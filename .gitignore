@@ -1,0 +1,155 @@
+# ========================================
+# God Agent - Comprehensive .gitignore
+# ========================================
+
+# =========================
+# Environment & Secrets
+# =========================
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Claude Code local settings (may contain API keys)
+.claude/settings.local.json
+!.claude/settings.local.json.example
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+.eggs/
+*.egg-info/
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.dmypy.json
+
+# =========================
+# Node.js
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# =========================
+# Build Artifacts
+# =========================
+dist/
+build/
+*.js.map
+*.d.ts.map
+
+# =========================
+# Vector Databases & AI Data
+# =========================
+vector_db_*/
+.agentdb/
+.god-agent/
+.swarm/
+.ucm/
+*.sqlite3
+!serena/*.sqlite3
+
+# =========================
+# User-Specific Content
+# =========================
+# Corpus (personal research documents)
+corpus/
+
+# God Learn outputs
+god-learn/runs/
+god-learn/knowledge.jsonl
+god-learn/index.json
+god-learn/sessions/
+god-learn/__archive__/
+god-learn/skew_alerts.json
+
+# God Reason outputs
+god-reason/
+god-reason__ZEROED_*/
+
+# God Assemble outputs
+god-assemble/
+god-assemble-*/
+god-assemble__ZEROED_*/
+
+# PhD pipeline sessions
+.phd-sessions/
+
+# Corpus tracking
+.corpus-tracking/
+.corpus-versions/
+
+# Run outputs
+runs/
+queries/
+
+# =========================
+# Runtime Files
+# =========================
+logs/
+*.log
+.run/
+*.pid
+tmp/
+*.tmp
+
+# =========================
+# Generated Documents
+# =========================
+dissertation_*.pdf
+dissertation_*.tex
+dissertation_input.tex
+
+# =========================
+# Windows/WSL Artifacts
+# =========================
+*:Zone.Identifier
+Thumbs.db
+Desktop.ini
+
+# =========================
+# macOS
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# =========================
+# IDEs
+# =========================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.bak
+
+# =========================
+# Serena (embedded project)
+# =========================
+serena/.venv/
+
+# =========================
+# Miscellaneous
+# =========================
+*.local
+setup-target.log
+scripts-filelist.txt
+fingerprint-source.txt
+god-agent@1.0.0
