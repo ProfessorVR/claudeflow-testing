@@ -429,3 +429,53 @@ export type {
   TestRunOptions,
   TestRunnerConfig,
 } from './test-runner.js';
+
+// ===== OUTCOME TRACKER =====
+
+export {
+  OutcomeTracker,
+  getOutcomeTracker,
+  resetOutcomeTracker,
+  initializeOutcomeTracker,
+  recordOutcome,
+  shouldEscalatePattern,
+  getPatternSuccessRate,
+  formatOutcome,
+  formatPatternStats,
+  formatTrackerStats,
+} from './outcome-tracker.js';
+
+export type {
+  RoutedTo,
+  OutcomeStatus,
+  RoutingOutcome,
+  PatternStats,
+  TrackerStats,
+  RecordOutcomeInput,
+  OutcomeQuery,
+  OutcomeTrackerConfig,
+} from './outcome-tracker.js';
+
+// ===== ROUTING OPTIMIZER =====
+
+export {
+  RoutingOptimizer,
+  getRoutingOptimizer,
+  resetRoutingOptimizer,
+  initializeRoutingOptimizer,
+  getOptimizedRoute,
+  getOptimizationSuggestions,
+  formatSuggestion,
+  formatReport,
+  formatSummary,
+} from './routing-optimizer.js';
+
+export type {
+  SuggestionPriority,
+  RuleChangeType,
+  RoutingRuleSuggestion,
+  OptimizationReport,
+  CostAnalysis,
+  QualityAnalysis,
+  RoutingOptimizerConfig,
+} from './routing-optimizer.js';
