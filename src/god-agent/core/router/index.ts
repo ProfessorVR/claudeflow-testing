@@ -352,6 +352,9 @@ export {
   showReviews,
   showReviewStats,
 
+  // Analytics commands
+  showAnalytics,
+
   // Command execution
   executeRouterCommand,
 

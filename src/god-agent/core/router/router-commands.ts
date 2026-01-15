@@ -35,6 +35,12 @@ import {
   formatSuggestion,
   formatSummary,
 } from './routing-optimizer.js';
+import {
+  getAnalyticsEngine,
+  formatDashboardSummary,
+  formatModelComparison,
+  formatAlerts,
+} from './analytics/index.js';
 import type { ProviderType, TaskType, Complexity } from './router-types.js';
 import type { RouteRecommendation } from './risk-classifier.js';
 
@@ -997,6 +1003,11 @@ export async function executeRouterCommand(command: string, args: string[]): Pro
       const limit = args[0] ? parseInt(args[0], 10) : undefined;
       return showReviews(limit);
 
+    // Analytics commands
+    case 'analytics':
+    case 'dashboard':
+      return showAnalytics(args[0], args.slice(1));
+
     default:
       return [
         `Unknown command: ${command}`,
@@ -1011,7 +1022,181 @@ export async function executeRouterCommand(command: string, args: string[]): Pro
         '  rate <1-5>  - Rate last response',
         '  quality [model]  - Show quality stats',
         '  review [stats|limit]  - Show pending reviews',
+        '  analytics [summary|models|quality|costs|alerts]  - Performance dashboard',
       ].join('\n');
+  }
+}
+
+// ===== ANALYTICS COMMANDS =====
+
+/**
+ * Show analytics dashboard
+ */
+export function showAnalytics(subcommand?: string, args: string[] = []): string {
+  const engine = getAnalyticsEngine();
+
+  // Collect fresh metrics
+  engine.collectMetrics();
+
+  // Parse period from args (e.g., --period 7d)
+  let periodDays = 30;
+  const periodIdx = args.indexOf('--period');
+  if (periodIdx !== -1 && args[periodIdx + 1]) {
+    const periodArg = args[periodIdx + 1];
+    const match = periodArg.match(/^(\d+)(d|w|m)?$/);
+    if (match) {
+      const value = parseInt(match[1], 10);
+      const unit = match[2] || 'd';
+      switch (unit) {
+        case 'd': periodDays = value; break;
+        case 'w': periodDays = value * 7; break;
+        case 'm': periodDays = value * 30; break;
+      }
+    }
+  }
+
+  const endDate = new Date();
+  const startDate = new Date(endDate.getTime() - periodDays * 24 * 60 * 60 * 1000);
+
+  switch (subcommand) {
+    case 'summary':
+      return formatDashboardSummary(engine.getDashboardSummary(startDate, endDate));
+
+    case 'models':
+    case 'compare':
+      return formatModelComparison(engine.getModelComparison(startDate, endDate));
+
+    case 'quality': {
+      const trends = engine.getQualityTrends(startDate, endDate);
+      const lines = [
+        '=== Quality Trends ===',
+        '',
+        `Period: ${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`,
+        '',
+        `Overall Data Points: ${trends.overall.points.length}`,
+        '',
+      ];
+
+      if (trends.byModel.size > 0) {
+        lines.push('--- By Model ---');
+        for (const [model, series] of trends.byModel) {
+          const latestValue = series.points.length > 0
+            ? series.points[series.points.length - 1].value
+            : 0;
+          lines.push(`  ${model}: ${(latestValue * 100).toFixed(1)}% (${series.points.length} samples)`);
+        }
+        lines.push('');
+      }
+
+      if (trends.movingAverage7d.length > 0) {
+        lines.push('--- Moving Averages ---');
+        const latest7d = trends.movingAverage7d[trends.movingAverage7d.length - 1] ?? 0;
+        const latest30d = trends.movingAverage30d[trends.movingAverage30d.length - 1] ?? 0;
+        lines.push(`  7-day MA: ${(latest7d * 100).toFixed(1)}%`);
+        lines.push(`  30-day MA: ${(latest30d * 100).toFixed(1)}%`);
+      }
+
+      return lines.join('\n');
+    }
+
+    case 'costs': {
+      const analytics = engine.getCostAnalytics(startDate, endDate);
+      const lines = [
+        '=== Cost Analytics ===',
+        '',
+        `Period: ${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`,
+        '',
+        '--- Totals ---',
+        `  Projected Monthly: $${analytics.projectedMonthlyCost.toFixed(2)}`,
+        '',
+        '--- By Provider ---',
+      ];
+
+      for (const [provider, cost] of Object.entries(analytics.costByProvider)) {
+        if (cost > 0) {
+          lines.push(`  ${provider}: $${cost.toFixed(4)}`);
+        }
+      }
+
+      lines.push('', '--- By Model ---');
+      for (const [model, cost] of Object.entries(analytics.costByModel)) {
+        lines.push(`  ${model}: $${cost.toFixed(4)}`);
+      }
+
+      lines.push('', '--- Budget Status ---');
+      lines.push(`  Daily: $${analytics.budgetStatus.daily.used.toFixed(2)}${analytics.budgetStatus.daily.limit ? ` / $${analytics.budgetStatus.daily.limit.toFixed(2)}` : ''}`);
+      lines.push(`  Weekly: $${analytics.budgetStatus.weekly.used.toFixed(2)}${analytics.budgetStatus.weekly.limit ? ` / $${analytics.budgetStatus.weekly.limit.toFixed(2)}` : ''}`);
+      lines.push(`  Monthly: $${analytics.budgetStatus.monthly.used.toFixed(2)}${analytics.budgetStatus.monthly.limit ? ` / $${analytics.budgetStatus.monthly.limit.toFixed(2)}` : ''}`);
+
+      return lines.join('\n');
+    }
+
+    case 'volume': {
+      const volume = engine.getRequestVolume(startDate, endDate);
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+      const lines = [
+        '=== Request Volume ===',
+        '',
+        `Period: ${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`,
+        '',
+        `Total Requests: ${volume.total.toLocaleString()}`,
+        `Peak Hour: ${volume.peakHour}:00 UTC`,
+        `Peak Day: ${days[volume.peakDay]}`,
+        '',
+        '--- By Model ---',
+      ];
+
+      for (const [model, count] of Object.entries(volume.byModel)) {
+        lines.push(`  ${model}: ${count.toLocaleString()}`);
+      }
+
+      return lines.join('\n');
+    }
+
+    case 'alerts': {
+      const alerts = engine.checkAlerts();
+      return formatAlerts(alerts);
+    }
+
+    case 'help':
+      return [
+        '=== Analytics Commands ===',
+        '',
+        'Usage: god analytics <subcommand> [--period <N>d|<N>w|<N>m]',
+        '',
+        'Subcommands:',
+        '  (none)   - Show full dashboard summary',
+        '  summary  - Show summary metrics with trends',
+        '  models   - Compare model performance',
+        '  quality  - Show quality trends',
+        '  costs    - Show cost breakdown',
+        '  volume   - Show request volume patterns',
+        '  alerts   - Show active alerts',
+        '',
+        'Period examples:',
+        '  --period 7d   - Last 7 days',
+        '  --period 2w   - Last 2 weeks',
+        '  --period 1m   - Last month',
+      ].join('\n');
+
+    default: {
+      // Show full dashboard
+      const result = engine.getDashboardData({
+        startDate,
+        endDate,
+      });
+
+      const lines = [
+        formatDashboardSummary(result.data.summary),
+        '',
+        formatModelComparison(result.data.modelComparison),
+        '',
+        `(Generated in ${result.computeTimeMs}ms${result.cached ? ' - cached' : ''})`,
+      ];
+
+      return lines.join('\n');
+    }
   }
 }
 
