@@ -623,3 +623,51 @@ export type {
   MetricsStoreConfig,
   AnalyticsEngineConfig,
 } from './analytics/index.js';
+
+// ===== RATE LIMITING (Phase 7.1) =====
+
+export {
+  RateLimiter,
+  RateLimiterManager,
+  getRateLimiterManager,
+  initializeRateLimiter,
+  resetRateLimiter,
+  formatRateLimitStatus,
+  formatAllRateLimitStatus,
+  DEFAULT_RATE_LIMITS,
+} from './rate-limiter.js';
+
+export type {
+  RateLimitConfig,
+  RateLimitStatus,
+  RateLimitResult,
+  RateLimiterManagerConfig,
+} from './rate-limiter.js';
+
+// ===== RETRY HANDLING (Phase 7.1) =====
+
+export {
+  RetryHandler,
+  RetryBudgetManager,
+  classifyError,
+  isRetryableError,
+  getSuggestedDelay,
+  withRetry,
+  withRetryPreset,
+  withRetryWrapper,
+  getRetryBudgetManager,
+  resetRetryBudgetManager,
+  formatRetryResult,
+  DEFAULT_RETRY_CONFIG,
+  RETRY_PRESETS,
+} from './retry-handler.js';
+
+export type {
+  RetryableErrorType,
+  NonRetryableErrorType,
+  ErrorType,
+  RetryConfig,
+  RetryResult,
+  RetryAttempt,
+  RetryBudget,
+} from './retry-handler.js';
