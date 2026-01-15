@@ -18,11 +18,11 @@
             </div>
         </div>
         <nav class="main-tabs">
-            <button class="tab-btn active" data-tab="analytics">Analytics</button>
-            <button class="tab-btn" data-tab="monitoring">Monitoring</button>
-            <button class="tab-btn" data-tab="router">Router</button>
-            <button class="tab-btn" data-tab="memory">Memory</button>
-            <button class="tab-btn" data-tab="activity">Activity</button>
+            <button class="main-tab active" data-tab="analytics">Analytics</button>
+            <button class="main-tab" data-tab="monitoring">Monitoring</button>
+            <button class="main-tab" data-tab="router">Router</button>
+            <button class="main-tab" data-tab="memory">Memory</button>
+            <button class="main-tab" data-tab="activity">Activity</button>
         </nav>
         <div class="header-right">
             <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">&#9776;</button>
@@ -61,7 +61,7 @@
         <!-- Main Content Area -->
         <main class="main-content">
             <!-- Analytics Tab -->
-            <div class="tab-panel active" id="tab-analytics">
+            <div class="tab-panel active" id="analytics-tab">
                 <div class="dashboard-grid analytics-grid">
                     <!-- Dashboard Summary Panel -->
                     <section class="panel summary-panel" data-panel="summary">
@@ -115,9 +115,18 @@
                             <div class="chart-container">
                                 <canvas id="modelComparisonChart"></canvas>
                             </div>
-                            <div class="model-winners" id="modelWinners">
-                                <!-- Best Quality, Best Cost, Best Value -->
-                            </div>
+                            <table class="model-table">
+                                <thead>
+                                    <tr>
+                                        <th>Model</th>
+                                        <th>Requests</th>
+                                        <th>Quality</th>
+                                        <th>Success</th>
+                                        <th>Cost/Req</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="modelTableBody"></tbody>
+                            </table>
                         </div>
                     </section>
 
@@ -128,7 +137,7 @@
                         </div>
                         <div class="panel-body">
                             <div class="chart-container">
-                                <canvas id="qualityTrendsChart"></canvas>
+                                <canvas id="qualityTrendChart"></canvas>
                             </div>
                         </div>
                     </section>
@@ -141,10 +150,27 @@
                         <div class="panel-body">
                             <div class="cost-breakdown">
                                 <div class="chart-container small">
-                                    <canvas id="costPieChart"></canvas>
+                                    <canvas id="costBreakdownChart"></canvas>
                                 </div>
-                                <div class="budget-bars" id="budgetBars">
-                                    <!-- Daily, Weekly, Monthly budgets -->
+                                <div class="budget-bars">
+                                    <div class="budget-item">
+                                        <span class="budget-label">Daily</span>
+                                        <div class="budget-bar-container">
+                                            <div class="budget-bar" id="dailyBudgetBar">$0 / $0</div>
+                                        </div>
+                                    </div>
+                                    <div class="budget-item">
+                                        <span class="budget-label">Weekly</span>
+                                        <div class="budget-bar-container">
+                                            <div class="budget-bar" id="weeklyBudgetBar">$0 / $0</div>
+                                        </div>
+                                    </div>
+                                    <div class="budget-item">
+                                        <span class="budget-label">Monthly</span>
+                                        <div class="budget-bar-container">
+                                            <div class="budget-bar" id="monthlyBudgetBar">$0 / $0</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -189,7 +215,7 @@
             </div>
 
             <!-- Monitoring Tab -->
-            <div class="tab-panel" id="tab-monitoring">
+            <div class="tab-panel" id="monitoring-tab">
                 <div class="dashboard-grid monitoring-grid">
                     <!-- Health Status Panel -->
                     <section class="panel health-panel" data-panel="health">
@@ -198,7 +224,7 @@
                             <button class="refresh-btn" id="refreshHealth">&#8635;</button>
                         </div>
                         <div class="panel-body">
-                            <div class="health-list" id="providerHealthList">
+                            <div class="health-list" id="healthList">
                                 <!-- Provider health status items -->
                             </div>
                         </div>
@@ -217,9 +243,9 @@
                                 <button class="filter-btn" data-severity="warning">Warning</button>
                                 <button class="filter-btn" data-severity="info">Info</button>
                             </div>
-                            <ul class="alert-list" id="alertList">
+                            <div class="alerts-list" id="alertsList">
                                 <!-- Alert items -->
-                            </ul>
+                            </div>
                         </div>
                     </section>
 
@@ -298,7 +324,7 @@
             </div>
 
             <!-- Router Tab -->
-            <div class="tab-panel" id="tab-router">
+            <div class="tab-panel" id="router-tab">
                 <div class="dashboard-grid router-grid">
                     <!-- Circuit Breaker Panel -->
                     <section class="panel circuits-panel" data-panel="circuits">
@@ -306,7 +332,7 @@
                             <h2>Circuit Breakers</h2>
                         </div>
                         <div class="panel-body">
-                            <div class="circuit-list" id="circuitList">
+                            <div class="circuits-list" id="circuitsList">
                                 <!-- Circuit breaker status items -->
                             </div>
                         </div>
@@ -318,7 +344,7 @@
                             <h2>Rate Limits</h2>
                         </div>
                         <div class="panel-body">
-                            <div class="ratelimit-list" id="ratelimitList">
+                            <div class="rate-limits-list" id="rateLimitsList">
                                 <!-- Rate limit status items -->
                             </div>
                         </div>
@@ -331,20 +357,20 @@
                             <span class="count-badge" id="experimentCount">0</span>
                         </div>
                         <div class="panel-body">
-                            <ul class="experiment-list" id="experimentList">
+                            <div class="experiments-list" id="experimentsList">
                                 <!-- Experiment items -->
-                            </ul>
+                            </div>
                         </div>
                     </section>
 
-                    <!-- Routing Optimizer Panel -->
-                    <section class="panel optimizer-panel" data-panel="optimizer">
+                    <!-- Provider Degradation Panel -->
+                    <section class="panel degradation-panel" data-panel="degradation">
                         <div class="panel-header">
-                            <h2>Routing Optimizer</h2>
+                            <h2>Provider Health</h2>
                         </div>
                         <div class="panel-body">
-                            <div class="suggestions-list" id="suggestionsList">
-                                <!-- Optimization suggestions -->
+                            <div class="degradation-list" id="degradationList">
+                                <!-- Provider health items -->
                             </div>
                         </div>
                     </section>
@@ -390,7 +416,7 @@
             </div>
 
             <!-- Memory Tab -->
-            <div class="tab-panel" id="tab-memory">
+            <div class="tab-panel" id="memory-tab">
                 <div class="dashboard-grid memory-grid">
                     <!-- Memory Inspector Panel (from existing, expanded) -->
                     <section class="panel memory-panel full-width" data-panel="memory-inspector">
@@ -398,32 +424,32 @@
                             <h2>Memory Inspector</h2>
                         </div>
                         <div class="panel-body">
-                            <div class="tabs">
-                                <button class="tab-button active" data-tab="interaction-store">InteractionStore</button>
-                                <button class="tab-button" data-tab="reasoning-bank">ReasoningBank</button>
-                                <button class="tab-button" data-tab="episode-store">EpisodeStore</button>
-                                <button class="tab-button" data-tab="ucm-context">UCM Context</button>
-                                <button class="tab-button" data-tab="hyperedge-store">Hyperedge</button>
+                            <div class="memory-tabs">
+                                <button class="memory-tab active" data-tab="interaction-store">InteractionStore</button>
+                                <button class="memory-tab" data-tab="reasoning-bank">ReasoningBank</button>
+                                <button class="memory-tab" data-tab="episode-store">EpisodeStore</button>
+                                <button class="memory-tab" data-tab="ucm-context">UCM Context</button>
+                                <button class="memory-tab" data-tab="hyperedge-store">Hyperedge</button>
                             </div>
-                            <div class="tab-content active" id="interaction-store">
+                            <div class="memory-tab-content active" id="interaction-store">
                                 <div class="memory-search">
                                     <input type="text" id="domainSearch" placeholder="Search by domain..." class="search-input">
                                 </div>
                                 <ul id="interactionList" class="memory-list"></ul>
                             </div>
-                            <div class="tab-content" id="reasoning-bank">
+                            <div class="memory-tab-content" id="reasoning-bank">
                                 <div class="memory-stats" id="reasoningStats"></div>
                                 <ul id="reasoningList" class="memory-list"></ul>
                             </div>
-                            <div class="tab-content" id="episode-store">
+                            <div class="memory-tab-content" id="episode-store">
                                 <div class="memory-stats" id="episodeStats"></div>
                                 <ul id="episodeList" class="memory-list"></ul>
                             </div>
-                            <div class="tab-content" id="ucm-context">
+                            <div class="memory-tab-content" id="ucm-context">
                                 <div class="memory-stats" id="ucmStats"></div>
                                 <ul id="ucmContextList" class="memory-list"></ul>
                             </div>
-                            <div class="tab-content" id="hyperedge-store">
+                            <div class="memory-tab-content" id="hyperedge-store">
                                 <div class="memory-stats" id="hyperedgeStats"></div>
                                 <ul id="hyperedgeList" class="memory-list"></ul>
                             </div>
@@ -503,7 +529,7 @@
             </div>
 
             <!-- Activity Tab -->
-            <div class="tab-panel" id="tab-activity">
+            <div class="tab-panel" id="activity-tab">
                 <div class="dashboard-grid activity-grid">
                     <!-- Activity Stream Panel (from existing) -->
                     <section class="panel activity-panel" data-panel="activity">
@@ -578,9 +604,7 @@
             <input type="text" id="commandInput" class="command-input" placeholder="Enter command (e.g., god analytics summary)" autocomplete="off">
             <button class="command-submit" id="commandSubmit">Run</button>
         </div>
-        <div class="command-output" id="commandOutput">
-            <pre id="commandResult"></pre>
-        </div>
+        <pre class="command-output" id="commandOutput"></pre>
     </div>
 
     <!-- Status Bar -->
