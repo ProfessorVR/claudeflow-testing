@@ -282,3 +282,43 @@ export type {
   EnforcementResult,
   PreRequestCheck,
 } from './budget-enforcer.js';
+
+// ===== CLI COMMANDS =====
+
+export {
+  // Session state
+  getSessionState,
+  resetSessionState,
+  setLastResponseId,
+
+  // Model commands
+  listModels,
+  testModelConnection,
+  testProvider,
+  useModel,
+
+  // Routing commands
+  showRoutingStatus,
+  suggestOptimizations,
+
+  // Cost commands
+  showCosts,
+  setBudget,
+  clearBudget,
+
+  // Quality commands
+  rateLastResponse,
+  showQuality,
+  showModelQuality,
+
+  // Review commands
+  showReviews,
+  showReviewStats,
+
+  // Command execution
+  executeRouterCommand,
+
+  // Integration helpers
+  getModelForRequest,
+  recordCompletedRequest,
+} from './router-commands.js';
