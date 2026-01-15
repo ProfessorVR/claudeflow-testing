@@ -208,19 +208,19 @@ class DashboardApp {
      */
     setupCommandBar() {
         const commandInput = document.getElementById('commandInput');
-        const commandOutput = document.getElementById('commandOutput');
-        const commandBarToggle = document.getElementById('commandBarToggle');
+        const commandSubmit = document.getElementById('commandSubmit');
         const commandBar = document.querySelector('.command-bar');
 
-        if (commandBarToggle && commandBar) {
-            commandBarToggle.addEventListener('click', () => {
-                commandBar.classList.toggle('expanded');
-                if (commandBar.classList.contains('expanded')) {
-                    commandInput?.focus();
+        // Handle submit button click
+        if (commandSubmit) {
+            commandSubmit.addEventListener('click', () => {
+                if (commandInput) {
+                    this.executeCommand(commandInput.value.trim());
                 }
             });
         }
 
+        // Handle keyboard input
         if (commandInput) {
             commandInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -233,7 +233,14 @@ class DashboardApp {
                     e.preventDefault();
                     this.navigateCommandHistory(1);
                 } else if (e.key === 'Escape') {
-                    commandBar?.classList.remove('expanded');
+                    commandInput.blur();
+                }
+            });
+
+            // Focus on click in command bar area
+            commandBar?.addEventListener('click', (e) => {
+                if (e.target === commandBar || e.target.classList.contains('command-input-container')) {
+                    commandInput.focus();
                 }
             });
         }
@@ -933,7 +940,20 @@ class DashboardApp {
             } else if (this.currentMainTab === 'router') {
                 await this.loadRouterData();
             }
+
+            // Update last refresh timestamp
+            this.updateLastRefresh();
         }, 5000);
+    }
+
+    /**
+     * Update last refresh timestamp in status bar
+     */
+    updateLastRefresh() {
+        const lastUpdateEl = document.getElementById('lastUpdate');
+        if (lastUpdateEl) {
+            lastUpdateEl.textContent = new Date().toLocaleTimeString();
+        }
     }
 
     /**
