@@ -4,6 +4,7 @@
  */
 import { StyleCharacteristics } from '../universal/style-analyzer.js';
 import type { AgentConfig } from './pipeline-loader.js';
+import type { DataSourceMode } from './cli-types.js';
 /**
  * StyleInjector class for building style-injected prompts
  */
@@ -24,7 +25,7 @@ export declare class StyleInjector {
         researchDir: string;
         agentIndex: number;
         agentKey: string;
-    }): Promise<string>;
+    }, dataSourceMode?: DataSourceMode): Promise<string>;
     /**
      * Build prompt with style injection using StyleProfileManager
      * [REQ-PIPE-030, REQ-PIPE-016]

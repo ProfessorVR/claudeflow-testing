@@ -168,7 +168,8 @@ export declare const PHASE_ORDER: CodingPipelinePhase[];
  */
 export declare const CHECKPOINT_PHASES: CodingPipelinePhase[];
 /**
- * Number of agents per phase
+ * Number of agents per phase (core + Sherlock forensic reviewer)
+ * Each phase includes its Sherlock reviewer for forensic analysis
  */
 export declare const PHASE_AGENT_COUNTS: Record<CodingPipelinePhase, number>;
 /**

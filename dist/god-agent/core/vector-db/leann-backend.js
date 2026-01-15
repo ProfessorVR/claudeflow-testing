@@ -222,6 +222,10 @@ export class LEANNBackend {
         if (this.vectors.size === 0) {
             return [];
         }
+        // For small datasets (<= 100 vectors), brute force is fast and guarantees exact results
+        if (this.vectors.size <= 100) {
+            return this.bruteForceSearch(query, k, includeVectors);
+        }
         // Level 1: Search hub cache first
         const hubResults = this.searchHubCache(query, k);
         // If we have enough results from hub cache, return them
@@ -240,6 +244,22 @@ export class LEANNBackend {
         });
         // Return top k
         return this.formatResults(allResults.slice(0, k), includeVectors);
+    }
+    /**
+     * Brute force search - guaranteed to find exact matches
+     * Used for small datasets where linear scan is efficient
+     */
+    bruteForceSearch(query, k, includeVectors) {
+        const results = [];
+        for (const [id, vector] of this.vectors.entries()) {
+            const score = this.metricFn(query, vector);
+            results.push({ id, score });
+        }
+        // Sort by score
+        results.sort((a, b) => {
+            return this.isSimilarity ? b.score - a.score : a.score - b.score;
+        });
+        return this.formatResults(results.slice(0, k), includeVectors);
     }
     /**
      * Search hub cache for nearest neighbors

@@ -4,22 +4,8 @@ A sophisticated multi-agent AI system with persistent memory, adaptive learning,
 
 **Version**: 2.0.0 | **Status**: Production-Ready | **Last Updated**: December 2024
 
-## Getting Started
-
-```bash
-git clone https://github.com/YOUR_USERNAME/claudeflow-testing.git
-cd claudeflow-testing
-npm install
-cp .env.example .env  # Add your API keys
-npm run build
-npx tsx src/god-agent/universal/cli.ts status
-```
-
-For detailed setup instructions, see [SETUP.md](./SETUP.md).
-
 ## Table of Contents
 
-- [Getting Started](#getting-started)
 - [Features](#features)
 - [Quick Setup (Automated)](#quick-setup-automated)
 - [Prerequisites (Manual Install)](#prerequisites-manual-install)

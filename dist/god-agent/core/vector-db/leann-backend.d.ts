@@ -78,6 +78,11 @@ export declare class LEANNBackend implements IHNSWBackend {
      */
     search(query: Float32Array, k: number, includeVectors?: boolean): SearchResult[];
     /**
+     * Brute force search - guaranteed to find exact matches
+     * Used for small datasets where linear scan is efficient
+     */
+    private bruteForceSearch;
+    /**
      * Search hub cache for nearest neighbors
      */
     private searchHubCache;

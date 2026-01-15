@@ -13,6 +13,28 @@
  * - RULE-006: ALL functions must have explicit return types
  * - RULE-011: Backward compatible with existing session schema
  */
+import type { DataSourceMode } from './cli-types.js';
+/**
+ * External tool types that agents may require.
+ * Used for tool dependency classification and permission gating.
+ */
+export type ExternalToolType = 'webSearch' | 'webFetch' | 'perplexity';
+/**
+ * Tool dependency metadata for an agent.
+ * Enables classification for local-only vs hybrid mode execution.
+ *
+ * GAP-A01: Agents classified by external tool dependency
+ */
+export interface ToolDependency {
+    /** Whether this agent can run without any external tools */
+    readonly canRunLocalOnly: boolean;
+    /** Whether this agent requires external tools for full functionality */
+    readonly requiresExternalTools: boolean;
+    /** Specific external tools this agent may use (empty if none) */
+    readonly externalToolsUsed: readonly ExternalToolType[];
+    /** Brief explanation of tool usage (for documentation) */
+    readonly toolUsageNotes?: string;
+}
 /**
  * Configuration for an individual agent in the PhD Pipeline.
  * Each agent has a unique key, belongs to a phase, and produces specific outputs.
@@ -30,6 +52,11 @@ export interface AgentConfig {
     readonly memoryKeys: readonly string[];
     /** Output artifacts this agent produces */
     readonly outputArtifacts: readonly string[];
+    /**
+     * Tool dependency classification for local/hybrid mode support.
+     * GAP-A01: Enables selective agent execution based on tool requirements.
+     */
+    readonly toolDependency: ToolDependency;
 }
 /**
  * Definition of a pipeline phase containing multiple agents.
@@ -51,14 +78,12 @@ export interface PhaseDefinition {
  * and operational settings.
  */
 export interface PipelineConfig {
-    /** Array of all agent configurations */
     readonly agents: readonly AgentConfig[];
-    /** Array of all phase definitions */
     readonly phases: readonly PhaseDefinition[];
-    /** Namespace for memory operations */
     readonly memoryNamespace: string;
-    /** Directory path containing agent markdown files */
     readonly agentsDirectory: string;
+    /** Research mode policy for this pipeline execution */
+    readonly dataSourceMode?: DataSourceMode;
 }
 /**
  * Session state for tracking pipeline execution progress.
@@ -69,6 +94,8 @@ export interface SessionState {
     readonly sessionId: string;
     /** Research topic or query being investigated */
     readonly topic: string;
+    /** Research mode policy persisted across steps */
+    readonly dataSourceMode?: DataSourceMode;
     /** Current phase number (1-7) */
     readonly currentPhase: number;
     /** Index of current agent within the complete agent list */
@@ -159,6 +186,56 @@ export declare function validateConfiguration(): boolean;
  * @returns Initial session state
  */
 export declare function createInitialSessionState(sessionId: string, topic: string): SessionState;
+/**
+ * Curated list of agent keys for local-only mode execution.
+ * These agents form a focused research workflow without external tools.
+ *
+ * GAP-A02: Local agent chain for meaningful local-mode research
+ *
+ * Selection criteria:
+ * - canRunLocalOnly: true
+ * - Core to scholarly research workflow
+ * - Produces meaningful output from corpus alone
+ */
+export declare const LOCAL_MODE_AGENT_CHAIN: readonly string[];
+/**
+ * Get all agents that can run in local-only mode.
+ * Returns agents where toolDependency.canRunLocalOnly is true.
+ *
+ * GAP-A01: Filter by tool dependency classification
+ *
+ * @returns Array of agents that can run without external tools
+ */
+export declare function getLocalCapableAgents(): readonly AgentConfig[];
+/**
+ * Get the curated local-only agent chain for focused research.
+ * Returns a subset of local-capable agents optimized for local mode.
+ *
+ * GAP-A02: Local agent chain function
+ *
+ * @returns Array of agent configs for local-only research workflow
+ */
+export declare function getLocalModeAgentChain(): readonly AgentConfig[];
+/**
+ * Get agents that require external tools for full functionality.
+ *
+ * @returns Array of agents that benefit from external tools
+ */
+export declare function getExternalToolAgents(): readonly AgentConfig[];
+/**
+ * Check if an agent can run in local-only mode.
+ *
+ * @param agentKey - The agent key to check
+ * @returns True if the agent can run locally
+ */
+export declare function canAgentRunLocally(agentKey: string): boolean;
+/**
+ * Get the external tools an agent may use.
+ *
+ * @param agentKey - The agent key to check
+ * @returns Array of external tool types the agent may use
+ */
+export declare function getAgentExternalTools(agentKey: string): readonly ExternalToolType[];
 /**
  * Get the file path for an agent's markdown definition.
  * @param agentKey - The agent key

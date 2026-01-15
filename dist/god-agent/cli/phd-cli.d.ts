@@ -33,24 +33,6 @@ export interface AgentValidationResult {
     /** Detailed error messages for each issue */
     errors: string[];
 }
-/**
- * Validate that all 46 agent .md files exist in the agents directory.
- * Implements RULE-018: Agent Key Validity - all agent keys must have corresponding .md files.
- *
- * @returns Promise<AgentValidationResult> - Detailed validation results
- *
- * Validation checks:
- * 1. Each agent in PHD_AGENTS has a corresponding .md file at ${DEFAULT_CONFIG.agentsDirectory}/${agent.file}
- * 2. Each .md file is non-empty (at least 100 bytes - reasonable minimum for agent definition)
- * 3. Each .md file contains valid content (starts with # or ---)
- *
- * @example
- * const result = await validateAgentFiles();
- * if (!result.valid) {
- *   console.error('Missing agents:', result.missingAgents);
- *   process.exit(1);
- * }
- */
 declare function validateAgentFiles(): Promise<AgentValidationResult>;
 /**
  * Result of building an agent prompt with the 5-part template.

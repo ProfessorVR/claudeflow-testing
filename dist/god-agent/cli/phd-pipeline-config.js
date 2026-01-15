@@ -24,6 +24,7 @@ export const PHD_AGENTS = [
     // =========================================================================
     // PHASE 1: FOUNDATION (6 agents)
     // Initial problem analysis, decomposition, and research planning
+    // All Phase 1 agents can run locally - pure reasoning, no external tools
     // =========================================================================
     {
         key: 'self-ask-decomposer',
@@ -32,6 +33,12 @@ export const PHD_AGENTS = [
         file: 'self-ask-decomposer.md',
         memoryKeys: ['research/meta/questions', 'research/foundation/decomposition'],
         outputArtifacts: ['essential-questions.md', 'knowledge-gaps.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Pure query decomposition - works entirely from research topic',
+        },
     },
     {
         key: 'step-back-analyzer',
@@ -40,6 +47,12 @@ export const PHD_AGENTS = [
         file: 'step-back-analyzer.md',
         memoryKeys: ['research/foundation/framing', 'research/meta/perspective'],
         outputArtifacts: ['high-level-framing.md', 'abstraction-analysis.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Abstract reasoning about research framing - no external data needed',
+        },
     },
     {
         key: 'ambiguity-clarifier',
@@ -48,6 +61,12 @@ export const PHD_AGENTS = [
         file: 'ambiguity-clarifier.md',
         memoryKeys: ['research/foundation/definitions', 'research/meta/clarifications'],
         outputArtifacts: ['term-definitions.md', 'clarified-scope.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Term clarification from corpus context - no external lookup',
+        },
     },
     {
         key: 'construct-definer',
@@ -56,6 +75,12 @@ export const PHD_AGENTS = [
         file: 'construct-definer.md',
         memoryKeys: ['research/foundation/constructs', 'research/theory/definitions'],
         outputArtifacts: ['construct-definitions.md', 'operationalizations.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Theoretical construct definition - uses local corpus definitions',
+        },
     },
     {
         key: 'theoretical-framework-analyst',
@@ -64,6 +89,12 @@ export const PHD_AGENTS = [
         file: 'theoretical-framework-analyst.md',
         memoryKeys: ['research/foundation/framework', 'research/theory/analysis'],
         outputArtifacts: ['theoretical-framework.md', 'framework-map.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Framework analysis from local corpus - no external sources',
+        },
     },
     {
         key: 'research-planner',
@@ -72,10 +103,17 @@ export const PHD_AGENTS = [
         file: 'research-planner.md',
         memoryKeys: ['research/foundation/plan', 'research/meta/strategy'],
         outputArtifacts: ['research-plan.md', 'timeline.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Research planning based on local findings - no external tools',
+        },
     },
     // =========================================================================
     // PHASE 2: LITERATURE (5 agents)
     // Literature review, source classification, methodology scanning, and systematic review
+    // Some agents benefit from external tools but can work locally with corpus
     // =========================================================================
     {
         key: 'literature-mapper',
@@ -84,6 +122,12 @@ export const PHD_AGENTS = [
         file: 'literature-mapper.md',
         memoryKeys: ['research/literature/map', 'research/sources/index'],
         outputArtifacts: ['literature-map.md', 'source-catalog.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: ['webSearch'],
+            toolUsageNotes: 'Can map local corpus; webSearch optional for discovering additional literature',
+        },
     },
     {
         key: 'source-tier-classifier',
@@ -92,6 +136,12 @@ export const PHD_AGENTS = [
         file: 'source-tier-classifier.md',
         memoryKeys: ['research/literature/tiers', 'research/quality/sources'],
         outputArtifacts: ['source-tiers.md', 'credibility-assessment.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Classifies sources already in corpus - no external lookup needed',
+        },
     },
     {
         key: 'methodology-scanner',
@@ -100,6 +150,12 @@ export const PHD_AGENTS = [
         file: 'methodology-scanner.md',
         memoryKeys: ['research/literature/methods', 'research/methodology/survey'],
         outputArtifacts: ['methodology-survey.md', 'method-comparison.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Scans methodologies in local corpus - no external tools',
+        },
     },
     {
         key: 'context-tier-manager',
@@ -108,6 +164,12 @@ export const PHD_AGENTS = [
         file: 'context-tier-manager.md',
         memoryKeys: ['research/literature/context', 'research/meta/tiers'],
         outputArtifacts: ['context-hierarchy.md', 'tier-mappings.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: ['webFetch'],
+            toolUsageNotes: 'Manages context tiers locally; webFetch optional for source verification',
+        },
     },
     {
         key: 'systematic-reviewer',
@@ -116,10 +178,17 @@ export const PHD_AGENTS = [
         file: 'systematic-reviewer.md',
         memoryKeys: ['research/literature/systematic', 'research/synthesis/systematic-review'],
         outputArtifacts: ['systematic-review.md', 'prisma-flowchart.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: ['webSearch'],
+            toolUsageNotes: 'PRISMA review of local corpus; webSearch optional for completeness check',
+        },
     },
     // =========================================================================
     // PHASE 3: ANALYSIS (6 agents)
     // Quality assessment, contradiction detection, evidence synthesis
+    // All Phase 3 agents work on local corpus data - pure analysis
     // =========================================================================
     {
         key: 'quality-assessor',
@@ -128,6 +197,12 @@ export const PHD_AGENTS = [
         file: 'quality-assessor.md',
         memoryKeys: ['research/analysis/quality', 'research/meta/assessment'],
         outputArtifacts: ['quality-assessment.md', 'quality-scores.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Assesses quality of local corpus sources - no external tools',
+        },
     },
     {
         key: 'contradiction-analyzer',
@@ -136,6 +211,12 @@ export const PHD_AGENTS = [
         file: 'contradiction-analyzer.md',
         memoryKeys: ['research/analysis/contradictions', 'research/findings/conflicts'],
         outputArtifacts: ['contradictions-report.md', 'resolution-proposals.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Detects contradictions within local corpus - pure analysis',
+        },
     },
     {
         key: 'bias-detector',
@@ -144,6 +225,12 @@ export const PHD_AGENTS = [
         file: 'bias-detector.md',
         memoryKeys: ['research/analysis/bias', 'research/quality/bias'],
         outputArtifacts: ['bias-analysis.md', 'bias-mitigation.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Identifies bias in local corpus - no external data needed',
+        },
     },
     {
         key: 'risk-analyst',
@@ -152,6 +239,12 @@ export const PHD_AGENTS = [
         file: 'risk-analyst.md',
         memoryKeys: ['research/analysis/risks', 'research/meta/risks'],
         outputArtifacts: ['risk-assessment.md', 'risk-mitigation.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Assesses research risks from local findings - pure reasoning',
+        },
     },
     {
         key: 'evidence-synthesizer',
@@ -160,6 +253,12 @@ export const PHD_AGENTS = [
         file: 'evidence-synthesizer.md',
         memoryKeys: ['research/analysis/evidence', 'research/synthesis/evidence'],
         outputArtifacts: ['evidence-synthesis.md', 'evidence-matrix.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Synthesizes evidence from local corpus - core local-mode agent',
+        },
     },
     {
         key: 'gap-hunter',
@@ -168,10 +267,17 @@ export const PHD_AGENTS = [
         file: 'gap-hunter.md',
         memoryKeys: ['research/analysis/gaps', 'research/findings/gaps'],
         outputArtifacts: ['research-gaps.md', 'gap-priorities.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: ['webSearch'],
+            toolUsageNotes: 'Identifies gaps in local corpus; webSearch optional to verify gap existence',
+        },
     },
     // =========================================================================
     // PHASE 4: SYNTHESIS (6 agents)
     // Pattern analysis, theory building, hypothesis generation
+    // All Phase 4 agents work on synthesized local findings - pure reasoning
     // =========================================================================
     {
         key: 'pattern-analyst',
@@ -180,6 +286,12 @@ export const PHD_AGENTS = [
         file: 'pattern-analyst.md',
         memoryKeys: ['research/synthesis/patterns', 'research/findings/patterns'],
         outputArtifacts: ['pattern-analysis.md', 'pattern-catalog.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Analyzes patterns in local findings - pure synthesis',
+        },
     },
     {
         key: 'thematic-synthesizer',
@@ -188,6 +300,12 @@ export const PHD_AGENTS = [
         file: 'thematic-synthesizer.md',
         memoryKeys: ['research/synthesis/themes', 'research/findings/themes'],
         outputArtifacts: ['thematic-synthesis.md', 'theme-hierarchy.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Synthesizes themes from local corpus - core local-mode agent',
+        },
     },
     {
         key: 'theory-builder',
@@ -196,6 +314,12 @@ export const PHD_AGENTS = [
         file: 'theory-builder.md',
         memoryKeys: ['research/synthesis/theory', 'research/theory/construction'],
         outputArtifacts: ['theory-development.md', 'theoretical-model.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Builds theory from local evidence - pure reasoning',
+        },
     },
     {
         key: 'hypothesis-generator',
@@ -204,6 +328,12 @@ export const PHD_AGENTS = [
         file: 'hypothesis-generator.md',
         memoryKeys: ['research/synthesis/hypotheses', 'research/theory/hypotheses'],
         outputArtifacts: ['hypotheses.md', 'testable-predictions.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Generates hypotheses from local synthesis - no external data',
+        },
     },
     {
         key: 'model-architect',
@@ -212,6 +342,12 @@ export const PHD_AGENTS = [
         file: 'model-architect.md',
         memoryKeys: ['research/synthesis/models', 'research/theory/models'],
         outputArtifacts: ['conceptual-model.md', 'model-specifications.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Designs conceptual models from local findings - pure architecture',
+        },
     },
     {
         key: 'opportunity-identifier',
@@ -220,10 +356,17 @@ export const PHD_AGENTS = [
         file: 'opportunity-identifier.md',
         memoryKeys: ['research/synthesis/opportunities', 'research/findings/opportunities'],
         outputArtifacts: ['research-opportunities.md', 'opportunity-matrix.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Identifies opportunities from local gaps - pure analysis',
+        },
     },
     // =========================================================================
     // PHASE 5: METHODS (6 agents)
     // Research design, sampling, instrumentation, ethics
+    // All Phase 5 agents work on methodology design - mostly local reasoning
     // =========================================================================
     {
         key: 'method-designer',
@@ -232,6 +375,12 @@ export const PHD_AGENTS = [
         file: 'method-designer.md',
         memoryKeys: ['research/methods/design', 'research/methodology/approach'],
         outputArtifacts: ['research-design.md', 'method-rationale.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Designs methodology based on local synthesis - pure design',
+        },
     },
     {
         key: 'sampling-strategist',
@@ -240,6 +389,12 @@ export const PHD_AGENTS = [
         file: 'sampling-strategist.md',
         memoryKeys: ['research/methods/sampling', 'research/methodology/sampling'],
         outputArtifacts: ['sampling-strategy.md', 'sample-specifications.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Develops sampling strategy from local context - no external tools',
+        },
     },
     {
         key: 'instrument-developer',
@@ -248,6 +403,12 @@ export const PHD_AGENTS = [
         file: 'instrument-developer.md',
         memoryKeys: ['research/methods/instruments', 'research/methodology/instruments'],
         outputArtifacts: ['research-instruments.md', 'instrument-validation.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Develops instruments from local requirements - pure design',
+        },
     },
     {
         key: 'analysis-planner',
@@ -256,6 +417,12 @@ export const PHD_AGENTS = [
         file: 'analysis-planner.md',
         memoryKeys: ['research/methods/analysis', 'research/methodology/analysis'],
         outputArtifacts: ['analysis-plan.md', 'statistical-approach.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Plans analysis approach from local hypotheses - pure planning',
+        },
     },
     {
         key: 'ethics-reviewer',
@@ -264,6 +431,12 @@ export const PHD_AGENTS = [
         file: 'ethics-reviewer.md',
         memoryKeys: ['research/methods/ethics', 'research/compliance/ethics'],
         outputArtifacts: ['ethics-review.md', 'irb-protocol.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Reviews ethics from local methodology - pure analysis',
+        },
     },
     {
         key: 'validity-guardian',
@@ -272,10 +445,17 @@ export const PHD_AGENTS = [
         file: 'validity-guardian.md',
         memoryKeys: ['research/methods/validity', 'research/quality/validity'],
         outputArtifacts: ['validity-assessment.md', 'threat-mitigation.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Assesses validity threats from local design - pure analysis',
+        },
     },
     // =========================================================================
     // PHASE 6: WRITING (8 agents)
     // Dissertation chapter writing and document architecture
+    // All Phase 6 agents produce prose from local synthesis - core local-mode agents
     // =========================================================================
     {
         key: 'dissertation-architect',
@@ -284,6 +464,12 @@ export const PHD_AGENTS = [
         file: 'dissertation-architect.md',
         memoryKeys: ['research/writing/structure', 'research/document/architecture'],
         outputArtifacts: ['dissertation-outline.md', 'chapter-structure.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Designs document structure from local findings - core local-mode agent',
+        },
     },
     {
         key: 'abstract-writer',
@@ -292,6 +478,12 @@ export const PHD_AGENTS = [
         file: 'abstract-writer.md',
         memoryKeys: ['research/writing/abstract', 'research/document/abstract'],
         outputArtifacts: ['abstract.md', 'executive-summary.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Writes abstract from local synthesis - pure writing',
+        },
     },
     {
         key: 'introduction-writer',
@@ -300,6 +492,12 @@ export const PHD_AGENTS = [
         file: 'introduction-writer.md',
         memoryKeys: ['research/writing/introduction', 'research/document/chapter1'],
         outputArtifacts: ['introduction.md', 'problem-statement.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Writes introduction from local framing - core local-mode agent',
+        },
     },
     {
         key: 'literature-review-writer',
@@ -308,6 +506,12 @@ export const PHD_AGENTS = [
         file: 'literature-review-writer.md',
         memoryKeys: ['research/writing/literature', 'research/document/chapter2'],
         outputArtifacts: ['literature-review.md', 'synthesis-narrative.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Writes literature review from local corpus synthesis - pure writing',
+        },
     },
     {
         key: 'methodology-writer',
@@ -316,6 +520,12 @@ export const PHD_AGENTS = [
         file: 'methodology-writer.md',
         memoryKeys: ['research/writing/methodology', 'research/document/chapter3'],
         outputArtifacts: ['methodology-chapter.md', 'method-details.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Writes methodology from local design - core local-mode agent',
+        },
     },
     {
         key: 'results-writer',
@@ -324,6 +534,12 @@ export const PHD_AGENTS = [
         file: 'results-writer.md',
         memoryKeys: ['research/writing/results', 'research/document/chapter4'],
         outputArtifacts: ['results-chapter.md', 'findings-narrative.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Writes results from local findings - pure writing',
+        },
     },
     {
         key: 'discussion-writer',
@@ -332,6 +548,12 @@ export const PHD_AGENTS = [
         file: 'discussion-writer.md',
         memoryKeys: ['research/writing/discussion', 'research/document/chapter5'],
         outputArtifacts: ['discussion-chapter.md', 'implications.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Writes discussion from local analysis - pure writing',
+        },
     },
     {
         key: 'conclusion-writer',
@@ -340,10 +562,17 @@ export const PHD_AGENTS = [
         file: 'conclusion-writer.md',
         memoryKeys: ['research/writing/conclusion', 'research/document/chapter6'],
         outputArtifacts: ['conclusion-chapter.md', 'future-directions.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Writes conclusion from local synthesis - pure writing',
+        },
     },
     // =========================================================================
     // PHASE 7: QUALITY (9 agents)
     // Citation management, validation, review, and final quality assurance
+    // Most Phase 7 agents work locally on document quality - core local-mode agents
     // =========================================================================
     {
         key: 'apa-citation-specialist',
@@ -352,6 +581,12 @@ export const PHD_AGENTS = [
         file: 'apa-citation-specialist.md',
         memoryKeys: ['research/quality/citations', 'research/document/references'],
         outputArtifacts: ['citation-audit.md', 'apa-compliance.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Validates APA formatting from local citations - pure analysis',
+        },
     },
     {
         key: 'citation-extractor',
@@ -360,6 +595,12 @@ export const PHD_AGENTS = [
         file: 'citation-extractor.md',
         memoryKeys: ['research/quality/extraction', 'research/sources/citations'],
         outputArtifacts: ['extracted-citations.md', 'reference-list.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Extracts citations from local document - pure extraction',
+        },
     },
     {
         key: 'citation-validator',
@@ -368,6 +609,12 @@ export const PHD_AGENTS = [
         file: 'citation-validator.md',
         memoryKeys: ['research/quality/validation', 'research/sources/verified'],
         outputArtifacts: ['citation-validation.md', 'source-verification.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: ['webFetch'],
+            toolUsageNotes: 'Validates local citations; webFetch optional for DOI/URL verification',
+        },
     },
     {
         key: 'adversarial-reviewer',
@@ -376,6 +623,12 @@ export const PHD_AGENTS = [
         file: 'adversarial-reviewer.md',
         memoryKeys: ['research/quality/critique', 'research/review/adversarial'],
         outputArtifacts: ['adversarial-critique.md', 'weakness-report.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Adversarial review of local document - core local-mode agent',
+        },
     },
     {
         key: 'confidence-quantifier',
@@ -384,6 +637,12 @@ export const PHD_AGENTS = [
         file: 'confidence-quantifier.md',
         memoryKeys: ['research/quality/confidence', 'research/meta/certainty'],
         outputArtifacts: ['confidence-scores.md', 'uncertainty-analysis.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Quantifies confidence from local evidence - pure analysis',
+        },
     },
     {
         key: 'reproducibility-checker',
@@ -392,6 +651,12 @@ export const PHD_AGENTS = [
         file: 'reproducibility-checker.md',
         memoryKeys: ['research/quality/reproducibility', 'research/meta/replication'],
         outputArtifacts: ['reproducibility-report.md', 'replication-guide.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Checks reproducibility of local methodology - pure analysis',
+        },
     },
     {
         key: 'consistency-validator',
@@ -400,6 +665,12 @@ export const PHD_AGENTS = [
         file: 'consistency-validator.md',
         memoryKeys: ['research/quality/consistency', 'research/document/coherence'],
         outputArtifacts: ['consistency-report.md', 'coherence-audit.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Validates internal consistency - core local-mode agent',
+        },
     },
     {
         key: 'file-length-manager',
@@ -408,6 +679,12 @@ export const PHD_AGENTS = [
         file: 'file-length-manager.md',
         memoryKeys: ['research/quality/structure', 'research/document/formatting'],
         outputArtifacts: ['structure-audit.md', 'length-compliance.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Manages document structure - pure formatting',
+        },
     },
     {
         key: 'chapter-synthesizer',
@@ -416,6 +693,12 @@ export const PHD_AGENTS = [
         file: 'chapter-synthesizer.md',
         memoryKeys: ['research/quality/synthesis', 'research/document/final'],
         outputArtifacts: ['final-synthesis.md', 'dissertation-complete.md'],
+        toolDependency: {
+            canRunLocalOnly: true,
+            requiresExternalTools: false,
+            externalToolsUsed: [],
+            toolUsageNotes: 'Final chapter synthesis - core local-mode agent',
+        },
     },
 ];
 // ============================================================================
@@ -644,6 +927,95 @@ export function createInitialSessionState(sessionId, topic) {
         lastActivityAt: now,
         status: 'pending',
     };
+}
+// ============================================================================
+// LOCAL MODE AGENT SELECTION (GAP-A01, GAP-A02)
+// ============================================================================
+/**
+ * Curated list of agent keys for local-only mode execution.
+ * These agents form a focused research workflow without external tools.
+ *
+ * GAP-A02: Local agent chain for meaningful local-mode research
+ *
+ * Selection criteria:
+ * - canRunLocalOnly: true
+ * - Core to scholarly research workflow
+ * - Produces meaningful output from corpus alone
+ */
+export const LOCAL_MODE_AGENT_CHAIN = [
+    // Phase 1: Foundation
+    'step-back-analyzer', // High-level reasoning
+    'self-ask-decomposer', // Query decomposition
+    'construct-definer', // Define key constructs
+    'theoretical-framework-analyst', // Framework analysis
+    // Phase 3: Analysis
+    'evidence-synthesizer', // Core evidence synthesis
+    'contradiction-analyzer', // Find contradictions
+    // Phase 4: Synthesis
+    'thematic-synthesizer', // Theme synthesis
+    'theory-builder', // Build theory from evidence
+    // Phase 6: Writing
+    'dissertation-architect', // Structure the document
+    'methodology-writer', // Write methodology
+    // Phase 7: Quality
+    'adversarial-reviewer', // Adversarial review
+    'consistency-validator', // Consistency check
+];
+/**
+ * Get all agents that can run in local-only mode.
+ * Returns agents where toolDependency.canRunLocalOnly is true.
+ *
+ * GAP-A01: Filter by tool dependency classification
+ *
+ * @returns Array of agents that can run without external tools
+ */
+export function getLocalCapableAgents() {
+    return PHD_AGENTS.filter((agent) => agent.toolDependency.canRunLocalOnly);
+}
+/**
+ * Get the curated local-only agent chain for focused research.
+ * Returns a subset of local-capable agents optimized for local mode.
+ *
+ * GAP-A02: Local agent chain function
+ *
+ * @returns Array of agent configs for local-only research workflow
+ */
+export function getLocalModeAgentChain() {
+    return LOCAL_MODE_AGENT_CHAIN.map((key) => {
+        const agent = getAgentByKey(key);
+        if (!agent) {
+            throw new Error(`Local mode agent not found: ${key}`);
+        }
+        return agent;
+    });
+}
+/**
+ * Get agents that require external tools for full functionality.
+ *
+ * @returns Array of agents that benefit from external tools
+ */
+export function getExternalToolAgents() {
+    return PHD_AGENTS.filter((agent) => agent.toolDependency.externalToolsUsed.length > 0);
+}
+/**
+ * Check if an agent can run in local-only mode.
+ *
+ * @param agentKey - The agent key to check
+ * @returns True if the agent can run locally
+ */
+export function canAgentRunLocally(agentKey) {
+    const agent = getAgentByKey(agentKey);
+    return agent?.toolDependency.canRunLocalOnly ?? false;
+}
+/**
+ * Get the external tools an agent may use.
+ *
+ * @param agentKey - The agent key to check
+ * @returns Array of external tool types the agent may use
+ */
+export function getAgentExternalTools(agentKey) {
+    const agent = getAgentByKey(agentKey);
+    return agent?.toolDependency.externalToolsUsed ?? [];
 }
 /**
  * Get the file path for an agent's markdown definition.

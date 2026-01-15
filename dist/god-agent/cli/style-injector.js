@@ -29,7 +29,7 @@ export class StyleInjector {
      * This ensures format consistency (REQ-PIPE-016) without requiring access to
      * PhDPipelineBridge private methods.
      */
-    async buildAgentPrompt(agent, styleProfileId, query, outputContext) {
+    async buildAgentPrompt(agent, styleProfileId, query, outputContext, dataSourceMode = "external") {
         // Check if Phase 6 agent
         const isPhase6 = agent.phase === 6;
         // Inject query into prompt if provided

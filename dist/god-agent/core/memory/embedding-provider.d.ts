@@ -49,7 +49,6 @@ export declare class LocalEmbeddingProvider implements IEmbeddingProvider {
     embedBatch(texts: string[]): Promise<Float32Array[]>;
     /**
      * Check if the local embedding API is available
-     * Uses the configured timeout (default 30s) to accommodate slow model loading
      * @returns true if API is reachable
      */
     isAvailable(): Promise<boolean>;
