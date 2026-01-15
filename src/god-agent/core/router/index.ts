@@ -237,3 +237,48 @@ export type {
   ReviewQueueConfig,
   ReviewCommand,
 } from './review-queue.js';
+
+// ===== COST TRACKING =====
+
+export {
+  CostTracker,
+  getCostTracker,
+  initializeCostTracker,
+  resetCostTracker,
+  formatCostString,
+  estimateMonthlyFromDaily,
+  calculateAverageCostPerRequest,
+} from './cost-tracker.js';
+
+export type {
+  CostTrackerConfig,
+} from './cost-tracker.js';
+
+// ===== QUALITY SCORING =====
+
+export {
+  QualityScorer,
+  getQualityScorer,
+  initializeQualityScorer,
+  resetQualityScorer,
+} from './quality-scorer.js';
+
+export type {
+  QualityScorerConfig,
+  QualityScoreInput,
+} from './quality-scorer.js';
+
+// ===== BUDGET ENFORCEMENT =====
+
+export {
+  BudgetEnforcer,
+  getBudgetEnforcer,
+  initializeBudgetEnforcer,
+  resetBudgetEnforcer,
+} from './budget-enforcer.js';
+
+export type {
+  BudgetEnforcerConfig,
+  EnforcementResult,
+  PreRequestCheck,
+} from './budget-enforcer.js';
