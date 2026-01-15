@@ -496,3 +496,47 @@ export type {
   ModelScore,
   AdaptiveRanking,
 } from './adaptive-router.js';
+
+// ===== A/B TESTING (Phase 6.2) =====
+
+export {
+  // Statistical Analysis
+  StatisticalAnalyzer,
+  getStatisticalAnalyzer,
+  initializeStatisticalAnalyzer,
+  resetStatisticalAnalyzer,
+
+  // Experiment Management
+  ExperimentManager,
+  getExperimentManager,
+  initializeExperimentManager,
+  resetExperimentManager,
+} from './ab-testing/index.js';
+
+export type {
+  // Status & Control
+  ExperimentStatus,
+  Winner,
+  ExperimentEventType,
+
+  // Configuration
+  ExperimentConfig,
+  CreateExperimentInput,
+  AnalysisOptions,
+  ExperimentQuery,
+
+  // State & Outcomes
+  ExperimentState,
+  PairedOutcome,
+  ModelOutcome,
+
+  // Results
+  StatisticalResults,
+  ExperimentResults,
+  MetricComparison,
+  ExperimentSummary,
+
+  // Events
+  ExperimentEvent,
+  ExperimentEventHandler,
+} from './ab-testing/index.js';
