@@ -34,15 +34,31 @@ This folder contains implementation plans for the God Agent system.
 
 ---
 
+## Current Phase
+
+### Phase 5: vLLM Local Model Integration & Risk-Based Routing
+- **Status:** In Progress
+- **Goal:** Integrate vLLM for local model inference with risk-based intelligent routing
+
+| Sub-Phase | Description | Status |
+|-----------|-------------|--------|
+| 5.1 | vLLM Provider Implementation | 🔄 |
+| 5.2 | Risk-Based Task Classifier | ⏳ |
+| 5.3 | Local-First Pipeline with Claude Review | ⏳ |
+| 5.4 | Outcome Learning & Routing Optimization | ⏳ |
+| 5.5 | CLI & Configuration | ⏳ |
+
+---
+
 ## Future Phases
 
-### Phase 5: Advanced Features (Planned)
+### Phase 6: Advanced Features (Planned)
 - Adaptive routing based on quality history
 - A/B testing between models
 - Cost optimization suggestions
 - Performance analytics dashboard
 
-### Phase 6: Production Hardening (Planned)
+### Phase 7: Production Hardening (Planned)
 - Rate limiting and retry logic
 - Circuit breakers for provider failures
 - Graceful degradation strategies
