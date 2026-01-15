@@ -720,3 +720,31 @@ export type {
   DegradationConfig,
   CachedResponse,
 } from './graceful-degradation.js';
+
+// ===== MONITORING AND ALERTING (Phase 7.4) =====
+
+export {
+  MonitoringSystem,
+  getMonitoringSystem,
+  initializeMonitoring,
+  resetMonitoring,
+  formatAlert,
+  formatMonitoringAlerts,
+  formatHealthCheck,
+  getAlertSummary,
+  DEFAULT_MONITORING_CONFIG,
+  DEFAULT_ALERT_DEFINITIONS,
+} from './monitoring.js';
+
+export type {
+  AlertSeverity,
+  AlertCategory,
+  AlertState,
+  AlertDefinition,
+  Alert,
+  HealthCheckResult,
+  MonitoringMetric,
+  MonitoringEventType,
+  MonitoringEvent,
+  MonitoringConfig,
+} from './monitoring.js';
