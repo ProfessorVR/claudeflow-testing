@@ -561,3 +561,62 @@ export type {
   CostOptimizationReport,
   CostOptimizerConfig,
 } from './cost-optimizer.js';
+
+// ===== ANALYTICS (Phase 6.4) =====
+
+export {
+  // Metrics Store
+  MetricsStore,
+  getMetricsStore,
+  initializeMetricsStore,
+  resetMetricsStore,
+  getBucketKey,
+  getBucketFromKey,
+  getCurrentBucket,
+
+  // Analytics Engine
+  AnalyticsEngine,
+  getAnalyticsEngine,
+  initializeAnalyticsEngine,
+  resetAnalyticsEngine,
+  formatDashboardSummary,
+  formatModelComparison,
+  formatAlerts,
+} from './analytics/index.js';
+
+export type {
+  // Time Periods
+  TimePeriod,
+  TimeBucket,
+
+  // Metrics
+  MetricPoint,
+  MetricSeries,
+  AggregatedMetric,
+  StoredMetric,
+  RollupConfig,
+
+  // Model & Task Metrics
+  ModelMetrics,
+  TaskTypeMetrics,
+
+  // Dashboard Data
+  DashboardSummary,
+  DashboardData,
+  ModelComparison,
+  QualityTrends,
+  CostAnalytics,
+  RequestVolume,
+
+  // Queries
+  AnalyticsQuery,
+  AnalyticsResult,
+
+  // Alerts
+  AnalyticsAlert,
+  AlertConfig as AnalyticsAlertConfig,
+
+  // Config
+  MetricsStoreConfig,
+  AnalyticsEngineConfig,
+} from './analytics/index.js';
