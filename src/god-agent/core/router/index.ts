@@ -671,3 +671,28 @@ export type {
   RetryAttempt,
   RetryBudget,
 } from './retry-handler.js';
+
+// ===== CIRCUIT BREAKER (Phase 7.2) =====
+
+export {
+  CircuitBreaker,
+  CircuitBreakerManager,
+  getCircuitBreakerManager,
+  initializeCircuitBreaker,
+  resetCircuitBreaker,
+  formatCircuitStatus,
+  formatAllCircuitStatus,
+  getCircuitHealthSummary,
+  DEFAULT_CIRCUIT_CONFIG,
+  CIRCUIT_PRESETS,
+} from './circuit-breaker.js';
+
+export type {
+  CircuitState,
+  CircuitBreakerConfig,
+  CircuitBreakerStatus,
+  CircuitEventType,
+  CircuitEvent,
+  CircuitBreakerResult,
+  CircuitBreakerManagerConfig,
+} from './circuit-breaker.js';
