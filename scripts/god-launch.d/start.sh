@@ -238,11 +238,18 @@ do_start() {
                 attach_after=true
                 shift
                 ;;
+            --profile|-p)
+                # Profile already parsed in main script
+                shift 2
+                ;;
             *)
                 shift
                 ;;
         esac
     done
+
+    # Show current profile
+    log_info "Using profile: ${CURRENT_PROFILE:-dev}"
 
     # Check if already running
     if session_exists; then
@@ -275,20 +282,41 @@ do_start() {
     log_info "Starting services in dependency order..."
     echo ""
 
+    # Start services based on profile (only enabled services)
     # 1. Embedding (no dependencies)
-    start_embedding
+    if service_enabled_in_profile "embedding"; then
+        start_embedding
+    else
+        log_info "Skipping embedding (not in profile: ${CURRENT_PROFILE})"
+    fi
 
     # 2. Memory (no dependencies)
-    start_memory
+    if service_enabled_in_profile "memory"; then
+        start_memory
+    else
+        log_info "Skipping memory (not in profile: ${CURRENT_PROFILE})"
+    fi
 
     # 3. Core daemon (depends on memory)
-    start_daemon
+    if service_enabled_in_profile "daemon"; then
+        start_daemon
+    else
+        log_info "Skipping daemon (not in profile: ${CURRENT_PROFILE})"
+    fi
 
     # 4. UCM (depends on daemon, embedding)
-    start_ucm
+    if service_enabled_in_profile "ucm"; then
+        start_ucm
+    else
+        log_info "Skipping ucm (not in profile: ${CURRENT_PROFILE})"
+    fi
 
     # 5. Observability (depends on daemon)
-    start_observe
+    if service_enabled_in_profile "observe"; then
+        start_observe
+    else
+        log_info "Skipping observe (not in profile: ${CURRENT_PROFILE})"
+    fi
 
     # Start dashboard in window 0
     log_info "Starting dashboard..."

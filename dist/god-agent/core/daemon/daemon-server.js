@@ -17,6 +17,7 @@
 import { createServer } from 'net';
 import { existsSync, unlinkSync } from 'fs';
 import { EventEmitter } from 'events';
+import { createServiceLogger } from '../observability/logger.js';
 import { DEFAULT_DAEMON_CONFIG, GRACEFUL_SHUTDOWN_TIMEOUT_MS, ClientRejectionReason, DaemonErrorCode, createDaemonError, generateClientId, JSON_RPC_ERROR_CODES, } from './daemon-types.js';
 import { VECTOR_DIM } from '../validation/constants.js';
 import { EpisodeStore } from '../episode/episode-store.js';
@@ -56,6 +57,8 @@ const DEFAULT_STORAGE_CONFIG = {
  * - EpisodeStore: SQLite + HNSW for episodic memory
  * - GraphDB: Hypergraph database with temporal features
  */
+// Service logger for daemon-server
+const log = createServiceLogger('daemon-server');
 export class DaemonServer extends EventEmitter {
     config;
     storageConfig;
@@ -145,7 +148,7 @@ export class DaemonServer extends EventEmitter {
                 // Use the quality estimator to assess output quality
                 const assessment = assessQuality(interaction, QUALITY_THRESHOLDS.FEEDBACK);
                 if (this.storageConfig.verbose) {
-                    console.log(`[CoreDaemon] Quality assessment for ${trajectoryId}:`, {
+                    log.debug(`Quality assessment for ${trajectoryId}`, {
                         score: assessment.score.toFixed(3),
                         meetsThreshold: assessment.meetsThreshold,
                         qualifiesForPattern: assessment.qualifiesForPattern,
@@ -161,9 +164,9 @@ export class DaemonServer extends EventEmitter {
             };
             setQualityAssessmentCallback(qualityCallback);
             if (this.storageConfig.verbose) {
-                console.log('[DaemonServer] Hooks registered and initialized');
-                console.log('[DaemonServer] DESC/SonaEngine not available in core daemon');
-                console.log('[DaemonServer] Quality assessment callback wired (TASK-HOOK-009)');
+                log.info('Hooks registered and initialized');
+                log.debug('DESC/SonaEngine not available in core daemon');
+                log.debug('Quality assessment callback wired', { task: 'TASK-HOOK-009' });
             }
         }
         catch (error) {
@@ -231,9 +234,10 @@ export class DaemonServer extends EventEmitter {
         // Initialize GraphDB (loads persisted data)
         await this.graphDb.initialize();
         if (this.storageConfig.verbose) {
-            console.log('[DaemonServer] Storage backends initialized');
-            console.log(`  - EpisodeStore: ${this.storageConfig.storageDir}`);
-            console.log(`  - GraphDB: ${this.storageConfig.graphDataDir}`);
+            log.info('Storage backends initialized', {
+                episodeStore: this.storageConfig.storageDir,
+                graphDb: this.storageConfig.graphDataDir,
+            });
         }
     }
     /**
@@ -263,9 +267,9 @@ export class DaemonServer extends EventEmitter {
             'create', 'createTemporal', 'query', 'expand', 'stats', 'get'
         ]);
         if (this.storageConfig.verbose) {
-            console.log('[DaemonServer] Core services registered:');
-            console.log('  - episode (9 methods)');
-            console.log('  - hyperedge (6 methods)');
+            log.info('Core services registered', {
+                services: ['episode (9 methods)', 'hyperedge (6 methods)'],
+            });
         }
     }
     /**
@@ -331,7 +335,7 @@ export class DaemonServer extends EventEmitter {
                 await this.episodeStore.close();
                 this.episodeStore = null;
                 if (this.storageConfig.verbose) {
-                    console.log('[DaemonServer] EpisodeStore closed');
+                    log.info('EpisodeStore closed');
                 }
             }
             // GraphDB persists via FallbackGraph automatically
@@ -339,13 +343,13 @@ export class DaemonServer extends EventEmitter {
             if (this.graphDb) {
                 this.graphDb = null;
                 if (this.storageConfig.verbose) {
-                    console.log('[DaemonServer] GraphDB closed');
+                    log.info('GraphDB closed');
                 }
             }
         }
         catch (error) {
             // Log but don't throw - we're shutting down
-            console.error('[DaemonServer] Error closing stores:', error);
+            log.error('Error closing stores', error);
         }
     }
     /**
@@ -581,7 +585,9 @@ export class DaemonServer extends EventEmitter {
         catch (error) {
             // Log but don't throw - socket may be closed
             if (this.storageConfig.verbose) {
-                console.error('[DaemonServer] Failed to send response:', error);
+                log.warn('Failed to send response', {
+                    error: error instanceof Error ? error.message : String(error),
+                });
             }
         }
     }

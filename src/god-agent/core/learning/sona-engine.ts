@@ -76,6 +76,7 @@ import {
   WEIGHT_FILE_VERSION,
 } from './sona-utils.js';
 import { VECTOR_DIM } from '../validation/constants.js';
+import { getConvergenceTracker, ConvergenceTracker, type IConvergenceMetrics } from './convergence-tracker.js';
 
 // ============================================================
 // DATABASE PERSISTENCE IMPORTS (TASK-PERSIST-004)
@@ -208,12 +209,24 @@ export class SonaEngine {
     lastUpdated: Date.now(),
   };
 
+  // Convergence tracking (TIER-2.3)
+  private convergenceTracker: ConvergenceTracker;
+
   constructor(config: ISonaConfig = {}) {
     this.config = validateAndApplyConfig(config);
     // Apply checkpointsDir from config if provided
     if (config.checkpointsDir) {
       this.checkpointsDir = config.checkpointsDir;
     }
+
+    // Initialize convergence tracker (TIER-2.3)
+    this.convergenceTracker = getConvergenceTracker({
+      windowSize: 50,
+      plateauThreshold: 0.01,
+      minSamplesForPlateau: 100,
+      maxFisherEntries: 10000,
+      initialLearningRate: this.config.learningRate,
+    });
 
     // ============================================================
     // DATABASE PERSISTENCE INITIALIZATION (TASK-PERSIST-004)
@@ -736,6 +749,52 @@ export class SonaEngine {
   }
 
   /**
+   * Get convergence metrics for learning system (TIER-2.3)
+   *
+   * Provides:
+   * - Learning curve tracking
+   * - Convergence speed calculation
+   * - Plateau detection
+   * - Learning rate recommendations
+   * - Fisher matrix statistics
+   *
+   * @returns Convergence metrics
+   */
+  getConvergenceMetrics(): IConvergenceMetrics {
+    return this.convergenceTracker.getMetrics();
+  }
+
+  /**
+   * Get recommended action based on convergence analysis (TIER-2.3)
+   *
+   * @returns 'continue' | 'pause' | 'reset' | 'reduce_lr' | 'increase_lr'
+   */
+  getConvergenceRecommendation(): string {
+    const metrics = this.convergenceTracker.getMetrics();
+    return metrics.recommendedAction;
+  }
+
+  /**
+   * Check if learning is in a plateau state (TIER-2.3)
+   *
+   * @returns true if plateau detected
+   */
+  isLearningPlateau(): boolean {
+    const metrics = this.convergenceTracker.getMetrics();
+    return metrics.plateauDetected;
+  }
+
+  /**
+   * Get suggested learning rate based on convergence analysis (TIER-2.3)
+   *
+   * @returns Suggested learning rate value
+   */
+  getSuggestedLearningRate(): number {
+    const metrics = this.convergenceTracker.getMetrics();
+    return metrics.suggestedLearningRate;
+  }
+
+  /**
    * Calculate drift from baseline weights
    *
    * @param baselineWeights - Baseline weight vector
@@ -1016,6 +1075,20 @@ export class SonaEngine {
 
       // 12. Update metrics
       this.metrics.lastUpdated = Date.now();
+
+      // 12a. Record sample for convergence tracking (TIER-2.3)
+      this.convergenceTracker.recordSample(quality);
+
+      // Update Fisher information in convergence tracker
+      for (const patternId of trajectory.patterns) {
+        const routeFisher = this.fisherInformation.get(trajectory.route);
+        if (routeFisher) {
+          const importance = routeFisher.get(patternId);
+          if (importance !== undefined) {
+            this.convergenceTracker.updateFisher(`${trajectory.route}:${patternId}`, importance);
+          }
+        }
+      }
 
       // ============================================================
       // DATABASE PERSISTENCE (TASK-PERSIST-006)

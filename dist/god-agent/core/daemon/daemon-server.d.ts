@@ -40,13 +40,6 @@ declare const DEFAULT_STORAGE_CONFIG: {
     embeddingDimension: number;
     graphDataDir: string;
 };
-/**
- * Daemon Server manages Unix socket connections for IPC
- *
- * Integrates with real storage backends:
- * - EpisodeStore: SQLite + HNSW for episodic memory
- * - GraphDB: Hypergraph database with temporal features
- */
 export declare class DaemonServer extends EventEmitter {
     private readonly config;
     private readonly storageConfig;

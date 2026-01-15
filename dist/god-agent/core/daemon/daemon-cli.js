@@ -15,16 +15,21 @@
 import { existsSync, writeFileSync, readFileSync, unlinkSync } from 'fs';
 import { DaemonServer } from './daemon-server.js';
 import { DEFAULT_SOCKET_PATH } from './daemon-types.js';
+import { createServiceLogger } from '../observability/logger.js';
 const PID_FILE = '/tmp/godagent-daemon.pid';
 const SOCKET_PATH = DEFAULT_SOCKET_PATH;
+// Enable daemon logging mode
+process.env.GOD_DAEMON_MODE = 'true';
+// Service logger for daemon-cli
+const log = createServiceLogger('daemon-cli');
 async function startDaemon() {
-    console.log('[DaemonCLI] Starting God Agent daemon...');
+    log.info('Starting God Agent daemon...');
     // Check if already running
     if (existsSync(PID_FILE)) {
         const pid = parseInt(readFileSync(PID_FILE, 'utf-8').trim(), 10);
         try {
             process.kill(pid, 0); // Check if process exists
-            console.log(`[DaemonCLI] Daemon already running (PID: ${pid})`);
+            log.warn('Daemon already running', { pid });
             return;
         }
         catch {
@@ -45,19 +50,19 @@ async function startDaemon() {
     await server.start();
     // Write PID file
     writeFileSync(PID_FILE, process.pid.toString());
-    console.log(`[DaemonCLI] Daemon started at ${SOCKET_PATH} (PID: ${process.pid})`);
-    console.log('[DaemonCLI] Services registered:');
-    console.log('  - health: Health check service');
-    console.log('  - status: Status and metrics service');
-    console.log('[DaemonCLI] Press Ctrl+C to stop');
+    log.info('Daemon started', {
+        socketPath: SOCKET_PATH,
+        pid: process.pid,
+        services: ['health', 'status'],
+    });
     // Handle shutdown
     const shutdown = async () => {
-        console.log('\n[DaemonCLI] Shutting down...');
+        log.info('Shutting down...');
         await server.stop();
         if (existsSync(PID_FILE)) {
             unlinkSync(PID_FILE);
         }
-        console.log('[DaemonCLI] Daemon stopped');
+        log.info('Daemon stopped');
         process.exit(0);
     };
     process.on('SIGINT', shutdown);
@@ -67,13 +72,13 @@ async function startDaemon() {
 }
 async function stopDaemon() {
     if (!existsSync(PID_FILE)) {
-        console.log('[DaemonCLI] Daemon not running');
+        log.info('Daemon not running');
         return;
     }
     const pid = parseInt(readFileSync(PID_FILE, 'utf-8').trim(), 10);
     try {
         process.kill(pid, 'SIGTERM');
-        console.log(`[DaemonCLI] Sent SIGTERM to daemon (PID: ${pid})`);
+        log.info('Sent SIGTERM to daemon', { pid });
         // Wait for process to exit
         let attempts = 0;
         while (attempts < 10) {
@@ -94,10 +99,10 @@ async function stopDaemon() {
         if (existsSync(SOCKET_PATH)) {
             unlinkSync(SOCKET_PATH);
         }
-        console.log('[DaemonCLI] Daemon stopped');
+        log.info('Daemon stopped');
     }
     catch (error) {
-        console.log(`[DaemonCLI] Failed to stop daemon: ${error}`);
+        log.error('Failed to stop daemon', error);
         // Clean up anyway
         if (existsSync(PID_FILE)) {
             unlinkSync(PID_FILE);
@@ -138,13 +143,13 @@ const command = process.argv[2];
 switch (command) {
     case 'start':
         startDaemon().catch((error) => {
-            console.error('[DaemonCLI] Failed to start:', error.message);
+            log.fatal('Failed to start', error);
             process.exit(1);
         });
         break;
     case 'stop':
         stopDaemon().catch((error) => {
-            console.error('[DaemonCLI] Failed to stop:', error.message);
+            log.fatal('Failed to stop', error);
             process.exit(1);
         });
         break;
@@ -152,7 +157,7 @@ switch (command) {
         statusDaemon();
         break;
     default:
-        console.log('Usage: daemon-cli.ts <start|stop|status>');
+        log.error('Invalid command', undefined, { usage: 'daemon-cli.ts <start|stop|status>' });
         process.exit(1);
 }
 //# sourceMappingURL=daemon-cli.js.map

@@ -13,12 +13,14 @@ import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { createComponentLogger, ConsoleLogHandler, LogLevel } from '../core/observability/index.js';
+import { getConfig } from '../core/config/index.js';
 const logger = createComponentLogger('UCMDaemonClient', {
     minLevel: LogLevel.INFO,
     handlers: [new ConsoleLogHandler({ useStderr: true })]
 });
-const DEFAULT_SOCKET_PATH = '/tmp/godagent-ucm.sock';
-const DEFAULT_TIMEOUT = 30000; // 30 seconds for DESC operations (embedding can be slow)
+// TIER-1.3: Get socket path from centralized config
+const DEFAULT_SOCKET_PATH = getConfig('services.ucm.socketPath', '/tmp/godagent-ucm.sock');
+const DEFAULT_TIMEOUT = getConfig('timeouts.socket', 30000);
 const DAEMON_START_TIMEOUT = 5000; // 5 seconds to wait for daemon to start
 export class UCMDaemonClient {
     socketPath;

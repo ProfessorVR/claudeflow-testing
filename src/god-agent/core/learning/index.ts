@@ -135,3 +135,20 @@ export {
   AUTO_PATTERN_QUALITY_THRESHOLD,
   WEIGHT_FILE_VERSION,
 } from './sona-utils.js';
+
+// ===== CONVERGENCE TRACKER (TIER-2.3) =====
+
+export {
+  ConvergenceTracker,
+  getConvergenceTracker,
+  resetConvergenceTracker,
+} from './convergence-tracker.js';
+
+export type {
+  IConvergenceMetrics,
+  IConvergenceConfig,
+  IFisherStats,
+  IFisherEntry,
+  ConvergenceAction,
+  ConvergenceTrend,
+} from './convergence-tracker.js';

@@ -22,11 +22,16 @@ import { IRoutingHistory } from './routing-history.js';
 import { IEventStore, IEventQuery } from './event-store.js';
 import { ISSEBroadcaster } from './sse-broadcaster.js';
 import { ActivityEventComponent, ActivityEventStatus } from './types.js';
+import { createServiceLogger } from '../core/observability/logger.js';
+import { getConfig } from '../core/config/index.js';
 
-// Database paths for real metrics
-const GOD_AGENT_DIR = path.join(process.cwd(), '.god-agent');
-const LEARNING_DB_PATH = path.join(GOD_AGENT_DIR, 'learning.db');
-const DESC_DB_PATH = path.join(GOD_AGENT_DIR, 'desc.db');
+// Service logger for express server
+const log = createServiceLogger('observe-server');
+
+// TIER-1.3: Database paths from centralized config
+const GOD_AGENT_DIR = path.join(process.cwd(), getConfig<string>('storage.baseDir', '.god-agent'));
+const LEARNING_DB_PATH = getConfig<string>('storage.learningDb', path.join(GOD_AGENT_DIR, 'learning.db'));
+const DESC_DB_PATH = getConfig<string>('storage.descDb', path.join(GOD_AGENT_DIR, 'desc.db'));
 const AGENTS_DIR = path.join(process.cwd(), '.claude', 'agents');
 
 // =============================================================================
@@ -131,9 +136,9 @@ export class ExpressServer implements IExpressServer {
     this.eventStore = dependencies.eventStore;
     this.sseBroadcaster = dependencies.sseBroadcaster;
 
-    // Configuration (RULE-OBS-006: Bind to localhost by default)
-    this.host = config?.host || '127.0.0.1';
-    this.verbose = config?.verbose || false;
+    // TIER-1.3: Get defaults from centralized config (RULE-OBS-006: Bind to localhost)
+    this.host = config?.host || getConfig<string>('services.observe.host', '127.0.0.1');
+    this.verbose = config?.verbose || getConfig<boolean>('logging.verbose', false);
 
     // Initialize Express app
     this.app = this.createApp();
@@ -269,7 +274,7 @@ export class ExpressServer implements IExpressServer {
     // Request logging (if verbose)
     if (this.verbose) {
       app.use((req: Request, res: Response, next: NextFunction) => {
-        console.log(`[ExpressServer] ${req.method} ${req.path}`);
+        log.debug(`${req.method} ${req.path}`, { method: req.method, path: req.path });
         next();
       });
     }
@@ -285,7 +290,7 @@ export class ExpressServer implements IExpressServer {
     // Global error handler (RULE-OBS-003: Sanitized errors)
     app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
       if (this.verbose) {
-        console.error('[ExpressServer] Error:', err);
+        log.error('Request error', err, { path: req.path });
       }
       res.status(500).json({ error: 'Internal Server Error' });
     });
@@ -530,7 +535,7 @@ export class ExpressServer implements IExpressServer {
       res.setHeader('Content-Type', 'application/json');
       res.json({ agents, count: agents.length });
     } catch (error) {
-      console.error('Error getting agents:', error);
+      log.error('Error getting agents', error);
       res.status(500).json({ error: 'Failed to get agents' });
     }
   }
@@ -638,7 +643,7 @@ export class ExpressServer implements IExpressServer {
       res.setHeader('Content-Type', 'application/json');
       res.json({ pipelines, count: pipelines.length });
     } catch (error) {
-      console.error('Error getting pipelines:', error);
+      log.error('Error getting pipelines', error);
       res.status(500).json({ error: 'Failed to get pipelines' });
     }
   }
@@ -699,7 +704,7 @@ export class ExpressServer implements IExpressServer {
       res.setHeader('Content-Type', 'application/json');
       res.json({ decisions, count: decisions.length });
     } catch (error) {
-      console.error('Error getting routing decisions:', error);
+      log.error('Error getting routing decisions', error);
       res.status(500).json({ error: 'Failed to get routing decisions' });
     }
   }
@@ -789,7 +794,7 @@ export class ExpressServer implements IExpressServer {
         lastUpdated: learningEvents[0]?.timestamp || new Date().toISOString(),
       });
     } catch (error) {
-      console.error('Error getting learning stats:', error);
+      log.error('Error getting learning stats', error);
       res.status(500).json({ error: 'Failed to get learning stats' });
     }
   }
@@ -1189,7 +1194,7 @@ export class ExpressServer implements IExpressServer {
         },
       });
     } catch (error) {
-      console.error('Error getting system metrics:', error);
+      log.error('Error getting system metrics', error);
       res.status(500).json({ error: 'Failed to get system metrics' });
     }
   }
@@ -1282,7 +1287,7 @@ export class ExpressServer implements IExpressServer {
         }
 
         if (this.verbose) {
-          console.log(`[ExpressServer] Server started on http://${this.host}:${this.port}`);
+          log.info('Server started', { url: `http://${this.host}:${this.port}` });
         }
         resolve();
       });
@@ -1306,7 +1311,7 @@ export class ExpressServer implements IExpressServer {
 
       this.server.close(() => {
         if (this.verbose) {
-          console.log('[ExpressServer] Server stopped');
+          log.info('Server stopped');
         }
         this.server = null;
         this.port = 0;

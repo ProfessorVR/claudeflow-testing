@@ -66,6 +66,13 @@ export UCM_SOCKET="/tmp/godagent-ucm.sock"
 # Ensure directories exist
 mkdir -p "${GOD_CONFIG_DIR}" "${GOD_LOG_DIR}"
 
+# Source modules
+source "${LAUNCH_DIR}/profiles.sh"
+source "${LAUNCH_DIR}/config-loader.sh"
+
+# Load configuration
+load_launcher_config
+
 # Helper: Print colored message
 log_info() { echo -e "${BLUE}[INFO]${NC} $*"; }
 log_success() { echo -e "${GREEN}[OK]${NC} $*"; }
@@ -121,11 +128,20 @@ Commands:
   status          Show service status (without attaching)
   logs [svc]      View logs (all or specific service)
   metrics         Show performance metrics
+  profiles        List available service profiles
+  config          Show current configuration
   kill            Force kill session (emergency)
 
 Options:
   --help, -h      Show this help message
-  --profile       Service profile (minimal|dev|prod|research)
+  --profile, -p   Service profile (minimal|dev|prod|research)
+  --attach, -a    Attach after starting
+
+Profiles:
+  minimal         Memory + daemon only (no embedding, no observe)
+  dev             All services with verbose logging (default)
+  prod            All services with production settings
+  research        All services + PhD pipeline ready mode
 
 Services:
   embedding       Embedding server (port 8000)
@@ -135,18 +151,26 @@ Services:
   observe         Observability dashboard (port 3847)
 
 Examples:
-  god launch                      # Start all services
-  god launch attach               # Attach to tmux session
-  god launch status               # Check all service status
-  god launch restart ucm          # Restart UCM only
-  god launch logs daemon          # Tail daemon logs
-  god launch logs --search error  # Search for errors
-  god launch metrics              # Show metrics dashboard
+  god launch                           # Start all services (dev profile)
+  god launch --profile minimal         # Start minimal services
+  god launch --profile prod --attach   # Start prod and attach
+  god launch attach                    # Attach to tmux session
+  god launch status                    # Check all service status
+  god launch restart ucm               # Restart UCM only
+  god launch logs daemon               # Tail daemon logs
+  god launch logs --search error       # Search for errors
+  god launch metrics                   # Show metrics dashboard
+  god launch profiles                  # List available profiles
+  god launch config                    # Show current configuration
 
 Navigation (in tmux):
   Ctrl-b 0-6    Switch windows
   Ctrl-b d      Detach from session
   Ctrl-b n/p    Next/previous window
+
+Configuration:
+  Project config: .god-agent/launcher.yaml
+  User config:    ~/.god-agent/launcher.yaml
 EOF
 }
 
@@ -158,8 +182,15 @@ main() {
     case "${command}" in
         start)
             check_prerequisites
+            parse_profile "$@"
             source "${LAUNCH_DIR}/start.sh"
             do_start "$@"
+            ;;
+        profiles)
+            list_profiles
+            ;;
+        config)
+            show_config
             ;;
         stop)
             source "${LAUNCH_DIR}/stop.sh"

@@ -165,10 +165,20 @@ export declare class StructuredLogger {
 }
 /**
  * Global logger instance
+ * - Silent by default in library/test mode
+ * - Console output when GOD_DAEMON_MODE=true or GOD_ENABLE_LOGS=true
  */
 export declare const logger: StructuredLogger;
 /**
+ * Create a service logger for daemon processes
+ * Always outputs to console with structured JSON
+ */
+export declare function createServiceLogger(service: string, options?: {
+    minLevel?: LogLevel;
+}): StructuredLogger;
+/**
  * Create a component-scoped logger
+ * @deprecated Use createServiceLogger for daemons, or logger.child() for components
  */
 export declare function createComponentLogger(component: string, options?: {
     minLevel?: LogLevel;

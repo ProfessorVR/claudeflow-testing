@@ -16,19 +16,26 @@
 import { existsSync, writeFileSync, readFileSync, unlinkSync } from 'fs';
 import { DaemonServer } from './daemon-server.js';
 import { DEFAULT_UCM_CONFIG } from '../config.js';
+import { createServiceLogger } from '../../observability/logger.js';
 
 const PID_FILE = '/tmp/godagent-ucm.pid';
 const SOCKET_PATH = DEFAULT_UCM_CONFIG.daemon.socketPath;
 
+// Enable daemon logging mode
+process.env.GOD_DAEMON_MODE = 'true';
+
+// Service logger for UCM daemon
+const log = createServiceLogger('ucm-cli');
+
 async function startDaemon(): Promise<void> {
-  console.log('[UCM-CLI] Starting UCM daemon...');
+  log.info('Starting UCM daemon...');
 
   // Check if already running
   if (existsSync(PID_FILE)) {
     const pid = parseInt(readFileSync(PID_FILE, 'utf-8').trim(), 10);
     try {
       process.kill(pid, 0); // Check if process exists
-      console.log(`[UCM-CLI] UCM daemon already running (PID: ${pid})`);
+      log.warn('UCM daemon already running', { pid });
       return;
     } catch {
       // INTENTIONAL: Process not running, clean up stale PID file
@@ -50,22 +57,20 @@ async function startDaemon(): Promise<void> {
   // Write PID file
   writeFileSync(PID_FILE, process.pid.toString());
 
-  console.log(`[UCM-CLI] UCM daemon started at ${SOCKET_PATH} (PID: ${process.pid})`);
-  console.log('[UCM-CLI] Services registered:');
-  console.log('  - health: Health check and embedding status');
-  console.log('  - desc: DESC episode retrieval and injection');
-  console.log('  - context: Context estimation and management');
-  console.log('  - recovery: Recovery and fallback services');
-  console.log('[UCM-CLI] Press Ctrl+C to stop');
+  log.info('UCM daemon started', {
+    socketPath: SOCKET_PATH,
+    pid: process.pid,
+    services: ['health', 'desc', 'context', 'recovery'],
+  });
 
   // Handle shutdown
   const shutdown = async () => {
-    console.log('\n[UCM-CLI] Shutting down...');
+    log.info('Shutting down...');
     await server.stop();
     if (existsSync(PID_FILE)) {
       unlinkSync(PID_FILE);
     }
-    console.log('[UCM-CLI] UCM daemon stopped');
+    log.info('UCM daemon stopped');
     process.exit(0);
   };
 
@@ -78,7 +83,7 @@ async function startDaemon(): Promise<void> {
 
 async function stopDaemon(): Promise<void> {
   if (!existsSync(PID_FILE)) {
-    console.log('[UCM-CLI] UCM daemon not running');
+    log.info('UCM daemon not running');
     return;
   }
 
@@ -86,7 +91,7 @@ async function stopDaemon(): Promise<void> {
 
   try {
     process.kill(pid, 'SIGTERM');
-    console.log(`[UCM-CLI] Sent SIGTERM to UCM daemon (PID: ${pid})`);
+    log.info('Sent SIGTERM to UCM daemon', { pid });
 
     // Wait for process to exit
     let attempts = 0;
@@ -109,9 +114,9 @@ async function stopDaemon(): Promise<void> {
       unlinkSync(SOCKET_PATH);
     }
 
-    console.log('[UCM-CLI] UCM daemon stopped');
+    log.info('UCM daemon stopped');
   } catch (error) {
-    console.log(`[UCM-CLI] Failed to stop UCM daemon: ${error}`);
+    log.error('Failed to stop UCM daemon', error);
     // Clean up anyway
     if (existsSync(PID_FILE)) {
       unlinkSync(PID_FILE);
@@ -156,13 +161,13 @@ const command = process.argv[2];
 switch (command) {
   case 'start':
     startDaemon().catch((error) => {
-      console.error('[UCM-CLI] Failed to start:', error.message);
+      log.fatal('Failed to start', error);
       process.exit(1);
     });
     break;
   case 'stop':
     stopDaemon().catch((error) => {
-      console.error('[UCM-CLI] Failed to stop:', error.message);
+      log.fatal('Failed to stop', error);
       process.exit(1);
     });
     break;
@@ -170,6 +175,6 @@ switch (command) {
     statusDaemon();
     break;
   default:
-    console.log('Usage: ucm-cli.ts <start|stop|status>');
+    log.error('Invalid command', undefined, { usage: 'ucm-cli.ts <start|stop|status>' });
     process.exit(1);
 }

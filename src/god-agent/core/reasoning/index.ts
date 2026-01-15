@@ -374,3 +374,26 @@ export type {
 
 // Training Worker (for Worker Thread implementation)
 export { TrainingWorker } from './training-worker.js';
+
+// ===== EXTENDED MODE SELECTOR =====
+
+export { ExtendedModeSelector } from './extended-mode-selector.js';
+export type {
+  ExtendedModeSelectorConfig,
+  ExtendedModeSelectionResult,
+} from './extended-mode-selector.js';
+
+// ===== AUTO MODE SELECTOR (TIER-2.4) =====
+
+export {
+  AutoModeSelector,
+  getAutoModeSelector,
+  resetAutoModeSelector,
+} from './auto-mode-selector.js';
+
+export type {
+  IAutoModeSelectorConfig,
+  IModeOutcome,
+  IModeWeight,
+  IAutoModeStats,
+} from './auto-mode-selector.js';

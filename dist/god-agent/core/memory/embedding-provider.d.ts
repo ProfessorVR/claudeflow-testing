@@ -7,8 +7,11 @@
  * 2. MockEmbeddingProvider - Random vectors for testing (FALLBACK)
  *
  * Local API: http://127.0.0.1:8000/embed (Alibaba-NLP/gte-Qwen2-1.5B-instruct)
+ *
+ * TIER-1.2: Integrated with error recovery patterns for resilience
  */
 import type { IEmbeddingProvider } from './types.js';
+import { type RetryOptions } from '../resilience/index.js';
 /**
  * Configuration for local embedding API
  */
@@ -21,6 +24,10 @@ export interface ILocalEmbeddingConfig {
     enableCache?: boolean;
     /** Maximum cache size (default: 10000) */
     maxCacheSize?: number;
+    /** Retry configuration (default: 3 attempts with exponential backoff) */
+    retry?: RetryOptions;
+    /** Whether to use circuit breaker (default: true) */
+    useCircuitBreaker?: boolean;
 }
 /**
  * Local embedding provider using gte-Qwen2-1.5B-instruct API
@@ -34,9 +41,13 @@ export declare class LocalEmbeddingProvider implements IEmbeddingProvider {
     private readonly cache;
     private readonly maxCacheSize;
     private readonly enableCache;
+    private readonly retryOptions;
+    private readonly useCircuitBreaker;
     constructor(config?: ILocalEmbeddingConfig);
     /**
      * Generate semantic embedding for text using local API
+     * TIER-1.2: Includes retry with exponential backoff and circuit breaker
+     *
      * @param text - Text to embed
      * @returns 1536-dimensional L2-normalized semantic embedding
      */

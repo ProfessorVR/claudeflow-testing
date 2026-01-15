@@ -17,31 +17,53 @@ import * as path from 'path';
 import { MemoryServer } from './memory-server.js';
 import { MemoryHealthMonitor } from './memory-health.js';
 import type { IMemoryServerConfig } from '../types/memory-types.js';
+import { createServiceLogger, type LogContext } from '../observability/logger.js';
 
 // ==================== Constants ====================
 
 const DEFAULT_AGENTDB_PATH = path.join(process.cwd(), '.agentdb');
 const DAEMON_LOG_FILE = 'memory-daemon.log';
 
+// Enable daemon logging mode
+process.env.GOD_DAEMON_MODE = 'true';
+
 // ==================== Logging ====================
 
-async function log(level: string, message: string, context?: Record<string, unknown>): Promise<void> {
-  const entry = {
-    timestamp: new Date().toISOString(),
-    level,
-    component: 'MemoryDaemon',
-    message,
-    pid: process.pid,
-    ...context,
-  };
+// Service logger
+const serviceLog = createServiceLogger('memory-daemon');
 
-  const logLine = JSON.stringify(entry);
-  console.log(logLine);
+async function log(level: string, message: string, context?: Record<string, unknown>): Promise<void> {
+  // Use structured logger
+  const logContext: LogContext = { pid: process.pid, ...context };
+
+  switch (level) {
+    case 'debug':
+      serviceLog.debug(message, logContext);
+      break;
+    case 'info':
+      serviceLog.info(message, logContext);
+      break;
+    case 'warn':
+      serviceLog.warn(message, logContext);
+      break;
+    case 'error':
+      serviceLog.error(message, context?.error as Error, logContext);
+      break;
+    default:
+      serviceLog.info(message, logContext);
+  }
 
   // Also write to log file for debugging
   try {
+    const entry = {
+      timestamp: new Date().toISOString(),
+      level,
+      service: 'memory-daemon',
+      message,
+      context: logContext,
+    };
     const logPath = path.join(DEFAULT_AGENTDB_PATH, DAEMON_LOG_FILE);
-    await fs.appendFile(logPath, logLine + '\n');
+    await fs.appendFile(logPath, JSON.stringify(entry) + '\n');
   } catch {
     // INTENTIONAL: Log file write errors are non-critical - daemon continues operation
   }

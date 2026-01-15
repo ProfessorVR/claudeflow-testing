@@ -16,6 +16,7 @@ import { randomUUID } from 'crypto';
 import { DEFAULT_SOCKET_PATH, DEFAULT_HTTP_PORT, DEFAULT_MAX_CONNECTIONS, DEFAULT_REQUEST_TIMEOUT_MS, MEMORY_SERVER_VERSION, } from '../types/memory-types.js';
 import { MemoryError, ServerShuttingDownError, MaxConnectionsError, StorageError, UnknownMethodError, wrapError, } from './memory-errors.js';
 import { MessageBuffer, serializeMessage, parseMessage, isRequest, isValidMethod, validateParams, createSuccessResponse, createErrorResponse, } from './memory-protocol.js';
+import { getConfig } from '../config/index.js';
 // ==================== Constants ====================
 const PID_FILE_NAME = 'memory-server.pid';
 const KNOWLEDGE_FILE = 'session-knowledge.json';
@@ -34,13 +35,14 @@ export class MemoryServer {
     dirty = false;
     saveTimer = null;
     constructor(config = {}) {
+        // TIER-1.3: Get defaults from centralized config, fall back to module constants
         this.config = {
-            socketPath: config.socketPath ?? DEFAULT_SOCKET_PATH,
+            socketPath: config.socketPath ?? getConfig('services.memory.socketPath', DEFAULT_SOCKET_PATH),
             httpPort: config.httpPort ?? DEFAULT_HTTP_PORT,
             maxConnections: config.maxConnections ?? DEFAULT_MAX_CONNECTIONS,
-            requestTimeoutMs: config.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
-            agentDbPath: config.agentDbPath ?? path.join(process.cwd(), '.agentdb'),
-            verbose: config.verbose ?? false,
+            requestTimeoutMs: config.requestTimeoutMs ?? getConfig('timeouts.socket', DEFAULT_REQUEST_TIMEOUT_MS),
+            agentDbPath: config.agentDbPath ?? getConfig('storage.agentDb', path.join(process.cwd(), '.agentdb')),
+            verbose: config.verbose ?? getConfig('logging.verbose', false),
         };
     }
     // ==================== Lifecycle ====================

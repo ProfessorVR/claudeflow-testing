@@ -59,6 +59,7 @@ import {
   createSuccessResponse,
   createErrorResponse,
 } from './memory-protocol.js';
+import { getConfig } from '../config/index.js';
 
 // ==================== Constants ====================
 
@@ -100,13 +101,14 @@ export class MemoryServer {
   private saveTimer: NodeJS.Timeout | null = null;
 
   constructor(config: Partial<IMemoryServerConfig> = {}) {
+    // TIER-1.3: Get defaults from centralized config, fall back to module constants
     this.config = {
-      socketPath: config.socketPath ?? DEFAULT_SOCKET_PATH,
+      socketPath: config.socketPath ?? getConfig<string>('services.memory.socketPath', DEFAULT_SOCKET_PATH),
       httpPort: config.httpPort ?? DEFAULT_HTTP_PORT,
       maxConnections: config.maxConnections ?? DEFAULT_MAX_CONNECTIONS,
-      requestTimeoutMs: config.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
-      agentDbPath: config.agentDbPath ?? path.join(process.cwd(), '.agentdb'),
-      verbose: config.verbose ?? false,
+      requestTimeoutMs: config.requestTimeoutMs ?? getConfig<number>('timeouts.socket', DEFAULT_REQUEST_TIMEOUT_MS),
+      agentDbPath: config.agentDbPath ?? getConfig<string>('storage.agentDb', path.join(process.cwd(), '.agentdb')),
+      verbose: config.verbose ?? getConfig<boolean>('logging.verbose', false),
     };
   }
 

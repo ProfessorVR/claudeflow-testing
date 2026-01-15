@@ -395,26 +395,67 @@ export class StructuredLogger {
 // ==================== Global Instance ====================
 
 /**
+ * Get log level from environment variable
+ */
+function getLogLevelFromEnv(): LogLevel {
+  const envLevel = process.env.GOD_LOG_LEVEL || process.env.LOG_LEVEL || 'INFO';
+  return parseLogLevel(envLevel);
+}
+
+/**
+ * Check if running as a daemon service (should output logs)
+ */
+function isDaemonMode(): boolean {
+  return (
+    process.env.GOD_DAEMON_MODE === 'true' ||
+    process.env.GOD_ENABLE_LOGS === 'true' ||
+    process.argv.some(arg => arg.includes('daemon') || arg.includes('start'))
+  );
+}
+
+/**
  * Global logger instance
+ * - Silent by default in library/test mode
+ * - Console output when GOD_DAEMON_MODE=true or GOD_ENABLE_LOGS=true
  */
 export const logger = new StructuredLogger({
-  minLevel: LogLevel.INFO,
-  handlers: [new SilentLogHandler()], // Silent by default in library code
+  minLevel: getLogLevelFromEnv(),
+  handlers: isDaemonMode()
+    ? [new ConsoleLogHandler({ useStderr: true })]
+    : [new SilentLogHandler()],
 });
 
 // ==================== Utility Functions ====================
 
 /**
+ * Create a service logger for daemon processes
+ * Always outputs to console with structured JSON
+ */
+export function createServiceLogger(
+  service: string,
+  options?: { minLevel?: LogLevel }
+): StructuredLogger {
+  return new StructuredLogger({
+    minLevel: options?.minLevel ?? getLogLevelFromEnv(),
+    context: { service },
+    handlers: [new ConsoleLogHandler({ useStderr: true })],
+  });
+}
+
+/**
  * Create a component-scoped logger
+ * @deprecated Use createServiceLogger for daemons, or logger.child() for components
  */
 export function createComponentLogger(
   component: string,
   options?: { minLevel?: LogLevel; handlers?: LogHandler[] }
 ): StructuredLogger {
   return new StructuredLogger({
-    minLevel: options?.minLevel ?? LogLevel.INFO,
+    minLevel: options?.minLevel ?? getLogLevelFromEnv(),
     context: { component },
-    handlers: options?.handlers ?? [new SilentLogHandler()],
+    handlers: options?.handlers ?? (isDaemonMode()
+      ? [new ConsoleLogHandler({ useStderr: true })]
+      : [new SilentLogHandler()]),
   });
 }
 

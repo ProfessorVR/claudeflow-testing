@@ -7,10 +7,22 @@
  * 2. MockEmbeddingProvider - Random vectors for testing (FALLBACK)
  *
  * Local API: http://127.0.0.1:8000/embed (Alibaba-NLP/gte-Qwen2-1.5B-instruct)
+ *
+ * TIER-1.2: Integrated with error recovery patterns for resilience
  */
 
 import type { IEmbeddingProvider } from './types.js';
 import { VECTOR_DIM } from '../validation/index.js';
+import {
+  withRetry,
+  embeddingCircuitBreaker,
+  type RetryOptions,
+} from '../resilience/index.js';
+import { createServiceLogger } from '../observability/logger.js';
+import { getConfig } from '../config/index.js';
+
+// Service logger
+const log = createServiceLogger('embedding-provider');
 
 // ==================== Local Embedding Provider ====================
 
@@ -26,6 +38,10 @@ export interface ILocalEmbeddingConfig {
   enableCache?: boolean;
   /** Maximum cache size (default: 10000) */
   maxCacheSize?: number;
+  /** Retry configuration (default: 3 attempts with exponential backoff) */
+  retry?: RetryOptions;
+  /** Whether to use circuit breaker (default: true) */
+  useCircuitBreaker?: boolean;
 }
 
 /**
@@ -40,17 +56,31 @@ export class LocalEmbeddingProvider implements IEmbeddingProvider {
   private readonly cache: Map<string, Float32Array>;
   private readonly maxCacheSize: number;
   private readonly enableCache: boolean;
+  private readonly retryOptions: RetryOptions;
+  private readonly useCircuitBreaker: boolean;
 
   constructor(config: ILocalEmbeddingConfig = {}) {
-    this.endpoint = config.endpoint ?? 'http://127.0.0.1:8000/embed';
-    this.timeout = config.timeout ?? 30000;
+    // TIER-1.3: Get defaults from centralized config
+    this.endpoint = config.endpoint ?? getConfig<string>('services.embedding.endpoint', 'http://127.0.0.1:8000/embed');
+    this.timeout = config.timeout ?? getConfig<number>('timeouts.embedding', 30000);
     this.enableCache = config.enableCache ?? true;
     this.maxCacheSize = config.maxCacheSize ?? 10000;
     this.cache = new Map();
+
+    // TIER-1.2: Configure resilience
+    this.retryOptions = config.retry ?? {
+      maxAttempts: 3,
+      initialDelayMs: 500,
+      maxDelayMs: 5000,
+      backoffMultiplier: 2,
+    };
+    this.useCircuitBreaker = config.useCircuitBreaker ?? true;
   }
 
   /**
    * Generate semantic embedding for text using local API
+   * TIER-1.2: Includes retry with exponential backoff and circuit breaker
+   *
    * @param text - Text to embed
    * @returns 1536-dimensional L2-normalized semantic embedding
    */
@@ -66,59 +96,87 @@ export class LocalEmbeddingProvider implements IEmbeddingProvider {
       this.cache.delete(text);
     }
 
-    try {
+    // Core embedding request wrapped with resilience patterns
+    const fetchEmbedding = async (): Promise<Float32Array> => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
-      const response = await fetch(this.endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ texts: [text] }),
-        signal: controller.signal,
-      });
+      try {
+        const response = await fetch(this.endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ texts: [text] }),
+          signal: controller.signal,
+        });
 
-      clearTimeout(timeoutId);
+        clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        throw new Error(`Embedding API error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json() as { embeddings: number[][] };
-
-      if (!data.embeddings || !data.embeddings[0]) {
-        throw new Error('Invalid response from embedding API');
-      }
-
-      const embedding = new Float32Array(data.embeddings[0]);
-
-      // Validate dimension
-      if (embedding.length !== VECTOR_DIM) {
-        throw new Error(`Expected ${VECTOR_DIM} dimensions, got ${embedding.length}`);
-      }
-
-      // L2 normalize (should already be normalized, but ensure consistency)
-      const magnitude = Math.sqrt(embedding.reduce((sum, v) => sum + v * v, 0));
-      if (magnitude > 0 && Math.abs(magnitude - 1) > 0.001) {
-        for (let i = 0; i < embedding.length; i++) {
-          embedding[i] /= magnitude;
+        if (!response.ok) {
+          throw new Error(`Embedding API error: ${response.status} ${response.statusText}`);
         }
-      }
 
-      // Only cache valid (non-zero) embeddings
-      if (this.enableCache && magnitude > 0.001) {
-        // Evict oldest if cache is full
-        if (this.cache.size >= this.maxCacheSize) {
-          const firstKey = this.cache.keys().next().value;
-          if (firstKey) this.cache.delete(firstKey);
+        const data = await response.json() as { embeddings: number[][] };
+
+        if (!data.embeddings || !data.embeddings[0]) {
+          throw new Error('Invalid response from embedding API');
         }
-        this.cache.set(text, embedding);
-      }
 
-      return embedding;
+        const embedding = new Float32Array(data.embeddings[0]);
+
+        // Validate dimension
+        if (embedding.length !== VECTOR_DIM) {
+          throw new Error(`Expected ${VECTOR_DIM} dimensions, got ${embedding.length}`);
+        }
+
+        // L2 normalize (should already be normalized, but ensure consistency)
+        const magnitude = Math.sqrt(embedding.reduce((sum, v) => sum + v * v, 0));
+        if (magnitude > 0 && Math.abs(magnitude - 1) > 0.001) {
+          for (let i = 0; i < embedding.length; i++) {
+            embedding[i] /= magnitude;
+          }
+        }
+
+        // Only cache valid (non-zero) embeddings
+        if (this.enableCache && magnitude > 0.001) {
+          // Evict oldest if cache is full
+          if (this.cache.size >= this.maxCacheSize) {
+            const firstKey = this.cache.keys().next().value;
+            if (firstKey) this.cache.delete(firstKey);
+          }
+          this.cache.set(text, embedding);
+        }
+
+        return embedding;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (error instanceof Error && error.name === 'AbortError') {
+          throw new Error(`Embedding request timed out after ${this.timeout}ms`);
+        }
+        throw error;
+      }
+    };
+
+    try {
+      // TIER-1.2: Apply resilience patterns
+      if (this.useCircuitBreaker) {
+        return await withRetry(
+          () => embeddingCircuitBreaker.execute(fetchEmbedding),
+          {
+            ...this.retryOptions,
+            onRetry: (attempt, error, delayMs) => {
+              log.warn('Embedding retry attempt', {
+                attempt,
+                textLength: text.length,
+                error: error.message,
+                delayMs: Math.round(delayMs),
+              });
+            },
+          }
+        );
+      } else {
+        return await withRetry(fetchEmbedding, this.retryOptions);
+      }
     } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error(`Embedding request timed out after ${this.timeout}ms`);
-      }
       // RULE-070: Re-throw with embedding context
       throw new Error(
         `Embedding generation failed for text (${text.length} chars): ${error instanceof Error ? error.message : String(error)}`,
@@ -305,7 +363,7 @@ export class EmbeddingProviderFactory {
     const isLocalAvailable = await this.localProvider.isAvailable();
 
     if (isLocalAvailable) {
-      console.log('[EmbeddingProvider] Using local gte-Qwen2-1.5B-instruct API');
+      log.info('Using local gte-Qwen2-1.5B-instruct API');
       this.instance = this.localProvider;
       return this.instance;
     }
@@ -317,7 +375,7 @@ export class EmbeddingProviderFactory {
     }
 
     // Fall back to mock
-    console.warn('[EmbeddingProvider] Local API unavailable, using mock provider');
+    log.warn('Local API unavailable, using mock provider');
     if (!this.mockProvider) {
       this.mockProvider = new MockEmbeddingProvider();
     }

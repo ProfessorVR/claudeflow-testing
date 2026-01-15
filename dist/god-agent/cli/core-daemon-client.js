@@ -14,13 +14,14 @@ import { spawn } from 'child_process'; // Implements RULE-106: spawn not exec
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { createComponentLogger, ConsoleLogHandler, LogLevel } from '../core/observability/index.js';
+import { getConfig } from '../core/config/index.js';
 const logger = createComponentLogger('CoreDaemonClient', {
     minLevel: LogLevel.INFO,
     handlers: [new ConsoleLogHandler({ useStderr: true })]
 });
-// Implements DAEMON-002: Socket path from daemon-types.ts
-const DEFAULT_SOCKET_PATH = '/tmp/godagent-db.sock';
-const DEFAULT_TIMEOUT = 30000; // 30 seconds
+// TIER-1.3: Get socket path from centralized config
+const DEFAULT_SOCKET_PATH = getConfig('services.daemon.socketPath', '/tmp/godagent-db.sock');
+const DEFAULT_TIMEOUT = getConfig('timeouts.socket', 30000);
 const DAEMON_START_TIMEOUT = 5000; // 5 seconds to wait for daemon to start
 /**
  * Core Daemon Client
