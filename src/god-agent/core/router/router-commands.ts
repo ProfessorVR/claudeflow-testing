@@ -10,15 +10,40 @@
  * - Quality tracking and ratings
  */
 
-import { getProviderFactory, listAllModelIds, getModelInfo, getConfiguredProviders } from './providers/index.js';
+import {
+  getProviderFactory,
+  listAllModelIds,
+  getModelInfo,
+  getConfiguredProviders,
+  isVLLMConfigured,
+  getVLLMStatus,
+  listVLLMModels,
+} from './providers/index.js';
 import { getCostTracker, formatCostString } from './cost-tracker.js';
 import { getQualityScorer } from './quality-scorer.js';
 import { getBudgetEnforcer } from './budget-enforcer.js';
 import { getCapabilityRouter } from './capability-router.js';
 import { getReviewQueue } from './review-queue.js';
+import {
+  getOutcomeTracker,
+  formatPatternStats,
+  formatTrackerStats,
+} from './outcome-tracker.js';
+import {
+  getRoutingOptimizer,
+  formatReport,
+  formatSuggestion,
+  formatSummary,
+} from './routing-optimizer.js';
 import type { ProviderType, TaskType, Complexity } from './router-types.js';
+import type { RouteRecommendation } from './risk-classifier.js';
 
 // ===== SESSION STATE =====
+
+/**
+ * Forced routing mode for the session
+ */
+export type ForcedRoutingMode = 'auto' | 'local' | 'claude';
 
 /**
  * Session-level routing preferences
@@ -30,6 +55,8 @@ interface SessionRoutingState {
   preferredProvider: ProviderType | null;
   /** Use auto-routing */
   autoRouting: boolean;
+  /** Forced routing mode */
+  forcedRoutingMode: ForcedRoutingMode;
   /** Last response ID for rating */
   lastResponseId: string | null;
 }
@@ -38,6 +65,7 @@ let sessionState: SessionRoutingState = {
   forcedModel: null,
   preferredProvider: null,
   autoRouting: true,
+  forcedRoutingMode: 'auto',
   lastResponseId: null,
 };
 
@@ -56,6 +84,7 @@ export function resetSessionState(): void {
     forcedModel: null,
     preferredProvider: null,
     autoRouting: true,
+    forcedRoutingMode: 'auto',
     lastResponseId: null,
   };
 }
@@ -191,23 +220,54 @@ export function useModel(modelId: string): string {
   if (modelId === 'auto') {
     sessionState.forcedModel = null;
     sessionState.autoRouting = true;
-    return 'Switched to auto-routing mode.';
+    sessionState.forcedRoutingMode = 'auto';
+    return 'Switched to auto-routing mode (risk-based routing enabled).';
   }
 
   if (modelId === 'local') {
-    // Find first local model
-    const localModels = listAllModelIds().filter(id => {
+    // Find first local model (prefer vLLM, fallback to Ollama)
+    const vllmModels = listAllModelIds().filter(id => {
+      const info = getModelInfo(id);
+      return info?.provider === 'vllm';
+    });
+
+    if (vllmModels.length > 0) {
+      sessionState.forcedModel = vllmModels[0];
+      sessionState.autoRouting = false;
+      sessionState.forcedRoutingMode = 'local';
+      return `Using local vLLM model: ${vllmModels[0]}`;
+    }
+
+    const ollamaModels = listAllModelIds().filter(id => {
       const info = getModelInfo(id);
       return info?.provider === 'ollama';
     });
 
-    if (localModels.length === 0) {
-      return 'No local models available. Install Ollama and pull a model.';
+    if (ollamaModels.length === 0) {
+      return 'No local models available. Start vLLM server or install Ollama.';
     }
 
-    sessionState.forcedModel = localModels[0];
+    sessionState.forcedModel = ollamaModels[0];
     sessionState.autoRouting = false;
-    return `Using local model: ${localModels[0]}`;
+    sessionState.forcedRoutingMode = 'local';
+    return `Using local Ollama model: ${ollamaModels[0]}`;
+  }
+
+  if (modelId === 'claude') {
+    // Find first Claude model
+    const claudeModels = listAllModelIds().filter(id => {
+      const info = getModelInfo(id);
+      return info?.provider === 'anthropic';
+    });
+
+    if (claudeModels.length === 0) {
+      return 'No Claude models available. Configure ANTHROPIC_API_KEY.';
+    }
+
+    sessionState.forcedModel = claudeModels[0];
+    sessionState.autoRouting = false;
+    sessionState.forcedRoutingMode = 'claude';
+    return `Using Claude model: ${claudeModels[0]}`;
   }
 
   // Check if model exists
@@ -219,6 +279,168 @@ export function useModel(modelId: string): string {
   sessionState.forcedModel = modelId;
   sessionState.autoRouting = false;
   return `Using model: ${modelId}`;
+}
+
+// ===== VLLM COMMANDS =====
+
+/**
+ * Check vLLM server status
+ */
+export async function showVLLMStatus(): Promise<string> {
+  const lines: string[] = [
+    '=== vLLM Server Status ===',
+    '',
+  ];
+
+  // Check if configured
+  const configured = await isVLLMConfigured();
+  lines.push(`Configured: ${configured ? 'Yes' : 'No'}`);
+
+  if (!configured) {
+    lines.push('');
+    lines.push('vLLM is not configured. Set VLLM_BASE_URL or configure in router-config.yaml.');
+    lines.push('');
+    lines.push('Example:');
+    lines.push('  export VLLM_BASE_URL=http://localhost:8000');
+    lines.push('');
+    lines.push('Or start vLLM server with:');
+    lines.push('  vllm serve Qwen/Qwen2.5-Coder-32B-Instruct --port 8000');
+    return lines.join('\n');
+  }
+
+  try {
+    const status = await getVLLMStatus();
+
+    lines.push(`Server: ${status.running ? '✓ Online' : '✗ Offline'}`);
+    lines.push(`Base URL: ${status.baseUrl}`);
+
+    if (status.running) {
+      lines.push(`Models Loaded: ${status.loadedModels.length}`);
+
+      if (status.metrics) {
+        if (status.metrics.gpuMemoryUsed !== undefined) {
+          lines.push(`GPU Memory: ${(status.metrics.gpuMemoryUsed / 1024 / 1024 / 1024).toFixed(1)} GB`);
+        }
+        if (status.metrics.requestsInProgress !== undefined) {
+          lines.push(`Requests In Progress: ${status.metrics.requestsInProgress}`);
+        }
+      }
+
+      if (status.loadedModels.length > 0) {
+        lines.push('');
+        lines.push('--- Loaded Models ---');
+        for (const model of status.loadedModels) {
+          lines.push(`  • ${model}`);
+        }
+      }
+    } else {
+      lines.push('');
+      lines.push('Error: Unable to connect to vLLM server');
+      lines.push('');
+      lines.push('Troubleshooting:');
+      lines.push('  1. Ensure vLLM server is running');
+      lines.push('  2. Check VLLM_BASE_URL is correct');
+      lines.push('  3. Verify firewall allows connections');
+    }
+  } catch (error) {
+    lines.push('');
+    lines.push(`Error checking status: ${error}`);
+  }
+
+  return lines.join('\n');
+}
+
+/**
+ * List vLLM models
+ */
+export async function showVLLMModels(): Promise<string> {
+  const lines: string[] = [
+    '=== vLLM Models ===',
+    '',
+  ];
+
+  const configured = await isVLLMConfigured();
+  if (!configured) {
+    lines.push('vLLM is not configured.');
+    return lines.join('\n');
+  }
+
+  try {
+    const models = await listVLLMModels();
+
+    if (models.length === 0) {
+      lines.push('No models loaded in vLLM server.');
+      lines.push('');
+      lines.push('Load a model with:');
+      lines.push('  vllm serve <model-name> --port 8000');
+      return lines.join('\n');
+    }
+
+    lines.push('--- Available Models ---');
+    for (const model of models) {
+      const info = getModelInfo(`vllm:${model}`);
+      if (info) {
+        lines.push(`  ${model}`);
+        lines.push(`    Capabilities: ${info.capabilities.join(', ')}`);
+        lines.push(`    Context Window: ${info.contextWindow}`);
+      } else {
+        lines.push(`  ${model} (custom)`);
+      }
+    }
+  } catch (error) {
+    lines.push(`Error listing models: ${error}`);
+  }
+
+  return lines.join('\n');
+}
+
+/**
+ * Test vLLM connectivity
+ */
+export async function testVLLM(): Promise<string> {
+  const lines: string[] = [
+    '=== vLLM Connection Test ===',
+    '',
+  ];
+
+  const configured = await isVLLMConfigured();
+  if (!configured) {
+    lines.push('✗ vLLM is not configured.');
+    return lines.join('\n');
+  }
+
+  try {
+    const status = await getVLLMStatus();
+
+    if (status.running) {
+      lines.push('✓ vLLM server is reachable');
+      lines.push(`✓ Base URL: ${status.baseUrl}`);
+      lines.push(`✓ Models available: ${status.loadedModels.length}`);
+
+      // Try a simple completion if models are available
+      if (status.loadedModels.length > 0) {
+        const factory = getProviderFactory();
+        const modelId = `vllm:${status.loadedModels[0]}`;
+        const provider = await factory.getProvider(modelId);
+
+        if (provider) {
+          const testResult = await provider.testConnection();
+          lines.push(`✓ Test completion: ${testResult ? 'Success' : 'Failed'}`);
+        }
+      }
+
+      lines.push('');
+      lines.push('vLLM is ready for use!');
+      lines.push(`Use 'god use local' to force local model usage.`);
+    } else {
+      lines.push('✗ vLLM server is not responding');
+      lines.push('  Error: Connection failed');
+    }
+  } catch (error) {
+    lines.push(`✗ Connection failed: ${error}`);
+  }
+
+  return lines.join('\n');
 }
 
 // ===== ROUTING COMMANDS =====
@@ -339,6 +561,170 @@ export function suggestOptimizations(): string {
   }
 
   return lines.join('\n');
+}
+
+/**
+ * Show routing statistics from outcome tracking
+ */
+export function showRoutingStats(): string {
+  const tracker = getOutcomeTracker();
+  const stats = tracker.getStats();
+
+  const lines: string[] = [
+    '=== Routing Statistics ===',
+    '',
+    formatTrackerStats(stats),
+    '',
+  ];
+
+  // Add optimizer summary
+  const optimizer = getRoutingOptimizer({ tracker });
+  const summary = optimizer.getSummary();
+
+  lines.push('--- Patterns Summary ---');
+  lines.push(formatSummary(summary));
+
+  return lines.join('\n');
+}
+
+/**
+ * Show pattern success rates
+ */
+export function showRoutingPatterns(limit: number = 20): string {
+  const tracker = getOutcomeTracker();
+  const patterns = tracker.getAllPatternStats();
+
+  if (patterns.length === 0) {
+    return 'No routing patterns recorded yet.\nPatterns will appear as tasks are processed.';
+  }
+
+  const lines: string[] = [
+    '=== Routing Patterns ===',
+    '',
+    `Total Patterns: ${patterns.length}`,
+    '',
+    '--- Pattern Success Rates ---',
+  ];
+
+  // Sort by total outcomes (most used first)
+  const sorted = [...patterns].sort((a, b) => b.totalOutcomes - a.totalOutcomes);
+
+  for (const pattern of sorted.slice(0, limit)) {
+    const successPct = Math.round(pattern.successRate * 100);
+    const rewritePct = Math.round(pattern.avgRewritePercentage * 100);
+    const route = pattern.recommendedRoute;
+
+    const statusIcon =
+      successPct >= 85 ? '✓' :
+      successPct >= 70 ? '~' : '✗';
+
+    lines.push(`  ${statusIcon} ${pattern.pattern}`);
+    lines.push(`      Outcomes: ${pattern.totalOutcomes} | Success: ${successPct}% | Rewrite: ${rewritePct}% | Route: ${route}`);
+  }
+
+  if (patterns.length > limit) {
+    lines.push('');
+    lines.push(`  ... and ${patterns.length - limit} more patterns`);
+  }
+
+  return lines.join('\n');
+}
+
+/**
+ * Show escalation candidates
+ */
+export function showRoutingEscalations(): string {
+  const tracker = getOutcomeTracker();
+  const optimizer = getRoutingOptimizer({ tracker });
+  const report = optimizer.getEscalationReport();
+
+  const lines: string[] = [
+    '=== Escalation Candidates ===',
+    '',
+    `Total Patterns: ${report.totalPatterns}`,
+    `Escalation Rate: ${Math.round(report.escalationRate * 100)}%`,
+    '',
+  ];
+
+  if (report.candidates.length === 0) {
+    lines.push('No patterns currently need escalation.');
+    lines.push('');
+    lines.push('Patterns are escalated when:');
+    lines.push('  • Success rate < 70%');
+    lines.push('  • High revert rate');
+    lines.push('  • Frequent Claude rewrites > 50%');
+    return lines.join('\n');
+  }
+
+  lines.push('--- Patterns to Escalate ---');
+  for (const pattern of report.candidates) {
+    const successPct = Math.round(pattern.successRate * 100);
+    lines.push(`  ✗ ${pattern.pattern}`);
+    lines.push(`      Success: ${successPct}% | Failures: ${pattern.failureCount}/${pattern.totalOutcomes}`);
+    lines.push(`      Recommendation: Always use Claude for this pattern`);
+    lines.push('');
+  }
+
+  return lines.join('\n');
+}
+
+/**
+ * Get optimization suggestions from the routing optimizer
+ */
+export function showRoutingSuggestions(): string {
+  const tracker = getOutcomeTracker();
+  const optimizer = getRoutingOptimizer({ tracker });
+  const suggestions = optimizer.suggestRuleChanges();
+
+  if (suggestions.length === 0) {
+    return [
+      '=== Routing Suggestions ===',
+      '',
+      'No suggestions at this time.',
+      '',
+      'Suggestions appear when:',
+      '  • Patterns have low success rates (< 70%)',
+      '  • High rewrite rates indicate need for review (> 30%)',
+      '  • Well-performing Claude patterns could use local models',
+      '',
+      'Record more outcomes to generate suggestions.',
+    ].join('\n');
+  }
+
+  const lines: string[] = [
+    '=== Routing Suggestions ===',
+    '',
+    `${suggestions.length} suggestion(s) based on outcome analysis:`,
+    '',
+  ];
+
+  for (const suggestion of suggestions) {
+    lines.push(formatSuggestion(suggestion));
+    lines.push(`    Pattern: ${suggestion.pattern}`);
+    lines.push(`    Reason: ${suggestion.reason}`);
+    lines.push(`    Expected: ${suggestion.expectedImprovement}`);
+    lines.push('');
+  }
+
+  return lines.join('\n');
+}
+
+/**
+ * Generate full optimization report
+ */
+export function showRoutingReport(): string {
+  const tracker = getOutcomeTracker();
+  const optimizer = getRoutingOptimizer({ tracker });
+  const report = optimizer.generateReport();
+
+  return formatReport(report);
+}
+
+/**
+ * Get the current forced routing mode
+ */
+export function getForcedRoutingMode(): ForcedRoutingMode {
+  return sessionState.forcedRoutingMode;
 }
 
 // ===== COST COMMANDS =====
@@ -527,16 +913,42 @@ export async function executeRouterCommand(command: string, args: string[]): Pro
 
     case 'use':
       if (!args[0]) {
-        return 'Usage: god use <model|local|auto>';
+        return 'Usage: god use <model|local|claude|auto>';
       }
       return useModel(args[0]);
 
+    // vLLM commands
+    case 'vllm':
+      switch (args[0]) {
+        case 'status':
+          return await showVLLMStatus();
+        case 'models':
+          return await showVLLMModels();
+        case 'test':
+          return await testVLLM();
+        default:
+          return 'Usage: god vllm <status|models|test>';
+      }
+
     // Routing commands
     case 'routing':
-      if (args[0] === 'optimize') {
-        return suggestOptimizations();
+      switch (args[0]) {
+        case 'stats':
+          return showRoutingStats();
+        case 'patterns':
+          const patternLimit = args[1] ? parseInt(args[1], 10) : 20;
+          return showRoutingPatterns(patternLimit);
+        case 'escalations':
+          return showRoutingEscalations();
+        case 'suggest':
+          return showRoutingSuggestions();
+        case 'report':
+          return showRoutingReport();
+        case 'optimize':
+          return suggestOptimizations();
+        default:
+          return await showRoutingStatus();
       }
-      return await showRoutingStatus();
 
     // Cost commands
     case 'costs':
@@ -586,7 +998,20 @@ export async function executeRouterCommand(command: string, args: string[]): Pro
       return showReviews(limit);
 
     default:
-      return `Unknown command: ${command}. Available commands: models, use, routing, costs, budget, rate, quality, review`;
+      return [
+        `Unknown command: ${command}`,
+        '',
+        'Available commands:',
+        '  models [test <provider>]  - List or test models',
+        '  use <model|local|claude|auto>  - Set model to use',
+        '  vllm <status|models|test>  - vLLM server management',
+        '  routing [stats|patterns|escalations|suggest|report]  - Routing insights',
+        '  costs [--detailed]  - Show cost summary',
+        '  budget <set|clear> <period> [amount]  - Budget management',
+        '  rate <1-5>  - Rate last response',
+        '  quality [model]  - Show quality stats',
+        '  review [stats|limit]  - Show pending reviews',
+      ].join('\n');
   }
 }
 

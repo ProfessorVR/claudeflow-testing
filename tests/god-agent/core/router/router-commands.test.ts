@@ -21,6 +21,15 @@ import {
   showReviewStats,
   executeRouterCommand,
   recordCompletedRequest,
+  showRoutingStats,
+  showRoutingPatterns,
+  showRoutingEscalations,
+  showRoutingSuggestions,
+  showRoutingReport,
+  showVLLMStatus,
+  showVLLMModels,
+  testVLLM,
+  getForcedRoutingMode,
 } from '../../../../src/god-agent/core/router/router-commands.js';
 import { resetCostTracker, getCostTracker } from '../../../../src/god-agent/core/router/cost-tracker.js';
 import { resetQualityScorer, getQualityScorer } from '../../../../src/god-agent/core/router/quality-scorer.js';
@@ -29,6 +38,8 @@ import { resetAuditLogger } from '../../../../src/god-agent/core/router/audit-lo
 import { resetReviewQueue } from '../../../../src/god-agent/core/router/review-queue.js';
 import { resetProviderFactory, initializeProviderFactory } from '../../../../src/god-agent/core/router/providers/index.js';
 import { resetCapabilityRouter } from '../../../../src/god-agent/core/router/capability-router.js';
+import { resetOutcomeTracker } from '../../../../src/god-agent/core/router/outcome-tracker.js';
+import { resetRoutingOptimizer } from '../../../../src/god-agent/core/router/routing-optimizer.js';
 
 describe('Router Commands', () => {
   beforeEach(() => {
@@ -41,6 +52,8 @@ describe('Router Commands', () => {
     resetReviewQueue();
     resetProviderFactory();
     resetCapabilityRouter();
+    resetOutcomeTracker();
+    resetRoutingOptimizer();
 
     // Initialize with test config
     initializeBudgetEnforcer({
@@ -59,6 +72,8 @@ describe('Router Commands', () => {
     resetReviewQueue();
     resetProviderFactory();
     resetCapabilityRouter();
+    resetOutcomeTracker();
+    resetRoutingOptimizer();
   });
 
   describe('Session State', () => {
@@ -425,6 +440,135 @@ describe('Router Commands', () => {
       );
 
       expect(getSessionState().lastResponseId).toBe(scoreId);
+    });
+  });
+
+  describe('Routing Stats Commands', () => {
+    it('should show routing stats', () => {
+      const result = showRoutingStats();
+      expect(result).toContain('Routing Statistics');
+    });
+
+    it('should show routing patterns', () => {
+      const result = showRoutingPatterns();
+      // With no data, should show appropriate message
+      expect(result).toMatch(/Routing Patterns|No routing patterns/);
+    });
+
+    it('should show escalation candidates', () => {
+      const result = showRoutingEscalations();
+      expect(result).toContain('Escalation Candidates');
+    });
+
+    it('should show routing suggestions', () => {
+      const result = showRoutingSuggestions();
+      expect(result).toContain('Routing Suggestions');
+    });
+
+    it('should show routing report', () => {
+      const result = showRoutingReport();
+      expect(result).toContain('Routing Optimization Report');
+    });
+  });
+
+  describe('vLLM Commands', () => {
+    it('should show vLLM status', async () => {
+      const result = await showVLLMStatus();
+      expect(result).toContain('vLLM Server Status');
+    });
+
+    it('should show vLLM models', async () => {
+      const result = await showVLLMModels();
+      expect(result).toContain('vLLM');
+    });
+
+    it('should test vLLM connectivity', async () => {
+      const result = await testVLLM();
+      expect(result).toContain('vLLM Connection Test');
+    });
+  });
+
+  describe('Force Routing Mode', () => {
+    it('should switch to claude mode', () => {
+      // This will fail without configured models, but should handle gracefully
+      const result = useModel('claude');
+      // Either sets model or reports not available
+      expect(result).toMatch(/Claude|No Claude models/);
+    });
+
+    it('should get forced routing mode', () => {
+      // Default is auto
+      expect(getForcedRoutingMode()).toBe('auto');
+
+      // Switch to auto explicitly
+      useModel('auto');
+      expect(getForcedRoutingMode()).toBe('auto');
+    });
+  });
+
+  describe('Execute Router Command - New Commands', () => {
+    it('should handle vllm status command', async () => {
+      const result = await executeRouterCommand('vllm', ['status']);
+      expect(result).toContain('vLLM');
+    });
+
+    it('should handle vllm models command', async () => {
+      const result = await executeRouterCommand('vllm', ['models']);
+      expect(result).toContain('vLLM');
+    });
+
+    it('should handle vllm test command', async () => {
+      const result = await executeRouterCommand('vllm', ['test']);
+      expect(result).toContain('vLLM');
+    });
+
+    it('should handle vllm without subcommand', async () => {
+      const result = await executeRouterCommand('vllm', []);
+      expect(result).toContain('Usage');
+    });
+
+    it('should handle routing stats command', async () => {
+      const result = await executeRouterCommand('routing', ['stats']);
+      expect(result).toContain('Routing Statistics');
+    });
+
+    it('should handle routing patterns command', async () => {
+      const result = await executeRouterCommand('routing', ['patterns']);
+      expect(result).toMatch(/Routing Patterns|No routing patterns/);
+    });
+
+    it('should handle routing escalations command', async () => {
+      const result = await executeRouterCommand('routing', ['escalations']);
+      expect(result).toContain('Escalation Candidates');
+    });
+
+    it('should handle routing suggest command', async () => {
+      const result = await executeRouterCommand('routing', ['suggest']);
+      expect(result).toContain('Routing Suggestions');
+    });
+
+    it('should handle routing report command', async () => {
+      const result = await executeRouterCommand('routing', ['report']);
+      expect(result).toContain('Routing Optimization Report');
+    });
+
+    it('should handle use local command', async () => {
+      const result = await executeRouterCommand('use', ['local']);
+      // Either sets model or reports not available
+      expect(result).toMatch(/local|No local models/);
+    });
+
+    it('should handle use claude command', async () => {
+      const result = await executeRouterCommand('use', ['claude']);
+      // Either sets model or reports not available
+      expect(result).toMatch(/Claude|No Claude models/);
+    });
+
+    it('should show improved help for unknown command', async () => {
+      const result = await executeRouterCommand('unknown', []);
+      expect(result).toContain('Unknown command');
+      expect(result).toContain('vllm');
+      expect(result).toContain('routing');
     });
   });
 });
