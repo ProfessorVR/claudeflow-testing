@@ -193,3 +193,47 @@ export type {
   OllamaModelKey,
   ProviderFactoryConfig,
 } from './providers/index.js';
+
+// ===== AUDIT SYSTEM =====
+
+export type {
+  // Audit Types
+  ReviewPriority,
+  FileModification,
+  AuditEntrySummary,
+  AuditFilter,
+  ReviewResult,
+  AuditEventType,
+  AuditEvent,
+  AuditEventHandler,
+  AuditConfig,
+  RollbackOptions,
+  RollbackResult,
+  CreateAuditEntryInput,
+  UpdateAuditEntryInput,
+} from './audit-types.js';
+
+export {
+  // Audit Logger
+  AuditLogger,
+  getAuditLogger,
+  initializeAuditLogger,
+  resetAuditLogger,
+  createFileModification,
+  generateDiffSummary,
+  generateFullDiff,
+  formatAuditEntry,
+} from './audit-logger.js';
+
+export {
+  // Review Queue
+  ReviewQueue,
+  getReviewQueue,
+  resetReviewQueue,
+  executeReviewCommand,
+} from './review-queue.js';
+
+export type {
+  ReviewQueueConfig,
+  ReviewCommand,
+} from './review-queue.js';
