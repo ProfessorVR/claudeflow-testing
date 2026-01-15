@@ -1278,7 +1278,7 @@ export class ExpressServer {
             res.json({
                 success: true,
                 command,
-                result,
+                output: result,
             });
         }
         catch (error) {

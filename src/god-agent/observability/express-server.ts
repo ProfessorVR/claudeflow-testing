@@ -1586,7 +1586,7 @@ export class ExpressServer implements IExpressServer {
       res.json({
         success: true,
         command,
-        result,
+        output: result,
       });
     } catch (error) {
       log.error('Error executing command', error);
