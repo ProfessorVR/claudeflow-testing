@@ -1,0 +1,72 @@
+# God Agent Launcher Configuration
+# Copy to ~/.god-agent/launcher.yaml to customize
+
+launcher:
+  session_name: god-agent
+  layout: windows           # windows | panes | hybrid
+
+  dashboard:
+    enabled: true
+    refresh_interval: 2     # seconds
+    show_logs: true
+
+  services:
+    embedding:
+      enabled: true
+      auto_restart: true
+      priority: 0           # Start first
+      type: auto            # auto | ollama | fastapi | external
+      model: gte-Qwen2-1.5B-instruct
+      port: 8000
+
+    memory:
+      enabled: true
+      auto_restart: true
+      priority: 1
+
+    daemon:
+      enabled: true
+      auto_restart: true
+      priority: 2
+      depends_on: [memory]
+
+    ucm:
+      enabled: true
+      auto_restart: true
+      priority: 3
+      depends_on: [daemon, embedding]
+
+    observe:
+      enabled: true
+      auto_restart: true
+      priority: 4
+      depends_on: [daemon]
+      port: 3847
+
+  health:
+    enabled: true
+    check_interval: 10      # seconds
+    startup_timeout: 30     # seconds
+    restart_delay: 2        # seconds
+    max_restarts: 3
+    restart_window: 300     # 5 minutes
+
+  logging:
+    enabled: true
+    keep_lines: 1000
+    log_dir: ~/.god-agent/logs/
+    rotate: daily
+    max_size: 10M
+
+  profiles:
+    minimal:
+      services: [memory, daemon]
+    dev:
+      services: [embedding, memory, daemon, ucm, observe]
+      verbose: true
+    prod:
+      services: [embedding, memory, daemon, ucm, observe]
+      verbose: false
+    research:
+      services: [embedding, memory, daemon, ucm, observe]
+      verbose: true

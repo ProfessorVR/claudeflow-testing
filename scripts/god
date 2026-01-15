@@ -1,6 +1,76 @@
 #!/usr/bin/env bash
-# God-Learn Unified CLI wrapper
-# Run from project root: ./god <command> [options]
+#
+# God Agent Unified CLI
+#
+# Usage: god <command> [options]
+#
+# Commands:
+#   launch    - Start/manage all god-agent services
+#   learn     - God-Learn knowledge management
+#   research  - PhD research pipeline
+#   ask       - Ask the god-agent
+#   write     - Generate documents
+#   status    - Show god-agent status
+#   feedback  - Provide feedback on trajectories
+#
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-exec python3 "$SCRIPT_DIR/scripts/god" "$@"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+show_help() {
+    cat << 'EOF'
+God Agent Unified CLI
+
+Usage: god <command> [options]
+
+Service Management:
+  launch              Start/manage all god-agent services in tmux
+  launch attach       Attach to running session
+  launch status       Show service status
+  launch stop         Stop all services
+  launch logs         View/search logs
+  launch metrics      Show performance metrics
+
+God Agent Commands:
+  ask <question>      Ask the god-agent anything
+  write <topic>       Generate documents/papers
+  research <topic>    Deep research using PhD pipeline
+  learn <action>      Knowledge management (store, compile, update)
+  status              Show god-agent learning status
+  feedback            Provide feedback on trajectories
+
+Examples:
+  god launch                    # Start all services
+  god launch attach             # Attach to tmux session
+  god ask "What is X?"          # Ask a question
+  god research "Topic Y"        # Deep research
+  god learn compile             # Compile knowledge
+EOF
+}
+
+main() {
+    local command="${1:-help}"
+    shift || true
+
+    case "${command}" in
+        launch)
+            exec "${SCRIPT_DIR}/god-launch" "$@"
+            ;;
+        help|--help|-h)
+            show_help
+            ;;
+        *)
+            # Delegate to the universal agent CLI
+            if [[ -f "${PROJECT_DIR}/dist/god-agent/universal/cli.js" ]]; then
+                exec node "${PROJECT_DIR}/dist/god-agent/universal/cli.js" "${command}" "$@"
+            else
+                echo "Error: God agent not built. Run: npm run build"
+                echo ""
+                echo "Or use: god launch  - to start services"
+                exit 1
+            fi
+            ;;
+    esac
+}
+
+main "$@"

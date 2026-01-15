@@ -1,0 +1,217 @@
+#!/usr/bin/env bash
+#
+# god-launch - Unified launcher for God Agent services
+#
+# Usage:
+#   god launch [command] [options]
+#
+# Commands:
+#   start       Start all services in tmux session (default)
+#   stop        Stop all services gracefully
+#   restart     Restart all or specific service
+#   attach      Attach to running tmux session
+#   status      Show service status
+#   logs        View/search logs
+#   metrics     Show performance metrics
+#   kill        Force kill session (emergency)
+#
+# Examples:
+#   god launch              # Start all services
+#   god launch attach       # Attach to session
+#   god launch restart ucm  # Restart UCM only
+#   god launch logs --search "error"
+#
+
+set -euo pipefail
+
+# Resolve script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LAUNCH_DIR="${SCRIPT_DIR}/god-launch.d"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+# Configuration
+export GOD_SESSION_NAME="${GOD_SESSION_NAME:-god-agent}"
+export GOD_CONFIG_DIR="${GOD_CONFIG_DIR:-${HOME}/.god-agent}"
+export GOD_LOG_DIR="${GOD_LOG_DIR:-${GOD_CONFIG_DIR}/logs}"
+export GOD_PROJECT_DIR="${PROJECT_DIR}"
+
+# Colors
+export RED='\033[0;31m'
+export GREEN='\033[0;32m'
+export YELLOW='\033[0;33m'
+export BLUE='\033[0;34m'
+export MAGENTA='\033[0;35m'
+export CYAN='\033[0;36m'
+export WHITE='\033[0;37m'
+export BOLD='\033[1m'
+export NC='\033[0m' # No Color
+
+# Service definitions
+export SERVICES=(embedding memory daemon ucm observe)
+export SERVICE_NAMES=(
+    "embedding:Embedding Server"
+    "memory:Memory Server"
+    "daemon:Core Daemon"
+    "ucm:UCM Daemon"
+    "observe:Observability"
+)
+
+# Ports and sockets
+export EMBEDDING_PORT=8000
+export OBSERVE_PORT=3847
+export MEMORY_SOCKET="${GOD_CONFIG_DIR}/memory-server.sock"
+export DAEMON_SOCKET="/tmp/godagent-db.sock"
+export UCM_SOCKET="/tmp/godagent-ucm.sock"
+
+# Ensure directories exist
+mkdir -p "${GOD_CONFIG_DIR}" "${GOD_LOG_DIR}"
+
+# Helper: Print colored message
+log_info() { echo -e "${BLUE}[INFO]${NC} $*"; }
+log_success() { echo -e "${GREEN}[OK]${NC} $*"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $*"; }
+
+# Helper: Check if tmux session exists
+session_exists() {
+    tmux has-session -t "${GOD_SESSION_NAME}" 2>/dev/null
+}
+
+# Helper: Check if command exists
+require_cmd() {
+    if ! command -v "$1" &>/dev/null; then
+        log_error "Required command not found: $1"
+        exit 1
+    fi
+}
+
+# Check prerequisites
+check_prerequisites() {
+    require_cmd tmux
+    require_cmd node
+    require_cmd npm
+
+    # Check Node version
+    local node_version
+    node_version=$(node -v | sed 's/v//' | cut -d. -f1)
+    if [[ "${node_version}" -lt 18 ]]; then
+        log_error "Node.js 18+ required (found: $(node -v))"
+        exit 1
+    fi
+
+    # Check if project is built
+    if [[ ! -d "${PROJECT_DIR}/dist" ]]; then
+        log_warn "Project not built. Running npm run build..."
+        (cd "${PROJECT_DIR}" && npm run build)
+    fi
+}
+
+# Show usage
+show_usage() {
+    cat << 'EOF'
+God Agent Unified Launcher
+
+Usage: god launch [command] [options]
+
+Commands:
+  start           Start all services in tmux session (default)
+  stop            Stop all services gracefully
+  restart [svc]   Restart all services or specific service
+  attach          Attach to running tmux session
+  status          Show service status (without attaching)
+  logs [svc]      View logs (all or specific service)
+  metrics         Show performance metrics
+  kill            Force kill session (emergency)
+
+Options:
+  --help, -h      Show this help message
+  --profile       Service profile (minimal|dev|prod|research)
+
+Services:
+  embedding       Embedding server (port 8000)
+  memory          Memory server daemon
+  daemon          Core daemon
+  ucm             UCM daemon
+  observe         Observability dashboard (port 3847)
+
+Examples:
+  god launch                      # Start all services
+  god launch attach               # Attach to tmux session
+  god launch status               # Check all service status
+  god launch restart ucm          # Restart UCM only
+  god launch logs daemon          # Tail daemon logs
+  god launch logs --search error  # Search for errors
+  god launch metrics              # Show metrics dashboard
+
+Navigation (in tmux):
+  Ctrl-b 0-6    Switch windows
+  Ctrl-b d      Detach from session
+  Ctrl-b n/p    Next/previous window
+EOF
+}
+
+# Main dispatch
+main() {
+    local command="${1:-start}"
+    shift || true
+
+    case "${command}" in
+        start)
+            check_prerequisites
+            source "${LAUNCH_DIR}/start.sh"
+            do_start "$@"
+            ;;
+        stop)
+            source "${LAUNCH_DIR}/stop.sh"
+            do_stop "$@"
+            ;;
+        restart)
+            source "${LAUNCH_DIR}/start.sh"
+            source "${LAUNCH_DIR}/stop.sh"
+            do_restart "$@"
+            ;;
+        attach)
+            if session_exists; then
+                exec tmux attach-session -t "${GOD_SESSION_NAME}"
+            else
+                log_error "No session running. Start with: god launch start"
+                exit 1
+            fi
+            ;;
+        status)
+            source "${LAUNCH_DIR}/status.sh"
+            do_status "$@"
+            ;;
+        logs)
+            source "${LAUNCH_DIR}/logs.sh"
+            do_logs "$@"
+            ;;
+        metrics)
+            source "${LAUNCH_DIR}/metrics.sh"
+            do_metrics "$@"
+            ;;
+        dashboard)
+            source "${LAUNCH_DIR}/dashboard.sh"
+            do_dashboard "$@"
+            ;;
+        kill)
+            if session_exists; then
+                log_warn "Force killing session..."
+                tmux kill-session -t "${GOD_SESSION_NAME}"
+                log_success "Session killed"
+            else
+                log_info "No session running"
+            fi
+            ;;
+        --help|-h|help)
+            show_usage
+            ;;
+        *)
+            log_error "Unknown command: ${command}"
+            show_usage
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"
