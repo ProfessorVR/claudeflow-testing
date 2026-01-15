@@ -21,6 +21,7 @@ import { FeedbackValidationError, WeightPersistenceError, RollbackLoopError, Che
 import { TrajectoryStreamManager } from './trajectory-stream-manager.js';
 import { generateTrajectoryID, generateCheckpointID, validateTrajectoryInput, validateAndApplyConfig, DEFAULT_INITIAL_WEIGHT, clampWeight, cosineSimilarity, arithmeticMean, validateFeedbackQuality, calculateReward, calculateGradient, calculateWeightUpdate, updateFisherInformation, crc32, DEFAULT_FISHER_INFORMATION, FISHER_DECAY_RATE, AUTO_SAVE_THROTTLE_MS, AUTO_PATTERN_QUALITY_THRESHOLD, WEIGHT_FILE_VERSION, } from './sona-utils.js';
 import { VECTOR_DIM } from '../validation/constants.js';
+import { getConvergenceTracker } from './convergence-tracker.js';
 import { TrajectoryMetadataDAO } from '../database/dao/trajectory-metadata-dao.js';
 import { PatternDAO } from '../database/dao/pattern-dao.js';
 import { LearningFeedbackDAO } from '../database/dao/learning-feedback-dao.js';
@@ -105,12 +106,22 @@ export class SonaEngine {
         rollbacksTriggered: 0,
         lastUpdated: Date.now(),
     };
+    // Convergence tracking (TIER-2.3)
+    convergenceTracker;
     constructor(config = {}) {
         this.config = validateAndApplyConfig(config);
         // Apply checkpointsDir from config if provided
         if (config.checkpointsDir) {
             this.checkpointsDir = config.checkpointsDir;
         }
+        // Initialize convergence tracker (TIER-2.3)
+        this.convergenceTracker = getConvergenceTracker({
+            windowSize: 50,
+            plateauThreshold: 0.01,
+            minSamplesForPlateau: 100,
+            maxFisherEntries: 10000,
+            initialLearningRate: this.config.learningRate,
+        });
         // ============================================================
         // DATABASE PERSISTENCE INITIALIZATION (TASK-PERSIST-004)
         // RULE-008: ALL learning data MUST be stored in SQLite
@@ -574,6 +585,48 @@ export class SonaEngine {
         return { ...this.metrics };
     }
     /**
+     * Get convergence metrics for learning system (TIER-2.3)
+     *
+     * Provides:
+     * - Learning curve tracking
+     * - Convergence speed calculation
+     * - Plateau detection
+     * - Learning rate recommendations
+     * - Fisher matrix statistics
+     *
+     * @returns Convergence metrics
+     */
+    getConvergenceMetrics() {
+        return this.convergenceTracker.getMetrics();
+    }
+    /**
+     * Get recommended action based on convergence analysis (TIER-2.3)
+     *
+     * @returns 'continue' | 'pause' | 'reset' | 'reduce_lr' | 'increase_lr'
+     */
+    getConvergenceRecommendation() {
+        const metrics = this.convergenceTracker.getMetrics();
+        return metrics.recommendedAction;
+    }
+    /**
+     * Check if learning is in a plateau state (TIER-2.3)
+     *
+     * @returns true if plateau detected
+     */
+    isLearningPlateau() {
+        const metrics = this.convergenceTracker.getMetrics();
+        return metrics.plateauDetected;
+    }
+    /**
+     * Get suggested learning rate based on convergence analysis (TIER-2.3)
+     *
+     * @returns Suggested learning rate value
+     */
+    getSuggestedLearningRate() {
+        const metrics = this.convergenceTracker.getMetrics();
+        return metrics.suggestedLearningRate;
+    }
+    /**
      * Calculate drift from baseline weights
      *
      * @param baselineWeights - Baseline weight vector
@@ -802,6 +855,18 @@ export class SonaEngine {
             }
             // 12. Update metrics
             this.metrics.lastUpdated = Date.now();
+            // 12a. Record sample for convergence tracking (TIER-2.3)
+            this.convergenceTracker.recordSample(quality);
+            // Update Fisher information in convergence tracker
+            for (const patternId of trajectory.patterns) {
+                const routeFisher = this.fisherInformation.get(trajectory.route);
+                if (routeFisher) {
+                    const importance = routeFisher.get(patternId);
+                    if (importance !== undefined) {
+                        this.convergenceTracker.updateFisher(`${trajectory.route}:${patternId}`, importance);
+                    }
+                }
+            }
             // ============================================================
             // DATABASE PERSISTENCE (TASK-PERSIST-006)
             // RULE-008: ALL learning feedback MUST be stored in SQLite

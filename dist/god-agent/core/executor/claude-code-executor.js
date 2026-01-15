@@ -27,6 +27,9 @@ export class ClaudeCodeExecutor {
             claudeCliPath: config.claudeCliPath ?? 'claude',
             executionMode: config.executionMode ?? 'live',
             outputFormat: config.outputFormat ?? 'json',
+            // TIER-2.1: Router defaults
+            enableRouterTracking: config.enableRouterTracking ?? true,
+            blockOnBudgetExceeded: config.blockOnBudgetExceeded ?? false,
         };
     }
     /**

@@ -19,6 +19,7 @@ import type { StyleCharacteristics } from './style-analyzer.js';
 import { AgentRegistry, AgentSelector, TaskExecutor, type IAgentSelectionResult } from '../core/agents/index.js';
 import { PipelineExecutor, type IPipelineDefinition, type DAI002PipelineResult, type DAI002PipelineOptions } from '../core/pipeline/index.js';
 import { type IRoutingResult, type IGeneratedPipeline } from '../core/routing/index.js';
+import { CapabilityRouter, type RouterConfig, type TaskType, type Complexity, type ProviderType } from '../core/router/index.js';
 import { MemoryClient } from '../core/memory-server/index.js';
 import { type KnowledgeChunk } from './knowledge-chunker.js';
 export type AgentMode = 'code' | 'research' | 'write' | 'general';
@@ -47,6 +48,18 @@ export interface UniversalConfig {
     descMaxEpisodes?: number;
     /** Enable Core Daemon for EpisodeStore/GraphDB IPC (default: true) */
     enableCoreDaemon?: boolean;
+    /** Enable model router for intelligent model selection (default: true) */
+    enableModelRouter?: boolean;
+    /** Router configuration for model capabilities and rules */
+    routerConfig?: Partial<RouterConfig>;
+    /** Daily budget limit in USD (default: undefined = no limit) */
+    dailyBudget?: number;
+    /** Weekly budget limit in USD (default: undefined = no limit) */
+    weeklyBudget?: number;
+    /** Monthly budget limit in USD (default: undefined = no limit) */
+    monthlyBudget?: number;
+    /** Fallback models when budget exceeded (default: ['deepseek-coder-local', 'qwen-local']) */
+    fallbackModels?: string[];
 }
 export interface Interaction {
     id: string;
@@ -135,6 +148,13 @@ export interface AskOptions {
     taskExecutionFn?: (agentType: string, prompt: string, options?: {
         timeout?: number;
     }) => Promise<string>;
+    /**
+     * TIER-2.1: Model override for intelligent model routing
+     * Overrides the automatic model selection. Can be:
+     * - Specific model ID: 'claude-sonnet', 'gpt-4o', 'deepseek-coder'
+     * - Model alias: 'local', 'fast', 'cheap'
+     */
+    model?: string;
 }
 /**
  * Extended result from ask() when returnResult is true
@@ -356,6 +376,8 @@ export declare class UniversalAgent {
     private routingLearner;
     private confirmationHandler;
     private failureClassifier;
+    private modelRouter;
+    private modelRouterEnabled;
     private memoryClient;
     private ucmClient;
     private coreDaemonClient;
@@ -415,6 +437,37 @@ export declare class UniversalAgent {
      * Get MemoryClient for multi-process memory access (MEM-001)
      */
     getMemoryClient(): MemoryClient;
+    /**
+     * Get the model router for intelligent model selection (TIER-2.1)
+     */
+    getModelRouter(): CapabilityRouter | null;
+    /**
+     * Check if model router is enabled and initialized
+     */
+    isModelRouterEnabled(): boolean;
+    /**
+     * Get the recommended model for a given task type and complexity
+     * Uses the intelligent model router to select the best model based on:
+     * - Task classification
+     * - Model capabilities
+     * - Budget constraints
+     * - Quality history
+     *
+     * @param taskType - Type of task (code_edit, reasoning, writing, etc.)
+     * @param complexity - Task complexity (simple, medium, complex)
+     * @returns Model selection with provider info, or null if router not available
+     */
+    getModelForTask(taskType?: TaskType, complexity?: Complexity): Promise<{
+        modelId: string;
+        provider: ProviderType;
+        reason: string;
+        isFallback: boolean;
+    } | null>;
+    /**
+     * Record a completed request for cost and quality tracking
+     * Should be called after each LLM request completes
+     */
+    recordModelUsage(modelId: string, provider: ProviderType, taskType: TaskType, complexity: Complexity, responseTime: number, tokensUsed: number, inputTokens: number, outputTokens: number, inputCost: number, outputCost: number, userAccepted?: boolean): string | null;
     /**
      * Default Task execution function for ask() method
      *
@@ -563,6 +616,8 @@ export declare class UniversalAgent {
     prepareCodeTask(task: string, options?: {
         language?: string;
         context?: string;
+        /** TIER-2.1: Model override for intelligent routing */
+        model?: string;
     }): Promise<ICodeTaskPreparation>;
     /**
      * TASK-GODWRITE-001: Prepare write task for two-phase execution
@@ -600,6 +655,8 @@ export declare class UniversalAgent {
         format?: 'essay' | 'report' | 'article' | 'paper';
         length?: 'short' | 'medium' | 'long' | 'comprehensive';
         styleProfileId?: string;
+        /** TIER-2.1: Model override for intelligent routing */
+        model?: string;
     }): Promise<IWriteTaskPreparation>;
     /**
      * Build writing instructions with style, format, and length guidance

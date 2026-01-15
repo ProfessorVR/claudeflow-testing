@@ -15,5 +15,8 @@ export const DEFAULT_EXECUTOR_CONFIG = {
     defaultAgentType: 'coder',
     executionMode: 'live',
     outputFormat: 'json',
+    // TIER-2.1: Router defaults
+    enableRouterTracking: true,
+    blockOnBudgetExceeded: false,
 };
 //# sourceMappingURL=executor-types.js.map

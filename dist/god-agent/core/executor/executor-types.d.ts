@@ -30,6 +30,10 @@ export interface IExecutorConfig {
     executionMode?: 'live' | 'mock';
     /** Output format for CLI */
     outputFormat?: 'json' | 'text';
+    /** Enable model router for cost/quality tracking (default: true) */
+    enableRouterTracking?: boolean;
+    /** Block execution when budget exceeded (default: false - use fallback) */
+    blockOnBudgetExceeded?: boolean;
 }
 /**
  * Default executor configuration
@@ -74,6 +78,16 @@ export interface IExecutionResult {
     error?: string;
     /** Number of retries attempted */
     retryCount: number;
+    /** Model used for execution */
+    modelUsed?: string;
+    /** Provider used */
+    providerUsed?: string;
+    /** Estimated input tokens */
+    estimatedInputTokens?: number;
+    /** Estimated output tokens */
+    estimatedOutputTokens?: number;
+    /** Tracking score ID for quality rating */
+    trackingScoreId?: string;
 }
 /**
  * Options for spawning a Claude Task

@@ -14,6 +14,7 @@
  */
 import type { TrajectoryID, PatternID, Route, Weight, WeightStorage, ITrajectory, ISonaConfig, ILearningMetrics, IDriftMetrics, ISerializedSonaState, IWeightUpdateResult, CheckpointReason, ICheckpointFull, IReasoningStep } from './sona-types.js';
 import type { ITrajectoryStreamConfig, IRollbackState } from '../types/trajectory-streaming-types.js';
+import { type IConvergenceMetrics } from './convergence-tracker.js';
 import { TrajectoryMetadataDAO } from '../database/dao/trajectory-metadata-dao.js';
 import { PatternDAO } from '../database/dao/pattern-dao.js';
 import { LearningFeedbackDAO } from '../database/dao/learning-feedback-dao.js';
@@ -76,6 +77,7 @@ export declare class SonaEngine {
     private learningFeedbackDAO?;
     private persistenceEnabled;
     private metrics;
+    private convergenceTracker;
     constructor(config?: ISonaConfig);
     /**
      * Check if database persistence is enabled
@@ -235,6 +237,37 @@ export declare class SonaEngine {
      * @returns Current learning metrics
      */
     getMetrics(): ILearningMetrics;
+    /**
+     * Get convergence metrics for learning system (TIER-2.3)
+     *
+     * Provides:
+     * - Learning curve tracking
+     * - Convergence speed calculation
+     * - Plateau detection
+     * - Learning rate recommendations
+     * - Fisher matrix statistics
+     *
+     * @returns Convergence metrics
+     */
+    getConvergenceMetrics(): IConvergenceMetrics;
+    /**
+     * Get recommended action based on convergence analysis (TIER-2.3)
+     *
+     * @returns 'continue' | 'pause' | 'reset' | 'reduce_lr' | 'increase_lr'
+     */
+    getConvergenceRecommendation(): string;
+    /**
+     * Check if learning is in a plateau state (TIER-2.3)
+     *
+     * @returns true if plateau detected
+     */
+    isLearningPlateau(): boolean;
+    /**
+     * Get suggested learning rate based on convergence analysis (TIER-2.3)
+     *
+     * @returns Suggested learning rate value
+     */
+    getSuggestedLearningRate(): number;
     /**
      * Calculate drift from baseline weights
      *

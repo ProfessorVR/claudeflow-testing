@@ -359,3 +359,73 @@ export {
   getModelForRequest,
   recordCompletedRequest,
 } from './router-commands.js';
+
+// ===== LOCAL-FIRST EXECUTOR =====
+
+export {
+  LocalFirstExecutor,
+  getLocalFirstExecutor,
+  resetLocalFirstExecutor,
+  initializeLocalFirstExecutor,
+  executeLocalFirst,
+  summarizeExecution,
+  formatTimeline,
+  DefaultTestRunner,
+  DefaultDiffGenerator,
+} from './local-first-executor.js';
+
+export type {
+  LocalFirstResult,
+  LocalFirstOptions,
+  TestResult,
+  ReviewResult as LocalReviewResult,
+  ExecutorProvider,
+  TestRunner as LocalTestRunner,
+  DiffGenerator,
+  LocalFirstExecutorConfig,
+} from './local-first-executor.js';
+
+// ===== DIFF REVIEWER =====
+
+export {
+  DiffReviewer,
+  getDiffReviewer,
+  resetDiffReviewer,
+  initializeDiffReviewer,
+  reviewDiff,
+  summarizeReview,
+  formatIssues,
+  hasBlockingIssues,
+  getIssuesBySeverity,
+} from './diff-reviewer.js';
+
+export type {
+  IssueSeverity,
+  IssueCategory,
+  ReviewIssue,
+  DiffReviewResult,
+  ReviewContext,
+  DiffReviewOptions,
+  DiffReviewProvider,
+  DiffReviewerConfig,
+} from './diff-reviewer.js';
+
+// ===== TEST RUNNER =====
+
+export {
+  TestRunner,
+  getTestRunner,
+  resetTestRunner,
+  initializeTestRunner,
+  runTests,
+  summarizeTestResult,
+  allTestsPassed,
+  getFrameworkName,
+} from './test-runner.js';
+
+export type {
+  TestFramework,
+  TestRunResult,
+  TestRunOptions,
+  TestRunnerConfig,
+} from './test-runner.js';

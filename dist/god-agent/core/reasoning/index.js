@@ -95,4 +95,8 @@ export { computeImportanceScores, getTopImportantParams, computeFisherOverlap, }
 export { BackgroundTrainer, createBackgroundTrainer } from './background-trainer.js';
 // Training Worker (for Worker Thread implementation)
 export { TrainingWorker } from './training-worker.js';
+// ===== EXTENDED MODE SELECTOR =====
+export { ExtendedModeSelector } from './extended-mode-selector.js';
+// ===== AUTO MODE SELECTOR (TIER-2.4) =====
+export { AutoModeSelector, getAutoModeSelector, resetAutoModeSelector, } from './auto-mode-selector.js';
 //# sourceMappingURL=index.js.map

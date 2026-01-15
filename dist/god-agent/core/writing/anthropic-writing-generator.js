@@ -2,24 +2,47 @@
  * Anthropic Writing Generator (SPEC-WRT-001)
  *
  * LLM-based writing generation using Anthropic's Claude API.
+ * Integrates with TIER-2.1 Intelligent Model Router for cost/quality tracking.
  */
 import Anthropic from '@anthropic-ai/sdk';
 import { SpellingTransformer } from '../../universal/spelling-transformer.js';
 import { GrammarTransformer } from '../../universal/grammar-transformer.js';
+// TIER-2.1: Intelligent Model Router imports
+import { getBudgetEnforcer, recordCompletedRequest, } from '../router/index.js';
 export class AnthropicWritingGenerator {
     client;
     styleManager;
-    model = 'claude-3-5-sonnet-20241022';
-    constructor(apiKey, styleManager) {
+    model;
+    config;
+    constructor(apiKey, styleManager, config) {
         const key = apiKey || process.env.ANTHROPIC_API_KEY;
         if (!key) {
             throw new Error('ANTHROPIC_API_KEY not configured. Set environment variable or pass to constructor.');
         }
         this.client = new Anthropic({ apiKey: key });
         this.styleManager = styleManager;
+        this.model = config?.model ?? 'claude-3-5-sonnet-20241022';
+        this.config = {
+            enableRouterTracking: config?.enableRouterTracking ?? true,
+            blockOnBudgetExceeded: config?.blockOnBudgetExceeded ?? false,
+            model: this.model,
+            verbose: config?.verbose ?? false,
+        };
     }
     async generate(request) {
         const startTime = Date.now();
+        // TIER-2.1: Check budget before execution
+        if (this.config.enableRouterTracking) {
+            const budgetCheck = this.checkBudget();
+            if (!budgetCheck.allowed) {
+                if (this.config.blockOnBudgetExceeded) {
+                    throw new Error(`Budget exceeded: ${budgetCheck.reason}`);
+                }
+                if (this.config.verbose) {
+                    console.warn(`[WritingGenerator] Budget warning: ${budgetCheck.reason}`);
+                }
+            }
+        }
         // Build system prompt with style
         const systemPrompt = await this.buildSystemPrompt(request);
         // Build user prompt
@@ -43,13 +66,21 @@ export class AnthropicWritingGenerator {
                 regionalTransformations = transformResult.metadata;
             }
         }
+        const qualityScore = await this.assessQuality(content, request);
+        const inputTokens = response.usage.input_tokens;
+        const outputTokens = response.usage.output_tokens;
+        // TIER-2.1: Record cost and quality after execution
+        if (this.config.enableRouterTracking) {
+            this.recordExecution('writing', this.determineComplexity(request), latencyMs, inputTokens, outputTokens, qualityScore >= 0.7 // considered successful if quality >= 70%
+            );
+        }
         return {
             content,
             wordCount: this.countWords(content),
-            qualityScore: await this.assessQuality(content, request),
+            qualityScore,
             metadata: {
                 model: this.model,
-                tokensUsed: response.usage.input_tokens + response.usage.output_tokens,
+                tokensUsed: inputTokens + outputTokens,
                 latencyMs,
                 styleApplied: !!request.style,
                 regionalTransformations,
@@ -57,6 +88,19 @@ export class AnthropicWritingGenerator {
         };
     }
     async generateSection(heading, context, style) {
+        const startTime = Date.now();
+        // TIER-2.1: Check budget before execution
+        if (this.config.enableRouterTracking) {
+            const budgetCheck = this.checkBudget();
+            if (!budgetCheck.allowed) {
+                if (this.config.blockOnBudgetExceeded) {
+                    throw new Error(`Budget exceeded: ${budgetCheck.reason}`);
+                }
+                if (this.config.verbose) {
+                    console.warn(`[WritingGenerator] Budget warning: ${budgetCheck.reason}`);
+                }
+            }
+        }
         let systemPrompt = `You are a professional writer. Generate complete, coherent section content.`;
         // Apply style if provided
         if (style && this.styleManager) {
@@ -76,6 +120,15 @@ export class AnthropicWritingGenerator {
                 },
             ],
         });
+        const latencyMs = Date.now() - startTime;
+        const inputTokens = response.usage.input_tokens;
+        const outputTokens = response.usage.output_tokens;
+        // TIER-2.1: Record cost and quality after execution
+        if (this.config.enableRouterTracking) {
+            this.recordExecution('writing', 'simple', // Section generation is typically simple
+            latencyMs, inputTokens, outputTokens, true // Section generation succeeds if we get a response
+            );
+        }
         return this.extractContent(response);
     }
     getSupportedStyles() {
@@ -270,6 +323,66 @@ ${request.context}`;
                 changes++;
         }
         return changes;
+    }
+    // ========================================================================
+    // TIER-2.1: Router Integration Methods
+    // ========================================================================
+    /**
+     * Check if budget allows execution
+     */
+    checkBudget() {
+        try {
+            const enforcer = getBudgetEnforcer();
+            const result = enforcer.checkRequest(this.model);
+            return { allowed: result.allowed, reason: result.reason };
+        }
+        catch {
+            // Router not initialized - allow execution
+            return { allowed: true };
+        }
+    }
+    /**
+     * Determine complexity of the writing request
+     */
+    determineComplexity(request) {
+        const wordTarget = request.maxLength ?? 1000;
+        const hasOutline = (request.outline?.length ?? 0) > 0;
+        const hasContext = !!request.context;
+        const hasStyle = !!request.style;
+        // Complex: long documents, multiple sections, style requirements
+        if (wordTarget > 3000 || (hasOutline && (request.outline?.length ?? 0) > 5)) {
+            return 'complex';
+        }
+        // Medium: moderate length or has styling/context
+        if (wordTarget > 1000 || hasContext || hasStyle) {
+            return 'medium';
+        }
+        return 'simple';
+    }
+    /**
+     * Record execution metrics to router
+     */
+    recordExecution(taskType, complexity, durationMs, inputTokens, outputTokens, success) {
+        try {
+            // Approximate costs for Claude Sonnet (per 1M tokens)
+            const inputCostPer1M = 3.0;
+            const outputCostPer1M = 15.0;
+            const inputCost = (inputTokens / 1_000_000) * inputCostPer1M;
+            const outputCost = (outputTokens / 1_000_000) * outputCostPer1M;
+            // Record the completed request using the router utility
+            const scoreId = recordCompletedRequest(this.model, 'anthropic', taskType, complexity, durationMs, // responseTime
+            inputTokens + outputTokens, // tokensUsed
+            inputTokens, outputTokens, inputCost, outputCost, success // accepted
+            );
+            if (this.config.verbose) {
+                console.log(`[WritingGenerator] Recorded: model=${this.model}, tokens=${inputTokens + outputTokens}, scoreId=${scoreId}`);
+            }
+            return scoreId;
+        }
+        catch {
+            // Router not initialized - skip recording
+            return undefined;
+        }
     }
 }
 //# sourceMappingURL=anthropic-writing-generator.js.map

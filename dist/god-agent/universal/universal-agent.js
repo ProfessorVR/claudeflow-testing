@@ -37,6 +37,8 @@ import { AgentRegistry, AgentSelector, TaskExecutor, } from '../core/agents/inde
 import { createPipelineExecutor, } from '../core/pipeline/index.js';
 // DAI-003: Intelligent Task Routing
 import { TaskAnalyzer, CapabilityIndex, RoutingEngine, PipelineGenerator, RoutingLearner, ConfirmationHandler, FailureClassifier, } from '../core/routing/index.js';
+// TIER-2.1: Intelligent Model Router
+import { initializeRouter, initializeProviderFactory, initializeCostTracker, initializeQualityScorer, initializeBudgetEnforcer, initializeAuditLogger, getModelForRequest, recordCompletedRequest, DEFAULT_ROUTER_CONFIG, } from '../core/router/index.js';
 // MEM-001: Multi-Process Memory System
 import { getMemoryClient, } from '../core/memory-server/index.js';
 // TASK-HOOK-006: Hook Executor for pre/post Tool Use hooks
@@ -45,7 +47,6 @@ import { getHookExecutor, } from '../core/hooks/index.js';
 // TASK-CHUNK-003: Knowledge chunking for OpenAI token limit compliance
 // CONSTITUTION COMPLIANCE: RULE-064 (symmetric chunking), RULE-008 (SQLite persistence)
 import { KnowledgeChunker, } from './knowledge-chunker.js';
-// ==================== Universal Agent ====================
 export class UniversalAgent {
     agent;
     config;
@@ -81,6 +82,9 @@ export class UniversalAgent {
     routingLearner;
     confirmationHandler;
     failureClassifier;
+    // TIER-2.1: Intelligent Model Router
+    modelRouter;
+    modelRouterEnabled = false;
     // MEM-001: Multi-Process Memory Client
     memoryClient;
     // DESC: UCM Daemon client for episode injection (RULE-010)
@@ -110,6 +114,13 @@ export class UniversalAgent {
             // DAEMON-003: Core daemon for EpisodeStore/GraphDB IPC (default: enabled)
             // TASK-DAEMON-002: Core daemon RPC now implemented
             enableCoreDaemon: config.enableCoreDaemon ?? true,
+            // TIER-2.1: Intelligent Model Router (default: enabled)
+            enableModelRouter: config.enableModelRouter ?? true,
+            routerConfig: config.routerConfig ?? {},
+            dailyBudget: config.dailyBudget,
+            weeklyBudget: config.weeklyBudget,
+            monthlyBudget: config.monthlyBudget,
+            fallbackModels: config.fallbackModels ?? ['deepseek-coder-local', 'qwen-local'],
         };
         // Configure GodAgent with persistence enabled
         this.agent = new GodAgent({
@@ -239,6 +250,56 @@ export class UniversalAgent {
             verbose: this.config.verbose,
         });
         this.log('DAI-003: Routing system initialized - Intelligent task routing enabled');
+        // TIER-2.1: Initialize Intelligent Model Router
+        if (this.config.enableModelRouter !== false) {
+            try {
+                // Initialize provider factory (uses default config if not specified)
+                await initializeProviderFactory({});
+                // Initialize cost tracker with budgets
+                initializeCostTracker({
+                    enabled: true,
+                    budgets: {
+                        daily: this.config.dailyBudget,
+                        weekly: this.config.weeklyBudget,
+                        monthly: this.config.monthlyBudget,
+                    },
+                });
+                // Initialize quality scorer
+                initializeQualityScorer({ enabled: true });
+                // Initialize budget enforcer
+                initializeBudgetEnforcer({
+                    enabled: true,
+                    budgets: {
+                        daily: this.config.dailyBudget,
+                        weekly: this.config.weeklyBudget,
+                        monthly: this.config.monthlyBudget,
+                    },
+                    fallbackModels: this.config.fallbackModels ?? ['deepseek-coder-local', 'qwen-local'],
+                    blockOnBudgetExceeded: false, // Use fallback instead of blocking
+                });
+                // Initialize audit logger
+                initializeAuditLogger({
+                    enabled: true,
+                    storage: 'file',
+                    storagePath: `${this.config.storageDir}/audit`,
+                });
+                // Initialize capability router
+                this.modelRouter = initializeRouter({
+                    routerConfig: DEFAULT_ROUTER_CONFIG,
+                    adaptiveRouting: true,
+                });
+                this.modelRouterEnabled = true;
+                this.log('TIER-2.1: Model router initialized - Intelligent model selection enabled');
+            }
+            catch (error) {
+                // Non-fatal: model router is optional enhancement
+                this.log(`TIER-2.1: Model router initialization failed: ${error}`);
+                this.modelRouterEnabled = false;
+            }
+        }
+        else {
+            this.log('TIER-2.1: Model router disabled');
+        }
         // MEM-001: Initialize memory client for multi-process memory access
         // Client will auto-start daemon if not running (autoStart: true by default)
         try {
@@ -429,6 +490,58 @@ export class UniversalAgent {
      */
     getMemoryClient() {
         return this.memoryClient;
+    }
+    /**
+     * Get the model router for intelligent model selection (TIER-2.1)
+     */
+    getModelRouter() {
+        return this.modelRouterEnabled ? this.modelRouter : null;
+    }
+    /**
+     * Check if model router is enabled and initialized
+     */
+    isModelRouterEnabled() {
+        return this.modelRouterEnabled;
+    }
+    /**
+     * Get the recommended model for a given task type and complexity
+     * Uses the intelligent model router to select the best model based on:
+     * - Task classification
+     * - Model capabilities
+     * - Budget constraints
+     * - Quality history
+     *
+     * @param taskType - Type of task (code_edit, reasoning, writing, etc.)
+     * @param complexity - Task complexity (simple, medium, complex)
+     * @returns Model selection with provider info, or null if router not available
+     */
+    async getModelForTask(taskType, complexity) {
+        if (!this.modelRouterEnabled) {
+            return null;
+        }
+        try {
+            return await getModelForRequest(taskType, complexity);
+        }
+        catch (error) {
+            this.log(`Model selection failed: ${error}`);
+            return null;
+        }
+    }
+    /**
+     * Record a completed request for cost and quality tracking
+     * Should be called after each LLM request completes
+     */
+    recordModelUsage(modelId, provider, taskType, complexity, responseTime, tokensUsed, inputTokens, outputTokens, inputCost, outputCost, userAccepted) {
+        if (!this.modelRouterEnabled) {
+            return null;
+        }
+        try {
+            return recordCompletedRequest(modelId, provider, taskType, complexity, responseTime, tokensUsed, inputTokens, outputTokens, inputCost, outputCost, userAccepted);
+        }
+        catch (error) {
+            this.log(`Failed to record model usage: ${error}`);
+            return null;
+        }
     }
     // ==================== TASK-LEARN-007: Default Task Execution ====================
     /**

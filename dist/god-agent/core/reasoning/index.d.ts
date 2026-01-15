@@ -75,4 +75,8 @@ export type { EWCConfig, EWCPenaltyResult, EWCGradientResult, FisherUpdateResult
 export { BackgroundTrainer, createBackgroundTrainer } from './background-trainer.js';
 export type { BackgroundTrainerConfig, TrainingProgress, TrainingPhase, BackgroundTrainingResult, BackgroundTrainerEvents, WorkerMessage, } from './background-trainer.js';
 export { TrainingWorker } from './training-worker.js';
+export { ExtendedModeSelector } from './extended-mode-selector.js';
+export type { ExtendedModeSelectorConfig, ExtendedModeSelectionResult, } from './extended-mode-selector.js';
+export { AutoModeSelector, getAutoModeSelector, resetAutoModeSelector, } from './auto-mode-selector.js';
+export type { IAutoModeSelectorConfig, IModeOutcome, IModeWeight, IAutoModeStats, } from './auto-mode-selector.js';
 //# sourceMappingURL=index.d.ts.map

@@ -45,6 +45,26 @@ export declare class ClaudeTaskExecutor implements IAgentExecutor {
      */
     private executeOnce;
     /**
+     * Determine task type for routing based on agent and definition
+     */
+    private determineTaskType;
+    /**
+     * Determine complexity based on prompt and definition
+     */
+    private determineComplexity;
+    /**
+     * Check budget before execution
+     */
+    private checkBudget;
+    /**
+     * Estimate token count for a string
+     */
+    private estimateTokens;
+    /**
+     * Record execution for cost/quality tracking
+     */
+    private recordExecution;
+    /**
      * Build full prompt combining agent system prompt and orchestrator context
      */
     buildFullPrompt(orchestratorPrompt: string, loadedDef?: ILoadedAgentDefinition, agent?: IAgentDefinition): string;
