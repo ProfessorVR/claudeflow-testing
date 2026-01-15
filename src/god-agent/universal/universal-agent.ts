@@ -77,6 +77,27 @@ import {
   type IRoutingFeedback,
 } from '../core/routing/index.js';
 
+// TIER-2.1: Intelligent Model Router
+import {
+  CapabilityRouter,
+  getCapabilityRouter,
+  initializeRouter,
+  resetCapabilityRouter,
+  initializeProviderFactory,
+  initializeCostTracker,
+  initializeQualityScorer,
+  initializeBudgetEnforcer,
+  initializeAuditLogger,
+  getModelForRequest,
+  recordCompletedRequest,
+  DEFAULT_ROUTER_CONFIG,
+  type RouterConfig,
+  type CapabilityRouterConfig,
+  type TaskType,
+  type Complexity,
+  type ProviderType,
+} from '../core/router/index.js';
+
 // MEM-001: Multi-Process Memory System
 import {
   MemoryClient,
@@ -146,6 +167,20 @@ export interface UniversalConfig {
   descMaxEpisodes?: number;
   /** Enable Core Daemon for EpisodeStore/GraphDB IPC (default: true) */
   enableCoreDaemon?: boolean;
+
+  // TIER-2.1: Intelligent Model Router Configuration
+  /** Enable model router for intelligent model selection (default: true) */
+  enableModelRouter?: boolean;
+  /** Router configuration for model capabilities and rules */
+  routerConfig?: Partial<RouterConfig>;
+  /** Daily budget limit in USD (default: undefined = no limit) */
+  dailyBudget?: number;
+  /** Weekly budget limit in USD (default: undefined = no limit) */
+  weeklyBudget?: number;
+  /** Monthly budget limit in USD (default: undefined = no limit) */
+  monthlyBudget?: number;
+  /** Fallback models when budget exceeded (default: ['deepseek-coder-local', 'qwen-local']) */
+  fallbackModels?: string[];
 }
 
 export interface Interaction {
@@ -463,9 +498,17 @@ export interface ITaskResult {
 
 // ==================== Universal Agent ====================
 
+// Internal config type that makes most properties required but keeps budget values optional
+type InternalUniversalConfig = Required<Omit<UniversalConfig, 'dailyBudget' | 'weeklyBudget' | 'monthlyBudget' | 'routerConfig'>> & {
+  dailyBudget: number | undefined;
+  weeklyBudget: number | undefined;
+  monthlyBudget: number | undefined;
+  routerConfig: Partial<RouterConfig>;
+};
+
 export class UniversalAgent {
   private agent: GodAgent;
-  private config: Required<UniversalConfig>;
+  private config: InternalUniversalConfig;
   private interactionStore!: InteractionStore;
   private initialized = false;
 
@@ -509,6 +552,10 @@ export class UniversalAgent {
   private confirmationHandler!: ConfirmationHandler;
   private failureClassifier!: FailureClassifier;
 
+  // TIER-2.1: Intelligent Model Router
+  private modelRouter!: CapabilityRouter;
+  private modelRouterEnabled = false;
+
   // MEM-001: Multi-Process Memory Client
   private memoryClient!: MemoryClient;
 
@@ -543,6 +590,13 @@ export class UniversalAgent {
       // DAEMON-003: Core daemon for EpisodeStore/GraphDB IPC (default: enabled)
       // TASK-DAEMON-002: Core daemon RPC now implemented
       enableCoreDaemon: config.enableCoreDaemon ?? true,
+      // TIER-2.1: Intelligent Model Router (default: enabled)
+      enableModelRouter: config.enableModelRouter ?? true,
+      routerConfig: config.routerConfig ?? {},
+      dailyBudget: config.dailyBudget,
+      weeklyBudget: config.weeklyBudget,
+      monthlyBudget: config.monthlyBudget,
+      fallbackModels: config.fallbackModels ?? ['deepseek-coder-local', 'qwen-local'],
     };
 
     // Configure GodAgent with persistence enabled
@@ -700,6 +754,61 @@ export class UniversalAgent {
     });
 
     this.log('DAI-003: Routing system initialized - Intelligent task routing enabled');
+
+    // TIER-2.1: Initialize Intelligent Model Router
+    if (this.config.enableModelRouter !== false) {
+      try {
+        // Initialize provider factory (uses default config if not specified)
+        await initializeProviderFactory({});
+
+        // Initialize cost tracker with budgets
+        initializeCostTracker({
+          enabled: true,
+          budgets: {
+            daily: this.config.dailyBudget,
+            weekly: this.config.weeklyBudget,
+            monthly: this.config.monthlyBudget,
+          },
+        });
+
+        // Initialize quality scorer
+        initializeQualityScorer({ enabled: true });
+
+        // Initialize budget enforcer
+        initializeBudgetEnforcer({
+          enabled: true,
+          budgets: {
+            daily: this.config.dailyBudget,
+            weekly: this.config.weeklyBudget,
+            monthly: this.config.monthlyBudget,
+          },
+          fallbackModels: this.config.fallbackModels ?? ['deepseek-coder-local', 'qwen-local'],
+          blockOnBudgetExceeded: false, // Use fallback instead of blocking
+        });
+
+        // Initialize audit logger
+        initializeAuditLogger({
+          enabled: true,
+          storage: 'file',
+          storagePath: `${this.config.storageDir}/audit`,
+        });
+
+        // Initialize capability router
+        this.modelRouter = initializeRouter({
+          routerConfig: DEFAULT_ROUTER_CONFIG,
+          adaptiveRouting: true,
+        });
+
+        this.modelRouterEnabled = true;
+        this.log('TIER-2.1: Model router initialized - Intelligent model selection enabled');
+      } catch (error) {
+        // Non-fatal: model router is optional enhancement
+        this.log(`TIER-2.1: Model router initialization failed: ${error}`);
+        this.modelRouterEnabled = false;
+      }
+    } else {
+      this.log('TIER-2.1: Model router disabled');
+    }
 
     // MEM-001: Initialize memory client for multi-process memory access
     // Client will auto-start daemon if not running (autoStart: true by default)
@@ -926,6 +1035,94 @@ export class UniversalAgent {
    */
   getMemoryClient(): MemoryClient {
     return this.memoryClient;
+  }
+
+  /**
+   * Get the model router for intelligent model selection (TIER-2.1)
+   */
+  getModelRouter(): CapabilityRouter | null {
+    return this.modelRouterEnabled ? this.modelRouter : null;
+  }
+
+  /**
+   * Check if model router is enabled and initialized
+   */
+  isModelRouterEnabled(): boolean {
+    return this.modelRouterEnabled;
+  }
+
+  /**
+   * Get the recommended model for a given task type and complexity
+   * Uses the intelligent model router to select the best model based on:
+   * - Task classification
+   * - Model capabilities
+   * - Budget constraints
+   * - Quality history
+   *
+   * @param taskType - Type of task (code_edit, reasoning, writing, etc.)
+   * @param complexity - Task complexity (simple, medium, complex)
+   * @returns Model selection with provider info, or null if router not available
+   */
+  async getModelForTask(
+    taskType?: TaskType,
+    complexity?: Complexity
+  ): Promise<{
+    modelId: string;
+    provider: ProviderType;
+    reason: string;
+    isFallback: boolean;
+  } | null> {
+    if (!this.modelRouterEnabled) {
+      return null;
+    }
+
+    try {
+      return await getModelForRequest(taskType, complexity);
+    } catch (error) {
+      this.log(`Model selection failed: ${error}`);
+      return null;
+    }
+  }
+
+  /**
+   * Record a completed request for cost and quality tracking
+   * Should be called after each LLM request completes
+   */
+  recordModelUsage(
+    modelId: string,
+    provider: ProviderType,
+    taskType: TaskType,
+    complexity: Complexity,
+    responseTime: number,
+    tokensUsed: number,
+    inputTokens: number,
+    outputTokens: number,
+    inputCost: number,
+    outputCost: number,
+    userAccepted?: boolean
+  ): string | null {
+    if (!this.modelRouterEnabled) {
+      return null;
+    }
+
+    try {
+      return recordCompletedRequest(
+        modelId,
+        provider,
+        taskType,
+        complexity,
+        responseTime,
+        tokensUsed,
+        inputTokens,
+        outputTokens,
+        inputCost,
+        outputCost,
+        userAccepted
+      );
+    } catch (error) {
+      this.log(`Failed to record model usage: ${error}`);
+      return null;
+    }
   }
 
   // ==================== TASK-LEARN-007: Default Task Execution ====================
