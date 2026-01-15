@@ -92,6 +92,30 @@ export type {
   ClassificationContext,
 } from './task-classifier.js';
 
+// ===== RISK CLASSIFIER =====
+
+export {
+  RiskClassifier,
+  getRiskClassifier,
+  resetRiskClassifier,
+  initializeRiskClassifier,
+  assessTaskRisk,
+  shouldUseExpensiveModel,
+  canUseLocalModel,
+  describeRiskAssessment,
+  getRouteDisplay,
+} from './risk-classifier.js';
+
+export type {
+  FeedbackSpeed,
+  Reversibility,
+  VerificationMethod,
+  RouteRecommendation,
+  RiskAssessment,
+  RiskContext,
+  RiskClassifierConfig,
+} from './risk-classifier.js';
+
 // ===== LLM PROVIDER =====
 
 export {
@@ -167,10 +191,21 @@ export {
   createAllOllamaProviders,
   isOllamaConfigured,
   listOllamaModels,
-  getBestLocalCodeModel,
+  getBestOllamaCodeModel,
   getEfficientLocalModel,
   isModelPulled,
   OLLAMA_MODELS,
+
+  // vLLM
+  VLLMProvider,
+  createVLLMProvider,
+  createAllVLLMProviders,
+  isVLLMConfigured,
+  isVLLMEnvConfigured,
+  listVLLMModels,
+  getBestLocalCodeModel,
+  getVLLMStatus,
+  VLLM_MODELS,
 
   // Factory
   LLMProviderFactory,
@@ -191,6 +226,8 @@ export type {
   OpenAIModelKey,
   OllamaProviderConfig,
   OllamaModelKey,
+  VLLMProviderConfig,
+  VLLMModelKey,
   ProviderFactoryConfig,
 } from './providers/index.js';
 
