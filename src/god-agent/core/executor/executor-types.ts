@@ -30,6 +30,12 @@ export interface IExecutorConfig {
   executionMode?: 'live' | 'mock';
   /** Output format for CLI */
   outputFormat?: 'json' | 'text';
+
+  // TIER-2.1: Router Integration
+  /** Enable model router for cost/quality tracking (default: true) */
+  enableRouterTracking?: boolean;
+  /** Block execution when budget exceeded (default: false - use fallback) */
+  blockOnBudgetExceeded?: boolean;
 }
 
 /**
@@ -49,6 +55,9 @@ export const DEFAULT_EXECUTOR_CONFIG: IExecutorConfig = {
   defaultAgentType: 'coder',
   executionMode: 'live',
   outputFormat: 'json',
+  // TIER-2.1: Router defaults
+  enableRouterTracking: true,
+  blockOnBudgetExceeded: false,
 };
 
 /**
@@ -92,6 +101,18 @@ export interface IExecutionResult {
   error?: string;
   /** Number of retries attempted */
   retryCount: number;
+
+  // TIER-2.1: Router tracking info
+  /** Model used for execution */
+  modelUsed?: string;
+  /** Provider used */
+  providerUsed?: string;
+  /** Estimated input tokens */
+  estimatedInputTokens?: number;
+  /** Estimated output tokens */
+  estimatedOutputTokens?: number;
+  /** Tracking score ID for quality rating */
+  trackingScoreId?: string;
 }
 
 /**

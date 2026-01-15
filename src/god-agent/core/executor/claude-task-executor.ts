@@ -19,6 +19,19 @@ import type {
 import { DEFAULT_EXECUTOR_CONFIG } from './executor-types.js';
 import { HookRunner } from './hook-runner.js';
 
+// TIER-2.1: Intelligent Model Router
+import {
+  getBudgetEnforcer,
+  getCostTracker,
+  getQualityScorer,
+  getAuditLogger,
+  recordCompletedRequest,
+  estimateTokenCount,
+  type TaskType,
+  type Complexity,
+  type ProviderType,
+} from '../router/index.js';
+
 // ==================== Claude Task Executor ====================
 
 /**
@@ -125,8 +138,33 @@ export class ClaudeTaskExecutor implements IAgentExecutor {
     const startTime = Date.now();
     let preHookResult: IHookResult | undefined;
     let postHookResult: IHookResult | undefined;
+    let trackingScoreId: string | undefined;
+
+    // TIER-2.1: Determine task type for routing
+    const taskType = this.determineTaskType(agent, loadedDef);
+    const complexity = this.determineComplexity(prompt, loadedDef);
 
     try {
+      // TIER-2.1: Check budget before execution
+      if (this.config.enableRouterTracking) {
+        const budgetCheck = this.checkBudget();
+        if (!budgetCheck.allowed) {
+          if (this.config.blockOnBudgetExceeded) {
+            return {
+              success: false,
+              output: '',
+              duration: Date.now() - startTime,
+              error: `Budget exceeded: ${budgetCheck.reason}`,
+              retryCount: 0,
+            };
+          }
+          // Log warning but continue (fallback behavior)
+          if (this.config.verbose) {
+            console.warn(`[ClaudeTaskExecutor] Budget warning: ${budgetCheck.reason}`);
+          }
+        }
+      }
+
       // Step 1: Run pre-hooks
       if (this.config.enableHooks && loadedDef?.frontmatter.hooks?.pre) {
         preHookResult = await this.hookRunner.runPreHook(
@@ -146,6 +184,9 @@ export class ClaudeTaskExecutor implements IAgentExecutor {
       // Step 3: Build system prompt from agent definition
       const systemPrompt = this.buildSystemPrompt(loadedDef);
 
+      // Estimate input tokens for tracking
+      const estimatedInputTokens = this.estimateTokens(fullPrompt + (systemPrompt || ''));
+
       // Step 4: Spawn Claude Task
       const output = await this.spawnClaudeTask({
         description: `Execute ${agent.agentName}`,
@@ -154,6 +195,9 @@ export class ClaudeTaskExecutor implements IAgentExecutor {
         subagentType: this.determineSubagentType(agent, loadedDef),
         timeout: this.config.timeout,
       });
+
+      // Estimate output tokens
+      const estimatedOutputTokens = this.estimateTokens(output);
 
       // Step 5: Run post-hooks
       if (this.config.enableHooks && loadedDef?.frontmatter.hooks?.post) {
@@ -168,6 +212,17 @@ export class ClaudeTaskExecutor implements IAgentExecutor {
         }
       }
 
+      // TIER-2.1: Record completed request for cost/quality tracking
+      if (this.config.enableRouterTracking) {
+        trackingScoreId = this.recordExecution(
+          taskType,
+          complexity,
+          Date.now() - startTime,
+          estimatedInputTokens,
+          estimatedOutputTokens
+        );
+      }
+
       return {
         success: true,
         output,
@@ -175,6 +230,12 @@ export class ClaudeTaskExecutor implements IAgentExecutor {
         preHookResult,
         postHookResult,
         retryCount: 0,
+        // TIER-2.1: Add tracking info
+        modelUsed: 'claude-sonnet',
+        providerUsed: 'anthropic',
+        estimatedInputTokens,
+        estimatedOutputTokens,
+        trackingScoreId,
       };
 
     } catch (error) {
@@ -189,6 +250,132 @@ export class ClaudeTaskExecutor implements IAgentExecutor {
         error: errorMessage,
         retryCount: 0,
       };
+    }
+  }
+
+  // ==================== TIER-2.1: Router Integration ====================
+
+  /**
+   * Determine task type for routing based on agent and definition
+   */
+  private determineTaskType(
+    agent: IAgentDefinition,
+    loadedDef?: ILoadedAgentDefinition
+  ): TaskType {
+    // Check agent capabilities
+    const capabilities = loadedDef?.frontmatter.capabilities || [];
+
+    if (capabilities.includes('code') || capabilities.includes('coding')) {
+      return 'code_edit';
+    }
+    if (capabilities.includes('research') || capabilities.includes('analysis')) {
+      return 'research';
+    }
+    if (capabilities.includes('writing') || capabilities.includes('documentation')) {
+      return 'writing';
+    }
+    if (capabilities.includes('reasoning') || capabilities.includes('planning')) {
+      return 'reasoning';
+    }
+
+    // Default based on agent type
+    const agentType = agent.agentType?.toLowerCase() || '';
+    if (agentType.includes('coder') || agentType.includes('code')) {
+      return 'code_edit';
+    }
+    if (agentType.includes('research') || agentType.includes('analyst')) {
+      return 'research';
+    }
+    if (agentType.includes('writer') || agentType.includes('doc')) {
+      return 'writing';
+    }
+
+    return 'code_edit'; // Default
+  }
+
+  /**
+   * Determine complexity based on prompt and definition
+   */
+  private determineComplexity(
+    prompt: string,
+    loadedDef?: ILoadedAgentDefinition
+  ): Complexity {
+    // Simple heuristic based on prompt length
+    const promptLength = prompt.length;
+
+    if (promptLength < 500) {
+      return 'simple';
+    }
+    if (promptLength < 2000) {
+      return 'medium';
+    }
+    return 'complex';
+  }
+
+  /**
+   * Check budget before execution
+   */
+  private checkBudget(): { allowed: boolean; reason?: string } {
+    try {
+      const enforcer = getBudgetEnforcer();
+      const result = enforcer.checkRequest('claude-sonnet');
+      return {
+        allowed: result.allowed,
+        reason: result.reason,
+      };
+    } catch {
+      // If router not initialized, allow execution
+      return { allowed: true };
+    }
+  }
+
+  /**
+   * Estimate token count for a string
+   */
+  private estimateTokens(text: string): number {
+    try {
+      return estimateTokenCount(text);
+    } catch {
+      // Fallback: rough estimate (4 chars per token)
+      return Math.ceil(text.length / 4);
+    }
+  }
+
+  /**
+   * Record execution for cost/quality tracking
+   */
+  private recordExecution(
+    taskType: TaskType,
+    complexity: Complexity,
+    durationMs: number,
+    inputTokens: number,
+    outputTokens: number
+  ): string | undefined {
+    try {
+      // Claude Sonnet pricing (approximate)
+      const inputCostPer1M = 3.0;
+      const outputCostPer1M = 15.0;
+      const inputCost = (inputTokens / 1_000_000) * inputCostPer1M;
+      const outputCost = (outputTokens / 1_000_000) * outputCostPer1M;
+
+      return recordCompletedRequest(
+        'claude-sonnet',
+        'anthropic' as ProviderType,
+        taskType,
+        complexity,
+        durationMs,
+        inputTokens + outputTokens,
+        inputTokens,
+        outputTokens,
+        inputCost,
+        outputCost,
+        true // userAccepted - default to true for CLI execution
+      );
+    } catch (error) {
+      if (this.config.verbose) {
+        console.warn(`[ClaudeTaskExecutor] Failed to record execution: ${error}`);
+      }
+      return undefined;
     }
   }
 
