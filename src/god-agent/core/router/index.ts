@@ -540,3 +540,24 @@ export type {
   ExperimentEvent,
   ExperimentEventHandler,
 } from './ab-testing/index.js';
+
+// ===== COST OPTIMIZER (Phase 6.3) =====
+
+export {
+  CostOptimizer,
+  getCostOptimizer,
+  initializeCostOptimizer,
+  resetCostOptimizer,
+  formatRecommendation,
+  formatParetoAnalysis,
+  formatOptimizationReport,
+} from './cost-optimizer.js';
+
+export type {
+  ModelCostQuality,
+  ParetoPoint,
+  SwitchRecommendation,
+  ParetoAnalysis,
+  CostOptimizationReport,
+  CostOptimizerConfig,
+} from './cost-optimizer.js';
