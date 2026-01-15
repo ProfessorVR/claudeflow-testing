@@ -39,6 +39,14 @@ import {
   type OllamaModelKey,
   OLLAMA_MODELS,
 } from './ollama-provider.js';
+import {
+  VLLMProvider,
+  createVLLMProvider,
+  isVLLMConfigured,
+  isVLLMEnvConfigured,
+  type VLLMModelKey,
+  VLLM_MODELS,
+} from './vllm-provider.js';
 
 // ===== PROVIDER REGISTRY =====
 
@@ -81,6 +89,11 @@ export interface ProviderFactoryConfig {
     baseUrl?: string;
     timeout?: number;
   };
+  vllm?: {
+    baseUrl?: string;
+    timeout?: number;
+    apiKey?: string;
+  };
 }
 
 // ===== PROVIDER FACTORY =====
@@ -107,6 +120,7 @@ export class LLMProviderFactory {
       anthropic: config.anthropic ?? {},
       openai: config.openai ?? {},
       ollama: config.ollama ?? {},
+      vllm: config.vllm ?? {},
     };
 
     if (this.config.autoInitialize) {
@@ -133,6 +147,11 @@ export class LLMProviderFactory {
     // Initialize Ollama providers if running
     if (await isOllamaConfigured()) {
       await this.initializeOllamaProviders();
+    }
+
+    // Initialize vLLM providers if running
+    if (isVLLMEnvConfigured() || await isVLLMConfigured()) {
+      await this.initializeVLLMProviders();
     }
 
     this.initialized = true;
@@ -175,6 +194,20 @@ export class LLMProviderFactory {
       const provider = createOllamaProvider(modelKey, {
         baseUrl: this.config.ollama?.baseUrl,
         timeout: this.config.ollama?.timeout,
+      });
+      this.registerProvider(provider);
+    }
+  }
+
+  /**
+   * Initialize all vLLM providers
+   */
+  private async initializeVLLMProviders(): Promise<void> {
+    for (const modelKey of Object.keys(VLLM_MODELS) as VLLMModelKey[]) {
+      const provider = createVLLMProvider(modelKey, {
+        baseUrl: this.config.vllm?.baseUrl,
+        timeout: this.config.vllm?.timeout,
+        apiKey: this.config.vllm?.apiKey,
       });
       this.registerProvider(provider);
     }
@@ -545,6 +578,7 @@ export function createProviderById(
     anthropic?: { apiKey?: string; baseUrl?: string; timeout?: number };
     openai?: { apiKey?: string; baseUrl?: string; organization?: string; timeout?: number };
     ollama?: { baseUrl?: string; timeout?: number };
+    vllm?: { baseUrl?: string; timeout?: number; apiKey?: string };
   }
 ): ILLMProvider | null {
   // Check Anthropic models
@@ -571,6 +605,14 @@ export function createProviderById(
     );
   }
 
+  // Check vLLM models
+  if (providerId in VLLM_MODELS) {
+    return createVLLMProvider(
+      providerId as VLLMModelKey,
+      config?.vllm
+    );
+  }
+
   return null;
 }
 
@@ -581,6 +623,7 @@ export function getProviderType(providerId: string): ProviderType | null {
   if (providerId in ANTHROPIC_MODELS) return 'anthropic';
   if (providerId in OPENAI_MODELS) return 'openai';
   if (providerId in OLLAMA_MODELS) return 'ollama';
+  if (providerId in VLLM_MODELS) return 'vllm';
   return null;
 }
 
@@ -592,6 +635,7 @@ export function listAllModelIds(): string[] {
     ...Object.keys(ANTHROPIC_MODELS),
     ...Object.keys(OPENAI_MODELS),
     ...Object.keys(OLLAMA_MODELS),
+    ...Object.keys(VLLM_MODELS),
   ];
 }
 
@@ -655,6 +699,22 @@ export function getModelInfo(modelId: string): {
     };
   }
 
+  if (modelId in VLLM_MODELS) {
+    const config = VLLM_MODELS[modelId as VLLMModelKey];
+    return {
+      id: config.id,
+      displayName: config.displayName,
+      provider: 'vllm',
+      capabilities: [...config.capabilities],
+      maxComplexity: config.maxComplexity,
+      contextWindow: config.contextWindow,
+      costPer1M: {
+        input: config.inputCostPer1M,
+        output: config.outputCostPer1M,
+      },
+    };
+  }
+
   return null;
 }
 
@@ -674,6 +734,10 @@ export async function getConfiguredProviders(): Promise<ProviderType[]> {
 
   if (await isOllamaConfigured()) {
     configured.push('ollama');
+  }
+
+  if (isVLLMEnvConfigured() || await isVLLMConfigured()) {
+    configured.push('vllm');
   }
 
   return configured;

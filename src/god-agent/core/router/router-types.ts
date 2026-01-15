@@ -75,7 +75,7 @@ export interface ClassificationSignals {
 /**
  * Supported LLM provider types
  */
-export type ProviderType = 'anthropic' | 'openai' | 'ollama' | 'custom';
+export type ProviderType = 'anthropic' | 'openai' | 'ollama' | 'vllm' | 'custom';
 
 /**
  * Model capability types

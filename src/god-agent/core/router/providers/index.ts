@@ -53,7 +53,7 @@ export {
   createAllOllamaProviders,
   isOllamaConfigured,
   listOllamaModels,
-  getBestLocalCodeModel,
+  getBestLocalCodeModel as getBestOllamaCodeModel,
   getEfficientLocalModel,
   isModelPulled,
   OLLAMA_MODELS,
@@ -63,6 +63,25 @@ export type {
   OllamaProviderConfig,
   OllamaModelKey,
 } from './ollama-provider.js';
+
+// ===== VLLM PROVIDER =====
+
+export {
+  VLLMProvider,
+  createVLLMProvider,
+  createAllVLLMProviders,
+  isVLLMConfigured,
+  isVLLMEnvConfigured,
+  listVLLMModels,
+  getBestLocalCodeModel,
+  getVLLMStatus,
+  VLLM_MODELS,
+} from './vllm-provider.js';
+
+export type {
+  VLLMProviderConfig,
+  VLLMModelKey,
+} from './vllm-provider.js';
 
 // ===== PROVIDER FACTORY =====
 

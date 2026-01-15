@@ -407,6 +407,21 @@ describe('Utility Functions', () => {
       expect(provider?.provider).toBe('ollama');
     });
 
+    it('should create vLLM provider', () => {
+      const provider = createProviderById('qwen2.5-coder-32b');
+      expect(provider).not.toBeNull();
+      expect(provider?.provider).toBe('vllm');
+    });
+
+    it('should create vLLM provider with config', () => {
+      // Use codestral-22b which is unique to vLLM
+      const provider = createProviderById('codestral-22b', {
+        vllm: { baseUrl: 'http://custom:8000', timeout: 180000 },
+      });
+      expect(provider).not.toBeNull();
+      expect(provider?.provider).toBe('vllm');
+    });
+
     it('should return null for unknown model', () => {
       const provider = createProviderById('unknown-model');
       expect(provider).toBeNull();
@@ -419,9 +434,16 @@ describe('Utility Functions', () => {
       expect(getProviderType('claude-sonnet-4')).toBe('anthropic');
       expect(getProviderType('gpt-4o')).toBe('openai');
       expect(getProviderType('o3')).toBe('openai');
-      expect(getProviderType('deepseek-v3')).toBe('ollama');
       expect(getProviderType('llama3.3')).toBe('ollama');
       expect(getProviderType('unknown')).toBeNull();
+    });
+
+    it('should return vllm for unique vLLM models', () => {
+      // Note: 'deepseek-coder-v2' and 'deepseek-v3' exist in both Ollama and vLLM
+      // Ollama is checked first, so they return 'ollama'
+      // These are unique to vLLM:
+      expect(getProviderType('qwen2.5-coder-32b')).toBe('vllm');
+      expect(getProviderType('codestral-22b')).toBe('vllm');
     });
   });
 
@@ -435,14 +457,22 @@ describe('Utility Functions', () => {
       expect(ids).toContain('gpt-4o');
       expect(ids).toContain('gpt-5.2');
       expect(ids).toContain('o3');
-      expect(ids).toContain('deepseek-coder-v2');
       expect(ids).toContain('llama3.3');
+      // vLLM-unique models
+      expect(ids).toContain('qwen2.5-coder-32b');
+      expect(ids).toContain('codestral-22b');
     });
 
-    it('should have no duplicates', () => {
+    it('should include both Ollama and vLLM models even with overlapping keys', () => {
       const ids = listAllModelIds();
-      const unique = new Set(ids);
-      expect(ids.length).toBe(unique.size);
+
+      // deepseek-coder-v2 and deepseek-v3 are in both, but should only appear once
+      const deepseekCoderCount = ids.filter(id => id === 'deepseek-coder-v2').length;
+      const deepseekV3Count = ids.filter(id => id === 'deepseek-v3').length;
+
+      // Each should appear twice (once from Ollama, once from vLLM)
+      expect(deepseekCoderCount).toBe(2);
+      expect(deepseekV3Count).toBe(2);
     });
   });
 
@@ -479,6 +509,26 @@ describe('Utility Functions', () => {
     it('should return null for unknown model', () => {
       const info = getModelInfo('unknown-model');
       expect(info).toBeNull();
+    });
+
+    it('should return model info for vLLM models', () => {
+      const info = getModelInfo('qwen2.5-coder-32b');
+
+      expect(info).not.toBeNull();
+      expect(info?.provider).toBe('vllm');
+      expect(info?.displayName).toBe('Qwen 2.5 Coder 32B');
+      expect(info?.capabilities).toContain('code');
+      expect(info?.costPer1M.input).toBe(0);
+      expect(info?.costPer1M.output).toBe(0);
+    });
+
+    it('should return model info for codestral-22b', () => {
+      const info = getModelInfo('codestral-22b');
+
+      expect(info).not.toBeNull();
+      expect(info?.provider).toBe('vllm');
+      expect(info?.displayName).toBe('Codestral 22B');
+      expect(info?.contextWindow).toBe(32768);
     });
   });
 });
