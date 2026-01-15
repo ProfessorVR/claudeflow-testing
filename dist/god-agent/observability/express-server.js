@@ -15,6 +15,8 @@ import { fileURLToPath } from 'url';
 import Database from 'better-sqlite3';
 import { createServiceLogger } from '../core/observability/logger.js';
 import { getConfig } from '../core/config/index.js';
+// Import router components for unified dashboard
+import { getAnalyticsEngine, getMonitoringSystem, getCircuitBreakerManager, getRateLimiterManager, getDegradationManager, getExperimentManager, executeRouterCommand, formatDashboardSummary, formatModelComparison, formatMonitoringAlerts, formatHealthCheck, formatAllCircuitStatus, formatAllRateLimitStatus, formatAllProviderHealth, getHealthSummary, } from '../core/router/index.js';
 // Service logger for express server
 const log = createServiceLogger('observe-server');
 // TIER-1.3: Database paths from centralized config
@@ -237,6 +239,31 @@ export class ExpressServer {
         app.get('/api/memory/hyperedges', this.getHyperedgeStore.bind(this));
         // 17. System metrics (comprehensive)
         app.get('/api/system/metrics', this.getSystemMetrics.bind(this));
+        // =========================================================================
+        // UNIFIED DASHBOARD ENDPOINTS (Phase 1.1)
+        // =========================================================================
+        // 18. Analytics - Dashboard Summary
+        app.get('/api/analytics/summary', this.getAnalyticsSummary.bind(this));
+        // 19. Analytics - Model Comparison
+        app.get('/api/analytics/models', this.getAnalyticsModels.bind(this));
+        // 20. Analytics - Quality Trends
+        app.get('/api/analytics/quality', this.getAnalyticsQuality.bind(this));
+        // 21. Analytics - Cost Breakdown
+        app.get('/api/analytics/costs', this.getAnalyticsCosts.bind(this));
+        // 22. Monitoring - Health Check
+        app.get('/api/monitoring/health', this.getMonitoringHealth.bind(this));
+        // 23. Monitoring - Active Alerts
+        app.get('/api/monitoring/alerts', this.getMonitoringAlerts.bind(this));
+        // 24. Router - Circuit Breaker Status
+        app.get('/api/router/circuits', this.getRouterCircuits.bind(this));
+        // 25. Router - Rate Limiter Status
+        app.get('/api/router/ratelimits', this.getRouterRateLimits.bind(this));
+        // 26. Router - Provider Health (Graceful Degradation)
+        app.get('/api/router/degradation', this.getRouterDegradation.bind(this));
+        // 27. Router - A/B Experiments
+        app.get('/api/router/experiments', this.getRouterExperiments.bind(this));
+        // 28. Command Interface
+        app.post('/api/command', this.executeCommand.bind(this));
     }
     // ===========================================================================
     // Endpoint Handlers
@@ -957,6 +984,309 @@ export class ExpressServer {
         catch (error) {
             log.error('Error getting system metrics', error);
             res.status(500).json({ error: 'Failed to get system metrics' });
+        }
+    }
+    // ===========================================================================
+    // UNIFIED DASHBOARD HANDLERS (Phase 1.1)
+    // ===========================================================================
+    /**
+     * Helper to calculate date range from days parameter
+     */
+    getDateRange(days) {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+        return { startDate, endDate };
+    }
+    /**
+     * Get analytics dashboard summary
+     * Returns aggregated metrics for the summary panel
+     */
+    getAnalyticsSummary(req, res) {
+        try {
+            const days = parseInt(req.query.days) || 7;
+            const analyticsEngine = getAnalyticsEngine();
+            if (!analyticsEngine) {
+                res.status(503).json({ error: 'Analytics engine not initialized' });
+                return;
+            }
+            const { startDate, endDate } = this.getDateRange(days);
+            const summary = analyticsEngine.getDashboardSummary(startDate, endDate);
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                data: summary,
+                formatted: formatDashboardSummary(summary),
+            });
+        }
+        catch (error) {
+            log.error('Error getting analytics summary', error);
+            res.status(500).json({ error: 'Failed to get analytics summary' });
+        }
+    }
+    /**
+     * Get model comparison data
+     * Returns per-model metrics for comparison charts
+     */
+    getAnalyticsModels(req, res) {
+        try {
+            const days = parseInt(req.query.days) || 7;
+            const analyticsEngine = getAnalyticsEngine();
+            if (!analyticsEngine) {
+                res.status(503).json({ error: 'Analytics engine not initialized' });
+                return;
+            }
+            const { startDate, endDate } = this.getDateRange(days);
+            const comparison = analyticsEngine.getModelComparison(startDate, endDate);
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                data: comparison,
+                formatted: formatModelComparison(comparison),
+            });
+        }
+        catch (error) {
+            log.error('Error getting model comparison', error);
+            res.status(500).json({ error: 'Failed to get model comparison' });
+        }
+    }
+    /**
+     * Get quality trends data
+     * Returns quality score trends over time
+     */
+    getAnalyticsQuality(req, res) {
+        try {
+            const days = parseInt(req.query.days) || 7;
+            const period = req.query.period || 'day';
+            const analyticsEngine = getAnalyticsEngine();
+            if (!analyticsEngine) {
+                res.status(503).json({ error: 'Analytics engine not initialized' });
+                return;
+            }
+            const { startDate, endDate } = this.getDateRange(days);
+            const trends = analyticsEngine.getQualityTrends(startDate, endDate, period);
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                data: trends,
+            });
+        }
+        catch (error) {
+            log.error('Error getting quality trends', error);
+            res.status(500).json({ error: 'Failed to get quality trends' });
+        }
+    }
+    /**
+     * Get cost analytics data
+     * Returns cost breakdown by model/provider
+     */
+    getAnalyticsCosts(req, res) {
+        try {
+            const days = parseInt(req.query.days) || 7;
+            const analyticsEngine = getAnalyticsEngine();
+            if (!analyticsEngine) {
+                res.status(503).json({ error: 'Analytics engine not initialized' });
+                return;
+            }
+            const { startDate, endDate } = this.getDateRange(days);
+            const costs = analyticsEngine.getCostAnalytics(startDate, endDate);
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                data: costs,
+            });
+        }
+        catch (error) {
+            log.error('Error getting cost analytics', error);
+            res.status(500).json({ error: 'Failed to get cost analytics' });
+        }
+    }
+    /**
+     * Get monitoring health check
+     * Returns system health status from monitoring
+     */
+    async getMonitoringHealth(req, res) {
+        try {
+            const monitoringSystem = getMonitoringSystem();
+            if (!monitoringSystem) {
+                res.status(503).json({ error: 'Monitoring system not initialized' });
+                return;
+            }
+            const health = await monitoringSystem.runHealthCheck();
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                data: health,
+                formatted: formatHealthCheck(health),
+            });
+        }
+        catch (error) {
+            log.error('Error getting monitoring health', error);
+            res.status(500).json({ error: 'Failed to get monitoring health' });
+        }
+    }
+    /**
+     * Get active monitoring alerts
+     * Returns current alerts with severity levels
+     */
+    async getMonitoringAlerts(req, res) {
+        try {
+            const severity = req.query.severity;
+            const monitoringSystem = getMonitoringSystem();
+            if (!monitoringSystem) {
+                res.status(503).json({ error: 'Monitoring system not initialized' });
+                return;
+            }
+            let alerts = monitoringSystem.getActiveAlerts();
+            // Filter by severity if provided
+            if (severity) {
+                alerts = alerts.filter(a => a.severity === severity);
+            }
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                data: alerts,
+                formatted: formatMonitoringAlerts(alerts),
+                count: alerts.length,
+            });
+        }
+        catch (error) {
+            log.error('Error getting monitoring alerts', error);
+            res.status(500).json({ error: 'Failed to get monitoring alerts' });
+        }
+    }
+    /**
+     * Get circuit breaker status
+     * Returns status for all provider circuits
+     */
+    getRouterCircuits(req, res) {
+        try {
+            const manager = getCircuitBreakerManager();
+            if (!manager) {
+                res.status(503).json({ error: 'Circuit breaker manager not initialized' });
+                return;
+            }
+            const allStatus = manager.getAllStatus();
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                data: allStatus,
+                formatted: formatAllCircuitStatus(allStatus),
+            });
+        }
+        catch (error) {
+            log.error('Error getting circuit breaker status', error);
+            res.status(500).json({ error: 'Failed to get circuit breaker status' });
+        }
+    }
+    /**
+     * Get rate limiter status
+     * Returns rate limit status for all providers
+     */
+    getRouterRateLimits(req, res) {
+        try {
+            const manager = getRateLimiterManager();
+            if (!manager) {
+                res.status(503).json({ error: 'Rate limiter manager not initialized' });
+                return;
+            }
+            const allStatus = manager.getAllStatus();
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                data: allStatus,
+                formatted: formatAllRateLimitStatus(allStatus),
+            });
+        }
+        catch (error) {
+            log.error('Error getting rate limiter status', error);
+            res.status(500).json({ error: 'Failed to get rate limiter status' });
+        }
+    }
+    /**
+     * Get provider health for graceful degradation
+     * Returns health status for all providers
+     */
+    async getRouterDegradation(req, res) {
+        try {
+            const manager = getDegradationManager();
+            if (!manager) {
+                res.status(503).json({ error: 'Degradation manager not initialized' });
+                return;
+            }
+            const allHealth = await manager.getAllProviderHealth();
+            const summary = getHealthSummary(allHealth);
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                data: allHealth,
+                summary,
+                formatted: formatAllProviderHealth(allHealth),
+            });
+        }
+        catch (error) {
+            log.error('Error getting degradation status', error);
+            res.status(500).json({ error: 'Failed to get degradation status' });
+        }
+    }
+    /**
+     * Get A/B testing experiments
+     * Returns list of active and recent experiments
+     */
+    getRouterExperiments(req, res) {
+        try {
+            const manager = getExperimentManager();
+            if (!manager) {
+                res.status(503).json({ error: 'Experiment manager not initialized' });
+                return;
+            }
+            const experiments = manager.getAllExperiments();
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                data: experiments,
+                count: experiments.length,
+            });
+        }
+        catch (error) {
+            log.error('Error getting experiments', error);
+            res.status(500).json({ error: 'Failed to get experiments' });
+        }
+    }
+    /**
+     * Execute CLI command
+     * Provides command-line interface through API
+     */
+    async executeCommand(req, res) {
+        try {
+            const { command } = req.body;
+            if (!command || typeof command !== 'string') {
+                res.status(400).json({ error: 'Missing or invalid command' });
+                return;
+            }
+            // Parse command (e.g., "god analytics summary" -> command="analytics", args=["summary"])
+            const parts = command.trim().split(/\s+/);
+            // Remove "god" prefix if present
+            if (parts[0] === 'god') {
+                parts.shift();
+            }
+            // Extract command and args
+            const cmd = parts[0] || '';
+            const args = parts.slice(1);
+            const result = await executeRouterCommand(cmd, args);
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                command,
+                result,
+            });
+        }
+        catch (error) {
+            log.error('Error executing command', error);
+            res.status(500).json({
+                success: false,
+                error: error instanceof Error ? error.message : 'Command execution failed',
+            });
         }
     }
     /**

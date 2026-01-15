@@ -176,6 +176,65 @@ export declare class ExpressServer implements IExpressServer {
      */
     private getSystemMetrics;
     /**
+     * Helper to calculate date range from days parameter
+     */
+    private getDateRange;
+    /**
+     * Get analytics dashboard summary
+     * Returns aggregated metrics for the summary panel
+     */
+    private getAnalyticsSummary;
+    /**
+     * Get model comparison data
+     * Returns per-model metrics for comparison charts
+     */
+    private getAnalyticsModels;
+    /**
+     * Get quality trends data
+     * Returns quality score trends over time
+     */
+    private getAnalyticsQuality;
+    /**
+     * Get cost analytics data
+     * Returns cost breakdown by model/provider
+     */
+    private getAnalyticsCosts;
+    /**
+     * Get monitoring health check
+     * Returns system health status from monitoring
+     */
+    private getMonitoringHealth;
+    /**
+     * Get active monitoring alerts
+     * Returns current alerts with severity levels
+     */
+    private getMonitoringAlerts;
+    /**
+     * Get circuit breaker status
+     * Returns status for all provider circuits
+     */
+    private getRouterCircuits;
+    /**
+     * Get rate limiter status
+     * Returns rate limit status for all providers
+     */
+    private getRouterRateLimits;
+    /**
+     * Get provider health for graceful degradation
+     * Returns health status for all providers
+     */
+    private getRouterDegradation;
+    /**
+     * Get A/B testing experiments
+     * Returns list of active and recent experiments
+     */
+    private getRouterExperiments;
+    /**
+     * Execute CLI command
+     * Provides command-line interface through API
+     */
+    private executeCommand;
+    /**
      * Get Prometheus metrics
      * Implements Prometheus text format
      */
