@@ -479,3 +479,20 @@ export type {
   QualityAnalysis,
   RoutingOptimizerConfig,
 } from './routing-optimizer.js';
+
+// ===== ADAPTIVE ROUTER (Phase 6.1) =====
+
+export {
+  AdaptiveRouter,
+  getAdaptiveRouter,
+  initializeAdaptiveRouter,
+  resetAdaptiveRouter,
+  formatModelScore,
+  formatAdaptiveRanking,
+} from './adaptive-router.js';
+
+export type {
+  AdaptiveRouterConfig,
+  ModelScore,
+  AdaptiveRanking,
+} from './adaptive-router.js';

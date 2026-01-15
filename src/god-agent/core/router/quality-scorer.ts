@@ -328,6 +328,89 @@ export class QualityScorer {
   }
 
   /**
+   * Get ranked models with time-decay weighting
+   * More recent outcomes have higher weight
+   */
+  getRankedModelsWithDecay(
+    taskType?: TaskType,
+    complexity?: Complexity,
+    decayFactor: number = 0.1
+  ): Array<{ model: string; score: number; decayedScore: number }> {
+    const allStats = this.getAllModelStats();
+    const results: Array<{ model: string; score: number; decayedScore: number }> = [];
+
+    for (const [model, stats] of allStats) {
+      const baseScore = this.calculateCompositeScore(stats, taskType, complexity);
+      const decayedScore = this.calculateTimeDecayedScore(model, taskType, decayFactor);
+
+      results.push({
+        model,
+        score: baseScore,
+        decayedScore: decayedScore * baseScore,
+      });
+    }
+
+    // Sort by decayed score (higher is better)
+    results.sort((a, b) => b.decayedScore - a.decayedScore);
+    return results;
+  }
+
+  /**
+   * Calculate time-decay factor for a model's scores
+   * Returns a value between 0-1 where 1 means fresh data
+   */
+  calculateTimeDecayedScore(
+    model: string,
+    taskType?: TaskType,
+    decayFactor: number = 0.1
+  ): number {
+    let scores = this.getScoresForModel(model);
+
+    if (taskType) {
+      scores = scores.filter(s => s.taskType === taskType);
+    }
+
+    if (scores.length === 0) {
+      return 1.0; // No decay if no data
+    }
+
+    const now = Date.now();
+    let weightedSum = 0;
+    let totalWeight = 0;
+
+    for (const score of scores) {
+      // Age in days
+      const ageInDays = (now - score.timestamp.getTime()) / (24 * 60 * 60 * 1000);
+      // Exponential decay: e^(-decay * age)
+      const weight = Math.exp(-decayFactor * ageInDays);
+      weightedSum += weight;
+      totalWeight += 1;
+    }
+
+    // Return average weight (1.0 = no decay, lower = more decay)
+    return totalWeight > 0 ? weightedSum / totalWeight : 1.0;
+  }
+
+  /**
+   * Get the most recently used models
+   */
+  getRecentlyUsedModels(limit: number = 5): string[] {
+    const modelLastUsed = new Map<string, Date>();
+
+    for (const score of this.scores) {
+      const existing = modelLastUsed.get(score.model);
+      if (!existing || score.timestamp > existing) {
+        modelLastUsed.set(score.model, score.timestamp);
+      }
+    }
+
+    return Array.from(modelLastUsed.entries())
+      .sort((a, b) => b[1].getTime() - a[1].getTime())
+      .slice(0, limit)
+      .map(([model]) => model);
+  }
+
+  /**
    * Calculate a composite quality score for a model
    */
   calculateCompositeScore(
