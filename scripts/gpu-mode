@@ -1,0 +1,360 @@
+#!/usr/bin/env bash
+#===============================================================================
+# GPU Server Mode Switcher
+#
+# Switches between AWQ model (code generation) and Embedding server (ingest).
+# Both require GPU memory and can't run simultaneously on 32GB VRAM.
+#
+# Usage: ./scripts/gpu-mode {awq|embedding|status}
+#
+# Modes:
+#   awq       - Start vLLM with Qwen2.5-Coder-32B-Instruct-AWQ (port 8002)
+#   embedding - Start embedding server gte-Qwen2-1.5B-instruct (port 8000)
+#   status    - Show current GPU server status
+#
+#===============================================================================
+
+set -euo pipefail
+
+# --- CONFIGURATION ---
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Server ports
+VLLM_PORT="${VLLM_PORT:-8002}"
+EMBEDDING_PORT="${EMBEDDING_PORT:-8000}"
+CHROMA_PORT="${CHROMA_PORT:-8001}"
+
+# AWQ model configuration
+AWQ_MODEL="${AWQ_MODEL:-Qwen/Qwen2.5-Coder-32B-Instruct-AWQ}"
+GPU_MEM_UTIL="${GPU_MEM_UTIL:-0.85}"
+MAX_MODEL_LEN="${MAX_MODEL_LEN:-16384}"
+
+# State file
+STATE_FILE="$PROJECT_DIR/.run/gpu-server-mode.json"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+# Ensure run directory exists
+mkdir -p "$PROJECT_DIR/.run"
+
+#===============================================================================
+# Utility Functions
+#===============================================================================
+
+log_info() {
+    echo -e "${BLUE}[gpu-mode]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[gpu-mode]${NC} $1"
+}
+
+log_warn() {
+    echo -e "${YELLOW}[gpu-mode]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[gpu-mode]${NC} $1"
+}
+
+check_port() {
+    local port=$1
+    curl -s --connect-timeout 2 "http://localhost:$port/" > /dev/null 2>&1
+}
+
+wait_for_port() {
+    local port=$1
+    local timeout=${2:-120}
+    local elapsed=0
+
+    echo -n "Waiting for port $port..."
+    while ! check_port "$port"; do
+        if [ $elapsed -ge $timeout ]; then
+            echo " TIMEOUT"
+            return 1
+        fi
+        echo -n "."
+        sleep 2
+        elapsed=$((elapsed + 2))
+    done
+    echo " Ready"
+    return 0
+}
+
+wait_for_port_down() {
+    local port=$1
+    local timeout=${2:-30}
+    local elapsed=0
+
+    while check_port "$port"; do
+        if [ $elapsed -ge $timeout ]; then
+            return 1
+        fi
+        sleep 1
+        elapsed=$((elapsed + 1))
+    done
+    return 0
+}
+
+save_state() {
+    local mode=$1
+    cat > "$STATE_FILE" <<EOF
+{
+  "mode": "$mode",
+  "timestamp": "$(date -Iseconds)"
+}
+EOF
+}
+
+get_current_mode() {
+    if [ -f "$STATE_FILE" ]; then
+        grep -o '"mode": *"[^"]*"' "$STATE_FILE" | cut -d'"' -f4
+    else
+        echo "unknown"
+    fi
+}
+
+#===============================================================================
+# Stop Functions
+#===============================================================================
+
+stop_vllm() {
+    log_info "Stopping vLLM server..."
+    pkill -f "vllm serve" 2>/dev/null || true
+
+    # Wait for port to be released
+    if wait_for_port_down "$VLLM_PORT" 10; then
+        log_success "vLLM stopped"
+    else
+        log_warn "vLLM may still be running"
+    fi
+}
+
+stop_embedding() {
+    log_info "Stopping embedding server..."
+
+    # Try using the api-embed.sh script first
+    local script="$PROJECT_DIR/embedding-api/api-embed.sh"
+    if [ -f "$script" ]; then
+        bash "$script" stop 2>/dev/null || true
+    else
+        # Fallback: kill processes directly
+        pkill -f "api_embedder.py" 2>/dev/null || true
+        pkill -f "chroma run" 2>/dev/null || true
+    fi
+
+    # Wait for ports to be released
+    wait_for_port_down "$EMBEDDING_PORT" 10 || true
+    wait_for_port_down "$CHROMA_PORT" 10 || true
+
+    log_success "Embedding server stopped"
+}
+
+stop_all() {
+    stop_vllm
+    stop_embedding
+}
+
+#===============================================================================
+# Start Functions
+#===============================================================================
+
+start_vllm() {
+    log_info "Starting vLLM AWQ server..."
+    log_info "Model: $AWQ_MODEL"
+    log_info "Port: $VLLM_PORT"
+
+    # Set environment variables for WSL2 compatibility
+    export PYTORCH_ALLOC_CONF="expandable_segments:True"
+    export NCCL_CUMEM_ENABLE=0
+
+    # Start vLLM in background
+    nohup vllm serve "$AWQ_MODEL" \
+        --port "$VLLM_PORT" \
+        --quantization awq \
+        --enforce-eager \
+        --gpu-memory-utilization "$GPU_MEM_UTIL" \
+        --max-model-len "$MAX_MODEL_LEN" \
+        > "$PROJECT_DIR/logs/vllm-awq.log" 2>&1 &
+
+    local pid=$!
+    echo "$pid" > "$PROJECT_DIR/.run/vllm.pid"
+
+    # Wait for server to be ready
+    if wait_for_port "$VLLM_PORT" 180; then
+        save_state "awq"
+        log_success "vLLM AWQ server started (PID: $pid)"
+        return 0
+    else
+        log_error "vLLM failed to start. Check logs: $PROJECT_DIR/logs/vllm-awq.log"
+        return 1
+    fi
+}
+
+start_embedding() {
+    log_info "Starting embedding server..."
+
+    local script="$PROJECT_DIR/embedding-api/api-embed.sh"
+    if [ ! -f "$script" ]; then
+        log_error "Embedding script not found: $script"
+        return 1
+    fi
+
+    bash "$script" start
+
+    # Verify server is running
+    if check_port "$EMBEDDING_PORT"; then
+        save_state "embedding"
+        log_success "Embedding server started"
+        return 0
+    else
+        log_error "Embedding server failed to start"
+        return 1
+    fi
+}
+
+#===============================================================================
+# Mode Switch Functions
+#===============================================================================
+
+switch_to_awq() {
+    log_info "Switching to AWQ mode..."
+
+    # Check if already running
+    if check_port "$VLLM_PORT"; then
+        log_info "AWQ server already running"
+        save_state "awq"
+        return 0
+    fi
+
+    # Stop embedding if running
+    if check_port "$EMBEDDING_PORT"; then
+        stop_embedding
+        sleep 3  # Allow GPU memory to be freed
+    fi
+
+    # Clear GPU memory
+    python3 -c "import torch; torch.cuda.empty_cache()" 2>/dev/null || true
+
+    # Start AWQ
+    start_vllm
+}
+
+switch_to_embedding() {
+    log_info "Switching to embedding mode..."
+
+    # Check if already running
+    if check_port "$EMBEDDING_PORT"; then
+        log_info "Embedding server already running"
+        save_state "embedding"
+        return 0
+    fi
+
+    # Stop AWQ if running
+    if check_port "$VLLM_PORT"; then
+        stop_vllm
+        sleep 3  # Allow GPU memory to be freed
+    fi
+
+    # Clear GPU memory
+    python3 -c "import torch; torch.cuda.empty_cache()" 2>/dev/null || true
+
+    # Start embedding
+    start_embedding
+}
+
+#===============================================================================
+# Status Function
+#===============================================================================
+
+show_status() {
+    echo -e "${YELLOW}=== GPU Server Status ===${NC}"
+    echo ""
+
+    local current_mode=$(get_current_mode)
+    echo -e "Recorded Mode: ${BLUE}$current_mode${NC}"
+    echo ""
+
+    # AWQ Status
+    if check_port "$VLLM_PORT"; then
+        echo -e "vLLM AWQ:    ${GREEN}Running${NC} (Port: $VLLM_PORT)"
+        # Try to get model info
+        local models=$(curl -s "http://localhost:$VLLM_PORT/v1/models" 2>/dev/null | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+        if [ -n "$models" ]; then
+            echo "  Model: $models"
+        fi
+    else
+        echo -e "vLLM AWQ:    ${RED}Stopped${NC}"
+    fi
+
+    # Embedding Status
+    if check_port "$EMBEDDING_PORT"; then
+        echo -e "Embedding:   ${GREEN}Running${NC} (Port: $EMBEDDING_PORT)"
+    else
+        echo -e "Embedding:   ${RED}Stopped${NC}"
+    fi
+
+    # ChromaDB Status
+    if check_port "$CHROMA_PORT"; then
+        echo -e "ChromaDB:    ${GREEN}Running${NC} (Port: $CHROMA_PORT)"
+    else
+        echo -e "ChromaDB:    ${RED}Stopped${NC}"
+    fi
+
+    echo ""
+
+    # GPU Memory
+    echo "GPU Memory:"
+    nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader 2>/dev/null || echo "  (nvidia-smi not available)"
+
+    echo ""
+    echo "Endpoints:"
+    echo "  vLLM AWQ:  http://localhost:$VLLM_PORT"
+    echo "  Embedding: http://localhost:$EMBEDDING_PORT"
+    echo "  ChromaDB:  http://localhost:$CHROMA_PORT"
+}
+
+#===============================================================================
+# Main
+#===============================================================================
+
+# Ensure logs directory exists
+mkdir -p "$PROJECT_DIR/logs"
+
+case "${1:-}" in
+    awq)
+        switch_to_awq
+        ;;
+    embedding)
+        switch_to_embedding
+        ;;
+    status)
+        show_status
+        ;;
+    stop)
+        stop_all
+        save_state "none"
+        ;;
+    *)
+        echo "GPU Server Mode Switcher"
+        echo ""
+        echo "Usage: $0 {awq|embedding|status|stop}"
+        echo ""
+        echo "Commands:"
+        echo "  awq       - Switch to vLLM AWQ mode (code generation)"
+        echo "  embedding - Switch to embedding mode (document ingestion)"
+        echo "  status    - Show current GPU server status"
+        echo "  stop      - Stop all GPU servers"
+        echo ""
+        echo "AWQ Model:  $AWQ_MODEL"
+        echo "AWQ Port:   $VLLM_PORT"
+        echo "Embed Port: $EMBEDDING_PORT"
+        exit 1
+        ;;
+esac

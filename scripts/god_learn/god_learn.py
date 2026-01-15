@@ -18,12 +18,78 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Tuple
+
+
+# ----------------------------
+# GPU Mode Switching
+# ----------------------------
+
+def switch_gpu_mode(mode: str, rr: Path, quiet: bool = False) -> bool:
+    """
+    Switch GPU server mode between 'embedding' and 'awq'.
+
+    Since both servers require GPU memory and can't run simultaneously on 32GB VRAM,
+    we need to stop one before starting the other.
+
+    Args:
+        mode: 'embedding' for ingest operations, 'awq' for code generation
+        rr: Repository root path
+        quiet: Suppress output if True
+
+    Returns:
+        True if switch was successful, False otherwise
+    """
+    script = rr / "scripts" / "gpu-mode"
+
+    # Skip if script doesn't exist (backwards compatibility)
+    if not script.exists():
+        if not quiet:
+            print(f"[god-learn] GPU mode script not found, skipping GPU switch", file=sys.stderr)
+        return True
+
+    try:
+        if not quiet:
+            print(f"[god-learn] Switching GPU to {mode} mode...")
+
+        result = subprocess.run(
+            ["bash", str(script), mode],
+            cwd=str(rr),
+            capture_output=not quiet,
+            text=True,
+            timeout=300,  # 5 minute timeout for model loading
+        )
+
+        if result.returncode == 0:
+            if not quiet:
+                print(f"[god-learn] GPU mode switched to {mode}")
+            return True
+        else:
+            if not quiet:
+                print(f"[god-learn] Failed to switch GPU mode: {result.stderr}", file=sys.stderr)
+            return False
+    except subprocess.TimeoutExpired:
+        print(f"[god-learn] GPU mode switch timed out", file=sys.stderr)
+        return False
+    except Exception as e:
+        print(f"[god-learn] GPU mode switch error: {e}", file=sys.stderr)
+        return False
+
+
+def ensure_embedding_mode(rr: Path, quiet: bool = False) -> bool:
+    """Ensure embedding server is running for ingest operations."""
+    return switch_gpu_mode("embedding", rr, quiet)
+
+
+def restore_awq_mode(rr: Path, quiet: bool = False) -> bool:
+    """Restore AWQ model after ingest operations."""
+    return switch_gpu_mode("awq", rr, quiet)
 
 
 # ----------------------------
@@ -319,6 +385,7 @@ def cmd_compile(args: argparse.Namespace) -> None:
     root = Path(args.root).resolve()
     verbose = getattr(args, 'verbose', False) and not getattr(args, 'quiet', False)
     quiet = getattr(args, 'quiet', False)
+    skip_gpu_switch = getattr(args, 'skip_gpu_switch', False)
 
     if not quiet:
         if args.no_run_dir:
@@ -337,11 +404,21 @@ def cmd_compile(args: argparse.Namespace) -> None:
         )
 
     start_time = datetime.now()
-    print_phase_header("Phase 1-3", "Compiling corpus substrate", verbose)
 
-    run_compile_substrate(rr=rr, root=root, log_path=log_path)
+    # Switch to embedding mode for ingest (requires embedding server)
+    if not skip_gpu_switch:
+        ensure_embedding_mode(rr, quiet)
 
-    print_phase_complete("Phase 1-3 Compile", verbose)
+    try:
+        print_phase_header("Phase 1-3", "Compiling corpus substrate", verbose)
+
+        run_compile_substrate(rr=rr, root=root, log_path=log_path)
+
+        print_phase_complete("Phase 1-3 Compile", verbose)
+    finally:
+        # Switch back to AWQ mode after compile
+        if not skip_gpu_switch:
+            restore_awq_mode(rr, quiet)
 
     if verbose:
         elapsed = (datetime.now() - start_time).total_seconds()
@@ -356,6 +433,7 @@ def cmd_update(args: argparse.Namespace) -> None:
     root = Path(args.root).resolve()
     verbose = getattr(args, 'verbose', False) and not getattr(args, 'quiet', False)
     quiet = getattr(args, 'quiet', False)
+    skip_gpu_switch = getattr(args, 'skip_gpu_switch', False)
 
     query = (args.query or "").strip()
     if not query:
@@ -394,71 +472,80 @@ def cmd_update(args: argparse.Namespace) -> None:
 
     start_time = datetime.now()
 
-    # Phase 1–3: compile substrate first
-    print_phase_header("Phase 1-3", "Compiling corpus substrate (ingest/audit/verify)", verbose)
-    run_compile_substrate(rr=rr, root=root, log_path=log_path)
-    print_phase_complete("Phase 1-3", verbose)
+    # Switch to embedding mode for ingest and retrieval (requires embedding server)
+    if not skip_gpu_switch:
+        ensure_embedding_mode(rr, quiet)
 
-    # Generate hits JSON if needed (Phase 4: Retrieval)
-    print_phase_header("Phase 4", "Running retrieval query", verbose)
-    if not args.hits_json:
-        cmd = [
-            "python3",
-            "scripts/retrieval/query_chunks.py",
-            query,
-            "--k", str(args.k),
-            "--overfetch", str(args.overfetch),
-            "--include_docs",
-            "--print_json",
-        ]
-        if args.where:
-            cmd += ["--where", args.where]
+    try:
+        # Phase 1–3: compile substrate first
+        print_phase_header("Phase 1-3", "Compiling corpus substrate (ingest/audit/verify)", verbose)
+        run_compile_substrate(rr=rr, root=root, log_path=log_path)
+        print_phase_complete("Phase 1-3", verbose)
 
+        # Generate hits JSON if needed (Phase 4: Retrieval)
+        print_phase_header("Phase 4", "Running retrieval query", verbose)
+        if not args.hits_json:
+            cmd = [
+                "python3",
+                "scripts/retrieval/query_chunks.py",
+                query,
+                "--k", str(args.k),
+                "--overfetch", str(args.overfetch),
+                "--include_docs",
+                "--print_json",
+            ]
+            if args.where:
+                cmd += ["--where", args.where]
+
+            assert hits_json is not None
+            tee_run(cmd, cwd=rr, log_path=log_path, stdout_to=hits_json)
+
+            if not hits_json.exists() or hits_json.stat().st_size == 0:
+                print(f"[god-learn:update] ERROR: failed to generate hits JSON at {hits_json}", file=sys.stderr)
+                raise SystemExit(2)
+        else:
+            assert hits_json is not None
+            q2 = infer_query_from_hits_json(hits_json)
+            if q2 and q2.strip() != query:
+                print(
+                    "[god-learn:update] WARNING: --hits-json contains a different top-level query than --query.\n"
+                    f"  hits_json.query={q2!r}\n"
+                    f"  --query       ={query!r}\n"
+                    "Proceeding with --query as the authoritative query.",
+                    file=sys.stderr,
+                )
+
+        # Phase 4 verification gate
+        tee_run(["python3", "scripts/retrieval/verify_phase4.py", query], cwd=rr, log_path=log_path)
+        print_phase_complete("Phase 4 Retrieval", verbose)
+
+        # Phase 5 diagnostic (optional)
+        if not args.skip_phase5:
+            print_phase_header("Phase 5", "Highlight diagnostics", verbose)
+            sh = rr / "scripts" / "highlights" / "phase5check.sh"
+            if sh.exists():
+                tee_run(["bash", "scripts/highlights/phase5check.sh"], cwd=rr, log_path=log_path)
+            print_phase_complete("Phase 5 Highlights", verbose)
+
+        # Phase 6 promote
+        print_phase_header("Phase 6", "Promoting retrieval hits to Knowledge Units", verbose)
         assert hits_json is not None
-        tee_run(cmd, cwd=rr, log_path=log_path, stdout_to=hits_json)
+        tee_run(
+            ["python3", "scripts/learn/promote_hits.py", "--hits_json", str(hits_json), "--query", query],
+            cwd=rr,
+            log_path=log_path,
+        )
 
-        if not hits_json.exists() or hits_json.stat().st_size == 0:
-            print(f"[god-learn:update] ERROR: failed to generate hits JSON at {hits_json}", file=sys.stderr)
-            raise SystemExit(2)
-    else:
-        assert hits_json is not None
-        q2 = infer_query_from_hits_json(hits_json)
-        if q2 and q2.strip() != query:
-            print(
-                "[god-learn:update] WARNING: --hits-json contains a different top-level query than --query.\n"
-                f"  hits_json.query={q2!r}\n"
-                f"  --query       ={query!r}\n"
-                "Proceeding with --query as the authoritative query.",
-                file=sys.stderr,
-            )
+        # STRICT verify with autofix normalization if needed
+        verify_knowledge_strict_with_autofix(rr=rr, log_path=log_path)
+        print_phase_complete("Phase 6 Promotion", verbose)
 
-    # Phase 4 verification gate
-    tee_run(["python3", "scripts/retrieval/verify_phase4.py", query], cwd=rr, log_path=log_path)
-    print_phase_complete("Phase 4 Retrieval", verbose)
-
-    # Phase 5 diagnostic (optional)
-    if not args.skip_phase5:
-        print_phase_header("Phase 5", "Highlight diagnostics", verbose)
-        sh = rr / "scripts" / "highlights" / "phase5check.sh"
-        if sh.exists():
-            tee_run(["bash", "scripts/highlights/phase5check.sh"], cwd=rr, log_path=log_path)
-        print_phase_complete("Phase 5 Highlights", verbose)
-
-    # Phase 6 promote
-    print_phase_header("Phase 6", "Promoting retrieval hits to Knowledge Units", verbose)
-    assert hits_json is not None
-    tee_run(
-        ["python3", "scripts/learn/promote_hits.py", "--hits_json", str(hits_json), "--query", query],
-        cwd=rr,
-        log_path=log_path,
-    )
-
-    # STRICT verify with autofix normalization if needed
-    verify_knowledge_strict_with_autofix(rr=rr, log_path=log_path)
-    print_phase_complete("Phase 6 Promotion", verbose)
-
-    if run_dir is not None:
-        snapshot_tmp_artifacts(run_dir)
+        if run_dir is not None:
+            snapshot_tmp_artifacts(run_dir)
+    finally:
+        # Switch back to AWQ mode after update completes
+        if not skip_gpu_switch:
+            restore_awq_mode(rr, quiet)
 
     if verbose:
         elapsed = (datetime.now() - start_time).total_seconds()
@@ -525,6 +612,8 @@ def main() -> int:
     pc = sub.add_parser("compile", help="Compile corpus substrate only (Phase 1–3: ingest/audit/verify)")
     pc.add_argument("--run-dir", help="Base directory for run logs (default: <repo>/god-learn/runs/)")
     pc.add_argument("--no-run-dir", action="store_true", help="Do not create a run folder/log")
+    pc.add_argument("--skip-gpu-switch", action="store_true",
+                    help="Skip automatic GPU mode switching (embedding <-> AWQ)")
     pc.add_argument("--verbose", "-v", action="store_true", help="Show detailed progress with timestamps")
     pc.add_argument("--quiet", "-q", action="store_true", help="Suppress non-error output")
     pc.set_defaults(func=cmd_compile)
@@ -533,6 +622,8 @@ def main() -> int:
     pu.add_argument("--query", required=True, help="Query string used to drive retrieval/promotion")
     pu.add_argument("--hits-json", dest="hits_json", help="Path to hits JSON (if omitted, generated to /tmp/phase4_hits.json)")
     pu.add_argument("--skip-phase5", action="store_true", help="Skip phase5check.sh diagnostic step")
+    pu.add_argument("--skip-gpu-switch", action="store_true",
+                    help="Skip automatic GPU mode switching (embedding <-> AWQ)")
     pu.add_argument("--run-dir", help="Base directory for run logs (default: <repo>/god-learn/runs/)")
     pu.add_argument("--no-run-dir", action="store_true", help="Do not create a run folder/log/tmp snapshot")
     pu.add_argument("--k", type=int, default=8, help="Top-k for query_chunks when generating hits JSON (default: 8)")
