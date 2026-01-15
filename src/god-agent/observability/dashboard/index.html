@@ -3,318 +3,604 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>God Agent Observability Dashboard</title>
+    <title>God Agent Unified Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>God Agent Observability Dashboard</h1>
-        <div class="connection-status" id="connectionStatus">
-            <span class="status-dot" id="statusDot"></span>
-            <span id="statusText">Connecting...</span>
+    <!-- Header with Tab Navigation -->
+    <header class="dashboard-header">
+        <div class="header-left">
+            <h1>God Agent Dashboard</h1>
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="statusText">Connecting...</span>
+            </div>
+        </div>
+        <nav class="main-tabs">
+            <button class="tab-btn active" data-tab="analytics">Analytics</button>
+            <button class="tab-btn" data-tab="monitoring">Monitoring</button>
+            <button class="tab-btn" data-tab="router">Router</button>
+            <button class="tab-btn" data-tab="memory">Memory</button>
+            <button class="tab-btn" data-tab="activity">Activity</button>
+        </nav>
+        <div class="header-right">
+            <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">&#9776;</button>
+            <button class="theme-toggle" id="themeToggle" title="Toggle Theme">&#9788;</button>
         </div>
     </header>
 
-    <main class="dashboard-grid">
-        <!-- Activity Stream Panel -->
-        <section class="panel activity-panel">
-            <div class="panel-header">
-                <h2>Activity Stream</h2>
-                <div class="filters">
-                    <label>
-                        Component:
-                        <select id="componentFilter" class="filter-select">
-                            <option value="">All</option>
-                            <option value="agent">Agents</option>
-                            <option value="pipeline">Pipelines</option>
-                            <option value="routing">Routing</option>
-                            <option value="learning">Learning</option>
-                            <option value="ucm">UCM</option>
-                            <option value="idesc">IDESC</option>
-                            <option value="episode">Episode</option>
-                            <option value="hyperedge">Hyperedge</option>
-                            <option value="embedding">Embedding</option>
-                            <option value="daemon">Daemon</option>
-                            <option value="token_budget">Token Budget</option>
-                            <option value="search">Search</option>
-                            <option value="memory">Memory</option>
-                        </select>
-                    </label>
-                    <label>
-                        Status:
-                        <select id="statusFilter" class="filter-select">
-                            <option value="">All</option>
-                            <option value="success">Success</option>
-                            <option value="error">Error</option>
-                            <option value="running">Running</option>
-                        </select>
-                    </label>
+    <div class="dashboard-container">
+        <!-- Collapsible Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h3>Panel Visibility</h3>
+                <div class="panel-toggles" id="panelToggles">
+                    <!-- Dynamically populated -->
                 </div>
             </div>
-            <div class="panel-body">
-                <ul id="activityList" class="activity-list"></ul>
+            <div class="sidebar-section">
+                <h3>Quick Stats</h3>
+                <div class="quick-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Agents</span>
+                        <span class="stat-value" id="sidebarAgentCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Requests</span>
+                        <span class="stat-value" id="sidebarRequestCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Quality</span>
+                        <span class="stat-value" id="sidebarQuality">0%</span>
+                    </div>
+                </div>
             </div>
-        </section>
+        </aside>
 
-        <!-- Active Agents Panel -->
-        <section class="panel agents-panel">
-            <div class="panel-header">
-                <h2>Active Agents</h2>
-                <span class="count-badge" id="agentCount">0</span>
-            </div>
-            <div class="panel-body">
-                <ul id="agentList" class="agent-list"></ul>
-            </div>
-        </section>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Analytics Tab -->
+            <div class="tab-panel active" id="tab-analytics">
+                <div class="dashboard-grid analytics-grid">
+                    <!-- Dashboard Summary Panel -->
+                    <section class="panel summary-panel" data-panel="summary">
+                        <div class="panel-header">
+                            <h2>Dashboard Summary</h2>
+                            <div class="panel-actions">
+                                <select id="summaryDays" class="filter-select">
+                                    <option value="1">Last 24h</option>
+                                    <option value="7" selected>Last 7 days</option>
+                                    <option value="30">Last 30 days</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="metrics-grid summary-metrics">
+                                <div class="metric-card large">
+                                    <span class="metric-label">Total Requests</span>
+                                    <span class="metric-value" id="summaryRequests">0</span>
+                                    <span class="metric-change positive" id="summaryRequestsChange">+0%</span>
+                                </div>
+                                <div class="metric-card large">
+                                    <span class="metric-label">Total Cost</span>
+                                    <span class="metric-value" id="summaryCost">$0.00</span>
+                                    <span class="metric-change" id="summaryCostChange">+0%</span>
+                                </div>
+                                <div class="metric-card large">
+                                    <span class="metric-label">Success Rate</span>
+                                    <span class="metric-value" id="summarySuccess">0%</span>
+                                    <span class="metric-change" id="summarySuccessChange">+0%</span>
+                                </div>
+                                <div class="metric-card large">
+                                    <span class="metric-label">Quality Score</span>
+                                    <span class="metric-value" id="summaryQuality">0.00</span>
+                                    <span class="metric-change" id="summaryQualityChange">+0%</span>
+                                </div>
+                                <div class="metric-card large">
+                                    <span class="metric-label">Avg Latency</span>
+                                    <span class="metric-value" id="summaryLatency">0ms</span>
+                                    <span class="metric-change" id="summaryLatencyChange">+0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
-        <!-- Pipelines Panel -->
-        <section class="panel pipelines-panel">
-            <div class="panel-header">
-                <h2>Pipelines</h2>
-                <span class="count-badge" id="pipelineCount">0</span>
-            </div>
-            <div class="panel-body">
-                <ul id="pipelineList" class="pipeline-list"></ul>
-            </div>
-        </section>
+                    <!-- Model Comparison Panel -->
+                    <section class="panel models-panel" data-panel="models">
+                        <div class="panel-header">
+                            <h2>Model Comparison</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="chart-container">
+                                <canvas id="modelComparisonChart"></canvas>
+                            </div>
+                            <div class="model-winners" id="modelWinners">
+                                <!-- Best Quality, Best Cost, Best Value -->
+                            </div>
+                        </div>
+                    </section>
 
-        <!-- Routing Decisions Panel -->
-        <section class="panel routing-panel">
-            <div class="panel-header">
-                <h2>Routing Decisions</h2>
-            </div>
-            <div class="panel-body">
-                <ul id="routingList" class="routing-list"></ul>
-            </div>
-        </section>
+                    <!-- Quality Trends Panel -->
+                    <section class="panel quality-panel" data-panel="quality">
+                        <div class="panel-header">
+                            <h2>Quality Trends</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="chart-container">
+                                <canvas id="qualityTrendsChart"></canvas>
+                            </div>
+                        </div>
+                    </section>
 
-        <!-- Learning Metrics Panel -->
-        <section class="panel learning-panel">
-            <div class="panel-header">
-                <h2>Learning Metrics</h2>
-                <span class="panel-badge" id="learningBadge">SoNA</span>
-            </div>
-            <div class="panel-body">
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <span class="metric-label">Trajectories</span>
-                        <span class="metric-value" id="trajTotal">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Active</span>
-                        <span class="metric-value" id="trajActive">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Completed</span>
-                        <span class="metric-value" id="trajCompleted">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Patterns</span>
-                        <span class="metric-value" id="patternCount">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Avg Weight</span>
-                        <span class="metric-value" id="patternAvgWeight">0.00</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Success/Fail</span>
-                        <span class="metric-value" id="patternSuccessFail">0/0</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+                    <!-- Cost Analytics Panel -->
+                    <section class="panel costs-panel" data-panel="costs">
+                        <div class="panel-header">
+                            <h2>Cost Analytics</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="cost-breakdown">
+                                <div class="chart-container small">
+                                    <canvas id="costPieChart"></canvas>
+                                </div>
+                                <div class="budget-bars" id="budgetBars">
+                                    <!-- Daily, Weekly, Monthly budgets -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
-        <!-- UCM & IDESC Panel -->
-        <section class="panel ucm-panel">
-            <div class="panel-header">
-                <h2>UCM & IDESC v2</h2>
-            </div>
-            <div class="panel-body">
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <span class="metric-label">Episodes Stored</span>
-                        <span class="metric-value" id="ucmEpisodesStored">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Context Size</span>
-                        <span class="metric-value" id="ucmContextSize">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Outcomes Recorded</span>
-                        <span class="metric-value" id="idescOutcomes">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Injection Rate</span>
-                        <span class="metric-value" id="idescInjectionRate">0%</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Negative Warnings</span>
-                        <span class="metric-value" id="idescNegativeWarnings">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Threshold Adj.</span>
-                        <span class="metric-value" id="idescThresholdAdj">0</span>
-                    </div>
+                    <!-- Learning Metrics Panel (from existing) -->
+                    <section class="panel learning-panel" data-panel="learning">
+                        <div class="panel-header">
+                            <h2>Learning Metrics</h2>
+                            <span class="panel-badge" id="learningBadge">SoNA</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="metrics-grid">
+                                <div class="metric-card">
+                                    <span class="metric-label">Trajectories</span>
+                                    <span class="metric-value" id="trajTotal">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Active</span>
+                                    <span class="metric-value" id="trajActive">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Completed</span>
+                                    <span class="metric-value" id="trajCompleted">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Patterns</span>
+                                    <span class="metric-value" id="patternCount">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Avg Weight</span>
+                                    <span class="metric-value" id="patternAvgWeight">0.00</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Success/Fail</span>
+                                    <span class="metric-value" id="patternSuccessFail">0/0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
-        </section>
 
-        <!-- Agent Registry Panel -->
-        <section class="panel registry-panel">
-            <div class="panel-header">
-                <h2>Agent Registry</h2>
-                <span class="count-badge" id="totalAgentCount">264</span>
-            </div>
-            <div class="panel-body">
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <span class="metric-label">Total Agents</span>
-                        <span class="metric-value" id="registryTotal">264</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Categories</span>
-                        <span class="metric-value" id="registryCategories">30</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Selections Today</span>
-                        <span class="metric-value" id="registrySelections">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Embedding Dim</span>
-                        <span class="metric-value" id="embeddingDim">1536</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+            <!-- Monitoring Tab -->
+            <div class="tab-panel" id="tab-monitoring">
+                <div class="dashboard-grid monitoring-grid">
+                    <!-- Health Status Panel -->
+                    <section class="panel health-panel" data-panel="health">
+                        <div class="panel-header">
+                            <h2>Provider Health</h2>
+                            <button class="refresh-btn" id="refreshHealth">&#8635;</button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="health-list" id="providerHealthList">
+                                <!-- Provider health status items -->
+                            </div>
+                        </div>
+                    </section>
 
-        <!-- Episode & Hyperedge Panel -->
-        <section class="panel hyperedge-panel">
-            <div class="panel-header">
-                <h2>Episode & Hyperedge</h2>
-            </div>
-            <div class="panel-body">
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <span class="metric-label">Episodes Linked</span>
-                        <span class="metric-value" id="episodesLinked">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Time Index Size</span>
-                        <span class="metric-value" id="timeIndexSize">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Q&A Hyperedges</span>
-                        <span class="metric-value" id="qaHyperedges">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Causal Chains</span>
-                        <span class="metric-value" id="causalChains">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Loops Detected</span>
-                        <span class="metric-value" id="loopsDetected">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Communities</span>
-                        <span class="metric-value" id="communities">0</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+                    <!-- Active Alerts Panel -->
+                    <section class="panel alerts-panel" data-panel="alerts">
+                        <div class="panel-header">
+                            <h2>Active Alerts</h2>
+                            <span class="count-badge warning" id="alertCount">0</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="alert-filters">
+                                <button class="filter-btn active" data-severity="all">All</button>
+                                <button class="filter-btn" data-severity="critical">Critical</button>
+                                <button class="filter-btn" data-severity="warning">Warning</button>
+                                <button class="filter-btn" data-severity="info">Info</button>
+                            </div>
+                            <ul class="alert-list" id="alertList">
+                                <!-- Alert items -->
+                            </ul>
+                        </div>
+                    </section>
 
-        <!-- Token Usage Panel -->
-        <section class="panel token-panel">
-            <div class="panel-header">
-                <h2>Token Usage</h2>
-            </div>
-            <div class="panel-body">
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <span class="metric-label">Total Tokens</span>
-                        <span class="metric-value" id="tokenTotal">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Input Tokens</span>
-                        <span class="metric-value" id="tokenInput">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Output Tokens</span>
-                        <span class="metric-value" id="tokenOutput">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Requests</span>
-                        <span class="metric-value" id="tokenRequests">0</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+                    <!-- System Metrics Panel -->
+                    <section class="panel metrics-panel" data-panel="metrics">
+                        <div class="panel-header">
+                            <h2>System Metrics</h2>
+                            <select id="metricSelector" class="filter-select">
+                                <option value="latency">Latency</option>
+                                <option value="throughput">Throughput</option>
+                                <option value="errors">Error Rate</option>
+                                <option value="memory">Memory</option>
+                            </select>
+                        </div>
+                        <div class="panel-body">
+                            <div class="chart-container">
+                                <canvas id="metricsChart"></canvas>
+                            </div>
+                        </div>
+                    </section>
 
-        <!-- Daemon Health Panel -->
-        <section class="panel daemon-panel">
-            <div class="panel-header">
-                <h2>Daemon Health</h2>
-            </div>
-            <div class="panel-body">
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <span class="metric-label">Status</span>
-                        <span class="metric-value status-healthy" id="daemonStatus">Healthy</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Uptime</span>
-                        <span class="metric-value" id="daemonUptime">0s</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Events Processed</span>
-                        <span class="metric-value" id="daemonEvents">0</span>
-                    </div>
-                    <div class="metric-card">
-                        <span class="metric-label">Memory Usage</span>
-                        <span class="metric-value" id="daemonMemory">0 MB</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+                    <!-- Daemon Health Panel (from existing) -->
+                    <section class="panel daemon-panel" data-panel="daemon">
+                        <div class="panel-header">
+                            <h2>Daemon Health</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="metrics-grid">
+                                <div class="metric-card">
+                                    <span class="metric-label">Status</span>
+                                    <span class="metric-value status-healthy" id="daemonStatus">Healthy</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Uptime</span>
+                                    <span class="metric-value" id="daemonUptime">0s</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Events Processed</span>
+                                    <span class="metric-value" id="daemonEvents">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Memory Usage</span>
+                                    <span class="metric-value" id="daemonMemory">0 MB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
-        <!-- Memory Inspector Panel (Full Width) -->
-        <section class="panel memory-panel">
-            <div class="panel-header">
-                <h2>Memory Inspector</h2>
-            </div>
-            <div class="panel-body">
-                <div class="tabs">
-                    <button class="tab-button active" data-tab="interaction-store">InteractionStore</button>
-                    <button class="tab-button" data-tab="reasoning-bank">ReasoningBank</button>
-                    <button class="tab-button" data-tab="episode-store">EpisodeStore</button>
-                    <button class="tab-button" data-tab="ucm-context">UCM Context</button>
-                    <button class="tab-button" data-tab="hyperedge-store">Hyperedge</button>
-                </div>
-                <div class="tab-content active" id="interaction-store">
-                    <div class="memory-search">
-                        <input type="text" id="domainSearch" placeholder="Search by domain..." class="search-input">
-                    </div>
-                    <ul id="interactionList" class="memory-list"></ul>
-                </div>
-                <div class="tab-content" id="reasoning-bank">
-                    <div class="memory-stats" id="reasoningStats"></div>
-                    <ul id="reasoningList" class="memory-list"></ul>
-                </div>
-                <div class="tab-content" id="episode-store">
-                    <div class="memory-stats" id="episodeStats"></div>
-                    <ul id="episodeList" class="memory-list"></ul>
-                </div>
-                <div class="tab-content" id="ucm-context">
-                    <div class="memory-stats" id="ucmStats"></div>
-                    <ul id="ucmContextList" class="memory-list"></ul>
-                </div>
-                <div class="tab-content" id="hyperedge-store">
-                    <div class="memory-stats" id="hyperedgeStats"></div>
-                    <ul id="hyperedgeList" class="memory-list"></ul>
+                    <!-- Token Usage Panel (from existing) -->
+                    <section class="panel token-panel" data-panel="tokens">
+                        <div class="panel-header">
+                            <h2>Token Usage</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="metrics-grid">
+                                <div class="metric-card">
+                                    <span class="metric-label">Total Tokens</span>
+                                    <span class="metric-value" id="tokenTotal">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Input Tokens</span>
+                                    <span class="metric-value" id="tokenInput">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Output Tokens</span>
+                                    <span class="metric-value" id="tokenOutput">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Requests</span>
+                                    <span class="metric-value" id="tokenRequests">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
-        </section>
-    </main>
+
+            <!-- Router Tab -->
+            <div class="tab-panel" id="tab-router">
+                <div class="dashboard-grid router-grid">
+                    <!-- Circuit Breaker Panel -->
+                    <section class="panel circuits-panel" data-panel="circuits">
+                        <div class="panel-header">
+                            <h2>Circuit Breakers</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="circuit-list" id="circuitList">
+                                <!-- Circuit breaker status items -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Rate Limiter Panel -->
+                    <section class="panel ratelimits-panel" data-panel="ratelimits">
+                        <div class="panel-header">
+                            <h2>Rate Limits</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="ratelimit-list" id="ratelimitList">
+                                <!-- Rate limit status items -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- A/B Testing Panel -->
+                    <section class="panel experiments-panel" data-panel="experiments">
+                        <div class="panel-header">
+                            <h2>A/B Experiments</h2>
+                            <span class="count-badge" id="experimentCount">0</span>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="experiment-list" id="experimentList">
+                                <!-- Experiment items -->
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Routing Optimizer Panel -->
+                    <section class="panel optimizer-panel" data-panel="optimizer">
+                        <div class="panel-header">
+                            <h2>Routing Optimizer</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="suggestions-list" id="suggestionsList">
+                                <!-- Optimization suggestions -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Routing Decisions Panel (from existing) -->
+                    <section class="panel routing-panel" data-panel="routing">
+                        <div class="panel-header">
+                            <h2>Recent Routing Decisions</h2>
+                        </div>
+                        <div class="panel-body">
+                            <ul id="routingList" class="routing-list"></ul>
+                        </div>
+                    </section>
+
+                    <!-- Agent Registry Panel (from existing) -->
+                    <section class="panel registry-panel" data-panel="registry">
+                        <div class="panel-header">
+                            <h2>Agent Registry</h2>
+                            <span class="count-badge" id="totalAgentCount">264</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="metrics-grid">
+                                <div class="metric-card">
+                                    <span class="metric-label">Total Agents</span>
+                                    <span class="metric-value" id="registryTotal">264</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Categories</span>
+                                    <span class="metric-value" id="registryCategories">30</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Selections Today</span>
+                                    <span class="metric-value" id="registrySelections">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Embedding Dim</span>
+                                    <span class="metric-value" id="embeddingDim">1536</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Memory Tab -->
+            <div class="tab-panel" id="tab-memory">
+                <div class="dashboard-grid memory-grid">
+                    <!-- Memory Inspector Panel (from existing, expanded) -->
+                    <section class="panel memory-panel full-width" data-panel="memory-inspector">
+                        <div class="panel-header">
+                            <h2>Memory Inspector</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="tabs">
+                                <button class="tab-button active" data-tab="interaction-store">InteractionStore</button>
+                                <button class="tab-button" data-tab="reasoning-bank">ReasoningBank</button>
+                                <button class="tab-button" data-tab="episode-store">EpisodeStore</button>
+                                <button class="tab-button" data-tab="ucm-context">UCM Context</button>
+                                <button class="tab-button" data-tab="hyperedge-store">Hyperedge</button>
+                            </div>
+                            <div class="tab-content active" id="interaction-store">
+                                <div class="memory-search">
+                                    <input type="text" id="domainSearch" placeholder="Search by domain..." class="search-input">
+                                </div>
+                                <ul id="interactionList" class="memory-list"></ul>
+                            </div>
+                            <div class="tab-content" id="reasoning-bank">
+                                <div class="memory-stats" id="reasoningStats"></div>
+                                <ul id="reasoningList" class="memory-list"></ul>
+                            </div>
+                            <div class="tab-content" id="episode-store">
+                                <div class="memory-stats" id="episodeStats"></div>
+                                <ul id="episodeList" class="memory-list"></ul>
+                            </div>
+                            <div class="tab-content" id="ucm-context">
+                                <div class="memory-stats" id="ucmStats"></div>
+                                <ul id="ucmContextList" class="memory-list"></ul>
+                            </div>
+                            <div class="tab-content" id="hyperedge-store">
+                                <div class="memory-stats" id="hyperedgeStats"></div>
+                                <ul id="hyperedgeList" class="memory-list"></ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- UCM & IDESC Panel (from existing) -->
+                    <section class="panel ucm-panel" data-panel="ucm">
+                        <div class="panel-header">
+                            <h2>UCM & IDESC v2</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="metrics-grid">
+                                <div class="metric-card">
+                                    <span class="metric-label">Episodes Stored</span>
+                                    <span class="metric-value" id="ucmEpisodesStored">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Context Size</span>
+                                    <span class="metric-value" id="ucmContextSize">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Outcomes Recorded</span>
+                                    <span class="metric-value" id="idescOutcomes">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Injection Rate</span>
+                                    <span class="metric-value" id="idescInjectionRate">0%</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Negative Warnings</span>
+                                    <span class="metric-value" id="idescNegativeWarnings">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Threshold Adj.</span>
+                                    <span class="metric-value" id="idescThresholdAdj">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Episode & Hyperedge Panel (from existing) -->
+                    <section class="panel hyperedge-panel" data-panel="hyperedge">
+                        <div class="panel-header">
+                            <h2>Episode & Hyperedge</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="metrics-grid">
+                                <div class="metric-card">
+                                    <span class="metric-label">Episodes Linked</span>
+                                    <span class="metric-value" id="episodesLinked">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Time Index Size</span>
+                                    <span class="metric-value" id="timeIndexSize">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Q&A Hyperedges</span>
+                                    <span class="metric-value" id="qaHyperedges">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Causal Chains</span>
+                                    <span class="metric-value" id="causalChains">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Loops Detected</span>
+                                    <span class="metric-value" id="loopsDetected">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Communities</span>
+                                    <span class="metric-value" id="communities">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Activity Tab -->
+            <div class="tab-panel" id="tab-activity">
+                <div class="dashboard-grid activity-grid">
+                    <!-- Activity Stream Panel (from existing) -->
+                    <section class="panel activity-panel" data-panel="activity">
+                        <div class="panel-header">
+                            <h2>Activity Stream</h2>
+                            <div class="filters">
+                                <label>
+                                    Component:
+                                    <select id="componentFilter" class="filter-select">
+                                        <option value="">All</option>
+                                        <option value="agent">Agents</option>
+                                        <option value="pipeline">Pipelines</option>
+                                        <option value="routing">Routing</option>
+                                        <option value="learning">Learning</option>
+                                        <option value="ucm">UCM</option>
+                                        <option value="idesc">IDESC</option>
+                                        <option value="episode">Episode</option>
+                                        <option value="hyperedge">Hyperedge</option>
+                                        <option value="embedding">Embedding</option>
+                                        <option value="daemon">Daemon</option>
+                                        <option value="token_budget">Token Budget</option>
+                                        <option value="search">Search</option>
+                                        <option value="memory">Memory</option>
+                                    </select>
+                                </label>
+                                <label>
+                                    Status:
+                                    <select id="statusFilter" class="filter-select">
+                                        <option value="">All</option>
+                                        <option value="success">Success</option>
+                                        <option value="error">Error</option>
+                                        <option value="running">Running</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <ul id="activityList" class="activity-list"></ul>
+                        </div>
+                    </section>
+
+                    <!-- Active Agents Panel (from existing) -->
+                    <section class="panel agents-panel" data-panel="agents">
+                        <div class="panel-header">
+                            <h2>Active Agents</h2>
+                            <span class="count-badge" id="agentCount">0</span>
+                        </div>
+                        <div class="panel-body">
+                            <ul id="agentList" class="agent-list"></ul>
+                        </div>
+                    </section>
+
+                    <!-- Pipelines Panel (from existing) -->
+                    <section class="panel pipelines-panel" data-panel="pipelines">
+                        <div class="panel-header">
+                            <h2>Pipelines</h2>
+                            <span class="count-badge" id="pipelineCount">0</span>
+                        </div>
+                        <div class="panel-body">
+                            <ul id="pipelineList" class="pipeline-list"></ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Command Bar -->
+    <div class="command-bar" id="commandBar">
+        <div class="command-input-container">
+            <span class="command-prompt">&gt;</span>
+            <input type="text" id="commandInput" class="command-input" placeholder="Enter command (e.g., god analytics summary)" autocomplete="off">
+            <button class="command-submit" id="commandSubmit">Run</button>
+        </div>
+        <div class="command-output" id="commandOutput">
+            <pre id="commandResult"></pre>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <footer class="status-bar">
+        <div class="status-item">
+            <span class="status-label">Last Update:</span>
+            <span id="lastUpdate">--</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Events:</span>
+            <span id="eventCount">0</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">SSE:</span>
+            <span id="sseStatus" class="status-connected">Connected</span>
+        </div>
+        <div class="status-item shortcut-hint">
+            Press <kbd>Ctrl</kbd>+<kbd>K</kbd> for command bar
+        </div>
+    </footer>
 
     <script src="app.js"></script>
 </body>
