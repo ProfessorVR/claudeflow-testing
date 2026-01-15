@@ -192,20 +192,50 @@ export abstract class BaseLLMProvider implements ILLMProvider {
 // ===== MOCK PROVIDER FOR TESTING =====
 
 /**
+ * Configuration for MockLLMProvider
+ */
+export interface MockLLMProviderConfig {
+  id?: string;
+  provider?: ProviderType;
+  model?: string;
+  capabilities?: ModelCapability[];
+  maxComplexity?: Complexity;
+  inputCostPer1M?: number;
+  outputCostPer1M?: number;
+  mockResponse?: string;
+  shouldFail?: boolean;
+  shouldBeAvailable?: boolean;
+}
+
+/**
  * Mock LLM provider for testing
  */
 export class MockLLMProvider extends BaseLLMProvider {
-  readonly id = 'mock';
-  readonly provider: ProviderType = 'custom';
-  readonly model = 'mock-model';
-  readonly capabilities: ModelCapability[] = ['code', 'reasoning', 'writing'];
-  readonly maxComplexity: Complexity = 'complex';
-  protected readonly inputCostPer1M = 0;
-  protected readonly outputCostPer1M = 0;
+  readonly id: string;
+  readonly provider: ProviderType;
+  readonly model: string;
+  readonly capabilities: ModelCapability[];
+  readonly maxComplexity: Complexity;
+  protected readonly inputCostPer1M: number;
+  protected readonly outputCostPer1M: number;
 
-  private mockResponse = 'This is a mock response';
-  private shouldFail = false;
-  private available = true;
+  private mockResponse: string;
+  private shouldFail: boolean;
+  private available: boolean;
+
+  constructor(config: MockLLMProviderConfig = {}) {
+    super();
+    this.id = config.id ?? 'mock';
+    this.provider = config.provider ?? 'custom';
+    this.model = config.model ?? 'mock-model';
+    this.capabilities = config.capabilities ?? ['code', 'reasoning', 'writing'];
+    this.maxComplexity = config.maxComplexity ?? 'complex';
+    this.inputCostPer1M = config.inputCostPer1M ?? 0;
+    this.outputCostPer1M = config.outputCostPer1M ?? 0;
+    this.mockResponse = config.mockResponse ?? 'This is a mock response';
+    this.shouldFail = config.shouldFail ?? false;
+    this.available = config.shouldBeAvailable ?? true;
+  }
 
   /**
    * Set the mock response

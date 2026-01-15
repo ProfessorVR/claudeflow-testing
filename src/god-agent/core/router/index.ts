@@ -138,3 +138,58 @@ export {
 export type {
   ValidationResult,
 } from './router-config.js';
+
+// ===== PROVIDERS =====
+
+export {
+  // Anthropic
+  AnthropicProvider,
+  createAnthropicProvider,
+  createAllAnthropicProviders,
+  isAnthropicConfigured,
+  listAnthropicModels,
+  ANTHROPIC_MODELS,
+
+  // OpenAI
+  OpenAIProvider,
+  createOpenAIProvider,
+  createAllOpenAIProviders,
+  isOpenAIConfigured,
+  listOpenAIModels,
+  getBestReasoningModel,
+  getBestCodeModel,
+  getCostEffectiveModel,
+  OPENAI_MODELS,
+
+  // Ollama
+  OllamaProvider,
+  createOllamaProvider,
+  createAllOllamaProviders,
+  isOllamaConfigured,
+  listOllamaModels,
+  getBestLocalCodeModel,
+  getEfficientLocalModel,
+  isModelPulled,
+  OLLAMA_MODELS,
+
+  // Factory
+  LLMProviderFactory,
+  getProviderFactory,
+  initializeProviderFactory,
+  resetProviderFactory,
+  createProviderById,
+  getProviderType,
+  listAllModelIds,
+  getModelInfo,
+  getConfiguredProviders,
+} from './providers/index.js';
+
+export type {
+  AnthropicProviderConfig,
+  AnthropicModelKey,
+  OpenAIProviderConfig,
+  OpenAIModelKey,
+  OllamaProviderConfig,
+  OllamaModelKey,
+  ProviderFactoryConfig,
+} from './providers/index.js';
