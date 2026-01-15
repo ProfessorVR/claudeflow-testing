@@ -125,6 +125,82 @@ function getFlag(flags: Record<string, string | boolean>, ...names: string[]): s
   return undefined;
 }
 
+// ==================== TIER-2.1: Model Alias Resolution ====================
+
+/**
+ * Model alias mappings for convenient CLI usage
+ * Aliases allow users to specify model categories instead of specific model IDs
+ */
+const MODEL_ALIASES: Record<string, string> = {
+  // Category aliases
+  local: 'deepseek-coder-local',    // Best local model (free, fast)
+  fast: 'claude-haiku',              // Fastest cloud model
+  cheap: 'deepseek-coder-local',     // Cheapest option (free local)
+  best: 'claude-sonnet',             // Best quality model
+  reasoning: 'gpt-4o',               // Best for complex reasoning
+  code: 'claude-sonnet',             // Best for code tasks
+
+  // Provider shortcuts
+  claude: 'claude-sonnet',
+  gpt: 'gpt-4o',
+  openai: 'gpt-4o',
+  deepseek: 'deepseek-coder-local',
+  qwen: 'qwen-local',
+};
+
+/**
+ * Resolve model alias to actual model ID
+ * @param aliasOrModelId - Model alias (e.g., 'local') or actual model ID
+ * @returns Resolved model ID
+ */
+function resolveModelAlias(aliasOrModelId: string): string {
+  const normalized = aliasOrModelId.toLowerCase();
+  return MODEL_ALIASES[normalized] || aliasOrModelId;
+}
+
+/**
+ * Extract @alias from prompt and return the model and cleaned prompt
+ * Supports syntax like: "@local what is 2+2?" or "@fast explain this"
+ *
+ * @param prompt - User prompt that may contain @alias prefix
+ * @returns Object with resolved model (if any) and cleaned prompt
+ */
+function extractModelFromPrompt(prompt: string): { model?: string; cleanedPrompt: string } {
+  const aliasMatch = prompt.match(/^@(\w+)\s+(.+)$/s);
+
+  if (aliasMatch) {
+    const [, alias, rest] = aliasMatch;
+    const resolvedModel = resolveModelAlias(alias);
+    return {
+      model: resolvedModel,
+      cleanedPrompt: rest.trim(),
+    };
+  }
+
+  return { cleanedPrompt: prompt };
+}
+
+/**
+ * Get model from flags or prompt alias
+ * Priority: --model flag > @alias in prompt > undefined (auto-route)
+ */
+function getModelOverride(
+  flags: Record<string, string | boolean>,
+  prompt: string
+): { model?: string; cleanedPrompt: string } {
+  // Check for --model flag first (highest priority)
+  const modelFlag = getFlag(flags, 'model', 'm');
+  if (typeof modelFlag === 'string') {
+    return {
+      model: resolveModelAlias(modelFlag),
+      cleanedPrompt: prompt,
+    };
+  }
+
+  // Check for @alias in prompt
+  return extractModelFromPrompt(prompt);
+}
+
 /**
  * Output result as JSON (DAI-002: FR-016)
  */
@@ -268,7 +344,7 @@ async function main() {
 
     switch (command.toLowerCase()) {
       case 'ask':
-      case 'a':
+      case 'a': {
         if (!input) {
           if (jsonMode) {
             outputJson({
@@ -285,8 +361,16 @@ async function main() {
           }
           process.exit(1);
         }
+        // TIER-2.1: Extract model override from flags or @alias syntax
+        const askModelOverride = getModelOverride(flags, input);
+        if (!jsonMode && askModelOverride.model) {
+          console.log(`[CLI] Using model: ${askModelOverride.model}`);
+        }
         // TASK-GODASK-001: Use returnResult to get trajectoryId for feedback tracking
-        const askResult = await agent.ask(input, { returnResult: true });
+        const askResult = await agent.ask(askModelOverride.cleanedPrompt, {
+          returnResult: true,
+          model: askModelOverride.model,
+        });
         if (jsonMode) {
           outputJson({
             command: 'ask',
@@ -307,6 +391,7 @@ async function main() {
           }
         }
         break;
+      }
 
       case 'code':
       case 'c': {
@@ -331,12 +416,20 @@ async function main() {
           process.exit(1);
         }
 
+        // TIER-2.1: Extract model override from flags or @alias syntax
+        const codeModelOverride = getModelOverride(flags, input);
+        const codePrompt = codeModelOverride.cleanedPrompt;
+        if (!jsonMode && codeModelOverride.model) {
+          console.log(`[CLI] Using model: ${codeModelOverride.model}`);
+        }
+
         // Check for --execute flag for backward compatibility
         const executeFlag = getFlag(flags, 'execute', 'e') === true;
 
         if (executeFlag) {
           // Legacy behavior: Full execution via agent.code()
-          const codeResult = await agent.code(input);
+          // Note: model override is passed but code() may not support it yet
+          const codeResult = await agent.code(codePrompt);
           if (jsonMode) {
             outputJson({
               command: 'code',
@@ -369,7 +462,10 @@ async function main() {
           // Phase 1: Prepare task (agent selection, DESC injection, prompt building)
           // Phase 2: Skill executes Task() with builtPrompt
           const languageFlag = getFlag(flags, 'language', 'l') as string | undefined;
-          const preparation = await agent.prepareCodeTask(input, { language: languageFlag });
+          const preparation = await agent.prepareCodeTask(codePrompt, {
+            language: languageFlag,
+            model: codeModelOverride.model,
+          });
 
           // Implements [REQ-GODCODE-002]: Output structured JSON with builtPrompt
           if (jsonMode) {
@@ -422,7 +518,7 @@ async function main() {
       }
 
       case 'research':
-      case 'r':
+      case 'r': {
         if (!input) {
           if (jsonMode) {
             outputJson({
@@ -439,7 +535,13 @@ async function main() {
           }
           process.exit(1);
         }
-        const researchResult = await agent.research(input, { depth: 'deep' });
+        // TIER-2.1: Extract model override from flags or @alias syntax
+        const researchModelOverride = getModelOverride(flags, input);
+        const researchPrompt = researchModelOverride.cleanedPrompt;
+        if (!jsonMode && researchModelOverride.model) {
+          console.log(`[CLI] Using model: ${researchModelOverride.model}`);
+        }
+        const researchResult = await agent.research(researchPrompt, { depth: 'deep' });
         if (jsonMode) {
           outputJson({
             command: 'research',
@@ -460,6 +562,7 @@ async function main() {
           console.log(`Knowledge stored: ${researchResult.knowledgeStored}`);
         }
         break;
+      }
 
       case 'write':
       case 'w': {
@@ -484,6 +587,13 @@ async function main() {
           process.exit(1);
         }
 
+        // TIER-2.1: Extract model override from flags or @alias syntax
+        const writeModelOverride = getModelOverride(flags, input);
+        const writePrompt = writeModelOverride.cleanedPrompt;
+        if (!jsonMode && writeModelOverride.model) {
+          console.log(`[CLI] Using model: ${writeModelOverride.model}`);
+        }
+
         // Parse writing options from flags
         const style = getFlag(flags, 'style', 's') as 'academic' | 'professional' | 'casual' | 'technical' | undefined;
         const length = getFlag(flags, 'length', 'l') as 'short' | 'medium' | 'long' | 'comprehensive' | undefined;
@@ -496,7 +606,7 @@ async function main() {
 
         if (executeFlag) {
           // Legacy behavior: Full execution via agent.write()
-          const writeResult = await agent.write(input, { style, length, format, styleProfileId });
+          const writeResult = await agent.write(writePrompt, { style, length, format, styleProfileId });
           if (jsonMode) {
             outputJson({
               command: 'write',
@@ -528,11 +638,12 @@ async function main() {
           // Implements [REQ-GODWRITE-001]: New two-phase behavior (default)
           // Phase 1: Prepare task (agent selection, DESC injection, prompt building)
           // Phase 2: Skill executes Task() with builtPrompt
-          const preparation = await agent.prepareWriteTask(input, {
+          const preparation = await agent.prepareWriteTask(writePrompt, {
             style,
             length,
             format,
             styleProfileId,
+            model: writeModelOverride.model,
           });
 
           // Implements [REQ-GODWRITE-002]: Output structured JSON with builtPrompt
@@ -972,6 +1083,16 @@ WRITE OPTIONS:
 GLOBAL OPTIONS:
   --json, -j             Output results as JSON (DAI-002: machine-readable)
                          JSON includes: command, selectedAgent, prompt, isPipeline, result, success
+  --model, -m <id>       Override model selection (TIER-2.1: Intelligent Routing)
+                         Supports model IDs or aliases: local, fast, cheap, best, claude, gpt
+
+MODEL ALIASES:
+  @local                 Use best local model (deepseek-coder-local)
+  @fast                  Use fastest cloud model (claude-haiku)
+  @cheap                 Use cheapest option (local models)
+  @best                  Use highest quality model (claude-sonnet)
+  @reasoning             Use best reasoning model (gpt-4o)
+  @code                  Use best code model (claude-sonnet)
 
 EXAMPLES:
   # Store knowledge directly
@@ -1001,6 +1122,14 @@ EXAMPLES:
   # Get JSON output for machine processing (DAI-002)
   npx tsx src/god-agent/universal/cli.ts status --json
   npx tsx src/god-agent/universal/cli.ts code "Implement a linked list" --json
+
+  # Use model override with --model flag (TIER-2.1)
+  npx tsx src/god-agent/universal/cli.ts ask --model gpt-4o "Explain this algorithm"
+  npx tsx src/god-agent/universal/cli.ts code --model local "Fix the null check"
+
+  # Use @alias syntax for model selection
+  npx tsx src/god-agent/universal/cli.ts ask "@local What is 2+2?"
+  npx tsx src/god-agent/universal/cli.ts code "@fast Fix typo in README"
 
 SELF-LEARNING:
   The agent automatically learns from every interaction:

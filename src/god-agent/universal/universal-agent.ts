@@ -273,6 +273,13 @@ export interface AskOptions {
    * If not provided, a stub implementation returns the prompt (for TASK-LEARN-007)
    */
   taskExecutionFn?: (agentType: string, prompt: string, options?: { timeout?: number }) => Promise<string>;
+  /**
+   * TIER-2.1: Model override for intelligent model routing
+   * Overrides the automatic model selection. Can be:
+   * - Specific model ID: 'claude-sonnet', 'gpt-4o', 'deepseek-coder'
+   * - Model alias: 'local', 'fast', 'cheap'
+   */
+  model?: string;
 }
 
 /**
@@ -2016,6 +2023,8 @@ export class UniversalAgent {
   async prepareCodeTask(task: string, options: {
     language?: string;
     context?: string;
+    /** TIER-2.1: Model override for intelligent routing */
+    model?: string;
   } = {}): Promise<ICodeTaskPreparation> {
     // Implements [REQ-GODCODE-006]: Ensure initialized before processing
     await this.ensureInitialized();
@@ -2132,6 +2141,8 @@ export class UniversalAgent {
     format?: 'essay' | 'report' | 'article' | 'paper';
     length?: 'short' | 'medium' | 'long' | 'comprehensive';
     styleProfileId?: string;
+    /** TIER-2.1: Model override for intelligent routing */
+    model?: string;
   } = {}): Promise<IWriteTaskPreparation> {
     // Implements [REQ-GODWRITE-006]: Ensure initialized before processing
     await this.ensureInitialized();
