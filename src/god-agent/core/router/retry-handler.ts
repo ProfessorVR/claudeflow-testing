@@ -131,7 +131,7 @@ export const DEFAULT_RETRY_CONFIG: Required<RetryConfig> = {
   attemptTimeoutMs: 30000,
   totalTimeoutMs: 120000,
   retryableErrors: ['rate_limit', 'server_error', 'timeout', 'network', 'overloaded', 'unavailable', 'transient'],
-  onRetry: undefined,
+  onRetry: () => {}, // No-op default
 };
 
 /**
@@ -301,7 +301,7 @@ export class RetryHandler {
       ...DEFAULT_RETRY_CONFIG,
       ...config,
       retryableErrors: config.retryableErrors || DEFAULT_RETRY_CONFIG.retryableErrors,
-      onRetry: config.onRetry,
+      onRetry: config.onRetry || DEFAULT_RETRY_CONFIG.onRetry,
     };
   }
 

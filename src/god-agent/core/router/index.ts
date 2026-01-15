@@ -696,3 +696,27 @@ export type {
   CircuitBreakerResult,
   CircuitBreakerManagerConfig,
 } from './circuit-breaker.js';
+
+// ===== GRACEFUL DEGRADATION (Phase 7.3) =====
+
+export {
+  DegradationManager,
+  getDegradationManager,
+  initializeDegradation,
+  resetDegradation,
+  formatProviderHealth,
+  formatDegradationDecision,
+  formatAllProviderHealth,
+  getHealthSummary,
+  DEFAULT_DEGRADATION_CONFIG,
+} from './graceful-degradation.js';
+
+export type {
+  HealthStatus,
+  DegradationLevel,
+  ProviderHealth,
+  FallbackChain,
+  DegradationDecision,
+  DegradationConfig,
+  CachedResponse,
+} from './graceful-degradation.js';
