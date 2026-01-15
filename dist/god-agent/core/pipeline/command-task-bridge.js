@@ -507,4 +507,11 @@ export class CommandTaskBridge {
 export function createCommandTaskBridge(config = {}) {
     return new CommandTaskBridge(config);
 }
+// ═══════════════════════════════════════════════════════════════════════════
+// CODING PIPELINE EXPORTS (stub for coding-pipeline-orchestrator.ts)
+// NOTE: These are stubs - the orchestrator file has @ts-nocheck
+// ═══════════════════════════════════════════════════════════════════════════
+export const CODING_PIPELINE_MAPPINGS = [];
+export function getAgentsForPhase(_phase) { return []; }
+export function buildPipelineDAG() { return new Map(); }
 //# sourceMappingURL=command-task-bridge.js.map

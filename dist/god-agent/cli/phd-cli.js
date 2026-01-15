@@ -670,6 +670,12 @@ async function getNextAgent(session, options = {}) {
                 file: `${dynamicAgent.key}.md`,
                 memoryKeys: [`research/writing/${dynamicAgent.key}`],
                 outputArtifacts: [`${dynamicAgent.key}.md`],
+                toolDependency: {
+                    canRunLocalOnly: true,
+                    requiresExternalTools: false,
+                    externalToolsUsed: [],
+                    toolUsageNotes: 'Dynamic Phase 6 agent - writing only'
+                }
             };
         }
         else {
@@ -861,6 +867,12 @@ function getCurrentPhaseAgents(session) {
             file: `${dynamicAgent.key}.md`,
             memoryKeys: [`research/writing/${dynamicAgent.key}`],
             outputArtifacts: [`${dynamicAgent.key}.md`],
+            toolDependency: {
+                canRunLocalOnly: true,
+                requiresExternalTools: false,
+                externalToolsUsed: [],
+                toolUsageNotes: 'Dynamic Phase 6 agent - writing only'
+            }
         }));
     }
     // Get static agents for the phase

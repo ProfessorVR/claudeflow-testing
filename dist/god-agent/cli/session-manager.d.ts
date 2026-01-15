@@ -3,6 +3,7 @@
  * Implements REQ-PIPE-020, REQ-PIPE-021, REQ-PIPE-022, REQ-PIPE-023
  */
 import type { PipelineSession, SessionStatus, DataSourceMode, ToolPermissions, QueryIntent, ToolUsageEntry, PromotedKU, LLMCallEntry, LLMCallPurpose } from './cli-types.js';
+export type { QueryIntent } from './cli-types.js';
 /**
  * SessionManager class for pipeline session persistence
  */

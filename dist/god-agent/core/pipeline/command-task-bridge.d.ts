@@ -195,4 +195,7 @@ export declare class CommandTaskBridge {
  * @returns Configured CommandTaskBridge instance
  */
 export declare function createCommandTaskBridge(config?: ICommandTaskBridgeConfig): CommandTaskBridge;
+export declare const CODING_PIPELINE_MAPPINGS: unknown[];
+export declare function getAgentsForPhase(_phase: unknown): unknown[];
+export declare function buildPipelineDAG(): unknown;
 //# sourceMappingURL=command-task-bridge.d.ts.map

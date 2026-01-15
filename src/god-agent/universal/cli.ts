@@ -292,6 +292,84 @@ function initializeCliHooks(verbose: boolean): void {
   }
 }
 
+// ==================== Early Router Commands (No Full Agent Init) ====================
+
+/**
+ * Commands that can be handled without full agent initialization.
+ * These only need the router module, not the embedding server.
+ */
+const ROUTER_COMMANDS = new Set([
+  'analytics', 'dashboard',
+  'costs', 'cost',
+  'quality',
+  'budget',
+  'reviews', 'review',
+  'routing', 'route',
+]);
+
+/**
+ * Handle router commands without full agent initialization.
+ * Returns true if command was handled, false otherwise.
+ */
+async function handleRouterCommand(
+  command: string,
+  positional: string[],
+  flags: Record<string, string | boolean>
+): Promise<boolean> {
+  if (!ROUTER_COMMANDS.has(command.toLowerCase())) {
+    return false;
+  }
+
+  // Dynamic import to avoid loading router module for other commands
+  const { executeRouterCommand } = await import('../core/router/router-commands.js');
+
+  const jsonMode = getFlag(flags, 'json', 'j') === true;
+
+  try {
+    // Map command to router-command format
+    const routerCommand = command.toLowerCase();
+    const args = [...positional];
+
+    // Handle --period flag for analytics
+    const period = getFlag(flags, 'period', 'p');
+    if (period && typeof period === 'string') {
+      args.push(`--period=${period}`);
+    }
+
+    const result = await executeRouterCommand(routerCommand, args);
+
+    if (jsonMode) {
+      outputJson({
+        command: routerCommand,
+        selectedAgent: 'router-agent',
+        prompt: args.join(' '),
+        isPipeline: false,
+        result: { output: result },
+        success: true,
+      });
+    } else {
+      console.log(result);
+    }
+
+    process.exit(0);
+  } catch (error) {
+    if (jsonMode) {
+      outputJson({
+        command,
+        selectedAgent: 'router-agent',
+        prompt: positional.join(' '),
+        isPipeline: false,
+        result: null,
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    } else {
+      console.error('Error:', error instanceof Error ? error.message : error);
+    }
+    process.exit(1);
+  }
+}
+
 async function main() {
     // -------------------- god-learn passthrough (unified compiler front-end) --------------------
   // IMPORTANT: must run BEFORE parseArgs() so we preserve raw argv ordering and flags.
@@ -312,6 +390,14 @@ async function main() {
   // ------------------------------------------------------------------------------------------
 
   const { command, positional, flags } = parseArgs(process.argv);
+
+  // -------------------- Early Router Commands (No Full Agent Init) --------------------
+  // Handle simple router commands without initializing the full agent
+  // This allows analytics, costs, quality, etc. to work without embedding server
+  if (await handleRouterCommand(command, positional, flags)) {
+    return; // Command was handled, exit already called
+  }
+  // ------------------------------------------------------------------------------------------
   const input = positional.join(' ');
   const jsonMode = getFlag(flags, 'json', 'j') === true;
 
@@ -1058,6 +1144,14 @@ COMMANDS:
   query, q    --domain <name> [options] Query stored knowledge
   help, h                               Show this help
 
+ROUTER COMMANDS (no embedding server required):
+  analytics [subcommand] [--period]     Performance analytics dashboard
+  costs [--period]                      Cost tracking summary
+  quality [--period]                    Quality metrics summary
+  budget                                Budget enforcement status
+  reviews                               Pending reviews queue
+  routing                               Routing status
+
 LEARN OPTIONS:
   --file, -f <path>      Read content from file (markdown, text, etc.)
   --domain, -d <name>    Domain namespace (default: "general")
@@ -1118,6 +1212,15 @@ EXAMPLES:
 
   # Check status
   npx tsx src/god-agent/universal/cli.ts status
+
+  # Router commands (work without embedding server)
+  npx tsx src/god-agent/universal/cli.ts analytics
+  npx tsx src/god-agent/universal/cli.ts analytics summary --period 7d
+  npx tsx src/god-agent/universal/cli.ts analytics models
+  npx tsx src/god-agent/universal/cli.ts costs --period 30d
+  npx tsx src/god-agent/universal/cli.ts quality
+  npx tsx src/god-agent/universal/cli.ts budget
+  npx tsx src/god-agent/universal/cli.ts reviews
 
   # Get JSON output for machine processing (DAI-002)
   npx tsx src/god-agent/universal/cli.ts status --json

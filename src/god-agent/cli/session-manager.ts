@@ -19,6 +19,9 @@ import type {
   LLMUsageStats
 } from './cli-types.js';
 
+// Re-export QueryIntent for consumers that import from session-manager
+export type { QueryIntent } from './cli-types.js';
+
 const SESSION_DIR = '.phd-sessions';
 const SESSION_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
 const MAX_WRITE_RETRIES = 3;

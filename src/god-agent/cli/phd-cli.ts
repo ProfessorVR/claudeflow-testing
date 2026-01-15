@@ -1019,6 +1019,12 @@ async function getNextAgent(
         file: `${dynamicAgent.key}.md`,
         memoryKeys: [`research/writing/${dynamicAgent.key}`],
         outputArtifacts: [`${dynamicAgent.key}.md`],
+        toolDependency: {
+          canRunLocalOnly: true,
+          requiresExternalTools: false,
+          externalToolsUsed: [],
+          toolUsageNotes: 'Dynamic Phase 6 agent - writing only'
+        }
       };
     } else {
       // Phase 7: map to static agents
@@ -1277,6 +1283,12 @@ function getCurrentPhaseAgents(session: IPhdSession): PhdAgentConfig[] {
       file: `${dynamicAgent.key}.md`,
       memoryKeys: [`research/writing/${dynamicAgent.key}`],
       outputArtifacts: [`${dynamicAgent.key}.md`],
+      toolDependency: {
+        canRunLocalOnly: true,
+        requiresExternalTools: false,
+        externalToolsUsed: [],
+        toolUsageNotes: 'Dynamic Phase 6 agent - writing only'
+      }
     }));
   }
 
