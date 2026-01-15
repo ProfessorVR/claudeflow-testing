@@ -14,10 +14,10 @@ check_service_status() {
 
     case "${service}" in
         embedding)
-            if curl -sf "http://127.0.0.1:${EMBEDDING_PORT}/health" >/dev/null 2>&1 || \
+            if curl -sf "http://127.0.0.1:${EMBEDDING_PORT}/" >/dev/null 2>&1 || \
                curl -sf "http://127.0.0.1:11434/api/tags" >/dev/null 2>&1; then
                 status="running"
-                pid=$(pgrep -f "api_embedder.py" 2>/dev/null | head -1)
+                pid=$(pgrep -f "api_embedder" 2>/dev/null | head -1)
                 [[ -z "$pid" ]] && pid=$(pgrep -f "ollama" 2>/dev/null | head -1)
             fi
             ;;

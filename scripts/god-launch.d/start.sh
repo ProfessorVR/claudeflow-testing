@@ -82,8 +82,7 @@ start_embedding() {
     log_info "Starting embedding server..."
 
     # Check if already running
-    if curl -sf "http://127.0.0.1:${EMBEDDING_PORT}/health" >/dev/null 2>&1 || \
-       curl -sf "http://127.0.0.1:${EMBEDDING_PORT}/embed" >/dev/null 2>&1; then
+    if curl -sf "http://127.0.0.1:${EMBEDDING_PORT}/" >/dev/null 2>&1; then
         log_success "Embedding server already running"
         return 0
     fi
