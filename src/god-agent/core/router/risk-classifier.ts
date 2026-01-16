@@ -144,37 +144,109 @@ const HIGH_RISK_PATTERNS: Array<{ pattern: RegExp; reason: string }> = [
 /**
  * Low-risk patterns - can use local model + verification
  * Fast feedback loop, easily reversible
+ *
+ * LOCAL-FIRST STRATEGY: Expanded patterns to maximize local vLLM usage
+ * Any task matching these patterns goes directly to local model without Claude review
  */
 const LOW_RISK_PATTERNS: Array<{ pattern: RegExp; reason: string; verification: VerificationMethod }> = [
-  // Implementation with tests
+  // ===== IMPLEMENTATION WITH TESTS =====
   { pattern: /implement.*function/i, reason: 'Function implementation can be tested', verification: 'tests' },
   { pattern: /write.*function/i, reason: 'New function can be tested', verification: 'tests' },
   { pattern: /create.*function/i, reason: 'Function creation is testable', verification: 'tests' },
   { pattern: /add.*method/i, reason: 'Method addition is testable', verification: 'tests' },
+  { pattern: /add.*function/i, reason: 'Function addition is testable', verification: 'tests' },
+  { pattern: /simple.*function/i, reason: 'Simple functions are straightforward', verification: 'tests' },
+  { pattern: /helper.*function/i, reason: 'Helper functions are isolated', verification: 'tests' },
+  { pattern: /utility.*function/i, reason: 'Utility functions are isolated', verification: 'tests' },
 
-  // Test fixes - instant feedback
+  // ===== TEST-RELATED (INSTANT VERIFICATION) =====
   { pattern: /fix.*test/i, reason: 'Test fix verified instantly', verification: 'tests' },
   { pattern: /test.*fail/i, reason: 'Failing test provides verification', verification: 'tests' },
   { pattern: /make.*test.*pass/i, reason: 'Test provides verification', verification: 'tests' },
   { pattern: /update.*test/i, reason: 'Test changes are self-verifying', verification: 'tests' },
+  { pattern: /add.*test/i, reason: 'Adding tests is self-verifying', verification: 'tests' },
+  { pattern: /write.*test/i, reason: 'Writing tests is self-verifying', verification: 'tests' },
+  { pattern: /unit.*test/i, reason: 'Unit tests verify themselves', verification: 'tests' },
+  { pattern: /test.*case/i, reason: 'Test cases are self-verifying', verification: 'tests' },
+  { pattern: /spec.*file/i, reason: 'Spec files are self-verifying', verification: 'tests' },
 
-  // Simple additions
+  // ===== SIMPLE REFACTORING (EASY TO VERIFY) =====
+  { pattern: /rename/i, reason: 'Renaming is easily verified', verification: 'tests' },
+  { pattern: /extract.*(method|function|variable|constant)/i, reason: 'Extraction is testable', verification: 'tests' },
+  { pattern: /inline/i, reason: 'Inlining is testable', verification: 'tests' },
+  { pattern: /move.*(to|into)/i, reason: 'Moving code is testable', verification: 'tests' },
+  { pattern: /reorganize/i, reason: 'Reorganization is diff-reviewable', verification: 'diff_review' },
+
+  // ===== SIMPLE ADDITIONS =====
   { pattern: /add.*logging/i, reason: 'Logging is low-risk', verification: 'diff_review' },
   { pattern: /add.*comment/i, reason: 'Comments are easily reviewed', verification: 'diff_review' },
   { pattern: /add.*docstring/i, reason: 'Documentation is low-risk', verification: 'diff_review' },
+  { pattern: /add.*import/i, reason: 'Import additions are compiler-checked', verification: 'tests' },
+  { pattern: /add.*export/i, reason: 'Export additions are compiler-checked', verification: 'tests' },
 
-  // Formatting/style
+  // ===== FORMATTING/STYLE =====
   { pattern: /format/i, reason: 'Formatting is easily verified', verification: 'diff_review' },
   { pattern: /lint/i, reason: 'Linting is automated', verification: 'tests' },
   { pattern: /style/i, reason: 'Style changes are visible', verification: 'diff_review' },
   { pattern: /typo/i, reason: 'Typo fixes are simple', verification: 'diff_review' },
+  { pattern: /spelling/i, reason: 'Spelling fixes are simple', verification: 'diff_review' },
+  { pattern: /prettie?r/i, reason: 'Prettier formatting is automated', verification: 'tests' },
 
-  // Type additions
+  // ===== TYPE ADDITIONS =====
   { pattern: /add.*type/i, reason: 'Type additions are checked by compiler', verification: 'tests' },
   { pattern: /type.*annotation/i, reason: 'Type annotations are verified by TSC', verification: 'tests' },
+  { pattern: /add.*interface/i, reason: 'Interface additions are type-checked', verification: 'tests' },
 
-  // Interface implementation
+  // ===== INTERFACE IMPLEMENTATION =====
   { pattern: /implement.*interface/i, reason: 'Interface impl is type-checked', verification: 'tests' },
+
+  // ===== SAFE MODIFICATIONS =====
+  { pattern: /update.*message/i, reason: 'Message updates are low-risk', verification: 'diff_review' },
+  { pattern: /update.*text/i, reason: 'Text updates are low-risk', verification: 'diff_review' },
+  { pattern: /update.*label/i, reason: 'Label updates are low-risk', verification: 'diff_review' },
+  { pattern: /update.*string/i, reason: 'String updates are low-risk', verification: 'diff_review' },
+  { pattern: /change.*message/i, reason: 'Message changes are low-risk', verification: 'diff_review' },
+  { pattern: /remove.*unused/i, reason: 'Removing unused code is safe', verification: 'tests' },
+  { pattern: /delete.*unused/i, reason: 'Deleting unused code is safe', verification: 'tests' },
+  { pattern: /clean.*up/i, reason: 'Cleanup is testable', verification: 'tests' },
+  { pattern: /null.*check/i, reason: 'Null checks are safe additions', verification: 'tests' },
+  { pattern: /undefined.*check/i, reason: 'Undefined checks are safe', verification: 'tests' },
+  { pattern: /add.*validation/i, reason: 'Validation additions are testable', verification: 'tests' },
+  { pattern: /add.*error.*handling/i, reason: 'Error handling is testable', verification: 'tests' },
+  { pattern: /add.*try.*catch/i, reason: 'Try-catch is testable', verification: 'tests' },
+
+  // ===== CONFIG UPDATES =====
+  { pattern: /update.*config/i, reason: 'Config updates are low-risk', verification: 'diff_review' },
+  { pattern: /change.*setting/i, reason: 'Setting changes are visible', verification: 'diff_review' },
+  { pattern: /update.*constant/i, reason: 'Constant updates are visible', verification: 'diff_review' },
+  { pattern: /change.*constant/i, reason: 'Constant changes are visible', verification: 'diff_review' },
+  { pattern: /update.*default/i, reason: 'Default value updates are visible', verification: 'diff_review' },
+  { pattern: /environment.*variable/i, reason: 'Env var changes are visible', verification: 'diff_review' },
+
+  // ===== DOCUMENTATION =====
+  { pattern: /update.*readme/i, reason: 'README updates are diff-reviewable', verification: 'diff_review' },
+  { pattern: /update.*doc/i, reason: 'Documentation updates are reviewable', verification: 'diff_review' },
+  { pattern: /add.*jsdoc/i, reason: 'JSDoc is easily reviewed', verification: 'diff_review' },
+  { pattern: /update.*changelog/i, reason: 'Changelog updates are reviewable', verification: 'diff_review' },
+
+  // ===== SIMPLE BUG FIXES =====
+  { pattern: /fix.*bug/i, reason: 'Bug fixes are testable', verification: 'tests' },
+  { pattern: /bug.*fix/i, reason: 'Bug fixes are testable', verification: 'tests' },
+  { pattern: /fix.*error/i, reason: 'Error fixes are testable', verification: 'tests' },
+  { pattern: /fix.*issue/i, reason: 'Issue fixes are testable', verification: 'tests' },
+  { pattern: /fix.*typo/i, reason: 'Typo fixes are simple', verification: 'diff_review' },
+  { pattern: /quick.*fix/i, reason: 'Quick fixes are testable', verification: 'tests' },
+  { pattern: /hotfix/i, reason: 'Hotfixes are testable', verification: 'tests' },
+
+  // ===== SIMPLE GETTERS/SETTERS =====
+  { pattern: /getter/i, reason: 'Getters are simple and testable', verification: 'tests' },
+  { pattern: /setter/i, reason: 'Setters are simple and testable', verification: 'tests' },
+  { pattern: /accessor/i, reason: 'Accessors are simple and testable', verification: 'tests' },
+
+  // ===== SIMPLE CALCULATIONS =====
+  { pattern: /calculate/i, reason: 'Calculations are testable', verification: 'tests' },
+  { pattern: /compute/i, reason: 'Computations are testable', verification: 'tests' },
+  { pattern: /sum|average|total/i, reason: 'Math operations are testable', verification: 'tests' },
 ];
 
 /**
