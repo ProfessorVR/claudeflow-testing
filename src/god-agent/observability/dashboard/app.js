@@ -9,6 +9,7 @@ class DashboardApp {
         this.eventSource = null;
         this.reconnectTimeout = null;
         this.reconnectDelay = 5000;
+        this.connectionStatus = 'disconnected';
 
         // Data stores
         this.activities = [];
@@ -1603,6 +1604,8 @@ class DashboardApp {
     updateConnectionStatus(status) {
         const dot = document.getElementById('statusDot');
         const text = document.getElementById('statusText');
+        const prevStatus = this.connectionStatus;
+        this.connectionStatus = status;
 
         if (dot) dot.className = `status-dot ${status}`;
 
@@ -1610,12 +1613,17 @@ class DashboardApp {
             switch (status) {
                 case 'connected':
                     text.textContent = 'Connected';
+                    // Only show toast if we were previously disconnected
+                    if (prevStatus === 'disconnected') {
+                        this.toastSuccess('Reconnected', 'Real-time updates restored', 3000);
+                    }
                     break;
                 case 'connecting':
                     text.textContent = 'Connecting...';
                     break;
                 case 'disconnected':
                     text.textContent = 'Disconnected';
+                    this.toastWarning('Disconnected', 'Attempting to reconnect...', 4000);
                     break;
             }
         }
@@ -1651,6 +1659,13 @@ class DashboardApp {
         this.renderAgents();
         this.addActivity('agent', data.success ? 'success' : 'error',
             `Agent ${agent?.type || data.agentId} ${data.success ? 'completed' : 'failed'}`, data);
+
+        // Show toast for agent completion
+        if (data.success) {
+            this.toastSuccess('Agent Completed', `${agent?.type || 'Agent'} finished successfully`);
+        } else {
+            this.toastError('Agent Failed', `${agent?.type || 'Agent'} encountered an error`);
+        }
     }
 
     handlePipelineStarted(event) {
@@ -1665,6 +1680,9 @@ class DashboardApp {
         });
         this.renderPipelines();
         this.addActivity('pipeline', 'running', `Pipeline ${data.type} started`, data);
+
+        // Show toast for pipeline start
+        this.toastInfo('Pipeline Started', `${data.type || 'Pipeline'} is now running`, 3000);
     }
 
     handlePipelineCompleted(event) {
@@ -1682,6 +1700,13 @@ class DashboardApp {
         this.renderPipelines();
         this.addActivity('pipeline', data.success ? 'success' : 'error',
             `Pipeline ${pipeline?.type || data.pipelineId} ${data.success ? 'completed' : 'failed'}`, data);
+
+        // Show toast for pipeline completion
+        if (data.success) {
+            this.toastSuccess('Pipeline Completed', `${pipeline?.type || 'Pipeline'} finished successfully`, 6000);
+        } else {
+            this.toastError('Pipeline Failed', `${pipeline?.type || 'Pipeline'} encountered an error`, 10000);
+        }
     }
 
     handleStepStarted(event) {
@@ -3567,6 +3592,106 @@ class DashboardApp {
                 </div>
             `).join('');
         }
+    }
+
+    // =========================================================================
+    // TOAST NOTIFICATIONS
+    // =========================================================================
+
+    /**
+     * Show a toast notification
+     * @param {Object} options - Toast options
+     * @param {string} options.type - 'success' | 'error' | 'warning' | 'info'
+     * @param {string} options.title - Toast title
+     * @param {string} options.message - Toast message
+     * @param {number} options.duration - Auto-dismiss duration (ms), 0 for no auto-dismiss
+     * @param {Object} options.action - Optional action button { label, onClick }
+     */
+    showToast({ type = 'info', title, message, duration = 5000, action = null }) {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const icons = {
+            success: '&#10004;',
+            error: '&#10008;',
+            warning: '&#9888;',
+            info: '&#8505;'
+        };
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+            <span class="toast-icon">${icons[type] || icons.info}</span>
+            <div class="toast-content">
+                <div class="toast-title">${this.escapeHtml(title)}</div>
+                ${message ? `<div class="toast-message">${this.escapeHtml(message)}</div>` : ''}
+                ${action ? `<div class="toast-action"><button>${this.escapeHtml(action.label)}</button></div>` : ''}
+            </div>
+            <button class="toast-close">&times;</button>
+        `;
+
+        // Close button handler
+        toast.querySelector('.toast-close').addEventListener('click', () => {
+            this.dismissToast(toast);
+        });
+
+        // Action button handler
+        if (action && action.onClick) {
+            toast.querySelector('.toast-action button')?.addEventListener('click', () => {
+                action.onClick();
+                this.dismissToast(toast);
+            });
+        }
+
+        container.appendChild(toast);
+
+        // Auto-dismiss
+        if (duration > 0) {
+            setTimeout(() => {
+                this.dismissToast(toast);
+            }, duration);
+        }
+
+        return toast;
+    }
+
+    /**
+     * Dismiss a toast with animation
+     */
+    dismissToast(toast) {
+        if (!toast || !toast.parentNode) return;
+        toast.classList.add('closing');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }
+
+    /**
+     * Show success toast
+     */
+    toastSuccess(title, message = '', duration = 5000) {
+        return this.showToast({ type: 'success', title, message, duration });
+    }
+
+    /**
+     * Show error toast
+     */
+    toastError(title, message = '', duration = 8000) {
+        return this.showToast({ type: 'error', title, message, duration });
+    }
+
+    /**
+     * Show warning toast
+     */
+    toastWarning(title, message = '', duration = 6000) {
+        return this.showToast({ type: 'warning', title, message, duration });
+    }
+
+    /**
+     * Show info toast
+     */
+    toastInfo(title, message = '', duration = 4000) {
+        return this.showToast({ type: 'info', title, message, duration });
     }
 
     /**
