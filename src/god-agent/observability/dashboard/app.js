@@ -3707,6 +3707,146 @@ class DashboardApp {
     }
 
     // =========================================================================
+    // DATA EXPORT
+    // =========================================================================
+
+    /**
+     * Export data as JSON
+     * @param {Object} data - Data to export
+     * @param {string} filename - Output filename
+     */
+    exportJSON(data, filename) {
+        const json = JSON.stringify(data, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        this.downloadBlob(blob, `${filename}.json`);
+        this.toastSuccess('Export Complete', `${filename}.json downloaded`);
+    }
+
+    /**
+     * Export data as CSV
+     * @param {Array} data - Array of objects to export
+     * @param {string} filename - Output filename
+     */
+    exportCSV(data, filename) {
+        if (!Array.isArray(data) || data.length === 0) {
+            this.toastError('Export Error', 'No data to export');
+            return;
+        }
+
+        // Get headers from first object
+        const headers = Object.keys(data[0]);
+        const csvRows = [headers.join(',')];
+
+        // Add data rows
+        data.forEach(row => {
+            const values = headers.map(header => {
+                let val = row[header];
+                if (val === null || val === undefined) val = '';
+                if (typeof val === 'object') val = JSON.stringify(val);
+                // Escape quotes and wrap in quotes if contains comma
+                val = String(val).replace(/"/g, '""');
+                if (val.includes(',') || val.includes('"') || val.includes('\n')) {
+                    val = `"${val}"`;
+                }
+                return val;
+            });
+            csvRows.push(values.join(','));
+        });
+
+        const csv = csvRows.join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        this.downloadBlob(blob, `${filename}.csv`);
+        this.toastSuccess('Export Complete', `${filename}.csv downloaded`);
+    }
+
+    /**
+     * Export chart as PNG
+     * @param {Object} chart - Chart.js instance
+     * @param {string} filename - Output filename
+     */
+    exportChartPNG(chart, filename) {
+        if (!chart) {
+            this.toastError('Export Error', 'Chart not available');
+            return;
+        }
+
+        const canvas = chart.canvas;
+        canvas.toBlob(blob => {
+            this.downloadBlob(blob, `${filename}.png`);
+            this.toastSuccess('Export Complete', `${filename}.png downloaded`);
+        });
+    }
+
+    /**
+     * Helper to trigger download
+     */
+    downloadBlob(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    /**
+     * Export analytics summary
+     */
+    exportAnalyticsSummary() {
+        const data = {
+            timestamp: new Date().toISOString(),
+            summary: this.analyticsData.summary,
+            models: this.analyticsData.models,
+            quality: this.analyticsData.quality,
+            costs: this.analyticsData.costs,
+        };
+        this.exportJSON(data, `analytics-${new Date().toISOString().slice(0, 10)}`);
+    }
+
+    /**
+     * Export activities as CSV
+     */
+    exportActivities() {
+        const data = this.activities.map(a => ({
+            timestamp: new Date(a.timestamp).toISOString(),
+            component: a.component,
+            status: a.status,
+            message: a.message,
+        }));
+        this.exportCSV(data, `activities-${new Date().toISOString().slice(0, 10)}`);
+    }
+
+    /**
+     * Export knowledge units
+     */
+    exportKUs() {
+        this.exportJSON(this.exploreData.kus, `knowledge-units-${new Date().toISOString().slice(0, 10)}`);
+    }
+
+    /**
+     * Export reasoning units
+     */
+    exportRUs() {
+        this.exportJSON(this.exploreData.rus, `reasoning-units-${new Date().toISOString().slice(0, 10)}`);
+    }
+
+    /**
+     * Export quality chart as PNG
+     */
+    exportQualityChart() {
+        this.exportChartPNG(this.qualityChart, `quality-chart-${new Date().toISOString().slice(0, 10)}`);
+    }
+
+    /**
+     * Export cost chart as PNG
+     */
+    exportCostChart() {
+        this.exportChartPNG(this.costChart, `cost-chart-${new Date().toISOString().slice(0, 10)}`);
+    }
+
+    // =========================================================================
     // TOAST NOTIFICATIONS
     // =========================================================================
 

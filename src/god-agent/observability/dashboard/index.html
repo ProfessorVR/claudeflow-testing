@@ -92,6 +92,7 @@
                                     <option value="7" selected>Last 7 days</option>
                                     <option value="30">Last 30 days</option>
                                 </select>
+                                <button class="export-btn" onclick="window.dashboardApp?.exportAnalyticsSummary()" title="Export as JSON">&#8681;</button>
                             </div>
                         </div>
                         <div class="panel-body">
@@ -647,6 +648,7 @@
                                         <option value="running">Running</option>
                                     </select>
                                 </label>
+                                <button class="export-btn" onclick="window.dashboardApp?.exportActivities()" title="Export as CSV">&#8681;</button>
                             </div>
                         </div>
                         <div class="panel-body">
@@ -730,6 +732,7 @@
                                     <option value="0.7">≥ 70%</option>
                                     <option value="0.5">≥ 50%</option>
                                 </select>
+                                <button class="export-btn" onclick="window.dashboardApp?.exportKUs()" title="Export as JSON">&#8681;</button>
                             </div>
                         </div>
                         <div class="panel-body">
