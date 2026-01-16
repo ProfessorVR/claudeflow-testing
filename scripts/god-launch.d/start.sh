@@ -122,6 +122,80 @@ start_embedding() {
     fi
 }
 
+# ==================== vLLM AWQ Server ====================
+
+start_vllm() {
+    log_info "Starting vLLM AWQ server..."
+
+    # Check if already running
+    if check_vllm_health; then
+        log_success "vLLM AWQ server already running on port 8002"
+        return 0
+    fi
+
+    # Verify vLLM is installed
+    if ! command -v vllm &>/dev/null; then
+        log_error "vLLM not found. Install with: pip install vllm"
+        log_warn "God Agent will use cloud API only"
+        return 1
+    fi
+
+    # Set environment variables for GPU optimization
+    export PYTORCH_ALLOC_CONF="expandable_segments:True"
+    export NCCL_CUMEM_ENABLE="0"
+
+    # Start vLLM in tmux window
+    local model="Qwen/Qwen2.5-Coder-32B-Instruct-AWQ"
+    local port=8002
+    local gpu_mem=0.85
+    local max_len=16384
+
+    tmux send-keys -t "${GOD_SESSION_NAME}:vllm" \
+        "vllm serve ${model} \
+         --port ${port} \
+         --quantization awq \
+         --enforce-eager \
+         --gpu-memory-utilization ${gpu_mem} \
+         --max-model-len ${max_len} \
+         2>&1 | tee '${GOD_LOG_DIR}/vllm.log'; \
+         echo '--- vLLM AWQ exited ---'; read" Enter
+
+    # Wait for server to be ready (up to 120 seconds)
+    log_info "Waiting for vLLM AWQ server to start (may take up to 2 minutes)..."
+
+    if check_vllm_health_with_timeout 120; then
+        log_success "vLLM AWQ server started successfully on port ${port}"
+        log_info "Model: ${model}"
+    else
+        log_error "vLLM AWQ server failed to start within 120s"
+        log_warn "God Agent will use cloud API only"
+        return 1
+    fi
+}
+
+check_vllm_health() {
+    # Check if vLLM is responding on port 8002
+    curl -sf http://localhost:8002/v1/models >/dev/null 2>&1
+    return $?
+}
+
+check_vllm_health_with_timeout() {
+    local timeout="${1:-120}"
+    local elapsed=0
+    local check_interval=5
+
+    while [[ $elapsed -lt $timeout ]]; do
+        if check_vllm_health; then
+            return 0
+        fi
+        sleep $check_interval
+        elapsed=$((elapsed + check_interval))
+        echo -n "."
+    done
+    echo ""  # newline after dots
+    return 1
+}
+
 # Start memory server
 start_memory() {
     log_info "Starting memory server..."
@@ -283,11 +357,11 @@ do_start() {
     echo ""
 
     # Start services based on profile (only enabled services)
-    # 1. Embedding (no dependencies)
-    if service_enabled_in_profile "embedding"; then
-        start_embedding
+    # 1. vLLM (no dependencies)
+    if service_enabled_in_profile "vllm"; then
+        start_vllm
     else
-        log_info "Skipping embedding (not in profile: ${CURRENT_PROFILE})"
+        log_info "Skipping vLLM (not in profile: ${CURRENT_PROFILE})"
     fi
 
     # 2. Memory (no dependencies)
@@ -304,7 +378,7 @@ do_start() {
         log_info "Skipping daemon (not in profile: ${CURRENT_PROFILE})"
     fi
 
-    # 4. UCM (depends on daemon, embedding)
+    # 4. UCM (depends on daemon)
     if service_enabled_in_profile "ucm"; then
         start_ucm
     else

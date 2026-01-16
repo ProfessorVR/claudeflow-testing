@@ -2,6 +2,19 @@
 #
 # god-launch - Unified launcher for God Agent services
 #
+# Services Started:
+#   vllm        Local vLLM AWQ model (Qwen2.5-Coder-32B-Instruct) on port 8002
+#   memory      Memory server daemon (AgentDB + DESC)
+#   daemon      Core God Agent daemon
+#   ucm         Universal Context Management daemon
+#   observe     Observability dashboard (http://localhost:3847)
+#
+# GPU Management:
+#   - vLLM starts by default for local inference
+#   - Embedding server does NOT start by default (saves GPU VRAM)
+#   - Embedding starts automatically when needed (god learn, ingest operations)
+#   - GPU switching handled by GPUServerManager (vLLM ↔ embedding)
+#
 # Usage:
 #   god launch [command] [options]
 #
@@ -13,13 +26,21 @@
 #   status      Show service status
 #   logs        View/search logs
 #   metrics     Show performance metrics
+#   dashboard   Open TUI dashboard
 #   kill        Force kill session (emergency)
 #
 # Examples:
-#   god launch              # Start all services
-#   god launch attach       # Attach to session
-#   god launch restart ucm  # Restart UCM only
+#   god launch                # Start all services (vLLM, memory, daemon, ucm, observe)
+#   god launch attach         # Attach to tmux session
+#   god launch restart vllm   # Restart vLLM only
 #   god launch logs --search "error"
+#   god launch dashboard      # Open interactive TUI
+#
+# Profiles:
+#   --profile minimal         # memory + daemon only
+#   --profile dev             # all services (default)
+#   --profile prod            # all services + production settings
+#   --profile research        # all services + PhD pipeline mode
 #
 
 set -euo pipefail
@@ -47,7 +68,7 @@ export BOLD='\033[1m'
 export NC='\033[0m' # No Color
 
 # Service definitions
-export SERVICES=(embedding memory daemon ucm observe)
+export SERVICES=(vllm memory daemon ucm observe)
 export SERVICE_NAMES=(
     "embedding:Embedding Server"
     "memory:Memory Server"

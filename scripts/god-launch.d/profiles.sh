@@ -3,8 +3,8 @@
 # profiles.sh - Service profiles for different use cases
 #
 # Profiles define which services to start and with what configuration:
-# - minimal:  memory + daemon only (no embedding, no observe)
-# - dev:      all services with verbose logging
+# - minimal:  memory + daemon only (no vLLM, no observe)
+# - dev:      all services with verbose logging (vLLM, memory, daemon, ucm, observe)
 # - prod:     all services with production settings
 # - research: all services + PhD pipeline ready mode
 #
@@ -12,9 +12,9 @@
 # Profile definitions - which services to start
 declare -A PROFILE_SERVICES
 PROFILE_SERVICES[minimal]="memory daemon"
-PROFILE_SERVICES[dev]="embedding memory daemon ucm observe"
-PROFILE_SERVICES[prod]="embedding memory daemon ucm observe"
-PROFILE_SERVICES[research]="embedding memory daemon ucm observe"
+PROFILE_SERVICES[dev]="vllm memory daemon ucm observe"
+PROFILE_SERVICES[prod]="vllm memory daemon ucm observe"
+PROFILE_SERVICES[research]="vllm memory daemon ucm observe"
 
 # Profile settings
 declare -A PROFILE_VERBOSE
