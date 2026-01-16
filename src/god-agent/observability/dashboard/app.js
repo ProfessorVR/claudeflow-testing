@@ -588,6 +588,14 @@ class DashboardApp {
         if (!this.isDarkTheme) {
             document.body.classList.add('light-theme');
         }
+
+        // Refresh button
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                this.refreshCurrentTab();
+            });
+        }
     }
 
     /**
@@ -595,6 +603,13 @@ class DashboardApp {
      */
     setupKeyboardShortcuts() {
         document.addEventListener('keydown', (e) => {
+            // Ctrl+R or Cmd+R to refresh current tab (prevent browser refresh)
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                this.refreshCurrentTab();
+                return;
+            }
+
             // Ctrl+K or Cmd+K to focus command bar
             if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                 e.preventDefault();
@@ -1412,26 +1427,58 @@ class DashboardApp {
     }
 
     /**
-     * Start periodic polling for agents and pipelines
+     * Start periodic polling with differentiated frequencies
+     * - Fast polling (5s): agents, pipelines, activity (real-time critical)
+     * - Slow polling (15s): tab data, stats (less time-sensitive)
      */
     startPolling() {
-        this.pollingInterval = setInterval(async () => {
+        // Fast polling for real-time data (agents, pipelines)
+        this.fastPollingInterval = setInterval(async () => {
             await this.refreshAgentsAndPipelines();
 
-            // Refresh current tab data
-            if (this.currentMainTab === 'analytics') {
-                await this.loadAnalyticsData();
-            } else if (this.currentMainTab === 'monitoring') {
-                await this.loadMonitoringData();
-            } else if (this.currentMainTab === 'router') {
-                await this.loadRouterData();
-            } else if (this.currentMainTab === 'explore') {
-                await this.loadExploreStats();
+            // Update activity tab if currently viewing
+            if (this.currentMainTab === 'activity') {
+                this.renderActivities();
+            }
+        }, 5000);
+
+        // Slow polling for tab data (less critical)
+        this.slowPollingInterval = setInterval(async () => {
+            // Only refresh current tab data if it was already loaded
+            if (this.loadedTabs.has(this.currentMainTab)) {
+                switch (this.currentMainTab) {
+                    case 'analytics':
+                        await this.loadAnalyticsData();
+                        break;
+                    case 'monitoring':
+                        await this.loadMonitoringData();
+                        break;
+                    case 'router':
+                        await this.loadRouterData();
+                        break;
+                    case 'explore':
+                        await this.loadExploreStats();
+                        break;
+                }
             }
 
             // Update last refresh timestamp
             this.updateLastRefresh();
-        }, 5000);
+        }, 15000);
+    }
+
+    /**
+     * Stop all polling
+     */
+    stopPolling() {
+        if (this.fastPollingInterval) {
+            clearInterval(this.fastPollingInterval);
+            this.fastPollingInterval = null;
+        }
+        if (this.slowPollingInterval) {
+            clearInterval(this.slowPollingInterval);
+            this.slowPollingInterval = null;
+        }
     }
 
     /**
