@@ -42,14 +42,40 @@ export const DEFAULT_ROUTER_CONFIG: RouterConfig = {
 
 /**
  * Default model configurations
+ * Priority: lower = higher priority (0 = highest)
+ * Local models (vLLM) have highest priority for cost savings
  */
 export const DEFAULT_MODEL_CONFIGS: Record<string, Partial<ProviderConfig>> = {
+  // === LOCAL MODELS (HIGHEST PRIORITY - FREE) ===
+  'qwen-coder-32b': {
+    provider: 'vllm' as ProviderType,
+    model: 'Qwen/Qwen2.5-Coder-32B-Instruct-AWQ',
+    capabilities: ['code', 'reasoning', 'writing', 'refactor', 'debug', 'test'],
+    maxComplexity: 'complex',
+    priority: 0, // Highest priority - use first
+    inputCostPer1M: 0,
+    outputCostPer1M: 0,
+    timeout: 120000,
+    enabled: true,
+  },
+  'deepseek-coder': {
+    provider: 'ollama',
+    model: 'deepseek-coder-v2:33b',
+    capabilities: ['code', 'writing'],
+    maxComplexity: 'simple',
+    priority: 1, // Second priority local
+    inputCostPer1M: 0,
+    outputCostPer1M: 0,
+    timeout: 60000,
+    enabled: true,
+  },
+  // === CLOUD MODELS (FALLBACK ONLY) ===
   'claude-sonnet': {
     provider: 'anthropic',
     model: 'claude-sonnet-4-20250514',
     capabilities: ['code', 'reasoning', 'research', 'writing', 'refactor', 'debug', 'test'],
     maxComplexity: 'complex',
-    priority: 1,
+    priority: 10, // Only use when local unavailable
     inputCostPer1M: 3.0,
     outputCostPer1M: 15.0,
     timeout: 60000,
@@ -60,7 +86,7 @@ export const DEFAULT_MODEL_CONFIGS: Record<string, Partial<ProviderConfig>> = {
     model: 'claude-opus-4-20250514',
     capabilities: ['code', 'reasoning', 'research', 'writing', 'refactor', 'debug', 'test'],
     maxComplexity: 'complex',
-    priority: 0,
+    priority: 11, // Expensive - last resort for complex
     inputCostPer1M: 15.0,
     outputCostPer1M: 75.0,
     timeout: 120000,
@@ -71,7 +97,7 @@ export const DEFAULT_MODEL_CONFIGS: Record<string, Partial<ProviderConfig>> = {
     model: 'gpt-4o',
     capabilities: ['code', 'reasoning', 'writing', 'refactor'],
     maxComplexity: 'medium',
-    priority: 2,
+    priority: 12,
     inputCostPer1M: 2.5,
     outputCostPer1M: 10.0,
     timeout: 60000,
@@ -82,7 +108,7 @@ export const DEFAULT_MODEL_CONFIGS: Record<string, Partial<ProviderConfig>> = {
     model: 'gpt-4o-mini',
     capabilities: ['code', 'writing'],
     maxComplexity: 'simple',
-    priority: 4,
+    priority: 13,
     inputCostPer1M: 0.15,
     outputCostPer1M: 0.6,
     timeout: 30000,
@@ -93,75 +119,76 @@ export const DEFAULT_MODEL_CONFIGS: Record<string, Partial<ProviderConfig>> = {
     model: 'o1',
     capabilities: ['reasoning', 'code'],
     maxComplexity: 'complex',
-    priority: 1,
+    priority: 14,
     inputCostPer1M: 15.0,
     outputCostPer1M: 60.0,
     timeout: 180000,
-    enabled: true,
-  },
-  'deepseek-coder': {
-    provider: 'ollama',
-    model: 'deepseek-coder-v2:33b',
-    capabilities: ['code', 'writing'],
-    maxComplexity: 'simple',
-    priority: 5,
-    inputCostPer1M: 0,
-    outputCostPer1M: 0,
-    timeout: 60000,
     enabled: true,
   },
 };
 
 /**
  * Default routing rules
+ * LOCAL FIRST: Always try vLLM/Qwen before cloud providers
+ * Cloud models are fallback only when local unavailable
  */
 export const DEFAULT_ROUTING_RULES: RoutingRule[] = [
-  // Simple code edits → prefer local
+  // === CODE TASKS - LOCAL FIRST ===
   {
     task: 'code_edit',
     complexity: 'simple',
-    route: ['deepseek-coder', 'gpt-4o-mini', 'gpt-4o', 'claude-sonnet'],
+    route: ['qwen-coder-32b', 'deepseek-coder', 'gpt-4o-mini', 'claude-sonnet'],
   },
-  // Medium code edits → prefer GPT-4o
   {
     task: 'code_edit',
     complexity: 'medium',
-    route: ['gpt-4o', 'claude-sonnet', 'deepseek-coder'],
+    route: ['qwen-coder-32b', 'deepseek-coder', 'gpt-4o', 'claude-sonnet'],
   },
-  // Complex code edits → Claude only
   {
     task: 'code_edit',
     complexity: 'complex',
-    route: ['claude-sonnet', 'gpt-4o'],
-    blockIfUnavailable: true,
+    route: ['qwen-coder-32b', 'claude-sonnet', 'gpt-4o'],
   },
-  // Reasoning → prefer o1
+  // === REASONING - LOCAL FIRST ===
   {
     task: 'reasoning',
-    route: ['o1', 'claude-sonnet', 'gpt-4o'],
+    route: ['qwen-coder-32b', 'o1', 'claude-sonnet', 'gpt-4o'],
   },
-  // Research → Claude preferred
+  // === RESEARCH - LOCAL FIRST ===
   {
     task: 'research',
-    route: ['claude-sonnet', 'gpt-4o'],
+    route: ['qwen-coder-32b', 'claude-sonnet', 'gpt-4o'],
   },
-  // Writing → any capable model
+  // === WRITING - LOCAL FIRST ===
   {
     task: 'writing',
-    route: ['gpt-4o', 'claude-sonnet', 'deepseek-coder'],
+    route: ['qwen-coder-32b', 'deepseek-coder', 'gpt-4o', 'claude-sonnet'],
   },
-  // Refactoring → depends on complexity
+  // === REFACTORING - LOCAL FIRST ===
   {
     task: 'refactor',
     complexity: 'simple',
-    route: ['deepseek-coder', 'gpt-4o', 'claude-sonnet'],
+    route: ['qwen-coder-32b', 'deepseek-coder', 'gpt-4o', 'claude-sonnet'],
+  },
+  {
+    task: 'refactor',
+    complexity: 'medium',
+    route: ['qwen-coder-32b', 'gpt-4o', 'claude-sonnet'],
   },
   {
     task: 'refactor',
     complexity: 'complex',
-    riskLevel: 'high',
-    route: ['claude-sonnet', 'gpt-4o'],
-    blockIfUnavailable: true,
+    route: ['qwen-coder-32b', 'claude-sonnet', 'gpt-4o'],
+  },
+  // === DEBUG - LOCAL FIRST ===
+  {
+    task: 'debug',
+    route: ['qwen-coder-32b', 'claude-sonnet', 'gpt-4o'],
+  },
+  // === TEST - LOCAL FIRST ===
+  {
+    task: 'test',
+    route: ['qwen-coder-32b', 'deepseek-coder', 'claude-sonnet', 'gpt-4o'],
   },
 ];
 
@@ -525,7 +552,7 @@ function validateRoutingRule(
  * Check if a provider type is valid
  */
 function isValidProvider(provider: string): provider is ProviderType {
-  return ['anthropic', 'openai', 'ollama', 'custom'].includes(provider);
+  return ['anthropic', 'openai', 'ollama', 'vllm', 'custom'].includes(provider);
 }
 
 /**
