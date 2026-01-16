@@ -1314,6 +1314,7 @@ body {
     display: flex;
     align-items: center;
     padding: 0.75rem 1rem;
+    position: relative;
     border-bottom: 1px solid var(--border-color);
     background: var(--bg-tertiary);
 }
@@ -1362,6 +1363,97 @@ body {
     font-size: 0.85rem;
     white-space: pre-wrap;
     color: var(--text-secondary);
+}
+
+/* Command Output Formatting */
+.cmd-prompt {
+    color: var(--accent-info);
+    font-weight: bold;
+}
+
+.cmd-input {
+    color: var(--text-primary);
+}
+
+.cmd-status {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.cmd-header {
+    color: var(--accent-info);
+    font-weight: bold;
+}
+
+.cmd-success {
+    color: var(--accent-success);
+}
+
+.cmd-warning {
+    color: var(--accent-warning);
+}
+
+.cmd-error {
+    color: var(--accent-danger);
+}
+
+.cmd-stat {
+    color: var(--text-primary);
+}
+
+.cmd-item {
+    color: var(--text-secondary);
+}
+
+.cmd-hint {
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 0.8rem;
+}
+
+/* Command Suggestions */
+.command-suggestions {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    z-index: 1000;
+    margin-bottom: 4px;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.suggestion-item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background: var(--bg-primary);
+}
+
+.suggestion-cmd {
+    font-family: 'Consolas', 'Monaco', monospace;
+    color: var(--accent-info);
+    font-size: 0.85rem;
+}
+
+.suggestion-desc {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
 }
 
 /* ============================

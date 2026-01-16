@@ -93,6 +93,7 @@ class DashboardApp {
         this.setupPanelToggles();
         this.setupEventListeners();
         this.setupExploreListeners();
+        this.setupCommandAutocomplete();
         this.initializeCharts();
         await this.loadInitialData();
         this.connectSSE();
@@ -295,6 +296,34 @@ class DashboardApp {
     }
 
     /**
+     * Available commands for autocomplete
+     */
+    availableCommands = [
+        { cmd: 'models', desc: 'List available models' },
+        { cmd: 'models test', desc: 'Test a provider' },
+        { cmd: 'use local', desc: 'Switch to local model' },
+        { cmd: 'use claude', desc: 'Switch to Claude' },
+        { cmd: 'use auto', desc: 'Enable auto-routing' },
+        { cmd: 'vllm status', desc: 'Show vLLM server status' },
+        { cmd: 'vllm models', desc: 'List vLLM models' },
+        { cmd: 'vllm test', desc: 'Test vLLM connection' },
+        { cmd: 'routing', desc: 'Show routing status' },
+        { cmd: 'routing stats', desc: 'Show routing statistics' },
+        { cmd: 'routing patterns', desc: 'Show routing patterns' },
+        { cmd: 'routing suggest', desc: 'Get routing suggestions' },
+        { cmd: 'costs', desc: 'Show cost summary' },
+        { cmd: 'costs --detailed', desc: 'Show detailed costs' },
+        { cmd: 'budget set daily', desc: 'Set daily budget' },
+        { cmd: 'budget set monthly', desc: 'Set monthly budget' },
+        { cmd: 'quality', desc: 'Show quality metrics' },
+        { cmd: 'review', desc: 'Show pending reviews' },
+        { cmd: 'analytics', desc: 'Show analytics dashboard' },
+        { cmd: 'analytics summary', desc: 'Show summary' },
+        { cmd: 'analytics models', desc: 'Show model stats' },
+        { cmd: 'help', desc: 'Show available commands' },
+    ];
+
+    /**
      * Execute a command
      */
     async executeCommand(command) {
@@ -303,8 +332,20 @@ class DashboardApp {
         const commandInput = document.getElementById('commandInput');
         const commandOutput = document.getElementById('commandOutput');
 
-        // Add to history
-        this.commandHistory.push(command);
+        // Handle help command locally
+        if (command.toLowerCase() === 'help') {
+            this.showCommandHelp();
+            return;
+        }
+
+        // Add to history (avoid duplicates)
+        if (this.commandHistory[this.commandHistory.length - 1] !== command) {
+            this.commandHistory.push(command);
+            // Keep only last 50 commands
+            if (this.commandHistory.length > 50) {
+                this.commandHistory.shift();
+            }
+        }
         this.commandHistoryIndex = -1;
         this.saveUIState();
 
@@ -313,7 +354,7 @@ class DashboardApp {
 
         // Show executing message
         if (commandOutput) {
-            commandOutput.textContent = `> ${command}\nExecuting...\n`;
+            commandOutput.innerHTML = `<span class="cmd-prompt">&gt;</span> <span class="cmd-input">${this.escapeHtml(command)}</span>\n<span class="cmd-status">Executing...</span>\n`;
         }
 
         try {
@@ -324,16 +365,143 @@ class DashboardApp {
             });
 
             const data = await res.json();
+            const output = data.output || data.error || 'No output';
 
             if (commandOutput) {
-                commandOutput.textContent = `> ${command}\n${data.output || data.error || 'No output'}`;
+                commandOutput.innerHTML = `<span class="cmd-prompt">&gt;</span> <span class="cmd-input">${this.escapeHtml(command)}</span>\n` +
+                    this.formatCommandOutput(output, data.success !== false);
                 commandOutput.scrollTop = commandOutput.scrollHeight;
             }
         } catch (error) {
             if (commandOutput) {
-                commandOutput.textContent = `> ${command}\nError: ${error.message}`;
+                commandOutput.innerHTML = `<span class="cmd-prompt">&gt;</span> <span class="cmd-input">${this.escapeHtml(command)}</span>\n` +
+                    `<span class="cmd-error">Error: ${this.escapeHtml(error.message)}</span>`;
             }
         }
+    }
+
+    /**
+     * Format command output with syntax highlighting
+     */
+    formatCommandOutput(output, success) {
+        if (!output) return '';
+
+        // Split into lines and format
+        const lines = output.split('\n');
+        return lines.map(line => {
+            // Headers (lines ending with :)
+            if (line.match(/^[A-Z].*:$/)) {
+                return `<span class="cmd-header">${this.escapeHtml(line)}</span>`;
+            }
+            // Success indicators
+            if (line.includes('✓') || line.includes('OK') || line.includes('success')) {
+                return `<span class="cmd-success">${this.escapeHtml(line)}</span>`;
+            }
+            // Warning indicators
+            if (line.includes('⚠') || line.includes('warning') || line.includes('Warning')) {
+                return `<span class="cmd-warning">${this.escapeHtml(line)}</span>`;
+            }
+            // Error indicators
+            if (line.includes('✗') || line.includes('error') || line.includes('Error') || line.includes('failed')) {
+                return `<span class="cmd-error">${this.escapeHtml(line)}</span>`;
+            }
+            // Numbers and stats
+            if (line.match(/:\s*[\d.]+%?$/)) {
+                return `<span class="cmd-stat">${this.escapeHtml(line)}</span>`;
+            }
+            // Commands (indented with -)
+            if (line.match(/^\s+-\s/)) {
+                return `<span class="cmd-item">${this.escapeHtml(line)}</span>`;
+            }
+            return this.escapeHtml(line);
+        }).join('\n');
+    }
+
+    /**
+     * Show command help
+     */
+    showCommandHelp() {
+        const commandOutput = document.getElementById('commandOutput');
+        if (!commandOutput) return;
+
+        const helpHtml = `<span class="cmd-header">Available Commands:</span>\n\n` +
+            this.availableCommands.map(c =>
+                `<span class="cmd-item">  ${this.escapeHtml(c.cmd.padEnd(20))} - ${this.escapeHtml(c.desc)}</span>`
+            ).join('\n') +
+            `\n\n<span class="cmd-hint">Tip: Use ↑/↓ arrows to navigate command history</span>`;
+
+        commandOutput.innerHTML = helpHtml;
+    }
+
+    /**
+     * Setup command autocomplete
+     */
+    setupCommandAutocomplete() {
+        const commandInput = document.getElementById('commandInput');
+        if (!commandInput) return;
+
+        // Create suggestions container
+        let suggestionsEl = document.getElementById('commandSuggestions');
+        if (!suggestionsEl) {
+            suggestionsEl = document.createElement('div');
+            suggestionsEl.id = 'commandSuggestions';
+            suggestionsEl.className = 'command-suggestions';
+            commandInput.parentNode.appendChild(suggestionsEl);
+        }
+
+        commandInput.addEventListener('input', () => {
+            const value = commandInput.value.toLowerCase().trim();
+            if (!value) {
+                suggestionsEl.style.display = 'none';
+                return;
+            }
+
+            const matches = this.availableCommands.filter(c =>
+                c.cmd.toLowerCase().startsWith(value) ||
+                c.desc.toLowerCase().includes(value)
+            ).slice(0, 5);
+
+            if (matches.length === 0) {
+                suggestionsEl.style.display = 'none';
+                return;
+            }
+
+            suggestionsEl.innerHTML = matches.map((m, i) =>
+                `<div class="suggestion-item" data-cmd="${this.escapeHtml(m.cmd)}">
+                    <span class="suggestion-cmd">${this.escapeHtml(m.cmd)}</span>
+                    <span class="suggestion-desc">${this.escapeHtml(m.desc)}</span>
+                </div>`
+            ).join('');
+            suggestionsEl.style.display = 'block';
+
+            // Handle suggestion clicks
+            suggestionsEl.querySelectorAll('.suggestion-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    commandInput.value = item.dataset.cmd;
+                    suggestionsEl.style.display = 'none';
+                    commandInput.focus();
+                });
+            });
+        });
+
+        // Hide suggestions on blur (with delay for click)
+        commandInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                suggestionsEl.style.display = 'none';
+            }, 200);
+        });
+
+        // Tab completion
+        commandInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab' && suggestionsEl.style.display === 'block') {
+                e.preventDefault();
+                const firstMatch = suggestionsEl.querySelector('.suggestion-item');
+                if (firstMatch) {
+                    commandInput.value = firstMatch.dataset.cmd;
+                    suggestionsEl.style.display = 'none';
+                }
+            }
+        });
     }
 
     /**
