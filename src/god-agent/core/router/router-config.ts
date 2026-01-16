@@ -205,14 +205,39 @@ export const CONFIG_PATHS = {
 
 /**
  * Environment variable mappings
+ *
+ * LOCAL-FIRST CONFIGURATION:
+ * These variables control the local-first routing strategy that maximizes
+ * local vLLM usage and minimizes cloud API costs.
  */
 const ENV_MAPPINGS: Record<string, string> = {
+  // === CORE ROUTER SETTINGS ===
   GOD_ROUTER_DEFAULT_MODEL: 'defaultModel',
   GOD_ROUTER_ADAPTIVE: 'adaptiveRouting',
+
+  // === LOCAL-FIRST SETTINGS ===
+  // Master switch for local-first mode (default: true)
+  GOD_ROUTER_LOCAL_FIRST: 'localFirst.enabled',
+  // Minimum success rate to trust local model for a pattern (default: 0.50)
+  GOD_ROUTER_LOCAL_THRESHOLD: 'localFirst.successThreshold',
+  // Trust tests for verification instead of Claude review (default: true)
+  GOD_ROUTER_TRUST_TESTS: 'localFirst.trustTests',
+  // Default risk level for unknown patterns: low|medium|high (default: low)
+  GOD_ROUTER_DEFAULT_RISK: 'localFirst.defaultRiskLevel',
+  // Maximum retries with local model before Claude fallback (default: 2)
+  GOD_ROUTER_MAX_LOCAL_RETRIES: 'localFirst.maxLocalRetries',
+  // Quality threshold for accepting local output (default: 0.70)
+  GOD_ROUTER_LOCAL_QUALITY: 'localFirst.localQualityThreshold',
+  // Always try local first, even for high-risk tasks (default: true)
+  GOD_ROUTER_ALWAYS_TRY_LOCAL: 'localFirst.alwaysTryLocalFirst',
+
+  // === COST TRACKING ===
   GOD_COST_TRACKING_ENABLED: 'costTracking.enabled',
   GOD_BUDGET_DAILY: 'costTracking.budgets.daily',
   GOD_BUDGET_WEEKLY: 'costTracking.budgets.weekly',
   GOD_BUDGET_MONTHLY: 'costTracking.budgets.monthly',
+
+  // === API KEYS ===
   ANTHROPIC_API_KEY: 'models.claude-sonnet.apiKey',
   OPENAI_API_KEY: 'models.gpt-4o.apiKey',
   OLLAMA_BASE_URL: 'models.deepseek-coder.baseUrl',
