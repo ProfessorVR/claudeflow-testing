@@ -42,8 +42,14 @@ export type VerificationMethod = 'tests' | 'diff_review' | 'manual' | 'none';
 
 /**
  * Recommended routing destination
+ *
+ * LOCAL-FIRST STRATEGY:
+ * - 'local': Pure local execution, no Claude review needed
+ * - 'pure_local_verified': Pure local when tests pass (trust tests mode)
+ * - 'local_then_review': Local execution with Claude review
+ * - 'expensive': Claude only (high-risk tasks)
  */
-export type RouteRecommendation = 'local' | 'expensive' | 'local_then_review';
+export type RouteRecommendation = 'local' | 'pure_local_verified' | 'expensive' | 'local_then_review';
 
 /**
  * Complete risk assessment for a task
@@ -371,11 +377,12 @@ export class RiskClassifier {
       );
     }
 
-    // Check for existing tests as verification
+    // LOCAL-FIRST: Trust tests mode - when tests exist and pass, go pure local
+    // This is the key optimization: test-backed code changes don't need Claude review
     if (context.hasTests && this.config.trustTests) {
-      signals.push('has_tests');
-      return this.createMediumRiskAssessment(
-        'Has tests for verification, but needs review',
+      signals.push('has_tests_trust_mode');
+      return this.createPureLocalVerifiedAssessment(
+        'Tests provide verification - pure local sufficient',
         signals,
         context
       );
@@ -521,6 +528,27 @@ export class RiskClassifier {
     };
   }
 
+  /**
+   * LOCAL-FIRST: Create assessment for pure local execution when tests verify correctness
+   * This is the trust-tests mode that skips Claude review entirely
+   */
+  private createPureLocalVerifiedAssessment(
+    reason: string,
+    signals: string[],
+    context: RiskContext
+  ): RiskAssessment {
+    return {
+      riskLevel: 'low',
+      feedbackSpeed: 'instant',
+      reversibility: 'easy',
+      verificationMethod: 'tests',
+      recommendedRoute: 'pure_local_verified',
+      reason,
+      confidence: this.calculateConfidence(signals, context) + 0.1, // Boost confidence when tests exist
+      signals,
+    };
+  }
+
   private createLowRiskAssessment(
     reason: string,
     verification: VerificationMethod,
@@ -612,11 +640,13 @@ export function canUseLocalModel(prompt: string, context?: RiskContext): boolean
  * Get human-readable description of risk assessment
  */
 export function describeRiskAssessment(assessment: RiskAssessment): string {
-  const route = assessment.recommendedRoute === 'expensive'
-    ? 'Claude (expensive)'
-    : assessment.recommendedRoute === 'local'
-      ? 'Local (vLLM)'
-      : 'Local + Claude review';
+  const routeMap: Record<RouteRecommendation, string> = {
+    expensive: 'Claude (expensive)',
+    local: 'Local (vLLM)',
+    pure_local_verified: 'Local (test verified)',
+    local_then_review: 'Local + Claude review',
+  };
+  const route = routeMap[assessment.recommendedRoute];
 
   return `${assessment.riskLevel} risk → ${route} (${assessment.feedbackSpeed} feedback, ${assessment.reversibility} reversal)`;
 }
@@ -628,6 +658,8 @@ export function getRouteDisplay(assessment: RiskAssessment): string {
   switch (assessment.recommendedRoute) {
     case 'local':
       return '🏠 Local Model';
+    case 'pure_local_verified':
+      return '🏠✅ Local (Test Verified)';
     case 'expensive':
       return '🧠 Claude';
     case 'local_then_review':

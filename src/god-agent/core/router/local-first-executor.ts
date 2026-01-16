@@ -324,6 +324,18 @@ export class LocalFirstExecutor {
       return this.executeWithExpensiveModel(prompt, opts, riskAssessment, timeline, startTime);
     }
 
+    // LOCAL-FIRST: Handle pure_local_verified (trust tests mode)
+    // When tests exist and we trust them, skip Claude review entirely
+    if (route === 'pure_local_verified') {
+      // Force runTests and disable requireReview for pure local verified mode
+      const pureLocalOpts = {
+        ...opts,
+        runTests: true,        // Tests are the verification
+        requireReview: false,  // Skip Claude review - tests are sufficient
+      };
+      return this.executeWithLocalModel(prompt, pureLocalOpts, riskAssessment, 'local', timeline, startTime, errors);
+    }
+
     // Local or local_then_review
     return this.executeWithLocalModel(prompt, opts, riskAssessment, route, timeline, startTime, errors);
   }

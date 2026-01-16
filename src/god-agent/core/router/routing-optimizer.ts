@@ -432,6 +432,7 @@ export class RoutingOptimizer {
   private analyzeCosts(allStats: PatternStats[]): CostAnalysis {
     const costByRoute: Record<RouteRecommendation, number> = {
       local: 0,
+      pure_local_verified: 0,
       expensive: 0,
       local_then_review: 0,
     };
@@ -468,12 +469,14 @@ export class RoutingOptimizer {
   private analyzeQuality(allStats: PatternStats[]): QualityAnalysis {
     const successRateByRoute: Record<RouteRecommendation, number> = {
       local: 0,
+      pure_local_verified: 0,
       expensive: 0,
       local_then_review: 0,
     };
 
     const countByRoute: Record<RouteRecommendation, number> = {
       local: 0,
+      pure_local_verified: 0,
       expensive: 0,
       local_then_review: 0,
     };
