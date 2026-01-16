@@ -40,6 +40,9 @@ class DashboardApp {
         this.registryMetrics = { total: 264, categories: 30 };
         this.learningMetrics = { trajectories: {}, patterns: {} };
 
+        // Cost projections
+        this.monthlyBudget = parseFloat(localStorage.getItem('monthlyBudget')) || 500;
+
         // Analytics data
         this.analyticsData = {
             summary: null,
@@ -473,6 +476,27 @@ class DashboardApp {
                 this.renderInteractionStore();
             });
         }
+
+        // Editable budget
+        const budgetMonthlyEl = document.getElementById('budgetMonthly');
+        if (budgetMonthlyEl) {
+            budgetMonthlyEl.addEventListener('click', () => {
+                const current = this.monthlyBudget;
+                const newBudget = prompt('Enter monthly budget ($):', current.toString());
+                if (newBudget !== null) {
+                    const parsed = parseFloat(newBudget);
+                    if (!isNaN(parsed) && parsed > 0) {
+                        this.monthlyBudget = parsed;
+                        localStorage.setItem('monthlyBudget', parsed.toString());
+                        budgetMonthlyEl.textContent = `$${parsed.toFixed(2)}`;
+                        // Re-render cost projections
+                        if (this.analyticsData.costs) {
+                            this.updateCostProjections(this.analyticsData.costs);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -743,6 +767,122 @@ class DashboardApp {
             const pct = Math.min(100, (data.monthlySpent / data.monthlyBudget) * 100 || 0);
             monthlyBar.style.width = pct + '%';
             monthlyBar.textContent = `$${(data.monthlySpent || 0).toFixed(2)} / $${(data.monthlyBudget || 0).toFixed(2)}`;
+        }
+
+        // Update cost projections
+        this.updateCostProjections(data);
+    }
+
+    /**
+     * Update cost projections and alerts
+     */
+    updateCostProjections(data) {
+        const dailyBurn = data.dailySpent || 0;
+        const projectedMonthly = dailyBurn * 30;
+        const budgetMonthly = this.monthlyBudget || data.monthlyBudget || 500;
+
+        // Update projection values
+        const dailyBurnEl = document.getElementById('dailyBurn');
+        const projectedMonthlyEl = document.getElementById('projectedMonthly');
+        const budgetMonthlyEl = document.getElementById('budgetMonthly');
+        const runwayEl = document.getElementById('budgetRunway');
+
+        if (dailyBurnEl) {
+            dailyBurnEl.textContent = `$${dailyBurn.toFixed(2)}`;
+        }
+        if (projectedMonthlyEl) {
+            projectedMonthlyEl.textContent = `$${projectedMonthly.toFixed(2)}`;
+            // Color based on projection vs budget
+            if (projectedMonthly > budgetMonthly) {
+                projectedMonthlyEl.style.color = 'var(--accent-danger)';
+            } else if (projectedMonthly > budgetMonthly * 0.8) {
+                projectedMonthlyEl.style.color = 'var(--accent-warning)';
+            } else {
+                projectedMonthlyEl.style.color = 'var(--accent-success)';
+            }
+        }
+        if (budgetMonthlyEl) {
+            budgetMonthlyEl.textContent = `$${budgetMonthly.toFixed(2)}`;
+        }
+
+        // Calculate runway (days until budget exceeded)
+        if (runwayEl) {
+            if (dailyBurn > 0) {
+                const monthlySpent = data.monthlySpent || 0;
+                const remaining = budgetMonthly - monthlySpent;
+                const runwayDays = Math.max(0, Math.floor(remaining / dailyBurn));
+                runwayEl.textContent = `${runwayDays} days`;
+
+                // Color based on runway
+                if (runwayDays < 7) {
+                    runwayEl.style.color = 'var(--accent-danger)';
+                } else if (runwayDays < 14) {
+                    runwayEl.style.color = 'var(--accent-warning)';
+                } else {
+                    runwayEl.style.color = 'var(--accent-success)';
+                }
+            } else {
+                runwayEl.textContent = '-- days';
+            }
+        }
+
+        // Update budget alert
+        this.updateBudgetAlert(data, projectedMonthly, budgetMonthly);
+    }
+
+    /**
+     * Update budget alert display
+     */
+    updateBudgetAlert(data, projectedMonthly, budgetMonthly) {
+        const alertEl = document.getElementById('budgetAlert');
+        const alertBadge = document.getElementById('costAlertBadge');
+        const alertMessage = document.getElementById('budgetAlertMessage');
+
+        if (!alertEl) return;
+
+        const monthlySpent = data.monthlySpent || 0;
+        const percentUsed = (monthlySpent / budgetMonthly) * 100;
+        const daysInMonth = 30;
+        const dayOfMonth = new Date().getDate();
+        const expectedPercent = (dayOfMonth / daysInMonth) * 100;
+
+        let alertClass = 'ok';
+        let message = 'Budget on track';
+        let showAlert = false;
+        let showBadge = false;
+
+        if (projectedMonthly > budgetMonthly * 1.2) {
+            // Will significantly exceed budget
+            alertClass = 'critical';
+            const excessDays = Math.ceil((projectedMonthly - budgetMonthly) / (data.dailySpent || 1));
+            message = `At current rate, budget will be exceeded by $${(projectedMonthly - budgetMonthly).toFixed(2)} this month`;
+            showAlert = true;
+            showBadge = true;
+        } else if (projectedMonthly > budgetMonthly) {
+            // Will exceed budget
+            alertClass = 'warning';
+            message = `Projected to exceed budget by $${(projectedMonthly - budgetMonthly).toFixed(2)}`;
+            showAlert = true;
+            showBadge = true;
+        } else if (percentUsed > expectedPercent * 1.3) {
+            // Spending faster than expected
+            alertClass = 'warning';
+            message = `Spending ${Math.round(percentUsed - expectedPercent)}% ahead of schedule`;
+            showAlert = true;
+        } else if (percentUsed < expectedPercent * 0.7 && monthlySpent > 0) {
+            // Under budget
+            alertClass = 'ok';
+            message = `Under budget - ${Math.round(expectedPercent - percentUsed)}% below expected`;
+            showAlert = true;
+        }
+
+        alertEl.style.display = showAlert ? 'flex' : 'none';
+        alertEl.className = `budget-alert ${alertClass}`;
+        if (alertMessage) alertMessage.textContent = message;
+
+        if (alertBadge) {
+            alertBadge.style.display = showBadge ? 'inline' : 'none';
+            alertBadge.className = `panel-badge ${alertClass === 'critical' ? 'danger' : 'warning'}`;
         }
     }
 

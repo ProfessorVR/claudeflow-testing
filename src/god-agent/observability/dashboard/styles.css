@@ -507,6 +507,109 @@ body {
     transition: width 0.3s ease;
 }
 
+/* Cost Projections */
+.cost-projections {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.cost-projections h4 {
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.projection-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.projection-item {
+    background: var(--bg-primary);
+    padding: 0.75rem;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.projection-label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.projection-value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-info);
+}
+
+.projection-value.editable {
+    cursor: pointer;
+    border-bottom: 1px dashed var(--text-secondary);
+}
+
+.projection-value.editable:hover {
+    color: var(--accent-success);
+}
+
+.budget-alert {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-primary);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-left: 3px solid var(--accent-warning);
+}
+
+.budget-alert.critical {
+    border-left-color: var(--accent-danger);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.budget-alert.warning {
+    border-left-color: var(--accent-warning);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.budget-alert.ok {
+    border-left-color: var(--accent-success);
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.alert-icon {
+    font-size: 1.2rem;
+}
+
+.budget-alert.critical .alert-icon {
+    color: var(--accent-danger);
+}
+
+.budget-alert.warning .alert-icon {
+    color: var(--accent-warning);
+}
+
+.budget-alert.ok .alert-icon {
+    color: var(--accent-success);
+}
+
+.alert-message {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+    .projection-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 /* ============================
    Health & Alerts
    ============================ */

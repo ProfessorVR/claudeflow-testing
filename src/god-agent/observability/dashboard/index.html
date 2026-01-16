@@ -160,12 +160,41 @@
                         </div>
                     </section>
 
-                    <!-- Cost Analytics Panel -->
+                    <!-- Cost Analytics Panel (Enhanced) -->
                     <section class="panel costs-panel" data-panel="costs">
                         <div class="panel-header">
                             <h2>Cost Analytics</h2>
+                            <span class="panel-badge" id="costAlertBadge" style="display: none;">Alert</span>
                         </div>
                         <div class="panel-body">
+                            <!-- Cost Projections -->
+                            <div class="cost-projections">
+                                <h4>Cost Projections</h4>
+                                <div class="projection-grid">
+                                    <div class="projection-item">
+                                        <span class="projection-label">Daily Burn</span>
+                                        <span class="projection-value" id="dailyBurn">$0.00</span>
+                                    </div>
+                                    <div class="projection-item">
+                                        <span class="projection-label">Projected Monthly</span>
+                                        <span class="projection-value" id="projectedMonthly">$0.00</span>
+                                    </div>
+                                    <div class="projection-item">
+                                        <span class="projection-label">Budget Monthly</span>
+                                        <span class="projection-value editable" id="budgetMonthly" title="Click to edit">$500.00</span>
+                                    </div>
+                                    <div class="projection-item">
+                                        <span class="projection-label">Runway</span>
+                                        <span class="projection-value" id="budgetRunway">-- days</span>
+                                    </div>
+                                </div>
+                                <!-- Budget Alert -->
+                                <div class="budget-alert" id="budgetAlert" style="display: none;">
+                                    <span class="alert-icon">&#9888;</span>
+                                    <span class="alert-message" id="budgetAlertMessage">Budget on track</span>
+                                </div>
+                            </div>
+
                             <div class="cost-breakdown">
                                 <div class="chart-container small">
                                     <canvas id="costBreakdownChart"></canvas>
