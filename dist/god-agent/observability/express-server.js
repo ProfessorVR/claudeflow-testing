@@ -599,26 +599,113 @@ export class ExpressServer {
         }
     }
     /**
-     * Get memory domains (placeholder)
-     * TODO: Integrate with InteractionStore when available
+     * Get memory domains from InteractionStore events
      */
-    getMemoryDomains(req, res) {
-        res.setHeader('Content-Type', 'application/json');
-        res.json({
-            domains: [],
-            message: 'InteractionStore integration pending',
-        });
+    async getMemoryDomains(req, res) {
+        try {
+            // Query memory and agent events to extract domains
+            const memoryEvents = await this.eventStore.query({
+                component: 'memory',
+                limit: 200,
+            });
+            const agentEvents = await this.eventStore.query({
+                component: 'agent',
+                limit: 200,
+            });
+            const allEvents = [...memoryEvents, ...agentEvents];
+            // Extract unique domains with counts
+            const domainCounts = new Map();
+            for (const event of allEvents) {
+                const metadata = event.metadata;
+                const domain = metadata?.domain || metadata?.agentKey || 'general';
+                const existing = domainCounts.get(domain) || { count: 0, lastSeen: 0, tags: new Set() };
+                existing.count++;
+                existing.lastSeen = Math.max(existing.lastSeen, event.timestamp);
+                if (Array.isArray(metadata?.tags)) {
+                    metadata.tags.forEach((tag) => existing.tags.add(tag));
+                }
+                domainCounts.set(domain, existing);
+            }
+            const domains = Array.from(domainCounts.entries())
+                .map(([name, data]) => ({
+                name,
+                count: data.count,
+                lastSeen: data.lastSeen,
+                tags: Array.from(data.tags),
+            }))
+                .sort((a, b) => b.count - a.count);
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                domains,
+                totalEvents: allEvents.length,
+                uniqueDomains: domains.length,
+            });
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Failed to get domains', domains: [] });
+        }
     }
     /**
-     * Get memory patterns (placeholder)
-     * TODO: Integrate with ReasoningBank when available
+     * Get memory patterns from ReasoningBank/SONA events
      */
-    getMemoryPatterns(req, res) {
-        res.setHeader('Content-Type', 'application/json');
-        res.json({
-            patterns: [],
-            message: 'ReasoningBank integration pending',
-        });
+    async getMemoryPatterns(req, res) {
+        try {
+            // Query reasoning and learning events
+            const reasoningEvents = await this.eventStore.query({
+                component: 'reasoning',
+                limit: 200,
+            });
+            const sonaEvents = await this.eventStore.query({
+                component: 'sona',
+                limit: 200,
+            });
+            const learningEvents = await this.eventStore.query({
+                component: 'learning',
+                limit: 200,
+            });
+            const allEvents = [...reasoningEvents, ...sonaEvents, ...learningEvents];
+            // Extract patterns with success rates
+            const patternData = new Map();
+            for (const event of allEvents) {
+                const metadata = event.metadata;
+                const pattern = metadata?.pattern ||
+                    metadata?.taskType ||
+                    (event.operation?.replace(/_/g, ' ')) ||
+                    'unknown';
+                const existing = patternData.get(pattern) || {
+                    count: 0,
+                    successes: 0,
+                    totalQuality: 0,
+                    lastSeen: 0
+                };
+                existing.count++;
+                if (metadata?.success === true || metadata?.outcome === 'success') {
+                    existing.successes++;
+                }
+                existing.totalQuality += Number(metadata?.quality || 0);
+                existing.lastSeen = Math.max(existing.lastSeen, event.timestamp);
+                patternData.set(pattern, existing);
+            }
+            const patterns = Array.from(patternData.entries())
+                .map(([name, data]) => ({
+                name,
+                count: data.count,
+                successRate: data.count > 0 ? data.successes / data.count : 0,
+                avgQuality: data.count > 0 ? data.totalQuality / data.count : 0,
+                lastSeen: data.lastSeen,
+            }))
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 50); // Top 50 patterns
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                patterns,
+                totalEvents: allEvents.length,
+                uniquePatterns: patterns.length,
+            });
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Failed to get patterns', patterns: [] });
+        }
     }
     /**
      * Get learning statistics - derives from EventStore learning events

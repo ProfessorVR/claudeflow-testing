@@ -825,12 +825,13 @@ export class ExpressServer implements IExpressServer {
       const domainCounts = new Map<string, { count: number; lastSeen: number; tags: Set<string> }>();
 
       for (const event of allEvents) {
-        const domain = event.metadata?.domain || event.metadata?.agentKey || 'general';
-        const existing = domainCounts.get(domain) || { count: 0, lastSeen: 0, tags: new Set() };
+        const metadata = event.metadata as Record<string, any> | undefined;
+        const domain = (metadata?.domain as string) || (metadata?.agentKey as string) || 'general';
+        const existing = domainCounts.get(domain) || { count: 0, lastSeen: 0, tags: new Set<string>() };
         existing.count++;
         existing.lastSeen = Math.max(existing.lastSeen, event.timestamp);
-        if (event.metadata?.tags) {
-          event.metadata.tags.forEach((tag: string) => existing.tags.add(tag));
+        if (Array.isArray(metadata?.tags)) {
+          metadata.tags.forEach((tag: string) => existing.tags.add(tag));
         }
         domainCounts.set(domain, existing);
       }
@@ -885,9 +886,10 @@ export class ExpressServer implements IExpressServer {
       }>();
 
       for (const event of allEvents) {
-        const pattern = event.metadata?.pattern ||
-                       event.metadata?.taskType ||
-                       event.operation?.replace(/_/g, ' ') ||
+        const metadata = event.metadata as Record<string, any> | undefined;
+        const pattern = (metadata?.pattern as string) ||
+                       (metadata?.taskType as string) ||
+                       (event.operation?.replace(/_/g, ' ')) ||
                        'unknown';
         const existing = patternData.get(pattern) || {
           count: 0,
@@ -896,10 +898,10 @@ export class ExpressServer implements IExpressServer {
           lastSeen: 0
         };
         existing.count++;
-        if (event.metadata?.success === true || event.metadata?.outcome === 'success') {
+        if (metadata?.success === true || metadata?.outcome === 'success') {
           existing.successes++;
         }
-        existing.totalQuality += Number(event.metadata?.quality || 0);
+        existing.totalQuality += Number(metadata?.quality || 0);
         existing.lastSeen = Math.max(existing.lastSeen, event.timestamp);
         patternData.set(pattern, existing);
       }

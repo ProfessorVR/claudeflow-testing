@@ -137,13 +137,11 @@ export declare class ExpressServer implements IExpressServer {
      */
     private getRoutingDecisions;
     /**
-     * Get memory domains (placeholder)
-     * TODO: Integrate with InteractionStore when available
+     * Get memory domains from InteractionStore events
      */
     private getMemoryDomains;
     /**
-     * Get memory patterns (placeholder)
-     * TODO: Integrate with ReasoningBank when available
+     * Get memory patterns from ReasoningBank/SONA events
      */
     private getMemoryPatterns;
     /**
