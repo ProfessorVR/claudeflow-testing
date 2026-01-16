@@ -10,11 +10,12 @@
 #
 
 # Profile definitions - which services to start
+# Note: embedding must start BEFORE ucm/daemon for CapabilityIndex routing
 declare -A PROFILE_SERVICES
 PROFILE_SERVICES[minimal]="memory daemon"
-PROFILE_SERVICES[dev]="vllm memory daemon ucm observe"
-PROFILE_SERVICES[prod]="vllm memory daemon ucm observe"
-PROFILE_SERVICES[research]="vllm memory daemon ucm observe"
+PROFILE_SERVICES[dev]="vllm embedding memory daemon ucm observe"
+PROFILE_SERVICES[prod]="vllm embedding memory daemon ucm observe"
+PROFILE_SERVICES[research]="vllm embedding memory daemon ucm observe"
 
 # Profile settings
 declare -A PROFILE_VERBOSE

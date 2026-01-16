@@ -4,16 +4,24 @@
 #
 # Services Started:
 #   vllm        Local vLLM AWQ model (Qwen2.5-Coder-32B-Instruct) on port 8002
+#   embedding   Embedding API (gte-Qwen2-1.5B-instruct) on port 8000 + ChromaDB on port 8001
 #   memory      Memory server daemon (AgentDB + DESC)
-#   daemon      Core God Agent daemon
-#   ucm         Universal Context Management daemon
+#   daemon      Core God Agent daemon (depends on embedding for CapabilityIndex routing)
+#   ucm         Universal Context Management daemon (depends on embedding for routing)
 #   observe     Observability dashboard (http://localhost:3847)
 #
+# Startup Order:
+#   1. vLLM (no dependencies)
+#   2. Embedding API (no dependencies, but MUST start before daemon/ucm)
+#   3. Memory (no dependencies)
+#   4. Daemon (depends on memory, embedding)
+#   5. UCM (depends on daemon, embedding)
+#   6. Observe (depends on daemon)
+#
 # GPU Management:
-#   - vLLM starts by default for local inference
-#   - Embedding server does NOT start by default (saves GPU VRAM)
-#   - Embedding starts automatically when needed (god learn, ingest operations)
-#   - GPU switching handled by GPUServerManager (vLLM ↔ embedding)
+#   - vLLM uses primary GPU memory for inference
+#   - Embedding API uses GPU for model inference (gte-Qwen2-1.5B-instruct)
+#   - Both can run concurrently on sufficient VRAM
 #
 # Usage:
 #   god launch [command] [options]
@@ -68,9 +76,11 @@ export BOLD='\033[1m'
 export NC='\033[0m' # No Color
 
 # Service definitions
-export SERVICES=(vllm memory daemon ucm observe)
+# Note: embedding must come after vllm but before memory/daemon/ucm for proper startup order
+export SERVICES=(vllm embedding memory daemon ucm observe)
 export SERVICE_NAMES=(
-    "embedding:Embedding Server"
+    "vllm:vLLM AWQ Server"
+    "embedding:Embedding API"
     "memory:Memory Server"
     "daemon:Core Daemon"
     "ucm:UCM Daemon"
@@ -87,18 +97,18 @@ export UCM_SOCKET="/tmp/godagent-ucm.sock"
 # Ensure directories exist
 mkdir -p "${GOD_CONFIG_DIR}" "${GOD_LOG_DIR}"
 
+# Helper: Print colored message (must be defined before sourcing modules that use them)
+log_info() { echo -e "${BLUE}[INFO]${NC} $*"; }
+log_success() { echo -e "${GREEN}[OK]${NC} $*"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $*"; }
+
 # Source modules
 source "${LAUNCH_DIR}/profiles.sh"
 source "${LAUNCH_DIR}/config-loader.sh"
 
 # Load configuration
 load_launcher_config
-
-# Helper: Print colored message
-log_info() { echo -e "${BLUE}[INFO]${NC} $*"; }
-log_success() { echo -e "${GREEN}[OK]${NC} $*"; }
-log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
-log_error() { echo -e "${RED}[ERROR]${NC} $*"; }
 
 # Helper: Check if tmux session exists
 session_exists() {

@@ -77,48 +77,49 @@ port_available() {
     ! netstat -tuln 2>/dev/null | grep -q ":${port} "
 }
 
-# Start embedding server
+# Start embedding API using api-embed.sh
+# This must start BEFORE any routing-dependent services (daemon, ucm)
+# because CapabilityIndex depends on embeddings for routing
 start_embedding() {
-    log_info "Starting embedding server..."
+    log_info "Starting embedding API (required for CapabilityIndex routing)..."
+
+    local embed_script="${GOD_PROJECT_DIR}/embedding-api/api-embed.sh"
 
     # Check if already running
     if curl -sf "http://127.0.0.1:${EMBEDDING_PORT}/" >/dev/null 2>&1; then
-        log_success "Embedding server already running"
+        log_success "Embedding API already running"
         return 0
     fi
 
-    # Check if ollama is available
-    if command -v ollama &>/dev/null; then
-        # Check if ollama is already running
-        if curl -sf "http://127.0.0.1:11434/api/tags" >/dev/null 2>&1; then
-            log_info "Using existing Ollama instance"
-            export UCM_EMBEDDING_ENDPOINT="http://127.0.0.1:11434/api/embeddings"
-            return 0
-        fi
-    fi
-
-    # Try FastAPI wrapper
-    if [[ -f "${GOD_PROJECT_DIR}/embedding-api/api_embedder.py" ]]; then
-        tmux send-keys -t "${GOD_SESSION_NAME}:embed" \
-            "cd '${GOD_PROJECT_DIR}/embedding-api' && python api_embedder.py 2>&1 | tee '${GOD_LOG_DIR}/embedding.log'" Enter
-    else
-        # Fallback: start ollama serve
-        if command -v ollama &>/dev/null; then
-            tmux send-keys -t "${GOD_SESSION_NAME}:embed" \
-                "ollama serve 2>&1 | tee '${GOD_LOG_DIR}/embedding.log'" Enter
-            export UCM_EMBEDDING_ENDPOINT="http://127.0.0.1:11434/api/embeddings"
+    # Verify script exists
+    if [[ ! -x "${embed_script}" ]]; then
+        if [[ -f "${embed_script}" ]]; then
+            chmod +x "${embed_script}"
         else
-            log_warn "No embedding server available. UCM will run in degraded mode."
-            return 0
+            log_error "Embedding API script not found: ${embed_script}"
+            log_warn "CapabilityIndex routing will not function correctly"
+            return 1
         fi
     fi
 
-    # Wait for embedding to be ready
-    if wait_for_http "http://127.0.0.1:${EMBEDDING_PORT}/health" 60 || \
-       wait_for_http "http://127.0.0.1:11434/api/tags" 60; then
-        log_success "Embedding server ready"
+    # Start embedding API using the dedicated script (runs ChromaDB + API server)
+    log_info "Starting ChromaDB and Embedding API via api-embed.sh..."
+    tmux send-keys -t "${GOD_SESSION_NAME}:embed" \
+        "'${embed_script}' start 2>&1; echo '--- Embedding API exited ---'; read" Enter
+
+    # Wait for embedding API to be ready (model loading can take time)
+    # The API runs on port 8000, ChromaDB on port 8001
+    log_info "Waiting for Embedding API to initialize (loading model)..."
+    if wait_for_http "http://127.0.0.1:${EMBEDDING_PORT}/" 60; then
+        log_success "Embedding API ready on port ${EMBEDDING_PORT}"
+        # Also verify ChromaDB is accessible
+        if curl -sf "http://127.0.0.1:8001/api/v1/heartbeat" >/dev/null 2>&1; then
+            log_success "ChromaDB ready on port 8001"
+        fi
     else
-        log_warn "Embedding server not responding (UCM will run in degraded mode)"
+        log_error "Embedding API failed to start within 60s"
+        log_warn "CapabilityIndex routing may not function correctly"
+        return 1
     fi
 }
 
@@ -357,6 +358,14 @@ do_start() {
     echo ""
 
     # Start services based on profile (only enabled services)
+    # Services are started in dependency order:
+    # 1. vLLM (no dependencies) - local inference
+    # 2. Embedding API (no dependencies) - MUST start before routing-dependent services
+    # 3. Memory (no dependencies)
+    # 4. Core daemon (depends on memory, embedding for CapabilityIndex)
+    # 5. UCM (depends on daemon, embedding for routing)
+    # 6. Observability (depends on daemon)
+
     # 1. vLLM (no dependencies)
     if service_enabled_in_profile "vllm"; then
         start_vllm
@@ -364,28 +373,36 @@ do_start() {
         log_info "Skipping vLLM (not in profile: ${CURRENT_PROFILE})"
     fi
 
-    # 2. Memory (no dependencies)
+    # 2. Embedding API (MUST start before daemon/ucm for CapabilityIndex routing)
+    if service_enabled_in_profile "embedding"; then
+        start_embedding
+    else
+        log_info "Skipping embedding (not in profile: ${CURRENT_PROFILE})"
+        log_warn "CapabilityIndex routing will not be available"
+    fi
+
+    # 3. Memory (no dependencies)
     if service_enabled_in_profile "memory"; then
         start_memory
     else
         log_info "Skipping memory (not in profile: ${CURRENT_PROFILE})"
     fi
 
-    # 3. Core daemon (depends on memory)
+    # 4. Core daemon (depends on memory, embedding for CapabilityIndex)
     if service_enabled_in_profile "daemon"; then
         start_daemon
     else
         log_info "Skipping daemon (not in profile: ${CURRENT_PROFILE})"
     fi
 
-    # 4. UCM (depends on daemon)
+    # 5. UCM (depends on daemon, embedding for routing)
     if service_enabled_in_profile "ucm"; then
         start_ucm
     else
         log_info "Skipping ucm (not in profile: ${CURRENT_PROFILE})"
     fi
 
-    # 5. Observability (depends on daemon)
+    # 6. Observability (depends on daemon)
     if service_enabled_in_profile "observe"; then
         start_observe
     else
@@ -432,8 +449,14 @@ do_restart() {
         # Stop the specific service
         case "${service}" in
             embedding)
-                tmux send-keys -t "${GOD_SESSION_NAME}:embed" C-c
-                sleep 1
+                # Use api-embed.sh for proper restart (stops ChromaDB + API)
+                local embed_script="${GOD_PROJECT_DIR}/embedding-api/api-embed.sh"
+                if [[ -x "${embed_script}" ]]; then
+                    "${embed_script}" stop 2>/dev/null || true
+                else
+                    tmux send-keys -t "${GOD_SESSION_NAME}:embed" C-c 2>/dev/null || true
+                fi
+                sleep 2
                 start_embedding
                 ;;
             memory)

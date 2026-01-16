@@ -13,12 +13,43 @@ check_service_status() {
     local cpu=""
 
     case "${service}" in
-        embedding)
-            if curl -sf "http://127.0.0.1:${EMBEDDING_PORT}/" >/dev/null 2>&1 || \
-               curl -sf "http://127.0.0.1:11434/api/tags" >/dev/null 2>&1; then
+        vllm)
+            # Check vLLM AWQ server on port 8002
+            if curl -sf "http://127.0.0.1:8002/v1/models" >/dev/null 2>&1; then
                 status="running"
-                pid=$(pgrep -f "api_embedder" 2>/dev/null | head -1)
-                [[ -z "$pid" ]] && pid=$(pgrep -f "ollama" 2>/dev/null | head -1)
+                pid=$(pgrep -f "vllm" 2>/dev/null | head -1)
+            fi
+            ;;
+        embedding)
+            # Check Embedding API (port 8000) and ChromaDB (port 8001)
+            local api_up=false
+            local chroma_up=false
+
+            if curl -sf "http://127.0.0.1:${EMBEDDING_PORT}/" >/dev/null 2>&1; then
+                api_up=true
+            fi
+            if curl -sf "http://127.0.0.1:8001/api/v1/heartbeat" >/dev/null 2>&1; then
+                chroma_up=true
+            fi
+
+            if [[ "$api_up" == "true" ]]; then
+                status="running"
+                # Try to get PID from api-embed.sh pid files or process
+                local pid_file="${GOD_PROJECT_DIR}/.run/embedder.pid"
+                if [[ -f "$pid_file" ]]; then
+                    pid=$(cat "$pid_file" 2>/dev/null)
+                else
+                    pid=$(pgrep -f "api_embedder" 2>/dev/null | head -1)
+                fi
+            elif [[ "$chroma_up" == "true" ]]; then
+                # ChromaDB running but API not - partial status
+                status="degraded"
+                local chroma_pid_file="${GOD_PROJECT_DIR}/.run/chroma.pid"
+                if [[ -f "$chroma_pid_file" ]]; then
+                    pid=$(cat "$chroma_pid_file" 2>/dev/null)
+                else
+                    pid=$(pgrep -f "chroma" 2>/dev/null | head -1)
+                fi
             fi
             ;;
         memory)
@@ -86,6 +117,9 @@ do_status() {
         if [[ "$status" == "running" ]]; then
             status_color="${GREEN}"
             status_icon="●"
+        elif [[ "$status" == "degraded" ]]; then
+            status_color="${YELLOW}"
+            status_icon="◐"
         fi
 
         printf "${CYAN}║${NC}  %-12s ${status_color}${status_icon} %-8s${NC} %-8s %-10s %-10s %-8s ${CYAN}║${NC}\n" \
@@ -102,8 +136,9 @@ do_status() {
     fi
 
     # Endpoints
-    echo -e "${CYAN}║${NC}  ${BLUE}Dashboard:${NC} http://localhost:${OBSERVE_PORT}                             ${CYAN}║${NC}"
-    echo -e "${CYAN}║${NC}  ${BLUE}Embedding:${NC} http://localhost:${EMBEDDING_PORT}                              ${CYAN}║${NC}"
+    echo -e "${CYAN}║${NC}  ${BLUE}Dashboard:${NC}  http://localhost:${OBSERVE_PORT}                            ${CYAN}║${NC}"
+    echo -e "${CYAN}║${NC}  ${BLUE}Embedding:${NC}  http://localhost:${EMBEDDING_PORT}                             ${CYAN}║${NC}"
+    echo -e "${CYAN}║${NC}  ${BLUE}ChromaDB:${NC}   http://localhost:8001                             ${CYAN}║${NC}"
 
     echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════════╝${NC}"
     echo ""

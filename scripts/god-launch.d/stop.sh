@@ -31,10 +31,16 @@ do_stop() {
     log_info "Stopping memory server..."
     (cd "${GOD_PROJECT_DIR}" && npm run memory:stop 2>/dev/null) || true
 
-    # 5. Embedding (no dependencies)
-    log_info "Stopping embedding server..."
-    # Send Ctrl-C to embedding window
-    tmux send-keys -t "${GOD_SESSION_NAME}:embed" C-c 2>/dev/null || true
+    # 5. Embedding API (no dependencies)
+    log_info "Stopping embedding API..."
+    # Use api-embed.sh for proper shutdown (stops both ChromaDB and API server)
+    local embed_script="${GOD_PROJECT_DIR}/embedding-api/api-embed.sh"
+    if [[ -x "${embed_script}" ]]; then
+        "${embed_script}" stop 2>/dev/null || true
+    else
+        # Fallback: send Ctrl-C to embedding window
+        tmux send-keys -t "${GOD_SESSION_NAME}:embed" C-c 2>/dev/null || true
+    fi
 
     # Wait a moment for graceful shutdown
     sleep 2
@@ -57,7 +63,13 @@ stop_service() {
 
     case "${service}" in
         embedding)
-            tmux send-keys -t "${GOD_SESSION_NAME}:embed" C-c 2>/dev/null || true
+            # Use api-embed.sh for proper shutdown (stops both ChromaDB and API)
+            local embed_script="${GOD_PROJECT_DIR}/embedding-api/api-embed.sh"
+            if [[ -x "${embed_script}" ]]; then
+                "${embed_script}" stop 2>/dev/null || true
+            else
+                tmux send-keys -t "${GOD_SESSION_NAME}:embed" C-c 2>/dev/null || true
+            fi
             ;;
         memory)
             (cd "${GOD_PROJECT_DIR}" && npm run memory:stop 2>/dev/null) || true
