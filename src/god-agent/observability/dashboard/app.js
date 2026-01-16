@@ -412,29 +412,93 @@ class DashboardApp {
      * Setup panel visibility toggles
      */
     setupPanelToggles() {
-        const panelToggles = document.querySelectorAll('.panel-toggle');
+        const container = document.getElementById('panelToggles');
+        if (!container) return;
 
-        panelToggles.forEach(toggle => {
-            const panelId = toggle.dataset.panel;
+        // Get all panels from the current active tab
+        const panels = document.querySelectorAll('.panel[data-panel]');
+        const panelNames = new Map();
 
-            // Load saved state
+        // Create unique panel list
+        panels.forEach(panel => {
+            const panelId = panel.dataset.panel;
+            if (!panelNames.has(panelId)) {
+                const header = panel.querySelector('.panel-header h2');
+                const name = header?.textContent || panelId;
+                panelNames.set(panelId, name);
+            }
+        });
+
+        // Create Show All / Hide All buttons
+        const buttonsHtml = `
+            <div class="toggle-actions">
+                <button class="btn-toggle-all" id="showAllPanels">Show All</button>
+                <button class="btn-toggle-all" id="hideAllPanels">Hide All</button>
+            </div>
+        `;
+
+        // Create toggle HTML for each unique panel
+        let togglesHtml = '';
+        panelNames.forEach((name, panelId) => {
             const isHidden = localStorage.getItem(`panel-${panelId}`) === 'hidden';
-            toggle.checked = !isHidden;
+            togglesHtml += `
+                <label class="panel-toggle-item">
+                    <input type="checkbox" class="panel-toggle" data-panel="${panelId}" ${!isHidden ? 'checked' : ''}>
+                    <span class="toggle-label">${this.escapeHtml(name)}</span>
+                </label>
+            `;
+        });
 
+        container.innerHTML = buttonsHtml + togglesHtml;
+
+        // Apply saved hidden states
+        panelNames.forEach((_, panelId) => {
+            const isHidden = localStorage.getItem(`panel-${panelId}`) === 'hidden';
             if (isHidden) {
-                const panel = document.getElementById(panelId);
+                const panel = document.querySelector(`.panel[data-panel="${panelId}"]`);
                 panel?.classList.add('hidden');
             }
+        });
 
+        // Setup toggle event listeners
+        container.querySelectorAll('.panel-toggle').forEach(toggle => {
             toggle.addEventListener('change', () => {
-                const panel = document.getElementById(panelId);
+                const panelId = toggle.dataset.panel;
+                const allPanels = document.querySelectorAll(`.panel[data-panel="${panelId}"]`);
+
+                allPanels.forEach(panel => {
+                    if (toggle.checked) {
+                        panel.classList.remove('hidden');
+                    } else {
+                        panel.classList.add('hidden');
+                    }
+                });
+
                 if (toggle.checked) {
-                    panel?.classList.remove('hidden');
                     localStorage.removeItem(`panel-${panelId}`);
                 } else {
-                    panel?.classList.add('hidden');
                     localStorage.setItem(`panel-${panelId}`, 'hidden');
                 }
+            });
+        });
+
+        // Show All button
+        document.getElementById('showAllPanels')?.addEventListener('click', () => {
+            container.querySelectorAll('.panel-toggle').forEach(toggle => {
+                toggle.checked = true;
+                const panelId = toggle.dataset.panel;
+                document.querySelectorAll(`.panel[data-panel="${panelId}"]`).forEach(p => p.classList.remove('hidden'));
+                localStorage.removeItem(`panel-${panelId}`);
+            });
+        });
+
+        // Hide All button
+        document.getElementById('hideAllPanels')?.addEventListener('click', () => {
+            container.querySelectorAll('.panel-toggle').forEach(toggle => {
+                toggle.checked = false;
+                const panelId = toggle.dataset.panel;
+                document.querySelectorAll(`.panel[data-panel="${panelId}"]`).forEach(p => p.classList.add('hidden'));
+                localStorage.setItem(`panel-${panelId}`, 'hidden');
             });
         });
     }

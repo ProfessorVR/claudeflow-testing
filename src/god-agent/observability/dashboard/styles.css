@@ -191,18 +191,65 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
-.panel-toggle {
+.toggle-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.btn-toggle-all {
+    flex: 1;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-toggle-all:hover {
+    background: var(--accent-info);
+    color: white;
+    border-color: var(--accent-info);
+}
+
+.panel-toggle-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.panel-toggle-item:hover {
+    background: var(--bg-primary);
+}
+
+.panel-toggle {
+    accent-color: var(--accent-info);
     cursor: pointer;
 }
 
-.panel-toggle input {
-    accent-color: var(--accent-info);
+.toggle-label {
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.panel.hidden {
+    display: none !important;
 }
 
 .quick-stats {
