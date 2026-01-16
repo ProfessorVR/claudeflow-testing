@@ -34,6 +34,9 @@ import {
 /**
  * Routing metrics counters
  * Tracks local vs cloud requests and fallback events
+ *
+ * LOCAL-FIRST METRICS: Enhanced tracking for local-first strategy
+ * Goal: 70%+ local usage, visible in dashboard
  */
 export interface RoutingMetrics {
   /** Count of requests routed to local models (vllm, ollama) */
@@ -52,6 +55,35 @@ export interface RoutingMetrics {
     to: string;
     timestamp: Date;
   } | null;
+
+  // === LOCAL-FIRST SPECIFIC METRICS ===
+  /** Local-first strategy metrics */
+  localFirst: {
+    /** Requests where local was tried first (regardless of outcome) */
+    localTriedFirst: number;
+    /** Local attempts that succeeded without Claude */
+    localSucceeded: number;
+    /** Local attempts that fell back to Claude */
+    localFellBackToClaude: number;
+    /** Requests that skipped local (high-risk direct to Claude) */
+    skippedLocal: number;
+    /** Pure local verified (tests passed, no review needed) */
+    pureLocalVerified: number;
+    /** Local then review (local + Claude review) */
+    localThenReview: number;
+  };
+  /** Routing distribution by recommendation type */
+  byRecommendation: {
+    local: number;
+    pure_local_verified: number;
+    local_then_review: number;
+    expensive: number;
+  };
+  /** Timestamps for rate calculation */
+  timestamps: {
+    firstRequest: Date | null;
+    lastRequest: Date | null;
+  };
 }
 
 // Global routing metrics singleton
@@ -62,6 +94,24 @@ let routingMetrics: RoutingMetrics = {
   recoveryEvents: 0,
   lastUnavailableProvider: null,
   lastFallback: null,
+  localFirst: {
+    localTriedFirst: 0,
+    localSucceeded: 0,
+    localFellBackToClaude: 0,
+    skippedLocal: 0,
+    pureLocalVerified: 0,
+    localThenReview: 0,
+  },
+  byRecommendation: {
+    local: 0,
+    pure_local_verified: 0,
+    local_then_review: 0,
+    expensive: 0,
+  },
+  timestamps: {
+    firstRequest: null,
+    lastRequest: null,
+  },
 };
 
 /**
@@ -82,6 +132,114 @@ export function resetRoutingMetrics(): void {
     recoveryEvents: 0,
     lastUnavailableProvider: null,
     lastFallback: null,
+    localFirst: {
+      localTriedFirst: 0,
+      localSucceeded: 0,
+      localFellBackToClaude: 0,
+      skippedLocal: 0,
+      pureLocalVerified: 0,
+      localThenReview: 0,
+    },
+    byRecommendation: {
+      local: 0,
+      pure_local_verified: 0,
+      local_then_review: 0,
+      expensive: 0,
+    },
+    timestamps: {
+      firstRequest: null,
+      lastRequest: null,
+    },
+  };
+}
+
+/**
+ * LOCAL-FIRST: Track a local-first routing decision
+ */
+export function trackLocalFirstDecision(
+  recommendation: 'local' | 'pure_local_verified' | 'local_then_review' | 'expensive',
+  outcome: {
+    triedLocal: boolean;
+    localSucceeded: boolean;
+    fellBackToClaude: boolean;
+  }
+): void {
+  const now = new Date();
+
+  // Update timestamps
+  if (!routingMetrics.timestamps.firstRequest) {
+    routingMetrics.timestamps.firstRequest = now;
+  }
+  routingMetrics.timestamps.lastRequest = now;
+
+  // Track by recommendation type
+  routingMetrics.byRecommendation[recommendation]++;
+
+  // Track local-first specific metrics
+  if (outcome.triedLocal) {
+    routingMetrics.localFirst.localTriedFirst++;
+    if (outcome.localSucceeded) {
+      routingMetrics.localFirst.localSucceeded++;
+    }
+    if (outcome.fellBackToClaude) {
+      routingMetrics.localFirst.localFellBackToClaude++;
+    }
+  } else {
+    routingMetrics.localFirst.skippedLocal++;
+  }
+
+  // Track specific routing patterns
+  if (recommendation === 'pure_local_verified') {
+    routingMetrics.localFirst.pureLocalVerified++;
+  } else if (recommendation === 'local_then_review') {
+    routingMetrics.localFirst.localThenReview++;
+  }
+}
+
+/**
+ * LOCAL-FIRST: Get local usage percentage
+ */
+export function getLocalUsagePercentage(): number {
+  const total = routingMetrics.localRequests + routingMetrics.cloudRequests;
+  if (total === 0) return 0;
+  return (routingMetrics.localRequests / total) * 100;
+}
+
+/**
+ * LOCAL-FIRST: Get local success rate (when local is tried)
+ */
+export function getLocalSuccessRate(): number {
+  const tried = routingMetrics.localFirst.localTriedFirst;
+  if (tried === 0) return 0;
+  return (routingMetrics.localFirst.localSucceeded / tried) * 100;
+}
+
+/**
+ * LOCAL-FIRST: Get formatted metrics summary for dashboard
+ */
+export function getLocalFirstMetricsSummary(): {
+  localUsage: string;
+  localSuccess: string;
+  breakdown: string;
+  savings: string;
+} {
+  const totalRequests = routingMetrics.localRequests + routingMetrics.cloudRequests;
+  const localPct = getLocalUsagePercentage();
+  const successPct = getLocalSuccessRate();
+
+  // Estimate cost savings (assuming $0.003 per Claude request average)
+  const estimatedSavings = routingMetrics.localRequests * 0.003;
+
+  return {
+    localUsage: `${localPct.toFixed(1)}% (${routingMetrics.localRequests}/${totalRequests})`,
+    localSuccess: `${successPct.toFixed(1)}% success when tried`,
+    breakdown: [
+      `Pure local: ${routingMetrics.byRecommendation.local}`,
+      `Test verified: ${routingMetrics.byRecommendation.pure_local_verified}`,
+      `Local+review: ${routingMetrics.byRecommendation.local_then_review}`,
+      `Claude only: ${routingMetrics.byRecommendation.expensive}`,
+    ].join(' | '),
+    savings: `~$${estimatedSavings.toFixed(2)} saved`,
   };
 }
 

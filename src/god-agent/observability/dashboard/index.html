@@ -459,6 +459,52 @@
                         </div>
                     </section>
 
+                    <!-- LOCAL-FIRST ROUTING METRICS PANEL -->
+                    <section class="panel local-first-panel" data-panel="local-first">
+                        <div class="panel-header">
+                            <h2>Local-First Routing</h2>
+                            <span class="count-badge local-usage" id="localUsageBadge">0%</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="metrics-grid">
+                                <div class="metric-card highlight-green">
+                                    <span class="metric-label">Local Usage</span>
+                                    <span class="metric-value" id="localUsagePct">0%</span>
+                                    <span class="metric-detail">Goal: 70%+</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Local Success</span>
+                                    <span class="metric-value" id="localSuccessRate">0%</span>
+                                    <span class="metric-detail">When tried</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Estimated Savings</span>
+                                    <span class="metric-value" id="estimatedSavings">$0.00</span>
+                                    <span class="metric-detail">vs. all Claude</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Total Requests</span>
+                                    <span class="metric-value" id="totalRoutingRequests">0</span>
+                                </div>
+                            </div>
+                            <div class="routing-breakdown">
+                                <h3>Routing Distribution</h3>
+                                <div class="breakdown-bar">
+                                    <div class="bar-segment local" id="barLocal" title="Pure Local" style="width: 0%"></div>
+                                    <div class="bar-segment verified" id="barVerified" title="Test Verified" style="width: 0%"></div>
+                                    <div class="bar-segment review" id="barReview" title="Local+Review" style="width: 0%"></div>
+                                    <div class="bar-segment claude" id="barClaude" title="Claude Only" style="width: 0%"></div>
+                                </div>
+                                <div class="breakdown-legend">
+                                    <span class="legend-item"><span class="dot local"></span> Pure Local (<span id="countLocal">0</span>)</span>
+                                    <span class="legend-item"><span class="dot verified"></span> Test Verified (<span id="countVerified">0</span>)</span>
+                                    <span class="legend-item"><span class="dot review"></span> Local+Review (<span id="countReview">0</span>)</span>
+                                    <span class="legend-item"><span class="dot claude"></span> Claude Only (<span id="countClaude">0</span>)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- Routing Decisions Panel (from existing) -->
                     <section class="panel routing-panel" data-panel="routing">
                         <div class="panel-header">

@@ -2311,6 +2311,86 @@ class DashboardApp {
     }
 
     /**
+     * LOCAL-FIRST: Update local-first routing metrics panel
+     * Goal: Show 70%+ local usage
+     */
+    updateLocalFirstMetrics(metrics) {
+        if (!metrics) return;
+
+        // Calculate totals
+        const total = (metrics.localRequests || 0) + (metrics.cloudRequests || 0);
+        const localPct = total > 0 ? ((metrics.localRequests || 0) / total * 100) : 0;
+
+        // Get local-first specific metrics
+        const lf = metrics.localFirst || {};
+        const byRec = metrics.byRecommendation || {};
+
+        // Local success rate
+        const tried = lf.localTriedFirst || 0;
+        const succeeded = lf.localSucceeded || 0;
+        const successPct = tried > 0 ? (succeeded / tried * 100) : 0;
+
+        // Estimated savings ($0.003 per Claude request average)
+        const savings = (metrics.localRequests || 0) * 0.003;
+
+        // Update metric cards
+        const localUsageBadge = document.getElementById('localUsageBadge');
+        const localUsagePct = document.getElementById('localUsagePct');
+        const localSuccessRate = document.getElementById('localSuccessRate');
+        const estimatedSavings = document.getElementById('estimatedSavings');
+        const totalRoutingRequests = document.getElementById('totalRoutingRequests');
+
+        if (localUsageBadge) localUsageBadge.textContent = `${localPct.toFixed(0)}%`;
+        if (localUsagePct) localUsagePct.textContent = `${localPct.toFixed(1)}%`;
+        if (localSuccessRate) localSuccessRate.textContent = `${successPct.toFixed(1)}%`;
+        if (estimatedSavings) estimatedSavings.textContent = `$${savings.toFixed(2)}`;
+        if (totalRoutingRequests) totalRoutingRequests.textContent = total.toString();
+
+        // Update badge color based on goal (70%+)
+        if (localUsageBadge) {
+            if (localPct >= 70) {
+                localUsageBadge.style.backgroundColor = '#4CAF50';
+            } else if (localPct >= 50) {
+                localUsageBadge.style.backgroundColor = '#FF9800';
+            } else {
+                localUsageBadge.style.backgroundColor = '#f44336';
+            }
+        }
+
+        // Update breakdown bar
+        const recTotal = (byRec.local || 0) + (byRec.pure_local_verified || 0) +
+                        (byRec.local_then_review || 0) + (byRec.expensive || 0);
+
+        if (recTotal > 0) {
+            const localWidth = (byRec.local || 0) / recTotal * 100;
+            const verifiedWidth = (byRec.pure_local_verified || 0) / recTotal * 100;
+            const reviewWidth = (byRec.local_then_review || 0) / recTotal * 100;
+            const claudeWidth = (byRec.expensive || 0) / recTotal * 100;
+
+            const barLocal = document.getElementById('barLocal');
+            const barVerified = document.getElementById('barVerified');
+            const barReview = document.getElementById('barReview');
+            const barClaude = document.getElementById('barClaude');
+
+            if (barLocal) barLocal.style.width = `${localWidth}%`;
+            if (barVerified) barVerified.style.width = `${verifiedWidth}%`;
+            if (barReview) barReview.style.width = `${reviewWidth}%`;
+            if (barClaude) barClaude.style.width = `${claudeWidth}%`;
+        }
+
+        // Update legend counts
+        const countLocal = document.getElementById('countLocal');
+        const countVerified = document.getElementById('countVerified');
+        const countReview = document.getElementById('countReview');
+        const countClaude = document.getElementById('countClaude');
+
+        if (countLocal) countLocal.textContent = (byRec.local || 0).toString();
+        if (countVerified) countVerified.textContent = (byRec.pure_local_verified || 0).toString();
+        if (countReview) countReview.textContent = (byRec.local_then_review || 0).toString();
+        if (countClaude) countClaude.textContent = (byRec.expensive || 0).toString();
+    }
+
+    /**
      * Update learning metrics and chart
      */
     updateLearningMetrics(stats) {

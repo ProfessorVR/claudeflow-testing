@@ -385,7 +385,96 @@ body {
 .experiments-panel { border-left: 3px solid #9C27B0; }
 .optimizer-panel { border-left: 3px solid #FF5722; }
 .routing-panel { border-left: 3px solid var(--accent-info); }
+.local-first-panel { border-left: 3px solid #4CAF50; }
 .registry-panel { border-left: 3px solid #00BCD4; }
+
+/* ============================
+   LOCAL-FIRST ROUTING STYLES
+   ============================ */
+.local-first-panel .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.local-first-panel .local-usage {
+    background-color: #4CAF50;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.local-first-panel .metric-card.highlight-green {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(76, 175, 80, 0.05));
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.local-first-panel .metric-detail {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.routing-breakdown {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.routing-breakdown h3 {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+}
+
+.breakdown-bar {
+    display: flex;
+    height: 24px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--bg-tertiary);
+}
+
+.bar-segment {
+    transition: width 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: white;
+    min-width: 0;
+}
+
+.bar-segment.local { background: #4CAF50; }
+.bar-segment.verified { background: #8BC34A; }
+.bar-segment.review { background: #FF9800; }
+.bar-segment.claude { background: #2196F3; }
+
+.breakdown-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+    font-size: 0.8rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.legend-item .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.legend-item .dot.local { background: #4CAF50; }
+.legend-item .dot.verified { background: #8BC34A; }
+.legend-item .dot.review { background: #FF9800; }
+.legend-item .dot.claude { background: #2196F3; }
 .ucm-panel { border-left: 3px solid #9C27B0; }
 .hyperedge-panel { border-left: 3px solid #FF5722; }
 .memory-panel { border-left: 3px solid #673AB7; }
