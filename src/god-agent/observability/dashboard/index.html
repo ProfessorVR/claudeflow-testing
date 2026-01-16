@@ -194,13 +194,28 @@
                         </div>
                     </section>
 
-                    <!-- Learning Metrics Panel (from existing) -->
+                    <!-- Learning Metrics Panel (Enhanced) -->
                     <section class="panel learning-panel" data-panel="learning">
                         <div class="panel-header">
                             <h2>Learning Metrics</h2>
                             <span class="panel-badge" id="learningBadge">SoNA</span>
                         </div>
                         <div class="panel-body">
+                            <!-- Convergence Progress -->
+                            <div class="learning-convergence">
+                                <div class="convergence-header">
+                                    <span class="convergence-label">Learning Convergence</span>
+                                    <span class="convergence-value" id="convergencePercent">0%</span>
+                                </div>
+                                <div class="convergence-bar-container">
+                                    <div class="convergence-bar" id="convergenceBar" style="width: 0%"></div>
+                                </div>
+                                <div class="convergence-stats">
+                                    <span>Drift: <span id="convergenceDrift">0.00</span></span>
+                                    <span>Status: <span id="convergenceStatus" class="status-stable">Stable</span></span>
+                                </div>
+                            </div>
+
                             <div class="metrics-grid">
                                 <div class="metric-card">
                                     <span class="metric-label">Trajectories</span>
@@ -225,6 +240,26 @@
                                 <div class="metric-card">
                                     <span class="metric-label">Success/Fail</span>
                                     <span class="metric-value" id="patternSuccessFail">0/0</span>
+                                </div>
+                            </div>
+
+                            <!-- Quality Distribution -->
+                            <div class="quality-distribution">
+                                <h4>Trajectory Quality Distribution</h4>
+                                <div class="quality-histogram" id="qualityHistogram">
+                                    <div class="histogram-bar" data-range="0.0-0.2" style="--height: 0%"><span>0-20%</span></div>
+                                    <div class="histogram-bar" data-range="0.2-0.4" style="--height: 0%"><span>20-40%</span></div>
+                                    <div class="histogram-bar" data-range="0.4-0.6" style="--height: 0%"><span>40-60%</span></div>
+                                    <div class="histogram-bar" data-range="0.6-0.8" style="--height: 0%"><span>60-80%</span></div>
+                                    <div class="histogram-bar" data-range="0.8-1.0" style="--height: 0%"><span>80-100%</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Top Patterns -->
+                            <div class="top-patterns">
+                                <h4>Top Performing Patterns</h4>
+                                <div class="patterns-list" id="topPatternsList">
+                                    <div class="pattern-item">No patterns yet</div>
                                 </div>
                             </div>
                         </div>
