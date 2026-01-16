@@ -38,7 +38,7 @@ import { createPipelineExecutor, } from '../core/pipeline/index.js';
 // DAI-003: Intelligent Task Routing
 import { TaskAnalyzer, CapabilityIndex, RoutingEngine, PipelineGenerator, RoutingLearner, ConfirmationHandler, FailureClassifier, } from '../core/routing/index.js';
 // TIER-2.1: Intelligent Model Router
-import { initializeRouter, initializeProviderFactory, initializeCostTracker, initializeQualityScorer, initializeBudgetEnforcer, initializeAuditLogger, getModelForRequest, recordCompletedRequest, DEFAULT_ROUTER_CONFIG, } from '../core/router/index.js';
+import { initializeRouter, initializeProviderFactory, getProviderFactory, initializeCostTracker, initializeQualityScorer, initializeBudgetEnforcer, initializeAuditLogger, getModelForRequest, recordCompletedRequest, loadRouterConfig, } from '../core/router/index.js';
 // MEM-001: Multi-Process Memory System
 import { getMemoryClient, } from '../core/memory-server/index.js';
 // TASK-HOOK-006: Hook Executor for pre/post Tool Use hooks
@@ -254,7 +254,9 @@ export class UniversalAgent {
         if (this.config.enableModelRouter !== false) {
             try {
                 // Initialize provider factory (uses default config if not specified)
+                // This creates all providers (Anthropic, OpenAI, Ollama, vLLM) based on available API keys/servers
                 await initializeProviderFactory({});
+                const factory = getProviderFactory();
                 // Initialize cost tracker with budgets
                 initializeCostTracker({
                     enabled: true,
@@ -274,7 +276,7 @@ export class UniversalAgent {
                         weekly: this.config.weeklyBudget,
                         monthly: this.config.monthlyBudget,
                     },
-                    fallbackModels: this.config.fallbackModels ?? ['deepseek-coder-local', 'qwen-local'],
+                    fallbackModels: this.config.fallbackModels ?? ['qwen2.5-coder-32b', 'deepseek-coder'],
                     blockOnBudgetExceeded: false, // Use fallback instead of blocking
                 });
                 // Initialize audit logger
@@ -283,13 +285,22 @@ export class UniversalAgent {
                     storage: 'file',
                     storagePath: `${this.config.storageDir}/audit`,
                 });
-                // Initialize capability router
+                // Load router config with defaults (includes priority-based model configs and routing rules)
+                // LOCAL-FIRST: vLLM models have priority 0, cloud models have priority 10+
+                const routerConfig = loadRouterConfig();
+                // Initialize capability router with proper config
                 this.modelRouter = initializeRouter({
-                    routerConfig: DEFAULT_ROUTER_CONFIG,
+                    routerConfig,
                     adaptiveRouting: true,
                 });
+                // Register all providers from factory with the router
+                // This connects the provider instances to the routing system
+                const providers = factory.getAllProviders();
+                for (const provider of providers) {
+                    this.modelRouter.registerProvider(provider);
+                }
                 this.modelRouterEnabled = true;
-                this.log('TIER-2.1: Model router initialized - Intelligent model selection enabled');
+                this.log(`TIER-2.1: Model router initialized with ${providers.length} providers - LOCAL-FIRST routing enabled`);
             }
             catch (error) {
                 // Non-fatal: model router is optional enhancement

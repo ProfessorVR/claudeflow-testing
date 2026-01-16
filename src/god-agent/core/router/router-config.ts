@@ -47,7 +47,8 @@ export const DEFAULT_ROUTER_CONFIG: RouterConfig = {
  */
 export const DEFAULT_MODEL_CONFIGS: Record<string, Partial<ProviderConfig>> = {
   // === LOCAL MODELS (HIGHEST PRIORITY - FREE) ===
-  'qwen-coder-32b': {
+  // ID must match vllm-provider.ts VLLM_MODELS key
+  'qwen2.5-coder-32b': {
     provider: 'vllm' as ProviderType,
     model: 'Qwen/Qwen2.5-Coder-32B-Instruct-AWQ',
     capabilities: ['code', 'reasoning', 'writing', 'refactor', 'debug', 'test'],
@@ -137,58 +138,58 @@ export const DEFAULT_ROUTING_RULES: RoutingRule[] = [
   {
     task: 'code_edit',
     complexity: 'simple',
-    route: ['qwen-coder-32b', 'deepseek-coder', 'gpt-4o-mini', 'claude-sonnet'],
+    route: ['qwen2.5-coder-32b', 'deepseek-coder', 'gpt-4o-mini', 'claude-sonnet'],
   },
   {
     task: 'code_edit',
     complexity: 'medium',
-    route: ['qwen-coder-32b', 'deepseek-coder', 'gpt-4o', 'claude-sonnet'],
+    route: ['qwen2.5-coder-32b', 'deepseek-coder', 'gpt-4o', 'claude-sonnet'],
   },
   {
     task: 'code_edit',
     complexity: 'complex',
-    route: ['qwen-coder-32b', 'claude-sonnet', 'gpt-4o'],
+    route: ['qwen2.5-coder-32b', 'claude-sonnet', 'gpt-4o'],
   },
   // === REASONING - LOCAL FIRST ===
   {
     task: 'reasoning',
-    route: ['qwen-coder-32b', 'o1', 'claude-sonnet', 'gpt-4o'],
+    route: ['qwen2.5-coder-32b', 'o1', 'claude-sonnet', 'gpt-4o'],
   },
   // === RESEARCH - LOCAL FIRST ===
   {
     task: 'research',
-    route: ['qwen-coder-32b', 'claude-sonnet', 'gpt-4o'],
+    route: ['qwen2.5-coder-32b', 'claude-sonnet', 'gpt-4o'],
   },
   // === WRITING - LOCAL FIRST ===
   {
     task: 'writing',
-    route: ['qwen-coder-32b', 'deepseek-coder', 'gpt-4o', 'claude-sonnet'],
+    route: ['qwen2.5-coder-32b', 'deepseek-coder', 'gpt-4o', 'claude-sonnet'],
   },
   // === REFACTORING - LOCAL FIRST ===
   {
     task: 'refactor',
     complexity: 'simple',
-    route: ['qwen-coder-32b', 'deepseek-coder', 'gpt-4o', 'claude-sonnet'],
+    route: ['qwen2.5-coder-32b', 'deepseek-coder', 'gpt-4o', 'claude-sonnet'],
   },
   {
     task: 'refactor',
     complexity: 'medium',
-    route: ['qwen-coder-32b', 'gpt-4o', 'claude-sonnet'],
+    route: ['qwen2.5-coder-32b', 'gpt-4o', 'claude-sonnet'],
   },
   {
     task: 'refactor',
     complexity: 'complex',
-    route: ['qwen-coder-32b', 'claude-sonnet', 'gpt-4o'],
+    route: ['qwen2.5-coder-32b', 'claude-sonnet', 'gpt-4o'],
   },
   // === DEBUG - LOCAL FIRST ===
   {
     task: 'debug',
-    route: ['qwen-coder-32b', 'claude-sonnet', 'gpt-4o'],
+    route: ['qwen2.5-coder-32b', 'claude-sonnet', 'gpt-4o'],
   },
   // === TEST - LOCAL FIRST ===
   {
     task: 'test',
-    route: ['qwen-coder-32b', 'deepseek-coder', 'claude-sonnet', 'gpt-4o'],
+    route: ['qwen2.5-coder-32b', 'deepseek-coder', 'claude-sonnet', 'gpt-4o'],
   },
 ];
 
