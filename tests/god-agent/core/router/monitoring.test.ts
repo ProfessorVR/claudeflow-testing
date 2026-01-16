@@ -408,7 +408,8 @@ describe('Alert detection', () => {
 
   it('should detect degradation to fallback', async () => {
     const circuitManager = getCircuitBreakerManager();
-    circuitManager.getBreaker('anthropic').forceState('open');
+    // Open vllm circuit (now the primary in local-first config)
+    circuitManager.getBreaker('vllm').forceState('open');
 
     await monitor.runHealthCheck();
 
@@ -678,5 +679,31 @@ describe('DEFAULT_ALERT_DEFINITIONS', () => {
 
   it('should have all alerts enabled by default', () => {
     expect(DEFAULT_ALERT_DEFINITIONS.every(a => a.enabled)).toBe(true);
+  });
+
+  // Local-first routing alerts
+  it('should have local model unavailable alert', () => {
+    const alert = DEFAULT_ALERT_DEFINITIONS.find(a => a.id === 'local_model_unavailable');
+
+    expect(alert).toBeDefined();
+    expect(alert?.category).toBe('routing');
+    expect(alert?.severity).toBe('warning');
+    expect(alert?.durationMs).toBe(300000); // 5 minutes
+  });
+
+  it('should have high fallback rate alert', () => {
+    const alert = DEFAULT_ALERT_DEFINITIONS.find(a => a.id === 'high_fallback_rate');
+
+    expect(alert).toBeDefined();
+    expect(alert?.category).toBe('routing');
+    expect(alert?.threshold).toBe(0.1); // 10%
+  });
+
+  it('should have cloud cost threshold alert', () => {
+    const alert = DEFAULT_ALERT_DEFINITIONS.find(a => a.id === 'cloud_cost_threshold');
+
+    expect(alert).toBeDefined();
+    expect(alert?.category).toBe('routing');
+    expect(alert?.threshold).toBe(5.0); // $5/day default
   });
 });

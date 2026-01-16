@@ -17,6 +17,7 @@ import { getRateLimiterManager, RateLimitStatus } from './rate-limiter.js';
 import { getDegradationManager, ProviderHealth, DegradationLevel } from './graceful-degradation.js';
 import { getCostTracker } from './cost-tracker.js';
 import { getQualityScorer } from './quality-scorer.js';
+import { getRoutingMetrics, resetRoutingMetrics } from './capability-router.js';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TYPES
@@ -38,7 +39,8 @@ export type AlertCategory =
   | 'error_rate'
   | 'cost'
   | 'degradation'
-  | 'availability';
+  | 'availability'
+  | 'routing';
 
 /**
  * Alert state
@@ -281,6 +283,37 @@ export const DEFAULT_ALERT_DEFINITIONS: AlertDefinition[] = [
     severity: 'warning',
     description: 'Service is operating in fallback mode',
     threshold: 1,
+    durationMs: 0,
+    enabled: true,
+  },
+  // ===== LOCAL-FIRST ROUTING ALERTS =====
+  {
+    id: 'local_model_unavailable',
+    name: 'Local Model Unavailable',
+    category: 'routing',
+    severity: 'warning',
+    description: 'Local model (vLLM) has been unavailable, routing to cloud',
+    threshold: 1,
+    durationMs: 300000, // 5 minutes
+    enabled: true,
+  },
+  {
+    id: 'high_fallback_rate',
+    name: 'High Fallback Rate',
+    category: 'routing',
+    severity: 'warning',
+    description: 'Fallback to cloud providers exceeds 10% of requests',
+    threshold: 0.1, // 10%
+    durationMs: 60000, // 1 minute
+    enabled: true,
+  },
+  {
+    id: 'cloud_cost_threshold',
+    name: 'Cloud Cost Threshold Exceeded',
+    category: 'routing',
+    severity: 'warning',
+    description: 'Daily cloud provider costs exceed threshold (local should be used)',
+    threshold: 5.0, // $5/day default
     durationMs: 0,
     enabled: true,
   },
@@ -544,6 +577,48 @@ export class MonitoringSystem extends EventEmitter {
       // Quality scorer may not be initialized
     }
 
+    // Routing metrics (local-first)
+    const routingMetrics = getRoutingMetrics();
+    this.recordMetric({
+      name: 'routing_local_requests',
+      value: routingMetrics.localRequests,
+      timestamp,
+      tags: {},
+    });
+    this.recordMetric({
+      name: 'routing_cloud_requests',
+      value: routingMetrics.cloudRequests,
+      timestamp,
+      tags: {},
+    });
+    this.recordMetric({
+      name: 'routing_fallback_events',
+      value: routingMetrics.fallbackEvents,
+      timestamp,
+      tags: {},
+    });
+    this.recordMetric({
+      name: 'routing_recovery_events',
+      value: routingMetrics.recoveryEvents,
+      timestamp,
+      tags: {},
+    });
+    const totalRouted = routingMetrics.localRequests + routingMetrics.cloudRequests;
+    if (totalRouted > 0) {
+      this.recordMetric({
+        name: 'routing_local_percentage',
+        value: routingMetrics.localRequests / totalRouted,
+        timestamp,
+        tags: {},
+      });
+      this.recordMetric({
+        name: 'routing_fallback_rate',
+        value: routingMetrics.fallbackEvents / totalRouted,
+        timestamp,
+        tags: {},
+      });
+    }
+
     this.emit('metric_recorded', { type: 'metric_recorded', timestamp, data: { count: this.metrics.length } });
   }
 
@@ -742,6 +817,63 @@ export class MonitoringSystem extends EventEmitter {
 
         case 'cost': {
           // Cost alerts are handled separately via budget tracking
+          break;
+        }
+
+        case 'routing': {
+          // Local-first routing alerts
+          const routingMetrics = getRoutingMetrics();
+          const totalRequests = routingMetrics.localRequests + routingMetrics.cloudRequests;
+
+          if (definition.id === 'local_model_unavailable') {
+            // Check if local model has been unavailable
+            conditionMet = routingMetrics.lastUnavailableProvider !== null &&
+              (routingMetrics.lastUnavailableProvider === 'vllm' ||
+               routingMetrics.lastUnavailableProvider === 'qwen2.5-coder-32b');
+            if (conditionMet) {
+              message = `Local model unavailable: ${routingMetrics.lastUnavailableProvider}`;
+              context = {
+                provider: routingMetrics.lastUnavailableProvider,
+                fallbackEvents: routingMetrics.fallbackEvents,
+                lastFallback: routingMetrics.lastFallback,
+              };
+            }
+          } else if (definition.id === 'high_fallback_rate') {
+            // Check fallback rate
+            if (totalRequests > 0) {
+              const fallbackRate = routingMetrics.fallbackEvents / totalRequests;
+              conditionMet = fallbackRate > definition.threshold;
+              if (conditionMet) {
+                message = `High fallback rate: ${(fallbackRate * 100).toFixed(1)}% (threshold: ${definition.threshold * 100}%)`;
+                context = {
+                  fallbackRate,
+                  fallbackEvents: routingMetrics.fallbackEvents,
+                  totalRequests,
+                  localRequests: routingMetrics.localRequests,
+                  cloudRequests: routingMetrics.cloudRequests,
+                };
+              }
+            }
+          } else if (definition.id === 'cloud_cost_threshold') {
+            // Check daily cloud costs
+            try {
+              const costTracker = getCostTracker();
+              const stats = costTracker.getStats();
+              // Check if we have cloud requests and costs exceed threshold
+              if (routingMetrics.cloudRequests > 0 && stats.totalCost > definition.threshold) {
+                conditionMet = true;
+                message = `Cloud costs exceed threshold: $${stats.totalCost.toFixed(2)} (threshold: $${definition.threshold})`;
+                context = {
+                  totalCost: stats.totalCost,
+                  threshold: definition.threshold,
+                  cloudRequests: routingMetrics.cloudRequests,
+                  localRequests: routingMetrics.localRequests,
+                };
+              }
+            } catch {
+              // Cost tracker may not be initialized
+            }
+          }
           break;
         }
       }

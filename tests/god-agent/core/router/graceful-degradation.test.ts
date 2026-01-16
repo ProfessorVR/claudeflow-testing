@@ -49,23 +49,25 @@ describe('DegradationManager', () => {
     it('should return primary provider when healthy', async () => {
       const decision = await manager.getDecision('default');
 
-      expect(decision.provider).toBe('anthropic');
+      // Local-first: vllm is now the default primary
+      expect(decision.provider).toBe('vllm');
       expect(decision.serviceAvailable).toBe(true);
     });
 
     it('should use fallback when primary is unavailable', async () => {
-      // Open circuit for primary
+      // Open circuit for primary (vllm is now primary in local-first)
       const circuitManager = getCircuitBreakerManager();
-      const anthropicBreaker = circuitManager.getBreaker('anthropic');
-      anthropicBreaker.forceState('open');
+      const vllmBreaker = circuitManager.getBreaker('vllm');
+      vllmBreaker.forceState('open');
 
-      // Also open openai
-      const openaiBreaker = circuitManager.getBreaker('openai');
-      openaiBreaker.forceState('open');
+      // Also open ollama (secondary local)
+      const ollamaBreaker = circuitManager.getBreaker('ollama');
+      ollamaBreaker.forceState('open');
 
       const decision = await manager.getDecision('default');
 
-      expect(decision.provider).toBe('vllm');
+      // Falls back to anthropic (first cloud fallback)
+      expect(decision.provider).toBe('anthropic');
       expect(decision.level).toBe('fallback');
     });
 
@@ -108,8 +110,8 @@ describe('DegradationManager', () => {
     });
 
     it('should use correct chain for use case', async () => {
-      // The local chain has vllm as primary
-      const decision = await manager.getDecision('local');
+      // The local_only chain has vllm as primary (no cloud fallback)
+      const decision = await manager.getDecision('local_only');
 
       expect(decision.provider).toBe('vllm');
     });
@@ -117,14 +119,16 @@ describe('DegradationManager', () => {
     it('should fallback to default chain for unknown use case', async () => {
       const decision = await manager.getDecision('unknown-use-case');
 
-      expect(decision.provider).toBe('anthropic');
+      // Default chain now uses vllm as primary (local-first)
+      expect(decision.provider).toBe('vllm');
     });
 
     it('should include alternatives in decision', async () => {
       const decision = await manager.getDecision('default');
 
+      // With local-first, default primary is vllm, fallbacks include cloud
+      expect(decision.alternatives).toContain('anthropic');
       expect(decision.alternatives).toContain('openai');
-      expect(decision.alternatives).toContain('vllm');
       expect(decision.alternatives).toContain('ollama');
     });
   });
@@ -133,7 +137,8 @@ describe('DegradationManager', () => {
     it('should return provider from decision', async () => {
       const provider = await manager.selectProvider('default');
 
-      expect(provider).toBe('anthropic');
+      // Local-first: vllm is now the default primary
+      expect(provider).toBe('vllm');
     });
 
     it('should prefer local when requested and available', async () => {
@@ -241,7 +246,8 @@ describe('DegradationManager', () => {
 
     it('should return fallback when using fallback provider', async () => {
       const circuitManager = getCircuitBreakerManager();
-      circuitManager.getBreaker('anthropic').forceState('open');
+      // Open vllm circuit (now the primary in local-first config)
+      circuitManager.getBreaker('vllm').forceState('open');
 
       const level = await manager.getOverallDegradationLevel();
 
@@ -562,9 +568,12 @@ describe('getHealthSummary', () => {
 });
 
 describe('DEFAULT_DEGRADATION_CONFIG', () => {
-  it('should have default fallback chain', () => {
+  it('should have default fallback chain with local-first priority', () => {
     expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.default).toBeDefined();
-    expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.default.primary).toBe('anthropic');
+    // Local-first: vllm is now primary
+    expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.default.primary).toBe('vllm');
+    // Cloud providers are fallbacks
+    expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.default.fallbacks).toContain('anthropic');
     expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.default.fallbacks).toContain('openai');
   });
 
@@ -573,9 +582,17 @@ describe('DEFAULT_DEGRADATION_CONFIG', () => {
     expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.code.minQualityThreshold).toBeGreaterThan(0);
   });
 
-  it('should have local chain', () => {
-    expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.local).toBeDefined();
-    expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.local.primary).toBe('vllm');
+  it('should have local_only chain for offline mode', () => {
+    expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.local_only).toBeDefined();
+    expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.local_only.primary).toBe('vllm');
+    expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.local_only.fallbacks).not.toContain('anthropic');
+    expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.local_only.fallbacks).not.toContain('openai');
+  });
+
+  it('should have cloud_only chain for explicit cloud preference', () => {
+    expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.cloud_only).toBeDefined();
+    expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.cloud_only.primary).toBe('anthropic');
+    expect(DEFAULT_DEGRADATION_CONFIG.fallbackChains.cloud_only.fallbacks).not.toContain('vllm');
   });
 
   it('should have sensible thresholds', () => {
