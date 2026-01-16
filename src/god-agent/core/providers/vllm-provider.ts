@@ -43,7 +43,7 @@ export class VLLMProvider extends BaseLLMProvider {
     super(config);
     this.baseUrl = config.baseUrl ?? process.env.VLLM_BASE_URL ?? 'http://localhost:8000';
     this.timeout = config.timeout ?? 30000;
-    this.defaultModelName = config.defaultModel ?? 'qwen2.5-coder-32b-awq';
+    this.defaultModelName = config.defaultModel ?? 'Qwen/Qwen2.5-Coder-32B-Instruct-AWQ';
   }
 
   /**
