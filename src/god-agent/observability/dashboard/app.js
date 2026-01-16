@@ -1278,11 +1278,12 @@ class DashboardApp {
      */
     async loadRouterData() {
         try {
-            const [circuitsRes, rateLimitsRes, degradationRes, experimentsRes] = await Promise.all([
+            const [circuitsRes, rateLimitsRes, degradationRes, experimentsRes, metricsRes] = await Promise.all([
                 fetch('/api/router/circuits'),
                 fetch('/api/router/ratelimits'),
                 fetch('/api/router/degradation'),
-                fetch('/api/router/experiments')
+                fetch('/api/router/experiments'),
+                fetch('/api/routing-metrics')
             ]);
 
             if (circuitsRes.ok) {
@@ -1300,6 +1301,11 @@ class DashboardApp {
             if (experimentsRes.ok) {
                 this.routerData.experiments = (await experimentsRes.json()).experiments || [];
                 this.renderExperiments();
+            }
+            if (metricsRes.ok) {
+                const metricsData = await metricsRes.json();
+                this.routerData.metrics = metricsData.data || metricsData;
+                this.updateLocalFirstMetrics(this.routerData.metrics);
             }
         } catch (error) {
             console.error('Error loading router data:', error);
@@ -1614,6 +1620,13 @@ class DashboardApp {
                 const decisions = data.decisions || data || [];
                 this.routingDecisions = decisions;
                 this.renderRoutingDecisions();
+            }
+
+            // Load routing metrics for local-first panel
+            const routingMetricsRes = await fetch('/api/routing-metrics');
+            if (routingMetricsRes.ok) {
+                const metricsData = await routingMetricsRes.json();
+                this.updateLocalFirstMetrics(metricsData.data || metricsData);
             }
 
             // Load learning stats

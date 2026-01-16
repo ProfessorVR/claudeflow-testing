@@ -235,11 +235,15 @@ export declare class ExpressServer implements IExpressServer {
     /**
      * Get list of Knowledge Units with optional filtering
      * Query params: query, minConfidence, limit, offset
+     *
+     * Returns empty array if learning corpus doesn't exist (graceful degradation)
      */
     private getExploreKUs;
     /**
      * Get list of Reasoning Units with optional filtering
      * Query params: relation, minScore, sourceKuId, targetKuId, limit
+     *
+     * Returns empty array if reasoning data doesn't exist (graceful degradation)
      */
     private getExploreRUs;
     /**

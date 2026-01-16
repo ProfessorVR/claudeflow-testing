@@ -9,6 +9,98 @@
 
 import { spawn } from 'child_process';
 import { join } from 'path';
+import { existsSync } from 'fs';
+
+/**
+ * Strip ANSI color codes from string
+ */
+function stripAnsi(str: string): string {
+  // eslint-disable-next-line no-control-regex
+  return str.replace(/\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])/g, '');
+}
+
+/**
+ * Extract JSON from mixed output (handles text before/after JSON)
+ * More robust than simple regex - finds balanced brackets
+ */
+function extractJson(output: string): string | null {
+  // First strip ANSI codes
+  const cleaned = stripAnsi(output).trim();
+
+  // Try to find JSON array
+  const arrayStart = cleaned.indexOf('[');
+  if (arrayStart !== -1) {
+    let depth = 0;
+    let inString = false;
+    let escape = false;
+
+    for (let i = arrayStart; i < cleaned.length; i++) {
+      const char = cleaned[i];
+
+      if (escape) {
+        escape = false;
+        continue;
+      }
+
+      if (char === '\\' && inString) {
+        escape = true;
+        continue;
+      }
+
+      if (char === '"' && !escape) {
+        inString = !inString;
+        continue;
+      }
+
+      if (!inString) {
+        if (char === '[') depth++;
+        if (char === ']') depth--;
+
+        if (depth === 0) {
+          return cleaned.substring(arrayStart, i + 1);
+        }
+      }
+    }
+  }
+
+  // Try to find JSON object
+  const objectStart = cleaned.indexOf('{');
+  if (objectStart !== -1) {
+    let depth = 0;
+    let inString = false;
+    let escape = false;
+
+    for (let i = objectStart; i < cleaned.length; i++) {
+      const char = cleaned[i];
+
+      if (escape) {
+        escape = false;
+        continue;
+      }
+
+      if (char === '\\' && inString) {
+        escape = true;
+        continue;
+      }
+
+      if (char === '"' && !escape) {
+        inString = !inString;
+        continue;
+      }
+
+      if (!inString) {
+        if (char === '{') depth++;
+        if (char === '}') depth--;
+
+        if (depth === 0) {
+          return cleaned.substring(objectStart, i + 1);
+        }
+      }
+    }
+  }
+
+  return null;
+}
 
 // ===== TYPES =====
 
@@ -149,6 +241,8 @@ export class ExploreBridge {
   private readonly pythonPath: string;
   private readonly scriptPath: string;
   private readonly projectRoot: string;
+  private readonly knowledgePath: string;
+  private readonly reasoningPath: string;
 
   constructor(options?: {
     pythonPath?: string;
@@ -157,6 +251,22 @@ export class ExploreBridge {
     this.pythonPath = options?.pythonPath ?? 'python3';
     this.projectRoot = options?.projectRoot ?? process.cwd();
     this.scriptPath = join(this.projectRoot, 'scripts', 'explore', 'cli', 'god_explore.py');
+    this.knowledgePath = join(this.projectRoot, 'god-learn', 'knowledge.jsonl');
+    this.reasoningPath = join(this.projectRoot, 'god-reason', 'reasoning.jsonl');
+  }
+
+  /**
+   * Check if the learning corpus exists
+   */
+  hasLearningCorpus(): boolean {
+    return existsSync(this.knowledgePath);
+  }
+
+  /**
+   * Check if reasoning data exists
+   */
+  hasReasoningData(): boolean {
+    return existsSync(this.reasoningPath);
   }
 
   /**
@@ -171,6 +281,9 @@ export class ExploreBridge {
         env: {
           ...process.env,
           PYTHONPATH: this.projectRoot,
+          // Disable ANSI colors in Python output
+          NO_COLOR: '1',
+          TERM: 'dumb',
         },
       });
 
@@ -196,9 +309,9 @@ export class ExploreBridge {
         }
 
         try {
-          // Find JSON in output (may have other text before it)
-          const jsonMatch = stdout.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
-          if (!jsonMatch) {
+          // Use improved JSON extraction that handles ANSI codes and mixed output
+          const jsonStr = extractJson(stdout);
+          if (!jsonStr) {
             reject(new ExploreError(
               'No JSON found in output',
               args,
@@ -207,7 +320,7 @@ export class ExploreBridge {
             ));
             return;
           }
-          const result = JSON.parse(jsonMatch[1]) as T;
+          const result = JSON.parse(jsonStr) as T;
           resolve(result);
         } catch (err) {
           reject(new ExploreError(
@@ -230,8 +343,14 @@ export class ExploreBridge {
 
   /**
    * List knowledge units with optional filters
+   * Returns empty array if learning corpus doesn't exist
    */
   async listKUs(options?: KUQueryOptions): Promise<KnowledgeUnit[]> {
+    // Return empty array if corpus doesn't exist
+    if (!this.hasLearningCorpus()) {
+      return [];
+    }
+
     const args = ['list', 'kus'];
 
     if (options?.query) {
@@ -247,32 +366,63 @@ export class ExploreBridge {
       args.push('--offset', options.offset.toString());
     }
 
-    return this.execute<KnowledgeUnit[]>(args);
+    try {
+      return await this.execute<KnowledgeUnit[]>(args);
+    } catch (err) {
+      // If Python CLI fails, return empty array instead of throwing
+      if (err instanceof ExploreError) {
+        // Log but don't throw - graceful degradation
+        console.warn(`ExploreBridge.listKUs failed: ${err.message}`);
+        return [];
+      }
+      throw err;
+    }
   }
 
   /**
    * List reasoning units with optional filters
+   * Returns empty array if reasoning data doesn't exist
+   * Note: The Python CLI doesn't support --json for RUs, so we return empty for now
    */
   async listRUs(options?: RUQueryOptions): Promise<ReasoningUnit[]> {
-    const args = ['list', 'rus'];
-
-    if (options?.relation) {
-      args.push('--relation', options.relation);
-    }
-    if (options?.minScore !== undefined) {
-      args.push('--min-score', options.minScore.toString());
-    }
-    if (options?.sourceKuId) {
-      args.push('--source', options.sourceKuId);
-    }
-    if (options?.targetKuId) {
-      args.push('--target', options.targetKuId);
-    }
-    if (options?.limit !== undefined) {
-      args.push('--limit', options.limit.toString());
+    // Return empty array if reasoning data doesn't exist
+    if (!this.hasReasoningData()) {
+      return [];
     }
 
-    return this.execute<ReasoningUnit[]>(args);
+    // NOTE: The Python CLI doesn't support --json flag for 'list rus'
+    // Until the Python CLI is updated, return empty array with a warning
+    console.warn('ExploreBridge.listRUs: Python CLI does not support --json for RUs, returning empty array');
+    return [];
+
+    // Original implementation (uncomment when Python CLI supports --json for RUs):
+    // const args = ['list', 'rus'];
+    //
+    // if (options?.relation) {
+    //   args.push('--relation', options.relation);
+    // }
+    // if (options?.minScore !== undefined) {
+    //   args.push('--min-score', options.minScore.toString());
+    // }
+    // if (options?.sourceKuId) {
+    //   args.push('--source', options.sourceKuId);
+    // }
+    // if (options?.targetKuId) {
+    //   args.push('--target', options.targetKuId);
+    // }
+    // if (options?.limit !== undefined) {
+    //   args.push('--limit', options.limit.toString());
+    // }
+    //
+    // try {
+    //   return await this.execute<ReasoningUnit[]>(args);
+    // } catch (err) {
+    //   if (err instanceof ExploreError) {
+    //     console.warn(`ExploreBridge.listRUs failed: ${err.message}`);
+    //     return [];
+    //   }
+    //   throw err;
+    // }
   }
 
   /**

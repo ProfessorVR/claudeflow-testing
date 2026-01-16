@@ -33,6 +33,7 @@ import {
   getRateLimiterManager,
   getDegradationManager,
   getExperimentManager,
+  getRoutingMetrics,
   executeRouterCommand,
   formatDashboardSummary,
   formatModelComparison,
@@ -424,23 +425,42 @@ export class ExpressServer implements IExpressServer {
     // 27. Router - A/B Experiments
     app.get('/api/router/experiments', this.getRouterExperiments.bind(this));
 
-    // 28. Command Interface
+    // 28. Router - Routing Metrics (Local-First)
+    app.get('/api/routing-metrics', (req: Request, res: Response) => {
+      try {
+        if (!getRoutingMetrics) {
+          res.status(503).json({ error: 'Routing metrics not available' });
+          return;
+        }
+        const metrics = getRoutingMetrics();
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+          success: true,
+          data: metrics,
+        });
+      } catch (error) {
+        log.error('Error getting routing metrics', error);
+        res.status(500).json({ error: 'Failed to get routing metrics' });
+      }
+    });
+
+    // 29. Command Interface
     app.post('/api/command', this.executeCommand.bind(this));
 
     // =========================================================================
     // EXPLORE TAB ENDPOINTS (Phase 11 Introspection Integration)
     // =========================================================================
 
-    // 29. List Knowledge Units
+    // 30. List Knowledge Units
     app.get('/api/explore/kus', this.getExploreKUs.bind(this));
 
-    // 30. List Reasoning Units
+    // 31. List Reasoning Units
     app.get('/api/explore/rus', this.getExploreRUs.bind(this));
 
-    // 31. Get single Knowledge Unit
+    // 32. Get single Knowledge Unit
     app.get('/api/explore/ku/:id', this.getExploreKU.bind(this));
 
-    // 32. Get single Reasoning Unit
+    // 33. Get single Reasoning Unit
     app.get('/api/explore/ru/:id', this.getExploreRU.bind(this));
 
     // 33. Build knowledge graph
@@ -1743,6 +1763,8 @@ export class ExpressServer implements IExpressServer {
   /**
    * Get list of Knowledge Units with optional filtering
    * Query params: query, minConfidence, limit, offset
+   *
+   * Returns empty array if learning corpus doesn't exist (graceful degradation)
    */
   private async getExploreKUs(req: Request, res: Response): Promise<void> {
     try {
@@ -1760,6 +1782,9 @@ export class ExpressServer implements IExpressServer {
       };
 
       const bridge = getExploreBridge({ projectRoot: process.cwd() });
+
+      // Check if learning corpus exists and provide helpful message
+      const hasCorpus = bridge.hasLearningCorpus();
       const kus = await bridge.listKUs(options);
 
       res.setHeader('Content-Type', 'application/json');
@@ -1768,13 +1793,20 @@ export class ExpressServer implements IExpressServer {
         data: kus,
         count: kus.length,
         options,
+        ...(hasCorpus ? {} : {
+          message: 'Learning corpus not found. Run "god-learn compile" to create knowledge units.',
+        }),
       });
     } catch (error) {
-      log.error('Error getting explore KUs', error);
-      res.status(500).json({
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to get knowledge units',
-        hint: 'Ensure Python explore CLI is available and learning corpus exists',
+      // Log but return success with empty data (graceful degradation)
+      log.warn('Error getting explore KUs, returning empty array', { error: error instanceof Error ? error.message : String(error) });
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        success: true,
+        data: [],
+        count: 0,
+        message: 'Unable to load knowledge units. Ensure Python explore CLI is available.',
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   }
@@ -1782,6 +1814,8 @@ export class ExpressServer implements IExpressServer {
   /**
    * Get list of Reasoning Units with optional filtering
    * Query params: relation, minScore, sourceKuId, targetKuId, limit
+   *
+   * Returns empty array if reasoning data doesn't exist (graceful degradation)
    */
   private async getExploreRUs(req: Request, res: Response): Promise<void> {
     try {
@@ -1798,6 +1832,9 @@ export class ExpressServer implements IExpressServer {
       };
 
       const bridge = getExploreBridge({ projectRoot: process.cwd() });
+
+      // Check if reasoning data exists and provide helpful message
+      const hasReasoning = bridge.hasReasoningData();
       const rus = await bridge.listRUs(options);
 
       res.setHeader('Content-Type', 'application/json');
@@ -1806,12 +1843,20 @@ export class ExpressServer implements IExpressServer {
         data: rus,
         count: rus.length,
         options,
+        ...(hasReasoning ? {} : {
+          message: 'Reasoning data not found. Run Phase 7 reasoning extraction to create reasoning units.',
+        }),
       });
     } catch (error) {
-      log.error('Error getting explore RUs', error);
-      res.status(500).json({
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to get reasoning units',
+      // Log but return success with empty data (graceful degradation)
+      log.warn('Error getting explore RUs, returning empty array', { error: error instanceof Error ? error.message : String(error) });
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        success: true,
+        data: [],
+        count: 0,
+        message: 'Unable to load reasoning units.',
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   }
