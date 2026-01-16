@@ -6,6 +6,7 @@
     <title>God Agent Unified Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
     <!-- Header with Tab Navigation -->
@@ -23,6 +24,7 @@
             <button class="main-tab" data-tab="router">Router</button>
             <button class="main-tab" data-tab="memory">Memory</button>
             <button class="main-tab" data-tab="activity">Activity</button>
+            <button class="main-tab" data-tab="explore">Explore</button>
         </nav>
         <div class="header-right">
             <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">&#9776;</button>
@@ -33,6 +35,22 @@
     <div class="dashboard-container">
         <!-- Collapsible Sidebar -->
         <aside class="sidebar" id="sidebar">
+            <!-- Global Search Section -->
+            <div class="sidebar-section search-section">
+                <h3>Global Search</h3>
+                <div class="global-search">
+                    <input type="text" id="globalSearchInput" class="search-input" placeholder="Search everything...">
+                    <div class="search-filters">
+                        <label class="search-filter-label"><input type="checkbox" id="searchKUs" checked> KUs</label>
+                        <label class="search-filter-label"><input type="checkbox" id="searchAgents" checked> Agents</label>
+                        <label class="search-filter-label"><input type="checkbox" id="searchMemory" checked> Memory</label>
+                    </div>
+                    <div class="search-results" id="globalSearchResults">
+                        <!-- Search results appear here -->
+                    </div>
+                </div>
+            </div>
+
             <div class="sidebar-section">
                 <h3>Panel Visibility</h3>
                 <div class="panel-toggles" id="panelToggles">
@@ -592,6 +610,215 @@
                             <ul id="pipelineList" class="pipeline-list"></ul>
                         </div>
                     </section>
+                </div>
+            </div>
+
+            <!-- Explore Tab (Phase 11 Introspection) -->
+            <div class="tab-panel" id="explore-tab">
+                <div class="dashboard-grid explore-grid">
+                    <!-- Explore Stats Summary -->
+                    <section class="panel explore-stats-panel" data-panel="explore-stats">
+                        <div class="panel-header">
+                            <h2>Knowledge Base Statistics</h2>
+                            <button class="refresh-btn" id="refreshExplore">&#8635;</button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="metrics-grid explore-metrics">
+                                <div class="metric-card">
+                                    <span class="metric-label">Knowledge Units</span>
+                                    <span class="metric-value" id="exploreKuCount">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Reasoning Units</span>
+                                    <span class="metric-value" id="exploreRuCount">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Source Chunks</span>
+                                    <span class="metric-value" id="exploreChunkCount">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Documents</span>
+                                    <span class="metric-value" id="exploreDocCount">0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Avg Confidence</span>
+                                    <span class="metric-value" id="exploreAvgConf">0.00</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Queries</span>
+                                    <span class="metric-value" id="exploreQueryCount">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Knowledge Units Panel -->
+                    <section class="panel explore-ku-panel" data-panel="explore-kus">
+                        <div class="panel-header">
+                            <h2>Knowledge Units</h2>
+                            <div class="panel-actions">
+                                <input type="text" id="kuSearchInput" class="search-input" placeholder="Search KUs...">
+                                <select id="kuConfidenceFilter" class="filter-select">
+                                    <option value="">All Confidence</option>
+                                    <option value="0.9">≥ 90%</option>
+                                    <option value="0.8">≥ 80%</option>
+                                    <option value="0.7">≥ 70%</option>
+                                    <option value="0.5">≥ 50%</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="ku-list" id="kuList">
+                                <div class="loading-placeholder">Loading knowledge units...</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Reasoning Units Panel -->
+                    <section class="panel explore-ru-panel" data-panel="explore-rus">
+                        <div class="panel-header">
+                            <h2>Reasoning Units</h2>
+                            <div class="panel-actions">
+                                <select id="ruRelationFilter" class="filter-select">
+                                    <option value="">All Relations</option>
+                                    <option value="supports">Supports</option>
+                                    <option value="conflicts">Conflicts</option>
+                                    <option value="elaborates">Elaborates</option>
+                                    <option value="prerequisite">Prerequisite</option>
+                                    <option value="similar">Similar</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="ru-list" id="ruList">
+                                <div class="loading-placeholder">Loading reasoning units...</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Knowledge Graph Viewer -->
+                    <section class="panel explore-graph-panel full-width" data-panel="explore-graph">
+                        <div class="panel-header">
+                            <h2>Knowledge Graph</h2>
+                            <div class="panel-actions">
+                                <select id="graphTypeSelect" class="filter-select">
+                                    <option value="full">Full Graph</option>
+                                    <option value="ku">KU Only</option>
+                                    <option value="provenance">Provenance</option>
+                                </select>
+                                <input type="number" id="graphMaxNodes" class="filter-input" placeholder="Max nodes" value="100" min="10" max="500">
+                                <button class="action-btn" id="buildGraphBtn">Build Graph</button>
+                                <div class="graph-export-dropdown">
+                                    <button class="action-btn dropdown-toggle" id="exportGraphBtn">Export ▼</button>
+                                    <div class="dropdown-menu" id="graphExportMenu">
+                                        <button data-format="d3">D3 JSON</button>
+                                        <button data-format="dot">DOT (Graphviz)</button>
+                                        <button data-format="cytoscape">Cytoscape</button>
+                                        <button data-format="mermaid">Mermaid</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="graph-container" id="graphContainer">
+                                <div class="graph-placeholder">
+                                    <p>Click "Build Graph" to visualize the knowledge graph</p>
+                                </div>
+                            </div>
+                            <div class="graph-controls">
+                                <button class="graph-control-btn" id="graphZoomIn" title="Zoom In">+</button>
+                                <button class="graph-control-btn" id="graphZoomOut" title="Zoom Out">−</button>
+                                <button class="graph-control-btn" id="graphReset" title="Reset View">⟲</button>
+                            </div>
+                            <div class="graph-legend">
+                                <span class="legend-item"><span class="legend-dot ku"></span> Knowledge Unit</span>
+                                <span class="legend-item"><span class="legend-dot ru"></span> Reasoning Unit</span>
+                                <span class="legend-item"><span class="legend-dot doc"></span> Document</span>
+                                <span class="legend-item"><span class="legend-dot query"></span> Query</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Provenance Trace Panel -->
+                    <section class="panel explore-trace-panel" data-panel="explore-trace">
+                        <div class="panel-header">
+                            <h2>Provenance Trace</h2>
+                            <div class="panel-actions">
+                                <input type="text" id="traceKuInput" class="search-input" placeholder="Enter KU ID...">
+                                <button class="action-btn" id="traceKuBtn">Trace</button>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="trace-container" id="traceContainer">
+                                <div class="trace-placeholder">
+                                    <p>Enter a Knowledge Unit ID to trace its provenance</p>
+                                    <p class="hint">Shows: Answer → Reasoning → KU → Chunk → Document</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Coverage Analysis Panel -->
+                    <section class="panel explore-coverage-panel" data-panel="explore-coverage">
+                        <div class="panel-header">
+                            <h2>Coverage Analysis</h2>
+                            <div class="panel-actions">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="showGapsCheck"> Show Gaps
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="showHeatmapCheck"> Heatmap
+                                </label>
+                                <button class="action-btn" id="analyzeCoverageBtn">Analyze</button>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="coverage-stats" id="coverageStats">
+                                <div class="metric-card">
+                                    <span class="metric-label">Coverage</span>
+                                    <span class="metric-value" id="coveragePercent">--%</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Covered Queries</span>
+                                    <span class="metric-value" id="coveredQueries">0/0</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">Used Docs</span>
+                                    <span class="metric-value" id="usedDocs">0/0</span>
+                                </div>
+                            </div>
+                            <div class="coverage-heatmap" id="coverageHeatmap">
+                                <div class="coverage-placeholder">Click "Analyze" to see coverage details</div>
+                            </div>
+                            <div class="coverage-gaps" id="coverageGaps"></div>
+                        </div>
+                    </section>
+
+                    <!-- KU Detail Modal (hidden by default) -->
+                    <div class="modal" id="kuDetailModal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Knowledge Unit Details</h3>
+                                <button class="modal-close" id="closeKuModal">&times;</button>
+                            </div>
+                            <div class="modal-body" id="kuDetailContent">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RU Detail Modal (hidden by default) -->
+                    <div class="modal" id="ruDetailModal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Reasoning Unit Details</h3>
+                                <button class="modal-close" id="closeRuModal">&times;</button>
+                            </div>
+                            <div class="modal-body" id="ruDetailContent">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

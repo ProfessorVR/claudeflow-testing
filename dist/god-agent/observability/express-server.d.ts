@@ -235,6 +235,47 @@ export declare class ExpressServer implements IExpressServer {
      */
     private executeCommand;
     /**
+     * Get list of Knowledge Units with optional filtering
+     * Query params: query, minConfidence, limit, offset
+     */
+    private getExploreKUs;
+    /**
+     * Get list of Reasoning Units with optional filtering
+     * Query params: relation, minScore, sourceKuId, targetKuId, limit
+     */
+    private getExploreRUs;
+    /**
+     * Get single Knowledge Unit by ID
+     */
+    private getExploreKU;
+    /**
+     * Get single Reasoning Unit by ID
+     */
+    private getExploreRU;
+    /**
+     * Build and return knowledge graph
+     * Query params: format (d3|dot|cytoscape|mermaid), type (ku|full|provenance), kuId, maxNodes
+     */
+    private getExploreGraph;
+    /**
+     * Get provenance trace for a Knowledge Unit
+     */
+    private getExploreTrace;
+    /**
+     * Get coverage analysis
+     * Query params: showGaps, includeHeatmap
+     */
+    private getExploreCoverage;
+    /**
+     * Get explore system statistics
+     */
+    private getExploreStats;
+    /**
+     * Search Knowledge Units semantically
+     * Query params: q (search query), limit
+     */
+    private searchExploreKUs;
+    /**
      * Get Prometheus metrics
      * Implements Prometheus text format
      */

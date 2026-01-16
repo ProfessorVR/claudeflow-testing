@@ -62,12 +62,25 @@ class DashboardApp {
             degradation: null,
             experiments: []
         };
+
+        // Explore data
+        this.exploreData = {
+            stats: null,
+            kus: [],
+            rus: [],
+            graph: null,
+            trace: null,
+            coverage: null
+        };
     }
 
     /**
      * Initialize the dashboard
      */
     async init() {
+        // Store app instance globally for onclick handlers
+        window.dashboardApp = this;
+
         this.loadUIState();
         this.setupMainTabs();
         this.setupSidebar();
@@ -76,6 +89,7 @@ class DashboardApp {
         this.setupKeyboardShortcuts();
         this.setupPanelToggles();
         this.setupEventListeners();
+        this.setupExploreListeners();
         this.initializeCharts();
         await this.loadInitialData();
         this.connectSSE();
@@ -176,7 +190,21 @@ class DashboardApp {
             case 'activity':
                 this.renderActivities();
                 break;
+            case 'explore':
+                await this.loadExploreData();
+                break;
         }
+    }
+
+    /**
+     * Load all explore tab data
+     */
+    async loadExploreData() {
+        await Promise.all([
+            this.loadExploreStats(),
+            this.loadExploreKUs(),
+            this.loadExploreRUs()
+        ]);
     }
 
     /**
@@ -339,20 +367,40 @@ class DashboardApp {
                 commandInput?.focus();
             }
 
-            // 1-5 for tab switching
-            if (e.altKey && e.key >= '1' && e.key <= '5') {
+            // Ctrl+F or Cmd+F to focus global search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
                 e.preventDefault();
-                const tabs = ['analytics', 'monitoring', 'router', 'memory', 'activity'];
+                const searchInput = document.getElementById('globalSearchInput');
+                if (searchInput) {
+                    // Open sidebar if collapsed
+                    const sidebar = document.getElementById('sidebar');
+                    if (sidebar && !sidebar.classList.contains('open')) {
+                        sidebar.classList.add('open');
+                    }
+                    searchInput.focus();
+                    searchInput.select();
+                }
+            }
+
+            // Alt+1-6 for tab switching (added explore tab)
+            if (e.altKey && e.key >= '1' && e.key <= '6') {
+                e.preventDefault();
+                const tabs = ['analytics', 'monitoring', 'router', 'memory', 'activity', 'explore'];
                 const tabIndex = parseInt(e.key) - 1;
                 if (tabIndex < tabs.length) {
                     this.switchMainTab(tabs[tabIndex]);
                 }
             }
 
-            // Escape to close command bar
+            // Escape to close command bar and modals
             if (e.key === 'Escape') {
                 const commandBar = document.querySelector('.command-bar');
                 commandBar?.classList.remove('expanded');
+
+                // Close any open modals
+                document.querySelectorAll('.modal.show').forEach(modal => {
+                    modal.classList.remove('show');
+                });
             }
         });
     }
@@ -939,6 +987,8 @@ class DashboardApp {
                 await this.loadMonitoringData();
             } else if (this.currentMainTab === 'router') {
                 await this.loadRouterData();
+            } else if (this.currentMainTab === 'explore') {
+                await this.loadExploreStats();
             }
 
             // Update last refresh timestamp
@@ -1691,14 +1741,34 @@ class DashboardApp {
                 ? (pipeline.completedSteps / pipeline.totalSteps * 100).toFixed(0)
                 : 0;
             const type = this.escapeHtml(pipeline.type || pipeline.pipelineId);
+            const stages = pipeline.stages || [];
+
+            // Create step indicators
+            const stepIndicators = stages.slice(-6).map(stage => {
+                const statusClass = stage.status === 'completed' ? 'completed' :
+                                   stage.status === 'running' ? 'running' : 'pending';
+                const icon = stage.status === 'completed' ? '✓' :
+                            stage.status === 'running' ? '▶' : '○';
+                return `<span class="step-indicator ${statusClass}" title="${this.escapeHtml(stage.name)}">${icon}</span>`;
+            }).join('<span class="step-arrow">→</span>');
+
+            const currentStage = stages.find(s => s.status === 'running');
+            const currentStep = currentStage ? this.escapeHtml(currentStage.name) : 'Initializing...';
 
             return `
-                <li class="pipeline-item">
-                    <div class="pipeline-name">${type}</div>
+                <li class="pipeline-item expanded">
+                    <div class="pipeline-header">
+                        <div class="pipeline-name">${type}</div>
+                        <div class="pipeline-stats">${pipeline.completedSteps}/${pipeline.totalSteps}</div>
+                    </div>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: ${progress}%"></div>
                     </div>
-                    <div class="pipeline-stats">${pipeline.completedSteps} / ${pipeline.totalSteps} steps</div>
+                    <div class="pipeline-steps">${stepIndicators}</div>
+                    <div class="pipeline-current">
+                        <span class="current-label">Current:</span>
+                        <span class="current-step">${currentStep}</span>
+                    </div>
                 </li>
             `;
         }).join('');
@@ -2043,6 +2113,930 @@ class DashboardApp {
                 </li>
             `;
         }).join('');
+    }
+
+    // ==========================================================================
+    // EXPLORE TAB FUNCTIONALITY
+    // ==========================================================================
+
+    /**
+     * Setup Explore tab event listeners
+     */
+    setupExploreListeners() {
+        // Global search
+        const globalSearch = document.getElementById('globalSearchInput');
+        if (globalSearch) {
+            let searchTimeout;
+            globalSearch.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => this.performGlobalSearch(), 300);
+            });
+            globalSearch.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    clearTimeout(searchTimeout);
+                    this.performGlobalSearch();
+                }
+            });
+        }
+
+        // KU search
+        const kuSearch = document.getElementById('kuSearchInput');
+        if (kuSearch) {
+            kuSearch.addEventListener('input', () => this.filterKUs());
+        }
+
+        // KU confidence filter
+        const kuConfFilter = document.getElementById('kuConfidenceFilter');
+        if (kuConfFilter) {
+            kuConfFilter.addEventListener('change', () => this.loadExploreKUs());
+        }
+
+        // RU relation filter
+        const ruRelFilter = document.getElementById('ruRelationFilter');
+        if (ruRelFilter) {
+            ruRelFilter.addEventListener('change', () => this.loadExploreRUs());
+        }
+
+        // Build graph button
+        const buildGraphBtn = document.getElementById('buildGraphBtn');
+        if (buildGraphBtn) {
+            buildGraphBtn.addEventListener('click', () => this.buildGraph());
+        }
+
+        // Graph export dropdown
+        const exportBtn = document.getElementById('exportGraphBtn');
+        const exportMenu = document.getElementById('graphExportMenu');
+        if (exportBtn && exportMenu) {
+            exportBtn.addEventListener('click', () => {
+                exportMenu.classList.toggle('show');
+            });
+            exportMenu.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    this.exportGraph(btn.dataset.format);
+                    exportMenu.classList.remove('show');
+                });
+            });
+        }
+
+        // Trace button
+        const traceBtn = document.getElementById('traceKuBtn');
+        if (traceBtn) {
+            traceBtn.addEventListener('click', () => this.traceKU());
+        }
+
+        // Coverage button
+        const coverageBtn = document.getElementById('analyzeCoverageBtn');
+        if (coverageBtn) {
+            coverageBtn.addEventListener('click', () => this.analyzeCoverage());
+        }
+
+        // Refresh explore button
+        const refreshBtn = document.getElementById('refreshExplore');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => this.refreshExplore());
+        }
+
+        // Modal close buttons
+        const closeKuModal = document.getElementById('closeKuModal');
+        const closeRuModal = document.getElementById('closeRuModal');
+        if (closeKuModal) {
+            closeKuModal.addEventListener('click', () => {
+                document.getElementById('kuDetailModal').classList.remove('show');
+            });
+        }
+        if (closeRuModal) {
+            closeRuModal.addEventListener('click', () => {
+                document.getElementById('ruDetailModal').classList.remove('show');
+            });
+        }
+
+        // Close modals on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+    }
+
+    /**
+     * Refresh all explore data
+     */
+    async refreshExplore() {
+        await Promise.all([
+            this.loadExploreStats(),
+            this.loadExploreKUs(),
+            this.loadExploreRUs()
+        ]);
+    }
+
+    /**
+     * Load explore statistics
+     */
+    async loadExploreStats() {
+        try {
+            const res = await fetch('/api/explore/stats');
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success) {
+                    this.exploreData.stats = data.data;
+                    this.renderExploreStats();
+                }
+            }
+        } catch (error) {
+            console.error('Error loading explore stats:', error);
+        }
+    }
+
+    /**
+     * Render explore statistics
+     */
+    renderExploreStats() {
+        const stats = this.exploreData.stats || {};
+
+        const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
+        };
+
+        setVal('exploreKuCount', stats.total_kus || 0);
+        setVal('exploreRuCount', stats.total_rus || 0);
+        setVal('exploreChunkCount', stats.total_chunks || 0);
+        setVal('exploreDocCount', stats.total_documents || 0);
+        setVal('exploreAvgConf', (stats.avg_confidence || 0).toFixed(2));
+        setVal('exploreQueryCount', stats.query_count || 0);
+    }
+
+    /**
+     * Load knowledge units
+     */
+    async loadExploreKUs() {
+        try {
+            const confFilter = document.getElementById('kuConfidenceFilter')?.value;
+            let url = '/api/explore/kus?limit=50';
+            if (confFilter) {
+                url += `&minConfidence=${confFilter}`;
+            }
+
+            const res = await fetch(url);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success) {
+                    this.exploreData.kus = data.data;
+                    this.renderExploreKUs();
+                }
+            }
+        } catch (error) {
+            console.error('Error loading KUs:', error);
+            this.renderExploreKUsError(error.message);
+        }
+    }
+
+    /**
+     * Filter displayed KUs by search term
+     */
+    filterKUs() {
+        const searchTerm = document.getElementById('kuSearchInput')?.value?.toLowerCase() || '';
+        const items = document.querySelectorAll('#kuList .ku-item');
+
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+    }
+
+    /**
+     * Render knowledge units list
+     */
+    renderExploreKUs() {
+        const list = document.getElementById('kuList');
+        if (!list) return;
+
+        const kus = this.exploreData.kus || [];
+        if (kus.length === 0) {
+            list.innerHTML = '<div class="loading-placeholder">No knowledge units found</div>';
+            return;
+        }
+
+        list.innerHTML = kus.map(ku => {
+            const conf = (ku.confidence * 100).toFixed(0);
+            const confClass = conf >= 80 ? 'high' : conf >= 60 ? 'medium' : 'low';
+
+            return `
+                <div class="ku-item" data-id="${this.escapeHtml(ku.id)}" onclick="window.dashboardApp?.showKUDetail('${this.escapeHtml(ku.id)}')">
+                    <div class="ku-header">
+                        <span class="ku-query">${this.escapeHtml(ku.query || 'Untitled')}</span>
+                        <span class="ku-confidence ${confClass}">${conf}%</span>
+                    </div>
+                    <div class="ku-content">${this.escapeHtml((ku.content || '').substring(0, 200))}</div>
+                    <div class="ku-meta">
+                        <span>${ku.source_count || 0} sources</span>
+                        ${ku.created_at ? `<span>${new Date(ku.created_at).toLocaleDateString()}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    /**
+     * Render KU loading error
+     */
+    renderExploreKUsError(message) {
+        const list = document.getElementById('kuList');
+        if (list) {
+            list.innerHTML = `<div class="loading-placeholder">Error: ${this.escapeHtml(message)}</div>`;
+        }
+    }
+
+    /**
+     * Load reasoning units
+     */
+    async loadExploreRUs() {
+        try {
+            const relFilter = document.getElementById('ruRelationFilter')?.value;
+            let url = '/api/explore/rus?limit=50';
+            if (relFilter) {
+                url += `&relation=${relFilter}`;
+            }
+
+            const res = await fetch(url);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success) {
+                    this.exploreData.rus = data.data;
+                    this.renderExploreRUs();
+                }
+            }
+        } catch (error) {
+            console.error('Error loading RUs:', error);
+        }
+    }
+
+    /**
+     * Render reasoning units list
+     */
+    renderExploreRUs() {
+        const list = document.getElementById('ruList');
+        if (!list) return;
+
+        const rus = this.exploreData.rus || [];
+        if (rus.length === 0) {
+            list.innerHTML = '<div class="loading-placeholder">No reasoning units found</div>';
+            return;
+        }
+
+        list.innerHTML = rus.map(ru => {
+            const score = ((ru.score || 0) * 100).toFixed(0);
+
+            return `
+                <div class="ru-item" data-id="${this.escapeHtml(ru.id)}" onclick="window.dashboardApp?.showRUDetail('${this.escapeHtml(ru.id)}')">
+                    <div class="ru-header">
+                        <span class="ru-relation ${ru.relation}">${this.escapeHtml(ru.relation)}</span>
+                        <span class="ru-score">${score}%</span>
+                    </div>
+                    <div class="ru-meta">
+                        <span>${this.escapeHtml(ru.source_ku_id?.substring(0, 8) || '?')}</span>
+                        <span class="ru-arrow">→</span>
+                        <span>${this.escapeHtml(ru.target_ku_id?.substring(0, 8) || '?')}</span>
+                    </div>
+                    ${ru.evidence ? `<div class="ku-content">${this.escapeHtml(ru.evidence.substring(0, 100))}</div>` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    /**
+     * Show KU detail modal
+     */
+    async showKUDetail(id) {
+        try {
+            const res = await fetch(`/api/explore/ku/${encodeURIComponent(id)}`);
+            if (!res.ok) throw new Error('Failed to load KU');
+
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error);
+
+            const ku = data.data;
+            const content = document.getElementById('kuDetailContent');
+            if (!content) return;
+
+            content.innerHTML = `
+                <div class="detail-section">
+                    <h4>Query</h4>
+                    <div class="value">${this.escapeHtml(ku.query)}</div>
+                </div>
+                <div class="detail-section">
+                    <h4>Content</h4>
+                    <div class="value">${this.escapeHtml(ku.content)}</div>
+                </div>
+                <div class="detail-section">
+                    <h4>Confidence</h4>
+                    <div class="value">${((ku.confidence || 0) * 100).toFixed(1)}%</div>
+                </div>
+                <div class="detail-section">
+                    <h4>Sources (${ku.sources?.length || 0})</h4>
+                    <ul class="sources-list">
+                        ${(ku.sources || []).map(s => `
+                            <li>
+                                <span>${this.escapeHtml(s.doc_path || s.chunk_id)}</span>
+                                <span>${((s.relevance || 0) * 100).toFixed(0)}%</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+
+            document.getElementById('kuDetailModal').classList.add('show');
+        } catch (error) {
+            console.error('Error loading KU detail:', error);
+        }
+    }
+
+    /**
+     * Show RU detail modal
+     */
+    async showRUDetail(id) {
+        try {
+            const res = await fetch(`/api/explore/ru/${encodeURIComponent(id)}`);
+            if (!res.ok) throw new Error('Failed to load RU');
+
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error);
+
+            const ru = data.data;
+            const content = document.getElementById('ruDetailContent');
+            if (!content) return;
+
+            content.innerHTML = `
+                <div class="detail-section">
+                    <h4>Relation</h4>
+                    <div class="value"><span class="ru-relation ${ru.relation}">${this.escapeHtml(ru.relation)}</span></div>
+                </div>
+                <div class="detail-section">
+                    <h4>Score</h4>
+                    <div class="value">${((ru.score || 0) * 100).toFixed(1)}%</div>
+                </div>
+                <div class="detail-section">
+                    <h4>Source KU</h4>
+                    <div class="value">${this.escapeHtml(ru.source_ku_id)}</div>
+                </div>
+                <div class="detail-section">
+                    <h4>Target KU</h4>
+                    <div class="value">${this.escapeHtml(ru.target_ku_id)}</div>
+                </div>
+                ${ru.evidence ? `
+                <div class="detail-section">
+                    <h4>Evidence</h4>
+                    <div class="value">${this.escapeHtml(ru.evidence)}</div>
+                </div>
+                ` : ''}
+            `;
+
+            document.getElementById('ruDetailModal').classList.add('show');
+        } catch (error) {
+            console.error('Error loading RU detail:', error);
+        }
+    }
+
+    /**
+     * Build and display knowledge graph
+     */
+    async buildGraph() {
+        const container = document.getElementById('graphContainer');
+        if (!container) return;
+
+        container.innerHTML = '<div class="graph-placeholder">Building graph...</div>';
+
+        try {
+            const graphType = document.getElementById('graphTypeSelect')?.value || 'full';
+            const maxNodes = document.getElementById('graphMaxNodes')?.value || 100;
+
+            const res = await fetch(`/api/explore/graph?format=d3&type=${graphType}&maxNodes=${maxNodes}`);
+            if (!res.ok) throw new Error('Failed to build graph');
+
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error);
+
+            this.exploreData.graph = data.data;
+            this.renderD3Graph(data.data);
+        } catch (error) {
+            console.error('Error building graph:', error);
+            container.innerHTML = `<div class="graph-placeholder">Error: ${this.escapeHtml(error.message)}</div>`;
+        }
+    }
+
+    /**
+     * Render D3.js force-directed graph
+     */
+    renderD3Graph(graphData) {
+        const container = document.getElementById('graphContainer');
+        if (!container || !graphData) return;
+
+        // Clear container
+        container.innerHTML = '';
+
+        const width = container.clientWidth;
+        const height = container.clientHeight || 500;
+
+        // Check if D3 is available
+        if (typeof d3 === 'undefined') {
+            container.innerHTML = `
+                <div class="graph-placeholder">
+                    <p>D3.js library not loaded</p>
+                    <p>Add <script src="https://d3js.org/d3.v7.min.js"></script> to use graph visualization</p>
+                </div>
+            `;
+            return;
+        }
+
+        const svg = d3.select(container)
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+        const g = svg.append('g');
+
+        // Zoom behavior
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on('zoom', (event) => g.attr('transform', event.transform));
+        svg.call(zoom);
+
+        // Setup zoom controls
+        document.getElementById('graphZoomIn')?.addEventListener('click', () => {
+            svg.transition().call(zoom.scaleBy, 1.3);
+        });
+        document.getElementById('graphZoomOut')?.addEventListener('click', () => {
+            svg.transition().call(zoom.scaleBy, 0.7);
+        });
+        document.getElementById('graphReset')?.addEventListener('click', () => {
+            svg.transition().call(zoom.transform, d3.zoomIdentity);
+        });
+
+        // Force simulation
+        const simulation = d3.forceSimulation(graphData.nodes)
+            .force('link', d3.forceLink(graphData.links).id(d => d.id).distance(100))
+            .force('charge', d3.forceManyBody().strength(-300))
+            .force('center', d3.forceCenter(width / 2, height / 2));
+
+        // Links
+        const link = g.append('g')
+            .attr('class', 'links')
+            .selectAll('line')
+            .data(graphData.links)
+            .enter().append('line')
+            .attr('class', 'graph-link')
+            .attr('stroke-width', d => Math.sqrt(d.weight || 1));
+
+        // Nodes
+        const node = g.append('g')
+            .attr('class', 'nodes')
+            .selectAll('g')
+            .data(graphData.nodes)
+            .enter().append('g')
+            .attr('class', 'graph-node')
+            .call(d3.drag()
+                .on('start', (event, d) => {
+                    if (!event.active) simulation.alphaTarget(0.3).restart();
+                    d.fx = d.x;
+                    d.fy = d.y;
+                })
+                .on('drag', (event, d) => {
+                    d.fx = event.x;
+                    d.fy = event.y;
+                })
+                .on('end', (event, d) => {
+                    if (!event.active) simulation.alphaTarget(0);
+                    d.fx = null;
+                    d.fy = null;
+                }));
+
+        node.append('circle')
+            .attr('r', d => d.type === 'ku' ? 8 : d.type === 'ru' ? 6 : 5)
+            .attr('class', d => d.type);
+
+        node.append('text')
+            .attr('dx', 12)
+            .attr('dy', '.35em')
+            .text(d => d.label?.substring(0, 20) || d.id?.substring(0, 8));
+
+        // Tooltip on hover
+        node.append('title')
+            .text(d => `${d.type}: ${d.label || d.id}`);
+
+        // Update positions on tick
+        simulation.on('tick', () => {
+            link
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y);
+
+            node.attr('transform', d => `translate(${d.x},${d.y})`);
+        });
+    }
+
+    /**
+     * Export graph in specified format
+     */
+    exportGraph(format) {
+        const graph = this.exploreData.graph;
+        if (!graph) {
+            alert('No graph data available. Build the graph first.');
+            return;
+        }
+
+        let content, filename, mimeType;
+
+        switch (format) {
+            case 'd3':
+                content = JSON.stringify(graph, null, 2);
+                filename = 'knowledge-graph.json';
+                mimeType = 'application/json';
+                break;
+            case 'dot':
+                content = this.graphToDot(graph);
+                filename = 'knowledge-graph.dot';
+                mimeType = 'text/plain';
+                break;
+            case 'mermaid':
+                content = this.graphToMermaid(graph);
+                filename = 'knowledge-graph.mmd';
+                mimeType = 'text/plain';
+                break;
+            case 'cytoscape':
+                content = JSON.stringify(this.graphToCytoscape(graph), null, 2);
+                filename = 'knowledge-graph-cytoscape.json';
+                mimeType = 'application/json';
+                break;
+            default:
+                return;
+        }
+
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    /**
+     * Convert graph to DOT format
+     */
+    graphToDot(graph) {
+        let dot = 'digraph KnowledgeGraph {\n';
+        dot += '  rankdir=LR;\n';
+        dot += '  node [shape=ellipse];\n\n';
+
+        graph.nodes.forEach(n => {
+            const label = (n.label || n.id).replace(/"/g, '\\"');
+            dot += `  "${n.id}" [label="${label}" type="${n.type}"];\n`;
+        });
+
+        dot += '\n';
+
+        graph.links.forEach(l => {
+            const source = typeof l.source === 'object' ? l.source.id : l.source;
+            const target = typeof l.target === 'object' ? l.target.id : l.target;
+            dot += `  "${source}" -> "${target}"`;
+            if (l.relation) dot += ` [label="${l.relation}"]`;
+            dot += ';\n';
+        });
+
+        dot += '}\n';
+        return dot;
+    }
+
+    /**
+     * Convert graph to Mermaid format
+     */
+    graphToMermaid(graph) {
+        let mmd = 'graph LR\n';
+
+        graph.nodes.forEach(n => {
+            const label = (n.label || n.id).replace(/["\[\]]/g, '');
+            mmd += `  ${n.id.replace(/[^a-zA-Z0-9]/g, '_')}["${label}"]\n`;
+        });
+
+        graph.links.forEach(l => {
+            const source = typeof l.source === 'object' ? l.source.id : l.source;
+            const target = typeof l.target === 'object' ? l.target.id : l.target;
+            const srcId = source.replace(/[^a-zA-Z0-9]/g, '_');
+            const tgtId = target.replace(/[^a-zA-Z0-9]/g, '_');
+            mmd += `  ${srcId} --> ${tgtId}\n`;
+        });
+
+        return mmd;
+    }
+
+    /**
+     * Convert graph to Cytoscape format
+     */
+    graphToCytoscape(graph) {
+        const elements = [];
+
+        graph.nodes.forEach(n => {
+            elements.push({
+                data: { id: n.id, label: n.label, type: n.type }
+            });
+        });
+
+        graph.links.forEach(l => {
+            const source = typeof l.source === 'object' ? l.source.id : l.source;
+            const target = typeof l.target === 'object' ? l.target.id : l.target;
+            elements.push({
+                data: { source, target, relation: l.relation }
+            });
+        });
+
+        return { elements };
+    }
+
+    /**
+     * Trace provenance for a KU
+     */
+    async traceKU() {
+        const input = document.getElementById('traceKuInput');
+        const container = document.getElementById('traceContainer');
+        if (!input || !container) return;
+
+        const kuId = input.value.trim();
+        if (!kuId) {
+            container.innerHTML = '<div class="trace-placeholder"><p>Please enter a KU ID</p></div>';
+            return;
+        }
+
+        container.innerHTML = '<div class="trace-placeholder"><p>Tracing provenance...</p></div>';
+
+        try {
+            const res = await fetch(`/api/explore/trace/${encodeURIComponent(kuId)}`);
+            if (!res.ok) throw new Error('Failed to trace KU');
+
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error);
+
+            this.exploreData.trace = data.data;
+            this.renderTrace(data.data);
+        } catch (error) {
+            console.error('Error tracing KU:', error);
+            container.innerHTML = `<div class="trace-placeholder"><p>Error: ${this.escapeHtml(error.message)}</p></div>`;
+        }
+    }
+
+    /**
+     * Render provenance trace
+     */
+    renderTrace(trace) {
+        const container = document.getElementById('traceContainer');
+        if (!container || !trace) return;
+
+        const chain = trace.chain || [];
+        if (chain.length === 0) {
+            container.innerHTML = '<div class="trace-placeholder"><p>No provenance chain found</p></div>';
+            return;
+        }
+
+        container.innerHTML = '<div class="trace-chain">' +
+            chain.map((node, i) => `
+                ${i > 0 ? '<div class="trace-arrow">↓</div>' : ''}
+                <div class="trace-node ${node.level}">
+                    <span class="trace-level">${this.escapeHtml(node.level)}</span>
+                    <div class="trace-content">
+                        <strong>${this.escapeHtml(node.id)}</strong>
+                        ${node.content ? `<p>${this.escapeHtml(node.content.substring(0, 200))}...</p>` : ''}
+                    </div>
+                </div>
+            `).join('') +
+            '</div>';
+    }
+
+    /**
+     * Analyze coverage
+     */
+    async analyzeCoverage() {
+        const container = document.getElementById('coverageHeatmap');
+        const gapsContainer = document.getElementById('coverageGaps');
+        if (!container) return;
+
+        container.innerHTML = '<div class="coverage-placeholder">Analyzing coverage...</div>';
+        if (gapsContainer) gapsContainer.innerHTML = '';
+
+        try {
+            const showGaps = document.getElementById('showGapsCheck')?.checked;
+            const showHeatmap = document.getElementById('showHeatmapCheck')?.checked;
+
+            let url = '/api/explore/coverage?';
+            if (showGaps) url += 'showGaps=true&';
+            if (showHeatmap) url += 'includeHeatmap=true';
+
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('Failed to analyze coverage');
+
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error);
+
+            this.exploreData.coverage = data.data;
+            this.renderCoverage(data.data);
+        } catch (error) {
+            console.error('Error analyzing coverage:', error);
+            container.innerHTML = `<div class="coverage-placeholder">Error: ${this.escapeHtml(error.message)}</div>`;
+        }
+    }
+
+    /**
+     * Perform global search across KUs, Agents, and Memory
+     */
+    async performGlobalSearch() {
+        const input = document.getElementById('globalSearchInput');
+        const resultsContainer = document.getElementById('globalSearchResults');
+        if (!input || !resultsContainer) return;
+
+        const query = input.value.trim();
+        if (!query) {
+            resultsContainer.innerHTML = '';
+            return;
+        }
+
+        const searchKUs = document.getElementById('searchKUs')?.checked;
+        const searchAgents = document.getElementById('searchAgents')?.checked;
+        const searchMemory = document.getElementById('searchMemory')?.checked;
+
+        resultsContainer.innerHTML = '<div class="search-loading">Searching...</div>';
+
+        try {
+            const results = [];
+
+            // Search KUs
+            if (searchKUs) {
+                try {
+                    const kuRes = await fetch(`/api/explore/search?q=${encodeURIComponent(query)}&limit=5`);
+                    if (kuRes.ok) {
+                        const kuData = await kuRes.json();
+                        if (kuData.success && kuData.data) {
+                            kuData.data.forEach(ku => {
+                                results.push({
+                                    type: 'ku',
+                                    id: ku.id,
+                                    title: ku.query || 'Knowledge Unit',
+                                    preview: ku.content?.substring(0, 80) || '',
+                                    score: ku.score || ku.confidence || 0
+                                });
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.warn('KU search failed:', e);
+                }
+            }
+
+            // Search Agents (client-side filtering from registry)
+            if (searchAgents) {
+                const agents = Array.from(this.agents.values());
+                const queryLower = query.toLowerCase();
+                const matchingAgents = agents.filter(a =>
+                    a.name?.toLowerCase().includes(queryLower) ||
+                    a.type?.toLowerCase().includes(queryLower) ||
+                    a.category?.toLowerCase().includes(queryLower)
+                ).slice(0, 5);
+
+                matchingAgents.forEach(agent => {
+                    results.push({
+                        type: 'agent',
+                        id: agent.agentId,
+                        title: agent.name || agent.type,
+                        preview: `${agent.category} - ${agent.status}`,
+                        score: 0.8
+                    });
+                });
+            }
+
+            // Search Memory (from interactions)
+            if (searchMemory) {
+                try {
+                    const memRes = await fetch('/api/memory/interactions');
+                    if (memRes.ok) {
+                        const interactions = await memRes.json();
+                        if (Array.isArray(interactions)) {
+                            const queryLower = query.toLowerCase();
+                            const matching = interactions.filter(i =>
+                                i.domain?.toLowerCase().includes(queryLower) ||
+                                i.content?.toLowerCase().includes(queryLower)
+                            ).slice(0, 5);
+
+                            matching.forEach(m => {
+                                results.push({
+                                    type: 'memory',
+                                    id: m.id,
+                                    title: m.domain || 'Memory Entry',
+                                    preview: m.content?.substring(0, 80) || '',
+                                    score: 0.7
+                                });
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Memory search failed:', e);
+                }
+            }
+
+            // Sort by score
+            results.sort((a, b) => (b.score || 0) - (a.score || 0));
+
+            // Render results
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div class="search-no-results">No results found</div>';
+            } else {
+                resultsContainer.innerHTML = results.map(r => `
+                    <div class="search-result-item" onclick="window.dashboardApp?.navigateToSearchResult('${r.type}', '${this.escapeHtml(r.id)}')">
+                        <span class="search-result-type ${r.type}">${r.type}</span>
+                        <span class="search-result-title">${this.escapeHtml(r.title)}</span>
+                        <span class="search-result-score">${((r.score || 0) * 100).toFixed(0)}%</span>
+                        <div class="search-result-preview">${this.escapeHtml(r.preview)}</div>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+            resultsContainer.innerHTML = '<div class="search-no-results">Search failed</div>';
+        }
+    }
+
+    /**
+     * Navigate to a search result
+     */
+    navigateToSearchResult(type, id) {
+        switch (type) {
+            case 'ku':
+                this.switchMainTab('explore');
+                setTimeout(() => this.showKUDetail(id), 100);
+                break;
+            case 'agent':
+                this.switchMainTab('activity');
+                break;
+            case 'memory':
+                this.switchMainTab('memory');
+                break;
+        }
+    }
+
+    /**
+     * Render coverage analysis
+     */
+    renderCoverage(coverage) {
+        // Update stats
+        document.getElementById('coveragePercent').textContent =
+            `${(coverage.coverage_percentage || 0).toFixed(1)}%`;
+        document.getElementById('coveredQueries').textContent =
+            `${coverage.covered_queries || 0}/${coverage.total_queries || 0}`;
+        document.getElementById('usedDocs').textContent =
+            `${coverage.used_documents || 0}/${coverage.total_documents || 0}`;
+
+        // Render heatmap
+        const heatmapContainer = document.getElementById('coverageHeatmap');
+        if (heatmapContainer && coverage.heatmap && coverage.heatmap.length > 0) {
+            // Group by query and document
+            const queries = [...new Set(coverage.heatmap.map(h => h.query))];
+            const docs = [...new Set(coverage.heatmap.map(h => h.document))];
+            const matrix = {};
+            coverage.heatmap.forEach(h => {
+                const key = `${h.query}|${h.document}`;
+                matrix[key] = h.coverage;
+            });
+
+            let html = '<table class="heatmap-table"><thead><tr><th></th>';
+            docs.forEach(d => {
+                html += `<th title="${this.escapeHtml(d)}">${this.escapeHtml(d.substring(0, 10))}...</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            queries.forEach(q => {
+                html += `<tr><td title="${this.escapeHtml(q)}">${this.escapeHtml(q.substring(0, 15))}...</td>`;
+                docs.forEach(d => {
+                    const val = matrix[`${q}|${d}`] || 0;
+                    const level = val >= 0.7 ? 'high' : val >= 0.4 ? 'medium' : val > 0 ? 'low' : 'none';
+                    html += `<td class="heatmap-cell ${level}" title="${(val * 100).toFixed(0)}%"></td>`;
+                });
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            heatmapContainer.innerHTML = html;
+        } else {
+            heatmapContainer.innerHTML = '<div class="coverage-placeholder">No heatmap data</div>';
+        }
+
+        // Render gaps
+        const gapsContainer = document.getElementById('coverageGaps');
+        if (gapsContainer && coverage.gaps && coverage.gaps.length > 0) {
+            gapsContainer.innerHTML = coverage.gaps.map(g => `
+                <div class="gap-item">
+                    <div class="gap-query">${this.escapeHtml(g.query)}</div>
+                    <div class="gap-missing">Missing: ${g.missing_coverage?.join(', ') || 'unknown'}</div>
+                </div>
+            `).join('');
+        }
     }
 
     /**

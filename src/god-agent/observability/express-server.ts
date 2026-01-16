@@ -44,6 +44,14 @@ import {
   getHealthSummary,
 } from '../core/router/index.js';
 
+// Explore system bridge
+import {
+  getExploreBridge,
+  type KUQueryOptions,
+  type RUQueryOptions,
+  type GraphOptions,
+} from './explore-bridge.js';
+
 // Service logger for express server
 const log = createServiceLogger('observe-server');
 
@@ -418,6 +426,37 @@ export class ExpressServer implements IExpressServer {
 
     // 28. Command Interface
     app.post('/api/command', this.executeCommand.bind(this));
+
+    // =========================================================================
+    // EXPLORE TAB ENDPOINTS (Phase 11 Introspection Integration)
+    // =========================================================================
+
+    // 29. List Knowledge Units
+    app.get('/api/explore/kus', this.getExploreKUs.bind(this));
+
+    // 30. List Reasoning Units
+    app.get('/api/explore/rus', this.getExploreRUs.bind(this));
+
+    // 31. Get single Knowledge Unit
+    app.get('/api/explore/ku/:id', this.getExploreKU.bind(this));
+
+    // 32. Get single Reasoning Unit
+    app.get('/api/explore/ru/:id', this.getExploreRU.bind(this));
+
+    // 33. Build knowledge graph
+    app.get('/api/explore/graph', this.getExploreGraph.bind(this));
+
+    // 34. Get provenance trace
+    app.get('/api/explore/trace/:kuId', this.getExploreTrace.bind(this));
+
+    // 35. Get coverage analysis
+    app.get('/api/explore/coverage', this.getExploreCoverage.bind(this));
+
+    // 36. Get explore statistics
+    app.get('/api/explore/stats', this.getExploreStats.bind(this));
+
+    // 37. Search KUs semantically
+    app.get('/api/explore/search', this.searchExploreKUs.bind(this));
   }
 
   // ===========================================================================
@@ -1593,6 +1632,292 @@ export class ExpressServer implements IExpressServer {
       res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Command execution failed',
+      });
+    }
+  }
+
+  // ===========================================================================
+  // EXPLORE TAB HANDLERS (Phase 11 Introspection Integration)
+  // ===========================================================================
+
+  /**
+   * Get list of Knowledge Units with optional filtering
+   * Query params: query, minConfidence, limit, offset
+   */
+  private async getExploreKUs(req: Request, res: Response): Promise<void> {
+    try {
+      const options: KUQueryOptions = {
+        query: req.query.query as string | undefined,
+        minConfidence: req.query.minConfidence
+          ? parseFloat(req.query.minConfidence as string)
+          : undefined,
+        limit: req.query.limit
+          ? parseInt(req.query.limit as string)
+          : 50,
+        offset: req.query.offset
+          ? parseInt(req.query.offset as string)
+          : undefined,
+      };
+
+      const bridge = getExploreBridge({ projectRoot: process.cwd() });
+      const kus = await bridge.listKUs(options);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        success: true,
+        data: kus,
+        count: kus.length,
+        options,
+      });
+    } catch (error) {
+      log.error('Error getting explore KUs', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to get knowledge units',
+        hint: 'Ensure Python explore CLI is available and learning corpus exists',
+      });
+    }
+  }
+
+  /**
+   * Get list of Reasoning Units with optional filtering
+   * Query params: relation, minScore, sourceKuId, targetKuId, limit
+   */
+  private async getExploreRUs(req: Request, res: Response): Promise<void> {
+    try {
+      const options: RUQueryOptions = {
+        relation: req.query.relation as string | undefined,
+        minScore: req.query.minScore
+          ? parseFloat(req.query.minScore as string)
+          : undefined,
+        sourceKuId: req.query.sourceKuId as string | undefined,
+        targetKuId: req.query.targetKuId as string | undefined,
+        limit: req.query.limit
+          ? parseInt(req.query.limit as string)
+          : 50,
+      };
+
+      const bridge = getExploreBridge({ projectRoot: process.cwd() });
+      const rus = await bridge.listRUs(options);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        success: true,
+        data: rus,
+        count: rus.length,
+        options,
+      });
+    } catch (error) {
+      log.error('Error getting explore RUs', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to get reasoning units',
+      });
+    }
+  }
+
+  /**
+   * Get single Knowledge Unit by ID
+   */
+  private async getExploreKU(req: Request, res: Response): Promise<void> {
+    try {
+      const id = req.params.id;
+      if (!id) {
+        res.status(400).json({ success: false, error: 'Missing KU ID' });
+        return;
+      }
+
+      const bridge = getExploreBridge({ projectRoot: process.cwd() });
+      const ku = await bridge.getKU(id);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        success: true,
+        data: ku,
+      });
+    } catch (error) {
+      log.error('Error getting explore KU', error);
+      res.status(404).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Knowledge unit not found',
+      });
+    }
+  }
+
+  /**
+   * Get single Reasoning Unit by ID
+   */
+  private async getExploreRU(req: Request, res: Response): Promise<void> {
+    try {
+      const id = req.params.id;
+      if (!id) {
+        res.status(400).json({ success: false, error: 'Missing RU ID' });
+        return;
+      }
+
+      const bridge = getExploreBridge({ projectRoot: process.cwd() });
+      const ru = await bridge.getRU(id);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        success: true,
+        data: ru,
+      });
+    } catch (error) {
+      log.error('Error getting explore RU', error);
+      res.status(404).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Reasoning unit not found',
+      });
+    }
+  }
+
+  /**
+   * Build and return knowledge graph
+   * Query params: format (d3|dot|cytoscape|mermaid), type (ku|full|provenance), kuId, maxNodes
+   */
+  private async getExploreGraph(req: Request, res: Response): Promise<void> {
+    try {
+      const options: GraphOptions = {
+        format: (req.query.format as 'd3' | 'dot' | 'cytoscape' | 'mermaid') || 'd3',
+        type: (req.query.type as 'ku' | 'full' | 'provenance') || 'full',
+        kuId: req.query.kuId as string | undefined,
+        maxNodes: req.query.maxNodes
+          ? parseInt(req.query.maxNodes as string)
+          : 100,
+      };
+
+      const bridge = getExploreBridge({ projectRoot: process.cwd() });
+      const graph = await bridge.buildGraph(options);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        success: true,
+        data: graph,
+        nodeCount: graph.nodes?.length || 0,
+        linkCount: graph.links?.length || 0,
+        options,
+      });
+    } catch (error) {
+      log.error('Error building explore graph', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to build knowledge graph',
+      });
+    }
+  }
+
+  /**
+   * Get provenance trace for a Knowledge Unit
+   */
+  private async getExploreTrace(req: Request, res: Response): Promise<void> {
+    try {
+      const kuId = req.params.kuId;
+      if (!kuId) {
+        res.status(400).json({ success: false, error: 'Missing KU ID' });
+        return;
+      }
+
+      const bridge = getExploreBridge({ projectRoot: process.cwd() });
+      const trace = await bridge.traceKU(kuId);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        success: true,
+        data: trace,
+        chainLength: trace.chain?.length || 0,
+      });
+    } catch (error) {
+      log.error('Error getting explore trace', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to get provenance trace',
+      });
+    }
+  }
+
+  /**
+   * Get coverage analysis
+   * Query params: showGaps, includeHeatmap
+   */
+  private async getExploreCoverage(req: Request, res: Response): Promise<void> {
+    try {
+      const options = {
+        showGaps: req.query.showGaps === 'true',
+        includeHeatmap: req.query.includeHeatmap === 'true',
+      };
+
+      const bridge = getExploreBridge({ projectRoot: process.cwd() });
+      const coverage = await bridge.getCoverage(options);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        success: true,
+        data: coverage,
+      });
+    } catch (error) {
+      log.error('Error getting explore coverage', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to get coverage analysis',
+      });
+    }
+  }
+
+  /**
+   * Get explore system statistics
+   */
+  private async getExploreStats(req: Request, res: Response): Promise<void> {
+    try {
+      const bridge = getExploreBridge({ projectRoot: process.cwd() });
+      const stats = await bridge.getStats();
+
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        success: true,
+        data: stats,
+      });
+    } catch (error) {
+      log.error('Error getting explore stats', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to get explore statistics',
+        available: false,
+      });
+    }
+  }
+
+  /**
+   * Search Knowledge Units semantically
+   * Query params: q (search query), limit
+   */
+  private async searchExploreKUs(req: Request, res: Response): Promise<void> {
+    try {
+      const query = req.query.q as string;
+      if (!query) {
+        res.status(400).json({ success: false, error: 'Missing search query (q)' });
+        return;
+      }
+
+      const limit = req.query.limit
+        ? parseInt(req.query.limit as string)
+        : 10;
+
+      const bridge = getExploreBridge({ projectRoot: process.cwd() });
+      const results = await bridge.searchKUs(query, limit);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        success: true,
+        data: results,
+        count: results.length,
+        query,
+      });
+    } catch (error) {
+      log.error('Error searching explore KUs', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to search knowledge units',
       });
     }
   }
