@@ -141,34 +141,49 @@ export interface CachedResponse {
 
 /**
  * Default degradation configuration
+ *
+ * LOCAL-FIRST: vLLM and Ollama are primary to save API costs
+ * Cloud providers (anthropic, openai) are fallback only
  */
 export const DEFAULT_DEGRADATION_CONFIG: DegradationConfig = {
   fallbackChains: {
+    // Default: LOCAL-FIRST - try local models before cloud
     default: {
-      primary: 'anthropic',
-      fallbacks: ['openai', 'vllm', 'ollama'],
+      primary: 'vllm',
+      fallbacks: ['ollama', 'anthropic', 'openai'],
       minQualityThreshold: 0.7,
       allowDegraded: true,
       allowCached: true,
     },
+    // Code tasks: LOCAL-FIRST with vLLM (Qwen coder is excellent)
     code: {
-      primary: 'anthropic',
-      fallbacks: ['openai', 'vllm'],
-      minQualityThreshold: 0.8,
+      primary: 'vllm',
+      fallbacks: ['ollama', 'anthropic', 'openai'],
+      minQualityThreshold: 0.7,
       allowDegraded: true,
       allowCached: false,
     },
+    // Creative: Use cloud for highest quality
     creative: {
       primary: 'anthropic',
-      fallbacks: ['openai'],
+      fallbacks: ['openai', 'vllm'],
       minQualityThreshold: 0.75,
       allowDegraded: false,
       allowCached: true,
     },
-    local: {
+    // Local-only: No cloud fallback
+    local_only: {
       primary: 'vllm',
       fallbacks: ['ollama'],
       minQualityThreshold: 0.6,
+      allowDegraded: true,
+      allowCached: true,
+    },
+    // Cloud-only: For when local is explicitly not wanted
+    cloud_only: {
+      primary: 'anthropic',
+      fallbacks: ['openai'],
+      minQualityThreshold: 0.8,
       allowDegraded: true,
       allowCached: true,
     },
