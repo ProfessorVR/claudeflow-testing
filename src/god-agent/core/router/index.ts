@@ -137,11 +137,15 @@ export {
   createRoutingDecision,
   isRoutingSuccessful,
   getRoutingDecisionSummary,
+  // Routing metrics
+  getRoutingMetrics,
+  resetRoutingMetrics,
 } from './capability-router.js';
 
 export type {
   CapabilityRouterConfig,
   RouteOptions,
+  RoutingMetrics,
 } from './capability-router.js';
 
 // ===== ROUTER CONFIGURATION =====

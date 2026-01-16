@@ -28,6 +28,69 @@ import {
   NoSuitableModelError,
   TaskBlockedError,
 } from './router-types.js';
+
+// ===== ROUTING METRICS =====
+
+/**
+ * Routing metrics counters
+ * Tracks local vs cloud requests and fallback events
+ */
+export interface RoutingMetrics {
+  /** Count of requests routed to local models (vllm, ollama) */
+  localRequests: number;
+  /** Count of requests routed to cloud models (anthropic, openai) */
+  cloudRequests: number;
+  /** Count of fallback events (when primary unavailable) */
+  fallbackEvents: number;
+  /** Count of recovery events (return to primary after fallback) */
+  recoveryEvents: number;
+  /** Last provider that was unavailable */
+  lastUnavailableProvider: string | null;
+  /** Last fallback transition */
+  lastFallback: {
+    from: string;
+    to: string;
+    timestamp: Date;
+  } | null;
+}
+
+// Global routing metrics singleton
+let routingMetrics: RoutingMetrics = {
+  localRequests: 0,
+  cloudRequests: 0,
+  fallbackEvents: 0,
+  recoveryEvents: 0,
+  lastUnavailableProvider: null,
+  lastFallback: null,
+};
+
+/**
+ * Get current routing metrics
+ */
+export function getRoutingMetrics(): RoutingMetrics {
+  return { ...routingMetrics };
+}
+
+/**
+ * Reset routing metrics
+ */
+export function resetRoutingMetrics(): void {
+  routingMetrics = {
+    localRequests: 0,
+    cloudRequests: 0,
+    fallbackEvents: 0,
+    recoveryEvents: 0,
+    lastUnavailableProvider: null,
+    lastFallback: null,
+  };
+}
+
+/**
+ * Check if a provider is local (zero cost)
+ */
+function isLocalProvider(providerType: ProviderType): boolean {
+  return providerType === 'vllm' || providerType === 'ollama';
+}
 import { TaskClassifier, getTaskClassifier } from './task-classifier.js';
 import type { ClassificationContext } from './task-classifier.js';
 
@@ -159,10 +222,13 @@ export class CapabilityRouter {
       // Check availability
       const available = await provider.isAvailable();
       if (!available) {
+        // Track unavailable provider
+        routingMetrics.lastUnavailableProvider = modelId;
+
         this.emit({
           type: 'provider_unavailable',
           timestamp: new Date(),
-          data: { modelId, classification },
+          data: { modelId, classification, providerType: provider.provider },
         });
         continue;
       }
@@ -179,10 +245,27 @@ export class CapabilityRouter {
         timestamp: new Date(),
       };
 
+      // Track routing metrics
+      if (isLocalProvider(provider.provider)) {
+        routingMetrics.localRequests++;
+      } else {
+        routingMetrics.cloudRequests++;
+      }
+
+      // Check if this is a fallback (not the first in route)
+      if (fallbackChain.indexOf(modelId) > 0) {
+        routingMetrics.fallbackEvents++;
+        routingMetrics.lastFallback = {
+          from: fallbackChain[0],
+          to: modelId,
+          timestamp: new Date(),
+        };
+      }
+
       this.emit({
         type: 'routing_decision',
         timestamp: new Date(),
-        data: { decision, latencyMs: Date.now() - startTime },
+        data: { decision, latencyMs: Date.now() - startTime, isLocal: isLocalProvider(provider.provider) },
       });
 
       return decision;
