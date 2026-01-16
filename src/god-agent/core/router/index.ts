@@ -140,6 +140,7 @@ export {
   // Routing metrics
   getRoutingMetrics,
   resetRoutingMetrics,
+  getLocalFirstMetricsSummary,
 } from './capability-router.js';
 
 export type {

@@ -296,6 +296,8 @@ export interface TaskExecutionResult {
     durationMs: number;
     /** Error message if execution failed */
     error?: string;
+    /** Optional metadata about execution (provider, routing, quality, etc.) */
+    metadata?: Record<string, unknown>;
 }
 /**
  * Unified learning statistics combining all subsystems
@@ -378,6 +380,8 @@ export declare class UniversalAgent {
     private failureClassifier;
     private modelRouter;
     private modelRouterEnabled;
+    private vllmProvider?;
+    private claudeProvider?;
     private memoryClient;
     private ucmClient;
     private coreDaemonClient;

@@ -93,12 +93,22 @@ import {
   recordCompletedRequest,
   loadRouterConfig,
   DEFAULT_ROUTER_CONFIG,
+  getLocalFirstMetricsSummary,
   type RouterConfig,
   type CapabilityRouterConfig,
   type TaskType,
   type Complexity,
   type ProviderType,
 } from '../core/router/index.js';
+
+// Provider integration for local-first routing
+import {
+  type ILLMProvider,
+  type CompletionRequest,
+  type CompletionResponse,
+  VLLMProvider,
+  ClaudeProvider,
+} from '../core/providers/index.js';
 
 // MEM-001: Multi-Process Memory System
 import {
@@ -439,6 +449,8 @@ export interface TaskExecutionResult {
   durationMs: number;
   /** Error message if execution failed */
   error?: string;
+  /** Optional metadata about execution (provider, routing, quality, etc.) */
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -564,6 +576,10 @@ export class UniversalAgent {
   // TIER-2.1: Intelligent Model Router
   private modelRouter!: CapabilityRouter;
   private modelRouterEnabled = false;
+
+  // Provider instances for local-first routing
+  private vllmProvider?: VLLMProvider;
+  private claudeProvider?: ClaudeProvider;
 
   // MEM-001: Multi-Process Memory Client
   private memoryClient!: MemoryClient;
@@ -819,6 +835,29 @@ export class UniversalAgent {
         const providers = factory.getAllProviders();
         for (const provider of providers) {
           this.modelRouter.registerProvider(provider);
+        }
+
+        // Initialize LLM providers for direct execution
+        try {
+          this.vllmProvider = new VLLMProvider({
+            baseUrl: process.env.VLLM_BASE_URL || 'http://localhost:8002',
+          });
+          this.log('Provider: vLLM provider initialized');
+        } catch (error) {
+          this.log(`Provider: vLLM provider initialization failed: ${error}`);
+        }
+
+        try {
+          if (process.env.ANTHROPIC_API_KEY) {
+            this.claudeProvider = new ClaudeProvider({
+              apiKey: process.env.ANTHROPIC_API_KEY,
+            });
+            this.log('Provider: Claude provider initialized');
+          } else {
+            this.log('Provider: Claude provider skipped (no API key)');
+          }
+        } catch (error) {
+          this.log(`Provider: Claude provider initialization failed: ${error}`);
         }
 
         this.modelRouterEnabled = true;
@@ -1268,6 +1307,111 @@ export class UniversalAgent {
     try {
       let result: string;
       let executionSuccess = true;
+
+      // NEW: Local-First Routing - Try to execute directly with providers
+      // If providers are initialized and routing is enabled, use them first
+      if (this.modelRouterEnabled && (this.vllmProvider || this.claudeProvider) && !taskExecutionFn) {
+        this.log('LOCAL-FIRST: Attempting routed execution with providers');
+
+        try {
+          // Try vLLM first (local)
+          if (this.vllmProvider) {
+            this.log('LOCAL-FIRST: Trying vLLM provider');
+            const completionRequest: CompletionRequest = {
+              prompt: modifiedInput,
+              maxTokens: 4096,
+              temperature: 0.7,
+            };
+
+            const response = await this.vllmProvider.complete(completionRequest);
+
+            if (response.success && response.text) {
+              this.log(`LOCAL-FIRST: vLLM succeeded (${response.latencyMs}ms)`);
+              result = response.text;
+
+              // Track successful local execution in metrics
+              this.log('LOCAL-FIRST: Successfully executed with vLLM');
+
+              // Skip Task tool execution - we got result from local model
+              const durationMs = Date.now() - startTime;
+              const qualityInteraction: QualityInteraction = {
+                id: sessionId,
+                mode: taskType as AgentMode,
+                input: agentSelection.prompt,
+                output: result,
+                timestamp: Date.now(),
+              };
+              const qualityAssessment = assessQuality(qualityInteraction, this.config.autoStoreThreshold);
+
+              this.log(`LOCAL-FIRST: Quality score ${qualityAssessment.score.toFixed(3)}`);
+
+              return {
+                result,
+                success: true,
+                taskType,
+                agentId: agent.key,
+                durationMs,
+                metadata: {
+                  provider: 'vllm',
+                  localFirst: true,
+                  qualityScore: qualityAssessment.score,
+                },
+              };
+            }
+
+            this.log(`LOCAL-FIRST: vLLM failed or returned empty, falling back to Claude`);
+          }
+
+          // Fallback to Claude if vLLM failed or unavailable
+          if (this.claudeProvider) {
+            this.log('LOCAL-FIRST: Falling back to Claude provider');
+            const completionRequest: CompletionRequest = {
+              prompt: modifiedInput,
+              maxTokens: 4096,
+              temperature: 0.7,
+            };
+
+            const response = await this.claudeProvider.complete(completionRequest);
+
+            if (response.success && response.text) {
+              this.log(`LOCAL-FIRST: Claude succeeded (${response.latencyMs}ms)`);
+              result = response.text;
+
+              // Track fallback to cloud
+              this.log('LOCAL-FIRST: Fallback to Claude successful');
+
+              const durationMs = Date.now() - startTime;
+              const qualityInteraction: QualityInteraction = {
+                id: sessionId,
+                mode: taskType as AgentMode,
+                input: agentSelection.prompt,
+                output: result,
+                timestamp: Date.now(),
+              };
+              const qualityAssessment = assessQuality(qualityInteraction, this.config.autoStoreThreshold);
+
+              return {
+                result,
+                success: true,
+                taskType,
+                agentId: agent.key,
+                durationMs,
+                metadata: {
+                  provider: 'claude',
+                  localFirst: false,
+                  fallback: true,
+                  qualityScore: qualityAssessment.score,
+                },
+              };
+            }
+          }
+
+          // Both providers failed - fall through to Task tool
+          this.log('LOCAL-FIRST: All providers failed, falling back to Task tool');
+        } catch (providerError) {
+          this.log(`LOCAL-FIRST: Provider execution error: ${providerError}, falling back to Task tool`);
+        }
+      }
 
       if (taskExecutionFn) {
         // Use custom execution function if provided
