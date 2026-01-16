@@ -105,6 +105,14 @@ export interface LocalFirstOptions {
   completionOptions?: CompletionOptions;
   /** Force a specific route (bypass risk assessment) */
   forceRoute?: RouteRecommendation;
+
+  // LOCAL-FIRST FALLBACK OPTIONS
+  /** Enable always-try-local-first mode (try local even for medium-risk before Claude) */
+  alwaysTryLocalFirst?: boolean;
+  /** Maximum local retries before falling back to Claude */
+  maxLocalRetries?: number;
+  /** Quality threshold for accepting local output (0-1) */
+  localQualityThreshold?: number;
 }
 
 /**
@@ -265,6 +273,10 @@ type ResolvedOptions = {
   riskContext: RiskContext | undefined;
   completionOptions: CompletionOptions | undefined;
   forceRoute: RouteRecommendation | undefined;
+  // LOCAL-FIRST FALLBACK
+  alwaysTryLocalFirst: boolean;
+  maxLocalRetries: number;
+  localQualityThreshold: number;
 };
 
 /**
@@ -295,6 +307,10 @@ export class LocalFirstExecutor {
       riskContext: undefined,
       completionOptions: undefined,
       forceRoute: undefined,
+      // LOCAL-FIRST FALLBACK DEFAULTS
+      alwaysTryLocalFirst: true,  // Enable local-first by default
+      maxLocalRetries: 2,          // Retry local twice before Claude
+      localQualityThreshold: 0.7,  // Accept local output if quality >= 70%
       ...this.config.defaultOptions,
     };
   }
@@ -320,7 +336,11 @@ export class LocalFirstExecutor {
     const route = opts.forceRoute ?? riskAssessment.recommendedRoute;
 
     // Step 2: Route based on risk
-    if (route === 'expensive') {
+    // LOCAL-FIRST STRATEGY: Always try local first unless explicitly high-risk (expensive)
+    // This maximizes local vLLM usage and only falls back to Claude when needed
+
+    // Only go directly to Claude for 'expensive' route when alwaysTryLocalFirst is disabled
+    if (route === 'expensive' && !opts.alwaysTryLocalFirst) {
       return this.executeWithExpensiveModel(prompt, opts, riskAssessment, timeline, startTime);
     }
 
@@ -336,8 +356,158 @@ export class LocalFirstExecutor {
       return this.executeWithLocalModel(prompt, pureLocalOpts, riskAssessment, 'local', timeline, startTime, errors);
     }
 
+    // LOCAL-FIRST FALLBACK: Try local first, even for 'expensive' route if alwaysTryLocalFirst is enabled
+    if (route === 'expensive' && opts.alwaysTryLocalFirst && this.config.localProvider) {
+      // Try local first with retries before falling back to Claude
+      const localResult = await this.tryLocalWithFallback(prompt, opts, riskAssessment, timeline, startTime, errors);
+      if (localResult.success) {
+        return localResult;
+      }
+      // Local failed, fall back to Claude
+      return this.executeWithExpensiveModel(prompt, opts, riskAssessment, timeline, startTime);
+    }
+
     // Local or local_then_review
     return this.executeWithLocalModel(prompt, opts, riskAssessment, route, timeline, startTime, errors);
+  }
+
+  /**
+   * LOCAL-FIRST: Try local model with retries before falling back
+   * This is the key method for the always-try-local-first strategy
+   */
+  private async tryLocalWithFallback(
+    prompt: string,
+    opts: ResolvedOptions,
+    riskAssessment: RiskAssessment,
+    timeline: LocalFirstResult['timeline'],
+    startTime: number,
+    errors: string[]
+  ): Promise<LocalFirstResult> {
+    if (!this.config.localProvider) {
+      // No local provider, signal to fall back to Claude
+      return {
+        success: false,
+        output: '',
+        generatedBy: 'local',
+        testsPassed: null,
+        iterations: 0,
+        riskAssessment,
+        timeline: { ...timeline, total: Date.now() - startTime },
+        errors: ['No local provider configured'],
+      };
+    }
+
+    // Try local with limited retries (faster than full execution loop)
+    for (let retry = 0; retry < opts.maxLocalRetries; retry++) {
+      const genStart = Date.now();
+      try {
+        const response = await this.config.localProvider.complete(
+          prompt,
+          opts.completionOptions
+        );
+        timeline.localGeneration = (timeline.localGeneration ?? 0) + (Date.now() - genStart);
+
+        // Quick quality check - if output looks reasonable, accept it
+        const outputQuality = this.estimateOutputQuality(response.content, prompt);
+        if (outputQuality >= opts.localQualityThreshold) {
+          // Run tests if enabled
+          let testsPassed: boolean | null = null;
+          if (opts.runTests) {
+            const testStart = Date.now();
+            const testResult = await this.config.testRunner.runTests(opts.testCommand, opts.affectedFiles);
+            timeline.testExecution = (timeline.testExecution ?? 0) + (Date.now() - testStart);
+            testsPassed = testResult.passed;
+
+            if (!testResult.passed) {
+              errors.push(`Tests failed on local attempt ${retry + 1}: ${testResult.failedTests.join(', ')}`);
+              continue; // Try again
+            }
+          }
+
+          // Local succeeded!
+          timeline.total = Date.now() - startTime;
+          return {
+            success: true,
+            output: response.content,
+            generatedBy: 'local',
+            testsPassed,
+            iterations: retry + 1,
+            riskAssessment,
+            timeline,
+            errors,
+          };
+        }
+
+        // Output quality too low, try again
+        errors.push(`Local attempt ${retry + 1} quality too low: ${(outputQuality * 100).toFixed(0)}%`);
+      } catch (error) {
+        errors.push(`Local attempt ${retry + 1} failed: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+
+    // All local attempts failed, signal to fall back to Claude
+    timeline.total = Date.now() - startTime;
+    return {
+      success: false,
+      output: '',
+      generatedBy: 'local',
+      testsPassed: null,
+      iterations: opts.maxLocalRetries,
+      riskAssessment,
+      timeline,
+      errors,
+    };
+  }
+
+  /**
+   * Estimate output quality (simple heuristic)
+   * Returns 0-1 score based on output characteristics
+   */
+  private estimateOutputQuality(output: string, prompt: string): number {
+    if (!output || output.trim().length === 0) {
+      return 0;
+    }
+
+    let score = 0.5; // Base score
+
+    // Length check - too short or too long is suspicious
+    const outputLen = output.length;
+    if (outputLen > 50 && outputLen < 50000) {
+      score += 0.1;
+    }
+
+    // Contains code markers (for code tasks)
+    if (prompt.toLowerCase().includes('function') ||
+        prompt.toLowerCase().includes('implement') ||
+        prompt.toLowerCase().includes('code')) {
+      if (output.includes('function') || output.includes('const') ||
+          output.includes('class') || output.includes('def ')) {
+        score += 0.15;
+      }
+    }
+
+    // Contains explanation (shows understanding)
+    if (output.includes('//') || output.includes('#') ||
+        output.includes('/*') || output.toLowerCase().includes('note:')) {
+      score += 0.05;
+    }
+
+    // Doesn't contain obvious error markers
+    const errorMarkers = ['error:', 'failed:', 'cannot', 'undefined', 'NaN'];
+    const hasErrors = errorMarkers.some(marker =>
+      output.toLowerCase().includes(marker)
+    );
+    if (!hasErrors) {
+      score += 0.1;
+    }
+
+    // Contains proper structure (braces, semicolons for code)
+    if ((output.includes('{') && output.includes('}')) ||
+        (output.includes('(') && output.includes(')'))) {
+      score += 0.1;
+    }
+
+    return Math.min(score, 1.0);
   }
 
   /**
