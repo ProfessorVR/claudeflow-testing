@@ -223,7 +223,7 @@ export class RiskClassifier {
     this.config = {
       trustTests: config.trustTests ?? true,
       escalateProduction: config.escalateProduction ?? true,
-      minPatternSuccessRate: config.minPatternSuccessRate ?? 0.70,
+      minPatternSuccessRate: config.minPatternSuccessRate ?? 0.50,
       customHighRiskPatterns: config.customHighRiskPatterns ?? [],
       customLowRiskPatterns: config.customLowRiskPatterns ?? [],
     };
@@ -354,10 +354,12 @@ export class RiskClassifier {
       }
     }
 
-    // Default to medium risk with review
+    // Default to low risk (local-first approach)
+    // Changed from medium risk to maximize local model usage
     signals.push('default_assessment');
-    return this.createMediumRiskAssessment(
-      'No strong signals, defaulting to local with review',
+    return this.createLowRiskAssessment(
+      'No strong signals, defaulting to pure local (local-first)',
+      'diff_review',
       signals,
       context
     );

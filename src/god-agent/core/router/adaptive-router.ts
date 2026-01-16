@@ -56,7 +56,7 @@ const DEFAULT_ADAPTIVE_CONFIG = {
   enabled: true,
   timeDecayFactor: 0.1,
   historyWindow: 100,
-  minOutcomesForAdaptive: 5,
+  minOutcomesForAdaptive: 2,
   qualityWeight: 0.6,
   successRateThreshold: 0.5,
   autoLearn: true,
