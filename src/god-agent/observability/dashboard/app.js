@@ -31,6 +31,10 @@ class DashboardApp {
         this.commandHistoryIndex = -1;
         this.isDarkTheme = true;
 
+        // Lazy loading - tracks which tabs have been loaded
+        this.loadedTabs = new Set();
+        this.tabLoadingStates = new Map();
+
         // Metrics
         this.ucmMetrics = {};
         this.idescMetrics = {};
@@ -176,29 +180,90 @@ class DashboardApp {
     }
 
     /**
-     * Load data for a specific tab
+     * Load data for a specific tab (with lazy loading)
+     * @param {string} tabId - Tab identifier
+     * @param {boolean} forceRefresh - Force reload even if already loaded
      */
-    async loadTabData(tabId) {
-        switch (tabId) {
-            case 'analytics':
-                await this.loadAnalyticsData();
-                break;
-            case 'monitoring':
-                await this.loadMonitoringData();
-                break;
-            case 'router':
-                await this.loadRouterData();
-                break;
-            case 'memory':
-                this.loadInteractionStore();
-                break;
-            case 'activity':
-                this.renderActivities();
-                break;
-            case 'explore':
-                await this.loadExploreData();
-                break;
+    async loadTabData(tabId, forceRefresh = false) {
+        // Skip if already loaded and not forcing refresh
+        if (!forceRefresh && this.loadedTabs.has(tabId)) {
+            return;
         }
+
+        // Skip if currently loading this tab
+        if (this.tabLoadingStates.get(tabId)) {
+            return;
+        }
+
+        // Show loading state
+        this.setTabLoading(tabId, true);
+
+        try {
+            switch (tabId) {
+                case 'analytics':
+                    await this.loadAnalyticsData();
+                    break;
+                case 'monitoring':
+                    await this.loadMonitoringData();
+                    break;
+                case 'router':
+                    await this.loadRouterData();
+                    break;
+                case 'memory':
+                    await this.loadInteractionStore();
+                    break;
+                case 'activity':
+                    this.renderActivities();
+                    break;
+                case 'explore':
+                    await this.loadExploreData();
+                    break;
+            }
+
+            // Mark tab as loaded
+            this.loadedTabs.add(tabId);
+        } catch (error) {
+            console.error(`Error loading tab ${tabId}:`, error);
+            this.toastError('Load Error', `Failed to load ${tabId} data`);
+        } finally {
+            this.setTabLoading(tabId, false);
+        }
+    }
+
+    /**
+     * Set loading state for a tab
+     */
+    setTabLoading(tabId, isLoading) {
+        this.tabLoadingStates.set(tabId, isLoading);
+
+        const tabPanel = document.getElementById(`${tabId}-tab`);
+        if (tabPanel) {
+            if (isLoading) {
+                // Add loading overlay if not exists
+                if (!tabPanel.querySelector('.tab-loading-overlay')) {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'tab-loading-overlay';
+                    overlay.innerHTML = `
+                        <div class="loading-spinner"></div>
+                        <span>Loading ${tabId}...</span>
+                    `;
+                    tabPanel.appendChild(overlay);
+                }
+            } else {
+                // Remove loading overlay
+                const overlay = tabPanel.querySelector('.tab-loading-overlay');
+                overlay?.remove();
+            }
+        }
+    }
+
+    /**
+     * Force refresh current tab data
+     */
+    async refreshCurrentTab() {
+        await this.loadTabData(this.currentMainTab, true);
+        this.updateLastRefresh();
+        this.toastInfo('Refreshed', `${this.currentMainTab} data updated`);
     }
 
     /**
