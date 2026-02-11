@@ -121,6 +121,7 @@ import {
 // Extracted modules (Tranche E)
 import { scrubNonCorpusAuthors, buildCorpusSourcesFromChunks } from './author-scrubber.js';
 import { DESCEpisodeManager } from './desc-episode-manager.js';
+import { StyleProfileFacade } from './style-profile-facade.js';
 
 // Phase 5: Staged Composition System Integration
 import {
@@ -767,6 +768,7 @@ export class UniversalAgent {
   // DESC: UCM Daemon client for episode injection (RULE-010)
   private ucmClient!: UCMDaemonClient;
   private descManager!: DESCEpisodeManager;
+  private styleFacade!: StyleProfileFacade;
 
   // DAEMON-003: Core Daemon client for EpisodeStore/GraphDB IPC
   private coreDaemonClient!: CoreDaemonClient;
@@ -893,6 +895,11 @@ export class UniversalAgent {
       this.styleProfileManager = new StyleProfileManager(process.cwd());
       this.log('StyleProfileManager initialized - Style learning enabled');
     }
+    this.styleFacade = new StyleProfileFacade(
+      this.styleProfileManager,
+      (msg: string) => this.log(msg),
+      () => this.ensureInitialized()
+    );
 
     // Initialize embedding provider (SPEC-EMB-002)
     this.embeddingProvider = await EmbeddingProviderFactory.getProvider();
@@ -5051,114 +5058,38 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
     }
   }
 
-  // ==================== Style Profile Management ====================
+  // ==================== Style Profile Management (delegates to StyleProfileFacade) ====================
 
-  /**
-   * Learn a writing style from text samples
-   *
-   * @param name - Name for the style profile
-   * @param textSamples - Array of text samples to learn from
-   * @param options - Additional options
-   * @returns The created style profile
-   */
   async learnStyle(
     name: string,
     textSamples: string[],
-    options: {
-      description?: string;
-      tags?: string[];
-      setAsActive?: boolean;
-    } = {}
+    options: { description?: string; tags?: string[]; setAsActive?: boolean } = {}
   ): Promise<StoredStyleProfile | null> {
-    await this.ensureInitialized();
-
-    if (!this.styleProfileManager) {
-      this.log('Warning: StyleProfileManager not available');
-      return null;
-    }
-
-    try {
-      const profile = await this.styleProfileManager.createProfile(name, textSamples, {
-        description: options.description,
-        sourceType: 'text',
-        tags: options.tags,
-      });
-
-      if (options.setAsActive) {
-        await this.styleProfileManager.setActiveProfile(profile.metadata.id);
-        this.log(`Style profile "${name}" created and set as active`);
-      } else {
-        this.log(`Style profile "${name}" created`);
-      }
-
-      return profile;
-    } catch (error) {
-      this.log(`Error creating style profile: ${error}`);
-      return null;
-    }
+    return this.styleFacade.learnStyle(name, textSamples, options);
   }
 
-  /**
-   * List all available style profiles
-   */
   listStyleProfiles(): StyleProfileMetadata[] {
-    if (!this.styleProfileManager) {
-      return [];
-    }
-    return this.styleProfileManager.listProfiles();
+    return this.styleFacade.listProfiles();
   }
 
-  /**
-   * Set the active style profile
-   */
   async setActiveStyleProfile(profileId: string | null): Promise<boolean> {
-    if (!this.styleProfileManager) {
-      this.log('Warning: StyleProfileManager not available');
-      return false;
-    }
-
-    try {
-      await this.styleProfileManager.setActiveProfile(profileId);
-      this.log(`Active style profile set to: ${profileId ?? 'none'}`);
-      return true;
-    } catch (error) {
-      this.log(`Error setting active style profile: ${error}`);
-      return false;
-    }
+    return this.styleFacade.setActiveProfile(profileId);
   }
 
-  /**
-   * Get the active style profile
-   */
   getActiveStyleProfile(): StoredStyleProfile | undefined {
-    return this.styleProfileManager?.getActiveProfile();
+    return this.styleFacade.getActiveProfile();
   }
 
-  /**
-   * Get style characteristics for a profile
-   */
   getStyleCharacteristics(profileId?: string): StyleCharacteristics | null {
-    if (!this.styleProfileManager) {
-      return null;
-    }
-    return this.styleProfileManager.getStyleCharacteristics(profileId);
+    return this.styleFacade.getCharacteristics(profileId);
   }
 
-  /**
-   * Get style profile statistics
-   */
   getStyleStats(): { totalProfiles: number; activeProfile: string | null; totalSourceDocuments: number } {
-    if (!this.styleProfileManager) {
-      return { totalProfiles: 0, activeProfile: null, totalSourceDocuments: 0 };
-    }
-    return this.styleProfileManager.getStats();
+    return this.styleFacade.getStats();
   }
 
-  /**
-   * Get the StyleProfileManager instance for direct access
-   */
   getStyleProfileManager(): StyleProfileManager | undefined {
-    return this.styleProfileManager;
+    return this.styleFacade.getManager();
   }
 
   // ==================== Stats & Status ====================
