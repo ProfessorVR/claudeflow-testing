@@ -3602,12 +3602,12 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
           ? `auto (chunks=${corpusChunks.length} >= ${minChunksForInline}, sources=${uniqueSources})`
           : `auto-skip (chunks=${corpusChunks.length} < ${minChunksForInline})`;
     this.log(`[InlineValidation] ${shouldUseInlineValidation && hasUsableCorpus ? 'ON' : 'OFF'} (${inlineReason}${options.forceExecute ? ', forceExecute override' : ''})`);
-    console.error(`[write() pipeline] InlineValidation=${shouldUseInlineValidation && hasUsableCorpus ? 'ON' : 'OFF'} (${inlineReason})`);
+    universalLogger.debug( `[write() pipeline] InlineValidation=${shouldUseInlineValidation && hasUsableCorpus ? 'ON' : 'OFF'} (${inlineReason})`);
 
     if (shouldUseInlineValidation && hasUsableCorpus && !options.forceExecute) {
       try {
         this.log('🔬 Phase 11: Using inline validation for hallucination prevention DURING generation...');
-        console.error('[write() pipeline] Entering inline validation...');
+        universalLogger.debug( '[write() pipeline] Entering inline validation...');
         usedInlineValidation = true;
 
         // Build corpus sources from chunks
@@ -3686,7 +3686,7 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
           // Skip to the return, but first do prose sanitization and other post-processing
         }
       } catch (error) {
-        console.error(`[write() pipeline] Inline validation FAILED: ${error}`);
+        universalLogger.warn( `[write() pipeline] Inline validation FAILED: ${error}`);
         this.log(`Warning: Inline validation failed, falling back to regular execution: ${error}`);
         usedInlineValidation = false;
         inlineValidationResult = undefined;
@@ -3700,10 +3700,10 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
     // If inline validation was successful, use that content
     if (usedInlineValidation && inlineValidationResult && inlineValidationResult.document.length > 0) {
       content = inlineValidationResult.document;
-      console.error(`[write() pipeline] Using INLINE VALIDATION content (${content.split(/\s+/).length} words)`);
+      universalLogger.debug( `[write() pipeline] Using INLINE VALIDATION content (${content.split(/\s+/).length} words)`);
       this.log(`Using inline-validated content (${content.split(/\s+/).length} words)`);
     } else {
-      console.error(`[write() pipeline] Using DIRECT API path (inline=${usedInlineValidation}, docLen=${inlineValidationResult?.document?.length ?? 'N/A'})`);
+      universalLogger.debug( `[write() pipeline] Using DIRECT API path (inline=${usedInlineValidation}, docLen=${inlineValidationResult?.document?.length ?? 'N/A'})`);
       // Direct LLM execution for write() with --execute flag.
       // Uses Anthropic API directly instead of executeTaskDefault() which returns [TASK_QUEUED].
       // This ensures the full pipeline (corpus constraint, quality gauntlet, enforcement) runs
@@ -3722,17 +3722,17 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
         // Generate via Claude Code CLI (uses Claude subscription, not API key)
         try {
           this.log('write() direct execution: Generating via Claude Code CLI...');
-          console.error('[write() pipeline] Claude Code execution: starting...');
+          universalLogger.debug( '[write() pipeline] Claude Code execution: starting...');
 
           content = await this.generateViaClaudeCode(agentSelection.prompt, {
             model: 'sonnet',
           });
 
           this.log(`write() Claude Code execution: Got ${content.split(/\s+/).length} words`);
-          console.error(`[write() pipeline] Claude Code execution: Got ${content.split(/\s+/).length} words`);
+          universalLogger.debug( `[write() pipeline] Claude Code execution: Got ${content.split(/\s+/).length} words`);
         } catch (apiError) {
           this.log(`write() Claude Code execution failed: ${apiError}, falling back to task queuing`);
-          console.error(`[write() pipeline] Claude Code execution FAILED: ${apiError}`);
+          universalLogger.warn( `[write() pipeline] Claude Code execution FAILED: ${apiError}`);
 
           // Fallback: try executeTaskDefault (will return [TASK_QUEUED] but at least won't crash)
           const executionResult = await this.executeTaskDefault(agentSelection, undefined, {
@@ -3777,10 +3777,10 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
 
     // Quality Gauntlet: Validate and revise content if needed (0.85 threshold, up to 3 iterations)
     let qualityValidation: QualityValidationResult | undefined;
-    console.error(`[write() pipeline] Quality gauntlet: qualityIntegration=${!!this.qualityIntegration}`);
+    universalLogger.debug( `[write() pipeline] Quality gauntlet: qualityIntegration=${!!this.qualityIntegration}`);
     if (this.qualityIntegration) {
       try {
-        console.error('[write() pipeline] Running quality gauntlet...');
+        universalLogger.debug( '[write() pipeline] Running quality gauntlet...');
         this.log('Running quality gauntlet validation...');
         qualityValidation = await this.qualityIntegration.validateAndRevise(content, {
           topic,
@@ -3800,7 +3800,7 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
           `passed=${qualityValidation.passed}, revisions=${qualityValidation.revisionIterations}`
         );
       } catch (error) {
-        console.error(`[write() pipeline] Quality gauntlet FAILED: ${error}`);
+        universalLogger.warn( `[write() pipeline] Quality gauntlet FAILED: ${error}`);
         this.log(`Warning: Quality validation failed, using original content: ${error}`);
       }
     }
@@ -3808,10 +3808,10 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
     // Phase 2 & 4: Citation Validation and Enforcement (post-generation)
     // This catches and corrects any hallucinated citations that slipped through
     let citationEnforcementResult: EnforcementResult | undefined;
-    console.error(`[write() pipeline] Citation enforcement: corpusConstraint=${!!corpusConstraint}, chunks=${corpusChunks.length}`);
+    universalLogger.debug( `[write() pipeline] Citation enforcement: corpusConstraint=${!!corpusConstraint}, chunks=${corpusChunks.length}`);
     if (corpusConstraint && corpusChunks.length > 0) {
       try {
-        console.error('[write() pipeline] Running citation enforcement...');
+        universalLogger.debug( '[write() pipeline] Running citation enforcement...');
         this.log('🔍 Phase 2/4: Running citation enforcement...');
 
         // Create enforcer from corpus constraint with configurable options

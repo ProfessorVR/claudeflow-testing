@@ -5,6 +5,15 @@
 
 import { SpellingTransformer, SpellingRule } from './spelling-transformer.js';
 import { GrammarRule, GrammarTransformer } from './grammar-transformer.js';
+import { createComponentLogger } from '../core/observability/logger.js';
+
+const logger = createComponentLogger('StyleAnalyzer');
+
+// Deep style fingerprinting imports
+import type { RhetoricalMovePatterns } from '../cli/style/rhetorical-move-extractor.js';
+import type { CitationIntegrationStyle } from '../cli/style/citation-integration-analyzer.js';
+import type { ArgumentPatterns } from '../cli/style/argument-pattern-extractor.js';
+import type { TransitionPatterns } from '../cli/style/transition-pattern-mapper.js';
 
 export interface SentenceMetrics {
   averageLength: number;
@@ -76,6 +85,28 @@ export interface StyleCharacteristics {
    * Implements [REQ-STYLE-001, REQ-STYLE-007]
    */
   regional?: RegionalSettings;
+
+  // Deep style fingerprinting (Phase 1 enhancement)
+  /**
+   * CARS model rhetorical move patterns
+   * Optional - only present when deep analysis is performed
+   */
+  rhetoricalMoves?: RhetoricalMovePatterns;
+  /**
+   * Citation integration style analysis
+   * Optional - only present when deep analysis is performed
+   */
+  citationIntegration?: CitationIntegrationStyle;
+  /**
+   * Argument structure patterns
+   * Optional - only present when deep analysis is performed
+   */
+  argumentPatterns?: ArgumentPatterns;
+  /**
+   * Section, paragraph, and chapter transition patterns
+   * Optional - only present when deep analysis is performed
+   */
+  transitionPatterns?: TransitionPatterns;
 }
 
 // Academic/formal vocabulary indicators
@@ -209,6 +240,230 @@ export class StyleAnalyzer {
   }
 
   /**
+   * Perform deep style analysis including rhetorical, citation, argument, and transition patterns
+   * @param text - Text to analyze
+   * @param preferredVariant - Preferred language variant or 'auto' for detection
+   * @returns StyleCharacteristics with all deep patterns
+   */
+  async analyzeDeep(text: string, preferredVariant: 'en-US' | 'en-GB' | 'auto' = 'auto'): Promise<StyleCharacteristics> {
+    // Start with regional analysis
+    const baseAnalysis = this.analyzeWithRegional(text, preferredVariant);
+
+    // Dynamically import deep style extractors to avoid circular dependencies
+    try {
+      const { DeepStyleAnalyzer } = await import('../cli/style/deep-style-analyzer.js');
+      const deepAnalyzer = new DeepStyleAnalyzer();
+      const deepCharacteristics = deepAnalyzer.analyzeText(text);
+
+      return {
+        ...baseAnalysis,
+        rhetoricalMoves: deepCharacteristics.rhetoricalMoves,
+        citationIntegration: deepCharacteristics.citationIntegration,
+        argumentPatterns: deepCharacteristics.argumentPatterns,
+        transitionPatterns: deepCharacteristics.transitionPatterns,
+      };
+    } catch (error) {
+      // If deep analysis fails, return base analysis
+      logger.warn('Deep style analysis failed, using base analysis', { error: String(error) });
+      return baseAnalysis;
+    }
+  }
+
+  /**
+   * Perform deep style analysis on multiple text samples
+   * @param texts - Array of text samples
+   * @param preferredVariant - Preferred language variant
+   * @returns Merged StyleCharacteristics with all deep patterns
+   */
+  async analyzeDeepMultiple(texts: string[], preferredVariant: 'en-US' | 'en-GB' | 'auto' = 'auto'): Promise<StyleCharacteristics> {
+    if (texts.length === 0) {
+      throw new Error('No text samples provided for analysis');
+    }
+
+    // Analyze each text
+    const analyses = await Promise.all(
+      texts.filter(t => t && t.length > 100).map(t => this.analyzeDeep(t, preferredVariant))
+    );
+
+    if (analyses.length === 0) {
+      throw new Error('No valid text samples for analysis');
+    }
+
+    // Merge analyses
+    return this.mergeAnalysesDeep(analyses);
+  }
+
+  /**
+   * Merge analyses including deep patterns
+   */
+  private mergeAnalysesDeep(analyses: StyleCharacteristics[]): StyleCharacteristics {
+    // Start with base merge
+    const merged = this.mergeAnalyses(analyses);
+
+    // Merge deep patterns if present
+    const rhetoricalMoves = analyses.filter(a => a.rhetoricalMoves).map(a => a.rhetoricalMoves!);
+    const citationIntegration = analyses.filter(a => a.citationIntegration).map(a => a.citationIntegration!);
+    const argumentPatterns = analyses.filter(a => a.argumentPatterns).map(a => a.argumentPatterns!);
+    const transitionPatterns = analyses.filter(a => a.transitionPatterns).map(a => a.transitionPatterns!);
+
+    if (rhetoricalMoves.length > 0 || citationIntegration.length > 0 ||
+        argumentPatterns.length > 0 || transitionPatterns.length > 0) {
+      // Dynamically merge deep patterns
+      return {
+        ...merged,
+        rhetoricalMoves: rhetoricalMoves.length > 0 ? this.mergeRhetoricalMoves(rhetoricalMoves) : undefined,
+        citationIntegration: citationIntegration.length > 0 ? this.mergeCitationIntegration(citationIntegration) : undefined,
+        argumentPatterns: argumentPatterns.length > 0 ? this.mergeArgumentPatterns(argumentPatterns) : undefined,
+        transitionPatterns: transitionPatterns.length > 0 ? this.mergeTransitionPatterns(transitionPatterns) : undefined,
+      };
+    }
+
+    return merged;
+  }
+
+  /**
+   * Merge rhetorical move patterns
+   */
+  private mergeRhetoricalMoves(patterns: RhetoricalMovePatterns[]): RhetoricalMovePatterns {
+    if (patterns.length === 1) return patterns[0];
+
+    return {
+      establishingTerritory: {
+        topicIntroducers: this.mergeArrays(patterns.map(p => p.establishingTerritory.topicIntroducers), 15),
+        generalClaimPatterns: this.mergeArrays(patterns.map(p => p.establishingTerritory.generalClaimPatterns), 15),
+        fieldPositioning: this.mergeArrays(patterns.map(p => p.establishingTerritory.fieldPositioning), 10),
+        confidence: this.avg(patterns.map(p => p.establishingTerritory.confidence)),
+      },
+      establishingNiche: {
+        gapIndicators: this.mergeArrays(patterns.map(p => p.establishingNiche.gapIndicators), 15),
+        questionRaisers: this.mergeArrays(patterns.map(p => p.establishingNiche.questionRaisers), 10),
+        contrastMarkers: this.mergeArrays(patterns.map(p => p.establishingNiche.contrastMarkers), 10),
+        confidence: this.avg(patterns.map(p => p.establishingNiche.confidence)),
+      },
+      occupyingNiche: {
+        purposeStatements: this.mergeArrays(patterns.map(p => p.occupyingNiche.purposeStatements), 15),
+        methodPreviews: this.mergeArrays(patterns.map(p => p.occupyingNiche.methodPreviews), 10),
+        contributionClaims: this.mergeArrays(patterns.map(p => p.occupyingNiche.contributionClaims), 10),
+        confidence: this.avg(patterns.map(p => p.occupyingNiche.confidence)),
+      },
+      overallConfidence: this.avg(patterns.map(p => p.overallConfidence)),
+      segmentsAnalyzed: patterns.reduce((sum, p) => sum + p.segmentsAnalyzed, 0),
+    };
+  }
+
+  /**
+   * Merge citation integration patterns
+   */
+  private mergeCitationIntegration(styles: CitationIntegrationStyle[]): CitationIntegrationStyle {
+    if (styles.length === 1) return styles[0];
+
+    return {
+      introductionPatterns: {
+        authorProminent: this.mergeArrays(styles.map(s => s.introductionPatterns.authorProminent), 20),
+        informationProminent: this.mergeArrays(styles.map(s => s.introductionPatterns.informationProminent), 20),
+        quotationIntroducers: this.mergeArrays(styles.map(s => s.introductionPatterns.quotationIntroducers), 15),
+        authorProminentRatio: this.avg(styles.map(s => s.introductionPatterns.authorProminentRatio)),
+      },
+      quotationStyle: {
+        embeddedVsBlock: this.mostCommon(styles.map(s => s.quotationStyle.embeddedVsBlock)) as 'embedded' | 'block' | 'mixed',
+        avgQuoteLength: this.avg(styles.map(s => s.quotationStyle.avgQuoteLength)),
+        quoteSandwichUsage: styles.filter(s => s.quotationStyle.quoteSandwichUsage).length > styles.length / 2,
+        postQuoteAnalysisLength: this.avg(styles.map(s => s.quotationStyle.postQuoteAnalysisLength)),
+        quoteVerbs: this.mergeArrays(styles.map(s => s.quotationStyle.quoteVerbs), 15),
+        confidence: this.avg(styles.map(s => s.quotationStyle.confidence)),
+      },
+      synthesisPatterns: {
+        multiSourceIntegration: this.mergeArrays(styles.map(s => s.synthesisPatterns.multiSourceIntegration), 15),
+        contrastivePatterns: this.mergeArrays(styles.map(s => s.synthesisPatterns.contrastivePatterns), 15),
+        synthesisRatio: this.avg(styles.map(s => s.synthesisPatterns.synthesisRatio)),
+        synthesisConnectors: this.mergeArrays(styles.map(s => s.synthesisPatterns.synthesisConnectors), 15),
+        confidence: this.avg(styles.map(s => s.synthesisPatterns.confidence)),
+      },
+      detectedFormat: this.mostCommon(styles.map(s => s.detectedFormat)) as 'apa' | 'chicago' | 'mla' | 'harvard' | 'ieee' | 'unknown',
+      citationsAnalyzed: styles.reduce((sum, s) => sum + s.citationsAnalyzed, 0),
+      overallConfidence: this.avg(styles.map(s => s.overallConfidence)),
+    };
+  }
+
+  /**
+   * Merge argument patterns
+   */
+  private mergeArgumentPatterns(patterns: ArgumentPatterns[]): ArgumentPatterns {
+    if (patterns.length === 1) return patterns[0];
+
+    return {
+      claimStructure: {
+        claimMarkers: this.mergeArrays(patterns.map(p => p.claimStructure.claimMarkers), 20),
+        hedgingPatterns: this.mergeArrays(patterns.map(p => p.claimStructure.hedgingPatterns), 20),
+        strengthIndicators: this.mergeArrays(patterns.map(p => p.claimStructure.strengthIndicators), 15),
+        claimStrength: this.mostCommon(patterns.map(p => p.claimStructure.claimStrength)) as 'strong' | 'moderate' | 'cautious',
+        confidence: this.avg(patterns.map(p => p.claimStructure.confidence)),
+      },
+      evidenceIntegration: {
+        evidenceIntroducers: this.mergeArrays(patterns.map(p => p.evidenceIntegration.evidenceIntroducers), 20),
+        exampleMarkers: this.mergeArrays(patterns.map(p => p.evidenceIntegration.exampleMarkers), 15),
+        dataReferences: this.mergeArrays(patterns.map(p => p.evidenceIntegration.dataReferences), 15),
+        evidenceTypes: this.mergeArrays(patterns.map(p => p.evidenceIntegration.evidenceTypes), 10),
+        confidence: this.avg(patterns.map(p => p.evidenceIntegration.confidence)),
+      },
+      warrantConnection: {
+        becausePatterns: this.mergeArrays(patterns.map(p => p.warrantConnection.becausePatterns), 15),
+        thereforePatterns: this.mergeArrays(patterns.map(p => p.warrantConnection.thereforePatterns), 15),
+        implicationMarkers: this.mergeArrays(patterns.map(p => p.warrantConnection.implicationMarkers), 15),
+        reasoningConnectors: this.mergeArrays(patterns.map(p => p.warrantConnection.reasoningConnectors), 15),
+        confidence: this.avg(patterns.map(p => p.warrantConnection.confidence)),
+      },
+      counterargument: {
+        objectionIntroducers: this.mergeArrays(patterns.map(p => p.counterargument.objectionIntroducers), 15),
+        concessionPatterns: this.mergeArrays(patterns.map(p => p.counterargument.concessionPatterns), 15),
+        refutationPatterns: this.mergeArrays(patterns.map(p => p.counterargument.refutationPatterns), 15),
+        style: this.mostCommon(patterns.map(p => p.counterargument.style)) as 'before_claim' | 'after_claim' | 'integrated',
+        frequency: this.mostCommon(patterns.map(p => p.counterargument.frequency)) as 'frequent' | 'occasional' | 'rare',
+        confidence: this.avg(patterns.map(p => p.counterargument.confidence)),
+      },
+      overallConfidence: this.avg(patterns.map(p => p.overallConfidence)),
+      argumentBlocksDetected: patterns.reduce((sum, p) => sum + p.argumentBlocksDetected, 0),
+    };
+  }
+
+  /**
+   * Merge transition patterns
+   */
+  private mergeTransitionPatterns(patterns: TransitionPatterns[]): TransitionPatterns {
+    if (patterns.length === 1) return patterns[0];
+
+    return {
+      sectionTransitions: {
+        openers: this.mergeArrays(patterns.map(p => p.sectionTransitions.openers), 20),
+        closers: this.mergeArrays(patterns.map(p => p.sectionTransitions.closers), 20),
+        bridgingPhrases: this.mergeArrays(patterns.map(p => p.sectionTransitions.bridgingPhrases), 15),
+        avgSectionLength: this.avg(patterns.map(p => p.sectionTransitions.avgSectionLength)),
+        confidence: this.avg(patterns.map(p => p.sectionTransitions.confidence)),
+      },
+      paragraphTransitions: {
+        topicSentencePatterns: this.mergeArrays(patterns.map(p => p.paragraphTransitions.topicSentencePatterns), 25),
+        connectors: this.mergeArrays(patterns.map(p => p.paragraphTransitions.connectors), 20),
+        contrastConnectors: this.mergeArrays(patterns.map(p => p.paragraphTransitions.contrastConnectors), 20),
+        sequenceMarkers: this.mergeArrays(patterns.map(p => p.paragraphTransitions.sequenceMarkers), 20),
+        causalConnectors: this.mergeArrays(patterns.map(p => p.paragraphTransitions.causalConnectors), 15),
+        exampleConnectors: this.mergeArrays(patterns.map(p => p.paragraphTransitions.exampleConnectors), 15),
+        avgParagraphLength: this.avg(patterns.map(p => p.paragraphTransitions.avgParagraphLength)),
+        confidence: this.avg(patterns.map(p => p.paragraphTransitions.confidence)),
+      },
+      chapterTransitions: {
+        chapterOpenings: this.mergeArrays(patterns.map(p => p.chapterTransitions.chapterOpenings), 15),
+        chapterClosings: this.mergeArrays(patterns.map(p => p.chapterTransitions.chapterClosings), 15),
+        previewPhrases: this.mergeArrays(patterns.map(p => p.chapterTransitions.previewPhrases), 15),
+        reviewPhrases: this.mergeArrays(patterns.map(p => p.chapterTransitions.reviewPhrases), 15),
+        crossReferences: this.mergeArrays(patterns.map(p => p.chapterTransitions.crossReferences), 15),
+        confidence: this.avg(patterns.map(p => p.chapterTransitions.confidence)),
+      },
+      overallConfidence: this.avg(patterns.map(p => p.overallConfidence)),
+      transitionsDetected: patterns.reduce((sum, p) => sum + p.transitionsDetected, 0),
+    };
+  }
+
+  /**
    * Generate a style prompt from characteristics
    * Implements [REQ-STYLE-005]
    */
@@ -281,6 +536,107 @@ export class StyleAnalyzer {
 
       if (style.regional.detectedConfidence !== undefined) {
         parts.push(`- Language variant confidence: ${Math.round(style.regional.detectedConfidence * 100)}%`);
+      }
+    }
+
+    // Deep style fingerprinting (Phase 1 enhancement)
+    // Only include if deep analysis was performed
+    if (style.rhetoricalMoves || style.citationIntegration || style.argumentPatterns || style.transitionPatterns) {
+      parts.push('\n## DEEP STYLE PATTERNS');
+
+      // Rhetorical Moves (CARS Model)
+      if (style.rhetoricalMoves && style.rhetoricalMoves.overallConfidence > 0.2) {
+        parts.push('\nRhetorical Move Patterns (CARS Model):');
+
+        if (style.rhetoricalMoves.establishingTerritory.confidence > 0.3) {
+          const territory = style.rhetoricalMoves.establishingTerritory;
+          if (territory.topicIntroducers.length > 0) {
+            parts.push(`  - Topic introducers: ${territory.topicIntroducers.slice(0, 3).map(p => `"${p}"`).join(', ')}`);
+          }
+          if (territory.generalClaimPatterns.length > 0) {
+            parts.push(`  - General claims: ${territory.generalClaimPatterns.slice(0, 2).map(p => `"${p}"`).join(', ')}`);
+          }
+        }
+
+        if (style.rhetoricalMoves.establishingNiche.confidence > 0.3) {
+          const niche = style.rhetoricalMoves.establishingNiche;
+          if (niche.gapIndicators.length > 0) {
+            parts.push(`  - Gap indicators: ${niche.gapIndicators.slice(0, 2).map(p => `"${p}"`).join(', ')}`);
+          }
+        }
+
+        if (style.rhetoricalMoves.occupyingNiche.confidence > 0.3) {
+          const occupy = style.rhetoricalMoves.occupyingNiche;
+          if (occupy.purposeStatements.length > 0) {
+            parts.push(`  - Purpose statements: ${occupy.purposeStatements.slice(0, 2).map(p => `"${p}"`).join(', ')}`);
+          }
+        }
+      }
+
+      // Citation Integration
+      if (style.citationIntegration && style.citationIntegration.overallConfidence > 0.2) {
+        parts.push('\nCitation Integration Style:');
+        const citation = style.citationIntegration;
+
+        if (citation.detectedFormat !== 'unknown') {
+          parts.push(`  - Citation format: ${citation.detectedFormat.toUpperCase()}`);
+        }
+
+        const ratio = citation.introductionPatterns.authorProminentRatio;
+        if (ratio > 0.6) {
+          parts.push('  - Preference: Author-prominent citations (e.g., "Smith (2020) argues...")');
+        } else if (ratio < 0.4) {
+          parts.push('  - Preference: Information-prominent citations (cite at end)');
+        } else {
+          parts.push('  - Mixed citation integration style');
+        }
+
+        if (citation.quotationStyle.quoteSandwichUsage) {
+          parts.push('  - Uses quote sandwich pattern (intro -> quote -> analysis)');
+        }
+
+        if (citation.synthesisPatterns.synthesisRatio > 0.3) {
+          parts.push('  - Frequently synthesizes multiple sources together');
+        }
+      }
+
+      // Argument Patterns
+      if (style.argumentPatterns && style.argumentPatterns.overallConfidence > 0.2) {
+        parts.push('\nArgument Structure:');
+        const args = style.argumentPatterns;
+
+        parts.push(`  - Claim strength: ${args.claimStructure.claimStrength}`);
+
+        if (args.claimStructure.hedgingPatterns.length > 0 && args.claimStructure.claimStrength !== 'strong') {
+          parts.push(`  - Hedging: ${args.claimStructure.hedgingPatterns.slice(0, 3).map(p => `"${p}"`).join(', ')}`);
+        }
+
+        if (args.evidenceIntegration.evidenceIntroducers.length > 0) {
+          parts.push(`  - Evidence phrases: ${args.evidenceIntegration.evidenceIntroducers.slice(0, 2).map(p => `"${p}"`).join(', ')}`);
+        }
+
+        if (args.counterargument.frequency !== 'rare') {
+          parts.push(`  - Counterargument handling: ${args.counterargument.frequency}, ${args.counterargument.style.replace('_', ' ')}`);
+        }
+      }
+
+      // Transition Patterns
+      if (style.transitionPatterns && style.transitionPatterns.overallConfidence > 0.2) {
+        parts.push('\nTransition Patterns:');
+        const trans = style.transitionPatterns;
+
+        if (trans.paragraphTransitions.connectors.length > 0) {
+          parts.push(`  - Additive: ${trans.paragraphTransitions.connectors.slice(0, 4).join(', ')}`);
+        }
+        if (trans.paragraphTransitions.contrastConnectors.length > 0) {
+          parts.push(`  - Contrastive: ${trans.paragraphTransitions.contrastConnectors.slice(0, 4).join(', ')}`);
+        }
+        if (trans.sectionTransitions.openers.length > 0) {
+          parts.push(`  - Section openers: ${trans.sectionTransitions.openers.slice(0, 2).map(p => `"${p}"`).join(', ')}`);
+        }
+        if (trans.chapterTransitions.previewPhrases.length > 0) {
+          parts.push(`  - Chapter previews: ${trans.chapterTransitions.previewPhrases.slice(0, 2).map(p => `"${p}"`).join(', ')}`);
+        }
       }
     }
 
