@@ -106,3 +106,28 @@ export type {
   DAI002PipelineOptions as IPipelineOptions,
   DAI002StepResult as IStepResult,
 } from '../core/pipeline/index.js';
+
+// Quality Integration for god-write
+export {
+  QualityIntegration,
+  createQualityIntegration,
+  type QualityValidationOptions,
+  type QualityValidationResult,
+  type QualityMetrics,
+} from './quality-integration.js';
+
+// Feature 7: Context Management
+export {
+  ContextManager,
+  createContextManager,
+  createLargeContextManager,
+  type TokenUsageEntry,
+  type ContextHealth,
+  type ContextHealthReport,
+  type ContextManagerOptions,
+  type SummarizationStrategy,
+} from './context-manager.js';
+
+// Features 4,5,6,8,9,10 moved to src/god-agent/__experimental__/
+// (human-verification, satisfaction-tracker, tiered-validation,
+//  provenance-ledger, style-drift-detector, feedback-learning)
