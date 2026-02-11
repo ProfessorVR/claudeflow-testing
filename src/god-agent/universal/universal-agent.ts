@@ -28,7 +28,33 @@ import {
 } from '../core/executor/index.js';
 import { EmbeddingProviderFactory } from '../core/memory/embedding-provider.js';
 import type { IEmbeddingProvider } from '../core/memory/types.js';
-import { AnthropicWritingGenerator, type IWritingGenerator } from '../core/writing/index.js';
+import {
+  AnthropicWritingGenerator,
+  type IWritingGenerator,
+  buildCorpusConstraint,
+  loadCorpusManifest,
+  type CorpusConstraint,
+  // Phase 2: Pre-generation citation validation
+  CitationValidator,
+  createValidatorFromChunks,
+  type ValidationResult,
+  // Phase 4: Active citation enforcement
+  CitationEnforcer,
+  createEnforcerFromChunks,
+  type EnforcementResult,
+  // Phase 5: Citation budget system
+  calculateCitationBudget,
+  quickBudgetCheck,
+  type CitationBudgetResult,
+  // Phase 11: Inline Citation Enforcement (Hallucination Prevention DURING Generation)
+  InlineValidationOrchestrator,
+  createInlineValidationOrchestrator,
+  type InlineGenerationConfig,
+  type InlineGenerationResult,
+  type GenerationUnit,
+  type CorpusSource,
+  type CorpusRetriever,
+} from '../core/writing/index.js';
 import { HybridSearchProvider, type IWebSearchProvider } from '../core/search/index.js';
 import { createComponentLogger, ConsoleLogHandler, LogLevel } from '../core/observability/index.js';
 
@@ -77,6 +103,57 @@ import {
   type IRoutingFeedback,
 } from '../core/routing/index.js';
 
+// Quality Gauntlet Integration for god-write
+import {
+  createQualityIntegration,
+  type QualityIntegration,
+  type QualityValidationOptions,
+  type QualityValidationResult,
+} from './quality-integration.js';
+
+// Phase 3: Smart Retrieval Layer for corpus-aware content generation
+import {
+  SmartRetrievalLayer,
+  type ContextChunk,
+  type RetrievalOptions,
+} from '../retrieval/index.js';
+
+// Phase 5: Staged Composition System Integration
+import {
+  compositionOrchestrator,
+  type ChapterOutline,
+  type CompositionResult,
+} from '../cli/composition/synthesis/composition-orchestrator.js';
+
+// Phase A: Prose Sanitization for artifact-free academic writing
+import {
+  ProseSanitizer,
+  type SanitizationResult,
+  type ArtifactViolation,
+} from '../cli/composition/prose-sanitizer.js';
+
+// Endnote Generation Integration
+import {
+  generateEndnotes,
+  type EndnoteGenerationResult,
+  type EndnoteGeneratorConfig,
+  type CorpusSearchFn,
+} from '../cli/quality/endnote-generator.js';
+import { ProvenanceLedger } from '../cli/quality/provenance-ledger.js';
+
+// Source Verification and Acquisition Integration
+import {
+  SourceVerificationLayer,
+  getSourceVerificationLayer,
+  type VerificationSummary,
+  type AcquisitionSuggestion,
+} from '../cli/quality/source-verification-layer.js';
+import {
+  MissingSourceAcquisitionLayer,
+  getMissingSourceAcquisitionLayer,
+  type AcquisitionResult,
+} from '../cli/quality/missing-source-acquisition.js';
+
 // TIER-2.1: Intelligent Model Router
 import {
   CapabilityRouter,
@@ -94,6 +171,7 @@ import {
   loadRouterConfig,
   DEFAULT_ROUTER_CONFIG,
   getLocalFirstMetricsSummary,
+  trackLocalFirstDecision,
   type RouterConfig,
   type CapabilityRouterConfig,
   type TaskType,
@@ -217,7 +295,9 @@ export interface Interaction {
 export interface KnowledgeEntry {
   id: string;
   content: string;
-  type: 'pattern' | 'fact' | 'procedure' | 'example' | 'insight';
+  type?: 'pattern' | 'fact' | 'procedure' | 'example' | 'insight';
+  /** Optional category for classification (alternative to type) */
+  category?: string;
   domain: string;
   tags: string[];
   quality: number;
@@ -261,6 +341,93 @@ export interface WriteResult {
   wordCount: number;
   /** Trajectory ID for feedback (FR-11) */
   trajectoryId?: string;
+  /** Quality metrics from quality gauntlet validation */
+  qualityMetrics?: import('./quality-integration.js').QualityMetrics;
+  /** Overall quality score (0-1) from quality gauntlet */
+  qualityScore?: number;
+  /** Number of revision iterations performed */
+  revisionIterations?: number;
+  /** Phase 3: Corpus context information */
+  corpusContext?: {
+    used: boolean;
+    chunkCount: number;
+    collections: string[];
+    citations: string[];
+  };
+  /** Phase 5: Staged composition metadata */
+  stagedComposition?: {
+    used: boolean;
+    succeeded?: boolean;
+    wordCount?: number;
+    qualityScore?: number;
+    processingTime?: number;
+  };
+  /** Endnote generation metadata */
+  endnotes?: {
+    generated: boolean;
+    count: number;
+    supportingQuotationsCount: number;
+    enhancedContent?: string;
+    endnotesSection?: string;
+  };
+  /** Source verification results */
+  sourceVerification?: {
+    verified: boolean;
+    totalCitations: number;
+    foundInCorpus: number;
+    missingFromCorpus: number;
+    missingSources: Array<{
+      author: string;
+      title: string;
+      type: 'open_access' | 'paywalled' | 'unknown' | 'in_corpus';
+    }>;
+    acquisitionResults?: Array<{
+      source: string;
+      status: 'downloaded' | 'link_provided' | 'not_found' | 'error';
+      downloadPath?: string;
+      accessUrls?: string[];
+    }>;
+  };
+  /** Citation enforcement results (hallucination prevention) */
+  citationEnforcement?: {
+    action: 'pass' | 'corrected' | 'warning' | 'rejected';
+    totalCitations: number;
+    validCitations: number;
+    hallucinatedCitations: number;
+    correctionsMade: number;
+    missingPageNumbers: number;
+    passRate: number;
+    report: string;
+  };
+  /** Phase A: Prose sanitization results (artifact removal) */
+  proseSanitization?: {
+    sanitized: boolean;
+    artifactsRemoved: number;
+    cleanRate: number;
+    violations: Array<{
+      type: string;
+      text: string;
+      line: number;
+    }>;
+  };
+  /** Phase 11: Inline validation results (hallucination prevention DURING generation) */
+  inlineValidation?: {
+    used: boolean;
+    allPassed: boolean;
+    qualityScore: number;
+    totalUnits: number;
+    passedFirstAttempt: number;
+    passedAfterRetry: number;
+    failedUnits: number;
+    totalAttempts: number;
+    avgAttemptsPerUnit: number;
+    failedUnitDetails: Array<{
+      type: string;
+      intent: string;
+      lastScore: number;
+      issues: string[];
+    }>;
+  };
 }
 
 /**
@@ -556,6 +723,15 @@ export class UniversalAgent {
   // Web search provider for research operations (SPEC-WEB-001)
   private webSearchProvider!: IWebSearchProvider;
 
+  // Quality Gauntlet Integration for god-write validation
+  private qualityIntegration?: QualityIntegration;
+
+  // Phase A: Prose Sanitizer for artifact-free academic writing (100% clean rate target)
+  private proseSanitizer: ProseSanitizer;
+
+  // Phase 3: Smart Retrieval Layer for corpus-aware content generation
+  private smartRetrieval: SmartRetrievalLayer;
+
   // DAI-001: Dynamic Agent Integration
   private agentRegistry!: AgentRegistry;
   private agentSelector!: AgentSelector;
@@ -646,6 +822,12 @@ export class UniversalAgent {
 
     // Initialize ClaudeCodeExecutor (SPEC-EXE-001)
     this.codeExecutor = new ClaudeCodeExecutor({ verbose: this.config.verbose });
+
+    // Phase 3: Initialize smart retrieval layer for corpus-aware content generation
+    this.smartRetrieval = new SmartRetrievalLayer();
+
+    // Phase A: Initialize prose sanitizer for artifact-free academic writing
+    this.proseSanitizer = new ProseSanitizer();
   }
 
   // ==================== Initialization ====================
@@ -718,6 +900,10 @@ export class UniversalAgent {
     // Initialize web search provider (SPEC-WEB-001)
     this.webSearchProvider = new HybridSearchProvider({ verbose: this.config.verbose });
     this.log(`Web search provider: ${this.webSearchProvider.getAvailableSources().join(', ')}`);
+
+    // Initialize quality gauntlet integration for god-write validation
+    this.qualityIntegration = createQualityIntegration(this);
+    this.log('Quality Gauntlet initialized - Auto-validation enabled for god-write (threshold: 0.85)');
 
     // DAI-001: Initialize dynamic agent system
     this.agentRegistry = new AgentRegistry({ basePath: '.claude/agents', verbose: this.config.verbose });
@@ -1224,6 +1410,8 @@ export class UniversalAgent {
     options?: {
       /** Trajectory ID for quality tracking (RULE-036) */
       trajectoryId?: string;
+      /** Force direct execution, bypassing Task tool (for testing) */
+      forceExecute?: boolean;
     }
   ): Promise<TaskExecutionResult> {
     const startTime = Date.now();
@@ -1310,8 +1498,11 @@ export class UniversalAgent {
 
       // NEW: Local-First Routing - Try to execute directly with providers
       // If providers are initialized and routing is enabled, use them first
-      if (this.modelRouterEnabled && (this.vllmProvider || this.claudeProvider) && !taskExecutionFn) {
-        this.log('LOCAL-FIRST: Attempting routed execution with providers');
+      // FORCE_EXECUTE: Also use providers when forceExecute is true (for testing)
+      const shouldUseProviders = (this.modelRouterEnabled || options?.forceExecute) && (this.vllmProvider || this.claudeProvider) && !taskExecutionFn;
+
+      if (shouldUseProviders) {
+        this.log(options?.forceExecute ? 'FORCE_EXECUTE: Using providers for direct execution' : 'LOCAL-FIRST: Attempting routed execution with providers');
 
         try {
           // Try vLLM first (local)
@@ -1331,6 +1522,13 @@ export class UniversalAgent {
 
               // Track successful local execution in metrics
               this.log('LOCAL-FIRST: Successfully executed with vLLM');
+
+              // Record metrics for dashboard
+              trackLocalFirstDecision('pure_local_verified', {
+                triedLocal: true,
+                localSucceeded: true,
+                fellBackToClaude: false,
+              });
 
               // Skip Task tool execution - we got result from local model
               const durationMs = Date.now() - startTime;
@@ -1380,6 +1578,13 @@ export class UniversalAgent {
               // Track fallback to cloud
               this.log('LOCAL-FIRST: Fallback to Claude successful');
 
+              // Record metrics for dashboard
+              trackLocalFirstDecision('local_then_review', {
+                triedLocal: true,
+                localSucceeded: false,
+                fellBackToClaude: true,
+              });
+
               const durationMs = Date.now() - startTime;
               const qualityInteraction: QualityInteraction = {
                 id: sessionId,
@@ -1406,10 +1611,10 @@ export class UniversalAgent {
             }
           }
 
-          // Both providers failed - fall through to Task tool
-          this.log('LOCAL-FIRST: All providers failed, falling back to Task tool');
+          // Both providers failed - fall through to custom function or Task tool
+          this.log('LOCAL-FIRST: All providers failed, falling back');
         } catch (providerError) {
-          this.log(`LOCAL-FIRST: Provider execution error: ${providerError}, falling back to Task tool`);
+          this.log(`LOCAL-FIRST: Provider execution error: ${providerError}, falling back`);
         }
       }
 
@@ -1938,6 +2143,256 @@ export class UniversalAgent {
    * - ask(input): Promise<string> - Simple output (backward compatible)
    * - ask(input, { returnResult: true }): Promise<AskResult> - Full result with trajectoryId
    */
+
+  /**
+   * Build corpus constraint prompt text for hallucination prevention (Phase 1)
+   *
+   * Creates an explicit whitelist of allowed sources that gets injected into the prompt.
+   * This is CRITICAL for preventing the LLM from citing sources not in the corpus.
+   *
+   * @param constraint - The corpus constraint with verified sources
+   * @returns Formatted prompt text block
+   * @private
+   */
+  private buildCorpusConstraintPromptText(constraint: CorpusConstraint): string {
+    if (constraint.sources.length === 0) {
+      return '';
+    }
+
+    const isStrict = constraint.enforcement === 'strict';
+    const placeholder = constraint.missingCitationPlaceholder || '[CITATION NEEDED]';
+
+    // Group sources by type
+    const primarySources: typeof constraint.sources = [];
+    const secondarySources: typeof constraint.sources = [];
+
+    for (const source of constraint.sources) {
+      const isPrimary =
+        source.author.includes('Aristotle') ||
+        source.author.includes('Heidegger') ||
+        source.author.includes('Plato') ||
+        source.title.includes('De Anima') ||
+        source.title.includes('Being and Time') ||
+        source.title.includes('Rhetoric');
+
+      if (isPrimary) {
+        primarySources.push(source);
+      } else {
+        secondarySources.push(source);
+      }
+    }
+
+    let prompt = `
+## CORPUS-ONLY CITATION CONSTRAINT (${isStrict ? 'MANDATORY' : 'RECOMMENDED'})
+
+You may ${isStrict ? 'ONLY' : 'preferably'} cite from the following verified sources:`;
+
+    if (primarySources.length > 0) {
+      prompt += `
+
+### Primary Sources
+${primarySources.map(s => `- ${s.author} (${s.year > 0 ? s.year : 'c. ' + Math.abs(s.year) + ' BCE'}). "${s.title}"${s.pages ? ` [Pages: ${s.pages}]` : ''}${s.citationKey ? ` — Cite as: (${s.citationKey})` : ''}`).join('\n')}`;
+    }
+
+    if (secondarySources.length > 0) {
+      prompt += `
+
+### Secondary Scholarship
+${secondarySources.map(s => `- ${s.author} (${s.year}). "${s.title}"${s.pages ? ` [Pages: ${s.pages}]` : ''}${s.citationKey ? ` — Cite as: (${s.citationKey})` : ''}`).join('\n')}`;
+    }
+
+    prompt += `
+
+### Citation Rules (MANDATORY — ZERO TOLERANCE FOR EXTERNAL SOURCES)
+1. **EVERY citation MUST include page numbers**: Use format (Author Year, p. X) or (Author Year, pp. X-Y)
+2. ${isStrict ? '**ABSOLUTE RULE: Do NOT cite, reference, discuss, or mention ANY scholar not in the list above.** This includes authors you know from your training data. If an author is not listed above, they do not exist for this task.' : 'Prefer citations from this list'}
+3. ${isStrict ? 'Do NOT fabricate page numbers - only cite pages from corpus chunks you have access to' : 'Use verified page numbers when available'}
+4. Do NOT combine authors who do not co-author in this list
+5. Do NOT cite works by listed authors other than those specified above (e.g., if "Gross, Uncomfortable Situations" is listed, do NOT cite "Gross, Secret History of Emotion")
+6. ${isStrict ? 'If a corpus chunk MENTIONS another scholar (e.g., "Modrak argues..."), do NOT cite that scholar — cite the AUTHOR of the chunk instead (e.g., cite O\'Gorman who wrote the chunk, not Modrak who is discussed in it)' : 'If you need a source not listed, write "' + placeholder + '" instead of fabricating'}
+7. If you cannot determine the page number, write "[PAGE NEEDED]" after the citation
+8. ${isStrict ? '**ANY mention of a non-listed author will cause automatic rejection.** Do not write "As X argues" or "X\'s account" unless X is in the list above.' : ''}
+
+### Citation Format Examples
+- Direct quote: "quoted text" (Frede 1992, p. 283)
+- Paraphrase: As Frede argues (1992, pp. 280-285), phantasia...
+- Multiple pages: (Heidegger 1927, pp. 134-137)
+- Primary source: (Aristotle, De Anima, 427b14-16)
+
+${isStrict ? '**Citations without page numbers will be flagged and may result in rejection. References to non-listed authors will be stripped from the output.**' : 'Unverified citations will be flagged for review.'}`;
+
+    return prompt;
+  }
+
+  /**
+   * Build a formatted block of corpus chunk text for injection into the generation prompt.
+   * This provides the agent with actual source material to cite from, enabling
+   * verbatim quotations and grounded claims. Chunks are grouped by source and
+   * capped at ~15K tokens to stay within context budgets.
+   * @private
+   */
+  private buildCorpusContextBlock(chunks: ContextChunk[]): string {
+    if (chunks.length === 0) return '';
+
+    // Group chunks by source for readability
+    const bySource = new Map<string, ContextChunk[]>();
+    for (const chunk of chunks) {
+      const key = `${chunk.metadata.author} - ${chunk.metadata.title} (${chunk.metadata.year})`;
+      if (!bySource.has(key)) bySource.set(key, []);
+      bySource.get(key)!.push(chunk);
+    }
+
+    let block = `\n## CORPUS SOURCE MATERIAL\n\nThe following are excerpts from the ingested scholarly corpus (OCR-processed). You MUST ground your citations in this material.\n\n**IMPORTANT instructions for using these chunks:**\n- These chunks are raw OCR output and may contain formatting artifacts (running headers, page numbers, line breaks, author names at page tops, etc.)\n- When citing, paraphrase the scholarly content in your own words and cite with (Author Year, p. X)\n- When directly quoting, extract ONLY the meaningful scholarly text — strip out OCR artifacts like page headers, running titles, or stray numbers\n- Never quote raw OCR artifacts like "JOHN SMITH 30 The following..." — instead quote the actual content: "The following..."\n- Use the page numbers from the [Chunk N] metadata, not numbers found within the OCR text\n`;
+
+    let chunkNumber = 1;
+    let totalChars = block.length;
+    const MAX_CHARS = 60000; // ~15K tokens budget for corpus context
+
+    for (const [sourceKey, sourceChunks] of bySource) {
+      const header = `\n### ${sourceKey}\n`;
+      totalChars += header.length;
+      if (totalChars > MAX_CHARS) break;
+      block += header;
+
+      for (const chunk of sourceChunks) {
+        const pages = chunk.metadata.page_start === chunk.metadata.page_end
+          ? `p. ${chunk.metadata.page_start}`
+          : `pp. ${chunk.metadata.page_start}-${chunk.metadata.page_end}`;
+        const entry = `\n**[Chunk ${chunkNumber}]** (${pages}):\n${chunk.content}\n`;
+        totalChars += entry.length;
+        if (totalChars > MAX_CHARS) {
+          block += `\n*[Remaining chunks truncated to stay within context budget]*\n`;
+          return block;
+        }
+        block += entry;
+        chunkNumber++;
+      }
+    }
+
+    block += `\n---\n**Total corpus chunks provided: ${chunkNumber - 1}**\n`;
+    return block;
+  }
+
+  /**
+   * Generate content via Claude Code CLI (uses Claude subscription, not API key).
+   * Falls back to direct Anthropic API if claude CLI is not available.
+   */
+  private async generateViaClaudeCode(prompt: string, options?: {
+    model?: string;
+    systemPrompt?: string;
+    maxTokens?: number;
+  }): Promise<string> {
+    const { execFile } = await import('child_process');
+    const { promisify } = await import('util');
+    const execFileAsync = promisify(execFile);
+
+    const args = ['-p', '--no-input'];
+    if (options?.model) args.push('--model', options.model);
+    if (options?.systemPrompt) args.push('--system-prompt', options.systemPrompt);
+    // --allowedTools "" disables all tools (pure text generation)
+    args.push('--allowedTools', '');
+    args.push(prompt);
+
+    try {
+      const { stdout } = await execFileAsync('claude', args, {
+        maxBuffer: 10 * 1024 * 1024,  // 10MB
+        timeout: 300000,  // 5 min
+        env: { ...process.env },
+      });
+      return stdout.trim();
+    } catch (error: any) {
+      // If claude CLI not found, fall back to direct API
+      if (error.code === 'ENOENT') {
+        this.log('claude CLI not found, falling back to Anthropic API...');
+        return this.generateViaAnthropicAPI(prompt, options);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Fallback: Direct Anthropic API call (requires ANTHROPIC_API_KEY)
+   */
+  private async generateViaAnthropicAPI(prompt: string, options?: {
+    model?: string;
+    systemPrompt?: string;
+    maxTokens?: number;
+  }): Promise<string> {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      throw new Error('Neither claude CLI nor ANTHROPIC_API_KEY available for generation');
+    }
+    const { default: Anthropic } = await import('@anthropic-ai/sdk');
+    const client = new Anthropic({ apiKey });
+    const messages: Array<{ role: 'user'; content: string }> = [{ role: 'user', content: prompt }];
+    const response = await client.messages.create({
+      model: options?.model || 'claude-sonnet-4-20250514',
+      max_tokens: options?.maxTokens || 8192,
+      ...(options?.systemPrompt ? { system: options.systemPrompt } : {}),
+      messages,
+    });
+    return response.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('\n\n');
+  }
+
+  /**
+   * Generate mock academic content for testing purposes
+   * Used when forceExecute is true and providers are not available
+   * @private
+   */
+  private generateMockAcademicContent(
+    topic: string,
+    style: string,
+    length: string,
+    corpusChunks: ContextChunk[]
+  ): string {
+    const wordCounts = {
+      short: 500,
+      medium: 1000,
+      long: 2000,
+      comprehensive: 2500,
+    };
+    const targetWords = wordCounts[length as keyof typeof wordCounts] || 1000;
+
+    // Build content with corpus citations if available
+    let content = `# ${topic}\n\n`;
+
+    if (corpusChunks.length > 0) {
+      content += `## Introduction\n\n`;
+      content += `This section examines ${topic.toLowerCase()}, drawing on recent scholarship and theoretical frameworks. `;
+      content += `Building on the work of ${corpusChunks[0]?.metadata.author || 'key scholars'} (${corpusChunks[0]?.metadata.year || '2020'}), `;
+      content += `we explore the conceptual foundations and implications of this topic.\n\n`;
+
+      content += `## Theoretical Framework\n\n`;
+      content += corpusChunks.slice(0, 3).map((chunk, i) => {
+        return `${chunk.content.slice(0, 200)}... (${chunk.metadata.author}, ${chunk.metadata.year}, p.${chunk.metadata.page_start})`;
+      }).join('\n\n');
+
+      content += `\n\n## Analysis\n\n`;
+      content += `The literature reveals multiple perspectives on ${topic.toLowerCase()}. `;
+    } else {
+      content += `This section provides a comprehensive examination of ${topic.toLowerCase()}. `;
+    }
+
+    // Pad to target word count
+    const currentWords = content.split(/\s+/).length;
+    if (currentWords < targetWords) {
+      const fillerParagraph = `Furthermore, this analysis considers the broader implications and contextual factors that shape our understanding. ` +
+        `The theoretical underpinnings draw from multiple disciplinary perspectives, including philosophical, empirical, and applied approaches. ` +
+        `Each perspective contributes unique insights that enrich our comprehensive understanding of the phenomenon. `;
+
+      const paragraphsNeeded = Math.ceil((targetWords - currentWords) / fillerParagraph.split(/\s+/).length);
+      for (let i = 0; i < paragraphsNeeded; i++) {
+        content += `\n\n${fillerParagraph}`;
+      }
+    }
+
+    content += `\n\n## Conclusion\n\n`;
+    content += `This examination of ${topic.toLowerCase()} demonstrates the complexity and significance of the topic. `;
+    content += `Future research should continue to explore these dimensions in greater depth.`;
+
+    return content;
+  }
+
   async ask(input: string, options?: AskOptions & { returnResult?: false }): Promise<string>;
   async ask(input: string, options: AskOptions & { returnResult: true }): Promise<AskResult>;
   async ask(input: string, options: AskOptions = {}): Promise<string | AskResult> {
@@ -2856,31 +3311,117 @@ export class UniversalAgent {
     styleProfileId?: string;
     /** Use the currently active style profile (default: true if one is set) */
     useActiveStyleProfile?: boolean;
+    /** Phase 3: Use corpus for source-grounded content generation */
+    useCorpus?: boolean;
+    /** Phase 3: Target specific corpus collections */
+    corpusCollections?: string[];
+    /** Phase 3: Number of corpus chunks to retrieve (default: 15) */
+    corpusChunkCount?: number;
+    /** Phase 3: Minimum relevance for corpus chunks (default: 0.75) */
+    corpusMinRelevance?: number;
+    /** Phase 5: Use staged composition system (auto-detected for chapters/sections) */
+    useStagedComposition?: boolean;
+    /** Phase 5: Chapter outline for staged composition */
+    chapterOutline?: ChapterOutline;
+    /** Force direct execution, bypassing pipeline detection (for testing) */
+    forceExecute?: boolean;
+    /** Enable endnote generation with supporting quotations (requires useCorpus) */
+    enableEndnotes?: boolean;
+    /** Maximum supporting quotations per endnote (default: 3) */
+    maxQuotationsPerEndnote?: number;
+    /** Minimum relevance threshold for endnote quotations (default: 0.65) */
+    minEndnoteRelevance?: number;
+    /** Source Verification: Verify all citations exist in corpus */
+    verifySources?: boolean;
+    /** Source Acquisition: Automatically acquire missing sources */
+    acquireMissing?: boolean;
+    /** Download directory for acquired sources (default: ./corpus/downloads) */
+    downloadDir?: string;
+    /** Citation Enforcement: Mode for hallucination prevention (default: 'auto-correct') */
+    citationEnforcementMode?: 'strict' | 'auto-correct' | 'warn';
+    /** Citation Enforcement: Minimum pass rate for citations (default: 0.85) */
+    citationMinPassRate?: number;
+    /** Citation Enforcement: Maximum hallucinations allowed (default: 3) */
+    citationMaxHallucinations?: number;
+    /** Phase 11: Use inline validation during generation (prevents hallucinations DURING generation, not after) */
+    useInlineValidation?: boolean;
+    /** Phase 11: Inline validation strictness level (default: 'moderate') */
+    inlineValidationStrictness?: 'strict' | 'moderate' | 'lenient';
+    /** Phase 11: Maximum retry attempts per paragraph (default: 3) */
+    inlineMaxRetriesPerUnit?: number;
+    /** Phase 11: Enable citation lookup tool-use during generation (default: true) */
+    inlineEnableCitationLookup?: boolean;
+    /** Phase 11: Minimum corpus chunks required to auto-enable inline validation (default: 3) */
+    inlineMinChunks?: number;
+    /** Data source mode: 'corpus' = retrieved chunks only, 'hybrid' = chunks + manifest, 'external' = no constraint */
+    dataSourceMode?: 'corpus' | 'hybrid' | 'external';
   } = {}): Promise<WriteResult> {
     await this.ensureInitialized();
+
+    // Fix 27: Resolve data source mode and enforce corpus-only invariants
+    const dataSourceMode = options.dataSourceMode ?? 'hybrid';
+    const resolved = { ...options };
+
+    if (dataSourceMode === 'corpus') {
+      // Hard error on explicit invariant violations (catches UI bugs early)
+      if (resolved.acquireMissing) {
+        throw new Error(
+          'Corpus-only mode forbids acquireMissing. ' +
+          'Set dataSourceMode to "hybrid" or "external" to acquire missing sources.'
+        );
+      }
+
+      // Force corpus-only invariants for unspecified options
+      resolved.useCorpus = true;
+      resolved.acquireMissing = false;
+      resolved.verifySources = true;
+      resolved.citationEnforcementMode = 'strict';
+      resolved.citationMaxHallucinations = 0;
+
+      this.log(`🔒 Corpus-only mode: enforcing strict citation constraints`);
+    }
+
+    // Apply resolved options so all downstream code uses enforced values
+    options = resolved;
 
     // DESC: Inject prior solutions before processing (RULE-010: window size 3)
     const descResult = await this.injectDESCEpisodes(topic, { command: 'god-write', mode: 'write' });
     const augmentedTopic = descResult.augmentedPrompt;
 
-    // DAI-001: Dynamic agent selection for write tasks (use augmented topic)
-    const agentSelection = await this.selectAgentForTask(augmentedTopic);
-    this.log(`DAI-001 write(): Selected agent '${agentSelection.selection.selected.key}' (${agentSelection.selection.selected.category})`);
-
+    // Fix 10: Skip DAI-001 agent selection for write() — it picks wrong agents
+    // (e.g., system-designer for academic topics) and injects irrelevant instructions.
+    // Instead, build a clean write-specific prompt from writing instructions + topic.
     const style = options.style ?? 'professional';
     const length = options.length ?? 'medium';
     const format = options.format ?? 'article';
 
     // Get style prompt from learned profile if available
-    let _stylePrompt: string | null = null;
+    let stylePrompt: string | null = null;
     if (this.styleProfileManager) {
       if (options.styleProfileId) {
-        _stylePrompt = this.styleProfileManager.generateStylePrompt(options.styleProfileId);
+        stylePrompt = this.styleProfileManager.generateStylePrompt(options.styleProfileId);
       } else if (options.useActiveStyleProfile !== false) {
-        // Default to active profile if one is set
-        _stylePrompt = this.styleProfileManager.generateStylePrompt();
+        stylePrompt = this.styleProfileManager.generateStylePrompt();
       }
     }
+
+    // Build writing instructions with style, format, length, and style profile
+    const writingInstructions = this.buildWritingInstructions(style, format, length, stylePrompt);
+
+    // Build clean prompt: writing instructions + topic only (no agent selection noise)
+    const writePrompt = `${writingInstructions}\n\n## Topic\n${augmentedTopic}`;
+
+    // Wrap in agentSelection-like structure for compatibility with downstream code
+    const agentSelection = {
+      selection: {
+        selected: { key: 'academic-writer', category: 'writing' },
+        candidates: [],
+        analysis: { taskType: 'write' },
+      },
+      prompt: writePrompt,
+      context: undefined as string | undefined,
+    };
+    this.log(`write() prompt built: style=${style}, format=${format}, length=${length}, styleProfile=${!!stylePrompt}`);
 
     // Create trajectory for learning (FR-11)
     let trajectoryId: string | undefined;
@@ -2896,16 +3437,680 @@ export class UniversalAgent {
       }
     }
 
-    // Get relevant knowledge
+    // Get relevant knowledge (existing InteractionStore)
     const knowledge = await this.retrieveRelevant(topic, 'write');
 
-    // TASK-FIX-005: Execute via TaskExecutor with ObservabilityBus events
-    // Per RULE-033: Quality MUST be assessed on Task() RESULT, not prompt
-    // TASK-HOOK-006: Pass trajectoryId for hook quality tracking (RULE-036)
-    const executionResult = await this.executeTaskDefault(agentSelection, undefined, { trajectoryId });
-    const content = executionResult.success ? executionResult.result : agentSelection.prompt;
-    if (!executionResult.success) {
-      this.log(`TASK-FIX-005 write(): Execution failed, using prompt as fallback`);
+    // Phase 3: Retrieve corpus context if enabled
+    let corpusChunks: ContextChunk[] = [];
+    let corpusContextInfo = {
+      used: false,
+      chunkCount: 0,
+      collections: [] as string[],
+      citations: [] as string[],
+    };
+
+    if (options.useCorpus) {
+      try {
+        this.log('Retrieving corpus context for source-grounded generation...');
+        corpusChunks = await this.smartRetrieval.retrieveContext(topic, {
+          collections: options.corpusCollections || [],
+          maxChunks: options.corpusChunkCount || 15,
+          minRelevance: options.corpusMinRelevance || 0.75,
+          diversityBoost: true,
+          rerank: true,
+        });
+
+        // Build citation list
+        const citations = corpusChunks.map(chunk =>
+          `${chunk.metadata.author} (${chunk.metadata.year}), p.${chunk.metadata.page_start}`
+        );
+
+        corpusContextInfo = {
+          used: true,
+          chunkCount: corpusChunks.length,
+          collections: options.corpusCollections || [],
+          citations: Array.from(new Set(citations)), // Deduplicate
+        };
+
+        this.log(`📚 Retrieved ${corpusChunks.length} corpus chunks from corpus`);
+      } catch (error) {
+        this.log(`Warning: Corpus retrieval failed: ${error}`);
+        // Continue without corpus (graceful degradation)
+      }
+    }
+
+    // Phase 1: Build corpus constraint for hallucination prevention
+    // This creates an explicit whitelist of sources that the LLM can cite
+    let corpusConstraint: CorpusConstraint | undefined;
+    if (corpusChunks.length > 0) {
+      try {
+        // Fix 26: Mode-aware whitelist construction.
+        // corpus-only: whitelist = retrieved chunks ONLY (no manifest widening)
+        // hybrid: whitelist = retrieved chunks + collection-filtered manifest
+        // external: no constraint
+        const additionalSources = dataSourceMode === 'corpus'
+          ? []
+          : await loadCorpusManifest({
+              collections: options.corpusCollections?.length ? options.corpusCollections : undefined,
+            });
+
+        corpusConstraint = buildCorpusConstraint(corpusChunks, {
+          enforcement: 'strict',
+          missingCitationPlaceholder: '[CITATION NEEDED]',
+          minRelevance: 0.5,
+          additionalSources,
+        });
+
+        this.log(`🔒 Corpus constraint built: ${corpusConstraint.sources.length} verified sources`);
+
+        // Inject corpus constraint into the agent prompt
+        // This is CRITICAL for preventing hallucinations
+        const constraintPrompt = this.buildCorpusConstraintPromptText(corpusConstraint);
+
+        // Inject actual corpus chunk TEXT so the agent has source material to cite from.
+        // This is what enables verbatim quotations and grounded claims.
+        const corpusContextBlock = this.buildCorpusContextBlock(corpusChunks);
+
+        agentSelection.prompt = `${agentSelection.prompt}\n\n${constraintPrompt}\n\n${corpusContextBlock}`;
+        this.log(`🔒 Corpus constraint + ${corpusChunks.length} chunk texts injected into agent prompt`);
+      } catch (error) {
+        this.log(`Warning: Failed to build corpus constraint: ${error}`);
+        // Continue without constraint (less optimal but functional)
+      }
+    }
+
+    // Phase 5: Citation Budget Check (pre-generation)
+    // Verify we have enough corpus sources to support target word count
+    let citationBudgetResult: CitationBudgetResult | undefined;
+    if (corpusChunks.length > 0) {
+      try {
+        // Estimate target word count based on length parameter
+        const targetWords = length === 'comprehensive' ? 3500 :
+                           length === 'long' ? 2500 :
+                           length === 'medium' ? 1500 : 800;
+
+        citationBudgetResult = calculateCitationBudget(corpusChunks, {
+          targetWords,
+          documentType: format === 'paper' ? 'dissertation' : 'paper',
+        });
+
+        if (citationBudgetResult.sufficient) {
+          this.log(`📊 Citation budget: ${citationBudgetResult.maxSupportableCitations} citations available for ${targetWords} words ✓`);
+        } else {
+          this.log(`⚠️ Citation budget warning: ${citationBudgetResult.warning}`);
+          // Log recommendations
+          for (const rec of citationBudgetResult.recommendations.slice(0, 2)) {
+            this.log(`   → ${rec}`);
+          }
+        }
+      } catch (error) {
+        this.log(`Warning: Citation budget check failed: ${error}`);
+        // Continue without budget check (graceful degradation)
+      }
+    }
+
+    // Fix 28: Fail-fast on insufficient corpus chunks in corpus-only mode.
+    // Prevents "write 1500 words with 3 chunks → hallucinate citations" failure mode.
+    if (dataSourceMode === 'corpus') {
+      const minByLength: Record<string, number> = {
+        short: 4,
+        medium: 8,
+        long: 14,
+        comprehensive: 20,
+      };
+
+      // If user explicitly set corpusChunkCount, trust their judgment as an override
+      const lengthKey = options.length ?? 'medium';
+      const minRequired = options.corpusChunkCount ?? minByLength[lengthKey] ?? 8;
+      const actualChunks = corpusChunks.length;
+
+      if (actualChunks < minRequired) {
+        throw new Error(
+          `Corpus-only mode requires at least ${minRequired} chunks for length="${lengthKey}"; ` +
+          `got ${actualChunks}. Options:\n` +
+          `  - Broaden collections (current: ${(options.corpusCollections || []).join(', ') || 'all'})\n` +
+          `  - Lower --corpus-relevance (current: ${options.corpusMinRelevance ?? 0.75})\n` +
+          `  - Reduce --length\n` +
+          `  - Set --corpus-chunks ${actualChunks} to explicitly accept low coverage`
+        );
+      }
+
+      this.log(`✓ Corpus coverage check: ${actualChunks} chunks >= ${minRequired} required for length="${lengthKey}"`);
+    }
+
+    // =========================================================================
+    // Phase 11: INLINE VALIDATION - Prevent hallucinations DURING generation
+    // This is the NEW approach that validates citations paragraph-by-paragraph
+    // as content is generated, rather than fixing them POST-HOC
+    // =========================================================================
+    let inlineValidationResult: InlineGenerationResult | undefined;
+    let usedInlineValidation = false;
+
+    // Inline validation: auto-enable when sufficient corpus context exists
+    // Precedence: explicit user option > auto-enable based on corpus availability
+    const minChunksForInline = options.inlineMinChunks ?? 3;
+    const hasUsableCorpus = corpusChunks.length >= minChunksForInline;
+    const uniqueSources = new Set(corpusChunks.map(c => c.metadata?.author ?? c.metadata?.source_id ?? 'unknown')).size;
+    const shouldUseInlineValidation = options.useInlineValidation ?? hasUsableCorpus;
+
+    // Log activation decision for debuggability
+    const inlineReason = options.useInlineValidation === false
+      ? 'user opt-out'
+      : options.useInlineValidation === true
+        ? 'user opt-in'
+        : hasUsableCorpus
+          ? `auto (chunks=${corpusChunks.length} >= ${minChunksForInline}, sources=${uniqueSources})`
+          : `auto-skip (chunks=${corpusChunks.length} < ${minChunksForInline})`;
+    this.log(`[InlineValidation] ${shouldUseInlineValidation && hasUsableCorpus ? 'ON' : 'OFF'} (${inlineReason}${options.forceExecute ? ', forceExecute override' : ''})`);
+    console.error(`[write() pipeline] InlineValidation=${shouldUseInlineValidation && hasUsableCorpus ? 'ON' : 'OFF'} (${inlineReason})`);
+
+    if (shouldUseInlineValidation && hasUsableCorpus && !options.forceExecute) {
+      try {
+        this.log('🔬 Phase 11: Using inline validation for hallucination prevention DURING generation...');
+        console.error('[write() pipeline] Entering inline validation...');
+        usedInlineValidation = true;
+
+        // Build corpus sources from chunks
+        const corpusSources: CorpusSource[] = this.buildCorpusSourcesFromChunks(corpusChunks);
+
+        // Create retriever function for citation lookup
+        const retriever: CorpusRetriever = async (query: string, opts: { maxChunks: number; minRelevance: number }) => {
+          return this.smartRetrieval.retrieveContext(query, {
+            maxChunks: opts.maxChunks,
+            minRelevance: opts.minRelevance,
+            collections: options.corpusCollections || [],
+          });
+        };
+
+        // Get style prompt if available
+        let stylePrompt: string | undefined;
+        if (this.styleProfileManager) {
+          if (options.styleProfileId) {
+            stylePrompt = this.styleProfileManager.generateStylePrompt(options.styleProfileId) ?? undefined;
+          } else if (options.useActiveStyleProfile !== false) {
+            stylePrompt = this.styleProfileManager.generateStylePrompt() ?? undefined;
+          }
+        }
+
+        // Create inline validation orchestrator with Claude Code CLI generation
+        const inlineGenerateFn = async (prompt: string, systemPrompt: string) => {
+          return this.generateViaClaudeCode(prompt, { model: 'sonnet', systemPrompt });
+        };
+        const orchestrator = createInlineValidationOrchestrator(
+          inlineGenerateFn,
+          retriever,
+          corpusChunks,
+          corpusSources,
+          {
+            maxRetriesPerUnit: options.inlineMaxRetriesPerUnit ?? 3,
+            validationStrictness: options.inlineValidationStrictness ?? 'moderate',
+            enableCitationLookupTool: options.inlineEnableCitationLookup ?? true,
+            // CCV Tier 1 enabled by default in orchestrator constructor;
+            // env var CCV_TIER1_ACTIVE=false|0 can override
+            model: 'claude-sonnet-4-20250514',
+            temperature: 0.7,
+            maxTokensPerUnit: 1500,
+            stylePrompt,
+          }
+        );
+
+        // Build outline from topic
+        const targetWords = length === 'comprehensive' ? 3500 :
+                           length === 'long' ? 2500 :
+                           length === 'medium' ? 1500 : 800;
+        const wordsPerSection = Math.floor(targetWords / 5); // ~5 sections
+
+        const outline = InlineValidationOrchestrator.createBasicOutline(
+          topic,
+          this.extractKeyPointsFromTopic(topic),
+          wordsPerSection
+        );
+
+        this.log(`🔬 Inline generation: ${outline.length} units, ~${wordsPerSection} words each`);
+
+        // Generate with inline validation
+        inlineValidationResult = await orchestrator.generateWithInlineValidation(
+          topic,
+          outline,
+          agentSelection.prompt // Include agent context as system prompt
+        );
+
+        this.log(
+          `🔬 Inline validation complete: ${inlineValidationResult.stats.passedFirstAttempt}/${inlineValidationResult.stats.totalUnits} passed first attempt, ` +
+          `${inlineValidationResult.stats.passedAfterRetry} after retry, ${inlineValidationResult.stats.failed} failed, ` +
+          `quality=${(inlineValidationResult.qualityScore * 100).toFixed(1)}%`
+        );
+
+        // If inline validation produced content, skip regular execution
+        if (inlineValidationResult.document.length > 0) {
+          // Skip to the return, but first do prose sanitization and other post-processing
+        }
+      } catch (error) {
+        console.error(`[write() pipeline] Inline validation FAILED: ${error}`);
+        this.log(`Warning: Inline validation failed, falling back to regular execution: ${error}`);
+        usedInlineValidation = false;
+        inlineValidationResult = undefined;
+        // Continue with regular execution (graceful degradation)
+      }
+    }
+
+    // Initialize content variable
+    let content: string;
+
+    // If inline validation was successful, use that content
+    if (usedInlineValidation && inlineValidationResult && inlineValidationResult.document.length > 0) {
+      content = inlineValidationResult.document;
+      console.error(`[write() pipeline] Using INLINE VALIDATION content (${content.split(/\s+/).length} words)`);
+      this.log(`Using inline-validated content (${content.split(/\s+/).length} words)`);
+    } else {
+      console.error(`[write() pipeline] Using DIRECT API path (inline=${usedInlineValidation}, docLen=${inlineValidationResult?.document?.length ?? 'N/A'})`);
+      // Direct LLM execution for write() with --execute flag.
+      // Uses Anthropic API directly instead of executeTaskDefault() which returns [TASK_QUEUED].
+      // This ensures the full pipeline (corpus constraint, quality gauntlet, enforcement) runs
+      // on actual generated content, not a task placeholder.
+
+      if (options.forceExecute) {
+        // FORCE_EXECUTE: Generate mock content for testing
+        const mockContent = this.generateMockAcademicContent(topic, style, length, corpusChunks);
+        this.log('FORCE_EXECUTE: Generated mock content for testing', {
+          wordCount: mockContent.split(/\s+/).length,
+          style,
+          length
+        });
+        content = mockContent;
+      } else {
+        // Generate via Claude Code CLI (uses Claude subscription, not API key)
+        try {
+          this.log('write() direct execution: Generating via Claude Code CLI...');
+          console.error('[write() pipeline] Claude Code execution: starting...');
+
+          content = await this.generateViaClaudeCode(agentSelection.prompt, {
+            model: 'sonnet',
+          });
+
+          this.log(`write() Claude Code execution: Got ${content.split(/\s+/).length} words`);
+          console.error(`[write() pipeline] Claude Code execution: Got ${content.split(/\s+/).length} words`);
+        } catch (apiError) {
+          this.log(`write() Claude Code execution failed: ${apiError}, falling back to task queuing`);
+          console.error(`[write() pipeline] Claude Code execution FAILED: ${apiError}`);
+
+          // Fallback: try executeTaskDefault (will return [TASK_QUEUED] but at least won't crash)
+          const executionResult = await this.executeTaskDefault(agentSelection, undefined, {
+            trajectoryId,
+            forceExecute: options.forceExecute
+          });
+          content = executionResult.success ? executionResult.result : agentSelection.prompt;
+        }
+      }
+    }
+
+    // Phase A: Prose Sanitization - Remove research artifacts for publication-ready output
+    // Target: 100% clean rate (zero tolerance for artifacts like Q1:, Confidence:, [SYNTHESIS NEEDED])
+    let sanitizationResult: SanitizationResult | undefined;
+    try {
+      this.log('Phase A: Running prose sanitization...');
+      sanitizationResult = await this.proseSanitizer.sanitize(content);
+
+      // Replace content with sanitized version
+      content = sanitizationResult.sanitized;
+
+      if (sanitizationResult.artifactCount > 0) {
+        this.log(
+          `Prose sanitization: removed ${sanitizationResult.artifactCount} artifacts, ` +
+          `cleanRate=${(sanitizationResult.cleanRate * 100).toFixed(1)}%`
+        );
+
+        // Log specific violations for debugging
+        for (const violation of sanitizationResult.violations.slice(0, 5)) {
+          this.log(`  - Removed "${violation.text}" at line ${violation.line}`);
+        }
+        if (sanitizationResult.violations.length > 5) {
+          this.log(`  ... and ${sanitizationResult.violations.length - 5} more`);
+        }
+      } else {
+        this.log('Prose sanitization: content is artifact-free');
+      }
+    } catch (error) {
+      this.log(`Warning: Prose sanitization failed, using original content: ${error}`);
+      // Continue without sanitization (graceful degradation)
+    }
+
+    // Quality Gauntlet: Validate and revise content if needed (0.85 threshold, up to 3 iterations)
+    let qualityValidation: QualityValidationResult | undefined;
+    console.error(`[write() pipeline] Quality gauntlet: qualityIntegration=${!!this.qualityIntegration}`);
+    if (this.qualityIntegration) {
+      try {
+        console.error('[write() pipeline] Running quality gauntlet...');
+        this.log('Running quality gauntlet validation...');
+        qualityValidation = await this.qualityIntegration.validateAndRevise(content, {
+          topic,
+          style,
+          format,
+          trajectoryId,
+          enabled: true, // Always enabled for god-write
+          corpusChunks: corpusChunks.length > 0 ? corpusChunks : undefined,
+          knownAuthors: corpusConstraint?.allowedSources?.map((s: any) => s.author).filter(Boolean) ?? [],
+        });
+
+        // Use validated/revised content
+        content = qualityValidation.content;
+
+        this.log(
+          `Quality gauntlet complete: score=${qualityValidation.qualityScore.toFixed(2)}, ` +
+          `passed=${qualityValidation.passed}, revisions=${qualityValidation.revisionIterations}`
+        );
+      } catch (error) {
+        console.error(`[write() pipeline] Quality gauntlet FAILED: ${error}`);
+        this.log(`Warning: Quality validation failed, using original content: ${error}`);
+      }
+    }
+
+    // Phase 2 & 4: Citation Validation and Enforcement (post-generation)
+    // This catches and corrects any hallucinated citations that slipped through
+    let citationEnforcementResult: EnforcementResult | undefined;
+    console.error(`[write() pipeline] Citation enforcement: corpusConstraint=${!!corpusConstraint}, chunks=${corpusChunks.length}`);
+    if (corpusConstraint && corpusChunks.length > 0) {
+      try {
+        console.error('[write() pipeline] Running citation enforcement...');
+        this.log('🔍 Phase 2/4: Running citation enforcement...');
+
+        // Create enforcer from corpus constraint with configurable options
+        const enforcer = new CitationEnforcer(corpusConstraint, {
+          mode: options.citationEnforcementMode || 'auto-correct',  // Configurable enforcement mode
+          minPassRate: options.citationMinPassRate || 0.85,          // Configurable minimum pass rate
+          maxHallucinations: options.citationMaxHallucinations || 3, // Configurable max hallucinations
+          placeholder: '',  // Fix 19: Remove hallucinated citations entirely instead of leaving [CITATION NEEDED] markers
+          includeReport: true,
+        }, corpusChunks); // Phase 7: Enable quotation fidelity validation
+
+        // Enforce citations on generated content
+        citationEnforcementResult = await enforcer.enforce(content);
+
+        if (citationEnforcementResult.action === 'pass') {
+          this.log(`✅ Citation enforcement: All ${citationEnforcementResult.validation.totalCitations} citations verified`);
+        } else if (citationEnforcementResult.action === 'corrected') {
+          this.log(
+            `🔧 Citation enforcement: Corrected ${citationEnforcementResult.correctionsCount} citations, ` +
+            `pass rate ${(citationEnforcementResult.validation.passRate * 100).toFixed(1)}%`
+          );
+          // Use corrected content
+          content = citationEnforcementResult.content;
+        } else if (citationEnforcementResult.action === 'warning') {
+          this.log(
+            `⚠️ Citation enforcement warning: ${citationEnforcementResult.validation.hallucinated.length} ` +
+            `hallucinated citations detected`
+          );
+          // Keep content but log warnings
+          for (const h of citationEnforcementResult.validation.hallucinated.slice(0, 3)) {
+            this.log(`   - Line ${h.citation.line}: "${h.citation.raw}" - ${h.reason}`);
+          }
+        } else if (citationEnforcementResult.action === 'rejected') {
+          this.log(`❌ Citation enforcement: Content rejected due to excessive hallucinations`);
+          // In production, might want to regenerate or flag for human review
+        }
+      } catch (error) {
+        this.log(`Warning: Citation enforcement failed: ${error}`);
+        // Continue without enforcement (graceful degradation)
+      }
+    }
+
+    // Fix 18: Second sanitizer pass after citation enforcement
+    // Citation enforcement may insert markers or leave artifacts that need cleanup
+    if (citationEnforcementResult && citationEnforcementResult.action !== 'pass') {
+      try {
+        const postEnforcementSanitize = await this.proseSanitizer.sanitize(content);
+        if (postEnforcementSanitize.artifactCount > 0) {
+          content = postEnforcementSanitize.sanitized;
+          this.log(`Post-enforcement sanitization: removed ${postEnforcementSanitize.artifactCount} additional artifacts`);
+        }
+      } catch (error) {
+        this.log(`Warning: Post-enforcement sanitization failed: ${error}`);
+      }
+    }
+
+    // Fix 25/30: Post-enforcement non-corpus author scrubbing
+    // Final safety net: remove any remaining references to non-corpus authors
+    // that slipped through inline validation and citation enforcement.
+    // In corpus-only mode, this is fail-closed (throws instead of silently scrubbing).
+    if (corpusConstraint && corpusConstraint.sources.length > 0) {
+      try {
+        const scrubResult = this.scrubNonCorpusAuthors(content, corpusConstraint);
+        if (scrubResult.removedCount > 0) {
+          if (dataSourceMode === 'corpus') {
+            // Corpus-only: fail-closed with diagnostic report
+            const report = scrubResult.removedAuthors
+              .slice(0, 3)
+              .map(name => {
+                const snippets = scrubResult.contexts[name]?.slice(0, 2).join('; ') || 'context unavailable';
+                return `  - "${name}" (${snippets})`;
+              })
+              .join('\n');
+
+            throw new Error(
+              `Corpus-only mode: ${scrubResult.removedCount} non-corpus author reference(s) detected after enforcement.\n` +
+              `Authors found:\n${report}\n` +
+              `This indicates insufficient corpus coverage. Options:\n` +
+              `  - Increase --corpus-chunks to retrieve more source material\n` +
+              `  - Lower --corpus-relevance to broaden retrieval\n` +
+              `  - Reduce --length to require less content`
+            );
+          } else {
+            // Hybrid/external: scrub silently (existing behavior)
+            content = scrubResult.content;
+            this.log(`🧹 Author scrub: removed ${scrubResult.removedCount} non-corpus author references (${scrubResult.removedAuthors.join(', ')})`);
+          }
+        }
+      } catch (error) {
+        // Re-throw corpus-only mode errors; swallow scrubber failures in other modes
+        if (error instanceof Error && error.message.startsWith('Corpus-only mode:')) throw error;
+        this.log(`Warning: Non-corpus author scrubbing failed: ${error}`);
+      }
+    }
+
+    // Phase 5: Staged Composition System Integration
+    // Auto-detect if staged composition should be used
+    let compositionMetadata: {
+      used: boolean;
+      succeeded?: boolean;
+      wordCount?: number;
+      qualityScore?: number;
+      processingTime?: number;
+    } = { used: false };
+
+    const shouldUseStagedComposition =
+      options.useStagedComposition ||
+      (options.chapterOutline !== undefined) ||
+      (format === 'paper' && length === 'comprehensive') ||
+      /chapter|section/i.test(topic);
+
+    if (shouldUseStagedComposition && !options.forceExecute) {
+      try {
+        this.log('Phase 5: Using staged composition system...');
+
+        let compositionResult: CompositionResult;
+
+        if (options.chapterOutline) {
+          // User provided explicit chapter outline
+          compositionResult = await compositionOrchestrator.composeChapter(
+            options.chapterOutline,
+            true // verbose
+          );
+        } else {
+          // Auto-generate simple outline from topic
+          const keyPoints = this.extractKeyPointsFromTopic(topic);
+          compositionResult = await compositionOrchestrator.composeSimple(
+            topic,
+            keyPoints,
+            {
+              chapterNumber: 1,
+              purpose: `Generate ${format} on ${topic}`,
+              evidenceType: style === 'academic' ? 'theoretical' : 'analytical',
+              verbose: true,
+            }
+          );
+        }
+
+        if (compositionResult.succeeded) {
+          // Use composed content
+          content = compositionResult.prose;
+          compositionMetadata = {
+            used: true,
+            succeeded: true,
+            wordCount: compositionResult.metadata.wordCount,
+            qualityScore: compositionResult.metadata.qualityScore,
+            processingTime: compositionResult.metadata.processingTime,
+          };
+
+          this.log(
+            `Staged composition complete: ` +
+            `wordCount=${compositionMetadata.wordCount}, ` +
+            `quality=${compositionMetadata.qualityScore?.toFixed(2)}`
+          );
+        } else {
+          // Composition failed, keep original content
+          compositionMetadata = { used: true, succeeded: false };
+          this.log('Staged composition failed, using original content');
+        }
+      } catch (error) {
+        this.log(`Warning: Staged composition failed: ${error}`);
+        compositionMetadata = { used: true, succeeded: false };
+        // Continue with original content (graceful degradation)
+      }
+    }
+
+    // Endnote Generation: Add supporting quotations from corpus
+    let endnotesMetadata: {
+      generated: boolean;
+      count: number;
+      supportingQuotationsCount: number;
+      enhancedContent?: string;
+      endnotesSection?: string;
+    } = { generated: false, count: 0, supportingQuotationsCount: 0 };
+
+    if (options.enableEndnotes && corpusContextInfo.used && this.smartRetrieval) {
+      try {
+        this.log('Generating endnotes with supporting quotations...');
+
+        // Create corpus search function using smart retrieval layer
+        const corpusSearch: CorpusSearchFn = async (query: string, limit: number) => {
+          const chunks = await this.smartRetrieval.retrieveContext(query, {
+            maxChunks: limit,
+            collections: corpusContextInfo.collections,
+            minRelevance: 0.65,
+          });
+
+          return chunks.map(chunk => ({
+            id: chunk.id,
+            text: chunk.text,
+            metadata: {
+              author: chunk.metadata?.author,
+              title: chunk.metadata?.title,
+              year: chunk.metadata?.year,
+              pageRef: chunk.metadata?.pageRef,
+              docId: chunk.metadata?.docId,
+            },
+            score: chunk.relevance,
+          }));
+        };
+
+        // Create provenance ledger for tracking
+        const provenanceLedger = new ProvenanceLedger();
+
+        // Generate endnotes
+        const endnoteConfig: Partial<EndnoteGeneratorConfig> = {
+          maxQuotationsPerEndnote: options.maxQuotationsPerEndnote ?? 3,
+          minRelevanceThreshold: options.minEndnoteRelevance ?? 0.65,
+          includeSameSource: true,
+          includeDifferentSources: true,
+          maxQuotationLength: 500,
+          formatStyle: 'numeric',
+          generateInlineMarkers: true,
+        };
+
+        const endnoteResult = await generateEndnotes(content, corpusSearch, {
+          config: endnoteConfig,
+          provenanceLedger,
+        });
+
+        // Update content with endnotes
+        if (endnoteResult.endnotes.length > 0) {
+          content = endnoteResult.contentWithMarkers + '\n\n' + endnoteResult.endnotesSection;
+          endnotesMetadata = {
+            generated: true,
+            count: endnoteResult.stats.totalEndnotes,
+            supportingQuotationsCount: endnoteResult.stats.totalSupportingQuotations,
+            enhancedContent: endnoteResult.contentWithMarkers,
+            endnotesSection: endnoteResult.endnotesSection,
+          };
+
+          this.log(
+            `Endnotes generated: ${endnotesMetadata.count} endnotes, ` +
+            `${endnotesMetadata.supportingQuotationsCount} supporting quotations`
+          );
+        } else {
+          this.log('No endnotes generated (no citations found)');
+        }
+      } catch (error) {
+        this.log(`Warning: Endnote generation failed: ${error}`);
+        // Continue with original content (graceful degradation)
+      }
+    }
+
+    // Source Verification and Acquisition (post-generation hook)
+    let sourceVerificationResult: {
+      verified: boolean;
+      summary?: VerificationSummary;
+      acquisitionResults?: AcquisitionResult[];
+    } = { verified: false };
+
+    if (options.verifySources) {
+      try {
+        this.log('Verifying sources against corpus...');
+        const sourceVerifier = getSourceVerificationLayer();
+        const extractedCitations = sourceVerifier.extractCitations(content);
+        const verificationSummary = await sourceVerifier.verifyCitationsAgainstCorpus(extractedCitations);
+
+        sourceVerificationResult.verified = true;
+        sourceVerificationResult.summary = verificationSummary;
+
+        this.log(
+          `Source verification complete: ${verificationSummary.foundInCorpus}/${verificationSummary.totalCitations} ` +
+          `found in corpus, ${verificationSummary.missingFromCorpus} missing`
+        );
+
+        // Automatic source acquisition if enabled and sources are missing
+        if (options.acquireMissing && verificationSummary.missingFromCorpus > 0) {
+          this.log('Acquiring missing sources...');
+          const acquisitionLayer = getMissingSourceAcquisitionLayer();
+
+          // Configure download directory if provided
+          if (options.downloadDir) {
+            // Create new instance with custom config
+            const customAcquisitionLayer = new MissingSourceAcquisitionLayer({
+              downloadDir: options.downloadDir,
+              autoDownload: true,
+              verbose: true,
+            });
+            sourceVerificationResult.acquisitionResults = await customAcquisitionLayer.acquireSources(
+              verificationSummary.missingSources
+            );
+          } else {
+            sourceVerificationResult.acquisitionResults = await acquisitionLayer.acquireSources(
+              verificationSummary.missingSources
+            );
+          }
+
+          const downloaded = sourceVerificationResult.acquisitionResults.filter(r => r.status === 'downloaded').length;
+          const linkProvided = sourceVerificationResult.acquisitionResults.filter(r => r.status === 'link_provided').length;
+
+          this.log(
+            `Source acquisition complete: ${downloaded} downloaded, ${linkProvided} links provided`
+          );
+        }
+      } catch (error) {
+        this.log(`Warning: Source verification failed: ${error}`);
+        // Continue without verification (graceful degradation)
+      }
     }
 
     // Store successful writing patterns
@@ -2917,15 +4122,19 @@ export class UniversalAgent {
     });
 
     // Auto-feedback if trajectory exists (FR-11)
-    let writeQuality = 0.7;
-    if (this.config.autoLearn && this.trajectoryBridge && trajectoryId) {
+    // Use quality gauntlet score if available, otherwise estimate
+    let writeQuality = qualityValidation?.qualityScore ?? 0.7;
+    if (!qualityValidation && this.config.autoLearn) {
       writeQuality = estimateQuality({
-        id: trajectoryId,
+        id: trajectoryId ?? 'unknown',
         mode: 'write',
         input: topic,
         output: content,
         timestamp: Date.now(),
       });
+    }
+
+    if (this.config.autoLearn && this.trajectoryBridge && trajectoryId) {
       if (writeQuality >= this.config.autoStoreThreshold) {
         try {
           await this.trajectoryBridge.submitFeedback(trajectoryId, writeQuality, { implicit: true });
@@ -2950,74 +4159,82 @@ export class UniversalAgent {
       sources: knowledge.map(k => k.id),
       wordCount: content.split(/\s+/).length,
       trajectoryId,
-    };
-  }
-
-  /**
-   * Write a paper by combining research and writing with learned style
-   *
-   * This method:
-   * 1. Performs research on the topic
-   * 2. Synthesizes findings
-   * 3. Generates a paper with the learned style profile
-   *
-   * @param topic - The paper topic
-   * @param options - Options for research and writing
-   */
-  async writePaper(topic: string, options: {
-    /** Research depth */
-    depth?: 'quick' | 'standard' | 'deep';
-    /** Paper format */
-    format?: 'essay' | 'report' | 'article' | 'paper';
-    /** Paper length */
-    length?: 'short' | 'medium' | 'long' | 'comprehensive';
-    /** Specific style profile ID to use */
-    styleProfileId?: string;
-    /** Enable web search for research */
-    enableWebSearch?: boolean;
-  } = {}): Promise<{
-    topic: string;
-    research: ResearchResult;
-    paper: WriteResult;
-    styleApplied: boolean;
-  }> {
-    await this.ensureInitialized();
-
-    this.log(`Writing paper on: ${topic}`);
-
-    // Check if we have an active style profile
-    const activeProfile = this.getActiveStyleProfile();
-    const styleProfileId = options.styleProfileId || activeProfile?.metadata.id;
-    const styleApplied = !!styleProfileId;
-
-    if (styleApplied) {
-      this.log(`Using style profile: ${styleProfileId}`);
-    }
-
-    // Step 1: Research the topic
-    const research = await this.research(topic, {
-      depth: options.depth ?? 'deep',
-      enableWebSearch: options.enableWebSearch ?? true,
-      styleProfileId,
-    });
-
-    this.log(`Research complete: ${research.findings.length} findings`);
-
-    // Step 2: Write the paper with findings and style
-    const paper = await this.write(topic, {
-      style: 'academic',
-      format: options.format ?? 'paper',
-      length: options.length ?? 'comprehensive',
-      styleProfileId,
-    });
-
-    this.log(`Paper complete: ${paper.wordCount} words`);
-
-    return {
-      topic,
-      research,
-      paper,
-      styleApplied,
+      // Include quality metrics if validation was performed
+      qualityMetrics: qualityValidation?.metrics,
+      qualityScore: qualityValidation?.qualityScore,
+      revisionIterations: qualityValidation?.revisionIterations ?? 0,
+      // Phase 3: Include corpus context information
+      corpusContext: corpusContextInfo.used ? corpusContextInfo : undefined,
+      // Phase 5: Include staged composition metadata
+      stagedComposition: compositionMetadata.used ? compositionMetadata : undefined,
+      // Include endnotes metadata if generated
+      endnotes: endnotesMetadata.generated ? endnotesMetadata : undefined,
+      // Include source verification results if performed
+      sourceVerification: sourceVerificationResult.verified ? {
+        verified: true,
+        totalCitations: sourceVerificationResult.summary?.totalCitations ?? 0,
+        foundInCorpus: sourceVerificationResult.summary?.foundInCorpus ?? 0,
+        missingFromCorpus: sourceVerificationResult.summary?.missingFromCorpus ?? 0,
+        missingSources: (sourceVerificationResult.summary?.missingSources ?? []).map(s => ({
+          author: s.author,
+          title: s.title,
+          type: s.type,
+        })),
+        acquisitionResults: sourceVerificationResult.acquisitionResults?.map(r => ({
+          source: r.source,
+          status: r.status,
+          downloadPath: r.downloadPath,
+          accessUrls: r.accessUrls,
+        })),
+      } : undefined,
+      // Phase A: Include prose sanitization results
+      proseSanitization: sanitizationResult ? {
+        sanitized: true,
+        artifactsRemoved: sanitizationResult.artifactCount,
+        cleanRate: sanitizationResult.cleanRate,
+        violations: sanitizationResult.violations.map(v => ({
+          type: v.type,
+          text: v.text,
+          line: v.line,
+        })),
+      } : undefined,
+      // Phase 2/4: Citation enforcement results
+      citationEnforcement: citationEnforcementResult ? {
+        action: citationEnforcementResult.action,
+        totalCitations: citationEnforcementResult.validation.totalCitations,
+        validCitations: citationEnforcementResult.validation.valid.length,
+        hallucinatedCitations: citationEnforcementResult.validation.hallucinated.length,
+        correctionsMade: citationEnforcementResult.correctionsCount,
+        missingPageNumbers: citationEnforcementResult.missingPageNumbersCount,
+        passRate: citationEnforcementResult.validation.passRate,
+        report: citationEnforcementResult.report,
+      } : undefined,
+      // Phase 5: Citation budget results
+      citationBudget: citationBudgetResult ? {
+        expectedCitations: citationBudgetResult.expectedCitations,
+        maxSupportableCitations: citationBudgetResult.maxSupportableCitations,
+        deficit: citationBudgetResult.deficit,
+        sufficient: citationBudgetResult.sufficient,
+        warning: citationBudgetResult.warning,
+      } : undefined,
+      // Phase 11: Inline validation results
+      inlineValidation: usedInlineValidation && inlineValidationResult ? {
+        used: true,
+        allPassed: inlineValidationResult.allPassed,
+        qualityScore: inlineValidationResult.qualityScore,
+        totalUnits: inlineValidationResult.stats.totalUnits,
+        passedFirstAttempt: inlineValidationResult.stats.passedFirstAttempt,
+        passedAfterRetry: inlineValidationResult.stats.passedAfterRetry,
+        failedUnits: inlineValidationResult.stats.failed,
+        totalAttempts: inlineValidationResult.stats.totalAttempts,
+        avgAttemptsPerUnit: inlineValidationResult.stats.avgAttemptsPerUnit,
+        failedUnitDetails: inlineValidationResult.failedUnits.map(f => ({
+          type: f.unit.type,
+          intent: f.unit.intent,
+          lastScore: f.lastValidationResult.overallScore,
+          issues: f.lastValidationResult.issues.map(i => i.message),
+        })),
+      } : undefined,
     };
   }
 
@@ -3176,7 +4393,7 @@ export class UniversalAgent {
     const chunkingResult: ChunkingResult = await this.knowledgeChunker.chunkForStorage(
       entry.content,
       id,
-      { domain: entry.domain, type: entry.type, tags: entry.tags },
+      { domain: entry.domain, type: entry.type || entry.category || 'unknown', tags: entry.tags },
       { contentType }
     );
 
@@ -3805,433 +5022,7 @@ export class UniversalAgent {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private _detectMode(input: string): AgentMode {
-    const lower = input.toLowerCase();
 
-    if (lower.match(/\b(code|function|implement|debug|fix|program|script|api)\b/)) {
-      return 'code';
-    }
-    if (lower.match(/\b(research|find|investigate|analyze|study|explore|learn about)\b/)) {
-      return 'research';
-    }
-    if (lower.match(/\b(write|draft|compose|create|essay|article|document|report|paper)\b/)) {
-      return 'write';
-    }
-
-    return 'general';
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private async _generateCode(
-    task: string,
-    patterns: QueryResult['patterns'],
-    options: { language?: string; context?: string; examples?: string[] }
-  ): Promise<string> {
-    const patternContext = this.buildPatternContext(patterns);
-
-    const examplesContext = options.examples?.length
-      ? `\n\n## Examples:\n${options.examples.map((ex, i) => `### Example ${i + 1}:\n${ex}`).join('\n\n')}`
-      : '';
-
-    const prompt = `## Code Generation Task
-
-**Language**: ${options.language ?? 'typescript'}
-
-**Task**: ${task}
-
-${patternContext}
-${options.context ? `\n## Additional Context:\n${options.context}` : ''}
-${examplesContext}
-
-## Requirements:
-1. Generate clean, production-ready code
-2. Follow best practices for ${options.language ?? 'typescript'}
-3. Include necessary imports
-4. Add JSDoc/docstring comments for public APIs
-5. Handle edge cases appropriately
-
-## Output Format:
-Return ONLY the code, wrapped in appropriate markdown code blocks.
-`;
-
-    // Use the coder agent via CLI (now that SPEC-EXE-001 is implemented)
-    const { spawn } = await import('child_process');
-
-    return new Promise((resolve) => {
-      const args = ['--print', '--output-format', 'json'];
-
-      // System prompt for coder behavior
-      const systemPrompt = `You are a code generation expert. Generate clean, well-documented, production-ready code.
-Focus on: correctness, readability, best practices, proper error handling.
-Return ONLY code in markdown code blocks.`;
-
-      args.push('--system-prompt', systemPrompt);
-      args.push(prompt);
-
-      // Set timeout for CLI execution (10 seconds)
-      const timeout = setTimeout(async () => {
-        this.log('Warning: Claude CLI execution timed out (10s)');
-        child.kill();
-        resolve(await this.generateFallbackCode(task, patterns, options));
-      }, 10000);
-
-      const child = spawn('claude', args, { cwd: process.cwd() });
-
-      let stdout = '';
-      let stderr = '';
-      child.stdout?.on('data', (data) => { stdout += data.toString(); });
-      child.stderr?.on('data', (data) => { stderr += data.toString(); });
-
-      child.on('close', async (code) => {
-        clearTimeout(timeout);
-        if (code === 0) {
-          try {
-            const parsed = JSON.parse(stdout);
-            const response = parsed.result || parsed.output || stdout;
-            const extractedCode = this.extractCodeFromResponse(response);
-            resolve(extractedCode);
-          } catch {
-            // INTENTIONAL: JSON parsing failure is expected for non-JSON CLI output - fallback to raw extraction
-            const extractedCode = this.extractCodeFromResponse(stdout);
-            resolve(extractedCode);
-          }
-        } else {
-          // Fallback to placeholder if CLI fails
-          this.log(`Warning: Claude CLI execution failed (code ${code}): ${stderr}`);
-          resolve(await this.generateFallbackCode(task, patterns, options));
-        }
-      });
-
-      child.on('error', async (err) => {
-        // Fallback if CLI not found or error occurred
-        clearTimeout(timeout);
-        this.log(`Warning: Claude CLI not available: ${err.message}`);
-        resolve(await this.generateFallbackCode(task, patterns, options));
-      });
-    });
-  }
-
-  /**
-   * Build context from ReasoningBank patterns
-   */
-  private buildPatternContext(patterns: QueryResult['patterns']): string {
-    if (patterns.length === 0) {
-      return '## No existing patterns found - creating new solution.';
-    }
-
-    const relevantPatterns = patterns.slice(0, 5);
-    return `## Relevant Patterns (${patterns.length} found):\n${
-      relevantPatterns.map((p, i) => {
-        const contentStr = String(p.content).slice(0, 500);
-        return `### Pattern ${i + 1} (relevance: ${(p.similarity * 100).toFixed(0)}%):\n${contentStr}`;
-      }).join('\n\n')
-    }`;
-  }
-
-  /**
-   * Extract code from markdown code blocks in response
-   */
-  private extractCodeFromResponse(response: string): string {
-    const codeBlockRegex = /```(?:\w+)?\n([\s\S]*?)```/g;
-    const matches = [...response.matchAll(codeBlockRegex)];
-
-    if (matches.length > 0) {
-      return matches.map(m => m[1].trim()).join('\n\n');
-    }
-
-    // No code blocks found, return trimmed response
-    return response.trim();
-  }
-
-  /**
-   * Generate fallback code when CLI is not available
-   * Uses ClaudeCodeExecutor for production-ready code with InteractionStore for learning
-   * RULE-CLI-001-002: No fallbacks - let errors propagate
-   */
-  private async generateFallbackCode(
-    task: string,
-    patterns: QueryResult['patterns'],
-    options: { language?: string; context?: string; examples?: string[] }
-  ): Promise<string> {
-    const language = options.language ?? 'typescript';
-
-    // Build context from patterns, examples, and InteractionStore
-    const contextParts: string[] = [];
-
-    if (options.context) {
-      contextParts.push(options.context);
-    }
-
-    // Add ReasoningBank patterns
-    if (patterns.length > 0) {
-      const patternContext = patterns
-        .slice(0, 3)
-        .map((p, i) => `Pattern ${i + 1}: ${String(p.content).slice(0, 300)}`)
-        .join('\n\n');
-      contextParts.push(`Relevant patterns from ReasoningBank:\n${patternContext}`);
-    }
-
-    // Retrieve relevant context from InteractionStore
-    const relevantContext = await this.getRelevantContext(task);
-    if (relevantContext) {
-      contextParts.push(relevantContext);
-    }
-
-    // Add user-provided examples
-    if (options.examples && options.examples.length > 0) {
-      const examplesContext = options.examples
-        .map((ex, i) => `Example ${i + 1}:\n${ex}`)
-        .join('\n\n');
-      contextParts.push(`Examples:\n${examplesContext}`);
-    }
-
-    const request: ICodeExecutionRequest = {
-      task,
-      language,
-      context: contextParts.join('\n\n') || undefined,
-      constraints: ['production-ready', 'well-documented', 'type-safe'],
-      maxTokens: 2048
-    };
-
-    // RULE-CLI-001-002: Let errors propagate (no try/catch fallback)
-    const result = await this.codeExecutor.execute(request);
-
-    // Store the generated code for learning if quality is high
-    if (this.interactionStore && result.qualityScore >= 0.7) {
-      const embedding = await this.embed(task);
-      const interaction: Interaction = {
-        id: this.generateId(),
-        mode: 'code',
-        input: task,
-        output: result.code,
-        embedding,
-        timestamp: Date.now(),
-        feedback: {
-          rating: result.qualityScore,
-          useful: true,
-          notes: `Generated via ${result.metadata.source}, model: ${result.metadata.model}`
-        },
-        metadata: {
-          language,
-          source: result.metadata.source,
-          model: result.metadata.model,
-          tokensUsed: result.metadata.tokensUsed,
-          latencyMs: result.metadata.latencyMs,
-        }
-      };
-      this.interactionStore.add(interaction);
-      this.log(`Stored high-quality code in InteractionStore: quality=${result.qualityScore.toFixed(2)}`);
-    }
-
-    this.log(`Generated code via ${result.metadata.source}: quality=${result.qualityScore.toFixed(2)}`);
-
-    return result.code;
-  }
-
-  /**
-   * Get relevant context from InteractionStore for code generation
-   */
-  private async getRelevantContext(prompt: string): Promise<string> {
-    if (!this.interactionStore) {
-      return '';
-    }
-
-    try {
-      // Search for similar code interactions in InteractionStore
-      const stats = this.interactionStore.getStats();
-      if (stats.totalInteractions === 0) {
-        return '';
-      }
-
-      // Get all interactions and find code mode ones
-      const allInteractions = this.interactionStore.getHighQuality();
-      const codeInteractions = allInteractions.filter(i => i.mode === 'code');
-
-      if (codeInteractions.length === 0) {
-        return '';
-      }
-
-      // Simple similarity: find interactions with matching keywords
-      const promptWords = new Set(prompt.toLowerCase().split(/\W+/).filter(w => w.length > 3));
-
-      const similar = codeInteractions
-        .map(interaction => {
-          const inputWords = new Set(interaction.input.toLowerCase().split(/\W+/));
-          const matchCount = [...promptWords].filter(word => inputWords.has(word)).length;
-          return { interaction, matchCount };
-        })
-        .filter(item => item.matchCount > 0)
-        .sort((a, b) => b.matchCount - a.matchCount)
-        .slice(0, 3);
-
-      if (similar.length === 0) {
-        return '';
-      }
-
-      const contextLines = similar.map((item, idx) => {
-        const { interaction } = item;
-        return `Previous Example ${idx + 1}:\nTask: ${interaction.input}\nCode:\n${interaction.output.slice(0, 400)}${interaction.output.length > 400 ? '...' : ''}`;
-      });
-
-      return `Similar code from memory (InteractionStore):\n\n${contextLines.join('\n\n')}`;
-    } catch (error) {
-      this.log(`Error retrieving context from InteractionStore: ${error}`);
-      return '';
-    }
-  }
-
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private async _generateWriting(
-    topic: string,
-    knowledge: QueryResult['patterns'],
-    options: { style: string; length: string; format: string; stylePrompt?: string | null }
-  ): Promise<string> {
-    try {
-      // Check if writing generator is available (graceful degradation)
-      if (!this.writingGenerator) {
-        this.log('Writing generator unavailable (ANTHROPIC_API_KEY not set)', true);
-        return `# ${topic}\n\nWriting generation requires ANTHROPIC_API_KEY environment variable to be set.`;
-      }
-
-      // Gather context from InteractionStore
-      const context = await this.gatherWritingContext(topic, knowledge);
-
-      // Estimate word count from length option
-      const maxLength = this.estimateWordCount(options.length);
-
-      // Generate with LLM
-      const result = await this.writingGenerator.generate({
-        title: topic,
-        description: `Generate content in ${options.style} style with ${options.length} length`,
-        style: options.style !== 'default' ? options.style : undefined,
-        context,
-        maxLength,
-        format: options.format === 'markdown' ? 'markdown' : 'plain',
-      });
-
-      // Provide feedback to ReasoningBank for learning
-      const reasoningBank = this.agent.getReasoningBank();
-      if (reasoningBank) {
-        await reasoningBank.provideFeedback({
-          trajectoryId: `writing-${Date.now()}`,
-          quality: result.qualityScore,
-          verdict: result.qualityScore > 0.7 ? 'correct' : 'neutral',
-          reasoning: `Generated ${result.wordCount} words for "${topic}" (quality: ${result.qualityScore.toFixed(2)})`,
-        });
-      }
-
-      this.log(
-        `Generated ${result.wordCount} words (quality: ${result.qualityScore.toFixed(2)}, model: ${result.metadata.model})`,
-        true
-      );
-
-      return result.content;
-    } catch (error) {
-      this.log(`Writing generation failed: ${error}`, true);
-      // Fallback to ensure non-breaking behavior
-      return `# ${topic}\n\nError: Failed to generate content. ${error instanceof Error ? error.message : String(error)}`;
-    }
-  }
-
-  /**
-   * Gather context from InteractionStore for writing generation (SPEC-WRT-001)
-   */
-  private async gatherWritingContext(
-    topic: string,
-    knowledge: QueryResult['patterns']
-  ): Promise<string> {
-    const contextParts: string[] = [];
-
-    // Include knowledge from query
-    if (knowledge.length > 0) {
-      contextParts.push(`Relevant knowledge entries: ${knowledge.length}`);
-      const topKnowledge = knowledge.slice(0, 3);
-      for (const pattern of topKnowledge) {
-        const content = typeof pattern.content === 'string' ? pattern.content : JSON.stringify(pattern.content);
-        contextParts.push(`- ${content.substring(0, 200)}`);
-      }
-    }
-
-    // Query InteractionStore for relevant knowledge
-    const allKnowledge = this.interactionStore.getKnowledgeByDomain('*');
-    const relevantKnowledge = allKnowledge.filter((k) => {
-      const content = k.content.toLowerCase();
-      const topicLower = topic.toLowerCase();
-      return (
-        content.includes(topicLower) ||
-        topicLower.split(' ').some((word) => word.length > 4 && content.includes(word))
-      );
-    });
-
-    if (relevantKnowledge.length > 0) {
-      contextParts.push(`\nAdditional context from InteractionStore:`);
-      const topRelevant = relevantKnowledge.slice(0, 3);
-      for (const k of topRelevant) {
-        contextParts.push(`[${k.type}]: ${k.content.substring(0, 300)}`);
-      }
-    }
-
-    return contextParts.length > 0 ? contextParts.join('\n') : '';
-  }
-
-  /**
-   * Estimate word count from length string
-   */
-  private estimateWordCount(length: string): number {
-    const lengthMap: Record<string, number> = {
-      short: 500,
-      medium: 1500,
-      long: 3000,
-    };
-    return lengthMap[length] ?? 1500;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private _synthesize(findings: ResearchResult['findings'], query: string, stylePrompt?: string | null): string {
-    if (findings.length === 0) {
-      return `No existing knowledge found for: ${query}. Consider adding research to the knowledge base.`;
-    }
-
-    // Build synthesis with style guidance if available
-    let synthesis = `Based on ${findings.length} knowledge entries:\n\n`;
-
-    if (stylePrompt) {
-      synthesis += `[Style Profile Applied]\n${stylePrompt}\n\n`;
-    }
-
-    synthesis += findings.map(f => `- ${f.content.slice(0, 100)}... (relevance: ${(f.relevance * 100).toFixed(0)}%)`).join('\n');
-
-    return synthesis;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private async _processCode(input: string, _knowledge: QueryResult['patterns'], context?: string): Promise<string> {
-    const result = await this.code(input, { context });
-    return result.code;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private async _processResearch(input: string, _knowledge: QueryResult['patterns']): Promise<string> {
-    const result = await this.research(input);
-    return result.synthesis;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private async _processWrite(input: string, _knowledge: QueryResult['patterns'], _context?: string): Promise<string> {
-    const result = await this.write(input);
-    return result.content;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private async _processGeneral(input: string, knowledge: QueryResult['patterns']): Promise<string> {
-    if (knowledge.length > 0) {
-      return `Found ${knowledge.length} relevant entries:\n\n` +
-        knowledge.slice(0, 5).map(k => `- ${String(k.content).slice(0, 200)}...`).join('\n');
-    }
-    return `No relevant knowledge found for: ${input}`;
-  }
 
   private assessQuality(interaction: Interaction): number {
     // Heuristic quality assessment
@@ -4256,6 +5047,170 @@ Return ONLY code in markdown code blocks.`;
     return words
       .filter(w => w.length > 3 && !stopWords.has(w))
       .slice(0, 10);
+  }
+
+  /**
+   * Extract key points from topic for staged composition
+   * Attempts to parse structured content (numbered lists, bullet points)
+   * or generates key points from topic analysis
+   */
+  private extractKeyPointsFromTopic(topic: string): string[] {
+    // Try to extract numbered or bulleted lists
+    const numberedPattern = /^\d+\.\s+(.+)$/gm;
+    const bulletPattern = /^[•\-\*]\s+(.+)$/gm;
+
+    const numberedMatches = Array.from(topic.matchAll(numberedPattern));
+    if (numberedMatches.length > 0) {
+      return numberedMatches.map(m => m[1].trim()).slice(0, 5);
+    }
+
+    const bulletMatches = Array.from(topic.matchAll(bulletPattern));
+    if (bulletMatches.length > 0) {
+      return bulletMatches.map(m => m[1].trim()).slice(0, 5);
+    }
+
+    // Split by sentences and take first 3-5 as key points
+    const sentences = topic.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 10);
+    if (sentences.length >= 2) {
+      return sentences.slice(0, Math.min(5, sentences.length));
+    }
+
+    // Fallback: generate generic key points from topic
+    return [
+      `Understanding the core concepts of ${topic}`,
+      `Analyzing the implications and applications`,
+      `Synthesizing the key findings and conclusions`,
+    ];
+  }
+
+  /**
+   * Fix 25: Scrub non-corpus author references from final content
+   *
+   * After citation enforcement removes formal citations, informal references
+   * like "Modrak's account" or "Drawing on Roark" may remain.
+   * This method scans for signal-phrase patterns referencing authors NOT in
+   * the corpus constraint whitelist and removes the containing sentences.
+   */
+  private scrubNonCorpusAuthors(
+    content: string,
+    constraint: CorpusConstraint
+  ): { content: string; removedCount: number; removedAuthors: string[]; contexts: Record<string, string[]> } {
+    // Build set of allowed author last names (normalized)
+    const allowedAuthors = new Set<string>();
+    for (const source of constraint.sources) {
+      // Extract last name from various formats
+      const lastName = source.author.includes(',')
+        ? source.author.split(',')[0].trim().toLowerCase()
+        : source.author.split(/\s+/).pop()?.toLowerCase() || '';
+      if (lastName) allowedAuthors.add(lastName);
+
+      // Also add first word for single-name authors like "Aristotle"
+      const firstWord = source.author.split(/[\s,]+/)[0].toLowerCase();
+      if (firstWord) allowedAuthors.add(firstWord);
+    }
+
+    // Common non-author words that match capitalized patterns but aren't authors
+    const falsePositives = new Set([
+      'the', 'this', 'that', 'these', 'those', 'however', 'moreover',
+      'furthermore', 'indeed', 'thus', 'hence', 'yet', 'still', 'also',
+      'chapter', 'section', 'part', 'book', 'volume', 'figure', 'table',
+      'greek', 'latin', 'english', 'german', 'french', 'ancient', 'modern',
+      'western', 'european', 'aristotelian', 'heideggerian', 'platonic',
+      'phenomenological', 'rhetorical', 'de', 'anima', 'rhetoric',
+      'being', 'time', 'soul', 'phantasia', 'stimmung', 'dasein', 'logos',
+    ]);
+
+    // Fix 30: Expanded signal phrase patterns for broader scholarly attribution coverage
+    const verbList = 'argues?|observes?|notes?|states?|maintains?|suggests?|contends?|claims?|emphasize[sd]?|explains?|demonstrates?|shows?|remarks?|writes?|proposes?|develops?|articulates?|characterizes?|distinguishes?|advances?|interprets?|critiques?|identifies?|establishes?|recognizes?|acknowledges?|theorizes?|posits?|holds?|defends?|elaborates?|outlines?|highlights?|underscores?|describes?|explores?|examines?|considers?|asserts?|insists?|reveals?|documents?|presents?|illustrates?|formulates?';
+    const nounList = 'account|analysis|reading|interpretation|argument|view|theory|claim|framework|approach|position|treatment|discussion|taxonomy|classification|model|concept|distinction|insight|observation|formulation|critique|contribution|definition|thesis|proposal|scheme|typology|ontology|epistemology|phenomenology|methodology';
+
+    const authorSignalPatterns = [
+      // "As Author argues/observes/notes..."
+      new RegExp(`\\bAs\\s+([A-Z][a-z']+(?:\\s+[A-Z][a-z']+)?)\\s+(?:${verbList})\\b`, 'g'),
+      // "Author argues/observes/notes that..."
+      new RegExp(`\\b([A-Z][a-z']+(?:\\s+[A-Z][a-z']+)?)\\s+(?:${verbList})\\s+(?:that|how|why|whether)\\b`, 'g'),
+      // "Author has shown/has demonstrated..."
+      new RegExp(`\\b([A-Z][a-z']+(?:\\s+[A-Z][a-z']+)?)\\s+has\\s+(?:shown|demonstrated|argued|suggested|noted|observed|proposed|established|maintained|claimed|illustrated)\\b`, 'g'),
+      // "Author's account/analysis/reading..."
+      new RegExp(`\\b([A-Z][a-z']+(?:\\s+[A-Z][a-z']+)?)'s\\s+(?:${nounList})\\b`, 'g'),
+      // "according to Author" or "following Author" or "drawing on Author"
+      /\b(?:according\s+to|following|drawing\s+on|building\s+on|inspired\s+by|indebted\s+to)\s+([A-Z][a-z']+(?:\s+[A-Z][a-z']+)?)\b/gi,
+      // "the work/account of Author"
+      new RegExp(`\\b(?:the\\s+(?:work|${nounList})\\s+(?:of|in|by))\\s+([A-Z][a-z']+(?:\\s+[A-Z][a-z']+)?)\\b`, 'gi'),
+    ];
+
+    const removedAuthors = new Set<string>();
+    const contexts: Record<string, string[]> = {};
+    let removedCount = 0;
+
+    // Split into sentences for targeted removal
+    const sentences = content.split(/(?<=[.!?])\s+/);
+    const cleanSentences: string[] = [];
+
+    for (const sentence of sentences) {
+      let hasExternalAuthor = false;
+
+      for (const pattern of authorSignalPatterns) {
+        pattern.lastIndex = 0;
+        let match;
+        while ((match = pattern.exec(sentence)) !== null) {
+          const authorName = match[1]?.trim();
+          if (!authorName) continue;
+
+          const normalized = authorName.split(/\s+/).pop()?.toLowerCase() || '';
+          // Check if this is NOT an allowed corpus author and NOT a false positive
+          if (normalized && !allowedAuthors.has(normalized) && !falsePositives.has(normalized)) {
+            hasExternalAuthor = true;
+            removedAuthors.add(authorName);
+            removedCount++;
+
+            // Collect context snippets (first 2 per author for diagnostics)
+            if (!contexts[authorName]) contexts[authorName] = [];
+            if (contexts[authorName].length < 2) {
+              contexts[authorName].push(sentence.slice(0, 120));
+            }
+          }
+        }
+      }
+
+      if (!hasExternalAuthor) {
+        cleanSentences.push(sentence);
+      }
+    }
+
+    return {
+      content: cleanSentences.join(' '),
+      removedCount,
+      removedAuthors: Array.from(removedAuthors),
+      contexts,
+    };
+  }
+
+  /**
+   * Build CorpusSource array from context chunks for inline validation
+   * Phase 11: Inline Citation Enforcement
+   */
+  private buildCorpusSourcesFromChunks(chunks: ContextChunk[]): CorpusSource[] {
+    // Group chunks by author+year+title to build unique sources
+    const sourceMap = new Map<string, CorpusSource>();
+
+    for (const chunk of chunks) {
+      const { author, year, title } = chunk.metadata;
+      if (!author) continue;
+
+      const key = `${author}_${year || 'nd'}_${title || 'unknown'}`;
+
+      if (!sourceMap.has(key)) {
+        sourceMap.set(key, {
+          author,
+          year: year ?? 0,
+          title: title || 'Unknown Title',
+          citationKey: `${author.split(/[,\s]+/)[0]}_${year || 'nd'}`,
+        });
+      }
+    }
+
+    return Array.from(sourceMap.values());
   }
 
   private async embed(text: string): Promise<Float32Array> {
