@@ -13,6 +13,9 @@ import { QuotationFidelityValidator, type QuotationFidelityValidationResult, typ
 import { ClaimGroundingValidator, type ClaimGroundingValidationResult } from './claim-grounding-validator.js';
 import { buildCorpusConstraint, type ContextChunk } from './corpus-constraint-builder.js';
 import type { CorpusSource, CorpusConstraint } from './writing-generator.js';
+import { createComponentLogger } from '../observability/logger.js';
+
+const logger = createComponentLogger('InlineClaimValidator');
 
 /**
  * Generated content unit (paragraph, claim block, etc.)
@@ -224,13 +227,13 @@ export class InlineClaimValidator {
     const details: InlineValidationResult['details'] = {};
 
     // === Citation Validation ===
-    console.log(`      [Validator] Starting citation validation on ${unit.content.length} chars...`);
+    logger.debug(`Starting citation validation on ${unit.content.length} chars...`);
     const citationOptions: ValidationOptions = {
       suggestReplacements: true,
       requirePageNumbers: this.config.requirePageNumbers ?? (this.config.strictness === 'strict'),
     };
     const citationValidation = await this.citationValidator.validate(unit.content, citationOptions);
-    console.log(`      [Validator] Citation validation complete: ${citationValidation.totalCitations} citations`);
+    logger.info(`Citation validation complete: ${citationValidation.totalCitations} citations`);
     details.citationValidation = citationValidation;
 
     const citationResults = {
@@ -271,13 +274,13 @@ export class InlineClaimValidator {
     };
 
     if (this.quoteValidator) {
-      console.log(`      [Validator] Starting quote fidelity validation...`);
+      logger.debug(`Starting quote fidelity validation...`);
       const quoteOptions: QuotationFidelityOptions = {
         minSimilarity: this.thresholds.minQuoteFidelityRate,
         suggestCorrections: true,
       };
       const quoteFidelityValidation = await this.quoteValidator.validate(unit.content);
-      console.log(`      [Validator] Quote fidelity complete: ${quoteFidelityValidation.totalQuotations} quotations`);
+      logger.info(`Quote fidelity complete: ${quoteFidelityValidation.totalQuotations} quotations`);
       details.quoteFidelityValidation = quoteFidelityValidation;
 
       quoteResults = {
@@ -319,9 +322,9 @@ export class InlineClaimValidator {
     };
 
     if (this.groundingValidator) {
-      console.log(`      [Validator] Starting claim grounding validation...`);
+      logger.debug(`Starting claim grounding validation...`);
       const claimGroundingValidation = await this.groundingValidator.validate(unit.content);
-      console.log(`      [Validator] Claim grounding complete: ${claimGroundingValidation.totalClaims} claims`);
+      logger.info(`Claim grounding complete: ${claimGroundingValidation.totalClaims} claims`);
       details.claimGroundingValidation = claimGroundingValidation;
 
       claimResults = {
