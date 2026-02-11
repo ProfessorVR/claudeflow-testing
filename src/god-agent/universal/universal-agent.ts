@@ -122,6 +122,7 @@ import {
 import { scrubNonCorpusAuthors, buildCorpusSourcesFromChunks } from './author-scrubber.js';
 import { DESCEpisodeManager } from './desc-episode-manager.js';
 import { StyleProfileFacade } from './style-profile-facade.js';
+import { collectStats } from './stats-collector.js';
 
 // Phase 5: Staged Composition System Integration
 import {
@@ -5092,104 +5093,16 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
     return this.styleFacade.getManager();
   }
 
-  // ==================== Stats & Status ====================
+  // ==================== Stats & Status (delegates to StatsCollector) ====================
 
-  /**
-   * Get comprehensive learning statistics
-   */
   getStats(): UnifiedLearningStats {
-    const storeStats = this.interactionStore.getStats();
-
-    // Get top patterns (sorted by usage)
-    const patternArray = Array.from(this.successfulPatterns.entries())
-      .map(([id, count]) => ({ id, uses: count }))
-      .sort((a, b) => b.uses - a.uses)
-      .slice(0, 10);
-
-    const stats: UnifiedLearningStats = {
-      totalInteractions: storeStats.totalInteractions,
-      knowledgeEntries: storeStats.knowledgeCount,
-      domainExpertise: Object.fromEntries(this.domainExpertise),
-      topPatterns: patternArray,
-      persistenceStats: {
-        highQualityCount: storeStats.highQualityCount,
-        oldestInteraction: storeStats.oldestInteraction,
-        newestInteraction: storeStats.newestInteraction,
-        lastSaved: new Date().toISOString(),
-      },
-    };
-
-    // Add SonaEngine metrics if available
-    try {
-      const sonaEngine = this.agent.getSonaEngine?.();
-      if (sonaEngine) {
-        const sonaStats = sonaEngine.getStats();
-        const metrics = sonaEngine.getMetrics();
-
-        stats.sonaMetrics = {
-          totalTrajectories: metrics.totalTrajectories,
-          totalRoutes: sonaStats.routeCount,
-          averageQualityByRoute: metrics.averageQualityByRoute || {},
-          improvementPercentage: metrics.improvementPercentage || {},
-          currentDrift: metrics.currentDrift || 0,
-        };
-
-        // Calculate learning effectiveness
-        stats.learningEffectiveness = this.calculateLearningEffectiveness(sonaEngine);
-      }
-    } catch (error) {
-      // SonaEngine not available or error - continue without
-      this.log(`SonaEngine metrics unavailable: ${error}`);
-    }
-
-    return stats;
-  }
-
-  /**
-   * Calculate learning effectiveness (G3 requirement: 10-30% improvement)
-   */
-  private calculateLearningEffectiveness(sonaEngine: unknown): UnifiedLearningStats['learningEffectiveness'] {
-    try {
-      // Cast to access methods (SonaEngine type might not be exported)
-      const engine = sonaEngine as {
-        listTrajectories: (route?: string) => Array<{ quality?: number; timestamp: number }>;
-      };
-
-      // Get all trajectories with quality scores, sorted by timestamp
-      const allTrajectories = engine.listTrajectories()
-        .filter(t => t.quality !== undefined)
-        .sort((a, b) => a.timestamp - b.timestamp);
-
-      if (allTrajectories.length < 20) {
-        return undefined; // Not enough data yet
-      }
-
-      const qualities = allTrajectories.map(t => t.quality!);
-      const sampleSize = Math.min(20, Math.floor(qualities.length / 2));
-
-      // First N trajectories (baseline)
-      const baseline = qualities.slice(0, sampleSize);
-      const baselineAvg = baseline.reduce((a, b) => a + b, 0) / baseline.length;
-
-      // Last N trajectories (learned)
-      const learned = qualities.slice(-sampleSize);
-      const learnedAvg = learned.reduce((a, b) => a + b, 0) / learned.length;
-
-      // Calculate improvement
-      const improvementPct = baselineAvg > 0
-        ? ((learnedAvg - baselineAvg) / baselineAvg) * 100
-        : 0;
-
-      return {
-        baselineQuality: Math.round(baselineAvg * 1000) / 1000,
-        learnedQuality: Math.round(learnedAvg * 1000) / 1000,
-        improvementPct: Math.round(improvementPct * 10) / 10,
-        sampleSize: sampleSize * 2,
-      };
-    } catch {
-      // INTENTIONAL: Learning metrics calculation is optional - undefined signals unavailable metrics
-      return undefined;
-    }
+    return collectStats({
+      getInteractionStoreStats: () => this.interactionStore.getStats(),
+      getSuccessfulPatterns: () => this.successfulPatterns,
+      getDomainExpertise: () => this.domainExpertise,
+      getSonaEngine: () => this.agent.getSonaEngine?.() ?? null,
+      log: (msg: string) => this.log(msg),
+    });
   }
 
   /**
