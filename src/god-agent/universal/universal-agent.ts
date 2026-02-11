@@ -3454,8 +3454,8 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
         this.log('Retrieving corpus context for source-grounded generation...');
         corpusChunks = await this.smartRetrieval.retrieveContext(topic, {
           collections: options.corpusCollections || [],
-          maxChunks: options.corpusChunkCount || 15,
-          minRelevance: options.corpusMinRelevance || 0.75,
+          maxChunks: options.corpusChunkCount ?? 15,
+          minRelevance: options.corpusMinRelevance ?? 0.75,
           diversityBoost: true,
           rerank: true,
         });
@@ -3817,8 +3817,8 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
         // Create enforcer from corpus constraint with configurable options
         const enforcer = new CitationEnforcer(corpusConstraint, {
           mode: options.citationEnforcementMode || 'auto-correct',  // Configurable enforcement mode
-          minPassRate: options.citationMinPassRate || 0.85,          // Configurable minimum pass rate
-          maxHallucinations: options.citationMaxHallucinations || 3, // Configurable max hallucinations
+          minPassRate: options.citationMinPassRate ?? 0.85,          // Configurable minimum pass rate
+          maxHallucinations: options.citationMaxHallucinations ?? 3, // Configurable max hallucinations
           placeholder: '',  // Fix 19: Remove hallucinated citations entirely instead of leaving [CITATION NEEDED] markers
           includeReport: true,
         }, corpusChunks); // Phase 7: Enable quotation fidelity validation
