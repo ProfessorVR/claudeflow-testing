@@ -125,6 +125,7 @@ import { StyleProfileFacade } from './style-profile-facade.js';
 import { collectStats } from './stats-collector.js';
 import { KnowledgeManager } from './knowledge-manager.js';
 import { LearningFeedbackManager } from './learning-feedback-manager.js';
+import { TaskRoutingOrchestrator } from './task-routing-orchestrator.js';
 
 // Phase 5: Staged Composition System Integration
 import {
@@ -757,6 +758,7 @@ export class UniversalAgent {
   private styleFacade!: StyleProfileFacade;
   private knowledgeMgr!: KnowledgeManager;
   private learningFeedbackMgr!: LearningFeedbackManager;
+  private taskRouter!: TaskRoutingOrchestrator;
 
   // DAEMON-003: Core Daemon client for EpisodeStore/GraphDB IPC
   private coreDaemonClient!: CoreDaemonClient;
@@ -1081,6 +1083,28 @@ export class UniversalAgent {
       this.log('TIER-2.1: Model router disabled');
     }
 
+    // Phase 4b: TaskRoutingOrchestrator (SEAM-6)
+    this.taskRouter = new TaskRoutingOrchestrator({
+      agentRegistry: this.agentRegistry,
+      taskAnalyzer: this.taskAnalyzer,
+      routingEngine: this.routingEngine,
+      pipelineGenerator: this.pipelineGenerator,
+      pipelineExecutor: this.pipelineExecutor,
+      confirmationHandler: this.confirmationHandler,
+      taskExecutor: this.taskExecutor,
+      routingLearner: this.routingLearner,
+      vllmProvider: this.vllmProvider ?? null,
+      claudeProvider: this.claudeProvider ?? null,
+      modelRouterEnabled: this.modelRouterEnabled,
+      config: this.config,
+      generateId: () => this.generateId(),
+      log: (...args: unknown[]) => this.log(...args),
+      ensureInitialized: () => this.ensureInitialized(),
+      injectDESCEpisodes: (desc, ctx) => this.injectDESCEpisodes(desc, ctx),
+      storeDESCEpisode: (input, output, meta) => this.storeDESCEpisode(input, output, meta),
+    });
+    this.log('Phase 4b: TaskRoutingOrchestrator initialized');
+
     // MEM-001: Initialize memory client for multi-process memory access
     // Client will auto-start daemon if not running (autoStart: true by default)
     try {
@@ -1403,34 +1427,9 @@ export class UniversalAgent {
     }
   }
 
-  // ==================== TASK-LEARN-007: Default Task Execution ====================
+  // ==================== TASK-LEARN-007: Default Task Execution (delegates to TaskRoutingOrchestrator) ====================
 
-  /**
-   * Default Task execution function for ask() method
-   *
-   * TASK-LEARN-007: Implements the default execution path when executeTask=true
-   * but no custom taskExecutionFn is provided.
-   *
-   * TASK-HOOK-006: Wires HookExecutor for pre/post Tool Use hooks
-   * CONSTITUTION COMPLIANCE:
-   * - RULE-033: DESC context MUST be injected into every Task-style tool call (via preToolUseHooks)
-   * - RULE-035: All agent results MUST be assessed for quality with 0.5 threshold
-   * - RULE-036: Task hook outputs MUST include quality assessment scores
-   *
-   * Uses TaskExecutor.execute() which wraps the Task() abstraction with:
-   * - Prompt building from agent definition
-   * - Error handling with AgentExecutionError
-   * - Observability events (agent_started, agent_completed, agent_failed)
-   * - Duration tracking
-   * - Pre/post hook execution (TASK-HOOK-006)
-   *
-   * Per RULE-024: Quality on RESULT (supports Task execution to get result)
-   *
-   * @param agentSelection - The result from selectAgentForTask()
-   * @param taskExecutionFn - Optional custom execution function
-   * @param options - Optional execution options including trajectoryId
-   * @returns TaskExecutionResult with result, success status, and duration
-   */
+  /** Delegate to TaskRoutingOrchestrator (Phase 4b, SEAM-6) */
   private async executeTaskDefault(
     agentSelection: {
       selection: IAgentSelectionResult;
@@ -1439,730 +1438,28 @@ export class UniversalAgent {
     },
     taskExecutionFn?: (agentType: string, prompt: string, options?: { timeout?: number }) => Promise<string>,
     options?: {
-      /** Trajectory ID for quality tracking (RULE-036) */
       trajectoryId?: string;
-      /** Force direct execution, bypassing Task tool (for testing) */
       forceExecute?: boolean;
     }
   ): Promise<TaskExecutionResult> {
-    const startTime = Date.now();
-    const agent = agentSelection.selection.selected;
-    const taskType = agentSelection.selection.analysis.taskType || 'unknown';
-    const agentType = agent.frontmatter?.type ?? agent.category;
-    const toolName = 'Task'; // All Task-style operations use this tool name
-
-    // TASK-HOOK-006: Generate session ID for hook tracking
-    const sessionId = this.generateId();
-    const trajectoryId = options?.trajectoryId;
-
-    // TASK-HOOK-006: Get the hook executor singleton
-    const hookExecutor = getHookExecutor();
-
-    // TASK-HOOK-006: Build pre-tool-use hook context
-    // RULE-033: DESC context injection happens here via auto-injection hook
-    const preHookContext: IHookContext = {
-      toolName,
-      toolInput: {
-        agentType,
-        prompt: agentSelection.prompt,
-        context: agentSelection.context,
-        taskType,
-        agentKey: agent.key,
-      },
-      sessionId,
-      trajectoryId,
-      timestamp: Date.now(),
-      metadata: {
-        source: 'UniversalAgent.executeTaskDefault',
-        agentCategory: agent.category,
-      },
-    };
-
-    // TASK-HOOK-006: Execute preToolUse hooks BEFORE task execution
-    // This triggers DESC context injection (RULE-033) and other pre-execution hooks
-    let preHookResult: IHookChainResult | undefined;
-    let modifiedInput = agentSelection.prompt;
-    try {
-      preHookResult = await hookExecutor.executePreToolUseHooks(preHookContext);
-
-      // Log hook execution for observability
-      this.log(`TASK-HOOK-006: preToolUseHooks executed`, {
-        hooksExecuted: preHookResult.results.length,
-        allSucceeded: preHookResult.allSucceeded,
-        chainStopped: preHookResult.chainStopped,
-        durationMs: preHookResult.totalDurationMs,
-        trajectoryId,
-      });
-
-      // Check if a hook stopped execution (e.g., validation failure)
-      if (preHookResult.chainStopped) {
-        const stoppedBy = preHookResult.stoppedByHook ?? 'unknown';
-        const stopReason = preHookResult.results.find(r => r.hookId === stoppedBy)?.result?.stopReason ?? 'Hook stopped execution';
-        this.log(`TASK-HOOK-006: Execution stopped by hook '${stoppedBy}': ${stopReason}`);
-
-        return {
-          result: `Task execution blocked by hook: ${stopReason}`,
-          success: false,
-          taskType,
-          agentId: agent.key,
-          durationMs: Date.now() - startTime,
-          error: `Hook '${stoppedBy}' blocked execution: ${stopReason}`,
-        };
-      }
-
-      // Apply any modified input from hooks (e.g., DESC context injection)
-      if (preHookResult.finalInput !== undefined && typeof preHookResult.finalInput === 'object') {
-        const finalInput = preHookResult.finalInput as { prompt?: string };
-        if (finalInput.prompt) {
-          modifiedInput = finalInput.prompt;
-          this.log(`TASK-HOOK-006: Hook modified prompt (DESC injection applied)`);
-        }
-      }
-    } catch (hookError) {
-      // Hooks should not crash main execution - log and continue
-      this.log(`TASK-HOOK-006: preToolUseHooks error (continuing): ${hookError}`);
-    }
-
-    try {
-      let result: string;
-      let executionSuccess = true;
-
-      // NEW: Local-First Routing - Try to execute directly with providers
-      // If providers are initialized and routing is enabled, use them first
-      // FORCE_EXECUTE: Also use providers when forceExecute is true (for testing)
-      const shouldUseProviders = (this.modelRouterEnabled || options?.forceExecute) && (this.vllmProvider || this.claudeProvider) && !taskExecutionFn;
-
-      if (shouldUseProviders) {
-        this.log(options?.forceExecute ? 'FORCE_EXECUTE: Using providers for direct execution' : 'LOCAL-FIRST: Attempting routed execution with providers');
-
-        try {
-          // Try vLLM first (local)
-          if (this.vllmProvider) {
-            this.log('LOCAL-FIRST: Trying vLLM provider');
-            const completionRequest: CompletionRequest = {
-              prompt: modifiedInput,
-              maxTokens: 4096,
-              temperature: 0.7,
-            };
-
-            const response = await this.vllmProvider.complete(completionRequest);
-
-            if (response.success && response.text) {
-              this.log(`LOCAL-FIRST: vLLM succeeded (${response.latencyMs}ms)`);
-              result = response.text;
-
-              // Track successful local execution in metrics
-              this.log('LOCAL-FIRST: Successfully executed with vLLM');
-
-              // Record metrics for dashboard
-              trackLocalFirstDecision('pure_local_verified', {
-                triedLocal: true,
-                localSucceeded: true,
-                fellBackToClaude: false,
-              });
-
-              // Skip Task tool execution - we got result from local model
-              const durationMs = Date.now() - startTime;
-              const qualityInteraction: QualityInteraction = {
-                id: sessionId,
-                mode: taskType as AgentMode,
-                input: agentSelection.prompt,
-                output: result,
-                timestamp: Date.now(),
-              };
-              const qualityAssessment = assessQuality(qualityInteraction, this.config.autoStoreThreshold);
-
-              this.log(`LOCAL-FIRST: Quality score ${qualityAssessment.score.toFixed(3)}`);
-
-              return {
-                result,
-                success: true,
-                taskType,
-                agentId: agent.key,
-                durationMs,
-                metadata: {
-                  provider: 'vllm',
-                  localFirst: true,
-                  qualityScore: qualityAssessment.score,
-                },
-              };
-            }
-
-            this.log(`LOCAL-FIRST: vLLM failed or returned empty, falling back to Claude`);
-          }
-
-          // Fallback to Claude if vLLM failed or unavailable
-          if (this.claudeProvider) {
-            this.log('LOCAL-FIRST: Falling back to Claude provider');
-            const completionRequest: CompletionRequest = {
-              prompt: modifiedInput,
-              maxTokens: 4096,
-              temperature: 0.7,
-            };
-
-            const response = await this.claudeProvider.complete(completionRequest);
-
-            if (response.success && response.text) {
-              this.log(`LOCAL-FIRST: Claude succeeded (${response.latencyMs}ms)`);
-              result = response.text;
-
-              // Track fallback to cloud
-              this.log('LOCAL-FIRST: Fallback to Claude successful');
-
-              // Record metrics for dashboard
-              trackLocalFirstDecision('local_then_review', {
-                triedLocal: true,
-                localSucceeded: false,
-                fellBackToClaude: true,
-              });
-
-              const durationMs = Date.now() - startTime;
-              const qualityInteraction: QualityInteraction = {
-                id: sessionId,
-                mode: taskType as AgentMode,
-                input: agentSelection.prompt,
-                output: result,
-                timestamp: Date.now(),
-              };
-              const qualityAssessment = assessQuality(qualityInteraction, this.config.autoStoreThreshold);
-
-              return {
-                result,
-                success: true,
-                taskType,
-                agentId: agent.key,
-                durationMs,
-                metadata: {
-                  provider: 'claude',
-                  localFirst: false,
-                  fallback: true,
-                  qualityScore: qualityAssessment.score,
-                },
-              };
-            }
-          }
-
-          // Both providers failed - fall through to custom function or Task tool
-          this.log('LOCAL-FIRST: All providers failed, falling back');
-        } catch (providerError) {
-          this.log(`LOCAL-FIRST: Provider execution error: ${providerError}, falling back`);
-        }
-      }
-
-      if (taskExecutionFn) {
-        // Use custom execution function if provided
-        result = await taskExecutionFn(
-          agentType,
-          modifiedInput,
-          { timeout: 120000 }
-        );
-      } else {
-        // Implements [REQ-EXEC-001]: No external API calls - output structured task for Claude Code
-        // Implements [REQ-EXEC-002]: Return Task for Claude Code Execution
-        // Implements [REQ-EXEC-003]: Integrate with Claude Code Task Tool
-        const executionResult = await this.taskExecutor.execute(
-          agent,
-          modifiedInput,
-          async (_agentType: string, prompt: string, options?: { timeout?: number }) => {
-            // Implements [REQ-EXEC-002]: Build structured task for Claude Code
-            const structuredTask: IStructuredTask = this.taskExecutor.buildStructuredTask(
-              agent,
-              prompt,
-              { timeout: options?.timeout, trajectoryId }
-            );
-
-            // Implements [REQ-EXEC-003]: Output task as JSON for Claude Code Task tool
-            // The markers allow Claude Code to parse the task specification
-            // Only output markers when verbose=true (not in --json mode) to avoid corrupting JSON output
-            if (this.config.verbose) {
-              console.log('\n================================================================================');
-              console.log('CLAUDE_CODE_TASK_START');
-              console.log('================================================================================');
-              console.log(JSON.stringify(structuredTask, null, 2));
-              console.log('================================================================================');
-              console.log('CLAUDE_CODE_TASK_END');
-              console.log('================================================================================\n');
-            }
-
-            this.log(`TASK-EXEC-001: Structured task output for Claude Code execution`, {
-              taskId: structuredTask.taskId,
-              agentType: structuredTask.agentType,
-              agentKey: structuredTask.agentKey,
-              promptLength: prompt.length,
-            });
-
-            // Implements [REQ-EXEC-005]: Return prompt for learning integration
-            // The actual result will come from Claude Code executing the task
-            return `[TASK_QUEUED:${structuredTask.taskId}] Execute via Claude Code Task tool with subagent_type="${structuredTask.agentType}"`;
-          },
-          { context: agentSelection.context }
-        );
-        result = executionResult.output;
-      }
-
-      const durationMs = Date.now() - startTime;
-
-      // TASK-HOOK-006: Calculate quality score for the result
-      // RULE-035: Quality threshold is 0.5
-      // RULE-036: Quality scores MUST be logged with trajectoryId
-      const qualityInteraction: QualityInteraction = {
-        id: sessionId,
-        mode: taskType as AgentMode,
-        input: agentSelection.prompt,
-        output: result,
-        timestamp: Date.now(),
-      };
-      const qualityAssessment = assessQuality(qualityInteraction, this.config.autoStoreThreshold);
-      const qualityScore = qualityAssessment.score;
-
-      // RULE-036: Log quality score with trajectoryId
-      this.log(`TASK-HOOK-006: Quality assessment`, {
-        qualityScore: qualityScore.toFixed(3),
-        meetsThreshold: qualityAssessment.meetsThreshold,
-        threshold: this.config.autoStoreThreshold,
-        trajectoryId,
-        sessionId,
-      });
-
-      // TASK-HOOK-006: Build post-tool-use hook context
-      const postHookContext: IPostToolUseContext = {
-        toolName,
-        toolInput: preHookContext.toolInput,
-        toolOutput: {
-          result,
-          success: executionSuccess,
-          qualityScore,
-          meetsThreshold: qualityAssessment.meetsThreshold,
-        },
-        sessionId,
-        trajectoryId,
-        timestamp: Date.now(),
-        executionDurationMs: durationMs,
-        executionSuccess,
-        metadata: {
-          source: 'UniversalAgent.executeTaskDefault',
-          agentCategory: agent.category,
-          qualityScore,
-          qualityMeetsThreshold: qualityAssessment.meetsThreshold,
-        },
-      };
-
-      // TASK-HOOK-006: Execute postToolUse hooks AFTER task execution
-      // This triggers quality assessment and result capture hooks
-      try {
-        const postHookResult = await hookExecutor.executePostToolUseHooks(postHookContext);
-
-        // Log hook execution for observability (RULE-036 compliance)
-        this.log(`TASK-HOOK-006: postToolUseHooks executed`, {
-          hooksExecuted: postHookResult.results.length,
-          allSucceeded: postHookResult.allSucceeded,
-          durationMs: postHookResult.totalDurationMs,
-          trajectoryId,
-          qualityScore: qualityScore.toFixed(3),
-        });
-      } catch (hookError) {
-        // Hooks should not crash main execution - log and continue
-        this.log(`TASK-HOOK-006: postToolUseHooks error (continuing): ${hookError}`);
-      }
-
-      return {
-        result,
-        success: true,
-        taskType,
-        agentId: agent.key,
-        durationMs,
-      };
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      const durationMs = Date.now() - startTime;
-      this.log(`TASK-LEARN-007: Task execution failed: ${errorMessage}`);
-
-      // TASK-HOOK-006: Execute postToolUse hooks even on failure
-      // This ensures quality assessment hooks can record failures
-      try {
-        const postHookContext: IPostToolUseContext = {
-          toolName,
-          toolInput: preHookContext.toolInput,
-          toolOutput: {
-            result: errorMessage,
-            success: false,
-            error: errorMessage,
-            qualityScore: 0, // Failed tasks get 0 quality
-          },
-          sessionId,
-          trajectoryId,
-          timestamp: Date.now(),
-          executionDurationMs: durationMs,
-          executionSuccess: false,
-          metadata: {
-            source: 'UniversalAgent.executeTaskDefault',
-            agentCategory: agent.category,
-            error: errorMessage,
-            qualityScore: 0,
-          },
-        };
-
-        const postHookResult = await hookExecutor.executePostToolUseHooks(postHookContext);
-
-        this.log(`TASK-HOOK-006: postToolUseHooks executed (failure path)`, {
-          hooksExecuted: postHookResult.results.length,
-          trajectoryId,
-          qualityScore: 0,
-        });
-      } catch (hookError) {
-        this.log(`TASK-HOOK-006: postToolUseHooks error on failure path: ${hookError}`);
-      }
-
-      return {
-        result: errorMessage,
-        success: false,
-        taskType,
-        agentId: agent.key,
-        durationMs,
-        error: errorMessage,
-      };
-    }
+    return this.taskRouter.executeTaskDefault(agentSelection, taskExecutionFn, options);
   }
 
-  // ==================== DAI-002: Pipeline Execution ====================
+  // ==================== DAI-002: Pipeline Execution (delegates to TaskRoutingOrchestrator) ====================
 
-  /**
-   * Execute a multi-agent sequential pipeline (DAI-002)
-   *
-   * Pipelines are executed strictly sequentially with memory coordination
-   * between steps via InteractionStore. Each step waits for the previous
-   * step to complete before starting.
-   *
-   * RULE-004: Sequential execution (no Promise.all)
-   * RULE-005: Memory coordination via InteractionStore
-   * RULE-006: DAI-001 AgentSelector integration
-   * RULE-007: Forward-looking prompts with workflow context
-   *
-   * @param pipeline - Pipeline definition with agents, steps, and config
-   * @param options - Optional execution options (stepExecutor, overrides)
-   * @returns Pipeline execution result with step results and quality metrics
-   *
-   * @example
-   * ```typescript
-   * const pipeline: IPipelineDefinition = {
-   *   name: 'API Feature Pipeline',
-   *   sequential: true,
-   *   agents: [
-   *     {
-   *       agentKey: 'backend-dev',
-   *       task: 'Implement the API endpoints',
-   *       outputDomain: 'project/api',
-   *       outputTags: ['endpoints', 'schema'],
-   *     },
-   *     {
-   *       agentKey: 'tester',
-   *       task: 'Write integration tests',
-   *       inputDomain: 'project/api',
-   *       inputTags: ['endpoints'],
-   *       outputDomain: 'project/tests',
-   *       outputTags: ['integration', 'api'],
-   *     },
-   *   ],
-   * };
-   *
-   * const result = await agent.runPipeline(pipeline);
-   * console.log(`Pipeline ${result.success ? 'succeeded' : 'failed'}`);
-   * console.log(`Overall quality: ${result.overallQuality}`);
-   * ```
-   */
+  /** Delegate to TaskRoutingOrchestrator (Phase 4b, SEAM-6) */
   async runPipeline(
     pipeline: IPipelineDefinition,
     options: DAI002PipelineOptions = {}
   ): Promise<DAI002PipelineResult> {
-    await this.ensureInitialized();
-
-    this.log(`DAI-002: Starting pipeline '${pipeline.name}' with ${pipeline.agents.length} steps`);
-
-    try {
-      const result = await this.pipelineExecutor.execute(pipeline, options);
-
-      if (result.status === 'completed') {
-        this.log(`DAI-002: Pipeline '${pipeline.name}' completed successfully`);
-        this.log(`  - Steps: ${result.steps.length}/${pipeline.agents.length}`);
-        this.log(`  - Overall quality: ${result.overallQuality.toFixed(2)}`);
-        this.log(`  - Duration: ${result.totalDuration}ms`);
-      } else {
-        this.log(`DAI-002: Pipeline '${pipeline.name}' failed at step ${result.steps.length}`);
-        if (result.error) {
-          this.log(`  - Error: ${result.error.message}`);
-        }
-      }
-
-      return result;
-    } catch (error) {
-      this.log(`DAI-002: Pipeline '${pipeline.name}' threw error: ${(error as Error).message}`);
-      throw error;
-    }
+    return this.taskRouter.runPipeline(pipeline, options);
   }
 
-  // ==================== DAI-003: Intelligent Task Routing ====================
+  // ==================== DAI-003: Intelligent Task Routing (delegates to TaskRoutingOrchestrator) ====================
 
-  /**
-   * Execute task with intelligent routing (DAI-003)
-   *
-   * This method:
-   * 1. Analyzes the task to determine domain, complexity, and requirements
-   * 2. Routes to best agent automatically (or uses explicit override)
-   * 3. Detects multi-step tasks and generates pipelines
-   * 4. Handles low-confidence decisions with confirmation flow
-   * 5. Executes via TaskExecutor or PipelineExecutor
-   * 6. Submits feedback to RoutingLearner for continuous improvement
-   *
-   * @param description - Natural language task description
-   * @param options - Optional settings (explicit agent, skip confirmation)
-   * @returns Task result with routing metadata and execution info
-   *
-   * @example
-   * ```typescript
-   * // Automatic routing
-   * const result = await agent.task('Write unit tests for the authentication module');
-   * console.log(`Routed to: ${result.routing.selectedAgent}`);
-   * console.log(`Confidence: ${result.routing.confidence}`);
-   *
-   * // Explicit agent override
-   * const result = await agent.task('Implement feature X', { agent: 'backend-dev' });
-   *
-   * // Multi-step task (generates pipeline)
-   * const result = await agent.task('Research API design, then implement endpoints, then write tests');
-   * console.log(`Pipeline: ${result.pipeline?.stages.length} stages`);
-   * ```
-   */
+  /** Delegate to TaskRoutingOrchestrator (Phase 4b, SEAM-6) */
   async task(description: string, options: ITaskOptions = {}): Promise<ITaskResult> {
-    await this.ensureInitialized();
-
-    const startTime = Date.now();
-    let routing: IRoutingResult;
-    let pipeline: IGeneratedPipeline | undefined;
-    let agentUsed: string;
-    let result: string;
-
-    // DESC: Inject prior solutions before processing (RULE-010: window size 3)
-    const descResult = await this.injectDESCEpisodes(description, { command: 'god-task', mode: 'general' });
-    const augmentedDescription = descResult.augmentedPrompt;
-
-    // Step 1: Check for explicit agent override FIRST (skip analysis if provided)
-    if (options.agent) {
-      this.log(`DAI-003 task(): Using explicit agent override: ${options.agent}`);
-
-      // Validate the agent exists early (fail fast)
-      const agentDef = this.agentRegistry.getByKey(options.agent);
-      if (!agentDef) {
-        throw new Error(`Agent '${options.agent}' not found in registry`);
-      }
-
-      // Create a bypass routing result
-      routing = {
-        selectedAgent: options.agent,
-        selectedAgentName: agentDef.frontmatter.name || options.agent,
-        confidence: 1.0,
-        usedPreference: true,
-        coldStartPhase: 'learned',
-        isColdStart: false,
-        factors: [{
-          name: 'explicit_override',
-          weight: 1.0,
-          score: 1.0,
-          description: 'User explicitly specified agent',
-        }],
-        explanation: `Using explicitly specified agent: ${options.agent}`,
-        alternatives: [],
-        requiresConfirmation: false,
-        confirmationLevel: 'auto',
-        routedAt: Date.now(),
-        routingTimeMs: 0,
-        routingId: this.generateId(),
-      };
-      agentUsed = options.agent;
-    } else {
-      // Step 2: Analyze the task (only when routing is needed, use augmented description)
-      this.log(`DAI-003 task(): Analyzing task...`);
-      const analysis = await this.taskAnalyzer.analyze(augmentedDescription);
-
-      // Step 3: Route via RoutingEngine
-      this.log(`DAI-003 task(): Routing via RoutingEngine...`);
-      routing = await this.routingEngine.route(analysis);
-      agentUsed = routing.selectedAgent;
-
-      this.log(`DAI-003 task(): Routed to '${agentUsed}' (confidence: ${routing.confidence.toFixed(2)})`);
-      if (routing.isColdStart) {
-        this.log(`  ${routing.coldStartIndicator}`);
-      }
-
-      // Step 4: Check if multi-step task (pipeline generation)
-      if (analysis.isMultiStep) {
-        this.log(`DAI-003 task(): Multi-step task detected, generating pipeline...`);
-        try {
-          pipeline = await this.pipelineGenerator.generate(description);
-          this.log(`DAI-003 task(): Pipeline generated with ${pipeline.stages.length} stages`);
-        } catch (error) {
-          this.log(`Warning: Pipeline generation failed: ${error}. Falling back to single-step execution.`);
-          pipeline = undefined;
-        }
-      }
-    }
-
-    // Step 5: Handle low-confidence confirmation (unless skipped)
-    if (!options.skipConfirmation && routing.requiresConfirmation) {
-      this.log(`DAI-003 task(): Low confidence (${routing.confidence.toFixed(2)}), requesting confirmation...`);
-
-      try {
-        const confirmation = await this.confirmationHandler.requestConfirmation(routing);
-
-        // Check if user selected a different agent
-        if (confirmation.selectedKey !== routing.selectedAgent && !confirmation.wasCancelled) {
-          this.log(`DAI-003 task(): User overrode to agent: ${confirmation.selectedKey}`);
-          agentUsed = confirmation.selectedKey;
-
-          // Update routing result to reflect override
-          routing = {
-            ...routing,
-            selectedAgent: confirmation.selectedKey,
-            selectedAgentName: confirmation.selectedKey,
-            usedPreference: true,
-          };
-        } else if (confirmation.wasCancelled) {
-          throw new Error('Task cancelled by user during confirmation');
-        }
-      } catch (error) {
-        this.log(`Warning: Confirmation failed: ${error}. Proceeding with original routing.`);
-      }
-    }
-
-    // Step 6: Execute the task
-    let executionSuccess = true;
-    let executionError: string | undefined;
-
-    try {
-      if (pipeline) {
-        // Execute via PipelineExecutor for multi-step tasks
-        this.log(`DAI-003 task(): Executing pipeline with ${pipeline.stages.length} stages...`);
-        
-        // Convert IGeneratedPipeline to IPipelineDefinition
-        const pipelineDefinition: IPipelineDefinition = {
-          name: `DAI-003: ${description.substring(0, 50)}`,
-          description: description,
-          sequential: true,
-          agents: pipeline.stages.map((stage, index) => ({
-            agentKey: stage.agentKey,
-            task: stage.taskSegment,
-            outputDomain: stage.outputDomain,
-            outputTags: ['dai-003', stage.agentKey],
-            timeout: 60000,
-          })),
-        };
-        
-        const pipelineResult = await this.pipelineExecutor.execute(pipelineDefinition);
-
-        if (pipelineResult.status === 'failed') {
-          executionSuccess = false;
-          executionError = pipelineResult.error?.message;
-          result = `Pipeline execution failed: ${pipelineResult.error?.message ?? 'Unknown error'}`;
-        } else {
-          result = `Pipeline completed successfully. ${pipelineResult.steps.length}/${pipeline.stages.length} stages completed.`;
-        }
-      } else {
-        // Execute via TaskExecutor for single-step tasks
-        this.log(`DAI-003 task(): Executing task with agent '${agentUsed}'...`);
-
-        // Get agent from registry
-        const agent = this.agentRegistry.getByKey(agentUsed);
-        if (!agent) {
-          throw new Error(`Agent '${agentUsed}' not found in registry`);
-        }
-
-        // Implements [REQ-EXEC-001]: No external API calls - output structured task for Claude Code
-        // Implements [REQ-EXEC-002]: Return Task for Claude Code Execution
-        // Implements [REQ-EXEC-003]: Integrate with Claude Code Task Tool
-        // Per RULE-033: Quality MUST be assessed on Task() RESULT, not prompt
-        // TaskExecutor.execute() emits agent_started, agent_completed, agent_failed events
-        const taskTrajectoryId = `traj-task-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-        const executionResult = await this.taskExecutor.execute(
-          agent,
-          description,
-          async (_agentType: string, prompt: string, options?: { timeout?: number }) => {
-            // Implements [REQ-EXEC-002]: Build structured task for Claude Code
-            const structuredTask: IStructuredTask = this.taskExecutor.buildStructuredTask(
-              agent,
-              prompt,
-              { timeout: options?.timeout, trajectoryId: taskTrajectoryId }
-            );
-
-            // Implements [REQ-EXEC-003]: Output task as JSON for Claude Code Task tool
-            // Only output markers when verbose=true (not in --json mode) to avoid corrupting JSON output
-            if (this.config.verbose) {
-              console.log('\n================================================================================');
-              console.log('CLAUDE_CODE_TASK_START');
-              console.log('================================================================================');
-              console.log(JSON.stringify(structuredTask, null, 2));
-              console.log('================================================================================');
-              console.log('CLAUDE_CODE_TASK_END');
-              console.log('================================================================================\n');
-            }
-
-            this.log(`DAI-003 task(): Structured task output for Claude Code`, {
-              taskId: structuredTask.taskId,
-              agentType: structuredTask.agentType,
-              agentKey: structuredTask.agentKey,
-            });
-
-            // Implements [REQ-EXEC-005]: Return message for learning integration
-            return `[TASK_QUEUED:${structuredTask.taskId}] Execute via Claude Code Task tool with subagent_type="${structuredTask.agentType}"`;
-          }
-        );
-        result = executionResult.output;
-      }
-    } catch (error) {
-      executionSuccess = false;
-      executionError = error instanceof Error ? error.message : String(error);
-      result = `Task execution failed: ${executionError}`;
-      this.log(`DAI-003 task(): Execution failed: ${executionError}`);
-    }
-
-    const executionTimeMs = Date.now() - startTime;
-
-    // Step 7: Submit feedback to RoutingLearner
-    try {
-      const feedback: IRoutingFeedback = {
-        routingId: routing.routingId,
-        task: description,
-        selectedAgent: routing.selectedAgent,
-        success: executionSuccess,
-        executionTimeMs,
-        userOverrideAgent: options.agent || (routing.usedPreference ? agentUsed : undefined),
-        errorMessage: executionError,
-        userAbandoned: false,
-        completedStages: pipeline ? pipeline.stages.length : undefined,
-        totalStages: pipeline ? pipeline.stages.length : undefined,
-        feedbackAt: Date.now(),
-      };
-
-      await this.routingLearner.processFeedback(feedback);
-      this.log(`DAI-003 task(): Feedback submitted to RoutingLearner`);
-    } catch (error) {
-      this.log(`Warning: Failed to submit routing feedback: ${error}`);
-    }
-
-    // DESC: Store episode for future learning (non-blocking, only if successful)
-    if (executionSuccess) {
-      this.storeDESCEpisode(description, result, {
-        command: 'god-task',
-        mode: 'general',
-        quality: 0.8, // Tasks that complete successfully get a good quality score
-      }).catch(err => this.log(`DESC: Background storage error: ${err}`));
-    }
-
-    return {
-      result,
-      routing,
-      pipeline,
-      executionTimeMs,
-      agentUsed,
-    };
+    return this.taskRouter.task(description, options);
   }
 
   // ==================== Main Interface ====================
