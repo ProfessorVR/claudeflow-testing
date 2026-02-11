@@ -120,6 +120,7 @@ import {
 
 // Extracted modules (Tranche E)
 import { scrubNonCorpusAuthors, buildCorpusSourcesFromChunks } from './author-scrubber.js';
+import { DESCEpisodeManager } from './desc-episode-manager.js';
 
 // Phase 5: Staged Composition System Integration
 import {
@@ -765,6 +766,7 @@ export class UniversalAgent {
 
   // DESC: UCM Daemon client for episode injection (RULE-010)
   private ucmClient!: UCMDaemonClient;
+  private descManager!: DESCEpisodeManager;
 
   // DAEMON-003: Core Daemon client for EpisodeStore/GraphDB IPC
   private coreDaemonClient!: CoreDaemonClient;
@@ -1109,6 +1111,13 @@ export class UniversalAgent {
     } else {
       this.log('DESC: Episode injection disabled');
     }
+
+    // Initialize DESC episode manager (Tranche E-02)
+    this.descManager = new DESCEpisodeManager(
+      this.config,
+      this.ucmClient ?? null,
+      (msg: string) => this.log(msg)
+    );
 
     this.log(`Runtime: ${result.runtime.type}`);
     this.log(`Persistence: ${this.config.enablePersistence ? 'enabled' : 'disabled'}`);
@@ -4942,87 +4951,21 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
 
   // ==================== DESC Episode Injection ====================
 
-  /**
-   * Inject prior solutions from DESC episodic memory (RULE-010)
-   * Uses default window size of 3 episodes for general agent work
-   *
-   * @param prompt - The original prompt to augment
-   * @param context - Additional context for logging/metadata
-   * @returns Augmented prompt with prior solutions or original on error
-   */
+  /** Delegate to DESCEpisodeManager (Tranche E-02) */
   private async injectDESCEpisodes(
     prompt: string,
     context?: { command?: string; mode?: AgentMode }
-  ): Promise<{ augmentedPrompt: string; episodesUsed: number; episodeIds: string[] }> {
-    // Skip if DESC is disabled or client not initialized
-    if (!this.config.enableDESC || !this.ucmClient) {
-      return { augmentedPrompt: prompt, episodesUsed: 0, episodeIds: [] };
-    }
-
-    try {
-      const result = await this.ucmClient.injectSolutions(prompt, {
-        threshold: this.config.descThreshold,
-        maxEpisodes: this.config.descMaxEpisodes, // RULE-010: default 3
-        agentType: context?.mode ?? 'general',
-        metadata: {
-          source: 'universal-agent',
-          command: context?.command ?? 'unknown',
-          timestamp: Date.now(),
-        },
-      });
-
-      if (result.episodesUsed > 0) {
-        this.log(`DESC: Injected ${result.episodesUsed} prior solutions for ${context?.command ?? 'task'}`);
-      }
-
-      return result;
-    } catch (error) {
-      // Graceful fallback - don't block execution if DESC fails
-      this.log(`DESC: Episode injection failed, using original prompt: ${error}`);
-      return { augmentedPrompt: prompt, episodesUsed: 0, episodeIds: [] };
-    }
+  ) {
+    return this.descManager.injectEpisodes(prompt, context);
   }
 
-  /**
-   * Store a completed episode for future DESC retrieval
-   *
-   * @param queryText - The original query/prompt
-   * @param answerText - The generated response/result
-   * @param context - Additional context for metadata
-   */
+  /** Delegate to DESCEpisodeManager (Tranche E-02) */
   private async storeDESCEpisode(
     queryText: string,
     answerText: string,
     context?: { command?: string; mode?: AgentMode; quality?: number }
-  ): Promise<void> {
-    // Skip if DESC is disabled or client not initialized
-    if (!this.config.enableDESC || !this.ucmClient) {
-      return;
-    }
-
-    // Only store high-quality episodes (above threshold)
-    const quality = context?.quality ?? 0.7;
-    if (quality < this.config.autoStoreThreshold) {
-      this.log(`DESC: Skipping episode storage (quality ${quality.toFixed(2)} < threshold ${this.config.autoStoreThreshold})`);
-      return;
-    }
-
-    try {
-      const result = await this.ucmClient.storeEpisode(queryText, answerText, {
-        source: 'universal-agent',
-        command: context?.command ?? 'unknown',
-        mode: context?.mode ?? 'general',
-        quality,
-        timestamp: Date.now(),
-      });
-
-      if (result.success) {
-        this.log(`DESC: Stored episode ${result.episodeId} for future learning`);
-      }
-    } catch (error) {
-      // Non-fatal: don't block on storage failures
-      this.log(`DESC: Episode storage failed: ${error}`);
-    }
+  ) {
+    return this.descManager.storeEpisode(queryText, answerText, context);
   }
 
 
