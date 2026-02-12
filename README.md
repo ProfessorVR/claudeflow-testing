@@ -2,24 +2,295 @@
 
 A sophisticated multi-agent AI system with persistent memory, adaptive learning, and intelligent context management. Features 197 specialized agents across 24 categories with ReasoningBank integration, neural pattern recognition, and unbounded context memory (UCM).
 
-**Version**: 2.0.0 | **Status**: Production-Ready | **Last Updated**: December 2024
+**Version**: 2.1.6 | **Status**: Production-Ready | **Last Updated**: February 2026
 
 ## Table of Contents
 
 - [Features](#features)
+- [LEANN Semantic Search](#leann-semantic-search)
 - [Quick Setup (Automated)](#quick-setup-automated)
 - [Prerequisites (Manual Install)](#prerequisites-manual-install)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Daemon Services](#daemon-services)
 - [PhD Research Pipeline (45 Agents)](#phd-research-pipeline-45-agents)
+- [Coding Pipeline (48 Agents)](#coding-pipeline-48-agents)
 - [Observability Dashboard](#observability-dashboard)
+- [Memory Visualization Tool](#memory-visualization-tool)
 - [Learning System](#learning-system)
 - [Quick Start](#quick-start)
 - [Available Commands](#available-commands)
 - [Architecture](#architecture)
 - [Testing](#testing)
 - [Troubleshooting](#troubleshooting)
+
+## What's New in v2.1.6
+
+### PRD-CLI Gap Closure (16 Features)
+
+Closed all 16 gaps between the pipeline PRD and the CLI implementation. The coding pipeline now fully implements the PRD specification:
+
+| Feature | Description |
+|---------|-------------|
+| **RLM Context Store** | Namespace-based cross-phase context with LEANN-backed selective retrieval for 10M+ token handling |
+| **Agent MD Loading** | 50 agent instruction files (`.claude/agents/coding-pipeline/*.md`) loaded and prepended to prompts |
+| **PatternMatcher** | Reusable patterns injected per phase via `getPatternsByTaskType()` with success-rate filtering |
+| **PipelinePromptBuilder** | Structured prompt generation via `AgentRegistry`-backed builder with fallback to basic context |
+| **Trajectory Feedback** | `provideStepFeedback()` routes quality scores through SonaEngine/ReasoningBank cascade |
+| **Algorithm Augmentation** | LATS, ReAct, ToT, Self-Debug, Reflexion, PoT strategies injected as prompt instructions |
+| **ObservabilityBus** | Agent completion events emitted with algorithm metadata for monitoring |
+| **Checkpoint/Rollback** | Per-agent RLM snapshots in `.god-agent/checkpoints/` with rollback support |
+| **Quality Gates** | Per-phase thresholds (Phase 1: 0.90 decomposition, Phase 5: 0.80 coverage, etc.) |
+| **ProgressStore** | Tracks files created/modified per agent in `.god-agent/progress/` |
+| **Sherlock Types** | Forensic reviewers use typed `Verdict`, `VerdictConfidence`, `InvestigationTier` enums |
+| **Anti-Heredoc Hook** | PreToolUse hook blocks Bash heredoc commands that corrupt `settings.local.json` |
+
+**New files**: `rlm-context-store.ts` (203 lines), `coding-pipeline-checkpoints.ts` (94 lines), `block-heredoc.sh`
+**Modified**: `coding-pipeline-cli.ts` (+465 lines), `regression-detector.md`
+
+---
+
+## What's New in v2.1.5
+
+### Learning Loop Fix (Pipeline Trajectory Persistence)
+
+The coding pipeline's learning loop was completely dead — trajectories were generated as string IDs but never persisted to `learning.db`, making feedback and pattern matching silently fail. This release fixes all three root causes:
+
+| Fix | Description |
+|-----|-------------|
+| **Trajectory Persistence** | `CodingPipelineOrchestrator` and per-agent executor now call `createTrajectoryWithId()` to persist trajectories before feedback |
+| **Embedding-Backed Creation** | When available, trajectories are created via `ReasoningBank.reason()` with task embeddings for similarity search |
+| **Simple Fallback** | Falls back to `SonaEngine.createTrajectoryWithId()` when embeddings unavailable |
+| **Failure Path Tracking** | Failed agent executions also persist trajectories with `'failed'` tags for learning avoidance |
+
+### test-fixer Agent (#35)
+
+Added a self-correction agent to Phase 5 (Testing), growing the pipeline from 47 to **48 agents**:
+
+| Feature | Description |
+|---------|-------------|
+| **Self-Debug Algorithm** | Reads test failures, fixes code, re-tests until pass |
+| **Bounded Loop** | Maximum 3 fix-retest iterations before escalating to recovery-agent |
+| **Dependency Chain** | Depends on `quality-gate`; `phase-5-reviewer` now depends on `test-fixer` |
+| **Reflexion Fallback** | Falls back to Reflexion algorithm if Self-Debug fails |
+
+### Stateful Pipeline CLI (Session Persistence)
+
+New stateful CLI pattern with disk-based session persistence matching the proven PhD pipeline approach:
+
+```bash
+# Initialize a new session (returns sessionId and first batch)
+npx tsx src/god-agent/cli/coding-pipeline-cli.ts init "Implement feature X"
+
+# Mark current batch complete and get next batch
+npx tsx src/god-agent/cli/coding-pipeline-cli.ts complete <sessionId>
+
+# Resume interrupted session after process restart
+npx tsx src/god-agent/cli/coding-pipeline-cli.ts resume <sessionId>
+```
+
+**Key Features:**
+- **Disk Persistence**: Sessions saved to `.god-agent/coding-sessions/` for resumability
+- **Massive Context**: No memory limits - state persists across restarts
+- **Smart Parallelism**: Pre-computed batches based on agent dependencies
+- **Full Integration**: RLM memory handoffs, LEANN semantic search, learning feedback
+- **Checkpointing**: Automatic state snapshots after each batch completion
+- **Batch Mode Support**: Process multiple tasks sequentially with `coding-pipeline-batch.ts`
+
+The orchestrator handles all 7 phases internally with trajectory persistence, Sherlock quality gates, and embedding-backed pattern matching.
+
+### god-code Command Pattern
+
+The `/god-code` slash command follows the same execution protocol as `/god-research`:
+
+```markdown
+## EXECUTION PROTOCOL
+
+**YOU MUST use coding-pipeline-cli for orchestration. DO NOT use static Task() templates.**
+
+### Step 1: Initialize Pipeline
+npx tsx src/god-agent/cli/coding-pipeline-cli.ts init "$ARGUMENTS"
+
+### Step 2: Execute Current Batch
+Task("<batch[0].type>", "<batch[0].prompt>", "<batch[0].key>")
+...
+
+### Step 3: Loop Until Complete
+npx tsx src/god-agent/cli/coding-pipeline-cli.ts complete "<sessionId>"
+```
+
+**No manual memory operations** - the orchestrator CLI handles ALL state management internally.
+
+### ClaudeCodeStepExecutor
+
+New `IStepExecutor` implementation that uses the `claude -p` CLI for agent execution:
+
+- Pipes prompts via stdin (handles arbitrarily long LEANN + RLM context)
+- Timeout guard with SIGTERM → SIGKILL escalation
+- Heuristic quality baseline before Sherlock gates
+- Uses existing Claude Code subscription (no ANTHROPIC_API_KEY needed)
+
+---
+
+## What's New in v2.1.4
+
+### Dual Embedding Backend Support
+
+The embedder API now supports both local and OpenAI embedding backends, configurable via environment variable. Both produce 1536-dimensional vectors, maintaining full compatibility with existing ChromaDB collections.
+
+| Backend | Model | Pros | Cons |
+|---------|-------|------|------|
+| **local** (default) | gte-Qwen2-1.5B-instruct | Free, offline, privacy | Requires GPU/CPU resources |
+| **openai** | text-embedding-ada-002 | Fast, consistent, no local resources | Costs ~$0.0001/1K tokens, requires internet |
+
+#### Usage
+
+```bash
+# Use local model (default)
+export EMBEDDING_BACKEND=local
+python embedding-api/api_embedder.py
+
+# Use OpenAI
+export EMBEDDING_BACKEND=openai
+export OPENAI_API_KEY=sk-...
+python embedding-api/api_embedder.py
+```
+
+#### API Changes
+
+```bash
+# Check current backend
+curl http://localhost:8000/backend
+
+# Response includes backend info
+{
+  "backend": "openai",
+  "ready": true,
+  "dimensions": 1536,
+  "switch_command": "export EMBEDDING_BACKEND=openai"
+}
+```
+
+All downstream code (god-agent, LEANN, pipelines) works unchanged since they call the embedder API at `http://localhost:8000`.
+
+---
+
+## What's New in v2.1.3
+
+### LEANN Semantic Chunking for Large Files
+
+Large files (>20KB) are now automatically chunked into semantic segments before indexing, enabling the context-gatherer agent to find code in any file regardless of size.
+
+| Feature | Description |
+|---------|-------------|
+| **Semantic Chunking** | Uses `parseCodeIntoChunks` to split code by functions, classes, methods |
+| **Chunk Metadata** | Each chunk includes `symbolName`, `symbolType`, `startLine`, `endLine` |
+| **TypeScript Processor** | New `scripts/hooks/leann-process-queue.ts` replaces shell-based indexing |
+| **Increased Limits** | `maxChunkSize: 4000` (from 2000), `maxFileSize: 512KB` |
+| **Rate Limiting** | Built-in health checks and pauses prevent embedder overload |
+
+#### How It Works
+
+```
+Pipeline creates/modifies files
+    ↓
+Post-edit hook queues files to leann-index-queue.json (automatic)
+    ↓
+Step Final.1: TypeScript processor runs
+    ↓
+Large files chunked by function/class/method
+    ↓
+Each chunk indexed with traceability metadata
+    ↓
+context-gatherer can find code from any file size
+```
+
+#### Chunk Metadata Example
+
+```json
+{
+  "filePath": "/path/to/file.ts",
+  "startLine": 42,
+  "endLine": 67,
+  "symbolType": "function",
+  "symbolName": "processData",
+  "chunkIndex": 3,
+  "totalChunks": 12,
+  "language": "typescript",
+  "contentHash": "1ab02786ad947dfe"
+}
+```
+
+---
+
+## What's New in v2.1.2
+
+### Phase 5 Self-Correction Loop
+
+Enhanced the coding pipeline's Phase 5 (Testing) with a self-correction subsystem that automatically fixes failing tests:
+
+| Feature | Description |
+|---------|-------------|
+| **test-execution-verifier (#38.1)** | Executes actual test suite and captures real results - estimation is forbidden |
+| **regression-detector (#38.2)** | Compares test results against baseline, blocks pipeline on regressions |
+| **test-fixer (#38.3)** | Analyzes failures, reads stack traces, fixes code, triggers re-test |
+| **Bounded Loop** | Maximum 3 fix-retest iterations before escalating to recovery-agent |
+| **No Estimation Policy** | Agents MUST run actual commands, never guess or approximate results |
+
+### Enhanced Agent Prompts
+
+- **quality-gate**: Now includes explicit execution steps with actual command parsing
+- **code-quality-improver**: Comprehensive refactoring and code improvement prompts
+- **final-refactorer**: Detailed final polish and consistency check procedures
+- **phase-6-reviewer**: Enhanced Sherlock forensic review for optimization phase
+
+---
+
+## What's New in v2.1.1
+
+### Sherlock-Learning Integration (Coding Pipeline Only)
+
+Connects Sherlock forensic verdicts to the RLM/LEANN learning system for continuous improvement of the `/god-code` pipeline:
+
+| Feature | Description |
+|---------|-------------|
+| **SonaEngine Integration** | Trajectories created for each forensic investigation with quality feedback |
+| **ReasoningBank Patterns** | High-quality INNOCENT verdicts stored as patterns for future reference |
+| **Verdict-to-Quality Mapping** | INNOCENT=0.9, GUILTY=0.3, INSUFFICIENT=0.5 (×confidence multiplier) |
+| **Confidence Multipliers** | HIGH=1.0, MEDIUM=0.85, LOW=0.7 (per PRD Section 2.3) |
+| **Bounded Pattern Storage** | LRU eviction at 500 patterns prevents memory leaks |
+| **PhD Pipeline Isolation** | Explicit rejection of `pipelineType: 'phd'` prevents contamination |
+| **Event System** | `verdict:recorded`, `pattern:created`, `trajectory:feedback` events |
+
+#### Memory Namespace
+
+```
+coding/forensics/
+├── phase-[N]/verdict     # Verdict trajectories per phase
+└── pipeline/pattern-library  # High-quality patterns from INNOCENT verdicts
+```
+
+#### Quality Gate Thresholds (L-Score)
+
+| Gate | Phase | Threshold |
+|------|-------|-----------|
+| Gate 1 | Understanding | 0.75 |
+| Gate 2 | Exploration | 0.80 |
+| Gate 3 | Architecture | 0.85 |
+| Gate 4 | Implementation | 0.90 |
+| Gate 5 | Testing | 0.92 |
+| Gate 6 | Optimization | 0.88 |
+| Gate 7 | Delivery | 0.95 |
+
+#### Key Components
+
+| Component | Path | Description |
+|-----------|------|-------------|
+| Learning Integration | `src/god-agent/core/pipeline/sherlock-learning-integration.ts` | Verdict-to-learning bridge |
+| Quality Gate Integration | `src/god-agent/core/pipeline/sherlock-quality-gate-integration.ts` | Gate + Sherlock coordination |
+| Tests | `tests/god-agent/core/pipeline/sherlock-learning-integration.test.ts` | 24 unit tests |
+
+---
 
 ## Features
 
@@ -34,6 +305,34 @@ A sophisticated multi-agent AI system with persistent memory, adaptive learning,
 - **GNN Training**: Graph Neural Network training with EWC regularization
 - **40+ Attention Mechanisms**: Flash, Sparse, Linear, Performer, Longformer, and more
 - **SQLite Persistence**: All learning data persisted (no more memory loss on restart)
+- **LEANN Semantic Search**: Lightweight Efficient Approximate Nearest Neighbor with 97% storage savings
+- **DualCodeEmbeddingProvider**: Hybrid embedding fusion (40% NLP + 60% Code) for optimal code search
+
+## What's New in v2.1.0
+
+### LEANN Semantic Search Integration
+
+Complete integration of LEANN (Lightweight Efficient Approximate Nearest Neighbor) for semantic code search:
+
+| Feature | Description |
+|---------|-------------|
+| **DualCodeEmbeddingProvider** | Hybrid 40% NLP + 60% Code embedding fusion for optimal code understanding |
+| **Hub Cache System** | Caches highest-degree vectors for fast retrieval |
+| **On-Demand Recomputation** | Stores original text, recomputes embeddings when needed (97% storage savings) |
+| **LRU Eviction** | Content store capped at 10,000 entries to prevent unbounded memory growth |
+| **Failure Tracking** | 30% threshold monitoring with automatic alerts |
+| **Dimension Validation** | Strict validation prevents silent vector corruption |
+| **Timeout Protection** | 5000ms timeout per PRD LATENCY-EMBEDDING requirement |
+| **RLM Integration** | Seamless context injection via `rlmContext.injectionSuccess` |
+
+### Key Fixes
+
+- **Zero Vector Bug**: Fixed silent fallback to zero vectors when embedding fails
+- **Null Pointer Safety**: Added `getProvider()` check before embedding operations
+- **Race Condition**: Error recovery in lazy initialization prevents concurrent failures
+- **Atomic Hub Cache**: Build-new-then-swap pattern prevents partial state corruption
+
+---
 
 ## What's New in v2.0.0
 
@@ -181,6 +480,143 @@ The learning system has been completely overhauled to fix critical issues where 
   4. Domain expertise - Tracks knowledge density per domain
 
   The more you use and rate knowledge, the better it surfaces relevant context in future queries.
+
+
+## LEANN Semantic Search
+
+LEANN (Lightweight Efficient Approximate Nearest Neighbor) provides high-performance semantic code search with 97% storage savings through on-demand embedding recomputation.
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    LEANN SEMANTIC SEARCH                             │
+├─────────────────────────────────────────────────────────────────────┤
+│  Query Input                                                         │
+│       ↓                                                              │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │ DualCodeEmbeddingProvider                                     │   │
+│  │  • 40% NLP weight (natural language understanding)            │   │
+│  │  • 60% Code weight (syntax and structure)                     │   │
+│  │  • Hybrid fusion for optimal code search                      │   │
+│  │  • 1000-entry embedding cache                                 │   │
+│  └──────────────────────────────────────────────────────────────┘   │
+│       ↓                                                              │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │ LEANNBackend                                                  │   │
+│  │  • Hub Cache: Top-degree vectors for fast retrieval           │   │
+│  │  • Strict dimension validation (prevents corruption)          │   │
+│  │  • Atomic hub updates (build-new-then-swap)                   │   │
+│  └──────────────────────────────────────────────────────────────┘   │
+│       ↓                                                              │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │ LEANNAdapter                                                  │   │
+│  │  • On-demand embedding recomputation (97% storage savings)    │   │
+│  │  • LRU eviction (10,000 max entries)                          │   │
+│  │  • Content store for original text preservation               │   │
+│  └──────────────────────────────────────────────────────────────┘   │
+│       ↓                                                              │
+│  Search Results → RLM Context Injection → Agent Response            │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Key Components
+
+| Component | Path | Description |
+|-----------|------|-------------|
+| LEANN Backend | `src/god-agent/core/vector-db/leann-backend.ts` | Core vector storage with hub caching |
+| LEANN Adapter | `src/god-agent/core/search/adapters/leann-adapter.ts` | On-demand recomputation adapter |
+| DualCodeEmbedding | `src/god-agent/core/search/dual-code-embedding.ts` | Hybrid NLP/Code embedding provider |
+| Universal Agent | `src/god-agent/universal/universal-agent.ts` | LEANN wiring and failure tracking |
+
+### How It Works
+
+#### 1. Hybrid Embedding (DualCodeEmbeddingProvider)
+
+The system uses a weighted fusion of NLP and Code embeddings:
+
+```typescript
+// Configuration
+{
+  dimension: 1536,
+  nlpWeight: 0.4,    // Natural language understanding
+  codeWeight: 0.6,   // Syntax and structure
+  cacheEnabled: true,
+  cacheMaxSize: 1000,
+  provider: 'local'
+}
+```
+
+#### 2. On-Demand Recomputation
+
+Instead of storing vectors (which can be large), LEANN stores the original text:
+
+```
+Traditional: Store 1536 × 4 bytes = 6KB per entry
+LEANN: Store ~200 bytes average text → Recompute on search
+
+Storage Savings: ~97%
+```
+
+#### 3. Hub Cache for Fast Retrieval
+
+The hub cache maintains highest-degree vectors for sub-millisecond retrieval:
+
+```typescript
+// Top 100 most-connected vectors kept in memory
+// Atomic updates prevent partial state corruption
+```
+
+#### 4. RLM Integration
+
+LEANN integrates with the Relay-Race Memory (RLM) system:
+
+1. `buildSemanticContext()` called at `pipeline-executor.ts:493`
+2. Context injected via `pipeline-prompt-builder.ts:210-212`
+3. Success tracked via `rlmContext.injectionSuccess`
+4. Feedback flows to `SonaEngine.provideFeedback()` for learning
+
+### Performance Characteristics
+
+| Metric | Target | Actual |
+|--------|--------|--------|
+| Embedding latency p95 | <5000ms | ~200ms |
+| Search latency p95 | <100ms | ~30ms |
+| Storage reduction | >90% | 97% |
+| Failure rate threshold | <30% | <5% |
+| Hub cache hit rate | >70% | ~85% |
+
+### Configuration
+
+```typescript
+// In universal-agent.ts initialization
+const dualEmbeddingProvider = createDualCodeEmbeddingProvider({
+  dimension: 1536,
+  nlpWeight: 0.4,
+  codeWeight: 0.6,
+  cacheEnabled: true,
+  cacheMaxSize: 1000,
+  provider: 'local',
+  embeddingTimeoutMs: 5000  // Per PRD LATENCY-EMBEDDING
+});
+
+// LEANN adapter configuration
+const leannAdapter = new LEANNAdapter({
+  maxContentStoreSize: 10000,  // LRU eviction threshold
+  recomputeOnSearch: true
+});
+```
+
+### Safety Features
+
+| Feature | Purpose |
+|---------|---------|
+| **Dimension Validation** | Prevents vector dimension mismatches from corrupting index |
+| **Failure Tracking** | Monitors embedding failures, alerts at 30% threshold |
+| **Timeout Protection** | 5000ms timeout prevents hanging on slow embeddings |
+| **Null Safety** | `getProvider()` check prevents null pointer exceptions |
+| **Atomic Updates** | Hub cache uses build-new-then-swap to prevent corruption |
+| **LRU Eviction** | Content store capped at 10K entries to bound memory |
 
 
 ## Quick Setup (Automated) ⚡ RECOMMENDED
@@ -488,6 +924,243 @@ cd docs/research/<your-topic>/final
 md-to-pdf final-paper.md --pdf-options '{"format": "A4", "margin": {"top": "20mm", "bottom": "20mm", "left": "25mm", "right": "25mm"}}'
 ```
 
+## Coding Pipeline (48 Agents)
+
+The God Agent includes a comprehensive 48-agent coding pipeline for software development tasks. The pipeline uses a 7-phase DAG-based architecture with intra-phase parallel execution (up to 3 agents concurrently) and Sherlock forensic reviewers embedded at the end of each phase to gate progression.
+
+### Running the Pipeline
+
+```bash
+# Single task via slash command
+/god-code "Implement a user authentication system"
+
+# Batch mode for multiple tasks
+npx tsx src/god-agent/cli/coding-pipeline-batch.ts "Task 1" "Task 2" "Task 3"
+
+# Batch mode from file (one task per line)
+npx tsx src/god-agent/cli/coding-pipeline-batch.ts --file tasks.txt
+
+# The pipeline automatically triggers for coding tasks via hooks
+```
+
+**Batch Mode Benefits:**
+- Each task gets isolated session with full 48-agent pipeline
+- Failed tasks don't block subsequent tasks
+- Sessions logged for post-analysis
+- All RLM/LEANN/learning integration preserved per task
+
+### Pipeline Architecture
+
+The pipeline consists of **41 core development agents** plus **7 Sherlock forensic reviewers** (48 total). Each Sherlock reviewer runs at the end of its respective phase as a quality gate:
+
+| Phase | Agents | Description |
+|-------|--------|-------------|
+| **Phase 1: Understanding (7)** | task-analyzer*, scope-definer, context-gatherer ‖ requirement-extractor → requirement-prioritizer → feasibility-analyzer* → **phase-1-reviewer*** | Task parsing, requirements, scope definition |
+| **Phase 2: Exploration (5)** | pattern-explorer, technology-scout, codebase-analyzer ‖ research-planner → **phase-2-reviewer*** | Solution space exploration, pattern matching |
+| **Phase 3: Architecture (6)** | system-designer* → component-designer, interface-designer*, data-architect ‖ integration-architect → **phase-3-reviewer*** | System design, interface contracts |
+| **Phase 4: Implementation (13)** | code-generator* → type-implementer → unit-implementer, service-implementer → api-implementer → frontend-implementer, data-layer-implementer, error-handler-implementer, config-implementer, logger-implementer → dependency-manager → implementation-coordinator* → **phase-4-reviewer*** | Code generation, API implementation |
+| **Phase 5: Testing (9)** | test-generator → test-runner* → integration-tester, regression-tester, security-tester* ‖ coverage-analyzer → quality-gate* → test-fixer → **phase-5-reviewer*** | Test creation, execution, self-correction |
+| **Phase 6: Optimization (6)** | performance-optimizer, performance-architect, code-quality-improver ‖ security-architect* → final-refactorer → **phase-6-reviewer*** | Performance tuning, security audit |
+| **Phase 7: Delivery (2)** | recovery-agent → sign-off-approver* | Recovery and final approval |
+
+*\* = Critical agents that halt pipeline on failure* | *→ = sequential dependency* | *‖ = runs in parallel (up to 3)*
+
+### Dynamic Configuration Loading
+
+Agent definitions are loaded dynamically from `.claude/agents/coding-pipeline/*.md` files:
+
+```typescript
+// CodingPipelineConfigLoader loads agents from markdown frontmatter
+const loader = createCodingPipelineConfigLoader();
+const config = await loader.loadPipelineConfig();
+
+// Returns 48 agents with phase, order, algorithm, dependencies
+console.log(config.agents.length); // 48
+```
+
+Key features:
+- **YAML Frontmatter Parsing**: Agent metadata extracted from markdown files
+- **Phase Derivation**: Sherlock reviewers use SHERLOCK_PHASE_MAP; regular agents use order-based boundaries
+- **DAG-Based Batching**: Intra-phase dependency graph enables parallel execution (up to 3 agents per batch)
+- **Critical Agent Detection**: Agents marked critical in frontmatter or CRITICAL_AGENT_KEYS
+- **Algorithm Assignment**: Default algorithm per phase (ReAct, LATS, ToT, Self-Debug, Reflexion)
+
+### Sherlock Forensic Reviewers
+
+Each phase-N-reviewer runs at the **end** of phase N (not in a separate delivery phase), gating progression to the next phase:
+
+| Agent | Runs In | Gates | Verdict Types |
+|-------|---------|-------|---------------|
+| phase-1-reviewer | Understanding | → Exploration | INNOCENT / GUILTY / INSUFFICIENT_EVIDENCE |
+| phase-2-reviewer | Exploration | → Architecture | INNOCENT / GUILTY / INSUFFICIENT_EVIDENCE |
+| phase-3-reviewer | Architecture | → Implementation | INNOCENT / GUILTY / INSUFFICIENT_EVIDENCE |
+| phase-4-reviewer | Implementation | → Testing | INNOCENT / GUILTY / INSUFFICIENT_EVIDENCE |
+| phase-5-reviewer | Testing | → Optimization | INNOCENT / GUILTY / INSUFFICIENT_EVIDENCE |
+| phase-6-reviewer | Optimization | → Delivery | INNOCENT / GUILTY / INSUFFICIENT_EVIDENCE |
+| recovery-agent | Delivery | Final sign-off | Orchestrates remediation on failures |
+
+All forensic reviewers are **CRITICAL** - a GUILTY verdict halts pipeline progression.
+
+### Phase 5 Self-Correction Loop (v2.1.2)
+
+Phase 5 includes a self-correction subsystem with three specialized sub-agents that work together to ensure tests pass before proceeding:
+
+| Sub-Agent | Position | Role |
+|-----------|----------|------|
+| **test-execution-verifier** | #38.1 | Executes actual test suite, captures real results. NEVER estimates. |
+| **regression-detector** | #38.2 | Compares results against baseline, fails pipeline on regressions. |
+| **test-fixer** | #38.3 | Reads failures, fixes code, triggers re-test until pass. |
+
+#### Self-Correction Flow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                 PHASE 5 SELF-CORRECTION LOOP                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  quality-gate (#38) orchestrates:                                │
+│                                                                  │
+│  ┌──────────────────────┐                                        │
+│  │ test-execution-verifier │ ← Runs npm test, captures output    │
+│  │        (#38.1)          │                                     │
+│  └──────────┬───────────┘                                        │
+│             │ verified results                                   │
+│             ▼                                                    │
+│  ┌──────────────────────┐                                        │
+│  │  regression-detector  │ ← Compares vs baseline                │
+│  │        (#38.2)        │                                       │
+│  └──────────┬───────────┘                                        │
+│             │                                                    │
+│     ┌───────┴───────┐                                            │
+│     │               │                                            │
+│  PASS ✓          FAIL ✗                                          │
+│     │               │                                            │
+│     │               ▼                                            │
+│     │    ┌──────────────────┐                                    │
+│     │    │    test-fixer     │ ← Analyzes failures, fixes code   │
+│     │    │      (#38.3)      │                                   │
+│     │    └──────────┬───────┘                                    │
+│     │               │ re-test                                    │
+│     │               └──────────────────┐                         │
+│     │                                  │                         │
+│     │    ┌─────────────────────────────┘                         │
+│     │    │ (loop until pass or max iterations)                   │
+│     │    ▼                                                       │
+│     └────► phase-5-reviewer (Sherlock #45)                       │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Key Guarantees
+
+- **No Estimation**: test-execution-verifier MUST run actual tests, never guess counts
+- **Regression Prevention**: regression-detector blocks pipeline if pass rate decreases
+- **Self-Healing**: test-fixer reads stack traces, identifies root cause, applies fix
+- **Bounded Loops**: Maximum 3 fix-retest iterations before escalating to recovery-agent
+
+### USACF Algorithms
+
+Each agent uses specialized algorithms from the USACF (Universal Search Algorithm for Claude Flow) framework:
+
+| Algorithm | Use Case |
+|-----------|----------|
+| **LATS** | Language Agent Tree Search - Complex algorithmic tasks |
+| **ReAct** | Reasoning + Acting - Tool-heavy tasks |
+| **Self-Debug** | Self-debugging - Test-driven tasks |
+| **Reflexion** | Pattern learning - Error recovery |
+| **PoT** | Program of Thought - Mathematical tasks |
+| **ToT** | Tree of Thought - Design decisions |
+
+### Hook Integration
+
+The pipeline integrates with Claude Code via hooks in `.claude/hooks/`:
+
+```json
+{
+  "hooks": [
+    {
+      "name": "coding-pipeline-pre",
+      "event": "PreToolUse",
+      "matcher": { "tool": "Skill", "args": { "skill": "god-code" } },
+      "command": ".claude/hooks/coding-pipeline-pre.sh"
+    },
+    {
+      "name": "coding-pipeline-post",
+      "event": "PostToolUse",
+      "matcher": { "tool": "Skill", "args": { "skill": "god-code" } },
+      "command": ".claude/hooks/coding-pipeline-post.sh"
+    },
+    {
+      "name": "block-heredoc",
+      "event": "PreToolUse",
+      "matcher": "Bash",
+      "command": ".claude/hooks/block-heredoc.sh"
+    }
+  ]
+}
+```
+
+### RLM Context Store (v2.1.6)
+
+The pipeline uses a namespace-based RLM (Retrieval-augmented Language Model) context store for cross-phase memory. Each agent's output is stored under `coding/phase{N}/{agentKey}` and selectively retrieved for downstream agents using LEANN semantic search when context exceeds token budgets.
+
+```
+.god-agent/rlm-context/{sessionId}.json    # Namespace store (grows per agent)
+.god-agent/checkpoints/{sessionId}-index.json  # Checkpoint index
+.god-agent/checkpoints/cp-{phase}-{agent}-{ts}-rlm.json  # RLM snapshots
+.god-agent/progress/{sessionId}.json       # File change tracking
+```
+
+**Context flow**: Phase N agents receive context from phases 1..N-1 via `retrieve()` with a 50k token budget. LEANN performs semantic selection when content exceeds the budget.
+
+### Memory Coordination
+
+The pipeline uses namespaced memory for agent coordination:
+
+```
+coding/
+├── context/task         # Original task description
+├── context/sessionId    # Session identifier
+├── phase1/{agentKey}    # Phase 1 agent outputs (up to 10k chars each)
+├── phase2/{agentKey}    # Phase 2 agent outputs
+├── phase3/{agentKey}    # Phase 3 agent outputs
+├── ...                  # Phases 4-7
+└── rlm/subquery/{id}    # Recursive sub-query storage
+```
+
+### Pipeline Execution Flow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    48-AGENT CODING PIPELINE                      │
+│              (DAG-based parallel execution, up to 3 concurrent)  │
+├─────────────────────────────────────────────────────────────────┤
+│  Phase 1: Understanding (7) ──→ Phase 2: Exploration (5)        │
+│  [3 parallel roots → chain → phase-1-reviewer gates]             │
+│           ↓                                    ↓                │
+│  Phase 3: Architecture (6) ──→ Phase 4: Implementation (13)     │
+│  [system-designer → 3 parallel → chain → phase-3-reviewer]      │
+│           ↓                                    ↓                │
+│  Phase 5: Testing (9) ──→ Phase 6: Optimization (6)             │
+│  [test-runner → 3 parallel testers → fix loop → reviewer]        │
+│           ↓                                    ↓                │
+│  Phase 7: Delivery (2) → recovery-agent → sign-off → COMPLETE   │
+└─────────────────────────────────────────────────────────────────┘
+
+On GUILTY verdict: Recovery Agent (#48) orchestrates remediation
+Checkpoints created after EVERY agent (with RLM snapshot for rollback)
+
+Learning Integration (v2.1.6):
+- Trajectory creation via SonaEngine.createTrajectoryWithId() per agent
+- provideStepFeedback() routes quality → SonaEngine → ReasoningBank cascade
+- Quality > 0.80 → PatternMatcher.createPattern() with embedding for reuse
+- RLM Context Store accumulates cross-phase context (50k token budget)
+- LEANN semantic retrieval for large context selection
+- Per-phase quality gates: Phase 1 (0.90), Phase 3 (0.95), Phase 5 (0.80)
+- Algorithm-specific prompts: LATS, ReAct, ToT, Self-Debug, Reflexion, PoT
+- ObservabilityBus events with algorithm metadata per agent
+```
+
 ## Observability Dashboard
 
 The dashboard at **http://localhost:3847** provides real-time monitoring of the God Agent system.
@@ -529,6 +1202,82 @@ The dashboard uses:
 │  Injections: 89 │  Warnings: 0    │  Uptime: 2h 15m         │
 └─────────────────┴─────────────────┴─────────────────────────┘
 ```
+
+## Memory Visualization Tool
+
+An interactive graph visualization tool for exploring God Agent memory structures, showing relationships between agents, task types, patterns, trajectories, events, token usage, feedback, and sessions.
+
+### Quick Start
+
+```bash
+# Terminal 1: Start the API server
+cd src/god-agent-viz
+npx tsx server.ts
+# Server runs on http://localhost:3456
+
+# Terminal 2: Open the visualization
+open src/god-agent-viz/index.html
+```
+
+Or use the start script:
+```bash
+cd src/god-agent-viz
+./start.sh
+```
+
+### Features
+
+- **Interactive Graph Visualization**: Cytoscape.js with force-directed layout showing all memory relationships
+- **8 Node Types**: Agents, Task Types, Patterns, Trajectories, Events, Token Usage, Feedback, Sessions
+- **Advanced Filtering**: Filter by node type, task type, status, date range, and limits
+- **Real-time Stats**: Live counts of nodes and edges with filter indicators
+- **Click-to-Explore**: Select nodes to see full details and connections in sidebar
+- **Legend with Counts**: Color-coded legend showing node type distribution
+
+### API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/graph` | Full graph data with filtering support |
+| `GET /api/filters` | Available filter options |
+| `GET /api/stats` | Node and edge statistics |
+| `GET /api/events` | Event data with pagination |
+| `GET /api/token-usage` | Token consumption metrics |
+| `GET /api/feedback` | User feedback data |
+| `GET /api/health` | Server health check |
+
+### Query Parameters
+
+```
+?includeTrajectories=all|recent|none
+&includeEvents=true|false
+&includeTokenUsage=true|false
+&includeFeedback=true|false
+&taskType=<type>
+&status=<status>
+&dateFrom=YYYY-MM-DD
+&dateTo=YYYY-MM-DD
+&limit=<number>
+```
+
+### Node Types & Colors
+
+| Type | Color | Description |
+|------|-------|-------------|
+| Agent | Blue (#3b82f6) | AI agent identifiers |
+| Task Type | Green (#10b981) | Types of tasks (code, research, ask, write) |
+| Pattern | Purple (#8b5cf6) | Learned patterns with success rates |
+| Trajectory | Amber (#f59e0b) | Learning trajectories with outcomes |
+| Event | Red (#ef4444) | System events and interactions |
+| Token Usage | Cyan (#06b6d4) | Token consumption records |
+| Feedback | Pink (#ec4899) | User feedback with ratings |
+| Session | Yellow (#eab308) | Session identifiers |
+
+### Tech Stack
+
+- **Backend**: Express.js + TypeScript + better-sqlite3
+- **Frontend**: React 18 (CDN) + Cytoscape.js (CDN) + Babel
+- **Database**: SQLite (`.god-agent/*.db` files)
 
 ## Learning System
 

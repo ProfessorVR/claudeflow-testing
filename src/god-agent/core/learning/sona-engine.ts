@@ -41,6 +41,7 @@ import type {
   ICheckpointFull,
   ISerializedCheckpoint,
   IReasoningStep,
+  IRlmContext,
 } from './sona-types.js';
 import { EmbeddingProviderFactory } from '../memory/embedding-provider.js';
 import type { IEmbeddingProvider } from '../memory/types.js';
@@ -76,7 +77,6 @@ import {
   WEIGHT_FILE_VERSION,
 } from './sona-utils.js';
 import { VECTOR_DIM } from '../validation/constants.js';
-import { getConvergenceTracker, ConvergenceTracker, type IConvergenceMetrics } from './convergence-tracker.js';
 
 // ============================================================
 // DATABASE PERSISTENCE IMPORTS (TASK-PERSIST-004)
@@ -195,6 +195,24 @@ export class SonaEngine {
   private learningFeedbackDAO?: LearningFeedbackDAO;
   private persistenceEnabled: boolean = false;
 
+  /**
+   * Map RLM context to feedback input format
+   * Extracts relay-race memory handoff fields for persistence
+   */
+  private mapRlmContextToFeedback(rlmContext?: IRlmContext): {
+    rlmInjectionSuccess?: boolean;
+    rlmSourceAgent?: string;
+    rlmSourceStepIndex?: number;
+    rlmSourceDomain?: string;
+  } {
+    return {
+      rlmInjectionSuccess: rlmContext?.injectionSuccess,
+      rlmSourceAgent: rlmContext?.sourceAgentKey,
+      rlmSourceStepIndex: rlmContext?.sourceStepIndex,
+      rlmSourceDomain: rlmContext?.sourceDomain,
+    };
+  }
+
   // Metrics tracking
   private metrics: ILearningMetrics = {
     totalTrajectories: 0,
@@ -209,24 +227,12 @@ export class SonaEngine {
     lastUpdated: Date.now(),
   };
 
-  // Convergence tracking (TIER-2.3)
-  private convergenceTracker: ConvergenceTracker;
-
   constructor(config: ISonaConfig = {}) {
     this.config = validateAndApplyConfig(config);
     // Apply checkpointsDir from config if provided
     if (config.checkpointsDir) {
       this.checkpointsDir = config.checkpointsDir;
     }
-
-    // Initialize convergence tracker (TIER-2.3)
-    this.convergenceTracker = getConvergenceTracker({
-      windowSize: 50,
-      plateauThreshold: 0.01,
-      minSamplesForPlateau: 100,
-      maxFisherEntries: 10000,
-      initialLearningRate: this.config.learningRate,
-    });
 
     // ============================================================
     // DATABASE PERSISTENCE INITIALIZATION (TASK-PERSIST-004)
@@ -351,6 +357,26 @@ export class SonaEngine {
       this.streamManager.addTrajectory(trajectory).catch(error => {
         console.warn(`[SonaEngine] Failed to stream trajectory ${trajectoryId}:`, error);
       });
+    }
+
+    // 4.6. DATABASE PERSISTENCE (FIX: was missing from createTrajectory)
+    // RULE-008: ALL trajectory data MUST be stored in SQLite
+    if (this.persistenceEnabled && this.trajectoryMetadataDAO) {
+      try {
+        const metadataInput: ITrajectoryMetadataInput = {
+          id: trajectoryId,
+          filePath: `.agentdb/sona/trajectories/${trajectoryId}.bin`,
+          fileOffset: 0,
+          fileLength: 0,
+          route,
+          stepCount: patterns.length,
+          createdAt: trajectory.createdAt,
+          status: 'active'
+        };
+        this.trajectoryMetadataDAO.insert(metadataInput);
+      } catch (error) {
+        console.warn(`[SonaEngine] Failed to persist trajectory metadata ${trajectoryId}:`, error);
+      }
     }
 
     // 5. Initialize route weights if first trajectory for this route
@@ -661,6 +687,7 @@ export class SonaEngine {
         patterns: [], // Patterns not stored in trajectory_metadata
         context: [],  // Context not stored in trajectory_metadata
         createdAt: metadata.createdAt,
+        quality: metadata.qualityScore, // Include quality score from database
       };
       return trajectory;
     } catch (error) {
@@ -746,52 +773,6 @@ export class SonaEngine {
     }
 
     return { ...this.metrics };
-  }
-
-  /**
-   * Get convergence metrics for learning system (TIER-2.3)
-   *
-   * Provides:
-   * - Learning curve tracking
-   * - Convergence speed calculation
-   * - Plateau detection
-   * - Learning rate recommendations
-   * - Fisher matrix statistics
-   *
-   * @returns Convergence metrics
-   */
-  getConvergenceMetrics(): IConvergenceMetrics {
-    return this.convergenceTracker.getMetrics();
-  }
-
-  /**
-   * Get recommended action based on convergence analysis (TIER-2.3)
-   *
-   * @returns 'continue' | 'pause' | 'reset' | 'reduce_lr' | 'increase_lr'
-   */
-  getConvergenceRecommendation(): string {
-    const metrics = this.convergenceTracker.getMetrics();
-    return metrics.recommendedAction;
-  }
-
-  /**
-   * Check if learning is in a plateau state (TIER-2.3)
-   *
-   * @returns true if plateau detected
-   */
-  isLearningPlateau(): boolean {
-    const metrics = this.convergenceTracker.getMetrics();
-    return metrics.plateauDetected;
-  }
-
-  /**
-   * Get suggested learning rate based on convergence analysis (TIER-2.3)
-   *
-   * @returns Suggested learning rate value
-   */
-  getSuggestedLearningRate(): number {
-    const metrics = this.convergenceTracker.getMetrics();
-    return metrics.suggestedLearningRate;
   }
 
   /**
@@ -904,6 +885,8 @@ export class SonaEngine {
       lScore?: number;
       similarities?: Map<PatternID, number>;
       skipAutoSave?: boolean;
+      /** RLM context for relay-race memory handoff tracking */
+      rlmContext?: IRlmContext;
     } = {}
   ): Promise<IWeightUpdateResult> {
     const startTime = performance.now();
@@ -911,8 +894,47 @@ export class SonaEngine {
     // 1. Validate quality
     validateFeedbackQuality(quality);
 
-    // 2. Retrieve trajectory
-    const trajectory = this.trajectories.get(trajectoryId);
+    // 2. Retrieve trajectory (with SQLite fallback per FIX-PLAN.md)
+    let trajectory = this.getTrajectory(trajectoryId);
+
+    // FIX: Create trajectory on-demand for hook-generated IDs (TRAJECTORY-ORPHAN-FIX)
+    // Hook-generated trajectories (from post-task.ts, god-agent-save.sh) are never
+    // registered in SonaEngine, causing 100% feedback failure. Create them on-demand.
+    if (!trajectory && trajectoryId.startsWith('hook-')) {
+      console.log(
+        `[SonaEngine] Creating on-demand trajectory for hook ID: ${trajectoryId}`
+      );
+
+      // Create trajectory with default route for hook-based auto-learning
+      const hookRoute = 'auto-learning.hook' as Route;
+      this.createTrajectoryWithId(
+        trajectoryId,
+        hookRoute,
+        [], // Empty patterns - will be auto-created if quality > threshold
+        ['auto-learning-hook', `created-on-demand-${Date.now()}`]
+      );
+
+      // Retrieve the newly created trajectory
+      trajectory = this.getTrajectory(trajectoryId);
+    }
+
+    // Also handle session-end trajectories from god-agent-save.sh
+    if (!trajectory && trajectoryId.startsWith('session-end-')) {
+      console.log(
+        `[SonaEngine] Creating on-demand trajectory for session-end ID: ${trajectoryId}`
+      );
+
+      const sessionRoute = 'auto-learning.session-end' as Route;
+      this.createTrajectoryWithId(
+        trajectoryId,
+        sessionRoute,
+        [],
+        ['session-end-hook', `created-on-demand-${Date.now()}`]
+      );
+
+      trajectory = this.getTrajectory(trajectoryId);
+    }
+
     if (!trajectory) {
       throw new FeedbackValidationError(`Trajectory ${trajectoryId} not found`);
     }
@@ -937,6 +959,43 @@ export class SonaEngine {
           }
         } catch (error) {
           console.warn('[SonaEngine] Pattern auto-creation failed (empty patterns):', error);
+        }
+      }
+
+      // ============================================================
+      // DATABASE PERSISTENCE FOR EMPTY-PATTERN TRAJECTORIES
+      // FIX: This was the bug causing all 598 trajectories to have NULL quality
+      // RULE-008: ALL learning feedback MUST be stored in SQLite
+      // ============================================================
+      if (this.persistenceEnabled && this.trajectoryMetadataDAO) {
+        try {
+          const status = quality >= 0.5 ? 'completed' : 'failed';
+          this.trajectoryMetadataDAO.updateStatus(trajectoryId, status, Date.now());
+          this.trajectoryMetadataDAO.updateQuality(trajectoryId, quality);
+        } catch (error) {
+          console.warn(`[SonaEngine] Failed to persist quality for empty-pattern trajectory ${trajectoryId}:`, error);
+        }
+      }
+
+      // Also persist learning feedback record for empty-pattern trajectories
+      if (this.persistenceEnabled && this.learningFeedbackDAO) {
+        try {
+          const feedbackId = `fb-${trajectoryId}-${Date.now()}`;
+          const feedbackInput: ILearningFeedbackInput = {
+            id: feedbackId,
+            trajectoryId,
+            quality,
+            outcome: quality >= 0.5 ? (quality >= 0.8 ? 'positive' : 'neutral') : 'negative',
+            taskType: trajectory.route,
+            agentId: 'sona-engine',
+            resultLength: trajectory.steps?.length ?? 0,
+            hasCodeBlocks: false,
+            createdAt: Date.now(),
+            ...this.mapRlmContextToFeedback(options.rlmContext)
+          };
+          this.learningFeedbackDAO.insert(feedbackInput);
+        } catch (error) {
+          console.warn(`[SonaEngine] Failed to persist feedback for empty-pattern trajectory ${trajectoryId}:`, error);
         }
       }
 
@@ -1076,20 +1135,6 @@ export class SonaEngine {
       // 12. Update metrics
       this.metrics.lastUpdated = Date.now();
 
-      // 12a. Record sample for convergence tracking (TIER-2.3)
-      this.convergenceTracker.recordSample(quality);
-
-      // Update Fisher information in convergence tracker
-      for (const patternId of trajectory.patterns) {
-        const routeFisher = this.fisherInformation.get(trajectory.route);
-        if (routeFisher) {
-          const importance = routeFisher.get(patternId);
-          if (importance !== undefined) {
-            this.convergenceTracker.updateFisher(`${trajectory.route}:${patternId}`, importance);
-          }
-        }
-      }
-
       // ============================================================
       // DATABASE PERSISTENCE (TASK-PERSIST-006)
       // RULE-008: ALL learning feedback MUST be stored in SQLite
@@ -1106,7 +1151,8 @@ export class SonaEngine {
             agentId: 'sona-engine', // Will be overridden by caller if available
             resultLength: trajectory.steps?.length ?? 0,
             hasCodeBlocks: false,
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            ...this.mapRlmContextToFeedback(options.rlmContext)
           };
           this.learningFeedbackDAO.insert(feedbackInput);
 
@@ -1119,6 +1165,27 @@ export class SonaEngine {
         } catch (error) {
           // Log but don't fail - in-memory operations still complete
           console.warn(`[SonaEngine] Failed to persist feedback for ${trajectoryId}:`, error);
+        }
+      }
+
+      // ============================================================
+      // BUG-1 FIX: Wire PatternDAO incrementSuccess/incrementFailure
+      // Update pattern success/failure counts based on feedback quality
+      // Success threshold: quality >= 0.7
+      // ============================================================
+      if (this.persistenceEnabled && this.patternDAO) {
+        const SUCCESS_THRESHOLD = 0.7;
+        for (const patternId of trajectory.patterns) {
+          try {
+            if (quality >= SUCCESS_THRESHOLD) {
+              this.patternDAO.incrementSuccess(patternId);
+            } else {
+              this.patternDAO.incrementFailure(patternId);
+            }
+          } catch (error) {
+            // Log but don't fail - pattern may not exist in DB yet
+            console.warn(`[SonaEngine] Failed to update pattern ${patternId} counts:`, error);
+          }
         }
       }
 
@@ -1523,6 +1590,90 @@ export class SonaEngine {
       routeCount: routes.length,
       totalPatterns,
       avgPatternsPerRoute: routes.length > 0 ? totalPatterns / routes.length : 0,
+    };
+  }
+
+  /**
+   * Get feedback health diagnostics (TRAJECTORY-ORPHAN-FIX diagnostic)
+   *
+   * Checks the health of the feedback system, specifically tracking:
+   * - Hook-generated trajectories created on-demand
+   * - Session-end trajectories created on-demand
+   * - Overall feedback success rate
+   *
+   * @returns Feedback health metrics
+   */
+  getFeedbackHealth(): {
+    totalTrajectories: number;
+    hookTrajectories: number;
+    sessionEndTrajectories: number;
+    onDemandCreatedCount: number;
+    feedbackSuccessRate: number;
+    status: 'healthy' | 'degraded' | 'critical';
+    recommendations: string[];
+  } {
+    let hookTrajectories = 0;
+    let sessionEndTrajectories = 0;
+    let onDemandCreated = 0;
+
+    // Count trajectory types
+    for (const [id, trajectory] of this.trajectories) {
+      if (id.startsWith('hook-')) {
+        hookTrajectories++;
+        // Check if created on-demand via context
+        if (trajectory.context?.some(c => c.startsWith('created-on-demand-'))) {
+          onDemandCreated++;
+        }
+      } else if (id.startsWith('session-end-')) {
+        sessionEndTrajectories++;
+        if (trajectory.context?.some(c => c.startsWith('created-on-demand-'))) {
+          onDemandCreated++;
+        }
+      }
+    }
+
+    // Calculate feedback success rate from database
+    let feedbackSuccessRate = 0;
+    if (this.persistenceEnabled && this.learningFeedbackDAO) {
+      const stats = this.learningFeedbackDAO.getStats();
+      const positiveCount = stats.outcomeBreakdown?.positive ?? 0;
+      const neutralCount = stats.outcomeBreakdown?.neutral ?? 0;
+      const negativeCount = stats.outcomeBreakdown?.negative ?? 0;
+      const total = positiveCount + neutralCount + negativeCount;
+      if (total > 0) {
+        feedbackSuccessRate = (positiveCount + neutralCount) / total;
+      }
+    }
+
+    // Determine health status
+    const recommendations: string[] = [];
+    let status: 'healthy' | 'degraded' | 'critical' = 'healthy';
+
+    if (feedbackSuccessRate < 0.5) {
+      status = 'critical';
+      recommendations.push('Feedback success rate below 50% - check trajectory registration');
+    } else if (feedbackSuccessRate < 0.7) {
+      status = 'degraded';
+      recommendations.push('Feedback success rate below 70% - review learning parameters');
+    }
+
+    if (onDemandCreated > 0 && hookTrajectories > 0) {
+      const onDemandRatio = onDemandCreated / (hookTrajectories + sessionEndTrajectories);
+      if (onDemandRatio > 0.9) {
+        recommendations.push(
+          'High on-demand trajectory creation - consider pre-registering trajectories in post-task hook'
+        );
+      }
+    }
+
+    return {
+      totalTrajectories: this.trajectories.size,
+      hookTrajectories,
+      sessionEndTrajectories,
+      onDemandCreatedCount: onDemandCreated,
+      feedbackSuccessRate,
+      status,
+      recommendations,
     };
   }
 
@@ -2608,6 +2759,585 @@ export class SonaEngine {
       lastRollbackAt: null,
       rollbackCount: this.rollbackState.rollbackCount
     };
+  }
+
+  // ==================== Quality Sync and Pattern Conversion Methods ====================
+
+  /**
+   * Sync quality scores from learning_feedback table to trajectory_metadata
+   *
+   * This method bridges the gap between feedback events (which contain quality scores)
+   * and trajectory metadata (which stores quality for pattern creation eligibility).
+   *
+   * Implements: TASK-QUALITY-SYNC
+   * - Queries learning_feedback for records with trajectory_id and quality
+   * - Updates corresponding trajectory_metadata.quality_score via DAO
+   * - Handles errors gracefully, continuing on individual failures
+   *
+   * @returns Object with count of synced records and any errors encountered
+   */
+  async syncQualityFromEvents(): Promise<{
+    synced: number;
+    errors: string[];
+  }> {
+    const result = {
+      synced: 0,
+      errors: [] as string[]
+    };
+
+    // Requires persistence to be enabled
+    if (!this.persistenceEnabled || !this.learningFeedbackDAO || !this.trajectoryMetadataDAO) {
+      result.errors.push('Database persistence not enabled. Cannot sync quality scores.');
+      console.warn('[SonaEngine] syncQualityFromEvents: Persistence not enabled');
+      return result;
+    }
+
+    try {
+      // Get all feedback records (both processed and unprocessed)
+      // We need to query directly since DAO only has findUnprocessed
+      const feedbackStats = this.learningFeedbackDAO.getStats();
+      console.info(
+        `[SonaEngine] syncQualityFromEvents: Found ${feedbackStats.feedbackCount} total feedback records`
+      );
+
+      // Query all feedback with trajectory IDs using raw SQL
+      // LearningFeedbackDAO doesn't expose findAll, so we need direct query
+      if (!this.databaseConnection) {
+        result.errors.push('Database connection not available');
+        return result;
+      }
+
+      const stmt = this.databaseConnection.prepare(`
+        SELECT DISTINCT trajectory_id, quality
+        FROM learning_feedback
+        WHERE trajectory_id IS NOT NULL
+        ORDER BY created_at DESC
+      `);
+
+      const feedbackRecords = stmt.all() as Array<{
+        trajectory_id: string;
+        quality: number;
+      }>;
+
+      console.info(
+        `[SonaEngine] syncQualityFromEvents: Processing ${feedbackRecords.length} feedback records`
+      );
+
+      // Track which trajectories we've already updated (use most recent quality)
+      const updatedTrajectories = new Set<string>();
+
+      for (const record of feedbackRecords) {
+        const { trajectory_id: trajectoryId, quality } = record;
+
+        // Skip if we've already updated this trajectory (first record is most recent)
+        if (updatedTrajectories.has(trajectoryId)) {
+          continue;
+        }
+
+        try {
+          // Check if trajectory exists in metadata
+          const metadata = this.trajectoryMetadataDAO.findById(trajectoryId);
+          if (!metadata) {
+            // Trajectory might exist in memory but not yet persisted to metadata
+            console.debug(
+              `[SonaEngine] syncQualityFromEvents: Trajectory ${trajectoryId} not found in metadata`
+            );
+            continue;
+          }
+
+          // Skip if quality is already set and matches
+          if (metadata.qualityScore !== undefined && Math.abs(metadata.qualityScore - quality) < 0.001) {
+            updatedTrajectories.add(trajectoryId);
+            continue;
+          }
+
+          // Update quality score in metadata
+          this.trajectoryMetadataDAO.updateQuality(trajectoryId, quality);
+          updatedTrajectories.add(trajectoryId);
+          result.synced++;
+
+          console.debug(
+            `[SonaEngine] syncQualityFromEvents: Updated trajectory ${trajectoryId} quality to ${quality.toFixed(3)}`
+          );
+        } catch (error) {
+          const errorMsg = `Failed to update trajectory ${trajectoryId}: ${error instanceof Error ? error.message : String(error)}`;
+          result.errors.push(errorMsg);
+          console.warn(`[SonaEngine] syncQualityFromEvents: ${errorMsg}`);
+          // Continue processing other records
+        }
+      }
+
+      console.info(
+        `[SonaEngine] syncQualityFromEvents: Completed. Synced ${result.synced} trajectories, ${result.errors.length} errors`
+      );
+
+      // Emit observability event
+      const bus = getObservabilityBus();
+      bus.emit({
+        component: 'sona',
+        operation: 'sona_quality_sync',
+        status: result.errors.length === 0 ? 'success' : 'warning',
+        metadata: {
+          synced: result.synced,
+          errorCount: result.errors.length,
+          totalFeedbackRecords: feedbackRecords.length
+        }
+      });
+
+      return result;
+    } catch (error) {
+      const errorMsg = `syncQualityFromEvents failed: ${error instanceof Error ? error.message : String(error)}`;
+      result.errors.push(errorMsg);
+      console.error(`[SonaEngine] ${errorMsg}`);
+
+      // Emit error event
+      const bus = getObservabilityBus();
+      bus.emit({
+        component: 'sona',
+        operation: 'sona_quality_sync',
+        status: 'error',
+        metadata: {
+          error: errorMsg
+        }
+      });
+
+      return result;
+    }
+  }
+
+  /**
+   * Convert high-quality trajectories to reusable patterns
+   *
+   * Queries trajectory_metadata for trajectories with quality >= threshold,
+   * then calls createPatternFromTrajectory for each eligible trajectory.
+   *
+   * Implements: TASK-PATTERN-CONVERT
+   * - Default threshold is AUTO_PATTERN_QUALITY_THRESHOLD (0.8) for pattern creation
+   * - Supports dry-run mode for previewing without creating
+   * - Skips trajectories that already have patterns
+   * - Limits conversions per batch to prevent overwhelming the system
+   *
+   * @param options - Configuration options for conversion
+   * @returns Statistics about the conversion process
+   */
+  async convertHighQualityTrajectoriesToPatterns(options?: {
+    qualityThreshold?: number;
+    dryRun?: boolean;
+    maxConversions?: number;
+  }): Promise<{
+    totalTrajectories: number;
+    eligibleTrajectories: number;
+    patternsCreated: number;
+    errors: string[];
+  }> {
+    const qualityThreshold = options?.qualityThreshold ?? AUTO_PATTERN_QUALITY_THRESHOLD;
+    const dryRun = options?.dryRun ?? false;
+    const maxConversions = options?.maxConversions ?? 100;
+
+    const result = {
+      totalTrajectories: 0,
+      eligibleTrajectories: 0,
+      patternsCreated: 0,
+      errors: [] as string[]
+    };
+
+    // Requires persistence to be enabled
+    if (!this.persistenceEnabled || !this.trajectoryMetadataDAO) {
+      result.errors.push('Database persistence not enabled. Cannot query trajectories.');
+      console.warn('[SonaEngine] convertHighQualityTrajectoriesToPatterns: Persistence not enabled');
+      return result;
+    }
+
+    // Ensure engine is initialized for pattern creation
+    if (!this.initialized) {
+      try {
+        await this.initialize();
+      } catch (error) {
+        result.errors.push(`Failed to initialize engine: ${error instanceof Error ? error.message : String(error)}`);
+        return result;
+      }
+    }
+
+    try {
+      // Get total trajectory count
+      result.totalTrajectories = this.trajectoryMetadataDAO.count();
+
+      // Query trajectories with quality >= threshold
+      const eligibleMetadata = this.trajectoryMetadataDAO.findByMinQuality(qualityThreshold);
+      result.eligibleTrajectories = eligibleMetadata.length;
+
+      console.info(
+        `[SonaEngine] convertHighQualityTrajectoriesToPatterns: Found ${result.eligibleTrajectories} ` +
+        `eligible trajectories (threshold: ${qualityThreshold}, total: ${result.totalTrajectories})`
+      );
+
+      if (dryRun) {
+        console.info('[SonaEngine] convertHighQualityTrajectoriesToPatterns: Dry run - no patterns will be created');
+
+        // Emit observability event for dry run
+        const bus = getObservabilityBus();
+        bus.emit({
+          component: 'sona',
+          operation: 'sona_pattern_conversion_preview',
+          status: 'success',
+          metadata: {
+            totalTrajectories: result.totalTrajectories,
+            eligibleTrajectories: result.eligibleTrajectories,
+            qualityThreshold,
+            dryRun: true
+          }
+        });
+
+        return result;
+      }
+
+      // Get existing patterns to check for duplicates
+      const existingPatternTrajectoryIds = new Set<string>();
+      for (const pattern of this.patterns.values()) {
+        existingPatternTrajectoryIds.add(pattern.sourceTrajectory);
+      }
+
+      // Also check DAO for persisted patterns
+      if (this.patternDAO) {
+        const persistedPatterns = this.patternDAO.findActive();
+        for (const pattern of persistedPatterns) {
+          for (const trajId of pattern.trajectoryIds) {
+            existingPatternTrajectoryIds.add(trajId);
+          }
+        }
+      }
+
+      let conversions = 0;
+
+      for (const metadata of eligibleMetadata) {
+        // Check conversion limit
+        if (conversions >= maxConversions) {
+          console.info(
+            `[SonaEngine] convertHighQualityTrajectoriesToPatterns: Reached max conversions limit (${maxConversions})`
+          );
+          break;
+        }
+
+        // Skip if pattern already exists for this trajectory
+        if (existingPatternTrajectoryIds.has(metadata.id)) {
+          console.debug(
+            `[SonaEngine] convertHighQualityTrajectoriesToPatterns: Skipping ${metadata.id} - pattern already exists`
+          );
+          continue;
+        }
+
+        try {
+          // Load full trajectory data
+          const trajectory = this.getTrajectory(metadata.id);
+          if (!trajectory) {
+            result.errors.push(`Trajectory ${metadata.id} not found in storage`);
+            continue;
+          }
+
+          // Create pattern from trajectory
+          const patternId = await this.createPatternFromTrajectory(trajectory);
+
+          if (patternId) {
+            result.patternsCreated++;
+            conversions++;
+            existingPatternTrajectoryIds.add(metadata.id);
+
+            console.info(
+              `[SonaEngine] convertHighQualityTrajectoriesToPatterns: Created pattern ${patternId} ` +
+              `from trajectory ${metadata.id} (quality: ${metadata.qualityScore?.toFixed(3)})`
+            );
+          }
+        } catch (error) {
+          const errorMsg = `Failed to create pattern from trajectory ${metadata.id}: ${error instanceof Error ? error.message : String(error)}`;
+          result.errors.push(errorMsg);
+          console.warn(`[SonaEngine] convertHighQualityTrajectoriesToPatterns: ${errorMsg}`);
+          // Continue processing other trajectories
+        }
+      }
+
+      console.info(
+        `[SonaEngine] convertHighQualityTrajectoriesToPatterns: Completed. ` +
+        `Created ${result.patternsCreated} patterns, ${result.errors.length} errors`
+      );
+
+      // Emit observability event
+      const bus = getObservabilityBus();
+      bus.emit({
+        component: 'sona',
+        operation: 'sona_pattern_conversion',
+        status: result.errors.length === 0 ? 'success' : 'warning',
+        metadata: {
+          totalTrajectories: result.totalTrajectories,
+          eligibleTrajectories: result.eligibleTrajectories,
+          patternsCreated: result.patternsCreated,
+          errorCount: result.errors.length,
+          qualityThreshold,
+          maxConversions
+        }
+      });
+
+      return result;
+    } catch (error) {
+      const errorMsg = `convertHighQualityTrajectoriesToPatterns failed: ${error instanceof Error ? error.message : String(error)}`;
+      result.errors.push(errorMsg);
+      console.error(`[SonaEngine] ${errorMsg}`);
+
+      // Emit error event
+      const bus = getObservabilityBus();
+      bus.emit({
+        component: 'sona',
+        operation: 'sona_pattern_conversion',
+        status: 'error',
+        metadata: {
+          error: errorMsg,
+          qualityThreshold
+        }
+      });
+
+      return result;
+    }
+  }
+
+  // ==================== BATCH LEARNING: Process Unprocessed Feedback ====================
+
+  /**
+   * Process unprocessed feedback records for batch learning.
+   *
+   * Retrieves unprocessed feedback from SQLite, updates pattern success/failure counts,
+   * creates patterns from exceptional feedback (quality >= AUTO_PATTERN_QUALITY_THRESHOLD = 0.8),
+   * and marks records as processed.
+   *
+   * Implements: TASK-BATCH-LEARN-001
+   * - RULE-008: ALL learning data MUST be stored in SQLite
+   * - ERR-001: No silent failures - log all errors
+   * - Uses LearningFeedbackDAO.findUnprocessed() and markProcessed()
+   *
+   * @param limit - Maximum records to process per batch (default: 100)
+   * @returns Processing statistics including processed count, patterns created, and errors
+   *
+   * @example
+   * ```typescript
+   * const engine = createProductionSonaEngine();
+   * const stats = await engine.processUnprocessedFeedback(50);
+   * console.log(`Processed ${stats.processed} records, created ${stats.patternsCreated} patterns`);
+   * ```
+   */
+  async processUnprocessedFeedback(limit: number = 100): Promise<{
+    processed: number;
+    patternsCreated: number;
+    errors: number;
+    details: Array<{
+      feedbackId: string;
+      trajectoryId: string;
+      quality: number;
+      status: 'processed' | 'pattern_created' | 'skipped' | 'error';
+      reason?: string;
+    }>;
+  }> {
+    const startTime = performance.now();
+
+    // Early return if persistence is not enabled
+    if (!this.persistenceEnabled || !this.learningFeedbackDAO) {
+      console.warn('[SonaEngine] processUnprocessedFeedback: Persistence not enabled, skipping batch processing');
+      return { processed: 0, patternsCreated: 0, errors: 0, details: [] };
+    }
+
+    const stats = {
+      processed: 0,
+      patternsCreated: 0,
+      errors: 0,
+      details: [] as Array<{
+        feedbackId: string;
+        trajectoryId: string;
+        quality: number;
+        status: 'processed' | 'pattern_created' | 'skipped' | 'error';
+        reason?: string;
+      }>
+    };
+
+    try {
+      // 1. Retrieve unprocessed feedback records (FIFO order - oldest first)
+      const unprocessed = this.learningFeedbackDAO.findUnprocessed(limit);
+
+      if (unprocessed.length === 0) {
+        console.info('[SonaEngine] processUnprocessedFeedback: No unprocessed feedback records found');
+        return stats;
+      }
+
+      console.info(`[SonaEngine] processUnprocessedFeedback: Processing ${unprocessed.length} feedback records`);
+
+      // 2. Build set of existing pattern source trajectories for duplicate detection
+      const existingPatternTrajectoryIds = new Set<string>();
+      for (const pattern of this.patterns.values()) {
+        existingPatternTrajectoryIds.add(pattern.sourceTrajectory);
+      }
+
+      // 3. Process each feedback record
+      for (const feedback of unprocessed) {
+        try {
+          // 3a. Validate feedback has required fields
+          if (!feedback.trajectoryId) {
+            stats.details.push({
+              feedbackId: feedback.id,
+              trajectoryId: 'unknown',
+              quality: feedback.quality,
+              status: 'skipped',
+              reason: 'Missing trajectory ID'
+            });
+            // Still mark as processed to prevent infinite retry
+            this.learningFeedbackDAO.markProcessed(feedback.id);
+            stats.processed++;
+            continue;
+          }
+
+          // 3b. Get trajectory for pattern creation
+          const trajectory = this.getTrajectory(feedback.trajectoryId);
+
+          // 3c. Update weights for positive high-quality feedback (quality >= 0.6)
+          // and increment pattern success/failure counts
+          if (trajectory) {
+            // Update trajectory quality if this feedback is higher
+            if (trajectory.quality === undefined || trajectory.quality < feedback.quality) {
+              trajectory.quality = feedback.quality;
+            }
+
+            // BUG-FIX: Wire pattern success/failure counters in batch processing
+            // This was missing - patterns existed but success_count was always 0
+            const SUCCESS_THRESHOLD = 0.7;
+            if (this.patternDAO && trajectory.patterns.length > 0) {
+              for (const patternId of trajectory.patterns) {
+                try {
+                  if (feedback.quality >= SUCCESS_THRESHOLD && feedback.outcome === 'positive') {
+                    this.patternDAO.incrementSuccess(patternId);
+                  } else if (feedback.quality < SUCCESS_THRESHOLD || feedback.outcome === 'negative') {
+                    this.patternDAO.incrementFailure(patternId);
+                  }
+                } catch (err) {
+                  // Log but don't fail - pattern may not exist in DB yet
+                  console.warn(`[SonaEngine] processUnprocessedFeedback: Failed to update pattern ${patternId} counts:`, err);
+                }
+              }
+            }
+          }
+
+          // 3d. Create pattern from exceptional feedback (quality >= AUTO_PATTERN_QUALITY_THRESHOLD)
+          // BUG-FIX: Was hardcoded 0.85, now uses the constant (0.8)
+          let patternCreated = false;
+          if (feedback.quality >= AUTO_PATTERN_QUALITY_THRESHOLD && trajectory) {
+            // Check if pattern already exists for this trajectory
+            const patternAlreadyExists = existingPatternTrajectoryIds.has(feedback.trajectoryId);
+
+            if (!patternAlreadyExists) {
+              // Ensure trajectory has quality set for pattern creation
+              if (trajectory.quality === undefined) {
+                trajectory.quality = feedback.quality;
+              }
+
+              try {
+                const patternId = await this.createPatternFromTrajectory(trajectory);
+                if (patternId) {
+                  patternCreated = true;
+                  stats.patternsCreated++;
+                  existingPatternTrajectoryIds.add(feedback.trajectoryId);
+                  console.info(
+                    `[SonaEngine] processUnprocessedFeedback: Created pattern ${patternId} ` +
+                    `from feedback ${feedback.id} (quality: ${feedback.quality.toFixed(3)})`
+                  );
+                }
+              } catch (patternError) {
+                console.warn(
+                  `[SonaEngine] processUnprocessedFeedback: Failed to create pattern from ` +
+                  `feedback ${feedback.id}:`,
+                  patternError
+                );
+              }
+            }
+          }
+
+          // 3e. Mark feedback as processed
+          this.learningFeedbackDAO.markProcessed(feedback.id);
+          stats.processed++;
+
+          stats.details.push({
+            feedbackId: feedback.id,
+            trajectoryId: feedback.trajectoryId,
+            quality: feedback.quality,
+            status: patternCreated ? 'pattern_created' : 'processed',
+          });
+
+        } catch (error) {
+          // ERR-001: Log error, don't silently fail
+          const errorMsg = error instanceof Error ? error.message : String(error);
+          console.warn(
+            `[SonaEngine] processUnprocessedFeedback: Failed to process feedback ${feedback.id}:`,
+            errorMsg
+          );
+          stats.errors++;
+          stats.details.push({
+            feedbackId: feedback.id,
+            trajectoryId: feedback.trajectoryId || 'unknown',
+            quality: feedback.quality,
+            status: 'error',
+            reason: errorMsg
+          });
+        }
+      }
+
+      // 4. Emit observability event
+      const elapsedMs = performance.now() - startTime;
+      const bus = getObservabilityBus();
+      bus.emit({
+        component: 'sona',
+        operation: 'sona_batch_feedback_processed',
+        status: stats.errors === 0 ? 'success' : 'warning',
+        durationMs: elapsedMs,
+        metadata: {
+          processed: stats.processed,
+          patternsCreated: stats.patternsCreated,
+          errors: stats.errors,
+          limit,
+          totalUnprocessed: unprocessed.length
+        }
+      });
+
+      console.info(
+        `[SonaEngine] processUnprocessedFeedback: Completed in ${elapsedMs.toFixed(2)}ms. ` +
+        `Processed: ${stats.processed}, Patterns: ${stats.patternsCreated}, Errors: ${stats.errors}`
+      );
+
+    } catch (error) {
+      // ERR-001: Log batch processing failure
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error('[SonaEngine] processUnprocessedFeedback: Batch processing failed:', errorMsg);
+
+      // Emit error event
+      const bus = getObservabilityBus();
+      bus.emit({
+        component: 'sona',
+        operation: 'sona_batch_feedback_processed',
+        status: 'error',
+        metadata: {
+          error: errorMsg,
+          processed: stats.processed,
+          patternsCreated: stats.patternsCreated,
+          errors: stats.errors
+        }
+      });
+    }
+
+    return stats;
+  }
+
+  /**
+   * Get count of unprocessed feedback records awaiting batch learning.
+   *
+   * @returns Number of unprocessed records, or 0 if persistence is disabled
+   */
+  getUnprocessedFeedbackCount(): number {
+    if (!this.persistenceEnabled || !this.learningFeedbackDAO) {
+      return 0;
+    }
+    return this.learningFeedbackDAO.countUnprocessed();
   }
 }
 

@@ -14,9 +14,48 @@
  * @see SPEC-001-architecture.md
  */
 
-import { spawn } from 'child_process';
-import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
+// Pipeline coordination services
+import { PipelineValidator } from './pipeline-validator.js';
+import {
+  PipelinePromptBuilder,
+  type IPromptContext,
+} from './pipeline-prompt-builder.js';
+import { PipelineMemoryCoordinator } from './pipeline-memory-coordinator.js';
+import type { ISemanticContext } from './leann-context-service.js';
+
+// Sherlock-Quality Gate Integration (PRD Section 2.3)
+import type { IntegratedValidator, IIntegratedValidationResult } from './sherlock-quality-gate-integration.js';
+
+// Extracted modules [REQ-REFACTOR-001 through REQ-REFACTOR-004]
+import {
+  providePipelineFeedback as providePipelineFeedbackFn,
+  provideStepFeedback as provideStepFeedbackFn,
+  batchAgentsForExecution as batchAgentsForExecutionFn,
+} from './coding-phase-executor.js';
+import {
+  storeMemory as storeMemoryFn,
+  retrieveMemoryContext as retrieveMemoryContextFn,
+} from './coding-memory-adapter.js';
+import {
+  executePhase as executePhaseFn,
+  rollbackToLastCheckpoint as rollbackToLastCheckpointFn,
+  type IAgentExecutorDependencies,
+  type IAgentExecutorConfig,
+  type IExecutionState,
+  type ISherlockValidatorAdapter,
+  type ICheckpointData,
+} from './coding-agent-executor.js';
+import { initializePipelineExecution } from './coding-pipeline-init.js';
+import {
+  finalizePipelineExecution,
+  buildFinalPipelineState,
+  buildCompletedMetadata,
+  buildXPStorageObject,
+  type IPipelineFinalizeInput,
+} from './coding-pipeline-finalize.js';
+
+// Observability
+import { ObservabilityBus } from '../observability/bus.js';
 
 import type {
   CodingPipelinePhase,
@@ -36,69 +75,57 @@ import {
   CODING_MEMORY_NAMESPACE,
 } from './types.js';
 
+// Dynamic config loader replaces hardcoded CODING_PIPELINE_MAPPINGS
 import {
-  CODING_PIPELINE_MAPPINGS,
-  getAgentsForPhase,
-  buildPipelineDAG,
-} from './command-task-bridge.js';
+  CodingPipelineConfigLoader,
+  type CodingAgentConfig,
+} from './coding-pipeline-config-loader.js';
+
+// Backwards compatibility - import buildPipelineDAG for DAG structure
+import { buildPipelineDAG } from './command-task-bridge.js';
+
+// Extracted types and constants [REQ-REFACTOR-004]
+import type {
+  IStepExecutor,
+  IOrchestratorDependencies,
+  IOrchestratorConfig,
+  IPipelineSession,
+  ISessionBatchResponse,
+  IBatchExecutionResult,
+  IAgentBatchItem,
+} from './coding-pipeline-types.js';
+import { ReasoningMode } from '../reasoning/reasoning-types.js';
+import { DEFAULT_ORCHESTRATOR_CONFIG } from './coding-pipeline-constants.js';
+
+// Parallel agent awareness [PARALLEL-AWARE]
+import { PipelineProgressStore } from './pipeline-progress-store.js';
+import { PipelineFileClaims } from './pipeline-file-claims.js';
+import { SituationalAwarenessBuilder } from './pipeline-situational-awareness.js';
+
+// Extracted factory functions [REQ-REFACTOR-005]
+import {
+  createPipelineIntegratedValidator,
+  validatePhaseWithSherlockAndStore,
+  handleSherlockGuiltyVerdictAndStore,
+  type ISherlockWrapperDependencies,
+} from './coding-pipeline-factories.js';
+
+// Session persistence (disk-based state management for CLI)
+import { writeFileSync, readFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
+import { join } from 'path';
+
+// Note: ICheckpointData imported from coding-agent-executor.ts
 
 // ═══════════════════════════════════════════════════════════════════════════
-// CONFIGURATION INTERFACE
+// SESSION PERSISTENCE
 // ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * Configuration for the pipeline orchestrator
- */
-export interface IOrchestratorConfig {
-  /** Maximum time for a single agent execution (ms) */
-  agentTimeoutMs: number;
+// Session storage directory for disk-based persistence
+const SESSION_DIR = join(process.cwd(), '.god-agent/coding-sessions');
 
-  /** Maximum time for a full phase execution (ms) */
-  phaseTimeoutMs: number;
-
-  /** Enable checkpoint creation for rollback */
-  enableCheckpoints: boolean;
-
-  /** Enable parallel execution of parallelizable agents */
-  enableParallelExecution: boolean;
-
-  /** Maximum agents to run in parallel within a phase */
-  maxParallelAgents: number;
-
-  /** Memory namespace for coordination */
-  memoryNamespace: string;
-
-  /** Path to agent markdown files */
-  agentMdPath: string;
-
-  /** Enable verbose logging */
-  verbose: boolean;
-}
-
-/**
- * Default orchestrator configuration
- */
-export const DEFAULT_ORCHESTRATOR_CONFIG: IOrchestratorConfig = {
-  agentTimeoutMs: 120_000, // 2 minutes per agent
-  phaseTimeoutMs: 600_000, // 10 minutes per phase
-  enableCheckpoints: true,
-  enableParallelExecution: true,
-  maxParallelAgents: 3,
-  memoryNamespace: CODING_MEMORY_NAMESPACE,
-  agentMdPath: '.claude/agents/coding-pipeline',
-  verbose: false,
-};
-
-// ═══════════════════════════════════════════════════════════════════════════
-// CHECKPOINT INTERFACE
-// ═══════════════════════════════════════════════════════════════════════════
-
-interface ICheckpoint {
-  phase: CodingPipelinePhase;
-  timestamp: string;
-  memorySnapshot: Record<string, unknown>;
-  completedAgents: CodingPipelineAgent[];
-  totalXP: number;
+// Ensure session directory exists
+if (!existsSync(SESSION_DIR)) {
+  mkdirSync(SESSION_DIR, { recursive: true });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -118,13 +145,70 @@ interface ICheckpoint {
 export class CodingPipelineOrchestrator {
   private config: IOrchestratorConfig;
   private dag: IPipelineDAG;
-  private checkpoints: Map<CodingPipelinePhase, ICheckpoint> = new Map();
-  private executionResults: Map<CodingPipelineAgent, IAgentExecutionResult> = new Map();
-  private totalXP = 0;
+  private executionState: IExecutionState;
 
-  constructor(config: Partial<IOrchestratorConfig> = {}) {
+  // LEANN/RLM Integration - Pipeline coordination services
+  private readonly validator: PipelineValidator;
+  private readonly promptBuilder: PipelinePromptBuilder;
+  private readonly memoryCoordinator: PipelineMemoryCoordinator;
+
+  // Dynamic config loader [REQ-PIPE-047]
+  private readonly configLoader: CodingPipelineConfigLoader;
+
+  // Sherlock-Quality Gate Integration [PRD Section 2.3]
+  // Connects forensic verdicts to learning system (RLM/LEANN)
+  private readonly integratedValidator: IntegratedValidator | null;
+
+  // Parallel agent awareness [PARALLEL-AWARE]
+  private readonly progressStore: PipelineProgressStore;
+  private readonly fileClaims: PipelineFileClaims;
+  private readonly awarenessBuilder: SituationalAwarenessBuilder;
+
+  /**
+   * Create a new CodingPipelineOrchestrator with dependency injection.
+   *
+   * @param dependencies - Required services for LEANN/RLM/Learning integration
+   * @param config - Optional orchestrator configuration
+   */
+  constructor(
+    private readonly dependencies: IOrchestratorDependencies,
+    config: Partial<IOrchestratorConfig> = {}
+  ) {
     this.config = { ...DEFAULT_ORCHESTRATOR_CONFIG, ...config };
     this.dag = buildPipelineDAG();
+
+    // Initialize execution state
+    this.executionState = {
+      executionResults: new Map(),
+      checkpoints: new Map(),
+      totalXP: 0,
+    };
+
+    // Initialize dynamic config loader [REQ-PIPE-047]
+    this.configLoader = new CodingPipelineConfigLoader();
+
+    // Initialize internal coordinators (from PipelineExecutor pattern)
+    this.validator = new PipelineValidator(dependencies.agentRegistry);
+    this.promptBuilder = new PipelinePromptBuilder(dependencies.agentRegistry);
+    this.memoryCoordinator = new PipelineMemoryCoordinator(dependencies.interactionStore, {
+      verbose: this.config.verbose,
+    });
+
+    // Initialize Sherlock-Quality Gate Integration [PRD Section 2.3] via factory
+    this.integratedValidator = createPipelineIntegratedValidator({
+      memoryCoordinator: this.memoryCoordinator,
+      memoryNamespace: this.config.memoryNamespace,
+      verbose: this.config.verbose,
+      enableLearning: this.config.enableLearning,
+      sonaEngine: dependencies.sonaEngine,
+      reasoningBank: dependencies.reasoningBank,
+      log: this.log.bind(this),
+    });
+
+    // Initialize parallel agent awareness [PARALLEL-AWARE]
+    this.progressStore = new PipelineProgressStore();
+    this.fileClaims = new PipelineFileClaims();
+    this.awarenessBuilder = new SituationalAwarenessBuilder(this.progressStore, this.fileClaims);
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -143,631 +227,289 @@ export class CodingPipelineOrchestrator {
     const completedPhases: CodingPipelinePhase[] = [];
     let failedPhase: CodingPipelinePhase | undefined;
     let rollbackApplied = false;
+    let errorMessage: string | undefined;
 
-    this.log(`Starting pipeline execution with ${pipelineConfig.phases.length} phases`);
+    // [REQ-REFACTOR-003] Use extracted initialization function
+    const initResult = initializePipelineExecution(pipelineConfig, this.validator, this.log.bind(this));
+    const { pipelineId, totalAgentCount } = initResult;
+    let trajectoryId = initResult.trajectoryId;
 
-    // Initialize pipeline state in memory
-    await this.storeMemory('pipeline/state', {
+    // Persist trajectory to learning.db so feedback calls succeed (PRD Section 5.1)
+    if (this.dependencies.embeddingProvider && this.dependencies.reasoningBank && pipelineConfig.taskText) {
+      try {
+        const embedding = await this.dependencies.embeddingProvider.embed(pipelineConfig.taskText);
+        const response = await this.dependencies.reasoningBank.reason({
+          query: embedding,
+          type: ReasoningMode.PATTERN_MATCH,
+          applyLearning: true,
+          enhanceWithGNN: false,
+          maxResults: 5,
+          confidenceThreshold: 0.5,
+          metadata: {
+            source: 'coding-pipeline-orchestrator',
+            pipelineId,
+            queryText: pipelineConfig.taskText,
+          },
+        });
+        trajectoryId = response.trajectoryId;
+        this.log(`Embedding-backed trajectory created: ${trajectoryId}`);
+      } catch (error) {
+        this.log(`Warning: Embedding trajectory failed, falling back to simple: ${error}`);
+        if (this.dependencies.sonaEngine) {
+          try {
+            this.dependencies.sonaEngine.createTrajectoryWithId(
+              trajectoryId, 'reasoning.pattern', [], [`pipeline:${pipelineId}`]
+            );
+            this.log(`Simple trajectory created: ${trajectoryId}`);
+          } catch (fallbackError) {
+            this.log(`Warning: Simple trajectory also failed: ${fallbackError}`);
+          }
+        }
+      }
+    } else if (this.dependencies.sonaEngine) {
+      try {
+        this.dependencies.sonaEngine.createTrajectoryWithId(
+          trajectoryId, 'reasoning.pattern', [], [`pipeline:${pipelineId}`]
+        );
+        this.log(`Pipeline trajectory created: ${trajectoryId}`);
+      } catch (error) {
+        this.log(`Warning: Pipeline trajectory creation failed: ${error}`);
+      }
+    }
+
+    // Emit pipeline_started event (preserve in orchestrator for observability)
+    ObservabilityBus.getInstance().emit({
+      component: 'pipeline',
+      operation: 'pipeline_started',
+      status: 'running',
+      metadata: { pipelineId, phases: pipelineConfig.phases, totalAgents: totalAgentCount },
+    });
+
+    // Initialize pipeline state in memory (preserve in orchestrator for memory coordination)
+    storeMemoryFn(this.memoryCoordinator, this.config.memoryNamespace, 'pipeline/state', {
       status: 'running',
       startTime: new Date().toISOString(),
       phases: pipelineConfig.phases,
       currentPhase: 0,
-    });
+      pipelineId,
+    }, this.log.bind(this));
 
+    // Execute phases
     try {
       for (const phase of pipelineConfig.phases) {
         this.log(`Executing phase: ${phase}`);
 
         // Update current phase in memory
-        await this.storeMemory('pipeline/state', {
+        storeMemoryFn(this.memoryCoordinator, this.config.memoryNamespace, 'pipeline/state', {
           currentPhase: PHASE_ORDER.indexOf(phase) + 1,
           currentPhaseName: phase,
-        });
+        }, this.log.bind(this));
 
-        // Execute the phase
-        const phaseResult = await this.executePhase(phase, pipelineConfig);
+        const phaseResult = await this.executePhaseWrapper(phase, pipelineConfig, pipelineId);
         phaseResults.push(phaseResult);
 
         if (phaseResult.success) {
           completedPhases.push(phase);
-          this.totalXP += phaseResult.totalXP;
+          this.executionState.totalXP += phaseResult.totalXP;
 
           // Store phase XP
-          await this.storeMemory(`xp/phase-${PHASE_ORDER.indexOf(phase) + 1}`, {
+          storeMemoryFn(this.memoryCoordinator, this.config.memoryNamespace, `xp/phase-${PHASE_ORDER.indexOf(phase) + 1}`, {
             phase,
             xp: phaseResult.totalXP,
             timestamp: new Date().toISOString(),
-          });
+          }, this.log.bind(this));
         } else {
           failedPhase = phase;
+          errorMessage = `Phase ${phase} failed`;
           this.log(`Phase ${phase} failed, checking for rollback...`);
 
-          // Attempt rollback if checkpoints enabled
-          if (this.config.enableCheckpoints && this.checkpoints.size > 0) {
-            const rolledBack = await this.rollbackToLastCheckpoint();
-            rollbackApplied = rolledBack;
+          if (this.config.enableCheckpoints && this.executionState.checkpoints.size > 0) {
+            rollbackApplied = rollbackToLastCheckpointFn(
+              this.memoryCoordinator,
+              this.config.memoryNamespace,
+              this.executionState,
+              this.log.bind(this)
+            );
           }
-
           break;
         }
       }
     } catch (error) {
       this.log(`Pipeline execution error: ${error}`);
       failedPhase = pipelineConfig.phases[completedPhases.length];
+      errorMessage = error instanceof Error ? error.message : String(error);
     }
 
-    const executionTimeMs = Date.now() - startTime;
-
-    // Store final XP
-    await this.storeMemory('xp/total', {
-      xp: this.totalXP,
-      timestamp: new Date().toISOString(),
-    });
-
-    // Update final pipeline state
-    await this.storeMemory('pipeline/state', {
-      status: failedPhase ? 'failed' : 'completed',
-      endTime: new Date().toISOString(),
-      executionTimeMs,
-      totalXP: this.totalXP,
-      completedPhases,
-      failedPhase,
-      rollbackApplied,
-    });
-
-    return {
+    // [REQ-REFACTOR-003] Use extracted finalization function
+    const finalizeInput: IPipelineFinalizeInput = {
       success: !failedPhase,
       phaseResults,
-      totalXP: this.totalXP,
-      executionTimeMs,
       completedPhases,
       failedPhase,
       rollbackApplied,
+      errorMessage,
+      startTime,
+      totalXP: this.executionState.totalXP,
+      pipelineId,
+      trajectoryId,
     };
-  }
+    const finalizeResult = finalizePipelineExecution(finalizeInput);
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // PHASE EXECUTION
-  // ═══════════════════════════════════════════════════════════════════════════
-
-  /**
-   * Execute a single phase of the pipeline
-   */
-  private async executePhase(
-    phase: CodingPipelinePhase,
-    config: IPipelineExecutionConfig
-  ): Promise<IPhaseExecutionResult> {
-    const startTime = Date.now();
-    const agentResults: IAgentExecutionResult[] = [];
-    let phaseXP = 0;
-    let checkpointCreated = false;
-
-    // Get agents for this phase
-    const phaseAgents = config.agentsByPhase.get(phase) ?? getAgentsForPhase(phase);
-
-    // Resolve execution order within phase (respecting dependencies)
-    const executionOrder = this.resolveExecutionOrder(phaseAgents);
-
-    this.log(`Phase ${phase}: ${executionOrder.length} agents to execute`);
-
-    // Create checkpoint before phase if configured
-    if (this.config.enableCheckpoints && CHECKPOINT_PHASES.includes(phase)) {
-      await this.createCheckpoint(phase);
-      checkpointCreated = true;
+    // Learning feedback (preserve in orchestrator)
+    // Convert feedbackStatus to 'completed' | 'failed' (skip 'skipped' status)
+    if (this.config.enableLearning && finalizeResult.feedbackStatus !== 'skipped') {
+      await providePipelineFeedbackFn(
+        { sonaEngine: this.dependencies.sonaEngine, reasoningBank: this.dependencies.reasoningBank },
+        trajectoryId,
+        finalizeResult.quality,
+        finalizeResult.feedbackStatus as 'completed' | 'failed',
+        errorMessage,
+        this.log.bind(this)
+      );
     }
 
-    // Execute agents in batches (parallelizable agents can run together)
-    const batches = this.batchAgentsForExecution(executionOrder);
+    // Store final XP (preserve in orchestrator for memory coordination)
+    storeMemoryFn(this.memoryCoordinator, this.config.memoryNamespace, 'xp/total',
+      buildXPStorageObject(this.executionState.totalXP), this.log.bind(this));
 
-    for (const batch of batches) {
-      const batchResults = await Promise.all(
-        batch.map(agent => this.executeAgent(agent, phase))
-      );
+    // Update final pipeline state (preserve in orchestrator for memory coordination)
+    storeMemoryFn(this.memoryCoordinator, this.config.memoryNamespace, 'pipeline/state',
+      buildFinalPipelineState(finalizeInput, finalizeResult.executionTimeMs), this.log.bind(this));
 
-      for (const result of batchResults) {
-        agentResults.push(result);
-
-        if (result.success) {
-          phaseXP += result.xpEarned;
-        } else if (this.isCriticalAgent(result.agentKey)) {
-          // Critical agent failed - halt phase
-          this.log(`Critical agent ${result.agentKey} failed, halting phase`);
-          return {
-            phase,
-            success: false,
-            agentResults,
-            totalXP: phaseXP,
-            checkpointCreated,
-            executionTimeMs: Date.now() - startTime,
-          };
-        }
-      }
-    }
-
-    return {
-      phase,
-      success: true,
-      agentResults,
-      totalXP: phaseXP,
-      checkpointCreated,
-      executionTimeMs: Date.now() - startTime,
-    };
-  }
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // AGENT EXECUTION WITH CLAUDEFLOW INTEGRATION
-  // ═══════════════════════════════════════════════════════════════════════════
-
-  /**
-   * Execute a single agent using ClaudeFlow subagent spawning
-   */
-  private async executeAgent(
-    agentMapping: IAgentMapping,
-    phase: CodingPipelinePhase
-  ): Promise<IAgentExecutionResult> {
-    const startTime = Date.now();
-    const { agentKey, algorithm, memoryReads, memoryWrites, xpReward } = agentMapping;
-
-    this.log(`Executing agent: ${agentKey} (algorithm: ${algorithm})`);
-
-    try {
-      // Retrieve memory context for this agent
-      const memoryContext = await this.retrieveMemoryContext(memoryReads);
-
-      // Load agent markdown if exists
-      const agentMd = this.loadAgentMarkdown(agentKey);
-
-      // Execute via ClaudeFlow subagent
-      const result = await this.runAgentWithClaudeFlow(
-        agentKey,
-        agentMd,
-        memoryContext,
-        algorithm,
-        phase
-      );
-
-      // Store agent outputs to memory
-      for (const writeKey of memoryWrites) {
-        await this.storeMemory(writeKey, {
-          agent: agentKey,
-          output: result.output,
-          timestamp: new Date().toISOString(),
-        });
-      }
-
-      const executionTimeMs = Date.now() - startTime;
-
-      const agentResult: IAgentExecutionResult = {
-        agentKey,
-        success: true,
-        output: result.output,
-        xpEarned: xpReward,
-        memoryWrites,
-        executionTimeMs,
-      };
-
-      this.executionResults.set(agentKey, agentResult);
-      return agentResult;
-    } catch (error) {
-      const executionTimeMs = Date.now() - startTime;
-      const errorMessage = error instanceof Error ? error.message : String(error);
-
-      this.log(`Agent ${agentKey} failed: ${errorMessage}`);
-
-      const agentResult: IAgentExecutionResult = {
-        agentKey,
-        success: false,
-        output: null,
-        xpEarned: 0,
-        memoryWrites: [],
-        executionTimeMs,
-        error: errorMessage,
-      };
-
-      this.executionResults.set(agentKey, agentResult);
-      return agentResult;
-    }
-  }
-
-  /**
-   * Execute agent using ClaudeFlow Task tool subprocess
-   *
-   * This replaces the mock implementation with actual ClaudeFlow integration.
-   * Uses npx claude-flow task_orchestrate for subagent execution.
-   */
-  private async runAgentWithClaudeFlow(
-    agentKey: CodingPipelineAgent,
-    agentMd: string,
-    memoryContext: Record<string, unknown>,
-    algorithm: string,
-    phase: CodingPipelinePhase
-  ): Promise<{ output: unknown }> {
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        reject(new Error(`Agent ${agentKey} timed out after ${this.config.agentTimeoutMs}ms`));
-      }, this.config.agentTimeoutMs);
-
-      // Build the ClaudeFlow task prompt with 4-part context
-      const taskPrompt = this.buildClaudeFlowPrompt(
-        agentKey,
-        agentMd,
-        memoryContext,
-        algorithm,
-        phase
-      );
-
-      // Spawn ClaudeFlow task_orchestrate subprocess
-      const child = spawn('npx', [
-        'claude-flow@alpha',
-        'task',
-        'orchestrate',
-        '--task', taskPrompt,
-        '--strategy', 'sequential',
-        '--priority', 'high',
-      ], {
-        cwd: process.cwd(),
-        env: { ...process.env },
-        stdio: ['pipe', 'pipe', 'pipe'],
-      });
-
-      let stdout = '';
-      let stderr = '';
-
-      child.stdout.on('data', (data) => {
-        stdout += data.toString();
-      });
-
-      child.stderr.on('data', (data) => {
-        stderr += data.toString();
-      });
-
-      child.on('close', (code) => {
-        clearTimeout(timeout);
-
-        if (code === 0) {
-          // Parse output - try JSON first, fallback to raw
-          let output: unknown;
-          try {
-            output = JSON.parse(stdout);
-          } catch {
-            output = {
-              agent: agentKey,
-              algorithm,
-              phase,
-              rawOutput: stdout.trim(),
-              memoryContext: Object.keys(memoryContext),
-              completedAt: new Date().toISOString(),
-            };
-          }
-
-          resolve({ output });
-        } else {
-          reject(new Error(`Agent ${agentKey} exited with code ${code}: ${stderr || stdout}`));
-        }
-      });
-
-      child.on('error', (err) => {
-        clearTimeout(timeout);
-        reject(new Error(`Failed to spawn agent ${agentKey}: ${err.message}`));
-      });
+    // Emit pipeline_completed event (preserve in orchestrator for observability)
+    ObservabilityBus.getInstance().emit({
+      component: 'pipeline',
+      operation: 'pipeline_completed',
+      status: finalizeResult.result.success ? 'success' : 'error',
+      durationMs: finalizeResult.executionTimeMs,
+      metadata: { ...buildCompletedMetadata(finalizeInput) },
     });
-  }
 
-  /**
-   * Build ClaudeFlow prompt with mandatory 4-part context
-   */
-  private buildClaudeFlowPrompt(
-    agentKey: CodingPipelineAgent,
-    agentMd: string,
-    memoryContext: Record<string, unknown>,
-    algorithm: string,
-    phase: CodingPipelinePhase
-  ): string {
-    const phaseIndex = PHASE_ORDER.indexOf(phase) + 1;
-    const agentMapping = CODING_PIPELINE_MAPPINGS.find(a => a.agentKey === agentKey);
-    const dependsOn = agentMapping?.dependsOn ?? [];
-    const memoryWrites = agentMapping?.memoryWrites ?? [];
-
-    return `
-## YOUR TASK
-Execute coding pipeline agent: ${agentKey}
-Algorithm: ${algorithm}
-${agentMd ? `\nAgent Instructions:\n${agentMd}` : ''}
-
-## WORKFLOW CONTEXT
-Phase ${phaseIndex}/7 (${phase}) | Agent: ${agentKey}
-Previous agents completed: ${dependsOn.length > 0 ? dependsOn.join(', ') : 'None (first in phase)'}
-Memory context keys: ${Object.keys(memoryContext).join(', ') || 'None'}
-
-## MEMORY RETRIEVAL
-Retrieved from previous agents:
-${JSON.stringify(memoryContext, null, 2)}
-
-## MEMORY STORAGE (For Next Agents)
-Store results to these keys:
-${memoryWrites.map((key, i) => `${i + 1}. ${key}`).join('\n')}
-
-## SUCCESS CRITERIA
-- Complete the agent's designated task
-- Store outputs to designated memory keys
-- Return structured result with completedAt timestamp
-`.trim();
+    return finalizeResult.result;
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // DEPENDENCY RESOLUTION
+  // PHASE EXECUTION WRAPPER
+  // Delegates to extracted executePhase function in coding-agent-executor.ts
   // ═══════════════════════════════════════════════════════════════════════════
 
   /**
-   * Resolve execution order for agents within a phase
-   * Uses topological sort based on dependencies
+   * Execute a single phase of the pipeline.
+   * Wrapper that builds dependencies and delegates to extracted function.
    */
-  private resolveExecutionOrder(agents: IAgentMapping[]): IAgentMapping[] {
-    const agentMap = new Map(agents.map(a => [a.agentKey, a]));
-    const visited = new Set<CodingPipelineAgent>();
-    const result: IAgentMapping[] = [];
-
-    const visit = (agentKey: CodingPipelineAgent) => {
-      if (visited.has(agentKey)) return;
-      visited.add(agentKey);
-
-      const agent = agentMap.get(agentKey);
-      if (!agent) return;
-
-      // Visit dependencies first (within this phase only)
-      for (const dep of agent.dependsOn ?? []) {
-        if (agentMap.has(dep)) {
-          visit(dep);
-        }
-      }
-
-      result.push(agent);
+  private async executePhaseWrapper(
+    phase: CodingPipelinePhase,
+    config: IPipelineExecutionConfig,
+    pipelineId: string
+  ): Promise<IPhaseExecutionResult> {
+    // Build dependencies for extracted function
+    const deps: IAgentExecutorDependencies = {
+      sonaEngine: this.dependencies.sonaEngine,
+      reasoningBank: this.dependencies.reasoningBank,
+      leannContextService: this.dependencies.leannContextService,
+      memoryCoordinator: this.memoryCoordinator,
+      promptBuilder: this.promptBuilder,
+      stepExecutor: this.config.stepExecutor,
+      // Parallel agent awareness [PARALLEL-AWARE]
+      progressStore: this.progressStore,
+      fileClaims: this.fileClaims,
+      awarenessBuilder: this.awarenessBuilder,
+      // PRD: LEANN Pattern Store — reusable pattern retrieval
+      patternMatcher: this.dependencies.patternMatcher,
     };
 
-    // Sort by priority first, then visit
-    const sortedByPriority = [...agents].sort((a, b) => a.priority - b.priority);
-    for (const agent of sortedByPriority) {
-      visit(agent.agentKey);
-    }
+    // Build config for extracted function
+    const executorConfig: IAgentExecutorConfig = {
+      agentTimeoutMs: this.config.agentTimeoutMs,
+      memoryNamespace: this.config.memoryNamespace,
+      agentMdPath: this.config.agentMdPath,
+      enableLearning: this.config.enableLearning,
+      verbose: this.config.verbose,
+      enableParallelExecution: this.config.enableParallelExecution,
+      maxParallelAgents: this.config.maxParallelAgents,
+      enableCheckpoints: this.config.enableCheckpoints,
+    };
 
-    return result;
-  }
-
-  /**
-   * Batch agents for parallel execution where allowed
-   */
-  private batchAgentsForExecution(agents: IAgentMapping[]): IAgentMapping[][] {
-    if (!this.config.enableParallelExecution) {
-      // Sequential: each agent in its own batch
-      return agents.map(a => [a]);
-    }
-
-    const batches: IAgentMapping[][] = [];
-    const executed = new Set<CodingPipelineAgent>();
-    let remaining = [...agents];
-
-    while (remaining.length > 0) {
-      const batch: IAgentMapping[] = [];
-
-      for (const agent of remaining) {
-        // Check if all dependencies are satisfied
-        const depsInPhase = (agent.dependsOn ?? []).filter(dep =>
-          agents.some(a => a.agentKey === dep)
-        );
-        const depsSatisfied = depsInPhase.every(dep => executed.has(dep));
-
-        if (depsSatisfied && agent.parallelizable && batch.length < this.config.maxParallelAgents) {
-          batch.push(agent);
-        } else if (depsSatisfied && batch.length === 0) {
-          // Non-parallelizable agent, must run alone
-          batch.push(agent);
-          break;
+    // Build Sherlock validator adapter
+    const sherlockValidator: ISherlockValidatorAdapter | null = this.integratedValidator
+      ? {
+          validatePhase: async (p, result, retryCount) =>
+            this.validatePhaseWithSherlockWrapper(p, result, retryCount),
+          handleGuiltyVerdict: (result, p) =>
+            this.handleSherlockGuiltyVerdictWrapper(result, p),
         }
-      }
+      : null;
 
-      if (batch.length === 0) {
-        // Shouldn't happen with valid DAG, but handle gracefully
-        batch.push(remaining[0]);
-      }
-
-      batches.push(batch);
-      for (const agent of batch) {
-        executed.add(agent.agentKey);
-      }
-      remaining = remaining.filter(a => !executed.has(a.agentKey));
-    }
-
-    return batches;
-  }
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // CHECKPOINT MANAGEMENT
-  // ═══════════════════════════════════════════════════════════════════════════
-
-  /**
-   * Create a checkpoint at the current phase
-   */
-  private async createCheckpoint(phase: CodingPipelinePhase): Promise<void> {
-    this.log(`Creating checkpoint for phase: ${phase}`);
-
-    // Retrieve current memory state
-    const memorySnapshot = await this.retrieveMemoryContext([
-      `${this.config.memoryNamespace}/*`,
-    ]);
-
-    const checkpoint: ICheckpoint = {
+    // Delegate to extracted function
+    return executePhaseFn(
+      deps,
+      executorConfig,
       phase,
-      timestamp: new Date().toISOString(),
-      memorySnapshot,
-      completedAgents: Array.from(this.executionResults.keys()),
-      totalXP: this.totalXP,
+      config,
+      pipelineId,
+      this.executionState,
+      this.getAgentsForPhaseFromLoader.bind(this),
+      sherlockValidator,
+      this.log.bind(this)
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SHERLOCK-QUALITY GATE VALIDATION [PRD Section 2.3]
+  // Thin wrappers that delegate to extracted factory functions.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /** Build Sherlock wrapper dependencies for extracted functions */
+  private getSherlockDeps(): ISherlockWrapperDependencies {
+    return {
+      integratedValidator: this.integratedValidator,
+      memoryCoordinator: this.memoryCoordinator,
+      memoryNamespace: this.config.memoryNamespace,
+      verbose: this.config.verbose,
+      log: this.log.bind(this),
     };
-
-    this.checkpoints.set(phase, checkpoint);
-
-    // Store checkpoint in memory
-    await this.storeMemory(`pipeline/checkpoints/${phase}`, checkpoint);
   }
 
-  /**
-   * Rollback to the last successful checkpoint
-   */
-  private async rollbackToLastCheckpoint(): Promise<boolean> {
-    if (this.checkpoints.size === 0) {
-      this.log('No checkpoints available for rollback');
-      return false;
-    }
+  /** Validate phase with Sherlock-Quality Gate (delegates to factory function) */
+  private async validatePhaseWithSherlockWrapper(
+    phase: CodingPipelinePhase,
+    phaseResult: IPhaseExecutionResult,
+    retryCount: number = 0
+  ): Promise<IIntegratedValidationResult | null> {
+    return validatePhaseWithSherlockAndStore(this.getSherlockDeps(), phase, phaseResult, retryCount);
+  }
 
-    // Get the most recent checkpoint
-    const phases = Array.from(this.checkpoints.keys());
-    const lastPhase = phases[phases.length - 1];
-    const checkpoint = this.checkpoints.get(lastPhase);
-
-    if (!checkpoint) {
-      return false;
-    }
-
-    this.log(`Rolling back to checkpoint: ${lastPhase}`);
-
-    // Restore memory state
-    for (const [key, value] of Object.entries(checkpoint.memorySnapshot)) {
-      await this.storeMemory(key, value);
-    }
-
-    // Restore XP
-    this.totalXP = checkpoint.totalXP;
-
-    // Clear execution results after checkpoint
-    const checkpointAgents = new Set(checkpoint.completedAgents);
-    for (const agentKey of this.executionResults.keys()) {
-      if (!checkpointAgents.has(agentKey)) {
-        this.executionResults.delete(agentKey);
-      }
-    }
-
-    return true;
+  /** Handle GUILTY verdict (delegates to factory function) */
+  private handleSherlockGuiltyVerdictWrapper(
+    validationResult: IIntegratedValidationResult,
+    phase: CodingPipelinePhase
+  ): string[] {
+    return handleSherlockGuiltyVerdictAndStore(this.getSherlockDeps(), validationResult, phase);
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // MEMORY COORDINATION
+  // DYNAMIC CONFIG LOADER METHODS [REQ-PIPE-047]
   // ═══════════════════════════════════════════════════════════════════════════
 
   /**
-   * Store value in ClaudeFlow memory
+   * Get agents for a phase from the dynamic loader.
+   * Converts CodingAgentConfig to IAgentMapping for orchestrator compatibility.
    */
-  private async storeMemory(key: string, value: unknown): Promise<void> {
-    const fullKey = key.startsWith(this.config.memoryNamespace)
-      ? key
-      : `${this.config.memoryNamespace}/${key}`;
-
-    try {
-      await new Promise<void>((resolve, reject) => {
-        const child = spawn('npx', [
-          'claude-flow',
-          'memory',
-          'store',
-          fullKey,
-          JSON.stringify(value),
-          '--namespace', this.config.memoryNamespace,
-        ], {
-          cwd: process.cwd(),
-          stdio: ['pipe', 'pipe', 'pipe'],
-        });
-
-        child.on('close', (code) => {
-          if (code === 0) resolve();
-          else reject(new Error(`Memory store failed with code ${code}`));
-        });
-
-        child.on('error', reject);
-      });
-    } catch (error) {
-      this.log(`Warning: Failed to store memory ${fullKey}: ${error}`);
-    }
+  private async getAgentsForPhaseFromLoader(phase: CodingPipelinePhase): Promise<IAgentMapping[]> {
+    const allMappings = await this.configLoader.getAgentMappings();
+    return allMappings.filter(m => m.phase === phase);
   }
 
   /**
-   * Retrieve memory context for agent execution
+   * Get agent markdown content from loaded config.
+   * Falls back to file read if not in cache.
    */
-  private async retrieveMemoryContext(keys: string[]): Promise<Record<string, unknown>> {
-    const context: Record<string, unknown> = {};
-
-    for (const key of keys) {
-      const fullKey = key.startsWith(this.config.memoryNamespace)
-        ? key
-        : `${this.config.memoryNamespace}/${key}`;
-
-      try {
-        const result = await new Promise<string>((resolve, reject) => {
-          const child = spawn('npx', [
-            'claude-flow',
-            'memory',
-            'retrieve',
-            '--key', fullKey,
-          ], {
-            cwd: process.cwd(),
-            stdio: ['pipe', 'pipe', 'pipe'],
-          });
-
-          let stdout = '';
-          child.stdout.on('data', (data) => {
-            stdout += data.toString();
-          });
-
-          child.on('close', (code) => {
-            if (code === 0) resolve(stdout.trim());
-            else resolve(''); // Key not found is OK
-          });
-
-          child.on('error', () => resolve(''));
-        });
-
-        if (result) {
-          try {
-            context[key] = JSON.parse(result);
-          } catch {
-            context[key] = result;
-          }
-        }
-      } catch {
-        // Ignore retrieval errors - key may not exist yet
-      }
-    }
-
-    return context;
+  private async getAgentMarkdownFromLoader(agentKey: string): Promise<string> {
+    const agent = await this.configLoader.getAgentByKey(agentKey);
+    return agent?.fullContent ?? '';
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // HELPER METHODS
-  // ═══════════════════════════════════════════════════════════════════════════
-
-  /**
-   * Load agent markdown file if it exists
-   */
-  private loadAgentMarkdown(agentKey: CodingPipelineAgent): string {
-    const mdPath = join(process.cwd(), this.config.agentMdPath, `${agentKey}.md`);
-
-    if (existsSync(mdPath)) {
-      try {
-        return readFileSync(mdPath, 'utf-8');
-      } catch {
-        return '';
-      }
-    }
-
-    return '';
-  }
-
-  /**
-   * Check if agent is critical (halts pipeline on failure)
-   */
-  private isCriticalAgent(agentKey: CodingPipelineAgent): boolean {
-    return CRITICAL_AGENTS.includes(agentKey);
-  }
-
-  /**
-   * Log message if verbose mode enabled
-   */
+  /** Log message if verbose mode enabled */
   private log(message: string): void {
     if (this.config.verbose) {
       console.log(`[CodingPipelineOrchestrator] ${message}`);
@@ -782,21 +524,21 @@ ${memoryWrites.map((key, i) => `${i + 1}. ${key}`).join('\n')}
    * Get current total XP
    */
   getTotalXP(): number {
-    return this.totalXP;
+    return this.executionState.totalXP;
   }
 
   /**
    * Get all execution results
    */
   getExecutionResults(): Map<CodingPipelineAgent, IAgentExecutionResult> {
-    return new Map(this.executionResults);
+    return new Map(this.executionState.executionResults);
   }
 
   /**
    * Get all checkpoints
    */
-  getCheckpoints(): Map<CodingPipelinePhase, ICheckpoint> {
-    return new Map(this.checkpoints);
+  getCheckpoints(): Map<CodingPipelinePhase, ICheckpointData> {
+    return new Map(this.executionState.checkpoints);
   }
 
   /**
@@ -805,6 +547,447 @@ ${memoryWrites.map((key, i) => `${i + 1}. ${key}`).join('\n')}
   getDAG(): IPipelineDAG {
     return this.dag;
   }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // STATEFUL CLI API (PhD Pipeline Pattern)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Save session to disk
+   * Enables resumption after process restart (PRD: massive context handling)
+   */
+  private saveSessionToDisk(session: IPipelineSession): void {
+    const sessionPath = join(SESSION_DIR, `${session.sessionId}.json`);
+    writeFileSync(sessionPath, JSON.stringify(session, null, 2), 'utf-8');
+    this.log(`Session ${session.sessionId} saved to disk`);
+  }
+
+  /**
+   * Load session from disk
+   * Enables resumption after process restart
+   */
+  private loadSessionFromDisk(sessionId: string): IPipelineSession {
+    const sessionPath = join(SESSION_DIR, `${sessionId}.json`);
+
+    if (!existsSync(sessionPath)) {
+      throw new Error(`Session not found: ${sessionId}`);
+    }
+
+    const data = readFileSync(sessionPath, 'utf-8');
+    const session = JSON.parse(data) as IPipelineSession;
+    this.log(`Session ${sessionId} loaded from disk`);
+    return session;
+  }
+
+  /**
+   * Check if session exists on disk
+   */
+  private sessionExists(sessionId: string): boolean {
+    const sessionPath = join(SESSION_DIR, `${sessionId}.json`);
+    return existsSync(sessionPath);
+  }
+
+  /**
+   * Delete session from disk (cleanup after completion)
+   */
+  private deleteSession(sessionId: string): void {
+    const sessionPath = join(SESSION_DIR, `${sessionId}.json`);
+    if (existsSync(sessionPath)) {
+      // Don't actually delete - keep for debugging
+      // Just mark as complete in the file
+      this.log(`Session ${sessionId} marked complete (file preserved)`);
+    }
+  }
+
+  /**
+   * Resume existing session from disk
+   * Validates session integrity and returns current state
+   *
+   * @param sessionId - Session identifier to resume
+   * @returns Session batch response for current position
+   */
+  async resumeSession(sessionId: string): Promise<ISessionBatchResponse> {
+    if (!this.sessionExists(sessionId)) {
+      throw new Error(`Cannot resume - session not found: ${sessionId}`);
+    }
+
+    const session = this.loadSessionFromDisk(sessionId);
+
+    // Validate session integrity
+    if (!session.batches || session.batches.length === 0) {
+      throw new Error(`Session ${sessionId} corrupted - no batches found`);
+    }
+
+    if (session.status === 'complete') {
+      this.log(`Session ${sessionId} already complete`);
+      return {
+        sessionId: session.sessionId,
+        status: 'complete',
+        batch: [],
+        currentPhase: session.config.phases[session.currentPhaseIndex - 1] || session.config.phases[0],
+        completedAgents: session.completedAgents.length,
+        totalAgents: session.batches.flat(2).length,
+      };
+    }
+
+    if (session.status === 'failed') {
+      throw new Error(`Session ${sessionId} failed - cannot resume`);
+    }
+
+    this.log(`Resuming session ${sessionId} at phase ${session.currentPhaseIndex}, batch ${session.currentBatchIndex}`);
+
+    // Return current batch
+    return this.getBatchPrompts(session);
+  }
+
+  /**
+   * List all sessions on disk
+   * Useful for recovery and debugging
+   */
+  listSessions(): Array<{ sessionId: string; status: string; createdAt: number }> {
+    if (!existsSync(SESSION_DIR)) {
+      return [];
+    }
+
+    const files = readdirSync(SESSION_DIR);
+    const sessions: Array<{ sessionId: string; status: string; createdAt: number }> = [];
+
+    for (const file of files) {
+      if (file.endsWith('.json')) {
+        try {
+          const session = this.loadSessionFromDisk(file.replace('.json', ''));
+          sessions.push({
+            sessionId: session.sessionId,
+            status: session.status,
+            createdAt: session.createdAt,
+          });
+        } catch (error) {
+          // Skip corrupted files
+          this.log(`Skipping corrupted session file: ${file}`);
+        }
+      }
+    }
+
+    return sessions;
+  }
+
+  /**
+   * Initialize a stateful pipeline session
+   * Returns the first batch of agents with contextualized prompts
+   *
+   * @param sessionId - Unique session identifier
+   * @param pipelineConfig - Pipeline configuration
+   * @returns First batch of agents to execute
+   */
+  async initSession(
+    sessionId: string,
+    pipelineConfig: IPipelineExecutionConfig
+  ): Promise<ISessionBatchResponse> {
+    const startTime = Date.now();
+    const pipelineId = `pipeline-${startTime}`;
+
+    // Initialize trajectory for learning
+    let trajectoryId = `traj_${startTime}_${Math.random().toString(36).slice(2, 10)}`;
+
+    if (this.dependencies.embeddingProvider && this.dependencies.reasoningBank && pipelineConfig.taskText) {
+      try {
+        const embedding = await this.dependencies.embeddingProvider.embed(pipelineConfig.taskText);
+        const response = await this.dependencies.reasoningBank.reason({
+          query: embedding,
+          type: ReasoningMode.PATTERN_MATCH,
+          applyLearning: true,
+          enhanceWithGNN: false,
+          maxResults: 5,
+          confidenceThreshold: 0.5,
+          metadata: {
+            source: 'coding-pipeline-cli',
+            pipelineId,
+            queryText: pipelineConfig.taskText,
+          },
+        });
+        trajectoryId = response.trajectoryId;
+        this.log(`Embedding-backed trajectory created: ${trajectoryId}`);
+      } catch (error) {
+        this.log(`Warning: Embedding trajectory failed: ${error}`);
+      }
+    }
+
+    // Create session
+    const session: IPipelineSession = {
+      sessionId,
+      pipelineId,
+      trajectoryId,
+      config: pipelineConfig,
+      currentPhaseIndex: 0,
+      currentBatchIndex: 0,
+      completedAgents: [],
+      status: 'running',
+      createdAt: startTime,
+      batches: await this.computeAllBatches(pipelineConfig),
+    };
+
+    // Save session to disk (CRITICAL: Persistence for massive context)
+    this.saveSessionToDisk(session);
+
+    // Store pipeline state in memory
+    storeMemoryFn(this.memoryCoordinator, this.config.memoryNamespace, 'pipeline/state', {
+      status: 'running',
+      startTime: new Date().toISOString(),
+      phases: pipelineConfig.phases,
+      currentPhase: 0,
+      pipelineId,
+      sessionId,
+    }, this.log.bind(this));
+
+    // Get first batch
+    return this.getBatchPrompts(session);
+  }
+
+  /**
+   * Get next batch of agents with contextualized prompts
+   * Loads session from disk (supports resumption after restart)
+   *
+   * @param sessionId - Session identifier
+   * @returns Batch of agents to execute, or completion status
+   */
+  async getNextBatch(sessionId: string): Promise<ISessionBatchResponse> {
+    // Load session from disk (CRITICAL: Enables resumption after restart)
+    const session = this.loadSessionFromDisk(sessionId);
+
+    return this.getBatchPrompts(session);
+  }
+
+  /**
+   * Mark batch as complete and provide learning feedback
+   * Loads session from disk, updates it, and saves back (checkpoint)
+   *
+   * @param sessionId - Session identifier
+   * @param results - Execution results from batch
+   */
+  async markBatchComplete(
+    sessionId: string,
+    results: IBatchExecutionResult[]
+  ): Promise<void> {
+    // Load session from disk (CRITICAL: Supports resumption)
+    const session = this.loadSessionFromDisk(sessionId);
+
+    // Idempotent guard: if the batch pointer already advanced past the last
+    // dispatched position, a previous (killed) call already did the advance.
+    // Don't advance again — just return so getNextBatch returns the correct batch.
+    if (session.lastDispatchedBatch) {
+      const dispatched = session.lastDispatchedBatch;
+      const atPhase = session.currentPhaseIndex;
+      const atBatch = session.currentBatchIndex;
+      if (atPhase > dispatched.phaseIndex ||
+          (atPhase === dispatched.phaseIndex && atBatch > dispatched.batchIndex)) {
+        this.log(`Idempotent skip: batch already advanced past dispatched (phase=${dispatched.phaseIndex},batch=${dispatched.batchIndex}) → current (phase=${atPhase},batch=${atBatch})`);
+        return;
+      }
+    }
+
+    // Store results and provide feedback
+    for (const result of results) {
+      const agentKey = result.agentKey as CodingPipelineAgent;
+
+      // Store in execution state
+      this.executionState.executionResults.set(agentKey, {
+        agentKey,
+        success: result.success,
+        output: result.output,
+        xpEarned: Math.floor(result.quality * 100),
+        memoryWrites: result.memoryWrites || [],
+        executionTimeMs: result.duration,
+      });
+
+      // Mark as completed
+      session.completedAgents.push(agentKey);
+
+      // Provide learning feedback
+      if (this.config.enableLearning && this.dependencies.sonaEngine) {
+        const currentPhase = session.config.phases[session.currentPhaseIndex];
+        const agentTrajectoryId = `${session.trajectoryId}-${agentKey}`;
+
+        try {
+          // Create agent trajectory
+          this.dependencies.sonaEngine.createTrajectoryWithId(
+            agentTrajectoryId,
+            'reasoning.pattern',
+            [],
+            [`agent:${agentKey}`, `phase:${currentPhase}`, `pipeline:${session.pipelineId}`]
+          );
+
+          // Provide feedback
+          await provideStepFeedbackFn(
+            { sonaEngine: this.dependencies.sonaEngine, reasoningBank: this.dependencies.reasoningBank },
+            agentTrajectoryId,
+            result.quality,
+            agentKey,
+            currentPhase,
+            undefined,
+            this.log.bind(this)
+          );
+        } catch (error) {
+          this.log(`Warning: Feedback provision failed for ${agentKey}: ${error}`);
+        }
+      }
+    }
+
+    // Advance to next batch
+    session.currentBatchIndex++;
+
+    // Check if phase complete
+    const currentPhaseBatches = session.batches[session.currentPhaseIndex];
+    if (session.currentBatchIndex >= currentPhaseBatches.length) {
+      // Move to next phase
+      session.currentPhaseIndex++;
+      session.currentBatchIndex = 0;
+
+      // Check if pipeline complete
+      if (session.currentPhaseIndex >= session.config.phases.length) {
+        session.status = 'complete';
+        this.log(`Pipeline session ${sessionId} complete`);
+      }
+    }
+
+    // Save updated session to disk (CRITICAL: Checkpoint for resumption)
+    this.saveSessionToDisk(session);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // PRIVATE HELPERS FOR STATEFUL CLI
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Compute all batches for all phases upfront
+   */
+  private async computeAllBatches(config: IPipelineExecutionConfig): Promise<IAgentMapping[][][]> {
+    const allBatches: IAgentMapping[][][] = [];
+
+    for (const phase of config.phases) {
+      const agents = await this.getAgentsForPhaseFromLoader(phase);
+      const phaseBatches = batchAgentsForExecutionFn(agents, {
+        enableParallelExecution: this.config.enableParallelExecution,
+        maxParallelAgents: this.config.maxParallelAgents,
+      });
+      allBatches.push(phaseBatches);
+    }
+
+    return allBatches;
+  }
+
+  /**
+   * Get batch prompts with full RLM/LEANN context injection
+   */
+  private async getBatchPrompts(session: IPipelineSession): Promise<ISessionBatchResponse> {
+    if (session.status === 'complete') {
+      return {
+        sessionId: session.sessionId,
+        status: 'complete',
+        batch: [],
+        currentPhase: session.config.phases[session.currentPhaseIndex - 1],
+        completedAgents: session.completedAgents.length,
+        totalAgents: session.batches.flat(2).length,
+      };
+    }
+
+    const currentPhase = session.config.phases[session.currentPhaseIndex];
+    const phaseBatches = session.batches[session.currentPhaseIndex];
+    const batch = phaseBatches[session.currentBatchIndex];
+
+    // Track which batch was dispatched (for idempotent complete guard)
+    session.lastDispatchedBatch = {
+      phaseIndex: session.currentPhaseIndex,
+      batchIndex: session.currentBatchIndex,
+    };
+    this.saveSessionToDisk(session);
+
+    // Build contextualized prompts for each agent in batch
+    const batchWithPrompts: IAgentBatchItem[] = await Promise.all(
+      batch.map(async (agentMapping) => {
+        const agentKey = agentMapping.agentKey as string;
+
+        // 1. Retrieve RLM context from memory
+        const memoryReads = agentMapping.memoryReads || [];
+        const memoryContext = retrieveMemoryContextFn(
+          this.memoryCoordinator,
+          this.config.memoryNamespace,
+          memoryReads
+        );
+
+        // 2. Retrieve LEANN semantic context
+        let semanticContext: ISemanticContext = { codeContext: [], totalResults: 0, searchQuery: '' };
+        if (this.dependencies.leannContextService) {
+          try {
+            const agentMd = await this.getAgentMarkdownFromLoader(agentKey);
+            semanticContext = await this.dependencies.leannContextService.buildSemanticContext({
+              taskDescription: agentMd || `Execute ${agentKey}`,
+              phase: PHASE_ORDER.indexOf(currentPhase),
+              previousOutput: memoryContext,
+              maxResults: 5,
+            });
+          } catch (error) {
+            this.log(`LEANN context retrieval failed for ${agentKey}: ${error}`);
+          }
+        }
+
+        // 3. Load agent markdown
+        const agentMd = await this.getAgentMarkdownFromLoader(agentKey);
+
+        // 4. Build prompt with full context
+        const algorithm = agentMapping.algorithm || 'ReAct';
+        const memoryWrites = agentMapping.memoryWrites || [];
+
+        const promptContext: IPromptContext = {
+          step: {
+            agentKey,
+            task: agentMd || `Execute ${agentKey} agent with ${algorithm} algorithm`,
+            inputDomain: memoryReads[0] || '',
+            inputTags: [],
+            outputDomain: memoryWrites[0] || `coding/${currentPhase}/${agentKey}`,
+            outputTags: [agentKey, currentPhase, algorithm],
+          },
+          stepIndex: agentMapping.priority,
+          pipeline: {
+            name: 'coding-pipeline',
+            description: `48-agent coding pipeline - Phase: ${currentPhase}`,
+            agents: [],
+            sequential: true,
+          },
+          pipelineId: session.pipelineId,
+          previousOutput: memoryContext,
+          semanticContext,
+        };
+
+        const builtPrompt = this.promptBuilder.buildPrompt(promptContext);
+
+        return {
+          key: agentKey,
+          prompt: builtPrompt.prompt,
+          type: this.mapAgentToType(agentKey),
+          memoryWrites,
+        };
+      })
+    );
+
+    return {
+      sessionId: session.sessionId,
+      status: 'running',
+      batch: batchWithPrompts,
+      currentPhase,
+      completedAgents: session.completedAgents.length,
+      totalAgents: session.batches.flat(2).length,
+    };
+  }
+
+  /**
+   * Map agent key to Claude Code Task tool subagent_type
+   *
+   * Agent keys (task-analyzer, requirement-extractor, etc.) are registered
+   * directly as subagent_types in Claude Code's Task tool. Return the key as-is.
+   */
+  private mapAgentToType(agentKey: string): string {
+    return agentKey;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -812,21 +995,38 @@ ${memoryWrites.map((key, i) => `${i + 1}. ${key}`).join('\n')}
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Create a new CodingPipelineOrchestrator instance
+ * Create a new CodingPipelineOrchestrator instance with dependency injection.
+ *
+ * @param dependencies - Required services for LEANN/RLM/Learning integration
+ * @param config - Optional orchestrator configuration
  */
 export function createOrchestrator(
-  config: Partial<IOrchestratorConfig> = {}
+  dependencies: IOrchestratorDependencies,
+  config?: Partial<IOrchestratorConfig>
 ): CodingPipelineOrchestrator {
-  return new CodingPipelineOrchestrator(config);
+  return new CodingPipelineOrchestrator(dependencies, config);
 }
 
 /**
- * Execute a coding pipeline with default configuration
+ * Execute a coding pipeline with dependency injection.
+ *
+ * @param pipelineConfig - Pipeline configuration from prepareCodeTask()
+ * @param dependencies - Required services for LEANN/RLM/Learning integration
+ * @param orchestratorConfig - Optional orchestrator configuration
  */
 export async function executePipeline(
   pipelineConfig: IPipelineExecutionConfig,
-  orchestratorConfig: Partial<IOrchestratorConfig> = {}
+  dependencies: IOrchestratorDependencies,
+  orchestratorConfig?: Partial<IOrchestratorConfig>
 ): Promise<IPipelineExecutionResult> {
-  const orchestrator = createOrchestrator(orchestratorConfig);
+  const orchestrator = createOrchestrator(dependencies, orchestratorConfig);
   return orchestrator.execute(pipelineConfig);
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// RE-EXPORTS FOR BACKWARD COMPATIBILITY [REQ-REFACTOR-004]
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Re-export types and constants so existing imports from this file continue to work
+export type { IStepExecutor, IOrchestratorDependencies, IOrchestratorConfig };
+export { DEFAULT_ORCHESTRATOR_CONFIG };

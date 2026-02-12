@@ -83,11 +83,31 @@ import {
 import {
   PipelineExecutor,
   createPipelineExecutor,
+  createLeannContextService,
+  LeannContextService,
   type IPipelineDefinition,
   type IPipelineExecutorConfig,
   type DAI002PipelineResult,
   type DAI002PipelineOptions,
 } from '../core/pipeline/index.js';
+
+// LEANN: Semantic search adapter for context service initialization
+import { createLEANNAdapter } from '../core/search/adapters/leann-adapter.js';
+
+// LEANN: DualCodeEmbeddingProvider for optimized code search (NLP + Code fusion)
+import {
+  createDualCodeEmbeddingProvider,
+  createLEANNEmbedder,
+  type DualCodeEmbeddingProvider
+} from '../core/search/dual-code-embedding.js';
+
+// TASK-PIPELINE-FIX: Import CommandTaskBridge for sophisticated task complexity analysis
+// Replaces weak regex-based isPipelineTask() with scoring-based analysis
+import {
+  CommandTaskBridge,
+  DEFAULT_PIPELINE_THRESHOLD,
+  type IComplexityAnalysis,
+} from '../core/pipeline/command-task-bridge.js';
 
 // DAI-003: Intelligent Task Routing
 import {
@@ -213,6 +233,34 @@ import {
   type IPostToolUseContext,
   type IHookChainResult,
 } from '../core/hooks/index.js';
+
+// TASK-PREP-003: Coding Pipeline DAG generation imports
+// Implements [REQ-PREP-003]: Dynamic import from command-task-bridge.ts
+import {
+  CODING_PIPELINE_MAPPINGS,
+  getAgentsForPhase,
+  buildPipelineDAG,
+} from '../core/pipeline/command-task-bridge.js';
+
+import {
+  PHASE_ORDER,
+  CHECKPOINT_PHASES,
+  CODING_MEMORY_NAMESPACE,
+  type CodingPipelinePhase,
+  type IPipelineExecutionConfig,
+  type IPipelineExecutionResult,
+  type IAgentMapping,
+} from '../core/pipeline/types.js';
+
+import {
+  CodingPipelineOrchestrator,
+  createOrchestrator,
+  type IOrchestratorDependencies,
+  type IOrchestratorConfig,
+  type IStepExecutor,
+} from '../core/pipeline/coding-pipeline-orchestrator.js';
+
+// ClaudeCodeStepExecutor removed - coding pipeline uses CLI-based execution like PhD pipeline
 
 // TASK-CHUNK-003: Knowledge chunking for OpenAI token limit compliance
 // CONSTITUTION COMPLIANCE: RULE-064 (symmetric chunking), RULE-008 (SQLite persistence)
@@ -524,7 +572,7 @@ export interface ICodeTaskPreparation {
   /** Whether this is a multi-agent pipeline task */
   isPipeline: boolean;
   /** Pipeline definition if isPipeline is true */
-  pipeline?: { steps: string[]; agents: string[] };
+  pipeline?: { steps: string[]; agents: string[]; config?: import('../core/pipeline/types.js').IPipelineExecutionConfig };
   /** Detected or specified programming language */
   language?: string;
 }
@@ -570,7 +618,7 @@ export interface IWriteTaskPreparation {
   isPipeline: boolean;
 
   /** Pipeline definition if isPipeline is true */
-  pipeline?: { steps: string[]; agents: string[] };
+  pipeline?: { steps: string[]; agents: string[]; config?: import('../core/pipeline/types.js').IPipelineExecutionConfig };
 
   // ========== Writing-Specific Fields ==========
 
@@ -687,6 +735,9 @@ type InternalUniversalConfig = Required<Omit<UniversalConfig, 'dailyBudget' | 'w
   routerConfig: Partial<RouterConfig>;
 };
 
+// Persistence path for LEANN vector index
+const LEANN_PERSISTENCE_PATH = './vector_db_leann';
+
 export class UniversalAgent {
   private agent: GodAgent;
   private config: InternalUniversalConfig;
@@ -732,6 +783,9 @@ export class UniversalAgent {
 
   // DAI-002: Multi-Agent Sequential Pipeline Orchestration
   private pipelineExecutor!: PipelineExecutor;
+
+  // LEANN context service for semantic search (persistence-enabled)
+  private leannContextService?: LeannContextService;
 
   // DAI-003: Intelligent Task Routing
   private taskAnalyzer!: TaskAnalyzer;
@@ -942,12 +996,92 @@ export class UniversalAgent {
 
     // DAI-002: Initialize multi-agent sequential pipeline executor
     // Note: reuses reasoningBank from TrajectoryBridge initialization above
+
+    // Initialize LEANN semantic search for infinite context retrieval
+    // PRD: Use DualCodeEmbeddingProvider for optimized code search (NLP + Code fusion)
+    let leannContextService: ReturnType<typeof createLeannContextService> | undefined;
+    let dualEmbeddingProvider: DualCodeEmbeddingProvider | undefined;
+    try {
+      leannContextService = createLeannContextService({
+        defaultMaxResults: 10,
+        minSimilarityThreshold: 0.5,
+      });
+
+      // Create DualCodeEmbeddingProvider for smart code/NLP embedding fusion
+      // 40% NLP weight (understand query intent) + 60% code weight (understand structure)
+      dualEmbeddingProvider = createDualCodeEmbeddingProvider({
+        dimension: this.embeddingProvider.getDimensions?.() ?? 1536,
+        nlpWeight: 0.4,
+        codeWeight: 0.6,
+        cacheEnabled: true,
+        cacheMaxSize: 1000,
+        provider: 'local', // Uses gte-Qwen2 underneath
+      });
+
+      // Create LEANN-compatible embedder using dual provider
+      const embeddingDimension = dualEmbeddingProvider.getDimensions();
+      const leannEmbedder = createLEANNEmbedder(dualEmbeddingProvider);
+
+      // Track embedding failures to prevent silent corruption
+      let embeddingFailures = 0;
+      let embeddingAttempts = 0;
+      const MAX_FAILURE_RATE = 0.3; // 30% failure rate threshold
+
+      const leannAdapter = createLEANNAdapter(
+        // Wrap with error handling and failure tracking
+        async (text: string) => {
+          embeddingAttempts++;
+          try {
+            const result = await leannEmbedder(text);
+            return result;
+          } catch (error) {
+            embeddingFailures++;
+            const failureRate = embeddingFailures / embeddingAttempts;
+
+            // If failure rate exceeds threshold, propagate error to prevent index corruption
+            if (failureRate > MAX_FAILURE_RATE && embeddingAttempts > 10) {
+              console.error(`[LEANN] Embedding failure rate ${(failureRate * 100).toFixed(1)}% exceeds threshold, propagating error`);
+              throw error;
+            }
+
+            // Below threshold: log error but allow graceful degradation with zero vector
+            console.error(`[LEANN] DualCodeEmbedding failed (${embeddingFailures}/${embeddingAttempts} = ${(failureRate * 100).toFixed(1)}%): ${error}`);
+            return new Float32Array(embeddingDimension);
+          }
+        },
+        embeddingDimension
+      );
+      await leannContextService.initialize(leannAdapter);
+      this.log(`LEANN: DualCodeEmbedding initialized (${embeddingDimension}D, 40% NLP + 60% Code fusion)`);
+
+      // Store as class member for persistence during shutdown
+      this.leannContextService = leannContextService;
+
+      // Load persisted vectors if available
+      try {
+        const loaded = await leannContextService.load(LEANN_PERSISTENCE_PATH);
+        if (loaded) {
+          const vectorCount = leannContextService.getVectorCount();
+          this.log(`LEANN: Loaded ${vectorCount} vectors from ${LEANN_PERSISTENCE_PATH}`);
+        } else {
+          this.log('LEANN: No persisted vectors found, starting fresh');
+        }
+      } catch (error) {
+        this.log(`LEANN: Failed to load persisted vectors (non-fatal): ${error}`);
+      }
+    } catch (error) {
+      this.log(`LEANN: Initialization failed (non-fatal): ${error}`);
+      leannContextService = undefined;
+      dualEmbeddingProvider = undefined;
+    }
+
     this.pipelineExecutor = createPipelineExecutor(
       {
         agentRegistry: this.agentRegistry,
         agentSelector: this.agentSelector,
         interactionStore: this.interactionStore,
         reasoningBank: reasoningBank ?? undefined,
+        leannContextService,
       },
       {
         verbose: this.config.verbose,
@@ -955,6 +1089,7 @@ export class UniversalAgent {
       }
     );
     this.log('DAI-002: PipelineExecutor initialized - Sequential multi-agent pipelines enabled');
+    this.log('LEANN: Semantic context service ready for infinite context retrieval');
 
     // DAI-003: Initialize intelligent task routing system (AFTER agentRegistry)
     this.taskAnalyzer = new TaskAnalyzer({
@@ -1131,11 +1266,11 @@ export class UniversalAgent {
     this.log('Phase 4c: WritePipelineOrchestrator initialized');
 
     // MEM-001: Initialize memory client for multi-process memory access
-    // Client will auto-start daemon if not running (autoStart: true by default)
+    // Daemons are started externally via scripts/god-agent-start.sh (no auto-start)
     try {
       this.memoryClient = getMemoryClient(
         this.config.storageDir.replace('/universal', ''),
-        { verbose: this.config.verbose, autoStart: true }
+        { verbose: this.config.verbose, autoStart: false }
       );
       await this.memoryClient.connect();
       this.log('MEM-001: Memory client connected to daemon');
@@ -1745,6 +1880,10 @@ export class UniversalAgent {
     context?: string;
     /** TIER-2.1: Model override for intelligent routing */
     model?: string;
+    /** Coding pipeline: starting phase index */
+    startPhase?: number;
+    /** Coding pipeline: ending phase index */
+    endPhase?: number;
   } = {}): Promise<ICodeTaskPreparation> {
     // Implements [REQ-GODCODE-006]: Ensure initialized before processing
     await this.ensureInitialized();
@@ -1800,12 +1939,49 @@ export class UniversalAgent {
 
     // Check if this is a pipeline task (multi-agent)
     const isPipeline = this.isPipelineTask(task);
-    let pipeline: { steps: string[]; agents: string[] } | undefined;
+    let pipeline: { steps: string[]; agents: string[]; config?: import('../core/pipeline/types.js').IPipelineExecutionConfig } | undefined;
     if (isPipeline) {
-      // Extract pipeline info if available
+      // TASK-PREP-003: Coding Pipeline DAG generation
+      // Upstream logic wrapped as-is during merge; refactor to TaskRoutingOrchestrator after tests pass.
+      const startIdx = options.startPhase ?? 0;
+      const endIdx = options.endPhase ?? (PHASE_ORDER.length - 1);
+      const activePhases = PHASE_ORDER.slice(startIdx, endIdx + 1);
+
+      // Build agentsByPhase map for active phases
+      const agentsByPhase = new Map<CodingPipelinePhase, IAgentMapping[]>();
+      for (const phase of activePhases) {
+        agentsByPhase.set(phase, getAgentsForPhase(phase));
+      }
+
+      // Collect all agent keys and steps for backward compatibility
+      const allAgentKeys: string[] = [];
+      for (const phase of activePhases) {
+        const phaseAgents = agentsByPhase.get(phase) ?? [];
+        for (const agentMapping of phaseAgents) {
+          allAgentKeys.push(agentMapping.agentKey);
+        }
+      }
+
+      // Build full DAG using buildPipelineDAG()
+      const dag = buildPipelineDAG();
+
+      // Build complete pipeline configuration
+      const pipelineConfig: IPipelineExecutionConfig = {
+        phases: activePhases,
+        agentsByPhase,
+        dag,
+        memoryNamespace: CODING_MEMORY_NAMESPACE,
+        checkpoints: CHECKPOINT_PHASES.filter(cp => activePhases.includes(cp)),
+        startPhase: startIdx,
+        endPhase: endIdx,
+        taskText: task,
+      };
+
+      // Create pipeline object with backward compatibility
       pipeline = {
         steps: ['analyze', 'implement', 'test'],
         agents: [agent.key],
+        config: pipelineConfig,
       };
     }
 
@@ -1823,6 +1999,55 @@ export class UniversalAgent {
       pipeline,
       language: options.language,
     };
+  }
+
+  /**
+   * Execute the coding pipeline via CodingPipelineOrchestrator.
+   *
+   * Wires all dependencies (agentRegistry, sonaEngine, reasoningBank, etc.)
+   * and delegates to the orchestrator for 7-phase execution with:
+   * - Trajectory persistence (PRD Section 5.1)
+   * - Sherlock forensic reviews (PRD Section 2.3)
+   * - Embedding-backed pattern matching (PRD Section 8.1)
+   *
+   * @param pipelineConfig - Configuration from prepareCodeTask()
+   * @param stepExecutor - Optional step executor for agent execution
+   * @returns Pipeline execution result with XP, phases, and success status
+   */
+  async executePipeline(
+    pipelineConfig: IPipelineExecutionConfig,
+    stepExecutor?: IStepExecutor
+  ): Promise<IPipelineExecutionResult> {
+    await this.ensureInitialized();
+
+    // Step executor should be provided externally if internal execution is needed
+    // For CLI-based execution (like PhD pipeline), this method shouldn't be used
+    if (!stepExecutor) {
+      throw new Error(
+        'executePipeline() requires a stepExecutor. ' +
+        'For CLI-based execution, use coding-pipeline-cli.ts instead.'
+      );
+    }
+    const resolvedExecutor = stepExecutor;
+
+    const deps: IOrchestratorDependencies = {
+      agentRegistry: this.agentRegistry,
+      agentSelector: this.agentSelector,
+      interactionStore: this.interactionStore,
+      reasoningBank: this.agent.getReasoningBank() ?? undefined,
+      sonaEngine: this.agent.getSonaEngine() ?? undefined,
+      leannContextService: this.leannContextService ?? undefined,
+      embeddingProvider: this.embeddingProvider ?? undefined,
+      patternMatcher: this.agent.getPatternMatcher() ?? undefined,
+    };
+
+    const orchestrator = createOrchestrator(deps, {
+      verbose: true,
+      enableLearning: true,
+      stepExecutor: resolvedExecutor,
+    });
+
+    return orchestrator.execute(pipelineConfig);
   }
 
   /**
@@ -2620,6 +2845,17 @@ export class UniversalAgent {
       await this.savePersistedState();
     }
 
+    // Save LEANN vectors before shutdown
+    if (this.leannContextService) {
+      try {
+        await this.leannContextService.save(LEANN_PERSISTENCE_PATH);
+        const vectorCount = this.leannContextService.getVectorCount();
+        this.log(`LEANN: Saved ${vectorCount} vectors to ${LEANN_PERSISTENCE_PATH}`);
+      } catch (error) {
+        this.log(`LEANN: Failed to save vectors: ${error}`);
+      }
+    }
+
     // MEM-001: Disconnect memory client (daemon keeps running for other processes)
     if (this.memoryClient?.isConnected()) {
       await this.memoryClient.disconnect();
@@ -2629,6 +2865,33 @@ export class UniversalAgent {
     await this.agent.shutdown();
     this.initialized = false;
     this.log('Universal Agent shutdown complete - state persisted');
+  }
+
+  /**
+   * Get coding pipeline orchestrator with all dependencies wired
+   * Used by coding-pipeline-cli.ts for stateful session management
+   *
+   * @returns Configured CodingPipelineOrchestrator instance
+   */
+  async getCodingOrchestrator(configOverride?: Partial<IOrchestratorConfig>): Promise<CodingPipelineOrchestrator> {
+    await this.ensureInitialized();
+
+    const deps: IOrchestratorDependencies = {
+      agentRegistry: this.agentRegistry,
+      agentSelector: this.agentSelector,
+      interactionStore: this.interactionStore,
+      reasoningBank: this.agent.getReasoningBank() ?? undefined,
+      sonaEngine: this.agent.getSonaEngine() ?? undefined,
+      leannContextService: this.leannContextService ?? undefined,
+      embeddingProvider: this.embeddingProvider ?? undefined,
+      patternMatcher: this.agent.getPatternMatcher() ?? undefined,
+    };
+
+    return createOrchestrator(deps, {
+      verbose: true,
+      enableLearning: true,
+      ...configOverride,
+    });
   }
 
   /**

@@ -12,196 +12,67 @@
  * FR-017: Task() Spawning Required
  * FR-018: Pipeline Detection
  * FR-019: Multi-Step Task Detection
+ *
+ * REFACTORED: Constitution compliance - split into 6 modules (< 500 lines each)
  */
 
 import { type IPipelineDefinition, type IPipelineStep } from './dai-002-types.js';
 import { PipelineDefinitionError } from './pipeline-errors.js';
 
-// ==================== Types ====================
+// ==================== Type Re-exports ====================
+export type {
+  IComplexityAnalysis,
+  IPipelineDecision,
+  TaskType,
+  IAgentMapping,
+  ICommandTaskBridgeConfig,
+} from './command-task-bridge-types.js';
 
-/**
- * Result of task complexity analysis.
- */
-export interface IComplexityAnalysis {
-  /** Complexity score from 0 to 1 */
-  score: number;
-  /** Whether task requires multiple agents */
-  isMultiStep: boolean;
-  /** Detected phases in the task */
-  detectedPhases: string[];
-  /** Detected document types to create */
-  detectedDocuments: string[];
-  /** Detected action verbs indicating steps */
-  detectedActions: string[];
-  /** Reasoning for the complexity score */
-  reasoning: string;
-}
+// ==================== Constant Re-exports ====================
+export {
+  DEFAULT_PIPELINE_THRESHOLD,
+  PHASE_KEYWORDS,
+  DOCUMENT_KEYWORDS,
+  MULTI_STEP_PATTERNS,
+  CONNECTOR_WORDS,
+  DEFAULT_PHASE_MAPPINGS,
+  DOCUMENT_AGENT_MAPPING,
+} from './command-task-bridge-constants.js';
 
-/**
- * Result of pipeline detection.
- */
-export interface IPipelineDecision {
-  /** Whether to use a pipeline */
-  usePipeline: boolean;
-  /** Reason for the decision */
-  reason: string;
-  /** Suggested pipeline steps if applicable */
-  suggestedSteps?: string[];
-  /** Complexity analysis details */
-  complexity: IComplexityAnalysis;
-}
+// ==================== DAG Builder Re-exports ====================
+export {
+  CODING_PIPELINE_MAPPINGS,
+  getAgentsForPhase,
+  buildPipelineDAG,
+  getCriticalAgents,
+  getAgentByKey,
+  getTotalPipelineXP,
+  getPhaseXPTotals,
+  validatePipelineDependencies,
+  getAgentsByCategory,
+  getForensicReviewAgents,
+  getParallelizableAgents,
+  getPhaseExecutionOrder,
+} from './coding-pipeline-dag-builder.js';
 
-/**
- * Task type mapping for agent selection.
- */
-export type TaskType = 'code' | 'ask' | 'research' | 'write' | 'unknown';
+// ==================== Internal Imports ====================
+import type {
+  IComplexityAnalysis,
+  IPipelineDecision,
+  TaskType,
+  IAgentMapping,
+  ICommandTaskBridgeConfig,
+} from './command-task-bridge-types.js';
 
-/**
- * Agent mapping for different task types and phases.
- */
-export interface IAgentMapping {
-  /** Phase name (e.g., 'plan', 'implement', 'test') */
-  phase: string;
-  /** Recommended agent key */
-  agentKey: string;
-  /** Domain for output storage */
-  outputDomain: string;
-  /** Tags for output storage */
-  outputTags: string[];
-  /** Task template for this phase */
-  taskTemplate: string;
-}
-
-/**
- * Configuration for CommandTaskBridge.
- */
-export interface ICommandTaskBridgeConfig {
-  /** Complexity threshold for triggering pipeline (default: 0.6) */
-  pipelineThreshold?: number;
-  /** Enable verbose logging */
-  verbose?: boolean;
-  /** Custom phase mappings */
-  phaseMappings?: Map<string, IAgentMapping>;
-}
-
-// ==================== Constants ====================
-
-/**
- * Default complexity threshold for triggering pipeline.
- */
-export const DEFAULT_PIPELINE_THRESHOLD = 0.6;
-
-/**
- * Keywords indicating multiple phases.
- */
-export const PHASE_KEYWORDS = [
-  'plan', 'design', 'analyze', 'implement', 'test', 'validate',
-  'review', 'document', 'deploy', 'refactor', 'optimize'
-];
-
-/**
- * Document creation keywords.
- */
-export const DOCUMENT_KEYWORDS = [
-  'prd', 'spec', 'specification', 'tech doc', 'technical document',
-  'readme', 'documentation', 'architecture', 'design doc', 'api doc'
-];
-
-/**
- * Multi-step action patterns (regex).
- */
-export const MULTI_STEP_PATTERNS = [
-  /(\w+)\s+and\s+(\w+)(?:\s+and\s+(\w+))?/gi,  // "plan and implement and test"
-  /first\s+(\w+).*then\s+(\w+)/gi,              // "first analyze, then implement"
-  /step\s*\d+|phase\s*\d+/gi,                    // "step 1", "phase 2"
-  /create\s+(\w+),?\s+(\w+)(?:,?\s+and\s+(\w+))?/gi  // "create PRD, spec, and docs"
-];
-
-/**
- * Connector words indicating sequential work.
- */
-export const CONNECTOR_WORDS = [
-  'then', 'after', 'before', 'once', 'following', 'next', 'finally',
-  'first', 'second', 'third', 'lastly', 'subsequently'
-];
-
-/**
- * Default agent mappings for common phases.
- */
-export const DEFAULT_PHASE_MAPPINGS: IAgentMapping[] = [
-  {
-    phase: 'plan',
-    agentKey: 'planner',
-    outputDomain: 'project/plans',
-    outputTags: ['plan', 'strategy'],
-    taskTemplate: 'Create a detailed plan for: {task}'
-  },
-  {
-    phase: 'analyze',
-    agentKey: 'code-analyzer',
-    outputDomain: 'project/analysis',
-    outputTags: ['analysis', 'review'],
-    taskTemplate: 'Analyze and assess: {task}'
-  },
-  {
-    phase: 'design',
-    agentKey: 'system-architect',
-    outputDomain: 'project/designs',
-    outputTags: ['design', 'architecture'],
-    taskTemplate: 'Design the architecture for: {task}'
-  },
-  {
-    phase: 'implement',
-    agentKey: 'backend-dev',
-    outputDomain: 'project/implementations',
-    outputTags: ['implementation', 'code'],
-    taskTemplate: 'Implement: {task}'
-  },
-  {
-    phase: 'test',
-    agentKey: 'tester',
-    outputDomain: 'project/tests',
-    outputTags: ['test', 'validation'],
-    taskTemplate: 'Write tests for: {task}'
-  },
-  {
-    phase: 'document',
-    agentKey: 'documentation-specialist',
-    outputDomain: 'project/docs',
-    outputTags: ['documentation', 'docs'],
-    taskTemplate: 'Create documentation for: {task}'
-  },
-  {
-    phase: 'review',
-    agentKey: 'reviewer',
-    outputDomain: 'project/reviews',
-    outputTags: ['review', 'feedback'],
-    taskTemplate: 'Review and validate: {task}'
-  },
-  {
-    phase: 'research',
-    agentKey: 'researcher',
-    outputDomain: 'project/research',
-    outputTags: ['research', 'findings'],
-    taskTemplate: 'Research and investigate: {task}'
-  }
-];
-
-/**
- * Document type to agent mapping.
- */
-export const DOCUMENT_AGENT_MAPPING: Record<string, string> = {
-  'prd': 'planner',
-  'spec': 'system-architect',
-  'specification': 'system-architect',
-  'tech doc': 'documentation-specialist',
-  'technical document': 'documentation-specialist',
-  'readme': 'documentation-specialist',
-  'documentation': 'documentation-specialist',
-  'architecture': 'system-architect',
-  'design doc': 'system-architect',
-  'api doc': 'backend-dev'
-};
+import {
+  DEFAULT_PIPELINE_THRESHOLD,
+  PHASE_KEYWORDS,
+  DOCUMENT_KEYWORDS,
+  MULTI_STEP_PATTERNS,
+  CONNECTOR_WORDS,
+  DEFAULT_PHASE_MAPPINGS,
+  DOCUMENT_AGENT_MAPPING,
+} from './command-task-bridge-constants.js';
 
 // ==================== CommandTaskBridge Class ====================
 
@@ -656,12 +527,3 @@ export function createCommandTaskBridge(
 ): CommandTaskBridge {
   return new CommandTaskBridge(config);
 }
-
-// ═══════════════════════════════════════════════════════════════════════════
-// CODING PIPELINE EXPORTS (stub for coding-pipeline-orchestrator.ts)
-// NOTE: These are stubs - the orchestrator file has @ts-nocheck
-// ═══════════════════════════════════════════════════════════════════════════
-
-export const CODING_PIPELINE_MAPPINGS: unknown[] = [];
-export function getAgentsForPhase(_phase: unknown): unknown[] { return []; }
-export function buildPipelineDAG(): unknown { return new Map(); }

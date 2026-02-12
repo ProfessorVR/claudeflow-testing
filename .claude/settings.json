@@ -9,53 +9,45 @@
   },
   "permissions": {
     "allow": [
-      "Bash(python3 scripts/*)",
-      "Bash(python3 -m *)",
-      "Bash(./scripts/*)",
-      "Bash(bash scripts/*)",
-      "Bash(god *)",
-      "Bash(god-learn *)",
+      "Bash(npx tsx:*)",
       "Bash(npx claude-flow:*)",
-      "Bash(npm run *)",
+      "Bash(sleep:*)",
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(kill:*)",
+      "Bash(tail:*)",
+      "Bash(head:*)",
+      "Bash(test:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run test:*)",
       "Bash(npm test:*)",
-      "Bash(npm install*)",
-      "Bash(npx tsc*)",
-      "Bash(npx tsx *)",
-      "Bash(git status*)",
-      "Bash(git diff*)",
-      "Bash(git log*)",
-      "Bash(git add*)",
-      "Bash(git commit*)",
-      "Bash(git push*)",
-      "Bash(git pull*)",
-      "Bash(git config*)",
-      "Bash(git tag*)",
-      "Bash(git branch*)",
-      "Bash(git checkout*)",
-      "Bash(git stash*)",
-      "Bash(git show*)",
-      "Bash(jq *)",
-      "Bash(node *)",
-      "Bash(which *)",
+      "Bash(npm run memory:*)",
+      "Bash(npm run daemon:*)",
+      "Bash(npm run ucm:*)",
+      "Bash(npm run observe:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(git config:*)",
+      "Bash(git tag:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git stash:*)",
+      "Bash(jq:*)",
+      "Bash(node:*)",
+      "Bash(cat > /tmp/:*)",
+      "Bash(cat>/tmp/:*)",
+      "Bash(cat:*)",
+      "Write(/tmp/**)",
+      "Bash(which:*)",
       "Bash(pwd)",
-      "Bash(ls *)",
-      "Bash(ls)",
-      "Bash(cat *)",
-      "Bash(head *)",
-      "Bash(tail *)",
-      "Bash(wc *)",
-      "Bash(find *)",
-      "Bash(grep *)",
-      "Bash(mkdir *)",
-      "Bash(touch *)",
-      "Bash(cp *)",
-      "Bash(mv *)",
-      "Bash(chmod *)",
-      "Bash(echo *)",
-      "Bash(cd *)",
-      "Bash(source *)",
-      "Bash(pip install*)",
-      "Bash(pip3 install*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(sed:*)",
       "Bash(npx tsx src/god-agent/universal/cli.ts status)",
       "Bash(npx tsx src/god-agent/universal/cli.ts ask:*)",
       "Bash(npx tsx src/god-agent/universal/cli.ts code:*)",
@@ -85,16 +77,28 @@
     ],
     "deny": [
       "Bash(rm -rf /)"
+    ],
+    "additionalDirectories": [
+      "/tmp"
     ]
   },
   "hooks": {
     "PreToolUse": [
       {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; SKILL=$(cat | jq -r \".tool_input.skill // empty\"); if [ \"$SKILL\" = \"god-code\" ] && [ -f \"$ROOT/.claude/hooks/god-code-enforcement-v2.sh\" ]; then source \"$ROOT/.claude/hooks/god-code-enforcement-v2.sh\" && activate_pipeline; elif [ \"$SKILL\" = \"god-code\" ]; then echo \"0\" > \"$ROOT/.claude/runtime/.god-code-active\"; echo \"🔒 GOD-CODE PIPELINE MODE ACTIVATED - Direct Write/Edit blocked until Task agents spawned\"; fi; [ -x \"$ROOT/.claude/hooks/coding-pipeline-pre.sh\" ] && \"$ROOT/.claude/hooks/coding-pipeline-pre.sh\" || true'"
+          }
+        ]
+      },
+      {
         "matcher": "Task",
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && [ -x \"$ROOT/.claude/hooks/pre-task.sh\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; \"$ROOT/.claude/hooks/pre-task.sh\" || true'"
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null); if [ -n \"$ROOT\" ] && [ -f \"$ROOT/.claude/runtime/.god-code-active\" ]; then if [ -f \"$ROOT/.claude/hooks/god-code-enforcement-v2.sh\" ]; then source \"$ROOT/.claude/hooks/god-code-enforcement-v2.sh\" && increment_agent_count; else COUNT=$(cat \"$ROOT/.claude/runtime/.god-code-active\" 2>/dev/null || echo 0); echo $((COUNT + 1)) > \"$ROOT/.claude/runtime/.god-code-active\"; echo \"📊 Pipeline Task #$((COUNT + 1)) spawned\"; fi; fi; [ -n \"$ROOT\" ] && [ -x \"$ROOT/.claude/hooks/pre-task.sh\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; \"$ROOT/.claude/hooks/pre-task.sh\" || true'"
           },
           {
             "type": "command",
@@ -107,7 +111,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; cat | jq -r \".tool_input.command // empty\" | tr \"\\n\" \"\\0\" | xargs -0 -I {} npx claude-flow@latest hooks pre-command --command \"{}\" --validate-safety true --prepare-resources true || true'"
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && [ -x \"$ROOT/.claude/hooks/block-heredoc.sh\" ] && \"$ROOT/.claude/hooks/block-heredoc.sh\" || echo \"{\\\"decision\\\": \\\"allow\\\"}\"'"
+          },
+          {
+            "type": "command",
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; cat | jq -r \".tool_input.command // empty\" | tr \"\\n\" \"\\0\" | xargs -0 -I {} npx claude-flow@alpha hooks pre-command --command \"{}\" --validate-safety true --prepare-resources true || true'"
           }
         ]
       },
@@ -116,12 +124,21 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; cat | jq -r \".tool_input.file_path // .tool_input.path // empty\" | tr \"\\n\" \"\\0\" | xargs -0 -I {} npx claude-flow@latest hooks pre-edit --file \"{}\" --auto-assign-agents true --load-context true || true'"
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; if [ -f \"$ROOT/.claude/runtime/.god-code-active\" ]; then if [ -f \"$ROOT/.claude/hooks/god-code-enforcement-v2.sh\" ]; then FILE_PATH=$(cat | jq -r \".tool_input.file_path // .tool_input.path // empty\"); TOOL_NAME=$(cat | jq -r \".tool_name // empty\"); source \"$ROOT/.claude/hooks/god-code-enforcement-v2.sh\" && check_write_permission \"$TOOL_NAME\" \"$FILE_PATH\"; else TASK_COUNT=$(cat \"$ROOT/.claude/runtime/.god-code-active\" 2>/dev/null || echo 0); if [ \"$TASK_COUNT\" -lt 7 ]; then echo \"═══════════════════════════════════════════════════════════════════\"; echo \"🚫 BLOCKED: /god-code Pipeline Violation\"; echo \"═══════════════════════════════════════════════════════════════════\"; echo \"You tried to use Write/Edit directly.\"; echo \"Task agents spawned: $TASK_COUNT (minimum required: 7)\"; echo \"\"; echo \"REQUIRED: Use Task(\\\"task-analyzer\\\", ...) first!\"; echo \"Pipeline must reach Phase 4 before writing files.\"; echo \"═══════════════════════════════════════════════════════════════════\"; exit 1; fi; fi; fi; cat | jq -r \".tool_input.file_path // .tool_input.path // empty\" | tr \"\\n\" \"\\0\" | xargs -0 -I {} npx claude-flow@alpha hooks pre-edit --file \"{}\" --auto-assign-agents true --load-context true || true'"
           }
         ]
       }
     ],
     "PostToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; SKILL=$(cat | jq -r \".tool_input.skill // empty\"); if [ \"$SKILL\" = \"god-code\" ] && [ -x \"$ROOT/.claude/hooks/coding-pipeline-post.sh\" ]; then \"$ROOT/.claude/hooks/coding-pipeline-post.sh\"; fi || true'"
+          }
+        ]
+      },
       {
         "matcher": "Task",
         "hooks": [
@@ -140,7 +157,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; cat | jq -r \".tool_input.command // empty\" | tr \"\\n\" \"\\0\" | xargs -0 -I {} npx claude-flow@latest hooks post-command --command \"{}\" --track-metrics true --store-results true || true'"
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; cat | jq -r \".tool_input.command // empty\" | tr \"\\n\" \"\\0\" | xargs -0 -I {} npx claude-flow@alpha hooks post-command --command \"{}\" --track-metrics true --store-results true || true'"
           }
         ]
       },
@@ -149,7 +166,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; cat | jq -r \".tool_input.file_path // .tool_input.path // empty\" | tr \"\\n\" \"\\0\" | xargs -0 -I {} npx claude-flow@latest hooks post-edit --file \"{}\" --format true --update-memory true || true'"
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; cat | jq -r \".tool_input.file_path // .tool_input.path // empty\" | tr \"\\n\" \"\\0\" | xargs -0 -I {} npx claude-flow@alpha hooks post-edit --file \"{}\" --format true --update-memory true || true'"
+          },
+          {
+            "type": "command",
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; FILE=$(cat | jq -r \".tool_input.file_path // .tool_input.path // empty\"); [ -n \"$FILE\" ] && [ -x \"$ROOT/.claude/hooks/leann-index-file.sh\" ] && \"$ROOT/.claude/hooks/leann-index-file.sh\" \"$FILE\" || true'"
           }
         ]
       }
@@ -174,12 +195,22 @@
         ]
       }
     ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/bash -c 'INPUT=$(cat); TOOL=$(echo \"$INPUT\" | jq -r \".tool_name // empty\"); CMD=$(echo \"$INPUT\" | jq -r \".tool_input.command // empty\"); if [ \"$TOOL\" = \"Bash\" ] && echo \"$CMD\" | grep -q \"/tmp/pipeline-agent-output\"; then echo \"{\\\"decision\\\": \\\"allow\\\"}\"; exit 0; fi'"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; npx claude-flow@latest hooks session-end --generate-summary true --persist-state true --export-metrics true || true'"
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null); [ -n \"$ROOT\" ] && rm -f \"$ROOT/.claude/runtime/.god-code-active\" 2>/dev/null; echo \"🔓 God-code pipeline mode cleared\"; [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; npx claude-flow@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true || true'"
           },
           {
             "type": "command",
@@ -188,6 +219,10 @@
           {
             "type": "command",
             "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && [ -f \"$ROOT/scripts/hooks/ucm-session-start.ts\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; npx tsx \"$ROOT/scripts/hooks/ucm-session-start.ts\" --action=stop || true'"
+          },
+          {
+            "type": "command",
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && [ -f \"$ROOT/scripts/hooks/leann-process-queue.ts\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; echo \"[LEANN] Processing index queue...\"; timeout 120 npx tsx \"$ROOT/scripts/hooks/leann-process-queue.ts\" 2>/dev/null || echo \"[LEANN] Queue processing skipped or timed out\"'"
           }
         ]
       }
@@ -197,14 +232,22 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && [ -f \"$ROOT/scripts/hooks/ucm-session-start.ts\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; npx tsx \"$ROOT/scripts/hooks/ucm-session-start.ts\" || true'"
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && [ -f \".swarm/memory.db\" ] && sqlite3 .swarm/memory.db \"DELETE FROM memory_entries WHERE status=\\\"deleted\\\";\" 2>/dev/null && echo \"[memory-fix] Purged ghost entries\" || true'"
+          },
+          {
+            "type": "command",
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; bash scripts/god-agent-start.sh 2>/dev/null || true'"
+          },
+          {
+            "type": "command",
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && [ -f \"$ROOT/scripts/hooks/ucm-session-start.ts\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; npx tsx \"$ROOT/scripts/hooks/ucm-session-start.ts\" 2>/dev/null || true'"
           }
         ]
       }
     ]
   },
   "includeCoAuthoredBy": true,
-  "enabledMcpjsonServers": ["claude-flow@latest", "ruv-swarm", "serena"],
+  "enabledMcpjsonServers": ["claude-flow@alpha", "ruv-swarm", "serena"],
   "statusLine": {
     "type": "command",
     "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && [ -x \"$ROOT/.claude/statusline-command.sh\" ] && \"$ROOT/.claude/statusline-command.sh\" || echo \"\"'"

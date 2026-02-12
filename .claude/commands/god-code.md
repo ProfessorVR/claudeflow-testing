@@ -1,103 +1,199 @@
 ---
-description: Generate code using the Universal Self-Learning God Agent with DAI-001 agent selection
+description: Generate code using the 48-Agent Coding Pipeline with stateful orchestration (ALWAYS uses full pipeline)
 ---
 
-Generate code using the Universal Self-Learning God Agent with DAI-001 dynamic agent selection.
+Use the Coding Pipeline CLI (`coding-pipeline-cli`) for code generation with 48 specialized agents, RLM memory handoffs, and LEANN semantic search.
 
-**Task:** $ARGUMENTS
+**Query**: $ARGUMENTS
 
 ---
 
-## Phase 1: Agent Selection (CLI)
+## EXECUTION PROTOCOL
 
-Run the God Agent CLI to get the dynamically selected agent and built prompt:
+**YOU MUST use coding-pipeline-cli for orchestration. DO NOT use static Task() templates.**
+
+### CRITICAL: DO NOT STOP DURING PIPELINE EXECUTION
+
+**The user has ALREADY decided to run this pipeline by invoking /god-code. Their confirmation is the invocation itself.**
+
+- **DO NOT** pause between agents to ask "should I continue?"
+- **DO NOT** stop to present status summaries with options
+- **DO NOT** say "this will take a long time, would you like to proceed?"
+- **DO NOT** offer to skip, pause, or modify the pipeline mid-execution
+- **DO NOT** comment on token usage, context limits, or duration estimates
+- **JUST EXECUTE** the init -> Task -> complete -> next -> Task -> complete -> next loop until `status: "complete"`
+- The ONLY reason to stop is an actual error (CLI crash, agent failure)
+
+### Step 1: Initialize Pipeline
 
 ```bash
-npx tsx src/god-agent/universal/cli.ts code "$ARGUMENTS" --json 2>/dev/null | grep -E '^\{' | head -1
+npx tsx src/god-agent/cli/coding-pipeline-cli.ts init "$ARGUMENTS"
 ```
 
-The CLI returns JSON with the selected agent and complete prompt:
-
+This returns:
 ```json
 {
-  "command": "code",
-  "selectedAgent": "backend-dev",
-  "prompt": "[original user prompt]",
-  "isPipeline": false,
-  "result": {
-    "builtPrompt": "## Agent: backend-dev\n\n**Description:** ...\n\n### Agent Instructions\n...\n\n### Task\n[user task]\n\n### Response Format\n...",
-    "agentType": "backend-dev",
-    "agentCategory": "core",
-    "memoryContext": "[retrieved context from prior trajectories]"
-  },
-  "success": true,
-  "trajectoryId": "traj_xxx_yyy"
+  "sessionId": "uuid",
+  "status": "running",
+  "currentPhase": "understanding",
+  "agent": { "key": "task-analyzer", "prompt": "...", "model": "sonnet" },
+  "progress": { "completed": 0, "total": 48, "percentage": 0 }
+}
+```
+
+**Save the `sessionId` - you need it for all subsequent commands.**
+
+### Step 2: Execute First Agent
+
+From the init response, spawn the first agent using the `model` field from the response:
+
+```
+Task("<agent.key>", "<agent.prompt>", "<agent.key>", model: "<agent.model>")
+```
+
+**CRITICAL: Always pass `model: "<agent.model>"` to the Task tool.** The pipeline specifies the correct model per agent (sonnet for design/implementation/testing, haiku for reviewers/checkers). Do NOT override or omit this.
+
+After the Task agent finishes, write its full response to `/tmp/pipeline-agent-output.txt` using the Write tool, then mark complete with `--file`:
+```bash
+npx tsx src/god-agent/cli/coding-pipeline-cli.ts complete <sessionId> <agent.key> --file /tmp/pipeline-agent-output.txt
+```
+
+This enables dynamic quality scoring and XP rewards. The complete command now returns quality + XP data.
+
+### Step 3: Loop Until Complete
+
+Repeat until `status: "complete"`:
+
+#### 3a. Get Next Agent
+```bash
+npx tsx src/god-agent/cli/coding-pipeline-cli.ts next <sessionId>
+```
+
+Returns:
+```json
+{
+  "sessionId": "...",
+  "status": "running",
+  "currentPhase": "exploration",
+  "agent": { "key": "pattern-explorer", "prompt": "...", "model": "sonnet" },
+  "progress": { "completed": 6, "total": 48, "percentage": 13 }
+}
+```
+
+#### 3b. Spawn Agent
+```
+Task("<agent.key>", "<agent.prompt>", "<agent.key>", model: "<agent.model>")
+```
+
+#### 3c. Mark Complete
+After the Task agent finishes, write its full response to `/tmp/pipeline-agent-output.txt` using the Write tool, then mark complete with `--file`:
+```bash
+npx tsx src/god-agent/cli/coding-pipeline-cli.ts complete <sessionId> <agent.key> --file /tmp/pipeline-agent-output.txt
+```
+
+When pipeline is complete, `next` returns:
+```json
+{
+  "status": "complete",
+  "progress": { "completed": 48, "total": 48, "percentage": 100 }
 }
 ```
 
 ---
 
-## Phase 2: Task Execution (Subagent)
+## BATCH MODE
 
-**CRITICAL**: You MUST spawn a Task() subagent with the CLI output. Do NOT execute the task yourself.
-
-### Extract from JSON:
-- `result.agentType` - The specialized agent type to spawn
-- `result.builtPrompt` - The complete prompt with agent instructions, context, and task
-
-### Spawn Task:
+When `$ARGUMENTS` starts with `-batch`, extract all tasks after the flag and run the **above protocol** for each task sequentially:
 
 ```
-Task(result.agentType, result.builtPrompt)
+FOR each task in tasks:
+  1. init "<task>"
+  2. Loop: Task -> complete -> next -> Task -> complete -> next ...
+  3. Until status: "complete"
 ```
 
-**Example**: If CLI returns `agentType: "backend-dev"`, spawn:
-```
-Task("backend-dev", "[full builtPrompt from result]")
-```
-
-### Pipeline Mode
-
-If `isPipeline` is `true`, the task requires multiple sequential agents. The `result` will contain pipeline configuration - execute agents sequentially as specified.
+Do NOT stop between tasks. Run all tasks back-to-back.
 
 ---
 
-## Phase 3: Present Results
+## RESUME MODE
 
-After the Task() subagent completes:
-
-1. Present the subagent's output to the user
-2. Include the `trajectoryId` for feedback tracking
-3. Summarize what was accomplished
-
----
-
-## Phase 4: Feedback (Recommended)
-
-To improve future agent selection, provide feedback on the trajectory:
+When `$ARGUMENTS` starts with `-resume`, extract the session ID and use `resume` instead of `init`:
 
 ```bash
-npx tsx src/god-agent/universal/cli.ts feedback [trajectoryId] [rating] --trajectory --notes "[optional notes]"
+npx tsx src/god-agent/cli/coding-pipeline-cli.ts resume <sessionId>
 ```
 
-**Rating scale**: 0.0 (poor) to 1.0 (excellent)
+Then continue with Step 2 onwards (Task -> complete -> next loop).
 
-**Example**:
+---
+
+## SESSION MANAGEMENT
+
 ```bash
-npx tsx src/god-agent/universal/cli.ts feedback traj_xxx_yyy 0.9 --trajectory --notes "Agent selection was appropriate"
+# Check progress
+npx tsx src/god-agent/cli/coding-pipeline-cli.ts status <sessionId>
+
+# Resume interrupted session (returns current agent without advancing)
+npx tsx src/god-agent/cli/coding-pipeline-cli.ts resume <sessionId>
 ```
 
 ---
 
-## Two-Phase Execution Model
+## PIPELINE PHASES (48 Agents)
 
-This skill implements the **DAI-001 Two-Phase Execution Model**:
+| Phase | Name | Agents | Count |
+|-------|------|--------|-------|
+| 1 | Understanding | task-analyzer -> feasibility-analyzer + phase-1-reviewer | 7 |
+| 2 | Exploration | pattern-explorer -> codebase-analyzer + phase-2-reviewer | 5 |
+| 3 | Architecture | system-designer -> integration-architect + phase-3-reviewer | 6 |
+| 4 | Implementation | code-generator -> implementation-coordinator + phase-4-reviewer | 13 |
+| 5 | Testing | test-generator -> test-fixer + phase-5-reviewer | 9 |
+| 6 | Optimization | performance-optimizer -> final-refactorer + phase-6-reviewer | 6 |
+| 7 | Delivery | sign-off-approver + recovery-agent | 2 |
 
-1. **Phase 1 (CLI)**: God Agent analyzes the task, searches 198+ agents via semantic matching, retrieves relevant memory context, and builds a specialized prompt
-2. **Phase 2 (Task)**: Claude Code spawns a Task() subagent with the selected agent type and built prompt
+**No single-agent bypass exists. The full 48-agent pipeline is MANDATORY.**
 
-This separation ensures:
-- Optimal agent selection via AI-powered capability matching
-- Context injection from prior trajectories (SoNA learning)
-- Clean execution boundary between selection and implementation
-- Trajectory tracking for continuous improvement
+---
+
+## EXAMPLE EXECUTION
+
+```
+# Initialize
+> npx tsx src/god-agent/cli/coding-pipeline-cli.ts init "Add user authentication with JWT"
+{
+  "sessionId": "abc-123",
+  "status": "running",
+  "agent": { "key": "task-analyzer", "prompt": "...", "model": "sonnet" },
+  "progress": { "completed": 0, "total": 48, "percentage": 0 }
+}
+
+# Spawn agent 1 (using model from response)
+> Task("task-analyzer", "<prompt>", "task-analyzer", model: "sonnet")
+
+# Write output, then complete agent 1 with --file
+> Write "/tmp/pipeline-agent-output.txt" (agent response)
+> npx tsx src/god-agent/cli/coding-pipeline-cli.ts complete abc-123 task-analyzer --file /tmp/pipeline-agent-output.txt
+{ "success": true, "agentKey": "task-analyzer", "quality": { "score": 0.82, "tier": "B+" }, "xp": { "earned": 255, "rewards": {...} } }
+
+# Get agent 2
+> npx tsx src/god-agent/cli/coding-pipeline-cli.ts next abc-123
+{
+  "status": "running",
+  "agent": { "key": "requirement-extractor", "prompt": "...", "model": "sonnet" },
+  "progress": { "completed": 1, "total": 48, "percentage": 2 }
+}
+
+# Spawn agent 2 (using model from response)
+> Task("requirement-extractor", "<prompt>", "requirement-extractor", model: "sonnet")
+
+# Write output, then complete agent 2 with --file
+> Write "/tmp/pipeline-agent-output.txt" (agent response)
+> npx tsx src/god-agent/cli/coding-pipeline-cli.ts complete abc-123 requirement-extractor --file /tmp/pipeline-agent-output.txt
+
+# ... repeat for all 48 agents ...
+
+# Pipeline complete
+> npx tsx src/god-agent/cli/coding-pipeline-cli.ts next abc-123
+{ "status": "complete", "progress": { "completed": 48, "total": 48, "percentage": 100 } }
+```
