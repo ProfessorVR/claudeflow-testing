@@ -13,21 +13,34 @@ import type { ICodeExecutionRequest } from '../../../../src/god-agent/core/execu
  * CRITICAL: These tests use REAL Claude Code CLI execution (RULE-CLI-001-004)
  * NO MOCKING of child_process, spawn, or CLI responses
  *
- * Tests skip gracefully when CLI is not available
+ * Tests skip gracefully when CLI is not available.
+ * Set INTEGRATION_TESTS=true to run live CLI execution tests (take 5+ minutes).
  */
+const runIntegration = process.env.INTEGRATION_TESTS === 'true';
+
 describe('ClaudeCodeExecutor', () => {
   let executor: ClaudeCodeExecutor;
   let cliAvailable: boolean;
 
   beforeAll(async () => {
-    executor = new ClaudeCodeExecutor({ verbose: true });
-    cliAvailable = await executor.isAvailable();
+    executor = new ClaudeCodeExecutor({ verbose: runIntegration });
+
+    // Guard against isAvailable() hanging (spawn may not honor timeout option)
+    try {
+      cliAvailable = await Promise.race([
+        executor.isAvailable(),
+        new Promise<boolean>((_, reject) =>
+          setTimeout(() => reject(new Error('CLI check timed out')), 8000)
+        ),
+      ]);
+    } catch {
+      cliAvailable = false;
+    }
 
     if (!cliAvailable) {
       console.log('NOTE: Claude Code CLI not available, execution tests will be skipped');
-      console.log('Install via: npm install -g @anthropic/claude-code');
     }
-  });
+  }, 15000);
 
   describe('isAvailable', () => {
     it('returns boolean indicating CLI availability', async () => {
@@ -86,7 +99,7 @@ describe('ClaudeCodeExecutor', () => {
     });
   });
 
-  describe('execute', () => {
+  describe.skipIf(!runIntegration)('execute', () => {
     it('generates code for simple task', async () => {
       if (!cliAvailable) {
         console.log('SKIPPED: CLI not available');
@@ -353,7 +366,7 @@ describe('ClaudeCodeExecutor', () => {
       expect(defaultExecutor).toBeDefined();
     });
 
-    it('truncates long tasks', async () => {
+    it.skipIf(!runIntegration)('truncates long tasks', async () => {
       if (!cliAvailable) {
         console.log('SKIPPED: CLI not available');
         return;

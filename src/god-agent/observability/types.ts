@@ -34,7 +34,9 @@ export type ActivityEventComponent =
   | 'token_budget'
   | 'vectordb'
   | 'sona'
-  | 'reasoning';
+  | 'reasoning'
+  | 'validation'
+  | 'context';
 
 /**
  * Activity event status types
@@ -145,140 +147,6 @@ export interface IAgentExecution {
   memoryStored?: IMemoryEntry[];
   /** Error message if failed */
   error?: string;
-}
-
-// =============================================================================
-// Pipeline Types
-// =============================================================================
-
-/**
- * Pipeline execution status
- */
-export type PipelineStatus = 
-  | 'pending'
-  | 'running'
-  | 'completed'
-  | 'failed'
-  | 'cancelled';
-
-/**
- * Pipeline step status
- */
-export type StepStatus = 
-  | 'pending'
-  | 'running'
-  | 'completed'
-  | 'failed'
-  | 'skipped';
-
-/**
- * Pipeline step tracking
- * Implements [REQ-OBS-11]: Pipeline steps MUST show memory retrieval and storage
- */
-export interface IPipelineStep {
-  /** Agent key for this step */
-  agentKey: string;
-  /** Step execution status */
-  status: StepStatus;
-  /** Start time (Unix epoch ms) */
-  startTime?: number;
-  /** End time (Unix epoch ms) */
-  endTime?: number;
-  /** Duration in milliseconds */
-  durationMs?: number;
-  /** Quality score 0-1 */
-  qualityScore?: number;
-  /** Memory domains retrieved */
-  memoryRetrieved?: IMemoryRef[];
-  /** Memory entries stored */
-  memoryStored?: IMemoryRef[];
-  /** Error message if failed */
-  error?: string;
-}
-
-/**
- * Pipeline execution tracking
- * Implements [REQ-OBS-10]: PipelineTracker MUST track pipeline status and per-step execution
- */
-export interface IPipelineStatus {
-  /** Unique pipeline ID */
-  id: string;
-  /** Pipeline name */
-  name: string;
-  /** Current pipeline status */
-  status: PipelineStatus;
-  /** Pipeline steps */
-  steps: IPipelineStep[];
-  /** Overall quality score 0-1 */
-  overallQuality?: number;
-  /** Total duration in milliseconds */
-  totalDuration?: number;
-  /** Start time (Unix epoch ms) */
-  startTime: number;
-  /** End time (Unix epoch ms) */
-  endTime?: number;
-}
-
-// =============================================================================
-// Routing Types
-// =============================================================================
-
-/**
- * Cold start phase
- */
-export type ColdStartPhase = 
-  | 'exploration'
-  | 'learning'
-  | 'exploitation'
-  | 'mature';
-
-/**
- * Routing decision factor
- */
-export interface IRoutingFactor {
-  name: string;
-  score: number;
-  weight: number;
-  description?: string;
-}
-
-/**
- * Routing alternative candidate
- */
-export interface IRoutingAlternative {
-  agentKey: string;
-  agentName: string;
-  score: number;
-  rejected_reason?: string;
-}
-
-/**
- * Routing explanation
- * Implements [REQ-OBS-09]: Routing explanation MUST include confidence, factors, and alternatives
- */
-export interface IRoutingExplanation {
-  /** Unique routing decision ID */
-  routingId: string;
-  /** Original task description */
-  task: string;
-  /** Selected agent key */
-  selectedAgent: string;
-  /** Selected agent name */
-  selectedAgentName: string;
-  /** Confidence score 0-1 */
-  confidence: number;
-  /** Decision factors */
-  factors: IRoutingFactor[];
-  /** Alternative candidates considered */
-  alternatives: IRoutingAlternative[];
-  /** Current cold start phase */
-  coldStartPhase: ColdStartPhase;
-  /** Whether in cold start mode */
-  isColdStart: boolean;
-  /** Whether user confirmation was required */
-  confirmationRequired: boolean;
-  /** Decision timestamp (Unix epoch ms) */
-  timestamp: number;
 }
 
 // =============================================================================

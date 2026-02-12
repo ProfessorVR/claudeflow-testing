@@ -31,6 +31,7 @@ import type {
   CompletionSummary,
   AgentDetails,
   ErrorResponse,
+  PipelineSession,
 } from './cli-types.js';
 import { AgentMismatchError } from './cli-types.js';
 import { getPhaseName } from './cli-types.js';
@@ -71,10 +72,44 @@ import { SocketClient } from '../observability/socket-client.js';
 import { FinalStageOrchestrator, PROGRESS_MILESTONES } from './final-stage/index.js';
 import type { FinalStageOptions, FinalStageResult, ProgressReport, FinalStageState } from './final-stage/index.js';
 import type { IActivityEvent } from '../observability/types.js';
+// Cross-chapter context management for dissertation coherence
+import { DissertationContextManager } from './context/index.js';
+import type { DissertationValidationReport } from './context/index.js';
+// Multi-pass quality gauntlet for publication-ready dissertation output
+import {
+  QualityGauntlet,
+  RevisionOrchestrator,
+  ProvenanceLedger,
+  createDefaultGauntlet,
+  createDefaultOrchestrator,
+  type GauntletResult,
+  type RefinementResult,
+} from './quality/index.js';
 // Implements RULE-025, RULE-028, RULE-031: SonaEngine integration for trajectory tracking
 import { createProductionSonaEngine } from '../core/learning/sona-engine.js';
 import type { SonaEngine } from '../core/learning/sona-engine.js';
 import type { TrajectoryID } from '../core/learning/sona-types.js';
+// Paragraph-level feedback learning for style improvement
+import {
+  FeedbackIntegration,
+  createFeedbackIntegration,
+  type DriftAnalysis,
+  type FeedbackProcessingResult,
+} from './feedback/index.js';
+import { DeepStyleAnalyzer } from './style/deep-style-analyzer.js';
+// Dissertation-native features for defense prep, progress tracking, committee simulation
+import {
+  DissertationProgressTracker,
+  CommitteeSimulator,
+  DefensePreparationGenerator,
+  InstitutionalComplianceChecker,
+  createDissertationSuiteWithCompliance,
+  exportDefensePreparation,
+  type DissertationConfig,
+  type DefenseConfig,
+  type CommitteeMember,
+  type ComplianceReport,
+} from './dissertation/index.js';
 
 // Lazy-initialized socket client for event emission
 let socketClient: SocketClient | null = null;
@@ -83,6 +118,19 @@ let socketClient: SocketClient | null = null;
 let sonaEngine: SonaEngine | null = null;
 // Active trajectory map: sessionId -> Map<agentKey -> trajectoryId>
 const activeTrajectories: Map<string, Map<string, TrajectoryID>> = new Map();
+
+// Cross-chapter context managers by session ID
+// Provides dissertation-wide context for writing agents
+const dissertationContextManagers: Map<string, DissertationContextManager> = new Map();
+
+// Quality gauntlets and provenance ledgers by session ID
+// Enables iterative quality refinement for each chapter
+const qualityGauntlets: Map<string, QualityGauntlet> = new Map();
+const provenanceLedgers: Map<string, ProvenanceLedger> = new Map();
+
+// Paragraph-level feedback integration by session ID
+// Enables fine-grained style learning from user corrections
+const feedbackIntegrations: Map<string, FeedbackIntegration> = new Map();
 
 // ============================================================================
 // PHD PIPELINE CONFIGURATION CONSTANTS (TASK-CONFIG-002)
@@ -233,6 +281,368 @@ function buildSessionStateForMemory(session: {
     lastActivityAt: new Date(session.lastActivityTime).toISOString(),
     status: session.status as PhdSessionState['status'],
   };
+}
+
+// ============================================================================
+// CROSS-CHAPTER CONTEXT MANAGEMENT HELPERS
+// ============================================================================
+// Implements cross-chapter context threading for dissertation coherence
+// Tracks arguments, forward references, and term definitions across chapters
+
+/**
+ * Get or create a DissertationContextManager for a session.
+ * Manages cross-chapter context for dissertation coherence.
+ *
+ * @param sessionId - The session ID
+ * @param storagePath - Path to session storage directory
+ * @param title - Dissertation title (used when creating new manager)
+ * @returns DissertationContextManager instance
+ */
+async function getOrCreateContextManager(
+  sessionId: string,
+  storagePath: string,
+  title: string = 'Untitled Dissertation'
+): Promise<DissertationContextManager> {
+  let manager = dissertationContextManagers.get(sessionId);
+
+  if (!manager) {
+    manager = new DissertationContextManager(sessionId, storagePath, title);
+    // Try to load existing context
+    await manager.load().catch(() => {
+      // INTENTIONAL: No existing context file is expected on first run
+    });
+    dissertationContextManagers.set(sessionId, manager);
+  }
+
+  return manager;
+}
+
+/**
+ * Record chapter completion and extract context.
+ * Called after each chapter is written to track cross-chapter coherence.
+ *
+ * @param sessionId - The session ID
+ * @param chapterNumber - Chapter number that was completed
+ * @param chapterText - Full text of the completed chapter
+ * @param chapterTitle - Optional chapter title
+ */
+async function recordChapterCompletion(
+  sessionId: string,
+  chapterNumber: number,
+  chapterText: string,
+  chapterTitle?: string
+): Promise<void> {
+  const manager = dissertationContextManagers.get(sessionId);
+  if (!manager) {
+    if (process.env.PHD_CLI_DEBUG) {
+      console.error(`[CONTEXT] No context manager found for session ${sessionId}`);
+    }
+    return;
+  }
+
+  try {
+    await manager.onChapterComplete(chapterNumber, chapterText, chapterTitle);
+    if (process.env.PHD_CLI_DEBUG) {
+      console.error(`[CONTEXT] Chapter ${chapterNumber} context extracted and stored`);
+    }
+  } catch (error) {
+    console.error(`[CONTEXT] Failed to record chapter ${chapterNumber} context: ${error}`);
+  }
+}
+
+/**
+ * Build context prompt for a writing agent.
+ * Provides prior chapter context, argument threads, and forward reference promises.
+ *
+ * @param sessionId - The session ID
+ * @param chapterNumber - Chapter being written
+ * @returns Context string to inject into agent prompt, or empty string if unavailable
+ */
+function buildChapterContextPrompt(
+  sessionId: string,
+  chapterNumber: number
+): string {
+  const manager = dissertationContextManagers.get(sessionId);
+  if (!manager) {
+    return '';
+  }
+
+  try {
+    return manager.buildContextForChapter(chapterNumber, {
+      includeSummaries: true,
+      includeThreadStatus: true,
+      includeGlossary: true,
+      includeForwardPromises: true,
+      maxLength: 12000, // Keep context reasonable for token budget
+    });
+  } catch (error) {
+    console.error(`[CONTEXT] Failed to build context for chapter ${chapterNumber}: ${error}`);
+    return '';
+  }
+}
+
+/**
+ * Validate dissertation consistency across all chapters.
+ * Called after all chapters are written to check for coherence issues.
+ *
+ * @param sessionId - The session ID
+ * @returns Validation report or null if manager not found
+ */
+async function validateDissertationCoherence(
+  sessionId: string
+): Promise<DissertationValidationReport | null> {
+  const manager = dissertationContextManagers.get(sessionId);
+  if (!manager) {
+    return null;
+  }
+
+  try {
+    const report = manager.validateDissertationConsistency();
+
+    // Log summary
+    if (process.env.PHD_CLI_DEBUG || !report.valid) {
+      console.error(`[CONTEXT] Dissertation validation: ${report.valid ? 'PASSED' : 'FAILED'}`);
+      console.error(`[CONTEXT] Total issues: ${report.totalIssues}`);
+      console.error(`[CONTEXT] Coherence score: ${(report.coherenceScore * 100).toFixed(0)}%`);
+
+      if (report.recommendations.length > 0) {
+        console.error('[CONTEXT] Recommendations:');
+        for (const rec of report.recommendations) {
+          console.error(`  - ${rec}`);
+        }
+      }
+    }
+
+    return report;
+  } catch (error) {
+    console.error(`[CONTEXT] Failed to validate dissertation: ${error}`);
+    return null;
+  }
+}
+
+/**
+ * Set the main thesis for dissertation context tracking.
+ *
+ * @param sessionId - The session ID
+ * @param thesis - The main thesis statement
+ */
+function setMainThesis(sessionId: string, thesis: string): void {
+  const manager = dissertationContextManagers.get(sessionId);
+  if (manager) {
+    manager.setMainThesis(thesis);
+  }
+}
+
+/**
+ * Clean up context manager for a session (e.g., on session abort or completion).
+ *
+ * @param sessionId - The session ID
+ */
+function cleanupContextManager(sessionId: string): void {
+  dissertationContextManagers.delete(sessionId);
+}
+
+// ============================================================================
+// QUALITY GAUNTLET INTEGRATION - Multi-Pass Quality Assurance
+// ============================================================================
+
+/**
+ * Initialize quality gauntlet and provenance ledger for a session.
+ * Called during session initialization for PhD pipeline.
+ *
+ * @param sessionId - The session ID
+ */
+function initializeQualityGauntlet(sessionId: string): void {
+  if (!qualityGauntlets.has(sessionId)) {
+    qualityGauntlets.set(sessionId, createDefaultGauntlet());
+    provenanceLedgers.set(sessionId, new ProvenanceLedger());
+
+    if (process.env.PHD_CLI_DEBUG) {
+      console.error(`[QUALITY] Quality gauntlet initialized for session ${sessionId}`);
+    }
+  }
+}
+
+/**
+ * Run quality gauntlet on completed chapter text.
+ * Returns quality assessment and determines if revision is needed.
+ *
+ * @param sessionId - The session ID
+ * @param chapterNumber - Chapter number (1-indexed)
+ * @param chapterText - Full text of the chapter
+ * @param styleProfile - Optional style profile for consistency checking
+ * @returns Gauntlet result with quality metrics and issues
+ */
+async function runChapterQualityGauntlet(
+  sessionId: string,
+  chapterNumber: number,
+  chapterText: string,
+  styleProfile?: unknown
+): Promise<GauntletResult | null> {
+  const gauntlet = qualityGauntlets.get(sessionId);
+  if (!gauntlet) {
+    if (process.env.PHD_CLI_DEBUG) {
+      console.error(`[QUALITY] No gauntlet found for session ${sessionId}`);
+    }
+    return null;
+  }
+
+  const ledger = provenanceLedgers.get(sessionId);
+
+  try {
+    const result = await gauntlet.runGauntlet(chapterText, chapterNumber, {
+      styleProfile,
+      provenanceLedger: ledger,
+    });
+
+    // Log quality summary
+    if (process.env.PHD_CLI_DEBUG || !result.passed) {
+      console.error(`[QUALITY] Chapter ${chapterNumber} evaluation:`);
+      console.error(`  Overall score: ${(result.overallScore * 100).toFixed(1)}%`);
+      console.error(`  Passed: ${result.passed}`);
+      console.error(`  Issues: ${result.summary.totalIssues} (${result.summary.criticalCount} critical, ${result.summary.majorCount} major)`);
+
+      if (result.stageResults.length > 0) {
+        console.error('  Stage scores:');
+        for (const stage of result.stageResults) {
+          const status = stage.passed ? 'PASS' : 'FAIL';
+          console.error(`    - ${stage.stageName}: ${(stage.score * 100).toFixed(1)}% [${status}]`);
+        }
+      }
+    }
+
+    // Track provenance for claims detected in the chapter
+    if (ledger) {
+      const claims = ledger.detectClaims(chapterText);
+      for (const claim of claims) {
+        if (claim.needsCitation) {
+          ledger.addEntry({
+            claimText: claim.text,
+            chapterId: chapterNumber,
+            paragraphIndex: claim.paragraphIndex,
+            sourceType: 'ungrounded', // Will be updated when citations are verified
+            sourceId: '',
+            sourceReference: '',
+            confidence: 0,
+            verified: false,
+          });
+        }
+      }
+    }
+
+    return result;
+  } catch (error) {
+    console.error(`[QUALITY] Failed to evaluate chapter ${chapterNumber}: ${error}`);
+    return null;
+  }
+}
+
+/**
+ * Determine if chapter text needs revision based on quality gauntlet results.
+ * Uses configurable thresholds and considers critical issues.
+ *
+ * @param result - Gauntlet result from quality evaluation
+ * @returns True if revision is needed
+ */
+function needsRevision(result: GauntletResult): boolean {
+  // Always revise if there are critical issues
+  if (result.summary.criticalCount > 0) {
+    return true;
+  }
+
+  // Check overall threshold (default 80%)
+  if (!result.passed) {
+    return true;
+  }
+
+  // Check for too many major issues
+  if (result.summary.majorCount > 10) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Get revision guidance for a chapter based on quality issues.
+ *
+ * @param sessionId - The session ID
+ * @param result - Gauntlet result from quality evaluation
+ * @returns Revision guidance string
+ */
+function getChapterRevisionGuidance(
+  _sessionId: string,
+  result: GauntletResult
+): string {
+  return result.revisionGuidance;
+}
+
+/**
+ * Get provenance audit report for the session.
+ *
+ * @param sessionId - The session ID
+ * @returns Audit report string
+ */
+function getProvenanceAuditReport(sessionId: string): string {
+  const ledger = provenanceLedgers.get(sessionId);
+  if (!ledger) {
+    return 'No provenance ledger found for this session.';
+  }
+
+  return ledger.generateAuditReport();
+}
+
+/**
+ * Save quality artifacts for a session to disk.
+ *
+ * @param sessionId - The session ID
+ * @param basePath - Base path for session storage
+ */
+async function saveQualityArtifacts(sessionId: string, basePath: string): Promise<void> {
+  const ledger = provenanceLedgers.get(sessionId);
+  if (ledger) {
+    const ledgerPath = path.join(basePath, `.phd-sessions/${sessionId}/provenance-ledger.json`);
+    await ledger.save(ledgerPath);
+
+    if (process.env.PHD_CLI_DEBUG) {
+      console.error(`[QUALITY] Provenance ledger saved: ${ledgerPath}`);
+    }
+  }
+}
+
+/**
+ * Load quality artifacts for a session from disk.
+ *
+ * @param sessionId - The session ID
+ * @param basePath - Base path for session storage
+ */
+async function loadQualityArtifacts(sessionId: string, basePath: string): Promise<void> {
+  // Initialize gauntlet if not exists
+  initializeQualityGauntlet(sessionId);
+
+  const ledger = provenanceLedgers.get(sessionId);
+  if (ledger) {
+    const ledgerPath = path.join(basePath, `.phd-sessions/${sessionId}/provenance-ledger.json`);
+    try {
+      await ledger.load(ledgerPath);
+
+      if (process.env.PHD_CLI_DEBUG) {
+        console.error(`[QUALITY] Provenance ledger loaded: ${ledgerPath}`);
+      }
+    } catch {
+      // File may not exist yet
+    }
+  }
+}
+
+/**
+ * Clean up quality artifacts for a session.
+ *
+ * @param sessionId - The session ID
+ */
+function cleanupQualityArtifacts(sessionId: string): void {
+  qualityGauntlets.delete(sessionId);
+  provenanceLedgers.delete(sessionId);
 }
 
 // ============================================================================
@@ -1913,6 +2323,23 @@ async function commandInit(
   // Persist to disk with atomic write pattern [RULE-021]
   await sessionManager.saveSession(session);
 
+  // =========================================================================
+  // CROSS-CHAPTER CONTEXT INITIALIZATION
+  // =========================================================================
+  // Initialize context manager for tracking dissertation coherence
+  // Context is stored in .phd-sessions/{sessionId}/context/
+  const contextStoragePath = path.join(sessionManager.getSessionDirectory(), sessionId);
+  const contextManager = await getOrCreateContextManager(
+    sessionId,
+    contextStoragePath,
+    query // Use query as initial title
+  );
+
+  // Store context manager reference for the session
+  if (options.verbose) {
+    console.error(`[CONTEXT] Initialized DissertationContextManager for session ${sessionId}`);
+  }
+
     // =========================================================================
   // PHASE 9 INTEGRATION (local + hybrid)
   // =========================================================================
@@ -3085,8 +3512,9 @@ async function commandComplete(
     // [PHASE-8-AUTO-FIX] Execute Phase 8 FULLY AUTOMATICALLY
     // RULE-022: Phase 7 → Phase 8 automatic with full execution
     // Calls execute() which runs: MAPPING → WRITING → COMBINING → VALIDATING → COMPLETED
+    // Cross-chapter context tracking enabled via sessionId
     try {
-      const phase8Result = await executePhase8Automatically(slug, session.styleProfileId);
+      const phase8Result = await executePhase8Automatically(slug, session.styleProfileId, session.sessionId);
 
       if (phase8Result.success) {
         console.error('[Phase 8] COMPLETED AUTOMATICALLY');
@@ -3194,7 +3622,8 @@ async function preparePhase8ForClaudeCode(
  */
 async function executePhase8Automatically(
   slug: string,
-  styleProfileId?: string
+  styleProfileId?: string,
+  sessionId?: string
 ): Promise<import('./final-stage/types.js').FinalStageResult> {
   console.error(`[Phase 8] AUTOMATIC EXECUTION starting for: ${slug}`);
   console.error('[Phase 8] State machine: MAPPING → WRITING → COMBINING → VALIDATING → COMPLETED');
@@ -3207,6 +3636,28 @@ async function executePhase8Automatically(
     const progress = report.total > 0 ? Math.round((report.current / report.total) * 100) : 0;
     console.error(`[Phase 8] ${report.phase}: ${report.message} (${progress}%)`);
   });
+
+  // Set up context management for cross-chapter coherence
+  // This tracks arguments, forward references, and term definitions
+  if (sessionId) {
+    const sessionManager = new SessionManager();
+    const contextStoragePath = path.join(sessionManager.getSessionDirectory(), sessionId);
+
+    // Initialize or load context manager
+    const contextManager = await getOrCreateContextManager(
+      sessionId,
+      contextStoragePath,
+      slug // Use slug as title placeholder
+    );
+
+    // Register chapter completion callback for context extraction
+    orchestrator.onChapterComplete(async (chapterNumber, chapterContent, chapterTitle) => {
+      console.error(`[CONTEXT] Extracting context from Chapter ${chapterNumber}`);
+      await contextManager.onChapterComplete(chapterNumber, chapterContent, chapterTitle);
+    });
+
+    console.error('[Phase 8] Cross-chapter context tracking enabled');
+  }
 
   // Call execute() which runs the FULL pipeline including WRITING and COMBINING
   // This produces the final combined paper automatically
@@ -3223,6 +3674,18 @@ async function executePhase8Automatically(
     console.error(`[Phase 8] Final paper: ${result.outputPath}`);
     console.error(`[Phase 8] Total words: ${result.totalWords}`);
     console.error(`[Phase 8] Chapters: ${result.chaptersGenerated}`);
+
+    // Run dissertation coherence validation
+    if (sessionId) {
+      console.error('[Phase 8] Running dissertation coherence validation...');
+      const validationReport = await validateDissertationCoherence(sessionId);
+      if (validationReport) {
+        console.error(`[Phase 8] Coherence score: ${(validationReport.coherenceScore * 100).toFixed(0)}%`);
+        if (validationReport.totalIssues > 0) {
+          console.error(`[Phase 8] Total coherence issues: ${validationReport.totalIssues}`);
+        }
+      }
+    }
   }
 
   return result;
@@ -3810,6 +4273,385 @@ async function commandAbort(
 }
 
 // ============================================================================
+// PARAGRAPH-LEVEL FEEDBACK COMMANDS
+// Enables fine-grained style learning from user corrections
+// ============================================================================
+
+/**
+ * CLI options interface for phd-feedback command
+ */
+interface FeedbackOptions {
+  session: string;
+  chapter: number;
+  paragraph: number;
+  correction?: string;
+  soundsLikeMe?: string;  // 'true' or 'false' as string from CLI
+  issueType?: string;
+  issueDescription?: string;
+  json?: boolean;
+}
+
+/**
+ * CLI options interface for phd-learn command
+ */
+interface LearnOptions {
+  session: string;
+  json?: boolean;
+  verbose?: boolean;
+}
+
+/**
+ * CLI options interface for phd-drift command
+ */
+interface DriftOptions {
+  session: string;
+  chapter?: number;
+  json?: boolean;
+  verbose?: boolean;
+}
+
+/**
+ * Get or create FeedbackIntegration for a session
+ */
+async function getOrCreateFeedbackIntegration(
+  sessionId: string,
+  sessionStoragePath: string,
+  styleProfileId: string
+): Promise<FeedbackIntegration> {
+  let integration = feedbackIntegrations.get(sessionId);
+
+  if (!integration) {
+    // Load style profile for drift detection
+    const styleManager = new StyleProfileManager();
+    const profile = styleManager.getProfile(styleProfileId);
+
+    // Analyze to get DeepStyleCharacteristics
+    const deepAnalyzer = new DeepStyleAnalyzer();
+    let deepStyle = deepAnalyzer.analyzeText('');  // Empty analysis as fallback
+
+    if (profile?.characteristics) {
+      // If profile has deep style characteristics, use them directly
+      // Otherwise create from sample phrases
+      const samplePhrases = profile.characteristics.samplePhrases ?? [];
+      if (samplePhrases.length > 0) {
+        // Join sample phrases to create representative text for analysis
+        const sampleText = samplePhrases.join('. ');
+        deepStyle = deepAnalyzer.analyzeText(sampleText);
+      }
+    }
+
+    // Create feedback integration
+    integration = createFeedbackIntegration(
+      deepStyle,
+      styleManager,
+      sessionStoragePath,
+      styleProfileId
+    );
+
+    await integration.initialize(sessionId);
+    feedbackIntegrations.set(sessionId, integration);
+  }
+
+  return integration;
+}
+
+/**
+ * phd-feedback command - Capture paragraph-level feedback
+ * Captures user corrections and "sounds like me" feedback
+ */
+program
+  .command('phd-feedback')
+  .description('Capture feedback for a paragraph in the session')
+  .requiredOption('--session <id>', 'Session ID')
+  .requiredOption('--chapter <num>', 'Chapter number', parseInt)
+  .requiredOption('--paragraph <idx>', 'Paragraph index', parseInt)
+  .option('--correction <text>', 'User-corrected text')
+  .option('--sounds-like-me <bool>', 'Does this sound like you? (true/false)')
+  .option('--issue-type <type>', 'Issue type: word_choice, sentence_structure, tone, argument_style, citation_style, transition, other')
+  .option('--issue-description <desc>', 'Description of the issue')
+  .option('--json', 'Output as JSON (default: true)', true)
+  .action(async (options: FeedbackOptions) => {
+    try {
+      const sessionManager = new SessionManager();
+      const session = await sessionManager.loadSession(options.session);
+
+      if (!session.researchDir) {
+        throw new Error('Session has no research directory set');
+      }
+
+      // Get feedback integration
+      const integration = await getOrCreateFeedbackIntegration(
+        session.sessionId,
+        path.dirname(sessionManager.getSessionDirectory()),
+        session.styleProfileId
+      );
+
+      // Read the generated paragraph from the chapter file
+      // Convention: chapter files are in {researchDir}/chapters/chapter-{num}.md
+      const chapterPath = path.join(session.researchDir, 'chapters', `chapter-${options.chapter}.md`);
+      let chapterContent: string;
+      try {
+        chapterContent = await fs.readFile(chapterPath, 'utf-8');
+      } catch {
+        throw new Error(`Chapter file not found: ${chapterPath}`);
+      }
+
+      // Extract the paragraph
+      const paragraphs = chapterContent.split(/\n\n+/).filter(p => p.trim().length > 50);
+      if (options.paragraph >= paragraphs.length) {
+        throw new Error(`Paragraph index ${options.paragraph} out of range (0-${paragraphs.length - 1})`);
+      }
+
+      const generatedText = paragraphs[options.paragraph];
+
+      // Build issues array if provided
+      const issues = options.issueType ? [{
+        type: options.issueType as 'word_choice' | 'sentence_structure' | 'tone' | 'argument_style' | 'citation_style' | 'transition' | 'other',
+        description: options.issueDescription || '',
+        originalSnippet: generatedText.substring(0, 100),
+        correctedSnippet: options.correction?.substring(0, 100),
+      }] : undefined;
+
+      // Determine soundsLikeMe
+      const soundsLikeMe = options.soundsLikeMe === 'true' ||
+        (options.soundsLikeMe === undefined && !options.correction);
+
+      // Capture the feedback
+      await integration.captureFeedback(
+        options.chapter,
+        options.paragraph,
+        generatedText,
+        {
+          soundsLikeMe,
+          correction: options.correction,
+          issues,
+        }
+      );
+
+      const stats = integration.getStats();
+
+      console.log(JSON.stringify({
+        success: true,
+        sessionId: session.sessionId,
+        chapter: options.chapter,
+        paragraph: options.paragraph,
+        feedbackCaptured: true,
+        soundsLikeMe,
+        hasCorrection: !!options.correction,
+        stats: {
+          totalFeedback: stats.totalFeedback,
+          contrastivePairs: stats.contrastivePairs,
+          soundsLikeMeRatio: stats.soundsLikeMeRatio,
+        }
+      }, null, 2));
+
+      process.exit(0);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+/**
+ * phd-learn command - Process pending feedback and update style
+ * Applies learned patterns from user corrections to improve style matching
+ */
+program
+  .command('phd-learn')
+  .description('Process pending feedback and learn style patterns')
+  .requiredOption('--session <id>', 'Session ID')
+  .option('--json', 'Output as JSON (default: true)', true)
+  .option('--verbose', 'Enable verbose logging')
+  .action(async (options: LearnOptions) => {
+    try {
+      const sessionManager = new SessionManager();
+      const session = await sessionManager.loadSession(options.session);
+
+      // Get feedback integration
+      const integration = await getOrCreateFeedbackIntegration(
+        session.sessionId,
+        path.dirname(sessionManager.getSessionDirectory()),
+        session.styleProfileId
+      );
+
+      if (options.verbose) {
+        const stats = integration.getStats();
+        console.error(`[PHD-LEARN] Session: ${session.sessionId}`);
+        console.error(`[PHD-LEARN] Total feedback items: ${stats.totalFeedback}`);
+        console.error(`[PHD-LEARN] Pending for processing: ${stats.totalFeedback - stats.processedCount}`);
+      }
+
+      // Process pending feedback
+      const result = await integration.processPendingFeedback();
+
+      if (options.verbose) {
+        console.error(`[PHD-LEARN] Processed ${result.feedbackProcessed} feedback items`);
+        console.error(`[PHD-LEARN] Learned ${result.patternsLearned} patterns`);
+        console.error(`[PHD-LEARN] Style updated: ${result.styleUpdated}`);
+      }
+
+      // Get consistent patterns learned
+      const consistentPatterns = integration.getConsistentPatterns();
+      const antiPatterns = integration.getAntiPatterns();
+
+      console.log(JSON.stringify({
+        success: true,
+        sessionId: session.sessionId,
+        result: {
+          feedbackProcessed: result.feedbackProcessed,
+          patternsLearned: result.patternsLearned,
+          styleUpdated: result.styleUpdated,
+        },
+        patterns: {
+          consistent: consistentPatterns.slice(0, 10),
+          antiPatterns: antiPatterns.slice(0, 10),
+        },
+        stats: integration.getStats(),
+      }, null, 2));
+
+      process.exit(0);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+/**
+ * phd-drift command - Check style drift for current session
+ * Analyzes generated text for deviation from user's style profile
+ */
+program
+  .command('phd-drift')
+  .description('Check style drift for session or specific chapter')
+  .requiredOption('--session <id>', 'Session ID')
+  .option('--chapter <num>', 'Specific chapter number to analyze', parseInt)
+  .option('--json', 'Output as JSON (default: true)', true)
+  .option('--verbose', 'Enable verbose logging')
+  .action(async (options: DriftOptions) => {
+    try {
+      const sessionManager = new SessionManager();
+      const session = await sessionManager.loadSession(options.session);
+
+      if (!session.researchDir) {
+        throw new Error('Session has no research directory set');
+      }
+
+      // Get feedback integration
+      const integration = await getOrCreateFeedbackIntegration(
+        session.sessionId,
+        path.dirname(sessionManager.getSessionDirectory()),
+        session.styleProfileId
+      );
+
+      if (options.chapter !== undefined) {
+        // Analyze specific chapter
+        const chapterPath = path.join(session.researchDir, 'chapters', `chapter-${options.chapter}.md`);
+        let chapterContent: string;
+        try {
+          chapterContent = await fs.readFile(chapterPath, 'utf-8');
+        } catch {
+          throw new Error(`Chapter file not found: ${chapterPath}`);
+        }
+
+        const analysis = integration.analyzeChapterDrift(chapterContent);
+
+        if (options.verbose) {
+          console.error(`[PHD-DRIFT] Analyzing chapter ${options.chapter}`);
+          console.error(`[PHD-DRIFT] Overall drift: ${(analysis.overallDrift * 100).toFixed(1)}%`);
+          console.error(`[PHD-DRIFT] Worst paragraphs: ${analysis.worstParagraphs.join(', ') || 'none'}`);
+        }
+
+        console.log(JSON.stringify({
+          success: true,
+          sessionId: session.sessionId,
+          chapter: options.chapter,
+          analysis: {
+            overallDrift: analysis.overallDrift,
+            overallDriftPercent: `${(analysis.overallDrift * 100).toFixed(1)}%`,
+            worstParagraphs: analysis.worstParagraphs,
+            suggestions: analysis.suggestions,
+          },
+          alertLevel: analysis.overallDrift < 0.2 ? 'none' :
+                      analysis.overallDrift < 0.4 ? 'minor' :
+                      analysis.overallDrift < 0.6 ? 'moderate' : 'significant',
+        }, null, 2));
+      } else {
+        // Analyze session overall
+        const sessionAnalysis = integration.getDriftAnalysisForSession();
+
+        if (options.verbose) {
+          console.error(`[PHD-DRIFT] Session: ${session.sessionId}`);
+          console.error(`[PHD-DRIFT] Total paragraphs analyzed: ${sessionAnalysis.totalParagraphs}`);
+          console.error(`[PHD-DRIFT] Paragraphs with drift: ${sessionAnalysis.driftingParagraphs}`);
+          console.error(`[PHD-DRIFT] Alert level: ${sessionAnalysis.alertLevel}`);
+        }
+
+        console.log(JSON.stringify({
+          success: true,
+          sessionId: session.sessionId,
+          analysis: {
+            totalParagraphs: sessionAnalysis.totalParagraphs,
+            driftingParagraphs: sessionAnalysis.driftingParagraphs,
+            averageDrift: sessionAnalysis.averageDrift,
+            averageDriftPercent: `${(sessionAnalysis.averageDrift * 100).toFixed(1)}%`,
+            alertLevel: sessionAnalysis.alertLevel,
+          },
+          stats: integration.getStats(),
+        }, null, 2));
+      }
+
+      process.exit(0);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+/**
+ * phd-feedback-stats command - Get feedback statistics for a session
+ */
+program
+  .command('phd-feedback-stats')
+  .description('Get feedback and learning statistics for a session')
+  .requiredOption('--session <id>', 'Session ID')
+  .option('--json', 'Output as JSON (default: true)', true)
+  .action(async (options: { session: string; json?: boolean }) => {
+    try {
+      const sessionManager = new SessionManager();
+      const session = await sessionManager.loadSession(options.session);
+
+      // Get feedback integration
+      const integration = await getOrCreateFeedbackIntegration(
+        session.sessionId,
+        path.dirname(sessionManager.getSessionDirectory()),
+        session.styleProfileId
+      );
+
+      const stats = integration.getStats();
+      const commonIssues = integration.getMostCommonIssues();
+      const consistentPatterns = integration.getConsistentPatterns().slice(0, 15);
+      const antiPatterns = integration.getAntiPatterns().slice(0, 10);
+
+      // Generate enhanced prompt preview
+      const enhancedPrompt = await integration.getEnhancedStylePrompt();
+
+      console.log(JSON.stringify({
+        success: true,
+        sessionId: session.sessionId,
+        stats,
+        commonIssues,
+        patterns: {
+          consistent: consistentPatterns,
+          antiPatterns,
+        },
+        enhancedPromptPreview: enhancedPrompt.substring(0, 500) + (enhancedPrompt.length > 500 ? '...' : ''),
+        enhancedPromptLength: enhancedPrompt.length,
+      }, null, 2));
+
+      process.exit(0);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+// ============================================================================
 // TASK-003: Finalize Command (Phase 8 Final Assembly)
 // ============================================================================
 
@@ -4386,6 +5228,1789 @@ function handleError(error: unknown): never {
   process.exit(1);
 }
 
+// ============================================================================
+// DISSERTATION-NATIVE FEATURES
+// Implements progress tracking, committee simulation, defense preparation,
+// and institutional compliance validation
+// ============================================================================
+
+// Maps to store dissertation components by session ID
+const dissertationTrackers: Map<string, DissertationProgressTracker> = new Map();
+const committeeSimulators: Map<string, CommitteeSimulator> = new Map();
+
+/**
+ * Get or create a progress tracker for a session
+ */
+async function getOrCreateProgressTracker(sessionId: string): Promise<DissertationProgressTracker> {
+  if (!dissertationTrackers.has(sessionId)) {
+    const tracker = new DissertationProgressTracker(sessionId);
+    // Try to load existing data
+    if (await tracker.exists()) {
+      await tracker.load();
+    }
+    dissertationTrackers.set(sessionId, tracker);
+  }
+  return dissertationTrackers.get(sessionId)!;
+}
+
+/**
+ * Get or create a committee simulator for a session
+ */
+function getOrCreateCommitteeSimulator(sessionId: string): CommitteeSimulator {
+  if (!committeeSimulators.has(sessionId)) {
+    const simulator = new CommitteeSimulator();
+    simulator.addDefaultRoles();
+    committeeSimulators.set(sessionId, simulator);
+  }
+  return committeeSimulators.get(sessionId)!;
+}
+
+/**
+ * phd-progress command - Track dissertation progress and milestones
+ */
+program
+  .command('phd-progress <session-id>')
+  .description('Track dissertation progress and milestones')
+  .option('--init', 'Initialize progress tracking for the session')
+  .option('--title <title>', 'Dissertation title (for init)')
+  .option('--student <name>', 'Student name (for init)')
+  .option('--program <program>', 'Degree program (for init)')
+  .option('--advisor <name>', 'Advisor name (for init)')
+  .option('--committee <names>', 'Committee members, comma-separated (for init)')
+  .option('--milestone <name>', 'Add or complete a milestone')
+  .option('--complete', 'Mark the milestone as complete')
+  .option('--chapter <num>', 'Update chapter progress')
+  .option('--status <status>', 'Chapter status: not_started, drafting, review, revision, approved')
+  .option('--words <count>', 'Chapter word count')
+  .option('--report', 'Generate progress report')
+  .option('--agenda', 'Generate advisor meeting agenda')
+  .option('--timeline', 'Generate timeline visualization')
+  .option('--json', 'Output as JSON')
+  .action(async (sessionId: string, options: {
+    init?: boolean;
+    title?: string;
+    student?: string;
+    program?: string;
+    advisor?: string;
+    committee?: string;
+    milestone?: string;
+    complete?: boolean;
+    chapter?: string;
+    status?: string;
+    words?: string;
+    report?: boolean;
+    agenda?: boolean;
+    timeline?: boolean;
+    json?: boolean;
+  }) => {
+    try {
+      const tracker = await getOrCreateProgressTracker(sessionId);
+
+      // Initialize if requested
+      if (options.init) {
+        const config: DissertationConfig = {
+          title: options.title || 'Untitled Dissertation',
+          studentName: options.student || 'Student',
+          program: options.program || 'PhD',
+          advisorName: options.advisor || 'Advisor',
+          committeeMembers: options.committee?.split(',').map(s => s.trim()) || []
+        };
+        tracker.initialize(config);
+        await tracker.save();
+
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, action: 'initialized', sessionId }));
+        } else {
+          console.log('Dissertation progress tracking initialized.');
+        }
+        return;
+      }
+
+      // Add/complete milestone
+      if (options.milestone) {
+        const progress = tracker.getProgress();
+        const existing = progress.milestones.find(m =>
+          m.name.toLowerCase() === options.milestone!.toLowerCase()
+        );
+
+        if (existing) {
+          if (options.complete) {
+            tracker.completeMilestone(existing.id);
+            await tracker.save();
+            if (options.json) {
+              console.log(JSON.stringify({ success: true, action: 'milestone_completed', milestone: existing.name }));
+            } else {
+              console.log(`Milestone completed: ${existing.name}`);
+            }
+          } else {
+            tracker.updateMilestoneStatus(existing.id, 'in_progress');
+            await tracker.save();
+            if (options.json) {
+              console.log(JSON.stringify({ success: true, action: 'milestone_started', milestone: existing.name }));
+            } else {
+              console.log(`Milestone started: ${existing.name}`);
+            }
+          }
+        } else {
+          const id = tracker.addMilestone({
+            name: options.milestone,
+            type: 'custom',
+            status: options.complete ? 'completed' : 'in_progress',
+            dependencies: [],
+            notes: '',
+            attachments: [],
+            completedDate: options.complete ? new Date() : undefined
+          });
+          await tracker.save();
+          if (options.json) {
+            console.log(JSON.stringify({ success: true, action: 'milestone_added', id, name: options.milestone }));
+          } else {
+            console.log(`Milestone added: ${options.milestone}`);
+          }
+        }
+        return;
+      }
+
+      // Update chapter
+      if (options.chapter) {
+        const chapterNum = parseInt(options.chapter, 10);
+        const update: { status?: string; wordCount?: number } = {};
+
+        if (options.status) {
+          update.status = options.status;
+        }
+        if (options.words) {
+          update.wordCount = parseInt(options.words, 10);
+        }
+
+        tracker.updateChapter(chapterNum, update as never);
+        await tracker.save();
+
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, action: 'chapter_updated', chapter: chapterNum, ...update }));
+        } else {
+          console.log(`Chapter ${chapterNum} updated.`);
+        }
+        return;
+      }
+
+      // Generate reports
+      if (options.report) {
+        const report = tracker.generateProgressReport();
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, report }));
+        } else {
+          console.log(report);
+        }
+        return;
+      }
+
+      if (options.agenda) {
+        const agenda = tracker.generateAdvisorMeetingAgenda();
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, agenda }));
+        } else {
+          console.log(agenda);
+        }
+        return;
+      }
+
+      if (options.timeline) {
+        const timeline = tracker.generateTimelineVisualization();
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, timeline }));
+        } else {
+          console.log(timeline);
+        }
+        return;
+      }
+
+      // Default: show summary
+      const progress = tracker.getProgress();
+      if (options.json) {
+        console.log(JSON.stringify({
+          success: true,
+          sessionId,
+          title: progress.title,
+          overallProgress: progress.overallProgress,
+          totalWordCount: progress.totalWordCount,
+          chapters: progress.chapters.length,
+          milestones: progress.milestones.length,
+          completedMilestones: progress.milestones.filter(m => m.status === 'completed').length
+        }));
+      } else {
+        console.log(`Dissertation: ${progress.title || 'Not initialized'}`);
+        console.log(`Progress: ${progress.overallProgress}%`);
+        console.log(`Word Count: ${progress.totalWordCount.toLocaleString()}`);
+        console.log(`Chapters: ${progress.chapters.length}`);
+        console.log(`Milestones: ${progress.milestones.filter(m => m.status === 'completed').length}/${progress.milestones.length} completed`);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+/**
+ * phd-committee command - Simulate committee perspectives and questions
+ */
+program
+  .command('phd-committee <session-id>')
+  .description('Simulate committee perspectives and generate anticipated questions')
+  .option('--setup', 'Set up committee with default roles')
+  .option('--add-member <name>', 'Add a committee member')
+  .option('--role <role>', 'Member role: chair, advisor, methodologist, theorist, external, reader')
+  .option('--questions', 'Generate questions')
+  .option('--chapter <num>', 'Generate questions for specific chapter')
+  .option('--count <n>', 'Number of questions to generate', '10')
+  .option('--review', 'Simulate full committee review')
+  .option('--critical', 'Generate critical/challenging questions only')
+  .option('--export', 'Export question bank')
+  .option('--json', 'Output as JSON')
+  .action(async (sessionId: string, options: {
+    setup?: boolean;
+    addMember?: string;
+    role?: string;
+    questions?: boolean;
+    chapter?: string;
+    count?: string;
+    review?: boolean;
+    critical?: boolean;
+    export?: boolean;
+    json?: boolean;
+  }) => {
+    try {
+      const simulator = getOrCreateCommitteeSimulator(sessionId);
+      const sessionManager = new SessionManager();
+      const session = await sessionManager.loadSession(sessionId);
+
+      // Setup with default roles
+      if (options.setup) {
+        simulator.addDefaultRoles();
+        if (options.json) {
+          console.log(JSON.stringify({
+            success: true,
+            action: 'setup',
+            committee: simulator.getCommittee().map(m => ({ name: m.name, role: m.role }))
+          }));
+        } else {
+          console.log('Committee set up with default roles:');
+          for (const member of simulator.getCommittee()) {
+            console.log(`  - ${member.name} (${member.role})`);
+          }
+        }
+        return;
+      }
+
+      // Add member
+      if (options.addMember) {
+        const member: CommitteeMember = {
+          name: options.addMember,
+          role: (options.role as CommitteeMember['role']) || 'reader',
+          expertise: [],
+          focusAreas: [],
+          questionStyle: 'probing',
+          personalityTraits: []
+        };
+        simulator.addMember(member);
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, action: 'member_added', member }));
+        } else {
+          console.log(`Added committee member: ${member.name} (${member.role})`);
+        }
+        return;
+      }
+
+      // Generate questions
+      if (options.questions || options.chapter) {
+        const count = parseInt(options.count || '10', 10);
+
+        // Load chapter content if available
+        let chapterContent = '';
+        if (session.researchDir && options.chapter) {
+          try {
+            const chapterPath = path.join(session.researchDir, `chapter-${options.chapter}.md`);
+            chapterContent = await fs.readFile(chapterPath, 'utf-8');
+          } catch {
+            // Chapter file not found, use empty content
+            chapterContent = '';
+          }
+        }
+
+        const questions = options.chapter
+          ? simulator.generateQuestions(chapterContent, parseInt(options.chapter, 10), count)
+          : simulator.generateDefenseQuestions(chapterContent || session.query, count);
+
+        simulator.storeQuestions(questions);
+
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, questions }));
+        } else {
+          console.log(`Generated ${questions.length} anticipated questions:\n`);
+          for (const q of questions) {
+            console.log(`Q: ${q.question}`);
+            console.log(`   From: ${q.askedBy} (${q.role}) - ${q.difficulty}`);
+            console.log(`   Suggested response: ${q.suggestedResponse}`);
+            console.log('');
+          }
+        }
+        return;
+      }
+
+      // Critical questions
+      if (options.critical) {
+        const questions = simulator.generateCriticalQuestions();
+        simulator.storeQuestions(questions);
+
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, questions }));
+        } else {
+          console.log('Most challenging anticipated questions:\n');
+          for (const q of questions) {
+            console.log(`Q: ${q.question}`);
+            console.log(`   From: ${q.askedBy} (${q.role})`);
+            console.log(`   Suggested response: ${q.suggestedResponse}`);
+            console.log('');
+          }
+        }
+        return;
+      }
+
+      // Full review
+      if (options.review) {
+        // Build chapters map from session if available
+        const chaptersMap = new Map<number, string>();
+        if (session.researchDir) {
+          // Try to load available chapters
+          for (let i = 1; i <= 10; i++) {
+            try {
+              const chapterPath = path.join(session.researchDir, `chapter-${i}.md`);
+              const content = await fs.readFile(chapterPath, 'utf-8');
+              chaptersMap.set(i, content);
+            } catch {
+              // Chapter not found, skip
+            }
+          }
+        }
+
+        const review = simulator.simulateCommitteeReview(chaptersMap);
+
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, review }));
+        } else {
+          console.log('Committee Review Simulation\n');
+          console.log(`Overall Assessment: ${review.overallAssessment.toUpperCase()}`);
+          console.log('\nCommon Themes:');
+          for (const theme of review.commonThemes) {
+            console.log(`  - ${theme}`);
+          }
+          console.log('\nCritical Issues:');
+          for (const issue of review.criticalIssues) {
+            console.log(`  - ${issue}`);
+          }
+          console.log('\nRevision Priorities:');
+          for (const priority of review.revisionPriorities.slice(0, 5)) {
+            console.log(`  ${priority}`);
+          }
+        }
+        return;
+      }
+
+      // Export question bank
+      if (options.export) {
+        const exported = simulator.exportQuestionBank();
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, questionBank: exported }));
+        } else {
+          console.log(exported);
+        }
+        return;
+      }
+
+      // Default: show committee
+      const committee = simulator.getCommittee();
+      if (options.json) {
+        console.log(JSON.stringify({
+          success: true,
+          sessionId,
+          committeeSize: committee.length,
+          committee: committee.map(m => ({ name: m.name, role: m.role })),
+          questionsStored: simulator.getQuestionBank().length
+        }));
+      } else {
+        console.log('Committee Members:');
+        for (const member of committee) {
+          console.log(`  - ${member.name} (${member.role})`);
+        }
+        console.log(`\nQuestions in bank: ${simulator.getQuestionBank().length}`);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+/**
+ * phd-defense command - Generate defense preparation materials
+ */
+program
+  .command('phd-defense <session-id>')
+  .description('Generate defense preparation materials')
+  .option('--generate', 'Generate complete defense package')
+  .option('--questions', 'Generate anticipated questions')
+  .option('--slides', 'Generate slide deck outline')
+  .option('--opening', 'Generate opening statement')
+  .option('--closing', 'Generate closing statement')
+  .option('--cheatsheet', 'Generate key points cheat sheet')
+  .option('--timing', 'Generate timing guide')
+  .option('--total-time <minutes>', 'Total defense time in minutes', '45')
+  .option('--qa-time <minutes>', 'Q&A time in minutes', '20')
+  .option('--output <path>', 'Output file path for defense package')
+  .option('--json', 'Output as JSON')
+  .action(async (sessionId: string, options: {
+    generate?: boolean;
+    questions?: boolean;
+    slides?: boolean;
+    opening?: boolean;
+    closing?: boolean;
+    cheatsheet?: boolean;
+    timing?: boolean;
+    totalTime?: string;
+    qaTime?: string;
+    output?: string;
+    json?: boolean;
+  }) => {
+    try {
+      const simulator = getOrCreateCommitteeSimulator(sessionId);
+      const generator = new DefensePreparationGenerator(simulator);
+      const sessionManager = new SessionManager();
+      const session = await sessionManager.loadSession(sessionId);
+
+      // Build chapters map from session
+      const chaptersMap = new Map<number, string>();
+      if (session.researchDir) {
+        for (let i = 1; i <= 10; i++) {
+          try {
+            const chapterPath = path.join(session.researchDir, `chapter-${i}.md`);
+            const content = await fs.readFile(chapterPath, 'utf-8');
+            chaptersMap.set(i, content);
+          } catch {
+            // Chapter not found, skip
+          }
+        }
+      }
+
+      const config: DefenseConfig = {
+        totalTime: parseInt(options.totalTime || '45', 10),
+        questionTime: parseInt(options.qaTime || '20', 10),
+        includeChallenging: true
+      };
+
+      // Generate complete package
+      if (options.generate) {
+        const prep = await generator.generateDefensePackage(chaptersMap, config);
+
+        if (options.output) {
+          const outputPath = path.resolve(options.output);
+          const content = exportDefensePreparation(prep);
+          await fs.writeFile(outputPath, content, 'utf-8');
+          if (options.json) {
+            console.log(JSON.stringify({ success: true, outputPath, questionsCount: prep.anticipatedQuestions.length, slidesCount: prep.summarySlides.slides.length }));
+          } else {
+            console.log(`Defense preparation package written to: ${outputPath}`);
+          }
+        } else {
+          if (options.json) {
+            console.log(JSON.stringify({ success: true, preparation: prep }));
+          } else {
+            console.log(exportDefensePreparation(prep));
+          }
+        }
+        return;
+      }
+
+      // Generate questions only
+      if (options.questions) {
+        const prep = await generator.generateDefensePackage(chaptersMap, config);
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, questions: prep.anticipatedQuestions }));
+        } else {
+          console.log('Anticipated Defense Questions\n');
+          for (const q of prep.anticipatedQuestions) {
+            console.log(`Q: ${q.question}`);
+            console.log(`   From: ${q.askedBy} - ${q.difficulty}`);
+            console.log('');
+          }
+        }
+        return;
+      }
+
+      // Generate slides only
+      if (options.slides) {
+        const slides = generator.generateSummarySlides(chaptersMap, config.totalTime - config.questionTime);
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, slides }));
+        } else {
+          console.log(`Slide Deck: ${slides.title}\n`);
+          console.log(`Total Duration: ${slides.totalDuration} minutes\n`);
+          for (const slide of slides.slides) {
+            console.log(`Slide ${slide.number}: ${slide.title} (${slide.duration} min)`);
+            for (const bullet of slide.bulletPoints) {
+              console.log(`  - ${bullet}`);
+            }
+            console.log('');
+          }
+        }
+        return;
+      }
+
+      // Generate opening statement
+      if (options.opening) {
+        const abstract = chaptersMap.get(1)?.slice(0, 2000) || '';
+        const opening = generator.generateOpeningStatement(abstract);
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, openingStatement: opening }));
+        } else {
+          console.log(opening);
+        }
+        return;
+      }
+
+      // Generate closing statement
+      if (options.closing) {
+        const lastChapter = chaptersMap.get(chaptersMap.size) || '';
+        const closing = generator.generateClosingStatement(lastChapter);
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, closingStatement: closing }));
+        } else {
+          console.log(closing);
+        }
+        return;
+      }
+
+      // Generate cheat sheet
+      if (options.cheatsheet) {
+        const cheatsheet = generator.generateCheatSheet(chaptersMap);
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, cheatSheet: cheatsheet }));
+        } else {
+          console.log(cheatsheet);
+        }
+        return;
+      }
+
+      // Generate timing guide
+      if (options.timing) {
+        const slides = generator.generateSummarySlides(chaptersMap, config.totalTime - config.questionTime);
+        const timing = generator.generateTimingGuide(slides);
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, timingGuide: timing }));
+        } else {
+          console.log(timing);
+        }
+        return;
+      }
+
+      // Default: show available options
+      if (options.json) {
+        console.log(JSON.stringify({
+          success: true,
+          sessionId,
+          availableChapters: chaptersMap.size,
+          commands: ['--generate', '--questions', '--slides', '--opening', '--closing', '--cheatsheet', '--timing']
+        }));
+      } else {
+        console.log('Defense Preparation Generator');
+        console.log(`Session: ${sessionId}`);
+        console.log(`Available chapters: ${chaptersMap.size}`);
+        console.log('\nUse one of the following options:');
+        console.log('  --generate    Generate complete defense package');
+        console.log('  --questions   Generate anticipated questions');
+        console.log('  --slides      Generate slide deck outline');
+        console.log('  --opening     Generate opening statement');
+        console.log('  --closing     Generate closing statement');
+        console.log('  --cheatsheet  Generate key points cheat sheet');
+        console.log('  --timing      Generate timing guide');
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+/**
+ * phd-compliance command - Check institutional compliance
+ */
+program
+  .command('phd-compliance <session-id>')
+  .description('Check dissertation compliance with institutional requirements')
+  .option('--check', 'Run compliance check')
+  .option('--institution <name>', 'Institution template to use', 'generic-us-doctoral')
+  .option('--checklist', 'Generate submission checklist')
+  .option('--list-institutions', 'List available institution templates')
+  .option('--deadlines', 'Show upcoming deadlines')
+  .option('--add-deadline <name>', 'Add a deadline')
+  .option('--date <date>', 'Deadline date (YYYY-MM-DD)')
+  .option('--export', 'Export compliance report')
+  .option('--output <path>', 'Output file path')
+  .option('--json', 'Output as JSON')
+  .action(async (sessionId: string, options: {
+    check?: boolean;
+    institution?: string;
+    checklist?: boolean;
+    listInstitutions?: boolean;
+    deadlines?: boolean;
+    addDeadline?: string;
+    date?: string;
+    export?: boolean;
+    output?: string;
+    json?: boolean;
+  }) => {
+    try {
+      // List available institutions
+      if (options.listInstitutions) {
+        const institutions = InstitutionalComplianceChecker.listAvailableInstitutions();
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, institutions }));
+        } else {
+          console.log('Available institution templates:');
+          for (const inst of institutions) {
+            console.log(`  - ${inst}`);
+          }
+        }
+        return;
+      }
+
+      // Load requirements for the institution
+      const requirements = InstitutionalComplianceChecker.loadInstitution(options.institution || 'generic-us-doctoral');
+      const checker = new InstitutionalComplianceChecker(requirements);
+
+      // Add deadline
+      if (options.addDeadline && options.date) {
+        const date = new Date(options.date);
+        checker.addDeadline(options.addDeadline, date);
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, action: 'deadline_added', name: options.addDeadline, date: options.date }));
+        } else {
+          console.log(`Deadline added: ${options.addDeadline} on ${options.date}`);
+        }
+        return;
+      }
+
+      // Show deadlines
+      if (options.deadlines) {
+        const deadlines = checker.getUpcomingDeadlines();
+        if (options.json) {
+          console.log(JSON.stringify({ success: true, deadlines }));
+        } else {
+          console.log('Upcoming Deadlines:');
+          for (const d of deadlines) {
+            const status = d.isOverdue ? 'OVERDUE' : `${d.daysRemaining} days`;
+            console.log(`  - ${d.name}: ${d.date.toLocaleDateString()} (${status})`);
+          }
+        }
+        return;
+      }
+
+      // Generate checklist
+      if (options.checklist) {
+        const checklist = checker.generateSubmissionChecklist();
+        if (options.output) {
+          await fs.writeFile(path.resolve(options.output), checklist, 'utf-8');
+          if (options.json) {
+            console.log(JSON.stringify({ success: true, outputPath: options.output }));
+          } else {
+            console.log(`Checklist written to: ${options.output}`);
+          }
+        } else {
+          if (options.json) {
+            console.log(JSON.stringify({ success: true, checklist }));
+          } else {
+            console.log(checklist);
+          }
+        }
+        return;
+      }
+
+      // Run compliance check
+      if (options.check) {
+        const sessionManager = new SessionManager();
+        const session = await sessionManager.loadSession(sessionId);
+
+        // Build content maps
+        const chapters = new Map<number, string>();
+        const frontMatter = new Map<string, string>();
+        const backMatter = new Map<string, string>();
+
+        if (session.researchDir) {
+          // Load chapters
+          for (let i = 1; i <= 10; i++) {
+            try {
+              const chapterPath = path.join(session.researchDir, `chapter-${i}.md`);
+              const content = await fs.readFile(chapterPath, 'utf-8');
+              chapters.set(i, content);
+            } catch {
+              // Chapter not found
+            }
+          }
+
+          // Try to load front/back matter
+          const frontMatterFiles = ['abstract.md', 'title-page.md', 'acknowledgments.md'];
+          for (const file of frontMatterFiles) {
+            try {
+              const content = await fs.readFile(path.join(session.researchDir, file), 'utf-8');
+              frontMatter.set(file.replace('.md', ''), content);
+            } catch {
+              // File not found
+            }
+          }
+
+          const backMatterFiles = ['references.md', 'appendices.md'];
+          for (const file of backMatterFiles) {
+            try {
+              const content = await fs.readFile(path.join(session.researchDir, file), 'utf-8');
+              backMatter.set(file.replace('.md', ''), content);
+            } catch {
+              // File not found
+            }
+          }
+        }
+
+        const report = checker.validateDissertation(chapters, frontMatter, backMatter);
+
+        if (options.export || options.output) {
+          const exported = checker.exportComplianceReport(report);
+          if (options.output) {
+            await fs.writeFile(path.resolve(options.output), exported, 'utf-8');
+            if (options.json) {
+              console.log(JSON.stringify({ success: true, outputPath: options.output, passed: report.passed, score: report.score }));
+            } else {
+              console.log(`Compliance report written to: ${options.output}`);
+            }
+          } else {
+            if (options.json) {
+              console.log(JSON.stringify({ success: true, report }));
+            } else {
+              console.log(exported);
+            }
+          }
+        } else {
+          if (options.json) {
+            console.log(JSON.stringify({ success: true, report }));
+          } else {
+            console.log(`Compliance Check for: ${requirements.institution}`);
+            console.log(`Status: ${report.passed ? 'PASSED' : 'NEEDS ATTENTION'}`);
+            console.log(`Score: ${report.score}/100`);
+            console.log(`\nIssues: ${report.issues.length}`);
+            const errors = report.issues.filter(i => i.severity === 'error');
+            const warnings = report.issues.filter(i => i.severity === 'warning');
+            console.log(`  Errors: ${errors.length}`);
+            console.log(`  Warnings: ${warnings.length}`);
+
+            if (errors.length > 0) {
+              console.log('\nErrors (must fix):');
+              for (const err of errors.slice(0, 5)) {
+                console.log(`  - ${err.location}: ${err.description}`);
+              }
+            }
+          }
+        }
+        return;
+      }
+
+      // Default: show requirements summary
+      const reqs = checker.getRequirements();
+      if (options.json) {
+        console.log(JSON.stringify({ success: true, requirements: reqs }));
+      } else {
+        console.log(`Institution: ${reqs.institution}`);
+        console.log(`Degree: ${reqs.degree.toUpperCase()}`);
+        console.log(`Citation Style: ${reqs.citationStyle.toUpperCase()}`);
+        console.log(`\nFormatting:`);
+        console.log(`  Font: ${reqs.formatting.font}, ${reqs.formatting.fontSize}pt`);
+        console.log(`  Line Spacing: ${reqs.formatting.lineSpacing}`);
+        console.log(`\nUse --check to validate dissertation or --checklist to generate submission checklist`);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+// ============================================================================
+// PHD-COMPLETE-SECTION COMMAND
+// ============================================================================
+// Completes unfinished dissertation sections using knowledge from the corpus
+// Implements section analysis, knowledge retrieval, and citation generation
+
+/**
+ * Options for the phd-complete-section command
+ */
+interface CompleteSectionOptions {
+  /** Path to input file containing the incomplete section */
+  input?: string;
+  /** Inline text for short sections */
+  inline?: string;
+  /** Corpus to search for knowledge (default: rhetorical_ontology) */
+  corpus?: string;
+  /** Style profile to apply */
+  style?: string;
+  /** Output file path (default: stdout) */
+  output?: string;
+  /** Output as JSON */
+  json?: boolean;
+}
+
+/**
+ * Represents an incomplete subsection detected in the input
+ */
+interface IncompleteSubsection {
+  /** The header text (e.g., "2.3.1 Phantasia in Aristotle's Rhetoric") */
+  header: string;
+  /** Line number where the header appears */
+  lineNumber: number;
+  /** Reason why it's considered incomplete */
+  reason: 'todo_marker' | 'empty' | 'placeholder' | 'too_short';
+  /** Any existing content after the header */
+  existingContent: string;
+  /** Start index in the original text */
+  startIndex: number;
+  /** End index in the original text (where next header starts or end of text) */
+  endIndex: number;
+}
+
+/**
+ * Knowledge unit from the corpus
+ */
+interface KnowledgeUnit {
+  id: string;
+  claim: string;
+  sources: Array<{
+    author: string;
+    title: string;
+    path_rel: string;
+    pages: string;
+    chunk_id?: string;
+  }>;
+  confidence: 'high' | 'medium' | 'low';
+  tags: string[];
+}
+
+/**
+ * Result of completing a subsection
+ */
+interface SubsectionCompletion {
+  /** Original header */
+  header: string;
+  /** Generated content */
+  content: string;
+  /** Citations used */
+  citations: Array<{
+    author: string;
+    year: string;
+    page: string;
+    kuId: string;
+  }>;
+  /** Knowledge units used */
+  knowledgeUnitsUsed: string[];
+}
+
+/**
+ * Full result of section completion
+ */
+interface SectionCompletionResult {
+  /** Original input text */
+  originalText: string;
+  /** Completed text with AI-generated content */
+  completedText: string;
+  /** Details about each completed subsection */
+  completions: SubsectionCompletion[];
+  /** Total citations added */
+  totalCitations: number;
+  /** Sources used */
+  sourcesUsed: string[];
+  /** Corpus that was searched */
+  corpus: string;
+  /** Style profile applied (if any) */
+  styleProfile?: string;
+}
+
+/**
+ * Parse the section text to identify incomplete subsections.
+ * Looks for:
+ * - Headers followed by TODO markers
+ * - Headers with no content or very short content
+ * - Placeholder text like "[Complete this section]"
+ *
+ * @param text - The markdown section text
+ * @returns Array of incomplete subsections detected
+ */
+function analyzeSection(text: string): IncompleteSubsection[] {
+  const lines = text.split('\n');
+  const incompleteSubsections: IncompleteSubsection[] = [];
+
+  // Regex to match markdown headers (##, ###, ####, etc.)
+  const headerRegex = /^(#{1,6})\s+(.+)$/;
+
+  // Patterns indicating incompleteness
+  const todoPatterns = [
+    /TODO/i,
+    /\[TODO\]/i,
+    /\[Complete\s+this/i,
+    /\[Fill\s+in/i,
+    /\[Add\s+content/i,
+    /\[Placeholder\]/i,
+    /TBD/i,
+    /FIXME/i,
+  ];
+
+  const placeholderPatterns = [
+    /^\s*\[.*\]\s*$/,
+    /^\s*\.{3,}\s*$/,
+    /^\s*\?\?\?\s*$/,
+  ];
+
+  let currentHeader: { text: string; lineNumber: number; startIndex: number } | null = null;
+  let currentContent: string[] = [];
+  let charIndex = 0;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const headerMatch = line.match(headerRegex);
+
+    if (headerMatch) {
+      // Process previous section if there was one
+      if (currentHeader) {
+        const content = currentContent.join('\n').trim();
+        const endIndex = charIndex;
+
+        // Check if the section is incomplete
+        let reason: IncompleteSubsection['reason'] | null = null;
+
+        // Check for TODO markers in header or content
+        const fullText = currentHeader.text + ' ' + content;
+        if (todoPatterns.some(p => p.test(fullText))) {
+          reason = 'todo_marker';
+        }
+        // Check if content is empty
+        else if (content.length === 0) {
+          reason = 'empty';
+        }
+        // Check for placeholder patterns
+        else if (content.split('\n').every(l => !l.trim() || placeholderPatterns.some(p => p.test(l)))) {
+          reason = 'placeholder';
+        }
+        // Check if content is too short (less than 100 chars of actual content)
+        else if (content.replace(/\s+/g, ' ').length < 100) {
+          reason = 'too_short';
+        }
+
+        if (reason) {
+          incompleteSubsections.push({
+            header: currentHeader.text,
+            lineNumber: currentHeader.lineNumber,
+            reason,
+            existingContent: content,
+            startIndex: currentHeader.startIndex,
+            endIndex,
+          });
+        }
+      }
+
+      // Start new section
+      currentHeader = {
+        text: headerMatch[2].trim(),
+        lineNumber: i + 1,
+        startIndex: charIndex,
+      };
+      currentContent = [];
+    } else if (currentHeader) {
+      currentContent.push(line);
+    }
+
+    charIndex += line.length + 1; // +1 for newline
+  }
+
+  // Process the last section
+  if (currentHeader) {
+    const content = currentContent.join('\n').trim();
+    let reason: IncompleteSubsection['reason'] | null = null;
+
+    const fullText = currentHeader.text + ' ' + content;
+    if (todoPatterns.some(p => p.test(fullText))) {
+      reason = 'todo_marker';
+    } else if (content.length === 0) {
+      reason = 'empty';
+    } else if (content.split('\n').every(l => !l.trim() || placeholderPatterns.some(p => p.test(l)))) {
+      reason = 'placeholder';
+    } else if (content.replace(/\s+/g, ' ').length < 100) {
+      reason = 'too_short';
+    }
+
+    if (reason) {
+      incompleteSubsections.push({
+        header: currentHeader.text,
+        lineNumber: currentHeader.lineNumber,
+        reason,
+        existingContent: content,
+        startIndex: currentHeader.startIndex,
+        endIndex: text.length,
+      });
+    }
+  }
+
+  return incompleteSubsections;
+}
+
+/**
+ * Search the knowledge base for relevant knowledge units.
+ *
+ * @param query - Search query (typically derived from subsection header)
+ * @param corpus - Corpus to filter by (e.g., "rhetorical_ontology")
+ * @param limit - Maximum number of results
+ * @returns Array of matching knowledge units
+ */
+async function searchKnowledgeBase(
+  query: string,
+  corpus?: string,
+  limit: number = 5
+): Promise<KnowledgeUnit[]> {
+  const knowledgePath = path.join(process.cwd(), 'god-learn', 'knowledge.jsonl');
+
+  try {
+    const content = await fs.readFile(knowledgePath, 'utf-8');
+    const allKUs: KnowledgeUnit[] = content
+      .split('\n')
+      .filter(line => line.trim())
+      .map(line => {
+        try {
+          return JSON.parse(line) as KnowledgeUnit;
+        } catch {
+          return null;
+        }
+      })
+      .filter((ku): ku is KnowledgeUnit => ku !== null);
+
+    // Extract keywords from query
+    const queryLower = query.toLowerCase();
+    const keywords = queryLower
+      .split(/\s+/)
+      .filter(w => w.length > 2)
+      .filter(w => !['the', 'and', 'for', 'this', 'that', 'with', 'from'].includes(w));
+
+    // Score and filter knowledge units
+    const scored = allKUs
+      .filter(ku => {
+        // Filter by corpus if specified
+        if (corpus && ku.sources && ku.sources.length > 0) {
+          return ku.sources.some(s => s.path_rel && s.path_rel.includes(corpus));
+        }
+        return true;
+      })
+      .map(ku => {
+        const claim = (ku.claim || '').toLowerCase();
+        let score = 0;
+
+        // Score based on keyword matches
+        for (const keyword of keywords) {
+          if (claim.includes(keyword)) {
+            score += 1;
+            // Bonus for exact word match
+            if (new RegExp(`\\b${keyword}\\b`).test(claim)) {
+              score += 0.5;
+            }
+          }
+        }
+
+        // Bonus for high confidence
+        if (ku.confidence === 'high') {
+          score *= 1.2;
+        } else if (ku.confidence === 'low') {
+          score *= 0.8;
+        }
+
+        return { ku, score };
+      })
+      .filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit)
+      .map(item => item.ku);
+
+    return scored;
+  } catch (error) {
+    if (process.env.PHD_CLI_DEBUG) {
+      console.error(`[COMPLETE-SECTION] Failed to read knowledge base: ${error}`);
+    }
+    return [];
+  }
+}
+
+/**
+ * Extract citation information from a knowledge unit source.
+ *
+ * @param source - Source object from a knowledge unit
+ * @returns Formatted citation object
+ */
+function extractCitation(source: KnowledgeUnit['sources'][0]): {
+  author: string;
+  year: string;
+  page: string;
+} {
+  // Extract year from title or path (e.g., "_(2011)_" or "_(2014)_")
+  const yearMatch = source.title?.match(/\((\d{4})\)/) ||
+    source.path_rel?.match(/\((\d{4})\)/);
+  const year = yearMatch ? yearMatch[1] : 'n.d.';
+
+  // Extract last name from author (handle "Last, First" format)
+  let author = source.author || 'Unknown';
+  if (author.includes(',')) {
+    author = author.split(',')[0].trim();
+  } else if (author.includes(' ')) {
+    // Assume "First Last" format, take the last word
+    const parts = author.split(' ');
+    author = parts[parts.length - 1];
+  }
+
+  // Format pages
+  const page = source.pages || '';
+
+  return { author, year, page };
+}
+
+/**
+ * Generate completion text for an incomplete subsection.
+ *
+ * @param subsection - The incomplete subsection to complete
+ * @param knowledgeUnits - Relevant knowledge units from the corpus
+ * @param styleProfile - Optional style profile for voice/tone matching
+ * @returns Completed subsection with content and citations
+ */
+function generateSubsectionCompletion(
+  subsection: IncompleteSubsection,
+  knowledgeUnits: KnowledgeUnit[],
+  _styleProfile?: StoredStyleProfile
+): SubsectionCompletion {
+  const citations: SubsectionCompletion['citations'] = [];
+  const paragraphs: string[] = [];
+  const usedKuIds: string[] = [];
+
+  if (knowledgeUnits.length === 0) {
+    // No knowledge units found - generate a placeholder note
+    paragraphs.push(
+      `*Note: No relevant knowledge units found in the corpus for this subsection. ` +
+      `Consider adding relevant sources to the corpus or refining the subsection topic.*`
+    );
+  } else {
+    // Build narrative from knowledge units
+    // Group by source author for coherent narrative flow
+    const byAuthor = new Map<string, KnowledgeUnit[]>();
+    for (const ku of knowledgeUnits) {
+      const author = ku.sources?.[0]?.author || 'Unknown';
+      if (!byAuthor.has(author)) {
+        byAuthor.set(author, []);
+      }
+      byAuthor.get(author)!.push(ku);
+    }
+
+    // Generate introductory sentence based on the header topic
+    const topicWords = subsection.header.toLowerCase().split(/\s+/).slice(0, 5).join(' ');
+    paragraphs.push(
+      `This section examines the scholarly discourse surrounding ${topicWords}, ` +
+      `drawing on key primary and secondary sources from the corpus.`
+    );
+
+    // Add content from each author grouping
+    for (const [author, kus] of byAuthor) {
+      for (const ku of kus) {
+        const source = ku.sources?.[0];
+        if (!source) continue;
+
+        const citation = extractCitation(source);
+        usedKuIds.push(ku.id);
+
+        // Format the claim as a quotation or paraphrase
+        let text: string;
+        if (ku.claim.length < 200) {
+          // Short claims can be quoted directly
+          text = `As ${citation.author} (${citation.year}) observes, "${ku.claim}"`;
+          if (citation.page) {
+            text += ` (p. ${citation.page})`;
+          }
+          text += '.';
+        } else {
+          // Longer claims should be paraphrased with citation
+          text = `${citation.author} (${citation.year}) argues that ${ku.claim.substring(0, 150)}...`;
+          if (citation.page) {
+            text += ` (p. ${citation.page})`;
+          }
+        }
+
+        paragraphs.push(text);
+
+        citations.push({
+          author: citation.author,
+          year: citation.year,
+          page: citation.page,
+          kuId: ku.id,
+        });
+      }
+    }
+
+    // Add a transitional/synthesizing sentence if we have multiple sources
+    if (citations.length > 1) {
+      const authorList = [...new Set(citations.map(c => c.author))];
+      if (authorList.length > 1) {
+        paragraphs.push(
+          `These perspectives from ${authorList.join(', ')} collectively illuminate ` +
+          `the multifaceted nature of ${topicWords} within the broader scholarly conversation.`
+        );
+      }
+    }
+  }
+
+  const content = paragraphs.join('\n\n');
+
+  return {
+    header: subsection.header,
+    content,
+    citations,
+    knowledgeUnitsUsed: usedKuIds,
+  };
+}
+
+/**
+ * Build the completed section text with all completions inserted.
+ *
+ * @param originalText - Original section text
+ * @param incompleteSubsections - Detected incomplete subsections
+ * @param completions - Generated completions for each subsection
+ * @returns Complete section text with AI-generated content marked
+ */
+function buildCompletedText(
+  originalText: string,
+  incompleteSubsections: IncompleteSubsection[],
+  completions: SubsectionCompletion[]
+): string {
+  // Sort subsections by start index in reverse order (so we can insert from end to start)
+  const sortedSubsections = [...incompleteSubsections].sort((a, b) => b.startIndex - a.startIndex);
+
+  let result = originalText;
+
+  for (let i = 0; i < sortedSubsections.length; i++) {
+    const subsection = sortedSubsections[i];
+    const completion = completions.find(c => c.header === subsection.header);
+
+    if (!completion) continue;
+
+    // Find the position after the header line
+    const lines = result.split('\n');
+    let lineIndex = -1;
+    let charCount = 0;
+
+    for (let j = 0; j < lines.length; j++) {
+      if (charCount >= subsection.startIndex && lines[j].includes(subsection.header)) {
+        lineIndex = j;
+        break;
+      }
+      charCount += lines[j].length + 1;
+    }
+
+    if (lineIndex === -1) continue;
+
+    // Build the replacement text
+    const headerLine = lines[lineIndex];
+    const completionBlock = [
+      headerLine,
+      '<!-- AI-COMPLETED -->',
+      '',
+      completion.content,
+      '',
+    ].join('\n');
+
+    // Find end of current subsection content
+    let endLineIndex = lineIndex + 1;
+    const headerRegex = /^#{1,6}\s+/;
+    while (endLineIndex < lines.length && !headerRegex.test(lines[endLineIndex])) {
+      endLineIndex++;
+    }
+
+    // Replace the subsection
+    const newLines = [
+      ...lines.slice(0, lineIndex),
+      completionBlock,
+      ...lines.slice(endLineIndex),
+    ];
+
+    result = newLines.join('\n');
+  }
+
+  return result;
+}
+
+/**
+ * Format the completion summary for output.
+ *
+ * @param result - The section completion result
+ * @returns Formatted summary string
+ */
+function formatCompletionSummary(result: SectionCompletionResult): string {
+  const uniqueSources = [...new Set(result.sourcesUsed)];
+
+  const lines = [
+    '',
+    '---',
+    '**Completion Summary**',
+    `- Subsections completed: ${result.completions.length}`,
+    `- Citations added: ${result.totalCitations}`,
+    `- Sources used: ${uniqueSources.join(', ') || 'None'}`,
+    `- Corpus: ${result.corpus}`,
+  ];
+
+  if (result.styleProfile) {
+    lines.push(`- Style profile: ${result.styleProfile}`);
+  }
+
+  return lines.join('\n');
+}
+
+/**
+ * Main function to complete an incomplete dissertation section.
+ *
+ * @param inputText - The incomplete section text
+ * @param options - Completion options
+ * @returns Section completion result
+ */
+async function completeSection(
+  inputText: string,
+  options: {
+    corpus?: string;
+    styleProfile?: StoredStyleProfile;
+  }
+): Promise<SectionCompletionResult> {
+  const corpus = options.corpus || 'rhetorical_ontology';
+
+  // Step 1: Analyze the section to find incomplete subsections
+  const incompleteSubsections = analyzeSection(inputText);
+
+  if (incompleteSubsections.length === 0) {
+    return {
+      originalText: inputText,
+      completedText: inputText,
+      completions: [],
+      totalCitations: 0,
+      sourcesUsed: [],
+      corpus,
+      styleProfile: options.styleProfile?.metadata.name,
+    };
+  }
+
+  // Step 2: For each incomplete subsection, search for relevant knowledge
+  const completions: SubsectionCompletion[] = [];
+  const allSourcesUsed: string[] = [];
+  let totalCitations = 0;
+
+  for (const subsection of incompleteSubsections) {
+    // Build search query from header
+    const query = subsection.header
+      .replace(/^\d+(\.\d+)*\s*/, '') // Remove section numbers
+      .trim();
+
+    // Search knowledge base
+    const knowledgeUnits = await searchKnowledgeBase(query, corpus, 5);
+
+    // Generate completion
+    const completion = generateSubsectionCompletion(
+      subsection,
+      knowledgeUnits,
+      options.styleProfile
+    );
+
+    completions.push(completion);
+    totalCitations += completion.citations.length;
+
+    // Track sources used
+    for (const citation of completion.citations) {
+      const sourceKey = `${citation.author} (${citation.year})`;
+      if (!allSourcesUsed.includes(sourceKey)) {
+        allSourcesUsed.push(sourceKey);
+      }
+    }
+  }
+
+  // Step 3: Build the completed text
+  const completedText = buildCompletedText(inputText, incompleteSubsections, completions);
+
+  return {
+    originalText: inputText,
+    completedText,
+    completions,
+    totalCitations,
+    sourcesUsed: allSourcesUsed,
+    corpus,
+    styleProfile: options.styleProfile?.metadata.name,
+  };
+}
+
+/**
+ * Read input text from various sources (file, inline, or stdin).
+ *
+ * @param options - Command options with input, inline, or neither (stdin)
+ * @returns The input text
+ */
+async function readInputText(options: CompleteSectionOptions): Promise<string> {
+  // Option 1: Read from file
+  if (options.input) {
+    const inputPath = path.resolve(options.input);
+    try {
+      return await fs.readFile(inputPath, 'utf-8');
+    } catch (error) {
+      throw new Error(`Failed to read input file: ${options.input}. ${(error as Error).message}`);
+    }
+  }
+
+  // Option 2: Use inline text
+  if (options.inline) {
+    return options.inline;
+  }
+
+  // Option 3: Read from stdin
+  console.error('Paste your dissertation section (Ctrl+D when done):');
+
+  return new Promise((resolve, reject) => {
+    let data = '';
+    process.stdin.setEncoding('utf-8');
+
+    process.stdin.on('readable', () => {
+      let chunk: string | null;
+      while ((chunk = process.stdin.read() as string | null) !== null) {
+        data += chunk;
+      }
+    });
+
+    process.stdin.on('end', () => {
+      if (!data.trim()) {
+        reject(new Error('No input provided. Use --input <file>, --inline "text", or paste text to stdin.'));
+      } else {
+        resolve(data);
+      }
+    });
+
+    process.stdin.on('error', (err) => {
+      reject(new Error(`Failed to read from stdin: ${err.message}`));
+    });
+
+    // Set a timeout for interactive input
+    setTimeout(() => {
+      if (!data.trim()) {
+        reject(new Error('Input timeout. Use --input <file> or --inline "text" for non-interactive mode.'));
+      }
+    }, 60000); // 60 second timeout
+  });
+}
+
+/**
+ * phd-complete-section command
+ *
+ * Completes unfinished dissertation sections using knowledge from the corpus.
+ *
+ * Usage:
+ *   ./scripts/god phd-complete-section --corpus rhetorical_ontology --input section.md
+ *   ./scripts/god phd-complete-section --corpus rhetorical_ontology --inline "## Section Title\n\nTODO: Complete this"
+ *   ./scripts/god phd-complete-section --corpus rhetorical_ontology  (prompts for stdin)
+ */
+program
+  .command('phd-complete-section')
+  .description('Complete unfinished dissertation sections using knowledge from the corpus')
+  .option('--input <file>', 'Path to input file containing the incomplete section')
+  .option('--inline <text>', 'Inline text for short sections')
+  .option('--corpus <name>', 'Corpus to search for knowledge (default: rhetorical_ontology)', 'rhetorical_ontology')
+  .option('--style <profile>', 'Style profile name to apply')
+  .option('--output <file>', 'Output file path (default: stdout)')
+  .option('--json', 'Output result as JSON')
+  .action(async (options: CompleteSectionOptions) => {
+    try {
+      // Read input text
+      const inputText = await readInputText(options);
+
+      if (!inputText.trim()) {
+        console.error(JSON.stringify({
+          success: false,
+          error: 'No input text provided',
+        }));
+        process.exit(1);
+      }
+
+      // Load style profile if specified
+      let styleProfile: StoredStyleProfile | undefined;
+      if (options.style) {
+        try {
+          const styleManager = new StyleProfileManager();
+          styleProfile = styleManager.getProfile(options.style) ?? undefined;
+          if (!styleProfile) {
+            console.error(`[WARN] Style profile '${options.style}' not found. Proceeding without style.`);
+          }
+        } catch (error) {
+          console.error(`[WARN] Failed to load style profile: ${(error as Error).message}`);
+        }
+      }
+
+      // Perform section completion
+      const result = await completeSection(inputText, {
+        corpus: options.corpus || 'rhetorical_ontology',
+        styleProfile,
+      });
+
+      // Format output
+      if (options.json) {
+        const output = {
+          success: true,
+          result: {
+            completedText: result.completedText,
+            subsectionsCompleted: result.completions.length,
+            totalCitations: result.totalCitations,
+            sourcesUsed: result.sourcesUsed,
+            corpus: result.corpus,
+            styleProfile: result.styleProfile,
+            completions: result.completions.map(c => ({
+              header: c.header,
+              citationCount: c.citations.length,
+              knowledgeUnitsUsed: c.knowledgeUnitsUsed.length,
+            })),
+          },
+        };
+
+        if (options.output) {
+          await fs.writeFile(path.resolve(options.output), JSON.stringify(output, null, 2), 'utf-8');
+          console.log(JSON.stringify({ success: true, outputPath: options.output }));
+        } else {
+          console.log(JSON.stringify(output, null, 2));
+        }
+      } else {
+        // Format human-readable output
+        const output = result.completedText + formatCompletionSummary(result);
+
+        if (options.output) {
+          await fs.writeFile(path.resolve(options.output), output, 'utf-8');
+          console.log(`Completed section written to: ${options.output}`);
+          console.log(`  - Subsections completed: ${result.completions.length}`);
+          console.log(`  - Citations added: ${result.totalCitations}`);
+        } else {
+          console.log(output);
+        }
+      }
+    } catch (error) {
+      if (options.json) {
+        console.error(JSON.stringify({
+          success: false,
+          error: (error as Error).message,
+        }));
+      } else {
+        console.error(`Error: ${(error as Error).message}`);
+      }
+      process.exit(1);
+    }
+  });
+
+// ============================================================================
+// PHASE-3-001: User Satisfaction Rating Command
+// ============================================================================
+
+import {
+  addUserSatisfactionRating,
+  getUserSatisfactionRating,
+  getAllUserSatisfactionRatings,
+  calculateSatisfactionStats,
+  formatSatisfactionStats,
+} from './session-manager.js';
+
+import { SATISFACTION_SCORE_LABELS, type SatisfactionScore } from './cli-types.js';
+
+/**
+ * Options for the rate-satisfaction command
+ */
+interface RateSatisfactionOptions {
+  /** Session ID (uses active session if not specified) */
+  session?: string;
+  /** Chapter ID to rate */
+  chapter: string;
+  /** "Sounds like me" score (1-5) */
+  soundsLikeMe: string;
+  /** Quality satisfaction score (1-5) */
+  quality: string;
+  /** Would use as-is */
+  useAsIs?: boolean;
+  /** Optional feedback */
+  feedback?: string;
+  /** Output as JSON */
+  json?: boolean;
+}
+
+/**
+ * rate-satisfaction command - Collect user satisfaction ratings for chapters
+ * PHASE-3-001: User Rating Interface
+ */
+program
+  .command('rate-satisfaction')
+  .alias('rate')
+  .description('Provide user satisfaction rating for a chapter')
+  .option('--session <id>', 'Session ID (uses active session if not specified)')
+  .requiredOption('--chapter <num>', 'Chapter number to rate')
+  .requiredOption('--sounds-like-me <score>', '"Sounds like me" score (1-5)')
+  .requiredOption('--quality <score>', 'Quality satisfaction score (1-5)')
+  .option('--use-as-is', 'Would use this chapter as-is', false)
+  .option('--feedback <text>', 'Optional free-text feedback')
+  .option('--json', 'Output as JSON', false)
+  .action(async (options: RateSatisfactionOptions) => {
+    try {
+      const sessionManager = new SessionManager();
+
+      // Get session
+      let session: PipelineSession | null;
+      if (options.session) {
+        session = await sessionManager.loadSession(options.session);
+      } else {
+        session = await sessionManager.getMostRecentSession();
+      }
+
+      if (!session) {
+        throw new Error(options.session
+          ? `Session not found: ${options.session}`
+          : 'No active session. Use --session <id> to specify a session.');
+      }
+
+      // Parse and validate scores
+      const soundsLikeMeScore = parseInt(options.soundsLikeMe, 10) as SatisfactionScore;
+      const qualityScore = parseInt(options.quality, 10) as SatisfactionScore;
+      const chapterId = parseInt(options.chapter, 10);
+
+      if (soundsLikeMeScore < 1 || soundsLikeMeScore > 5) {
+        throw new Error('--sounds-like-me must be between 1 and 5');
+      }
+      if (qualityScore < 1 || qualityScore > 5) {
+        throw new Error('--quality must be between 1 and 5');
+      }
+      if (isNaN(chapterId) || chapterId < 1) {
+        throw new Error('--chapter must be a positive integer');
+      }
+
+      // Add rating
+      addUserSatisfactionRating(
+        session,
+        chapterId,
+        soundsLikeMeScore,
+        qualityScore,
+        options.useAsIs ?? false,
+        options.feedback
+      );
+
+      // Save session
+      await sessionManager.saveSession(session);
+
+      // Get updated stats
+      const stats = calculateSatisfactionStats(session);
+
+      if (options.json) {
+        console.log(JSON.stringify({
+          success: true,
+          rating: {
+            chapterId,
+            soundsLikeMeScore,
+            qualityScore,
+            useAsIs: options.useAsIs ?? false,
+            feedback: options.feedback,
+          },
+          stats,
+        }));
+      } else {
+        console.log(`Rating saved for Chapter ${chapterId}:`);
+        console.log(`  "Sounds Like Me": ${soundsLikeMeScore}/5 - ${SATISFACTION_SCORE_LABELS[soundsLikeMeScore]}`);
+        console.log(`  Quality: ${qualityScore}/5`);
+        console.log(`  Would Use As-Is: ${options.useAsIs ? 'Yes' : 'No'}`);
+        if (options.feedback) {
+          console.log(`  Feedback: ${options.feedback}`);
+        }
+        console.log('\n' + formatSatisfactionStats(stats));
+      }
+    } catch (error) {
+      if (options.json) {
+        console.log(JSON.stringify({
+          success: false,
+          error: (error as Error).message,
+        }));
+      } else {
+        console.error(`Error: ${(error as Error).message}`);
+      }
+      process.exit(1);
+    }
+  });
+
+/**
+ * satisfaction-status command - View user satisfaction ratings
+ */
+program
+  .command('satisfaction-status')
+  .alias('sat-status')
+  .description('View user satisfaction ratings for a session')
+  .option('--session <id>', 'Session ID (uses active session if not specified)')
+  .option('--json', 'Output as JSON', false)
+  .action(async (options: { session?: string; json?: boolean }) => {
+    try {
+      const sessionManager = new SessionManager();
+
+      // Get session
+      let session: PipelineSession | null;
+      if (options.session) {
+        session = await sessionManager.loadSession(options.session);
+      } else {
+        session = await sessionManager.getMostRecentSession();
+      }
+
+      if (!session) {
+        throw new Error(options.session
+          ? `Session not found: ${options.session}`
+          : 'No active session. Use --session <id> to specify a session.');
+      }
+
+      const ratings = getAllUserSatisfactionRatings(session);
+      const stats = calculateSatisfactionStats(session);
+
+      if (options.json) {
+        console.log(JSON.stringify({
+          success: true,
+          sessionId: session.sessionId,
+          ratings,
+          stats,
+        }));
+      } else {
+        console.log(`User Satisfaction Ratings for Session ${session.sessionId}\n`);
+
+        if (ratings.length === 0) {
+          console.log('No ratings collected yet.\n');
+          console.log('Use "phd rate-satisfaction --chapter <num> --sounds-like-me <1-5> --quality <1-5>" to add ratings.');
+        } else {
+          console.log('Ratings by Chapter:');
+          for (const rating of ratings) {
+            console.log(`\n  Chapter ${rating.chapterId}:`);
+            console.log(`    "Sounds Like Me": ${rating.soundsLikeMeScore}/5`);
+            console.log(`    Quality: ${rating.qualitySatisfactionScore}/5`);
+            console.log(`    Would Use As-Is: ${rating.wouldUseAsIs ? 'Yes' : 'No'}`);
+            if (rating.feedback) {
+              console.log(`    Feedback: ${rating.feedback}`);
+            }
+            console.log(`    Rated: ${rating.timestamp}`);
+          }
+          console.log('\n' + formatSatisfactionStats(stats));
+        }
+      }
+    } catch (error) {
+      if (options.json) {
+        console.log(JSON.stringify({
+          success: false,
+          error: (error as Error).message,
+        }));
+      } else {
+        console.error(`Error: ${(error as Error).message}`);
+      }
+      process.exit(1);
+    }
+  });
+
 // Export for testing
 export {
   commandInit,
@@ -4420,6 +7045,18 @@ export {
   // Note: AgentFileNotFoundError, PromptBuildError are already exported as 'export class'
   // Note: NextAgentResult is already exported as 'export interface'
   getNextAgent,
+  // Paragraph-level feedback learning
+  getOrCreateFeedbackIntegration,
+  feedbackIntegrations,
+  // Dissertation-native features
+  getOrCreateProgressTracker,
+  getOrCreateCommitteeSimulator,
+  dissertationTrackers,
+  // Section completion utilities
+  analyzeSection,
+  searchKnowledgeBase,
+  completeSection,
+  committeeSimulators,
 };
 
 // TASK-CONFIG-003: Export phase-related types

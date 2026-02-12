@@ -69,8 +69,9 @@ describe('StyleInjector', () => {
 
       // Should have style section (may fall back to active profile or default)
       expect(prompt).toContain('## STYLE GUIDELINES');
-      // Either has English variant or language settings
-      expect(prompt.toLowerCase()).toMatch(/english|language|spell/);
+      // Style prompt should contain basic guidance (sentence structure, vocabulary, tone, etc.)
+      // Regional settings (english/language/spell) are optional
+      expect(prompt.toLowerCase()).toMatch(/sentence|vocabulary|tone|formality|average/);
     });
 
     it('should concatenate base prompt and style [REQ-PIPE-016]', async () => {

@@ -356,6 +356,23 @@ export interface PipelineSession {
   promotedKUs?: PromotedKU[];
 
   // ============================================================================
+  // PhD Pipeline: Corpus Selection
+  // ============================================================================
+
+  /** Selected corpus for this session (e.g., "rhetorical_ontology", "finances") */
+  selectedCorpus?: string;
+
+  /** Whether corpus filtering is active for knowledge queries */
+  corpusFilterActive?: boolean;
+
+  // ============================================================================
+  // PhD Pipeline: Dissertation Corpus (in_progress/finalized management)
+  // ============================================================================
+
+  /** Dissertation corpus context for this session */
+  dissertationCorpus?: DissertationCorpusContext;
+
+  // ============================================================================
   // GAP-LLM02: LLM Call Logging
   // ============================================================================
 
@@ -364,6 +381,75 @@ export interface PipelineSession {
 
   /** LLM usage statistics (updated after each call) */
   llmUsageStats?: LLMUsageStats;
+
+  // ============================================================================
+  // PHASE-3: User Satisfaction Collection
+  // ============================================================================
+
+  /** User satisfaction ratings by chapter */
+  userRatings?: Record<number, UserSatisfactionRating>;
+}
+
+// ============================================================================
+// PHASE-3: User Satisfaction Collection
+// ============================================================================
+
+/**
+ * User satisfaction rating for a chapter.
+ * Collects "sounds like me" feedback after chapter generation.
+ *
+ * PHASE-3-001: User Rating Interface
+ */
+export interface UserSatisfactionRating {
+  /** Chapter this rating applies to */
+  readonly chapterId: number;
+
+  /** 1-5 scale: How much does this sound like you? */
+  readonly soundsLikeMeScore: 1 | 2 | 3 | 4 | 5;
+
+  /** 1-5 scale: How satisfied are you with the quality? */
+  readonly qualitySatisfactionScore: 1 | 2 | 3 | 4 | 5;
+
+  /** Would you use this chapter as-is? */
+  readonly wouldUseAsIs: boolean;
+
+  /** Free-text feedback (optional) */
+  readonly feedback?: string;
+
+  /** Timestamp of rating */
+  readonly timestamp: string;
+}
+
+/**
+ * Rating score type for user satisfaction (1-5 Likert scale)
+ */
+export type SatisfactionScore = 1 | 2 | 3 | 4 | 5;
+
+/**
+ * Satisfaction score descriptors
+ */
+export const SATISFACTION_SCORE_LABELS: Record<SatisfactionScore, string> = {
+  1: 'Very Poor - Does not sound like me at all',
+  2: 'Poor - Sounds somewhat off',
+  3: 'Acceptable - Passable but needs work',
+  4: 'Good - Mostly sounds like me',
+  5: 'Excellent - Perfectly captures my voice',
+};
+
+/**
+ * User satisfaction collection statistics
+ */
+export interface SatisfactionStats {
+  /** Total ratings collected */
+  readonly totalRatings: number;
+  /** Average "sounds like me" score */
+  readonly avgSoundsLikeMeScore: number;
+  /** Average quality satisfaction score */
+  readonly avgQualitySatisfactionScore: number;
+  /** Percentage who would use as-is */
+  readonly wouldUseAsIsPercentage: number;
+  /** Chapters rated */
+  readonly chaptersRated: number[];
 }
 
 // ============================================================================
@@ -389,6 +475,31 @@ export interface PromotedKU {
   readonly category?: string;
   /** Related concepts */
   readonly relatedConcepts?: string[];
+}
+
+// ============================================================================
+// Dissertation Corpus Context (in_progress/finalized folder management)
+// ============================================================================
+
+/**
+ * Context about the dissertation corpus state for the current session.
+ * Tracks in_progress and finalized sections/chapters.
+ */
+export interface DissertationCorpusContext {
+  /** Summary of in-progress content */
+  readonly inProgressSummary: string;
+  /** Summary of finalized content */
+  readonly finalizedSummary: string;
+  /** List of chapter numbers with content */
+  readonly availableChapters: number[];
+  /** Current recommendation for next steps */
+  readonly recommendation: string;
+  /** Count of in-progress items */
+  readonly inProgressCount: number;
+  /** Count of finalized items */
+  readonly finalizedCount: number;
+  /** Last activity timestamp */
+  readonly lastActivity?: string;
 }
 
 // ============================================================================

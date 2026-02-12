@@ -344,23 +344,9 @@ export class SocketServer implements ISocketServer {
         id: event.id + '_activity',
       });
 
-      // Route based on component
-      switch (event.component) {
-        case 'routing':
-          this.routeToRoutingHistory(event);
-          break;
-
-        case 'agent':
-          this.routeToAgentTracker(event);
-          break;
-
-        case 'pipeline':
-          this.routeToPipelineTracker(event);
-          break;
-
-        // Other components just go to base components (already done above)
-        default:
-          break;
+      // Route to specialized trackers based on component
+      if (event.component === 'agent') {
+        this.routeToAgentTracker(event);
       }
     } catch (error) {
       // Implements [RULE-OBS-003]: Log and skip malformed JSON
@@ -390,16 +376,6 @@ export class SocketServer implements ISocketServer {
       typeof e.status === 'string' &&
       typeof e.metadata === 'object'
     );
-  }
-
-  /**
-   * Route routing events to RoutingHistory
-   * @param event Activity event with component='routing'
-   */
-  private routeToRoutingHistory(event: IActivityEvent): void {
-    // RoutingHistory records decisions via its own API
-    // Events are just logged to activity stream
-    // The routing system itself calls routingHistory.record()
   }
 
   /**
@@ -480,15 +456,6 @@ export class SocketServer implements ISocketServer {
     }
   }
 
-  /**
-   * Route pipeline events to PipelineTracker
-   * @param event Activity event with component='pipeline'
-   */
-  private routeToPipelineTracker(event: IActivityEvent): void {
-    // PipelineTracker manages its own lifecycle
-    // Events are emitted BY the tracker itself
-    // No additional routing needed
-  }
 }
 
 // =============================================================================

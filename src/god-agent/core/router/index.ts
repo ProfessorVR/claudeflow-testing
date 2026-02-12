@@ -55,11 +55,6 @@ export type {
   QualityScore,
   ModelQualityStats,
 
-  // Audit & Review
-  ReviewStatus,
-  AuditEntry,
-  ReviewQueueStats,
-
   // Events
   RouterEventType,
   RouterEvent,
@@ -141,6 +136,7 @@ export {
   getRoutingMetrics,
   resetRoutingMetrics,
   getLocalFirstMetricsSummary,
+  trackLocalFirstDecision,
 } from './capability-router.js';
 
 export type {
@@ -240,6 +236,9 @@ export type {
 
 export type {
   // Audit Types
+  ReviewStatus,
+  AuditEntry,
+  ReviewQueueStats,
   ReviewPriority,
   FileModification,
   AuditEntrySummary,

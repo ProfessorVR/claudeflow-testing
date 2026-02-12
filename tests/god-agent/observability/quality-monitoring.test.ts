@@ -12,15 +12,16 @@ import ActivityStream, { IQualityMetric } from '../../../src/god-agent/observabi
 
 describe('Quality Monitoring', () => {
   let stream: ActivityStream;
-  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+  let stderrSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     stream = new ActivityStream();
-    consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    // Logger uses process.stderr.write (ConsoleLogHandler with useStderr: true)
+    stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
   });
 
   afterEach(() => {
-    consoleErrorSpy.mockRestore();
+    stderrSpy.mockRestore();
   });
 
   describe('trackQualityMetric', () => {
@@ -51,7 +52,7 @@ describe('Quality Monitoring', () => {
       });
 
       // Should not trigger alerts
-      expect(consoleErrorSpy).not.toHaveBeenCalled();
+      expect(stderrSpy).not.toHaveBeenCalled();
     });
 
     it('should emit WARNING alert when accuracy drops below 90%', async () => {
@@ -79,11 +80,11 @@ describe('Quality Monitoring', () => {
       expect(alertEvent?.metadata?.message).toContain('90%');
       expect(alertEvent?.metadata?.category).toBe('low-accuracy');
 
-      // Should log to console
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('[ALERT] WARNING:')
+      // Should log to console via structured logger (JSON format)
+      expect(stderrSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Quality alert')
       );
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect(stderrSpy).toHaveBeenCalledWith(
         expect.stringContaining('85.0%')
       );
     });
@@ -113,11 +114,11 @@ describe('Quality Monitoring', () => {
       expect(alertEvent?.metadata?.message).toContain('3%');
       expect(alertEvent?.metadata?.category).toBe('high-fpr');
 
-      // Should log to console
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('[ALERT] CRITICAL:')
+      // Should log to console via structured logger (JSON format)
+      expect(stderrSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Quality alert')
       );
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect(stderrSpy).toHaveBeenCalledWith(
         expect.stringContaining('5.0%')
       );
     });
@@ -153,7 +154,7 @@ describe('Quality Monitoring', () => {
       expect(criticalAlert?.metadata?.alertType).toBe('FPR_ESCALATION');
 
       // Should log both alerts
-      expect(consoleErrorSpy).toHaveBeenCalledTimes(2);
+      expect(stderrSpy).toHaveBeenCalledTimes(2);
     });
 
     it('should handle boundary conditions correctly', async () => {
@@ -167,10 +168,10 @@ describe('Quality Monitoring', () => {
       };
 
       await stream.trackQualityMetric(exactAccuracy);
-      expect(consoleErrorSpy).not.toHaveBeenCalled();
+      expect(stderrSpy).not.toHaveBeenCalled();
 
       stream.clear();
-      consoleErrorSpy.mockClear();
+      stderrSpy.mockClear();
 
       // Test exactly at FPR threshold (3%)
       const exactFPR: IQualityMetric = {
@@ -182,7 +183,7 @@ describe('Quality Monitoring', () => {
       };
 
       await stream.trackQualityMetric(exactFPR);
-      expect(consoleErrorSpy).not.toHaveBeenCalled();
+      expect(stderrSpy).not.toHaveBeenCalled();
     });
 
     it('should include timestamp in metric event', async () => {
@@ -271,7 +272,7 @@ describe('Quality Monitoring', () => {
       const events = stream.getAll();
       expect(events).toHaveLength(1);
       expect(events[0].operation).toBe('quality_metric');
-      expect(consoleErrorSpy).not.toHaveBeenCalled();
+      expect(stderrSpy).not.toHaveBeenCalled();
     });
 
     it('should handle worst-case metrics gracefully', async () => {
@@ -367,7 +368,7 @@ describe('Quality Monitoring', () => {
 
       await stream.trackQualityMetric(metric);
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect(stderrSpy).toHaveBeenCalledWith(
         expect.stringContaining('85.7%')
       );
     });
@@ -383,7 +384,7 @@ describe('Quality Monitoring', () => {
 
       await stream.trackQualityMetric(metric);
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect(stderrSpy).toHaveBeenCalledWith(
         expect.stringContaining('4.6%')
       );
     });

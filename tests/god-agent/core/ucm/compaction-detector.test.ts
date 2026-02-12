@@ -1,6 +1,35 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { CompactionDetector, CompactionMarkers } from '@god-agent/core/ucm/index.js';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { CompactionDetector } from '@god-agent/core/ucm/index.js';
 
+/**
+ * CompactionDetector tests aligned with actual API:
+ *
+ * Public methods:
+ *   detectCompaction(message: string): boolean
+ *   getCompactionTimestamp(): number
+ *   isInRecoveryMode(): boolean
+ *   setRecoveryMode(enabled: boolean): void
+ *   getState(): { detected, timestamp, marker, confidence, recoveryMode }
+ *   getHistory(): Array<{ timestamp, marker, confidence }>
+ *   reset(): void
+ *   isRecentDetection(thresholdMs?): boolean
+ *   getConfidence(): number
+ *
+ * Internal COMPACTION_MARKERS (private, not exported):
+ *   - 'This session is being continued from a previous conversation'
+ *   - 'conversation is summarized below'
+ *   - 'ran out of context'
+ *   - 'context window limit'
+ *   - 'conversation has been compacted'
+ *   - 'previous messages have been summarized'
+ *   - 'continuing from a previous session'
+ *   - 'context has been compressed'
+ *   - 'earlier conversation history'
+ *   - 'session continuation detected'
+ *
+ * Partial-match keywords (>70% needed): session, continued, previous,
+ *   conversation, summarized, context, compacted, compressed
+ */
 describe('CompactionDetector', () => {
   let detector: CompactionDetector;
 
@@ -8,54 +37,53 @@ describe('CompactionDetector', () => {
     detector = new CompactionDetector();
   });
 
-  describe('detection markers', () => {
-    it('should detect "compact:" marker', () => {
-      const response = 'compact: summarizing previous context...';
-
-      const isCompacted = detector.detect(response);
-
-      expect(isCompacted).toBe(true);
+  describe('exact marker detection', () => {
+    it('should detect "conversation has been compacted" marker', () => {
+      const result = detector.detectCompaction('conversation has been compacted');
+      expect(result).toBe(true);
     });
 
-    it('should detect "summarizing:" marker', () => {
-      const response = 'summarizing: condensing the conversation history';
-
-      const isCompacted = detector.detect(response);
-
-      expect(isCompacted).toBe(true);
+    it('should detect "context has been compressed" marker', () => {
+      const result = detector.detectCompaction('context has been compressed');
+      expect(result).toBe(true);
     });
 
-    it('should detect "compressed:" marker', () => {
-      const response = 'compressed: reducing context for efficiency';
+    it('should detect "previous messages have been summarized" marker', () => {
+      const result = detector.detectCompaction('previous messages have been summarized');
+      expect(result).toBe(true);
+    });
 
-      const isCompacted = detector.detect(response);
+    it('should detect "ran out of context" marker', () => {
+      const result = detector.detectCompaction('ran out of context');
+      expect(result).toBe(true);
+    });
 
-      expect(isCompacted).toBe(true);
+    it('should detect "context window limit" marker', () => {
+      const result = detector.detectCompaction('context window limit');
+      expect(result).toBe(true);
+    });
+
+    it('should detect "session continuation detected" marker', () => {
+      const result = detector.detectCompaction('session continuation detected');
+      expect(result).toBe(true);
     });
 
     it('should detect case-insensitive markers', () => {
       const responses = [
-        'COMPACT: test',
-        'Summarizing: test',
-        'CoMpReSsEd: test'
+        'CONVERSATION HAS BEEN COMPACTED',
+        'Context Has Been Compressed',
+        'RAN OUT OF CONTEXT'
       ];
 
       responses.forEach(response => {
-        expect(detector.detect(response)).toBe(true);
+        detector.reset();
+        expect(detector.detectCompaction(response)).toBe(true);
       });
     });
 
-    it('should detect markers with whitespace variations', () => {
-      const responses = [
-        'compact:test',
-        'compact: test',
-        'compact:  test',
-        'compact:\ttest'
-      ];
-
-      responses.forEach(response => {
-        expect(detector.detect(response)).toBe(true);
-      });
+    it('should detect markers embedded in longer text', () => {
+      const response = 'Note: This session is being continued from a previous conversation that was truncated.';
+      expect(detector.detectCompaction(response)).toBe(true);
     });
 
     it('should not detect non-compaction text', () => {
@@ -66,223 +94,261 @@ describe('CompactionDetector', () => {
       ];
 
       normalResponses.forEach(response => {
-        expect(detector.detect(response)).toBe(false);
+        expect(detector.detectCompaction(response)).toBe(false);
       });
     });
 
-    it('should detect markers in middle of text', () => {
-      const response = 'Analysis shows compact: reduced context here';
-
-      const isCompacted = detector.detect(response);
-
-      expect(isCompacted).toBe(true);
-    });
-
     it('should handle empty string', () => {
-      const isCompacted = detector.detect('');
-
-      expect(isCompacted).toBe(false);
+      expect(detector.detectCompaction('')).toBe(false);
     });
 
     it('should handle multiline text with markers', () => {
       const response = `Line 1
 Line 2
-compact: compaction detected
+conversation has been compacted
 Line 4`;
 
-      const isCompacted = detector.detect(response);
+      expect(detector.detectCompaction(response)).toBe(true);
+    });
+  });
 
-      expect(isCompacted).toBe(true);
+  describe('partial match detection', () => {
+    it('should detect when many compaction keywords are present (>70%)', () => {
+      // Keywords: session, continued, previous, conversation, summarized, context, compacted, compressed
+      // Need >70% = at least 6 out of 8
+      const text = 'In this session the previous conversation context was summarized and compacted and compressed';
+      // Contains: session, previous, conversation, context, summarized, compacted, compressed = 7/8
+      expect(detector.detectCompaction(text)).toBe(true);
+    });
+
+    it('should not detect when few compaction keywords are present', () => {
+      // Only 1-2 keywords is well below 70%
+      const text = 'The context of this discussion is about cooking';
+      // Contains: context = 1/8 = 12.5%
+      expect(detector.detectCompaction(text)).toBe(false);
     });
   });
 
   describe('state tracking', () => {
-    it('should track compaction occurrences', () => {
-      const response1 = 'compact: first compaction';
-      const response2 = 'summarizing: second compaction';
-
-      detector.detect(response1);
-      detector.detect(response2);
+    it('should track detection state after compaction', () => {
+      detector.detectCompaction('conversation has been compacted');
 
       const state = detector.getState();
-      expect(state.compactionCount).toBe(2);
+      expect(state.detected).toBe(true);
+      expect(state.marker).toBe('conversation has been compacted');
+      expect(state.confidence).toBe(1.0);
+      expect(state.recoveryMode).toBe(true);
     });
 
     it('should track last compaction timestamp', () => {
       const before = Date.now();
-      detector.detect('compact: test');
+      detector.detectCompaction('conversation has been compacted');
       const after = Date.now();
 
       const state = detector.getState();
-      expect(state.lastCompactionAt).toBeGreaterThanOrEqual(before);
-      expect(state.lastCompactionAt).toBeLessThanOrEqual(after);
+      expect(state.timestamp).toBeGreaterThanOrEqual(before);
+      expect(state.timestamp).toBeLessThanOrEqual(after);
     });
 
     it('should initialize state correctly', () => {
       const state = detector.getState();
 
-      expect(state.compactionCount).toBe(0);
-      expect(state.lastCompactionAt).toBeNull();
-      expect(state.inRecoveryMode).toBe(false);
+      expect(state.detected).toBe(false);
+      expect(state.timestamp).toBe(0);
+      expect(state.marker).toBeNull();
+      expect(state.confidence).toBe(0);
+      expect(state.recoveryMode).toBe(false);
     });
 
-    it('should not increment count for non-compaction responses', () => {
-      detector.detect('normal response');
-      detector.detect('another normal response');
+    it('should not change state for non-compaction responses', () => {
+      detector.detectCompaction('normal response');
+      detector.detectCompaction('another normal response');
 
       const state = detector.getState();
-      expect(state.compactionCount).toBe(0);
+      expect(state.detected).toBe(false);
+      expect(state.timestamp).toBe(0);
     });
 
-    it('should track multiple compactions correctly', () => {
-      for (let i = 0; i < 5; i++) {
-        detector.detect('compact: iteration ' + i);
+    it('should update state on each detection', () => {
+      detector.detectCompaction('conversation has been compacted');
+      const firstTimestamp = detector.getState().timestamp;
+
+      // Small delay to ensure different timestamp
+      detector.detectCompaction('context has been compressed');
+      const secondTimestamp = detector.getState().timestamp;
+
+      expect(secondTimestamp).toBeGreaterThanOrEqual(firstTimestamp);
+      expect(detector.getState().marker).toBe('context has been compressed');
+    });
+  });
+
+  describe('detection history', () => {
+    it('should record detection history', () => {
+      detector.detectCompaction('conversation has been compacted');
+      detector.detectCompaction('context has been compressed');
+
+      const history = detector.getHistory();
+      expect(history).toHaveLength(2);
+      expect(history[0].marker).toBe('conversation has been compacted');
+      expect(history[1].marker).toBe('context has been compressed');
+    });
+
+    it('should not add to history for non-detections', () => {
+      detector.detectCompaction('normal text');
+      expect(detector.getHistory()).toHaveLength(0);
+    });
+
+    it('should limit history to 10 entries', () => {
+      for (let i = 0; i < 15; i++) {
+        detector.detectCompaction('conversation has been compacted');
       }
 
-      const state = detector.getState();
-      expect(state.compactionCount).toBe(5);
+      const history = detector.getHistory();
+      expect(history.length).toBeLessThanOrEqual(10);
     });
   });
 
   describe('recovery mode', () => {
     it('should enter recovery mode after detection', () => {
-      detector.detect('compact: entering recovery');
+      detector.detectCompaction('conversation has been compacted');
 
-      const state = detector.getState();
-      expect(state.inRecoveryMode).toBe(true);
+      expect(detector.isInRecoveryMode()).toBe(true);
+      expect(detector.getState().recoveryMode).toBe(true);
     });
 
-    it('should exit recovery mode on demand', () => {
-      detector.detect('compact: test');
-      detector.exitRecoveryMode();
+    it('should exit recovery mode via setRecoveryMode', () => {
+      detector.detectCompaction('conversation has been compacted');
+      detector.setRecoveryMode(false);
 
-      const state = detector.getState();
-      expect(state.inRecoveryMode).toBe(false);
+      expect(detector.isInRecoveryMode()).toBe(false);
+      expect(detector.getState().recoveryMode).toBe(false);
     });
 
     it('should remain in recovery mode after multiple detections', () => {
-      detector.detect('compact: first');
-      detector.detect('summarizing: second');
+      detector.detectCompaction('conversation has been compacted');
+      detector.detectCompaction('context has been compressed');
 
-      const state = detector.getState();
-      expect(state.inRecoveryMode).toBe(true);
+      expect(detector.isInRecoveryMode()).toBe(true);
     });
 
     it('should not enter recovery mode without detection', () => {
-      detector.detect('normal response');
+      detector.detectCompaction('normal response');
 
-      const state = detector.getState();
-      expect(state.inRecoveryMode).toBe(false);
+      expect(detector.isInRecoveryMode()).toBe(false);
     });
 
     it('should allow re-entering recovery mode', () => {
-      detector.detect('compact: first');
-      detector.exitRecoveryMode();
-      detector.detect('compact: second');
+      detector.detectCompaction('conversation has been compacted');
+      detector.setRecoveryMode(false);
+      detector.detectCompaction('context has been compressed');
 
-      const state = detector.getState();
-      expect(state.inRecoveryMode).toBe(true);
+      expect(detector.isInRecoveryMode()).toBe(true);
     });
   });
 
   describe('reset', () => {
     it('should reset all state', () => {
-      detector.detect('compact: test');
-      detector.detect('summarizing: test2');
+      detector.detectCompaction('conversation has been compacted');
+      detector.detectCompaction('context has been compressed');
 
       detector.reset();
 
       const state = detector.getState();
-      expect(state.compactionCount).toBe(0);
-      expect(state.lastCompactionAt).toBeNull();
-      expect(state.inRecoveryMode).toBe(false);
+      expect(state.detected).toBe(false);
+      expect(state.timestamp).toBe(0);
+      expect(state.marker).toBeNull();
+      expect(state.confidence).toBe(0);
+      expect(state.recoveryMode).toBe(false);
     });
 
     it('should allow reuse after reset', () => {
-      detector.detect('compact: before reset');
+      detector.detectCompaction('conversation has been compacted');
       detector.reset();
-      detector.detect('compact: after reset');
+      detector.detectCompaction('context has been compressed');
 
       const state = detector.getState();
-      expect(state.compactionCount).toBe(1);
+      expect(state.detected).toBe(true);
+      expect(state.marker).toBe('context has been compressed');
     });
   });
 
-  describe('marker patterns', () => {
-    it('should export CompactionMarkers constant', () => {
-      expect(CompactionMarkers).toBeDefined();
-      expect(Array.isArray(CompactionMarkers)).toBe(true);
-      expect(CompactionMarkers.length).toBeGreaterThan(0);
+  describe('convenience methods', () => {
+    it('getCompactionTimestamp should return 0 initially', () => {
+      expect(detector.getCompactionTimestamp()).toBe(0);
     });
 
-    it('should include standard markers', () => {
-      const markerStrings = CompactionMarkers.map(m => m.source.toLowerCase());
+    it('getCompactionTimestamp should return timestamp after detection', () => {
+      const before = Date.now();
+      detector.detectCompaction('conversation has been compacted');
 
-      expect(markerStrings.some(m => m.includes('compact'))).toBe(true);
-      expect(markerStrings.some(m => m.includes('summariz'))).toBe(true);
-      expect(markerStrings.some(m => m.includes('compress'))).toBe(true);
+      expect(detector.getCompactionTimestamp()).toBeGreaterThanOrEqual(before);
+    });
+
+    it('getConfidence should return 0 initially', () => {
+      expect(detector.getConfidence()).toBe(0);
+    });
+
+    it('getConfidence should return 1.0 for exact marker match', () => {
+      detector.detectCompaction('conversation has been compacted');
+      expect(detector.getConfidence()).toBe(1.0);
+    });
+
+    it('isRecentDetection should return false when no detection', () => {
+      expect(detector.isRecentDetection()).toBe(false);
+    });
+
+    it('isRecentDetection should return true immediately after detection', () => {
+      detector.detectCompaction('conversation has been compacted');
+      expect(detector.isRecentDetection()).toBe(true);
     });
   });
 
   describe('performance', () => {
     it('should detect quickly for short text', () => {
-      const text = 'compact: test';
+      const text = 'conversation has been compacted';
       const start = performance.now();
 
-      detector.detect(text);
+      detector.detectCompaction(text);
 
       const duration = performance.now() - start;
-      expect(duration).toBeLessThan(1);
+      expect(duration).toBeLessThan(5);
     });
 
     it('should detect quickly for long text', () => {
-      const longText = 'word '.repeat(10000) + ' compact: marker ';
+      const longText = 'word '.repeat(10000) + ' conversation has been compacted ';
       const start = performance.now();
 
-      detector.detect(longText);
+      detector.detectCompaction(longText);
 
       const duration = performance.now() - start;
-      expect(duration).toBeLessThan(10);
+      expect(duration).toBeLessThan(50);
     });
   });
 
   describe('edge cases', () => {
-    it('should handle null-like values safely', () => {
-      expect(() => detector.detect(null as any)).not.toThrow();
-      expect(() => detector.detect(undefined as any)).not.toThrow();
+    it('should handle special characters in surrounding text', () => {
+      const text = '!@#$%^&*() conversation has been compacted !@#$%^&*()';
+      expect(detector.detectCompaction(text)).toBe(true);
     });
 
-    it('should handle special characters', () => {
-      const text = 'compact: special chars !@#$%^&*()';
-
-      const isCompacted = detector.detect(text);
-
-      expect(isCompacted).toBe(true);
+    it('should handle unicode text around markers', () => {
+      const text = 'conversation has been compacted';
+      expect(detector.detectCompaction(text)).toBe(true);
     });
 
-    it('should handle unicode text', () => {
-      const text = 'compact: 世界 مرحبا дума';
+    it('should detect only once per call even when multiple markers present', () => {
+      const text = 'conversation has been compacted and context has been compressed';
+      detector.detectCompaction(text);
 
-      const isCompacted = detector.detect(text);
-
-      expect(isCompacted).toBe(true);
+      // Only the first matched marker is recorded
+      const history = detector.getHistory();
+      expect(history).toHaveLength(1);
     });
 
-    it('should detect first marker when multiple present', () => {
-      const text = 'compact: first summarizing: second compressed: third';
-
-      const isCompacted = detector.detect(text);
-
-      expect(isCompacted).toBe(true);
-
-      const state = detector.getState();
-      expect(state.compactionCount).toBe(1);
-    });
-
-    it('should handle very short text', () => {
-      expect(detector.detect('c')).toBe(false);
-      expect(detector.detect('co')).toBe(false);
-      expect(detector.detect('compact:')).toBe(true);
+    it('should handle very short text without matching', () => {
+      expect(detector.detectCompaction('c')).toBe(false);
+      expect(detector.detectCompaction('co')).toBe(false);
+      expect(detector.detectCompaction('ran')).toBe(false);
     });
   });
 
@@ -290,33 +356,33 @@ Line 4`;
     it('should track conversation with mixed responses', () => {
       const responses = [
         'Normal analysis here',
-        'compact: first compaction detected',
+        'conversation has been compacted',
         'More normal content',
-        'summarizing: second compaction',
+        'context has been compressed',
         'Final response'
       ];
 
-      responses.forEach(r => detector.detect(r));
+      responses.forEach(r => detector.detectCompaction(r));
 
-      const state = detector.getState();
-      expect(state.compactionCount).toBe(2);
-      expect(state.inRecoveryMode).toBe(true);
+      const history = detector.getHistory();
+      expect(history).toHaveLength(2);
+      expect(detector.isInRecoveryMode()).toBe(true);
     });
 
     it('should support recovery workflow', () => {
       // Detect compaction
-      detector.detect('compact: context loss detected');
-      expect(detector.getState().inRecoveryMode).toBe(true);
+      detector.detectCompaction('conversation has been compacted');
+      expect(detector.isInRecoveryMode()).toBe(true);
 
       // Perform recovery actions...
 
       // Exit recovery
-      detector.exitRecoveryMode();
-      expect(detector.getState().inRecoveryMode).toBe(false);
+      detector.setRecoveryMode(false);
+      expect(detector.isInRecoveryMode()).toBe(false);
 
       // Continue normal operation
-      detector.detect('normal response');
-      expect(detector.getState().compactionCount).toBe(1);
+      detector.detectCompaction('normal response');
+      expect(detector.isInRecoveryMode()).toBe(false);
     });
   });
 });

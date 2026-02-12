@@ -86,38 +86,86 @@ export interface RoutingMetrics {
   };
 }
 
-// Global routing metrics singleton
-let routingMetrics: RoutingMetrics = {
-  localRequests: 0,
-  cloudRequests: 0,
-  fallbackEvents: 0,
-  recoveryEvents: 0,
-  lastUnavailableProvider: null,
-  lastFallback: null,
-  localFirst: {
-    localTriedFirst: 0,
-    localSucceeded: 0,
-    localFellBackToClaude: 0,
-    skippedLocal: 0,
-    pureLocalVerified: 0,
-    localThenReview: 0,
-  },
-  byRecommendation: {
-    local: 0,
-    pure_local_verified: 0,
-    local_then_review: 0,
-    expensive: 0,
-  },
-  timestamps: {
-    firstRequest: null,
-    lastRequest: null,
-  },
-};
+import * as fs from 'fs';
+import * as path from 'path';
+
+// Persistent metrics file path
+const METRICS_FILE = path.join(process.cwd(), '.god-agent', 'routing-metrics.json');
+
+// Load metrics from file if it exists
+function loadMetricsFromFile(): RoutingMetrics {
+  try {
+    if (fs.existsSync(METRICS_FILE)) {
+      const data = fs.readFileSync(METRICS_FILE, 'utf-8');
+      const parsed = JSON.parse(data);
+      // Convert date strings back to Date objects
+      if (parsed.timestamps?.firstRequest) {
+        parsed.timestamps.firstRequest = new Date(parsed.timestamps.firstRequest);
+      }
+      if (parsed.timestamps?.lastRequest) {
+        parsed.timestamps.lastRequest = new Date(parsed.timestamps.lastRequest);
+      }
+      if (parsed.lastFallback?.timestamp) {
+        parsed.lastFallback.timestamp = new Date(parsed.lastFallback.timestamp);
+      }
+      return parsed;
+    }
+  } catch (error) {
+    console.error('[RoutingMetrics] Error loading metrics from file:', error);
+  }
+  // Return default metrics
+  return {
+    localRequests: 0,
+    cloudRequests: 0,
+    fallbackEvents: 0,
+    recoveryEvents: 0,
+    lastUnavailableProvider: null,
+    lastFallback: null,
+    localFirst: {
+      localTriedFirst: 0,
+      localSucceeded: 0,
+      localFellBackToClaude: 0,
+      skippedLocal: 0,
+      pureLocalVerified: 0,
+      localThenReview: 0,
+    },
+    byRecommendation: {
+      local: 0,
+      pure_local_verified: 0,
+      local_then_review: 0,
+      expensive: 0,
+    },
+    timestamps: {
+      firstRequest: null,
+      lastRequest: null,
+    },
+  };
+}
+
+// Save metrics to file
+function saveMetricsToFile(metrics: RoutingMetrics): void {
+  try {
+    // Ensure directory exists
+    const dir = path.dirname(METRICS_FILE);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(METRICS_FILE, JSON.stringify(metrics, null, 2), 'utf-8');
+  } catch (error) {
+    console.error('[RoutingMetrics] Error saving metrics to file:', error);
+  }
+}
+
+// Global routing metrics singleton - load from file
+let routingMetrics: RoutingMetrics = loadMetricsFromFile();
 
 /**
  * Get current routing metrics
+ * Reloads from file to get latest cross-process updates
  */
 export function getRoutingMetrics(): RoutingMetrics {
+  // Reload from file to get latest metrics from all processes
+  routingMetrics = loadMetricsFromFile();
   return { ...routingMetrics };
 }
 
@@ -151,6 +199,8 @@ export function resetRoutingMetrics(): void {
       lastRequest: null,
     },
   };
+  // Persist reset state to file so getRoutingMetrics() reads the reset values
+  saveMetricsToFile(routingMetrics);
 }
 
 /**
@@ -194,6 +244,9 @@ export function trackLocalFirstDecision(
   } else if (recommendation === 'local_then_review') {
     routingMetrics.localFirst.localThenReview++;
   }
+
+  // Persist metrics to file for dashboard visibility
+  saveMetricsToFile(routingMetrics);
 }
 
 /**

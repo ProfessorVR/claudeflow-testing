@@ -45,7 +45,7 @@ import {
   type HumanVerificationOptions,
   type VerificationDecision,
   type ReviewContext,
-} from './human-verification.js';
+} from '../__experimental__/human-verification.js';
 
 // ============================================================================
 // Quality Integration Types

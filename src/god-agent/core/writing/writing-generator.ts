@@ -4,6 +4,36 @@
  * Defines the contract for LLM-based writing generation.
  */
 
+/**
+ * Corpus source for citation constraint enforcement (Phase 1: Hallucination Prevention)
+ */
+export interface CorpusSource {
+  /** Author name(s) */
+  author: string;
+  /** Publication year */
+  year: number;
+  /** Work title */
+  title: string;
+  /** Available page range(s) */
+  pages?: string;
+  /** Document ID in corpus (for traceability) */
+  docId?: string;
+  /** Short citation key (e.g., "Frede 1992") */
+  citationKey?: string;
+}
+
+/**
+ * Corpus constraint configuration for hallucination prevention
+ */
+export interface CorpusConstraint {
+  /** List of verified corpus sources that may be cited */
+  sources: CorpusSource[];
+  /** Enforcement level */
+  enforcement: 'strict' | 'warn' | 'off';
+  /** Placeholder text to use when citation needed but not available */
+  missingCitationPlaceholder?: string;
+}
+
 export interface IWriteRequest {
   /** Document title */
   title: string;
@@ -28,6 +58,9 @@ export interface IWriteRequest {
 
   /** Writing tone */
   tone?: 'formal' | 'casual' | 'technical' | 'narrative';
+
+  /** Corpus constraint for citation hallucination prevention (Phase 1) */
+  corpusConstraint?: CorpusConstraint;
 }
 
 /**

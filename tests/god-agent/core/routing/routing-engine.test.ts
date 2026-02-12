@@ -58,7 +58,8 @@ function createTaskAnalysis(
   preferredAgent?: string
 ): ITaskAnalysis {
   // Create a simple embedding and L2-normalize it
-  const embedding = new Float32Array(768).fill(0.1);
+  // VectorDB is initialized with dimension 1536, so embeddings must match
+  const embedding = new Float32Array(1536).fill(0.1);
 
   // L2 normalize: divide by L2 norm
   let norm = 0;

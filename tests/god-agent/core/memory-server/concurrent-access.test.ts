@@ -39,9 +39,13 @@ describe('MEM-001: Concurrent Access', () => {
     await fs.mkdir(testDir, { recursive: true });
     await fs.mkdir(path.join(testDir, 'universal'), { recursive: true });
 
-    // Start memory server
+    // Use unique socket path to avoid conflicts with other tests/services
+    const socketPath = path.join(os.tmpdir(), `mem-test-${Date.now()}.sock`);
+
+    // Start memory server with isolated socket
     server = new MemoryServer({
       agentDbPath: testDir,
+      socketPath,
       maxConnections: 100,
       verbose: false,
     });

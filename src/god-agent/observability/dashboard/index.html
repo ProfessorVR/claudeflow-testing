@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/diff@5.2.0/dist/diff.min.js"></script>
 </head>
 <body>
     <!-- Header with Tab Navigation -->
@@ -25,6 +27,9 @@
             <button class="main-tab" data-tab="memory">Memory</button>
             <button class="main-tab" data-tab="activity">Activity</button>
             <button class="main-tab" data-tab="explore">Explore</button>
+            <button class="main-tab" data-tab="phd-pipeline">PhD Pipeline</button>
+            <button class="main-tab" data-tab="god-write">God Write</button>
+            <button class="main-tab" data-tab="claim-map">Claim Map</button>
         </nav>
         <div class="header-right">
             <button class="refresh-btn" id="refreshBtn" title="Refresh current tab (Ctrl+R)">&#8635;</button>
@@ -935,6 +940,1046 @@
                     </div>
                 </div>
             </div>
+
+            <!-- PhD Pipeline Tab -->
+            <div class="tab-panel" id="phd-pipeline-tab">
+                <div class="dashboard-grid phd-pipeline-grid">
+                    <!-- Corpus Selection Panel -->
+                    <section class="panel corpus-selection-panel" data-panel="corpus-selection">
+                        <div class="panel-header">
+                            <h2>Corpus Selection</h2>
+                            <span id="phdPipelineActiveCorpus" class="badge badge-info">None Selected</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="corpusSelect">Active Corpus:</label>
+                                <select id="corpusSelect" class="form-control">
+                                    <option value="">Loading...</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Pipeline Mode:</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="pipelineMode" value="local"> Local Only</label>
+                                    <label><input type="radio" name="pipelineMode" value="hybrid" checked> Hybrid</label>
+                                    <label><input type="radio" name="pipelineMode" value="external"> External</label>
+                                </div>
+                            </div>
+
+                            <button id="applyCorpusSelection" class="btn btn-primary">Apply Selection</button>
+                        </div>
+                    </section>
+
+                    <!-- Corpus Statistics Panel -->
+                    <section class="panel corpus-stats-panel" data-panel="corpus-stats">
+                        <div class="panel-header">
+                            <h2>Corpus Statistics</h2>
+                            <button class="refresh-btn" data-refresh="corpus-stats">&#8635;</button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <div class="stat-label">Documents</div>
+                                    <div class="stat-value" id="corpusDocCount">--</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Knowledge Units</div>
+                                    <div class="stat-value" id="corpusKUCount">--</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Reasoning Units</div>
+                                    <div class="stat-value" id="corpusRUCount">--</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Total Chunks</div>
+                                    <div class="stat-value" id="corpusChunkCount">--</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Avg Confidence</div>
+                                    <div class="stat-value" id="corpusAvgConf">--</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Active Pipeline Sessions Panel -->
+                    <section class="panel pipeline-sessions-panel full-width" data-panel="pipeline-sessions">
+                        <div class="panel-header">
+                            <h2>Active Pipeline Sessions</h2>
+                            <span id="sessionCount" class="badge">0</span>
+                        </div>
+                        <div class="panel-body">
+                            <div id="phdPipelineSessions" class="sessions-list">
+                                <div class="loading-placeholder">Loading pipeline sessions...</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Query Interface Panel -->
+                    <section class="panel query-interface-panel full-width" data-panel="query-interface">
+                        <div class="panel-header">
+                            <h2>Query Knowledge Base</h2>
+                            <span class="panel-badge">Using: <span id="queryActiveCorpus">None</span></span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="query-input-container">
+                                <label for="phdQueryInput">Enter your query:</label>
+                                <textarea
+                                    id="phdQueryInput"
+                                    class="query-input"
+                                    placeholder="Ask a question about the selected corpus...&#10;&#10;Example: What are the main findings about neural networks?&#10;Example: Summarize the methodology used in the studies."
+                                    rows="4"
+                                ></textarea>
+                                <div class="query-controls">
+                                    <button id="phdQuerySubmit" class="btn btn-primary">
+                                        <span class="btn-text">Submit Query</span>
+                                        <span class="btn-loading" style="display: none;">
+                                            <span class="loading-spinner-small"></span> Processing...
+                                        </span>
+                                    </button>
+                                    <button id="phdQueryClear" class="btn btn-secondary">Clear</button>
+                                    <span class="query-hint">Tip: Select a corpus above to filter results</span>
+                                </div>
+                            </div>
+
+                            <div class="query-response-container" id="phdQueryResponseContainer" style="display: none;">
+                                <div class="response-header">
+                                    <h3>Response</h3>
+                                    <button class="btn-icon" id="copyResponse" title="Copy to clipboard">
+                                        <span>&#128203;</span>
+                                    </button>
+                                </div>
+                                <div class="query-response" id="phdQueryResponse">
+                                    <!-- Response content appears here -->
+                                </div>
+                            </div>
+
+                            <div class="query-error" id="phdQueryError" style="display: none;">
+                                <span class="error-icon">&#9888;</span>
+                                <span class="error-message" id="phdQueryErrorMessage"></span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- God Write Tab -->
+            <div class="tab-panel" id="god-write-tab">
+                <div class="dashboard-grid god-write-grid">
+
+                    <!-- Preset Bar -->
+                    <section class="panel god-write-preset-bar full-width" data-panel="gw-presets">
+                        <div class="panel-body preset-bar-body">
+                            <div class="preset-select-group">
+                                <label for="gwPresetSelect">Preset:</label>
+                                <select id="gwPresetSelect" class="form-control">
+                                    <option value="">Custom Configuration</option>
+                                    <optgroup label="Built-in">
+                                        <option value="dissertation-chapter">Dissertation Chapter</option>
+                                        <option value="quick-draft">Quick Draft</option>
+                                        <option value="technical-report">Technical Report</option>
+                                        <option value="research-synthesis">Research Synthesis</option>
+                                    </optgroup>
+                                    <optgroup label="Custom" id="gwCustomPresetsGroup">
+                                    </optgroup>
+                                </select>
+                                <span class="preset-description" id="gwPresetDescription"></span>
+                            </div>
+                            <div class="preset-actions">
+                                <button class="btn btn-sm btn-secondary" id="gwSavePreset" title="Save current configuration as preset">Save as Preset</button>
+                                <button class="btn btn-sm btn-danger" id="gwDeletePreset" title="Delete selected custom preset" style="display: none;">Delete Preset</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Save Preset Dialog (hidden) -->
+                    <div class="modal" id="gwPresetDialog" style="display: none;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Save Configuration Preset</h3>
+                                <button class="modal-close" id="gwPresetDialogClose">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="gwPresetName">Preset Name:</label>
+                                    <input type="text" id="gwPresetName" class="form-control" placeholder="My Custom Preset">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gwPresetDesc">Description (optional):</label>
+                                    <input type="text" id="gwPresetDesc" class="form-control" placeholder="Brief description...">
+                                </div>
+                                <div class="dialog-buttons">
+                                    <button class="btn btn-primary" id="gwPresetSaveConfirm">Save</button>
+                                    <button class="btn btn-secondary" id="gwPresetSaveCancel">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Panel -->
+                    <section class="panel god-write-config-panel" data-panel="gw-config">
+                        <div class="panel-header">
+                            <h2>Configuration</h2>
+                        </div>
+                        <div class="panel-body">
+                            <!-- Style & Format Category -->
+                            <div class="flag-category">
+                                <h3 class="flag-category-title">Style &amp; Format</h3>
+                                <div class="flag-items">
+                                    <div class="flag-item" data-flag="style">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="style">Writing Style</span>
+                                            <select id="flag-style" class="flag-control">
+                                                <option value="academic">Academic</option>
+                                                <option value="professional">Professional</option>
+                                                <option value="casual">Casual</option>
+                                                <option value="technical">Technical</option>
+                                            </select>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="style">
+                                            <div class="tooltip-header">Writing Style</div>
+                                            <div class="tooltip-cli"><code>--style</code></div>
+                                            <div class="tooltip-desc">Controls the overall tone and register of the generated text. 'Academic' uses formal language with hedging and citations. 'Professional' is clear and direct. 'Casual' is conversational. 'Technical' prioritizes precision and specificity.</div>
+                                            <div class="tooltip-default">Default: <strong>academic</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Fundamentally changes vocabulary, sentence structure, and citation behavior.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item" data-flag="format">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="format">Output Format</span>
+                                            <select id="flag-format" class="flag-control">
+                                                <option value="paper">Paper</option>
+                                                <option value="essay">Essay</option>
+                                                <option value="report">Report</option>
+                                                <option value="article">Article</option>
+                                                <option value="section">Section</option>
+                                            </select>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="format">
+                                            <div class="tooltip-header">Output Format</div>
+                                            <div class="tooltip-cli"><code>--format</code></div>
+                                            <div class="tooltip-desc">Determines the structural format of the generated output. 'Paper' includes abstract, sections, and bibliography. 'Essay' is continuous prose. 'Report' includes executive summary and recommendations. 'Article' is for journal-style publication. 'Section' generates a single dissertation section with thesis-driven argumentation.</div>
+                                            <div class="tooltip-default">Default: <strong>paper</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Changes document structure, headings, and overall organization.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item" data-flag="length">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="length">Content Length</span>
+                                            <select id="flag-length" class="flag-control">
+                                                <option value="short">Short (~500-1,500 words)</option>
+                                                <option value="medium">Medium (~1,500-3,000 words)</option>
+                                                <option value="long">Long (~3,000-6,000 words)</option>
+                                                <option value="comprehensive" selected>Comprehensive (~4,500-9,000 words)</option>
+                                            </select>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="length">
+                                            <div class="tooltip-header">Content Length</div>
+                                            <div class="tooltip-cli"><code>--length</code></div>
+                                            <div class="tooltip-desc">Sets the target word count for generation. Longer outputs include more detail, examples, and supporting arguments. Short is best for summaries; comprehensive for full chapter sections.</div>
+                                            <div class="tooltip-default">Default: <strong>comprehensive</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Directly affects generation time and token cost. Comprehensive can take 3-5x longer than short.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Corpus Integration Category -->
+                            <div class="flag-category">
+                                <h3 class="flag-category-title">Corpus Integration</h3>
+                                <div class="flag-items">
+                                    <div class="flag-item" data-flag="use-corpus">
+                                        <label class="flag-checkbox">
+                                            <input type="checkbox" id="flag-use-corpus" checked>
+                                            <span class="flag-name" data-tooltip="use-corpus">Use Corpus</span>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="use-corpus">
+                                            <div class="tooltip-header">Use Corpus</div>
+                                            <div class="tooltip-cli"><code>--use-corpus</code></div>
+                                            <div class="tooltip-desc">Enable corpus-aware content generation. When enabled, the writing pipeline retrieves relevant chunks from your ingested corpus and grounds the generated content in actual sources. This reduces hallucinations and improves citation accuracy.</div>
+                                            <div class="tooltip-default">Default: <strong>Off</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Adds 10-30s to generation time. Significantly improves citation quality and factual grounding.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item corpus-dependent" data-flag="corpus-collections">
+                                        <div class="flag-collections-header">
+                                            <span class="flag-name" data-tooltip="corpus-collections">Collections</span>
+                                            <span class="collection-actions">
+                                                <button class="btn-link btn-xs" id="gwSelectAllCollections">All</button> /
+                                                <button class="btn-link btn-xs" id="gwSelectNoneCollections">None</button>
+                                            </span>
+                                        </div>
+                                        <div class="flag-tooltip" data-for="corpus-collections">
+                                            <div class="tooltip-header">Corpus Collections</div>
+                                            <div class="tooltip-cli"><code>--corpus-collections</code></div>
+                                            <div class="tooltip-desc">Target specific collections within your corpus. If empty, all collections are searched. Use this to focus retrieval on relevant document groups (e.g., 'metaphysics', 'rhetorical_ontology').</div>
+                                            <div class="tooltip-default">Default: <strong>All collections</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Narrower selection improves relevance but may miss cross-domain connections.</div>
+                                        </div>
+                                        <div class="inline-collection-grid" id="gwCollectionGrid">
+                                            <div class="loading-placeholder">Loading collections...</div>
+                                        </div>
+                                        <div class="corpus-summary-inline" id="gwCorpusSummary">
+                                            <span>Selected: <strong id="gwSelectedDocs">0</strong> docs, <strong id="gwSelectedChunks">0</strong> chunks</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item corpus-dependent" data-flag="corpus-chunks">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="corpus-chunks">Chunks to Retrieve</span>
+                                            <input type="number" id="flag-corpus-chunks" class="flag-control flag-number" value="15" min="1" max="50">
+                                        </label>
+                                        <div class="flag-tooltip" data-for="corpus-chunks">
+                                            <div class="tooltip-header">Corpus Chunks</div>
+                                            <div class="tooltip-cli"><code>--corpus-chunks</code></div>
+                                            <div class="tooltip-desc">Number of corpus chunks to retrieve for context. More chunks provide broader grounding but increase input token cost. Optimal range is 10-25 for most tasks.</div>
+                                            <div class="tooltip-default">Default: <strong>15</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Each chunk adds ~500 tokens to input. 25+ chunks may hit context limits.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item corpus-dependent" data-flag="corpus-relevance">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="corpus-relevance">Relevance Threshold</span>
+                                            <div class="range-with-value">
+                                                <input type="range" id="flag-corpus-relevance" class="flag-control flag-range" min="0" max="1" step="0.05" value="0.75">
+                                                <span class="range-value" id="corpus-relevance-value">0.75</span>
+                                            </div>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="corpus-relevance">
+                                            <div class="tooltip-header">Relevance Threshold</div>
+                                            <div class="tooltip-cli"><code>--corpus-relevance</code></div>
+                                            <div class="tooltip-desc">Minimum similarity score (0.0-1.0) for retrieved corpus chunks. Higher values return fewer but more relevant chunks. Lower values cast a wider net but may include tangential content.</div>
+                                            <div class="tooltip-default">Default: <strong>0.75</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Below 0.5 introduces noise. Above 0.9 may return too few chunks.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Source Verification Category -->
+                            <div class="flag-category">
+                                <h3 class="flag-category-title">Source Verification</h3>
+                                <div class="flag-items">
+                                    <div class="flag-item" data-flag="verify-sources">
+                                        <label class="flag-checkbox">
+                                            <input type="checkbox" id="flag-verify-sources">
+                                            <span class="flag-name" data-tooltip="verify-sources">Verify Sources</span>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="verify-sources">
+                                            <div class="tooltip-header">Verify Sources</div>
+                                            <div class="tooltip-cli"><code>--verify-sources</code></div>
+                                            <div class="tooltip-desc">After generation, checks that every cited source exists in your ingested corpus. Reports verified vs. missing citations with detailed breakdowns. Essential for academic writing integrity.</div>
+                                            <div class="tooltip-default">Default: <strong>Off</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Adds 5-15s post-generation verification pass.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item" data-flag="acquire-missing">
+                                        <label class="flag-checkbox">
+                                            <input type="checkbox" id="flag-acquire-missing">
+                                            <span class="flag-name" data-tooltip="acquire-missing">Acquire Missing Sources</span>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="acquire-missing">
+                                            <div class="tooltip-header">Acquire Missing Sources</div>
+                                            <div class="tooltip-cli"><code>--acquire-missing</code></div>
+                                            <div class="tooltip-desc">Automatically attempts to download open-access versions of missing cited sources. Uses Semantic Scholar and other repositories. Only downloads freely available papers.</div>
+                                            <div class="tooltip-default">Default: <strong>Off</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> May add 10-60s depending on number of missing sources and network speed.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item" data-flag="download-dir">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="download-dir">Download Directory</span>
+                                            <input type="text" id="flag-download-dir" class="flag-control flag-text" value="./corpus/downloads" placeholder="./corpus/downloads">
+                                        </label>
+                                        <div class="flag-tooltip" data-for="download-dir">
+                                            <div class="tooltip-header">Download Directory</div>
+                                            <div class="tooltip-cli"><code>--download-dir</code></div>
+                                            <div class="tooltip-desc">Directory where automatically acquired sources are saved. Downloads are organized by author and year. Existing files are not re-downloaded.</div>
+                                            <div class="tooltip-default">Default: <strong>./corpus/downloads</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Ensure the directory exists and is writable.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Inline Validation & Claim Enforcement -->
+                            <div class="flag-category">
+                                <h3 class="flag-category-title">Validation &amp; Claim Enforcement</h3>
+                                <div class="flag-items">
+                                    <div class="flag-item" data-flag="use-inline-validation">
+                                        <label class="flag-checkbox">
+                                            <input type="checkbox" id="flag-use-inline-validation" checked>
+                                            <span class="flag-name" data-tooltip="use-inline-validation">Inline Validator</span>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="use-inline-validation">
+                                            <div class="tooltip-header">Inline Validator (Phase 11)</div>
+                                            <div class="tooltip-cli"><code>--use-inline-validation</code></div>
+                                            <div class="tooltip-desc">Validates each paragraph DURING generation before appending it to the output. Prevents hallucinations at the source by checking citations, quote fidelity, and claim grounding in real-time. Paragraphs that fail validation are regenerated up to N retries.</div>
+                                            <div class="tooltip-default">Default: <strong>Off</strong> (auto-enabled when corpus has 3+ chunks)</div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Dramatically reduces hallucinations. Increases generation time 2-4x due to per-paragraph validation gates.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item validation-dependent" data-flag="inline-validation-strictness">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="inline-validation-strictness">Validation Strictness</span>
+                                            <select id="flag-inline-validation-strictness" class="flag-control">
+                                                <option value="lenient">Lenient (80% pass rate)</option>
+                                                <option value="moderate" selected>Moderate (90% pass rate)</option>
+                                                <option value="strict">Strict (100% pass rate)</option>
+                                            </select>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="inline-validation-strictness">
+                                            <div class="tooltip-header">Inline Validation Strictness</div>
+                                            <div class="tooltip-cli"><code>--inline-validation-strictness</code></div>
+                                            <div class="tooltip-desc">Controls how aggressively the inline validator rejects paragraphs. 'Strict' requires 100% citation pass rate. 'Moderate' allows minor issues. 'Lenient' only blocks serious hallucinations.</div>
+                                            <div class="tooltip-default">Default: <strong>moderate</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Strict mode may cause excessive retries. Lenient may allow some unsupported claims through.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item validation-dependent" data-flag="inline-max-retries">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="inline-max-retries">Max Retries per Paragraph</span>
+                                            <input type="number" id="flag-inline-max-retries" class="flag-control flag-number" value="3" min="1" max="10">
+                                        </label>
+                                        <div class="flag-tooltip" data-for="inline-max-retries">
+                                            <div class="tooltip-header">Max Retries per Paragraph</div>
+                                            <div class="tooltip-cli"><code>--inline-max-retries</code></div>
+                                            <div class="tooltip-desc">Maximum regeneration attempts when a paragraph fails inline validation. After exhausting retries, the best-scoring attempt is used with a warning.</div>
+                                            <div class="tooltip-default">Default: <strong>3</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Higher values improve quality but increase generation time linearly.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item validation-dependent" data-flag="inline-enable-citation-lookup">
+                                        <label class="flag-checkbox">
+                                            <input type="checkbox" id="flag-inline-enable-citation-lookup" checked>
+                                            <span class="flag-name" data-tooltip="inline-enable-citation-lookup">Citation Lookup Tool</span>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="inline-enable-citation-lookup">
+                                            <div class="tooltip-header">Citation Lookup Tool-Use</div>
+                                            <div class="tooltip-cli"><code>--inline-enable-citation-lookup</code></div>
+                                            <div class="tooltip-desc">Allows the LLM to call a citation_lookup tool during generation to find and verify citations against the corpus in real-time. The model can search for sources before citing them.</div>
+                                            <div class="tooltip-default">Default: <strong>On</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Adds ~2-5s per paragraph but enables self-correcting citation behavior.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item" data-flag="citation-enforcement-mode">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="citation-enforcement-mode">Citation Enforcement</span>
+                                            <select id="flag-citation-enforcement-mode" class="flag-control">
+                                                <option value="auto-correct" selected>Auto-Correct</option>
+                                                <option value="strict">Strict (fail on violation)</option>
+                                                <option value="warn">Warn Only</option>
+                                            </select>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="citation-enforcement-mode">
+                                            <div class="tooltip-header">Citation Enforcement Mode</div>
+                                            <div class="tooltip-cli"><code>--citation-enforcement-mode</code></div>
+                                            <div class="tooltip-desc">How to handle citation violations post-generation. 'Auto-correct' attempts to fix hallucinated citations. 'Strict' fails the generation if hallucinations exceed the threshold. 'Warn' flags issues but keeps the output.</div>
+                                            <div class="tooltip-default">Default: <strong>auto-correct</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Strict mode may reject otherwise good content. Auto-correct adds a post-processing pass.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item" data-flag="citation-min-pass-rate">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="citation-min-pass-rate">Min Citation Pass Rate</span>
+                                            <div class="range-with-value">
+                                                <input type="range" id="flag-citation-min-pass-rate" class="flag-control flag-range" min="0.5" max="1" step="0.05" value="0.85">
+                                                <span class="range-value" id="citation-pass-rate-value">0.85</span>
+                                            </div>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="citation-min-pass-rate">
+                                            <div class="tooltip-header">Minimum Citation Pass Rate</div>
+                                            <div class="tooltip-cli"><code>--citation-min-pass-rate</code></div>
+                                            <div class="tooltip-desc">Minimum percentage of citations that must be verified against the corpus. Below this threshold, the citation enforcement mode is triggered (auto-correct, strict fail, or warn).</div>
+                                            <div class="tooltip-default">Default: <strong>0.85 (85%)</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Higher values demand more rigorous citation grounding. 0.95+ is very strict.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item" data-flag="citation-max-hallucinations">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="citation-max-hallucinations">Max Hallucinations</span>
+                                            <input type="number" id="flag-citation-max-hallucinations" class="flag-control flag-number" value="3" min="0" max="20">
+                                        </label>
+                                        <div class="flag-tooltip" data-for="citation-max-hallucinations">
+                                            <div class="tooltip-header">Maximum Hallucinations Allowed</div>
+                                            <div class="tooltip-cli"><code>--citation-max-hallucinations</code></div>
+                                            <div class="tooltip-desc">Maximum number of hallucinated (unverifiable) citations allowed before triggering enforcement. Setting to 0 means zero tolerance for fabricated sources.</div>
+                                            <div class="tooltip-default">Default: <strong>3</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Lower values enforce stricter citation integrity. 0 is recommended for final dissertation output.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item corpus-dependent" data-flag="enable-endnotes">
+                                        <label class="flag-checkbox">
+                                            <input type="checkbox" id="flag-enable-endnotes">
+                                            <span class="flag-name" data-tooltip="enable-endnotes">Endnotes with Quotations</span>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="enable-endnotes">
+                                            <div class="tooltip-header">Endnote Generation</div>
+                                            <div class="tooltip-cli"><code>--enable-endnotes</code></div>
+                                            <div class="tooltip-desc">Generates endnotes with supporting quotations from the corpus for each citation. Each endnote includes up to 3 verbatim quotations from the source material to evidence the claim.</div>
+                                            <div class="tooltip-default">Default: <strong>Off</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Adds significant length. Requires corpus to be enabled. Essential for academic rigor.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Advanced Category -->
+                            <div class="flag-category">
+                                <h3 class="flag-category-title">Advanced</h3>
+                                <div class="flag-items">
+                                    <div class="flag-item" data-flag="use-staged-composition">
+                                        <label class="flag-checkbox">
+                                            <input type="checkbox" id="flag-use-staged-composition">
+                                            <span class="flag-name" data-tooltip="use-staged-composition">Staged Composition</span>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="use-staged-composition">
+                                            <div class="tooltip-header">Staged Composition</div>
+                                            <div class="tooltip-cli"><code>--use-staged-composition</code></div>
+                                            <div class="tooltip-desc">Enables the micro-meso-macro composition pipeline. First generates atomic claims (micro), then assembles paragraphs (meso), then composes full sections (macro). Produces more coherent and well-structured output.</div>
+                                            <div class="tooltip-default">Default: <strong>Off</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Doubles generation time but significantly improves argument structure and flow.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item" data-flag="chapter-outline">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="chapter-outline">Chapter Outline</span>
+                                            <textarea id="flag-chapter-outline" class="flag-control flag-textarea" rows="3" placeholder='{"thesis": "...", "sections": [...]}'></textarea>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="chapter-outline">
+                                            <div class="tooltip-header">Chapter Outline</div>
+                                            <div class="tooltip-cli"><code>--chapter-outline</code></div>
+                                            <div class="tooltip-desc">Provide a structured JSON outline with thesis statement and section breakdown. The generator will follow this structure precisely. Useful for dissertation chapters with specific organizational requirements.</div>
+                                            <div class="tooltip-default">Default: <strong>null (auto-structured)</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Provides strict structural guidance. Invalid JSON will fall back to auto-structuring.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Corpus Selection Panel removed - now inline in Configuration > Corpus Integration -->
+
+                    <!-- Style Profile Panel -->
+                    <section class="panel god-write-style-panel" data-panel="gw-style">
+                        <div class="panel-header">
+                            <h2>Style Profile</h2>
+                            <div class="panel-actions">
+                                <select id="gwProfileSelect" class="form-control-sm">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="profile-viewer" id="gwProfileViewer">
+                                <div class="profile-name-display">
+                                    <span class="profile-id" id="gwProfileId">--</span>
+                                    <span class="profile-active-badge">Active</span>
+                                </div>
+                                <div class="profile-trained-from">
+                                    <span class="profile-label">Trained from:</span>
+                                    <div class="trained-docs" id="gwTrainedDocs"></div>
+                                </div>
+                                <div class="profile-characteristics">
+                                    <div class="char-grid">
+                                        <div class="char-item">
+                                            <span class="char-label">Avg Sentence</span>
+                                            <span class="char-value" id="gwCharSentLen">--</span>
+                                            <div class="char-bar"><div class="char-fill" style="width: 0%"></div></div>
+                                        </div>
+                                        <div class="char-item">
+                                            <span class="char-label">Long Sentences</span>
+                                            <span class="char-value" id="gwCharLongSent">--</span>
+                                            <div class="char-bar"><div class="char-fill" style="width: 0%"></div></div>
+                                        </div>
+                                        <div class="char-item">
+                                            <span class="char-label">Passive Voice</span>
+                                            <span class="char-value" id="gwCharPassive">--</span>
+                                            <div class="char-bar"><div class="char-fill" style="width: 0%"></div></div>
+                                        </div>
+                                        <div class="char-item">
+                                            <span class="char-label">Formality</span>
+                                            <span class="char-value" id="gwCharFormality">--</span>
+                                            <div class="char-bar"><div class="char-fill" style="width: 0%"></div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="profile-transitions">
+                                    <span class="profile-label">Transitions:</span>
+                                    <div class="transition-chips" id="gwTransitionChips"></div>
+                                </div>
+                                <div class="profile-citation-style">
+                                    <span class="profile-label">Citation style:</span>
+                                    <span id="gwCitationStyle">--</span>
+                                    <div class="citation-verbs" id="gwCitationVerbs"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Estimation Panel -->
+                    <section class="panel god-write-estimates-panel" data-panel="gw-estimates">
+                        <div class="panel-header">
+                            <h2>Generation Estimates</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="estimates-grid" id="gwEstimates">
+                                <div class="estimate-item">
+                                    <span class="estimate-label">Est. Words:</span>
+                                    <span class="estimate-value" id="gwEstWords">2,000 - 4,000</span>
+                                </div>
+                                <div class="estimate-item">
+                                    <span class="estimate-label">Est. Time:</span>
+                                    <span class="estimate-value" id="gwEstTime">2 - 5 min</span>
+                                </div>
+                                <div class="estimate-item">
+                                    <span class="estimate-label">Est. Cost:</span>
+                                    <span class="estimate-value" id="gwEstCost">~$0.15 - $0.40</span>
+                                </div>
+                                <div class="estimate-item">
+                                    <span class="estimate-label">Pipeline:</span>
+                                    <span class="estimate-value" id="gwEstPipeline">7-stage gauntlet</span>
+                                </div>
+                            </div>
+                            <!-- Live metrics (shown during generation) -->
+                            <div class="live-metrics" id="gwLiveMetrics" style="display: none;">
+                                <div class="live-metric">
+                                    <span class="live-label">Elapsed:</span>
+                                    <span class="live-value" id="gwLiveElapsed">0:00</span>
+                                </div>
+                                <div class="live-metric">
+                                    <span class="live-label">Stage:</span>
+                                    <span class="live-value" id="gwLiveStage">--</span>
+                                </div>
+                                <div class="live-metric">
+                                    <span class="live-label">Tokens:</span>
+                                    <span class="live-value" id="gwLiveTokens">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Prompt Input Panel -->
+                    <section class="panel god-write-prompt-panel full-width" data-panel="gw-prompt">
+                        <div class="panel-header">
+                            <h2>Writing Prompt</h2>
+                            <div class="panel-actions">
+                                <span class="profile-badge" id="gwStyleProfileBadge">Profile: --</span>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <textarea
+                                id="gwPromptInput"
+                                class="god-write-prompt-input"
+                                placeholder="Enter your writing prompt...&#10;&#10;Examples:&#10;  Write a section on Aristotle's concept of phantasia in De Anima&#10;  Generate Chapter 3: Heidegger's Temporal Ecstasis&#10;  Draft an analysis comparing virtual objects to Aristotelian substances"
+                                rows="6"
+                            ></textarea>
+                            <div class="prompt-controls">
+                                <button id="gwSubmit" class="btn btn-primary btn-large" title="Generate (Ctrl+Enter)">
+                                    <span class="btn-text">Generate</span>
+                                    <span class="btn-loading" style="display: none;">
+                                        <span class="loading-spinner-small"></span>
+                                        <span id="gwGeneratingStatus">Generating...</span>
+                                    </span>
+                                    <kbd class="shortcut-hint">Ctrl+Enter</kbd>
+                                </button>
+                                <button id="gwClear" class="btn btn-secondary">Clear</button>
+                                <div class="prompt-meta">
+                                    <span id="gwCharCount">0 characters</span>
+                                </div>
+                            </div>
+                            <!-- Generation progress bar -->
+                            <div class="generation-progress" id="gwProgress" style="display: none;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="gwProgressFill" style="width: 0%"></div>
+                                </div>
+                                <div class="progress-stages" id="gwProgressStages"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Quality Gauntlet Pipeline (shown during/after generation) -->
+                    <div class="gauntlet-pipeline full-width" id="gwGauntletPipeline" style="display: none;">
+                        <div class="gauntlet-header">
+                            <h3>Quality Gauntlet <span class="gauntlet-revision" id="gwRevisionCount">(Attempt 1/3)</span></h3>
+                        </div>
+                        <div class="gauntlet-stages-pipeline" id="gwGauntletStages"></div>
+                        <div class="gauntlet-summary" id="gwGauntletSummary" style="display: none;">
+                            <div class="gauntlet-overall">
+                                Overall: <strong id="gwGauntletOverall">--</strong>
+                                <span class="gauntlet-verdict" id="gwGauntletVerdict">--</span>
+                            </div>
+                            <div class="gauntlet-details">
+                                <span>Threshold: 0.85</span>
+                                <span>Revisions: <span id="gwGauntletRevisions">0</span></span>
+                                <span>Total Time: <span id="gwGauntletTime">--</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Output Panel -->
+                    <section class="panel god-write-output-panel full-width" data-panel="gw-output">
+                        <div class="panel-header">
+                            <h2>Output</h2>
+                            <div class="panel-actions output-actions" id="gwOutputActions" style="display: none;">
+                                <span class="quality-badge" id="gwQualityBadge">Score: <strong id="gwQualityScore">--</strong></span>
+                                <span class="word-count-badge" id="gwWordCount">-- words</span>
+                                <span class="separator">|</span>
+                                <button class="btn-icon" id="gwCopyOutput" title="Copy to clipboard (Ctrl+Shift+C)">&#128203;</button>
+                                <button class="btn btn-sm btn-secondary" id="gwDownloadMd" title="Download Markdown (Ctrl+Shift+M)">.md</button>
+                                <button class="btn btn-sm btn-primary" id="gwDownloadTex" title="Download LaTeX (Ctrl+Shift+L)">.tex</button>
+                                <button class="btn btn-sm btn-secondary" id="gwToggleDiff" title="Toggle Diff (Ctrl+Shift+D)" style="display: none;">Diff</button>
+                                <span class="separator">|</span>
+                                <button class="btn btn-sm btn-accent" id="gwAnalyzeClaims" title="Analyze claims in output">Analyze Claims</button>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="output-empty" id="gwOutputEmpty">
+                                <div class="empty-icon">&#9998;</div>
+                                <p>Generated content will appear here</p>
+                                <p class="empty-hint">Configure options above, enter a prompt, and click Generate</p>
+                            </div>
+                            <div class="output-content" id="gwOutputContent" style="display: none;">
+                                <div class="output-rendered" id="gwOutputRendered"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- LaTeX Export Dialog (hidden) -->
+                    <div class="modal" id="gwLatexDialog" style="display: none;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>LaTeX Export Options</h3>
+                                <button class="modal-close" id="gwLatexDialogClose">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Conversion Method:</label>
+                                    <div class="radio-group">
+                                        <label><input type="radio" name="latexMethod" value="regex" checked> Fast (regex) - Instant, basic formatting</label>
+                                        <label><input type="radio" name="latexMethod" value="llm"> Accurate (LLM) - 30s, handles citations and complex formatting</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="latexDocClass">Document Class:</label>
+                                    <select id="latexDocClass" class="form-control">
+                                        <option value="report">report (chapters)</option>
+                                        <option value="article">article (sections)</option>
+                                        <option value="book">book</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="latexFontSize">Font Size:</label>
+                                    <select id="latexFontSize" class="form-control">
+                                        <option value="10">10pt</option>
+                                        <option value="11">11pt</option>
+                                        <option value="12" selected>12pt</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="latexSpacing">Line Spacing:</label>
+                                    <select id="latexSpacing" class="form-control">
+                                        <option value="single">Single</option>
+                                        <option value="1.5">1.5</option>
+                                        <option value="double" selected>Double</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="latexCiteStyle">Citation Style:</label>
+                                    <select id="latexCiteStyle" class="form-control">
+                                        <option value="authoryear" selected>Author-Year (biblatex)</option>
+                                        <option value="numeric">Numeric</option>
+                                        <option value="mla">MLA</option>
+                                    </select>
+                                </div>
+                                <div class="dialog-buttons">
+                                    <button class="btn btn-primary" id="gwExportLatex">Export</button>
+                                    <button class="btn btn-secondary" id="gwCancelLatex">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Source Verification Panel (shown after generation) -->
+                    <div class="source-verification full-width" id="gwSourceVerification" style="display: none;">
+                        <div class="verification-header">
+                            <h3>Source Verification</h3>
+                            <div class="verification-summary">
+                                <span class="verified-count"><span class="status-dot status-pass"></span> Verified: <strong id="gwVerifiedCount">0</strong></span>
+                                <span class="missing-count"><span class="status-dot status-warn"></span> Missing: <strong id="gwMissingCount">0</strong></span>
+                                <span class="verification-rate">Rate: <strong id="gwVerificationRate">--%</strong></span>
+                            </div>
+                        </div>
+                        <div class="source-section source-verified">
+                            <button class="section-toggle" id="gwToggleVerified">Verified Sources (<span id="gwVerifiedTotal">0</span>)</button>
+                            <div class="source-list" id="gwVerifiedList" style="display: none;"></div>
+                        </div>
+                        <div class="source-section source-missing" id="gwMissingSection" style="display: none;">
+                            <div class="section-header"><span>Missing Sources (<span id="gwMissingTotal">0</span>)</span></div>
+                            <div class="source-list" id="gwMissingList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Diff Viewer (hidden) -->
+                    <div class="diff-viewer full-width" id="gwDiffViewer" style="display: none;">
+                        <div class="diff-header">
+                            <h3>Revision Diff</h3>
+                            <div class="diff-controls">
+                                <select id="gwDiffVersion" class="form-control-sm"></select>
+                                <label class="diff-mode-toggle"><input type="radio" name="diffMode" value="inline" checked> Inline</label>
+                                <label class="diff-mode-toggle"><input type="radio" name="diffMode" value="side-by-side"> Side-by-Side</label>
+                                <button class="btn btn-sm btn-secondary" id="gwCloseDiff">Close</button>
+                            </div>
+                        </div>
+                        <div class="diff-content" id="gwDiffContent"></div>
+                        <div class="diff-stats" id="gwDiffStats">
+                            <span class="diff-additions">+<span id="gwDiffAdded">0</span> added</span>
+                            <span class="diff-deletions">-<span id="gwDiffRemoved">0</span> removed</span>
+                        </div>
+                    </div>
+
+                    <!-- History Panel -->
+                    <section class="panel god-write-history-panel full-width" data-panel="gw-history">
+                        <div class="panel-header">
+                            <h2>Generation History</h2>
+                            <div class="panel-actions">
+                                <span class="badge" id="gwHistoryCount">0</span>
+                                <input type="text" id="gwHistorySearch" class="search-input-sm" placeholder="Search history...">
+                                <select id="gwHistorySort" class="form-control-sm">
+                                    <option value="newest">Newest First</option>
+                                    <option value="oldest">Oldest First</option>
+                                    <option value="highest-quality">Highest Quality</option>
+                                    <option value="longest">Longest</option>
+                                </select>
+                                <button class="btn-icon" id="gwToggleHistory" title="Toggle History (Ctrl+H)">&#9776;</button>
+                            </div>
+                        </div>
+                        <div class="panel-body" id="gwHistoryBody" style="display: none;">
+                            <div class="history-list" id="gwHistoryList">
+                                <div class="loading-placeholder">No generation history yet</div>
+                            </div>
+                            <div class="history-pagination" id="gwHistoryPagination"></div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+
+            <!-- Claim Map Tab -->
+            <div class="tab-panel" id="claim-map-tab">
+                <div class="dashboard-grid claim-map-grid">
+
+                    <!-- Stats Bar -->
+                    <section class="panel cm-stats-bar full-width" data-panel="cm-stats">
+                        <div class="panel-body cm-stats-body">
+                            <div class="cm-stat-card">
+                                <span class="cm-stat-value" id="cmTotalClaims">0</span>
+                                <span class="cm-stat-label">Total Claims</span>
+                            </div>
+                            <div class="cm-stat-card">
+                                <span class="cm-stat-value" id="cmVerifiedPct">0%</span>
+                                <span class="cm-stat-label">Verified</span>
+                            </div>
+                            <div class="cm-stat-card">
+                                <span class="cm-stat-value" id="cmAvgQuality">0</span>
+                                <span class="cm-stat-label">Avg Quality</span>
+                            </div>
+                            <div class="cm-stat-card cm-stat-warn">
+                                <span class="cm-stat-value" id="cmUnsupported">0</span>
+                                <span class="cm-stat-label">Unsupported</span>
+                            </div>
+                            <div class="cm-stat-chart-mini">
+                                <canvas id="cmVerdictChart" width="200" height="40"></canvas>
+                            </div>
+                            <div class="cm-stat-chart-mini">
+                                <canvas id="cmCategoryChart" width="80" height="80"></canvas>
+                            </div>
+                            <div class="cm-comparison-badges" id="cmComparisonBadges" style="display:none;"></div>
+                        </div>
+                    </section>
+
+                    <!-- Toolbar -->
+                    <section class="panel cm-toolbar full-width" data-panel="cm-toolbar">
+                        <div class="panel-body cm-toolbar-body">
+                            <div class="cm-toolbar-left">
+                                <div class="cm-view-toggle">
+                                    <button class="cm-view-btn active" data-view="text" title="Annotated Text (1)">Text</button>
+                                    <button class="cm-view-btn" data-view="graph" title="Argument Graph (2)">Graph</button>
+                                    <button class="cm-view-btn" data-view="table" title="Claim Table (3)">Table</button>
+                                </div>
+                                <select id="cmJobSelect" class="form-control cm-job-select">
+                                    <option value="">No analyses yet</option>
+                                </select>
+                                <button class="btn btn-sm btn-primary" id="cmAnalyzeBtn" title="Analyze text">Analyze</button>
+                            </div>
+                            <div class="cm-toolbar-center" id="cmGraphControls" style="display:none;">
+                                <select id="cmLayoutSelect" class="form-control cm-layout-select">
+                                    <option value="toulmin">Toulmin Columnar</option>
+                                    <option value="hierarchy">Hierarchical</option>
+                                    <option value="force">Force-Directed</option>
+                                    <option value="radial">Radial</option>
+                                </select>
+                                <select id="cmColorMode" class="form-control cm-color-select">
+                                    <option value="verdict">Color: Verdict</option>
+                                    <option value="risk">Color: Risk</option>
+                                    <option value="category">Color: Category</option>
+                                    <option value="completeness">Color: Completeness</option>
+                                </select>
+                                <label class="cm-filter-label"><input type="checkbox" id="cmShowUnsupported"> Unsupported only</label>
+                            </div>
+                            <div class="cm-toolbar-right">
+                                <input type="text" id="cmSearchInput" class="form-control cm-search" placeholder="Search claims...">
+                                <select id="cmCompareSelect" class="form-control cm-compare-select" style="display:none;">
+                                    <option value="">Compare to...</option>
+                                </select>
+                                <button class="btn btn-sm btn-secondary" id="cmExportBtn" title="Export">Export</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Main Content Area (2-column) -->
+                    <div class="cm-main-area full-width">
+                        <!-- Left: Content Views -->
+                        <div class="cm-content-area">
+                            <!-- Annotated Text View -->
+                            <div class="cm-view-panel active" id="cmTextView">
+                                <div class="cm-annotated-text" id="cmAnnotatedText">
+                                    <div class="cm-empty-state">
+                                        <div class="empty-icon">&#128269;</div>
+                                        <p>No claim analysis loaded</p>
+                                        <p class="empty-hint">Select an analysis from the dropdown or click Analyze to run the pipeline on new text</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Graph View -->
+                            <div class="cm-view-panel" id="cmGraphView" style="display:none;">
+                                <div class="cm-graph-container" id="cmGraphContainer">
+                                    <div class="cm-graph-controls">
+                                        <button class="btn-icon" id="cmGraphZoomIn" title="Zoom In">+</button>
+                                        <button class="btn-icon" id="cmGraphZoomOut" title="Zoom Out">&minus;</button>
+                                        <button class="btn-icon" id="cmGraphReset" title="Reset View">&#8634;</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Table View -->
+                            <div class="cm-view-panel" id="cmTableView" style="display:none;">
+                                <div class="cm-table-container" id="cmTableContainer">
+                                    <table class="cm-table" id="cmClaimTable">
+                                        <thead>
+                                            <tr>
+                                                <th class="cm-th-sortable" data-sort="label">Claim</th>
+                                                <th class="cm-th-sortable" data-sort="category">Category</th>
+                                                <th class="cm-th-sortable" data-sort="riskLevel">Risk</th>
+                                                <th class="cm-th-sortable" data-sort="verdict">Verdict</th>
+                                                <th class="cm-th-sortable" data-sort="quality">Quality</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cmClaimTableBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Detail Panel -->
+                        <div class="cm-detail-panel" id="cmDetailPanel">
+                            <div class="cm-detail-empty">
+                                <p>Select a claim to view details</p>
+                            </div>
+                            <div class="cm-detail-content" id="cmDetailContent" style="display:none;">
+                                <div class="cm-detail-header">
+                                    <h3 id="cmDetailTitle">Claim</h3>
+                                    <div class="cm-detail-badges">
+                                        <span class="cm-badge" id="cmDetailVerdict"></span>
+                                        <span class="cm-badge" id="cmDetailRisk"></span>
+                                        <span class="cm-badge" id="cmDetailCategory"></span>
+                                    </div>
+                                    <button class="btn-icon cm-pin-btn" id="cmPinBtn" title="Pin this claim">&#128204;</button>
+                                </div>
+                                <div class="cm-detail-fulltext" id="cmDetailFullText"></div>
+
+                                <!-- Toulmin Structure -->
+                                <div class="cm-toulmin-section" id="cmToulminSection">
+                                    <h4>Toulmin Structure</h4>
+                                    <div class="cm-toulmin-cards" id="cmToulminCards"></div>
+                                </div>
+
+                                <!-- Evidence Matches -->
+                                <div class="cm-evidence-section" id="cmEvidenceSection">
+                                    <h4>Evidence</h4>
+                                    <div class="cm-evidence-list" id="cmEvidenceList"></div>
+                                </div>
+
+                                <!-- Profile Radar Chart -->
+                                <div class="cm-profile-section">
+                                    <h4>Claim Profile</h4>
+                                    <canvas id="cmProfileRadar" width="200" height="200"></canvas>
+                                </div>
+
+                                <!-- Notes & Overrides -->
+                                <div class="cm-notes-section">
+                                    <h4>Notes &amp; Overrides</h4>
+                                    <textarea id="cmNoteInput" class="cm-note-input" placeholder="Add a note about this claim..."></textarea>
+                                    <div class="cm-override-row">
+                                        <select id="cmOverrideSelect" class="form-control">
+                                            <option value="">No override</option>
+                                            <option value="background_knowledge">Background Knowledge</option>
+                                            <option value="rhetorical_flourish">Rhetorical Flourish</option>
+                                            <option value="excluded">Exclude from Metrics</option>
+                                        </select>
+                                        <button class="btn btn-sm btn-secondary" id="cmSaveNote">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Analyze Claims Dialog -->
+            <div class="modal" id="cmAnalyzeDialog" style="display:none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Analyze Claims</h3>
+                        <button class="modal-close" id="cmAnalyzeDialogClose">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="cmAnalyzeText">Text to analyze:</label>
+                            <textarea id="cmAnalyzeText" class="form-control" rows="10" placeholder="Paste text to analyze claims..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="cm-corpus-label">
+                                <input type="checkbox" id="cmAnalyzeCorpus" disabled>
+                                Use corpus verification
+                                <span id="cmCorpusStatus" class="cm-corpus-status cm-corpus-checking">checking...</span>
+                            </label>
+                            <div id="cmCorpusBanner" class="cm-corpus-banner" style="display:none;"></div>
+                        </div>
+                        <div class="dialog-buttons">
+                            <button class="btn btn-primary" id="cmAnalyzeConfirm">Run Analysis</button>
+                            <button class="btn btn-secondary" id="cmAnalyzeCancel">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -970,6 +2015,6 @@
     <!-- Toast Notifications Container -->
     <div id="toastContainer" class="toast-container"></div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=20260210a"></script>
 </body>
 </html>

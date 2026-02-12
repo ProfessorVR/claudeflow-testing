@@ -770,7 +770,10 @@ describe('RelayRaceOrchestrator', () => {
 
       const pipeline = createTestPipeline([agent1, agent2]);
 
-      await expect(orchestrator.runPipeline(pipeline)).rejects.toThrow(MemoryKeyError);
+      // runPipeline wraps internal MemoryKeyError in a generic Error (RULE-070)
+      // with the original as cause
+      await expect(orchestrator.runPipeline(pipeline)).rejects.toThrow(Error);
+      await expect(orchestrator.runPipeline(pipeline)).rejects.toThrow(/failed at agent/);
     });
 
     it('should throw on quality gate failure', async () => {
@@ -781,7 +784,10 @@ describe('RelayRaceOrchestrator', () => {
       });
       const pipeline = createTestPipeline([agent]);
 
-      await expect(orchestrator.runPipeline(pipeline)).rejects.toThrow(QualityGateError);
+      // runPipeline wraps internal QualityGateError in a generic Error (RULE-070)
+      // with the original as cause
+      await expect(orchestrator.runPipeline(pipeline)).rejects.toThrow(Error);
+      await expect(orchestrator.runPipeline(pipeline)).rejects.toThrow(/failed at agent/);
     });
 
     it('should emit fail events on error', async () => {

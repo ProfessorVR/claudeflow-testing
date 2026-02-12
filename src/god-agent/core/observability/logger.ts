@@ -102,8 +102,8 @@ export class ConsoleLogHandler implements LogHandler {
   write(entry: LogEntry): void {
     const output = JSON.stringify(entry);
 
-    if (this.useStderr && (entry.level === 'ERROR' || entry.level === 'FATAL')) {
-      console.error(output);
+    if (this.useStderr) {
+      process.stderr.write(output + '\n');
     } else {
       console.log(output);
     }

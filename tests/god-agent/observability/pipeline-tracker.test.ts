@@ -255,10 +255,10 @@ describe('PipelineTracker', () => {
       // Complete step
       tracker.completeStep(pipelineId, stepId, {});
 
-      // Verify duration
+      // Verify duration (allow 5ms tolerance for timer precision)
       const pipeline = tracker.getById(pipelineId);
       const step = pipeline?.steps[0];
-      expect(step?.durationMs).toBeGreaterThanOrEqual(50);
+      expect(step?.durationMs).toBeGreaterThanOrEqual(45);  // 50ms - 5ms tolerance
       expect(step?.durationMs).toBeLessThan(200);  // Reasonable upper bound
       expect(step?.startTime).toBeDefined();
       expect(step?.endTime).toBeDefined();
@@ -310,10 +310,13 @@ describe('PipelineTracker', () => {
 
   describe('Error Handling', () => {
     it('should handle unknown pipeline ID gracefully', () => {
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      // The structured logger outputs JSON via console.log (not console.warn)
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-      tracker.startStep('unknown-pipeline-id', { name: 'step1' });
+      // Should not throw - handles gracefully by logging and returning
+      expect(() => tracker.startStep('unknown-pipeline-id', { name: 'step1' })).not.toThrow();
 
+      // Logger outputs structured JSON containing the message
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('unknown pipeline')
       );
@@ -322,7 +325,8 @@ describe('PipelineTracker', () => {
     });
 
     it('should handle unknown step ID gracefully', () => {
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      // The structured logger outputs JSON via console.log (not console.warn)
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
       const pipelineId = tracker.startPipeline({
         name: 'test',
@@ -330,8 +334,10 @@ describe('PipelineTracker', () => {
         taskType: 'test',
       });
 
-      tracker.completeStep(pipelineId, 'unknown-step-id', {});
+      // Should not throw - handles gracefully by logging and returning
+      expect(() => tracker.completeStep(pipelineId, 'unknown-step-id', {})).not.toThrow();
 
+      // Logger outputs structured JSON containing the message
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('not found in pipeline')
       );

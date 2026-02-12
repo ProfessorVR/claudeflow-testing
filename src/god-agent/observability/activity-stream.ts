@@ -115,27 +115,6 @@ export interface IActivityStream {
  * - [RULE-OBS-004]: Memory bounds enforcement
  */
 export class ActivityStream implements IActivityStream {
-  // Static singleton instance
-  private static singletonInstance: ActivityStream | null = null;
-
-  /**
-   * Get the singleton ActivityStream instance
-   * Creates one if it doesn't exist
-   */
-  static getInstance(): Promise<ActivityStream> {
-    if (!ActivityStream.singletonInstance) {
-      ActivityStream.singletonInstance = new ActivityStream();
-    }
-    return Promise.resolve(ActivityStream.singletonInstance);
-  }
-
-  /**
-   * Reset the singleton (for testing)
-   */
-  static resetInstance(): void {
-    ActivityStream.singletonInstance = null;
-  }
-
   // Circular buffer storage
   private buffer: (IActivityEvent | null)[];
   private head: number = 0;  // Points to oldest element
@@ -452,11 +431,6 @@ export class ActivityStream implements IActivityStream {
     });
   }
 }
-
-
-// =============================================================================
-// Singleton Instance (static methods now in class)
-// =============================================================================
 
 // =============================================================================
 // Default Export

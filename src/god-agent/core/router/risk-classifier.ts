@@ -145,6 +145,16 @@ const HIGH_RISK_PATTERNS: Array<{ pattern: RegExp; reason: string }> = [
   { pattern: /production/i, reason: 'Production changes are high-stakes' },
   { pattern: /deploy/i, reason: 'Deployment changes need careful review' },
   { pattern: /migration/i, reason: 'Migrations are hard to reverse' },
+
+  // Academic/Dissertation writing - requires highest quality
+  { pattern: /dissertation/i, reason: 'Dissertation writing requires scholarly rigor' },
+  { pattern: /academic.*writing/i, reason: 'Academic writing requires citation precision' },
+  { pattern: /scholarly/i, reason: 'Scholarly work requires deep reasoning' },
+  { pattern: /chapter.*\d+/i, reason: 'Chapter writing requires contextual awareness' },
+  { pattern: /phantasia|aristotle|heidegger/i, reason: 'Philosophical analysis requires precision' },
+  { pattern: /complete.*section/i, reason: 'Section completion requires quality standards' },
+  { pattern: /write.*paper/i, reason: 'Paper writing requires scholarly standards' },
+  { pattern: /thesis/i, reason: 'Thesis work requires highest quality' },
 ];
 
 /**

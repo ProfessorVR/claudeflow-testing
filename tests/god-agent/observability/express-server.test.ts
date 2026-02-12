@@ -292,7 +292,7 @@ describe('ExpressServer', () => {
 
       expect(response.status).toBe(200);
       expect(response.headers['content-type']).toContain('text/html');
-      expect(response.text).toContain('God Agent Observability Dashboard');
+      expect(response.text).toContain('God Agent');
     });
   });
 
@@ -423,35 +423,36 @@ describe('ExpressServer', () => {
     });
   });
 
-  describe('Placeholder Endpoints', () => {
-    it('GET /api/memory/domains should return placeholder', async () => {
+  describe('Memory Endpoints', () => {
+    it('GET /api/memory/domains should return domains derived from EventStore', async () => {
       const app = server.getApp();
       const response = await request(app).get('/api/memory/domains');
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('domains');
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('InteractionStore');
+      expect(response.body).toHaveProperty('totalEvents');
+      expect(response.body).toHaveProperty('uniqueDomains');
     });
 
-    it('GET /api/memory/patterns should return placeholder', async () => {
+    it('GET /api/memory/patterns should return patterns derived from EventStore', async () => {
       const app = server.getApp();
       const response = await request(app).get('/api/memory/patterns');
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('patterns');
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('ReasoningBank');
+      expect(response.body).toHaveProperty('totalEvents');
+      expect(response.body).toHaveProperty('uniquePatterns');
     });
 
-    it('GET /api/learning/stats should return placeholder', async () => {
+    it('GET /api/learning/stats should return learning stats derived from EventStore', async () => {
       const app = server.getApp();
       const response = await request(app).get('/api/learning/stats');
 
       expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('totalTrajectories', 0);
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('SonaEngine');
+      expect(response.body).toHaveProperty('totalTrajectories');
+      expect(response.body).toHaveProperty('baselineQuality');
+      expect(response.body).toHaveProperty('learnedQuality');
+      expect(response.body).toHaveProperty('improvement');
     });
   });
 
@@ -573,5 +574,170 @@ describe('ExpressServer', () => {
       expect(response.body.events).toHaveLength(0);
       expect(response.body.count).toBe(0);
     });
+  });
+
+  // ===========================================================================
+  // Claim Map Endpoints
+  // ===========================================================================
+  describe('Claim Map Endpoints', () => {
+    it('GET /api/claim-map/jobs should return empty list initially', async () => {
+      const app = server.getApp();
+      const response = await request(app).get('/api/claim-map/jobs');
+
+      expect(response.status).toBe(200);
+      expect(response.body.jobs).toBeDefined();
+      expect(Array.isArray(response.body.jobs)).toBe(true);
+    });
+
+    it('POST /api/claim-map/analyze should require text', async () => {
+      const app = server.getApp();
+      const response = await request(app)
+        .post('/api/claim-map/analyze')
+        .send({});
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('text is required');
+    });
+
+    it('POST /api/claim-map/analyze should accept text and return jobId', async () => {
+      const app = server.getApp();
+      const response = await request(app)
+        .post('/api/claim-map/analyze')
+        .send({ text: 'Aristotle argues that phantasia is a distinct faculty of the soul.' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.jobId).toBeDefined();
+      expect(response.body.jobId).toMatch(/^cm_/);
+      expect(response.body.status).toBe('running');
+    });
+
+    it('GET /api/claim-map/data/:jobId should return 404 for unknown job', async () => {
+      const app = server.getApp();
+      const response = await request(app).get('/api/claim-map/data/nonexistent');
+
+      expect(response.status).toBe(404);
+    });
+
+    it('GET /api/claim-map/text/:jobId should return 404 for unknown job', async () => {
+      const app = server.getApp();
+      const response = await request(app).get('/api/claim-map/text/nonexistent');
+
+      expect(response.status).toBe(404);
+    });
+
+    it('PATCH /api/claim-map/node/:jobId/:nodeId should return 404 for unknown node', async () => {
+      const app = server.getApp();
+      const response = await request(app)
+        .patch('/api/claim-map/node/nonexistent/node1')
+        .send({ userNote: 'test' });
+
+      expect(response.status).toBe(404);
+    });
+
+    it('DELETE /api/claim-map/jobs/:jobId should succeed even for nonexistent', async () => {
+      const app = server.getApp();
+      const response = await request(app).delete('/api/claim-map/jobs/nonexistent');
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+    });
+
+    it('GET /api/claim-map/export/:jobId should return 404 for unknown job', async () => {
+      const app = server.getApp();
+      const response = await request(app).get('/api/claim-map/export/nonexistent');
+
+      expect(response.status).toBe(404);
+    });
+
+    it('GET /api/claim-map/compare/:jobA/:jobB should return 404 for unknown jobs', async () => {
+      const app = server.getApp();
+      const response = await request(app).get('/api/claim-map/compare/jobA/jobB');
+
+      expect(response.status).toBe(404);
+    });
+
+    it('POST /api/claim-map/analyze + GET /data should return full analysis after completion', async () => {
+      const app = server.getApp();
+
+      // Start analysis
+      const analyzeResp = await request(app)
+        .post('/api/claim-map/analyze')
+        .send({ text: 'Heidegger argues that Dasein is always already in a world. Furthermore, this being-in-the-world constitutes an essential structure of existence.' });
+
+      expect(analyzeResp.status).toBe(200);
+      const jobId = analyzeResp.body.jobId;
+
+      // Wait for async analysis to complete (with polling)
+      let data: any = null;
+      for (let i = 0; i < 20; i++) {
+        await new Promise(r => setTimeout(r, 200));
+        const dataResp = await request(app).get(`/api/claim-map/data/${jobId}`);
+        if (dataResp.status === 200 && dataResp.body.job?.status === 'complete') {
+          data = dataResp.body;
+          break;
+        }
+      }
+
+      expect(data).not.toBeNull();
+      expect(data.job.status).toBe('complete');
+      expect(data.nodes).toBeDefined();
+      expect(data.links).toBeDefined();
+      expect(data.stats).toBeDefined();
+      expect(data.stats.totalClaims).toBeGreaterThanOrEqual(0);
+      expect(data.layout).toBeDefined();
+
+      // Verify text endpoint
+      const textResp = await request(app).get(`/api/claim-map/text/${jobId}`);
+      expect(textResp.status).toBe(200);
+      expect(textResp.body.sourceText).toBeDefined();
+      expect(textResp.body.spans).toBeDefined();
+
+      // Verify span integrity: each span's offset maps to correct substring
+      for (const span of textResp.body.spans) {
+        if (span.startOffset != null && span.endOffset != null && span.startOffset >= 0) {
+          const substring = textResp.body.sourceText.slice(span.startOffset, span.endOffset);
+          expect(substring.length).toBeGreaterThan(0);
+        }
+      }
+
+      // Verify export works
+      const exportResp = await request(app).get(`/api/claim-map/export/${jobId}?format=json`);
+      expect(exportResp.status).toBe(200);
+      expect(exportResp.body.nodes).toBeDefined();
+
+      // Verify CSV export
+      const csvResp = await request(app).get(`/api/claim-map/export/${jobId}?format=csv`);
+      expect(csvResp.status).toBe(200);
+      expect(csvResp.headers['content-type']).toContain('text/csv');
+
+      // Verify jobs list includes this job
+      const jobsResp = await request(app).get('/api/claim-map/jobs');
+      expect(jobsResp.body.jobs.some((j: any) => j.jobId === jobId)).toBe(true);
+
+      // Test node update if we have nodes
+      if (data.nodes.length > 0) {
+        const nodeId = data.nodes[0].id;
+        const patchResp = await request(app)
+          .patch(`/api/claim-map/node/${jobId}/${nodeId}`)
+          .send({ userNote: 'Test note', overrideLabel: 'background_knowledge', pinned: true });
+        expect(patchResp.status).toBe(200);
+        expect(patchResp.body.success).toBe(true);
+
+        // Verify the update persisted
+        const updatedData = await request(app).get(`/api/claim-map/data/${jobId}`);
+        const updatedNode = updatedData.body.nodes.find((n: any) => n.id === nodeId);
+        expect(updatedNode.userNote).toBe('Test note');
+        expect(updatedNode.overrideLabel).toBe('background_knowledge');
+        expect(updatedNode.pinned).toBe(true);
+      }
+
+      // Test delete
+      const deleteResp = await request(app).delete(`/api/claim-map/jobs/${jobId}`);
+      expect(deleteResp.status).toBe(200);
+
+      // Verify deleted
+      const afterDelete = await request(app).get(`/api/claim-map/data/${jobId}`);
+      expect(afterDelete.status).toBe(404);
+    }, 15000); // Allow 15s for async pipeline
   });
 });

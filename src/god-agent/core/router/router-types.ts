@@ -431,65 +431,6 @@ export interface ModelQualityStats {
   }>;
 }
 
-// ===== AUDIT & REVIEW =====
-
-/**
- * Review status for an audit entry
- */
-export type ReviewStatus = 'pending' | 'approved' | 'rejected' | 'fixed';
-
-/**
- * Audit entry for a non-Claude change
- */
-export interface AuditEntry {
-  /** Unique ID */
-  id: string;
-  /** Timestamp */
-  timestamp: Date;
-  /** Task type */
-  taskType: TaskType;
-  /** Task complexity */
-  complexity: Complexity;
-  /** Original prompt */
-  originalPrompt: string;
-  /** Model that handled the request */
-  actualModel: string;
-  /** Provider type */
-  provider: ProviderType;
-  /** Reason for routing to this model */
-  routingReason: string;
-  /** Files modified */
-  filesModified: string[];
-  /** Summary of changes */
-  diffSummary: string;
-  /** Full diff (git-style) */
-  fullDiff: string;
-  /** Review status */
-  reviewStatus: ReviewStatus;
-  /** Who reviewed (if reviewed) */
-  reviewedBy: string | null;
-  /** Review timestamp */
-  reviewedAt: Date | null;
-  /** Review notes */
-  reviewNotes: string | null;
-}
-
-/**
- * Review queue statistics
- */
-export interface ReviewQueueStats {
-  /** Total pending reviews */
-  pending: number;
-  /** Pending high-risk reviews */
-  pendingHighRisk: number;
-  /** Reviews by model */
-  byModel: Record<string, number>;
-  /** Reviews by status */
-  byStatus: Record<ReviewStatus, number>;
-  /** Oldest pending review */
-  oldestPending: Date | null;
-}
-
 // ===== EVENTS =====
 
 /**

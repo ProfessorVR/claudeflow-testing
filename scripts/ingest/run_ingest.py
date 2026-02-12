@@ -126,6 +126,7 @@ def parse_filename_metadata(path_abs: Path) -> Dict[str, Any]:
     q = qualifier or ""
     is_my_copy = "my copy" in q.lower()
     is_clean_copy = "clean copy" in q.lower()
+    is_notes = "notes" in q.lower()
 
     return {
         "author_raw": author_raw,
@@ -134,6 +135,7 @@ def parse_filename_metadata(path_abs: Path) -> Dict[str, Any]:
         "qualifier": qualifier,
         "is_my_copy": bool(is_my_copy),
         "is_clean_copy": bool(is_clean_copy),
+        "is_notes": bool(is_notes),
     }
 
 

@@ -282,6 +282,14 @@ export class FinalStageOrchestrator {
   private _summaries: AgentOutputSummary[] | null = null;
   private _mapping: SemanticMapperOutput | null = null;
 
+  // Chapter completion callback for cross-chapter context management
+  // Called after each chapter is written with (chapterNumber, chapterContent, chapterTitle)
+  private chapterCompletionCallback: ((
+    chapterNumber: number,
+    chapterContent: string,
+    chapterTitle?: string
+  ) => Promise<void>) | null = null;
+
   // ============================================
   // Constructor
   // ============================================
@@ -791,6 +799,20 @@ export class FinalStageOrchestrator {
    */
   clearProgressCallbacks(): void {
     this.progressCallbacks.length = 0;
+  }
+
+  /**
+   * Register chapter completion callback for cross-chapter context management.
+   * Called after each chapter is written with content and metadata.
+   *
+   * @param callback - Async function receiving (chapterNumber, chapterContent, chapterTitle)
+   */
+  onChapterComplete(callback: (
+    chapterNumber: number,
+    chapterContent: string,
+    chapterTitle?: string
+  ) => Promise<void>): void {
+    this.chapterCompletionCallback = callback;
   }
 
   /**
@@ -1887,6 +1909,24 @@ export class FinalStageOrchestrator {
         tokensUsed: chapterOutput.tokensUsed,
         compliance: chapterOutput.qualityMetrics.wordCountCompliance
       });
+
+      // Call chapter completion callback for cross-chapter context extraction
+      // This enables dissertation-wide context tracking for argument threading
+      if (this.chapterCompletionCallback) {
+        try {
+          await this.chapterCompletionCallback(
+            chapterDef.number,
+            chapterOutput.content,
+            chapterDef.title
+          );
+          this.log('debug', `Chapter ${chapterDef.number} context extracted`);
+        } catch (contextError) {
+          // Non-fatal: log warning but continue
+          this.log('warn', `Failed to extract context for chapter ${chapterDef.number}`, {
+            error: contextError instanceof Error ? contextError.message : String(contextError)
+          });
+        }
+      }
 
       this.emitProgress({
         phase: 'WRITING',

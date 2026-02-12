@@ -249,6 +249,12 @@ const ENV_MAPPINGS: Record<string, string> = {
 export function loadRouterConfig(): RouterConfig {
   let config: RouterConfig = { ...DEFAULT_ROUTER_CONFIG };
 
+  // Apply default models FIRST as the base layer
+  // This ensures env overrides (e.g., ANTHROPIC_API_KEY → models.claude-sonnet.apiKey)
+  // merge INTO complete model configs rather than creating partial entries
+  config.models = JSON.parse(JSON.stringify(DEFAULT_MODEL_CONFIGS)) as Record<string, ProviderConfig>;
+  config.routingRules = [...DEFAULT_ROUTING_RULES];
+
   // Load from project config
   if (existsSync(CONFIG_PATHS.project)) {
     const projectConfig = loadConfigFile(CONFIG_PATHS.project);
@@ -261,18 +267,8 @@ export function loadRouterConfig(): RouterConfig {
     config = mergeConfig(config, userConfig);
   }
 
-  // Apply environment overrides
+  // Apply environment overrides (merges into existing model configs)
   config = applyEnvOverrides(config);
-
-  // Apply default models if none configured
-  if (Object.keys(config.models).length === 0) {
-    config.models = { ...DEFAULT_MODEL_CONFIGS } as Record<string, ProviderConfig>;
-  }
-
-  // Apply default routing rules if none configured
-  if (config.routingRules.length === 0) {
-    config.routingRules = [...DEFAULT_ROUTING_RULES];
-  }
 
   // Validate configuration
   validateRouterConfig(config);

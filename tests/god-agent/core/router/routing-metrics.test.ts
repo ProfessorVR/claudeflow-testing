@@ -387,6 +387,11 @@ describe('Routing Metrics - Local-First Strategy', () => {
   });
 
   describe('Edge Cases', () => {
+    beforeEach(() => {
+      // Extra reset to ensure isolation in edge case tests
+      resetRoutingMetrics();
+    });
+
     it('should handle rapid successive calls', () => {
       for (let i = 0; i < 100; i++) {
         trackLocalFirstDecision('local', {

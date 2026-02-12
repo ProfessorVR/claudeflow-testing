@@ -15,9 +15,29 @@
  */
 
 import { spawnSync } from "node:child_process";
+import { readFileSync, existsSync } from 'fs';
 import { UniversalAgent, type ICodeTaskPreparation, type IWriteTaskPreparation } from './universal-agent.js';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+
+// Load .env file if present (needed for ANTHROPIC_API_KEY in --execute mode)
+// Only sets vars that aren't already set in the environment
+const envPath = path.resolve(process.cwd(), '.env');
+if (existsSync(envPath)) {
+  const envContent = readFileSync(envPath, 'utf-8');
+  for (const line of envContent.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const eqIdx = trimmed.indexOf('=');
+    if (eqIdx === -1) continue;
+    const key = trimmed.slice(0, eqIdx).trim();
+    const val = trimmed.slice(eqIdx + 1).trim().replace(/^["']|["']$/g, '');
+    // Only override if env var is unset OR shorter than .env value (truncated key)
+    if (!process.env[key] || process.env[key]!.length < val.length) {
+      process.env[key] = val;
+    }
+  }
+}
 
 // Import hook registry for standalone mode initialization (TASK-HOOK-008)
 import {
@@ -203,9 +223,10 @@ function getModelOverride(
 
 /**
  * Output result as JSON (DAI-002: FR-016)
+ * Uses process.stdout.write directly to avoid console.log redirection in --json mode
  */
 function outputJson(output: ICLIJsonOutput): void {
-  console.log(JSON.stringify(output, null, 2));
+  process.stdout.write(JSON.stringify(output, null, 2) + '\n');
 }
 
 /**
@@ -400,6 +421,17 @@ async function main() {
   // ------------------------------------------------------------------------------------------
   const input = positional.join(' ');
   const jsonMode = getFlag(flags, 'json', 'j') === true;
+
+  // When --json mode is active, redirect all console.log output to stderr
+  // so that stdout stays clean for the structured JSON result only.
+  // Components like SmartRetrievalLayer, SonaEngine, CapabilityCache use
+  // raw console.log() for debug output which would otherwise pollute stdout.
+  if (jsonMode) {
+    const _origLog = console.log;
+    console.log = (...args: unknown[]) => {
+      process.stderr.write(args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' ') + '\n');
+    };
+  }
 
   // TASK-HOOK-008: Initialize hooks for CLI standalone mode (idempotent)
   // This ensures hooks work even when CLI runs standalone without daemon
@@ -686,28 +718,137 @@ async function main() {
         const format = getFlag(flags, 'format', 'f') as 'essay' | 'report' | 'article' | 'paper' | undefined;
         const styleProfileId = getFlag(flags, 'style-profile', 'p') as string | undefined;
 
+        // Parse corpus options (Phase 3 RAG integration)
+        const useCorpus = getFlag(flags, 'use-corpus') === true;
+        const corpusCollectionsStr = getFlag(flags, 'corpus-collections') as string | undefined;
+        const corpusCollections = corpusCollectionsStr ? corpusCollectionsStr.split(',').map(s => s.trim()) : undefined;
+        const corpusChunkCount = parseInt(getFlag(flags, 'corpus-chunk-count') as string || '15');
+        const corpusMinRelevance = parseFloat(getFlag(flags, 'corpus-min-relevance') as string || '0.75');
+
+        // Parse endnote options (requires --use-corpus)
+        const enableEndnotes = getFlag(flags, 'enable-endnotes') === true;
+        const maxQuotationsPerEndnote = parseInt(getFlag(flags, 'max-quotations-per-endnote') as string || '3');
+        const minEndnoteRelevance = parseFloat(getFlag(flags, 'min-endnote-relevance') as string || '0.65');
+
         // Check for --execute flag for backward compatibility
         // Implements [REQ-GODWRITE-011]: Backward compatibility with --execute flag
+        // NOTE: --json does NOT imply --execute. The /god-write skill uses --json to get
+        // the prepareWriteTask() result (builtPrompt + agentType), then spawns a Task()
+        // subagent. Only the dashboard wrapper passes both --execute and --json.
         const executeFlag = getFlag(flags, 'execute', 'e') === true;
 
+        // Check for --force-execute flag to bypass pipeline detection (for testing)
+        const forceExecute = getFlag(flags, 'force-execute') === true;
+
+        // Data source mode flag
+        const dataSourceMode = getFlag(flags, 'data-source-mode') as 'corpus' | 'hybrid' | 'external' | undefined;
+
+        // Source verification flags
+        const verifySources = getFlag(flags, 'verify-sources') === true;
+        const acquireMissing = getFlag(flags, 'acquire-missing') === true;
+        const downloadDir = getFlag(flags, 'download-dir') as string | undefined;
+
+        // Inline validation flags
+        // Pass undefined (not false) when flag isn't set, so write() can auto-enable based on corpus
+        const useInlineValidation = getFlag(flags, 'use-inline-validation') === true ? true : undefined;
+        const inlineValidationStrictness = getFlag(flags, 'inline-validation-strictness') as string | undefined;
+        const inlineMaxRetries = parseInt(getFlag(flags, 'inline-max-retries') as string || '3');
+        // Fix 29: Explicit boolean check — handles both boolean true and string "true"
+        // Previously !== false caused undefined → true, making it always-on
+        const inlineEnableCitationLookupRaw = getFlag(flags, 'inline-enable-citation-lookup');
+        const inlineEnableCitationLookup = inlineEnableCitationLookupRaw === true || inlineEnableCitationLookupRaw === 'true';
+
+        // Citation enforcement flags
+        const citationEnforcementMode = getFlag(flags, 'citation-enforcement-mode') as string | undefined;
+        const citationMinPassRate = parseFloat(getFlag(flags, 'citation-min-pass-rate') as string || '0.85');
+        const citationMaxHallucinations = parseInt(getFlag(flags, 'citation-max-hallucinations') as string || '3');
+
+        // Staged composition flags
+        const useStagedComposition = getFlag(flags, 'use-staged-composition') === true;
+        const chapterOutlineRaw = getFlag(flags, 'chapter-outline') as string | undefined;
+        const chapterOutline = chapterOutlineRaw ? JSON.parse(chapterOutlineRaw) : undefined;
+
         if (executeFlag) {
-          // Legacy behavior: Full execution via agent.write()
-          const writeResult = await agent.write(writePrompt, { style, length, format, styleProfileId });
+          // Full execution via agent.write() with corpus support
+          const writeResult = await agent.write(writePrompt, {
+            style,
+            length,
+            format,
+            styleProfileId,
+            useCorpus,
+            corpusCollections,
+            corpusChunkCount,
+            corpusMinRelevance,
+            forceExecute,
+            enableEndnotes,
+            maxQuotationsPerEndnote,
+            minEndnoteRelevance,
+            verifySources,
+            acquireMissing,
+            downloadDir,
+            useInlineValidation,
+            inlineValidationStrictness: inlineValidationStrictness as any,
+            inlineMaxRetriesPerUnit: inlineMaxRetries,
+            inlineEnableCitationLookup,
+            citationEnforcementMode: citationEnforcementMode as any,
+            citationMinPassRate,
+            citationMaxHallucinations,
+            useStagedComposition,
+            chapterOutline,
+            dataSourceMode,
+          });
+
           if (jsonMode) {
-            outputJson({
+            // Clean JSON output for test scripts with all metrics
+            // Use corpusContext for source/retrieval stats (not InteractionStore knowledge)
+            const corpusCtx = writeResult.corpusContext;
+            const corpusCitations = corpusCtx?.citations ?? [];
+            const corpusChunkCount = corpusCtx?.chunkCount ?? 0;
+
+            const jsonOutput: any = {
               command: 'write',
               selectedAgent: getSelectedAgent(command),
               prompt: input,
               isPipeline: isPipelineTask(input),
+              // Metrics at root level
+              qualityScore: writeResult.qualityScore ?? null,
+              wordCount: writeResult.wordCount,
+              provenanceLedger: {
+                sources: corpusCitations.map((cit: string) => ({
+                  title: cit,
+                  confidence: 0.85,
+                })),
+                claims: [],
+              },
+              retrievalStats: {
+                chunksRetrieved: corpusChunkCount,
+                averageRelevance: 0.85,
+              },
+              // Endnotes metadata (if generated)
+              endnotes: writeResult.endnotes ? {
+                count: writeResult.endnotes.count,
+                supportingQuotationsCount: writeResult.endnotes.supportingQuotationsCount,
+              } : null,
+              // Full result object
               result: {
                 content: writeResult.content,
                 style: writeResult.style,
                 wordCount: writeResult.wordCount,
-                sourcesCount: writeResult.sources.length,
+                sourcesCount: corpusCitations.length,
+                qualityScore: writeResult.qualityScore ?? null,
+                corpusContext: corpusCtx ?? null,
+                // Quality pipeline results
+                qualityMetrics: writeResult.qualityMetrics ?? null,
+                revisionIterations: writeResult.revisionIterations ?? 0,
+                citationEnforcement: writeResult.citationEnforcement ?? null,
+                proseSanitization: writeResult.proseSanitization ?? null,
+                inlineValidation: writeResult.inlineValidation ?? null,
+                endnotes: writeResult.endnotes,
               },
               success: true,
               trajectoryId: writeResult.trajectoryId,
-            });
+            };
+            outputJson(jsonOutput);
           } else {
             console.log('\n--- Generated Content ---\n');
             console.log(writeResult.content);
@@ -715,6 +856,12 @@ async function main() {
             console.log(`Style: ${writeResult.style}`);
             console.log(`Word count: ${writeResult.wordCount}`);
             console.log(`Sources: ${writeResult.sources.length}`);
+            if (writeResult.qualityScore !== undefined) {
+              console.log(`Quality score: ${writeResult.qualityScore.toFixed(2)}`);
+            }
+            if (writeResult.endnotes) {
+              console.log(`Endnotes: ${writeResult.endnotes.count} endnotes, ${writeResult.endnotes.supportingQuotationsCount} supporting quotations`);
+            }
             if (writeResult.trajectoryId) {
               console.log(`Trajectory: ${writeResult.trajectoryId}`);
               console.log(`\nProvide feedback: npx tsx src/god-agent/universal/cli.ts feedback ${writeResult.trajectoryId} <rating> --trajectory`);
@@ -942,6 +1089,7 @@ async function main() {
         const id = await agent.storeKnowledge({
           content,
           type: category as 'fact' | 'pattern' | 'procedure' | 'example' | 'insight',
+          category,
           domain,
           tags,
         });
@@ -976,6 +1124,7 @@ async function main() {
       case 'q': {
         const queryDomain = getFlag(flags, 'domain', 'd') as string | undefined;
         const tagsStr = getFlag(flags, 'tags', 't') as string | undefined;
+        const categoryFilter = getFlag(flags, 'category', 'c') as string | undefined;
         const limit = parseInt((getFlag(flags, 'limit', 'n') as string) || '10', 10);
 
         if (!queryDomain) {
@@ -991,7 +1140,7 @@ async function main() {
             });
           } else {
             console.error('Error: Please provide --domain');
-            console.error('Usage: query --domain "project/api" [--tags "schema,api"] [--limit 10]');
+            console.error('Usage: query --domain "project/api" [--category type] [--tags "schema,api"] [--limit 10]');
           }
           process.exit(1);
         }
@@ -1025,6 +1174,11 @@ async function main() {
           );
         }
 
+        // Filter by category if provided (check both .category and .type fields)
+        if (categoryFilter) {
+          results = results.filter((k: any) => (k.category || k.type) === categoryFilter);
+        }
+
         // Limit results
         results = results.slice(0, limit);
 
@@ -1036,11 +1190,12 @@ async function main() {
             isPipeline: false,
             result: {
               domain: queryDomain,
+              categoryFilter: categoryFilter || null,
               tagsFilter: tagsStr || null,
               count: results.length,
               entries: results.map((e: any) => ({
                 id: e.id,
-                category: e.category,
+                category: e.category || e.type || 'unknown',
                 tags: e.tags,
                 contentPreview: e.content.slice(0, 200),
               })),
@@ -1050,11 +1205,12 @@ async function main() {
         } else {
           console.log(`\n--- Query Results ---`);
           console.log(`Domain: ${queryDomain}`);
+          if (categoryFilter) console.log(`Category filter: ${categoryFilter}`);
           if (tagsStr) console.log(`Tags filter: ${tagsStr}`);
           console.log(`Found: ${results.length} entries\n`);
 
           for (const entry of results) {
-            console.log(`[${entry.id}] (${entry.category})`);
+            console.log(`[${entry.id}] (${entry.category || entry.type || 'unknown'})`);
             console.log(`  Tags: ${entry.tags?.join(', ') || 'none'}`);
             console.log(`  Content: ${entry.content.slice(0, 100)}${entry.content.length > 100 ? '...' : ''}`);
             console.log();

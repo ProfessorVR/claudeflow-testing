@@ -811,7 +811,8 @@ describe('PhDPipelineOrchestrator', () => {
       const orchestrator = new PhDPipelineOrchestrator(config, executor, { tracker });
       executor.setFailure('step-back-analyzer', 'Critical failure');
 
-      await expect(orchestrator.execute('Test')).rejects.toThrow(CriticalAgentError);
+      // The CriticalAgentError is now wrapped with pipeline context
+      await expect(orchestrator.execute('Test')).rejects.toThrow(/Critical agent.*step-back-analyzer.*failed/);
 
       const state = orchestrator.getState();
       expect(state?.status).toBe('failed');
@@ -855,7 +856,8 @@ describe('PhDPipelineOrchestrator', () => {
       // Set invalid output (missing required fields)
       executor.setOutput('step-back-analyzer', { invalid: 'output' });
 
-      await expect(orchestrator.execute('Test')).rejects.toThrow(CriticalAgentError);
+      // Validation now triggers retries and wraps errors with context
+      await expect(orchestrator.execute('Test')).rejects.toThrow(/Validation failed.*high_level_framing|Critical agent.*step-back-analyzer/);
     });
   });
 
@@ -1335,5 +1337,197 @@ describe('PhD Pipeline Integration', () => {
         expect(phase1Ids.has(depId)).toBe(true);
       }
     }
+  });
+});
+
+// ==================== Validation Integration Tests (PHASE-2-003/004) ====================
+
+describe('PhDPipelineOrchestrator Validation Integration', () => {
+  let executor: MockAgentExecutor;
+  let tracker: MockShadowTracker;
+
+  beforeEach(() => {
+    executor = new MockAgentExecutor();
+    tracker = new MockShadowTracker();
+  });
+
+  describe('Tier 1: Per-Agent Validation', () => {
+    it('should validate agent output with TieredValidator', async () => {
+      const config: IPipelineConfig = {
+        pipeline: { name: 'Test', version: '1.0.0', description: 'Test', totalAgents: 1, phases: 1 },
+        phases: [{ id: 1, name: 'Test Phase', description: 'Test', agents: [1], objectives: [] }],
+        agents: [{ id: 1, key: 'step-back-analyzer', name: 'Step Back', phase: 1, description: 'Test', dependencies: [], inputs: [], outputs: [], timeout: 300 }],
+      };
+
+      const orchestrator = new PhDPipelineOrchestrator(config, executor);
+
+      // Set valid output
+      executor.setOutput('step-back-analyzer', {
+        high_level_framing: 'Test framing',
+        key_questions: ['Q1', 'Q2'],
+        success_criteria: ['C1'],
+      });
+
+      const state = await orchestrator.execute('Test problem');
+      expect(state.status).toBe('completed');
+      expect(state.completedAgents.size).toBe(1);
+    });
+
+    it('should allow non-critical agent with partial output', async () => {
+      const config: IPipelineConfig = {
+        pipeline: { name: 'Test', version: '1.0.0', description: 'Test', totalAgents: 1, phases: 1 },
+        phases: [{ id: 1, name: 'Test Phase', description: 'Test', agents: [1], objectives: [] }],
+        agents: [{ id: 1, key: 'context-mapper', name: 'Context Mapper', phase: 1, description: 'Test', dependencies: [], inputs: [], outputs: [], timeout: 300 }],
+      };
+
+      // Non-critical agent with partial output should pass (with warnings)
+      // Disable Tier 2 validation since we're using custom config that doesn't match production
+      const orchestrator = new PhDPipelineOrchestrator(config, executor, {
+        validationConfig: { enabledTiers: [1] }, // Tier 1 only (Agent validation)
+      });
+      executor.setOutput('context-mapper', { partial: 'output' });
+
+      const state = await orchestrator.execute('Test problem');
+      // Non-critical agents continue despite validation warnings
+      expect(state.status).toBe('completed');
+    });
+
+    it('should fail critical agent after max retries', async () => {
+      const config: IPipelineConfig = {
+        pipeline: { name: 'Test', version: '1.0.0', description: 'Test', totalAgents: 1, phases: 1 },
+        phases: [{ id: 1, name: 'Test Phase', description: 'Test', agents: [1], objectives: [] }],
+        agents: [{ id: 1, key: 'step-back-analyzer', name: 'Step Back', phase: 1, description: 'Test', dependencies: [], inputs: [], outputs: [], timeout: 300 }],
+      };
+
+      const orchestrator = new PhDPipelineOrchestrator(config, executor, {
+        validationConfig: { tier1MaxRetries: 1 }, // Only 1 retry
+      });
+
+      // Invalid output for critical agent
+      executor.setOutput('step-back-analyzer', { invalid: 'output' });
+
+      await expect(orchestrator.execute('Test problem')).rejects.toThrow(/Validation failed/);
+    });
+
+    it('should pass revision guidance on retry', async () => {
+      const config: IPipelineConfig = {
+        pipeline: { name: 'Test', version: '1.0.0', description: 'Test', totalAgents: 1, phases: 1 },
+        phases: [{ id: 1, name: 'Test Phase', description: 'Test', agents: [1], objectives: [] }],
+        agents: [{ id: 1, key: 'step-back-analyzer', name: 'Step Back', phase: 1, description: 'Test', dependencies: [], inputs: [], outputs: [], timeout: 300 }],
+      };
+
+      let attemptCount = 0;
+      const customExecutor: IAgentExecutor = {
+        async execute(agentKey: string, inputs: Record<string, unknown>) {
+          attemptCount++;
+          if (attemptCount === 1) {
+            // First attempt returns invalid output
+            return { invalid: 'output' };
+          }
+          // Second attempt checks for revision guidance and returns valid output
+          expect(inputs._revisionGuidance).toBeDefined();
+          return {
+            high_level_framing: 'Test framing',
+            key_questions: ['Q1'],
+            success_criteria: ['C1'],
+          };
+        },
+      };
+
+      const orchestrator = new PhDPipelineOrchestrator(config, customExecutor);
+      const state = await orchestrator.execute('Test problem');
+
+      expect(state.status).toBe('completed');
+      expect(attemptCount).toBe(2);
+    });
+  });
+
+  describe('Tier 2: Phase Boundary Validation', () => {
+    it('should validate phase completion at phase boundary', async () => {
+      const config: IPipelineConfig = {
+        pipeline: { name: 'Test', version: '1.0.0', description: 'Test', totalAgents: 2, phases: 1 },
+        phases: [{ id: 1, name: 'Test Phase', description: 'Test', agents: [1, 2], objectives: [] }],
+        agents: [
+          { id: 1, key: 'step-back-analyzer', name: 'Step Back', phase: 1, description: 'Test', dependencies: [], inputs: [], outputs: [], timeout: 300 },
+          { id: 2, key: 'assumption-identifier', name: 'Assumption ID', phase: 1, description: 'Test', dependencies: [1], inputs: [], outputs: [], timeout: 300 },
+        ],
+      };
+
+      const orchestrator = new PhDPipelineOrchestrator(config, executor);
+
+      executor.setOutput('step-back-analyzer', {
+        high_level_framing: 'Test',
+        key_questions: ['Q1'],
+        success_criteria: ['C1'],
+      });
+      executor.setOutput('assumption-identifier', {
+        assumptions_list: [],
+        preconditions: [],
+        boundary_conditions: [],
+      });
+
+      const state = await orchestrator.execute('Test problem');
+      expect(state.status).toBe('completed');
+      expect(orchestrator.getValidator().isPhaseComplete(1)).toBe(true);
+    });
+  });
+
+  describe('Validator Access', () => {
+    it('should expose validator through getValidator()', () => {
+      const config: IPipelineConfig = {
+        pipeline: { name: 'Test', version: '1.0.0', description: 'Test', totalAgents: 1, phases: 1 },
+        phases: [{ id: 1, name: 'Test Phase', description: 'Test', agents: [1], objectives: [] }],
+        agents: [{ id: 1, key: 'step-back-analyzer', name: 'Step Back', phase: 1, description: 'Test', dependencies: [], inputs: [], outputs: [], timeout: 300 }],
+      };
+
+      const orchestrator = new PhDPipelineOrchestrator(config, executor);
+      const validator = orchestrator.getValidator();
+
+      expect(validator).toBeDefined();
+      expect(validator.getConfig()).toBeDefined();
+    });
+
+    it('should accept custom validation config', () => {
+      const config: IPipelineConfig = {
+        pipeline: { name: 'Test', version: '1.0.0', description: 'Test', totalAgents: 1, phases: 1 },
+        phases: [{ id: 1, name: 'Test Phase', description: 'Test', agents: [1], objectives: [] }],
+        agents: [{ id: 1, key: 'step-back-analyzer', name: 'Step Back', phase: 1, description: 'Test', dependencies: [], inputs: [], outputs: [], timeout: 300 }],
+      };
+
+      const orchestrator = new PhDPipelineOrchestrator(config, executor, {
+        validationConfig: {
+          tier1MaxRetries: 5,
+          strictMode: true,
+        },
+      });
+
+      const validatorConfig = orchestrator.getValidator().getConfig();
+      expect(validatorConfig.tier1MaxRetries).toBe(5);
+      expect(validatorConfig.strictMode).toBe(true);
+    });
+
+    it('should reset validator state between pipeline runs', async () => {
+      const config: IPipelineConfig = {
+        pipeline: { name: 'Test', version: '1.0.0', description: 'Test', totalAgents: 1, phases: 1 },
+        phases: [{ id: 1, name: 'Test Phase', description: 'Test', agents: [1], objectives: [] }],
+        agents: [{ id: 1, key: 'step-back-analyzer', name: 'Step Back', phase: 1, description: 'Test', dependencies: [], inputs: [], outputs: [], timeout: 300 }],
+      };
+
+      const orchestrator = new PhDPipelineOrchestrator(config, executor);
+      executor.setOutput('step-back-analyzer', {
+        high_level_framing: 'Test',
+        key_questions: ['Q1'],
+        success_criteria: ['C1'],
+      });
+
+      // First run
+      await orchestrator.execute('Test problem 1');
+      expect(orchestrator.getValidator().getAgentOutput('step-back-analyzer')).toBeDefined();
+
+      // Second run should reset validator
+      await orchestrator.execute('Test problem 2');
+      // After second run, we should still have output (from second run)
+      expect(orchestrator.getValidator().getAgentOutput('step-back-analyzer')).toBeDefined();
+    });
   });
 });

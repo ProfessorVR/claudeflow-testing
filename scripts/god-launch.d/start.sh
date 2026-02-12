@@ -158,6 +158,8 @@ start_vllm() {
          --enforce-eager \
          --gpu-memory-utilization ${gpu_mem} \
          --max-model-len ${max_len} \
+         --enable-auto-tool-choice \
+         --tool-call-parser hermes \
          2>&1 | tee '${GOD_LOG_DIR}/vllm.log'; \
          echo '--- vLLM AWQ exited ---'; read" Enter
 
@@ -288,6 +290,7 @@ create_session() {
     tmux new-session -d -s "${GOD_SESSION_NAME}" -n "dashboard" -x 200 -y 50
 
     # Create service windows
+    tmux new-window -t "${GOD_SESSION_NAME}" -n "vllm"
     tmux new-window -t "${GOD_SESSION_NAME}" -n "memory"
     tmux new-window -t "${GOD_SESSION_NAME}" -n "daemon"
     tmux new-window -t "${GOD_SESSION_NAME}" -n "ucm"
@@ -299,7 +302,7 @@ create_session() {
     tmux send-keys -t "${GOD_SESSION_NAME}:shell" "cd '${GOD_PROJECT_DIR}'" Enter
     tmux send-keys -t "${GOD_SESSION_NAME}:shell" "echo 'God Agent Shell - Ready for commands'" Enter
 
-    log_success "Session created with 7 windows"
+    log_success "Session created with 8 windows"
 }
 
 # Main start function

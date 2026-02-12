@@ -556,6 +556,10 @@ export class DaemonServer extends EventEmitter {
         message: `Connection rejected: ${reason}`,
       },
     });
+    // Attach error handler before ending to prevent unhandled ECONNRESET
+    socket.on('error', () => {
+      // Expected during rejection - client may have already closed
+    });
     socket.write(message);
     socket.end();
     this.emitEvent('client_rejected', { reason });

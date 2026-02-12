@@ -6,7 +6,7 @@
  */
 
 import Anthropic from '@anthropic-ai/sdk';
-import type { IWritingGenerator, IWriteRequest, IWriteResult, RegionalTransformationMetadata } from './writing-generator.js';
+import type { IWritingGenerator, IWriteRequest, IWriteResult, RegionalTransformationMetadata, CorpusConstraint, CorpusSource } from './writing-generator.js';
 import type { StyleProfileManager } from '../../universal/style-profile.js';
 import { SpellingTransformer } from '../../universal/spelling-transformer.js';
 import { GrammarTransformer } from '../../universal/grammar-transformer.js';
@@ -199,7 +199,7 @@ export class AnthropicWritingGenerator implements IWritingGenerator {
   }
 
   /**
-   * Build system prompt with style profile integration
+   * Build system prompt with style profile integration and corpus constraint
    */
   private async buildSystemPrompt(request: IWriteRequest): Promise<string> {
     let prompt = `You are a professional writer creating high-quality content.
@@ -220,7 +220,95 @@ Guidelines:
       }
     }
 
+    // PHASE 1: Apply corpus constraint for hallucination prevention
+    if (request.corpusConstraint && request.corpusConstraint.enforcement !== 'off') {
+      prompt += this.buildCorpusConstraintPrompt(request.corpusConstraint);
+    }
+
     return prompt;
+  }
+
+  /**
+   * Build corpus constraint prompt section for hallucination prevention (Phase 1)
+   *
+   * This creates an explicit whitelist of allowed sources that the LLM must use.
+   * Sources not in this list should not be cited.
+   */
+  private buildCorpusConstraintPrompt(constraint: CorpusConstraint): string {
+    if (constraint.sources.length === 0) {
+      return '';
+    }
+
+    const isStrict = constraint.enforcement === 'strict';
+    const placeholder = constraint.missingCitationPlaceholder || '[CITATION NEEDED]';
+
+    // Group sources by type for better organization
+    const primarySources: CorpusSource[] = [];
+    const secondarySources: CorpusSource[] = [];
+
+    for (const source of constraint.sources) {
+      // Heuristic: primary sources are ancient authors or "Being and Time" etc.
+      const isPrimary =
+        source.author.includes('Aristotle') ||
+        source.author.includes('Heidegger') ||
+        source.author.includes('Plato') ||
+        source.title.includes('De Anima') ||
+        source.title.includes('Being and Time') ||
+        source.title.includes('Rhetoric');
+
+      if (isPrimary) {
+        primarySources.push(source);
+      } else {
+        secondarySources.push(source);
+      }
+    }
+
+    let corpusPrompt = `
+
+## CORPUS-ONLY CITATION CONSTRAINT (${isStrict ? 'MANDATORY' : 'RECOMMENDED'})
+
+You may ${isStrict ? 'ONLY' : 'preferably'} cite from the following verified sources:`;
+
+    if (primarySources.length > 0) {
+      corpusPrompt += `
+
+### Primary Sources
+${primarySources.map(s => this.formatSourceEntry(s)).join('\n')}`;
+    }
+
+    if (secondarySources.length > 0) {
+      corpusPrompt += `
+
+### Secondary Scholarship
+${secondarySources.map(s => this.formatSourceEntry(s)).join('\n')}`;
+    }
+
+    corpusPrompt += `
+
+### Citation Rules
+1. ${isStrict ? 'Do NOT invent citations not in this list' : 'Prefer citations from this list'}
+2. ${isStrict ? 'Do NOT fabricate page numbers outside the ranges shown' : 'Use verified page numbers when available'}
+3. Do NOT combine authors who do not co-author in this list
+4. Do NOT cite works by listed authors other than those specified above
+5. If you need a source not listed, write "${placeholder}" instead of fabricating
+
+${isStrict ? 'Violation of these rules constitutes academic misconduct and will result in rejection.' : 'Unverified citations will be flagged for review.'}`;
+
+    return corpusPrompt;
+  }
+
+  /**
+   * Format a single corpus source entry for the constraint prompt
+   */
+  private formatSourceEntry(source: CorpusSource): string {
+    let entry = `- ${source.author} (${source.year}). "${source.title}"`;
+    if (source.pages) {
+      entry += ` [Pages: ${source.pages}]`;
+    }
+    if (source.citationKey) {
+      entry += ` — Cite as: (${source.citationKey})`;
+    }
+    return entry;
   }
 
   /**

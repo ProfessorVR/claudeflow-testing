@@ -122,11 +122,10 @@ describe('TrajectoryStreamManager - Basic Operations', () => {
       expect(existsSync(tempDir)).toBe(true);
     });
 
-    it('should create PID file on initialization', async () => {
+    it('should not create PID file on initialization (MEM-001: handled by MemoryServer)', async () => {
+      // MEM-001: PID file management removed - multi-process access now handled by MemoryServer
       const pidFile = join(tempDir, '.sona.pid');
-      expect(existsSync(pidFile)).toBe(true);
-      const pid = await readFile(pidFile, 'utf-8');
-      expect(parseInt(pid, 10)).toBe(process.pid);
+      expect(existsSync(pidFile)).toBe(false);
     });
   });
 
@@ -293,45 +292,38 @@ describe('TrajectoryStreamManager - Multi-Process Safety (CRITICAL-003)', () => 
   });
 
   describe('AC-MULTI-001: Detect concurrent writer', () => {
-    it('should throw ERR_MULTI_PROCESS when another process is active', async () => {
-      // Process A starts
+    it('should allow multiple managers on same directory (MEM-001: handled by MemoryServer)', async () => {
+      // MEM-001: Multi-process detection removed - now handled by MemoryServer
       const managerA = new TrajectoryStreamManager({
         storageDir: tempDir,
         enabled: true,
       });
       await managerA.initialize();
 
-      // Process B attempts to start (same directory)
+      // Process B attempts to start (same directory) - should succeed now
       const managerB = new TrajectoryStreamManager({
         storageDir: tempDir,
         enabled: true,
       });
 
-      await expect(managerB.initialize()).rejects.toThrow('Multi-process access is not supported');
+      await expect(managerB.initialize()).resolves.not.toThrow();
     });
 
-    it('should include PID in error message', async () => {
-      // Process A starts
+    it('should not throw multi-process errors (MEM-001: handled by MemoryServer)', async () => {
+      // MEM-001: Multi-process detection removed - now handled by MemoryServer
       const managerA = new TrajectoryStreamManager({
         storageDir: tempDir,
         enabled: true,
       });
       await managerA.initialize();
 
-      // Process B attempts to start
       const managerB = new TrajectoryStreamManager({
         storageDir: tempDir,
         enabled: true,
       });
 
-      try {
-        await managerB.initialize();
-        expect.fail('Should have thrown ERR_MULTI_PROCESS');
-      } catch (error: any) {
-        expect(error.name).toBe('ERR_MULTI_PROCESS');
-        expect(error.message).toContain(`PID ${process.pid}`);
-        expect(error.message).toContain('storage directory');
-      }
+      // Should NOT throw - multi-process safety is now at MemoryServer level
+      await expect(managerB.initialize()).resolves.not.toThrow();
     });
   });
 
@@ -387,13 +379,13 @@ describe('TrajectoryStreamManager - Multi-Process Safety (CRITICAL-003)', () => 
   });
 
   describe('AC-MULTI-003: Clean up stale PID file', () => {
-    it('should clean up stale PID file from dead process', async () => {
-      // Create stale PID file with non-existent PID
+    it('should ignore stale PID file from dead process (MEM-001: handled by MemoryServer)', async () => {
+      // MEM-001: PID file management removed - stale PID files are simply ignored
       const pidFile = join(tempDir, '.sona.pid');
       await mkdir(tempDir, { recursive: true });
       await writeFile(pidFile, '99999');
 
-      // New instance should clean up and start
+      // New instance should initialize successfully (ignores PID file)
       const manager = new TrajectoryStreamManager({
         storageDir: tempDir,
         enabled: true,
@@ -401,9 +393,9 @@ describe('TrajectoryStreamManager - Multi-Process Safety (CRITICAL-003)', () => 
 
       await expect(manager.initialize()).resolves.not.toThrow();
 
-      // Verify new PID file
-      const newPid = await readFile(pidFile, 'utf-8');
-      expect(parseInt(newPid, 10)).toBe(process.pid);
+      // PID file should remain unchanged (manager no longer manages PID files)
+      const existingPid = await readFile(pidFile, 'utf-8');
+      expect(parseInt(existingPid, 10)).toBe(99999);
     });
 
     it('should log when cleaning up stale PID file', async () => {

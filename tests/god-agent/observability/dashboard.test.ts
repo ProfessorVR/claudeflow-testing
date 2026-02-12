@@ -28,12 +28,14 @@ describe('OBS-010: Dashboard UI', () => {
 
     describe('TC-010-01: HTML Structure Validation', () => {
         it('should have all required panels', () => {
+            // Dashboard now uses panel classes within tab structure
             expect(document.querySelector('.activity-panel')).toBeTruthy();
             expect(document.querySelector('.agents-panel')).toBeTruthy();
             expect(document.querySelector('.pipelines-panel')).toBeTruthy();
             expect(document.querySelector('.routing-panel')).toBeTruthy();
             expect(document.querySelector('.learning-panel')).toBeTruthy();
-            expect(document.querySelector('.memory-panel')).toBeTruthy();
+            // Memory panel is now a tab containing memory-tabs
+            expect(document.querySelector('.memory-tabs')).toBeTruthy();
         });
 
         it('should have connection status indicator', () => {
@@ -46,6 +48,7 @@ describe('OBS-010: Dashboard UI', () => {
         });
 
         it('should have filter controls', () => {
+            // Filter controls are now in the activity panel
             const componentFilter = document.getElementById('componentFilter');
             const statusFilter = document.getElementById('statusFilter');
 
@@ -60,14 +63,15 @@ describe('OBS-010: Dashboard UI', () => {
             expect(html).toContain('cdn.jsdelivr.net');
         });
 
-        it('should have Chart.js canvas', () => {
-            const canvas = document.getElementById('qualityChart');
-            expect(canvas).toBeTruthy();
-            expect(canvas.tagName).toBe('CANVAS');
+        it('should have Chart.js canvas elements', () => {
+            // Dashboard now has multiple charts with different IDs
+            const charts = document.querySelectorAll('canvas');
+            expect(charts.length).toBeGreaterThan(0);
         });
 
         it('should have memory inspector tabs', () => {
-            const tabs = document.querySelectorAll('.tab-button');
+            // Memory tabs now use .memory-tab class instead of .tab-button
+            const tabs = document.querySelectorAll('.memory-tab');
             expect(tabs.length).toBeGreaterThanOrEqual(2);
 
             const hasInteractionStore = Array.from(tabs).some((tab: any) =>
@@ -130,7 +134,7 @@ describe('OBS-010: Dashboard UI', () => {
 
     describe('TC-010-02: SSE Event Handling Structure', () => {
         it('should reference app.js script', () => {
-            const script = document.querySelector('script[src="app.js"]');
+            const script = document.querySelector('script[src^="app.js"]');
             expect(script).toBeTruthy();
         });
 
@@ -177,26 +181,27 @@ describe('OBS-010: Dashboard UI', () => {
     });
 
     describe('TC-010-05: Chart Initialization Structure', () => {
-        it('should have quality chart canvas with ID', () => {
-            const canvas = document.getElementById('qualityChart');
-            expect(canvas).toBeTruthy();
-            expect(canvas.tagName).toBe('CANVAS');
+        it('should have chart canvas elements', () => {
+            // Dashboard now has multiple chart canvases with different IDs
+            const canvases = document.querySelectorAll('canvas');
+            expect(canvases.length).toBeGreaterThan(0);
         });
 
-        it('should have metrics summary container', () => {
-            const summary = document.getElementById('metricsSummary');
+        it('should have summary panel', () => {
+            // Summary panel now uses .summary-panel class
+            const summary = document.querySelector('.summary-panel');
             expect(summary).toBeTruthy();
-            expect(summary.classList.contains('metrics-summary')).toBe(true);
         });
 
-        it('should have pattern count display', () => {
-            const patternCount = document.getElementById('patternCount');
-            expect(patternCount).toBeTruthy();
+        it('should have main navigation tabs', () => {
+            // Dashboard now uses main-tab navigation
+            const tabs = document.querySelectorAll('.main-tab');
+            expect(tabs.length).toBeGreaterThanOrEqual(5);
         });
 
-        it('should have avg quality display', () => {
-            const avgQuality = document.getElementById('avgQuality');
-            expect(avgQuality).toBeTruthy();
+        it('should have refresh button', () => {
+            const refreshBtn = document.getElementById('refreshBtn');
+            expect(refreshBtn).toBeTruthy();
         });
     });
 

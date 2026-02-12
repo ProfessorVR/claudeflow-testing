@@ -96,8 +96,6 @@ def print_ru(ru, detailed: bool = False):
 
 def cmd_list_kus(args, loader: ArtifactLoader):
     """List knowledge units with filters."""
-    print_header("Knowledge Units")
-
     # Apply filters
     kus = loader.filter_kus(
         query=args.query,
@@ -105,6 +103,23 @@ def cmd_list_kus(args, loader: ArtifactLoader):
         min_sources=args.min_sources,
         tags=args.tags.split(',') if args.tags else None
     )
+
+    # JSON output mode
+    if args.json:
+        output = [
+            {
+                "id": ku.id,
+                "claim": ku.claim,
+                "query": ku.created_from_query,
+                "confidence": ku.confidence,
+                "source_count": len(ku.sources)
+            }
+            for ku in (kus[:args.limit] if args.limit else kus)
+        ]
+        print(json.dumps(output))
+        return
+
+    print_header("Knowledge Units")
 
     if not kus:
         print(f"{Colors.YELLOW}No knowledge units found matching filters.{Colors.END}")
@@ -120,31 +135,33 @@ def cmd_list_kus(args, loader: ArtifactLoader):
     for ku in kus:
         print_ku(ku, detailed=args.detailed)
 
-    if args.json:
-        output = [
-            {
-                "id": ku.id,
-                "claim": ku.claim,
-                "query": ku.created_from_query,
-                "confidence": ku.confidence,
-                "source_count": len(ku.sources)
-            }
-            for ku in kus
-        ]
-        print(f"\n{Colors.BOLD}JSON Output:{Colors.END}")
-        print(json.dumps(output, indent=2))
-
 
 def cmd_list_rus(args, loader: ArtifactLoader):
     """List reasoning units with filters."""
-    print_header("Reasoning Units")
-
     # Apply filters
     rus = loader.filter_rus(
         relation=args.relation,
         min_score=args.min_score,
         topic=args.topic
     )
+
+    # JSON output mode
+    if args.json:
+        output = [
+            {
+                "id": ru.reason_id,
+                "relation": ru.relation,
+                "score": ru.score,
+                "topic": ru.topic,
+                "knowledge_ids": ru.knowledge_ids,
+                "rationale": ru.llm.get('rationale', '')
+            }
+            for ru in (rus[:args.limit] if args.limit else rus)
+        ]
+        print(json.dumps(output))
+        return
+
+    print_header("Reasoning Units")
 
     if not rus:
         print(f"{Colors.YELLOW}No reasoning units found matching filters.{Colors.END}")
@@ -300,13 +317,32 @@ def cmd_graph(args, loader: ArtifactLoader):
 
 def cmd_stats(args, loader: ArtifactLoader):
     """Show artifact statistics."""
-    print_header("Artifact Statistics")
-
     stats = loader.get_stats()
 
     if "error" in stats:
-        print(f"{Colors.RED}{stats['error']}{Colors.END}")
+        if args.json:
+            print(json.dumps({"error": stats['error']}))
+        else:
+            print(f"{Colors.RED}{stats['error']}{Colors.END}")
         return
+
+    # JSON output mode
+    if args.json:
+        output = {
+            "total_kus": stats['knowledge_units']['total'],
+            "total_rus": stats['reasoning_units']['total'],
+            "total_sources": stats['knowledge_units']['total_sources'],
+            "avg_sources_per_ku": stats['knowledge_units']['avg_sources_per_ku'],
+            "unique_queries": stats['knowledge_units']['unique_queries'],
+            "unique_documents": stats['knowledge_units']['unique_documents'],
+            "unique_chunks": stats['knowledge_units']['unique_chunks'],
+            "ru_by_relation": stats['reasoning_units'].get('by_relation', {}),
+            "avg_confidence": stats['knowledge_units'].get('avg_confidence', 0)
+        }
+        print(json.dumps(output))
+        return
+
+    print_header("Artifact Statistics")
 
     # Knowledge Units
     ku_stats = stats['knowledge_units']
@@ -397,6 +433,9 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__
     )
+
+    # Global --json flag for machine-readable output
+    parser.add_argument('--json', action='store_true', help='Output as JSON (machine-readable)')
 
     subparsers = parser.add_subparsers(dest='command', help='Command to run')
 

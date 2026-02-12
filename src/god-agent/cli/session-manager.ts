@@ -16,8 +16,13 @@ import type {
   PromotedKU,
   LLMCallEntry,
   LLMCallPurpose,
-  LLMUsageStats
+  LLMUsageStats,
+  DissertationCorpusContext,
+  UserSatisfactionRating,
+  SatisfactionScore,
+  SatisfactionStats,
 } from './cli-types.js';
+import { getDissertationCorpusManager } from './dissertation/dissertation-corpus-manager.js';
 
 // Re-export QueryIntent for consumers that import from session-manager
 export type { QueryIntent } from './cli-types.js';
@@ -56,6 +61,33 @@ createSession(
 
     const now = Date.now();
 
+    // Read corpus selection from dashboard state if exists
+    let selectedCorpus: string | undefined;
+    let corpusFilterActive = false;
+
+    try {
+      const corpusSelectionPath = path.join(process.cwd(), '.god-agent', 'corpus-selection.json');
+      const fs = require('fs');
+      if (fs.existsSync(corpusSelectionPath)) {
+        const data = fs.readFileSync(corpusSelectionPath, 'utf-8');
+        const selection = JSON.parse(data);
+        if (selection?.corpus) {
+          selectedCorpus = selection.corpus;
+          corpusFilterActive = true;
+        }
+      }
+    } catch (error) {
+      // Silently ignore if corpus selection file doesn't exist or is invalid
+    }
+
+    // Get dissertation corpus context
+    let dissertationCorpus: DissertationCorpusContext | undefined;
+    try {
+      dissertationCorpus = getDissertationCorpusContext();
+    } catch {
+      // Silently ignore if dissertation corpus doesn't exist
+    }
+
     return {
       sessionId,
       pipelineId,
@@ -69,7 +101,10 @@ createSession(
       agentOutputs: {},
       startTime: now,
       lastActivityTime: now,
-      errors: []
+      errors: [],
+      selectedCorpus,
+      corpusFilterActive,
+      dissertationCorpus
     };
   }
 
@@ -1013,4 +1048,227 @@ export function validateLLMBoundaries(session: PipelineSession): {
     isValid: violations.length === 0,
     violations
   };
+}
+
+// ============================================================================
+// Dissertation Corpus Context Integration
+// ============================================================================
+
+/**
+ * Get current dissertation corpus context for a session.
+ * Scans the corpus/dissertation folder and returns context information.
+ *
+ * @param projectRoot - Project root directory (defaults to cwd)
+ * @returns DissertationCorpusContext with current state
+ */
+export function getDissertationCorpusContext(
+  projectRoot?: string
+): DissertationCorpusContext {
+  try {
+    const manager = getDissertationCorpusManager(projectRoot);
+    const agentContext = manager.getAgentContext();
+    const stats = manager.getStats();
+
+    return {
+      inProgressSummary: agentContext.inProgressSummary,
+      finalizedSummary: agentContext.finalizedSummary,
+      availableChapters: agentContext.availableChapters,
+      recommendation: agentContext.recommendation,
+      inProgressCount: stats.inProgressCount,
+      finalizedCount: stats.finalizedCount,
+      lastActivity: stats.lastActivity?.toISOString()
+    };
+  } catch (error) {
+    // Return empty context if corpus manager fails (e.g., directory doesn't exist)
+    return {
+      inProgressSummary: 'None',
+      finalizedSummary: 'None',
+      availableChapters: [],
+      recommendation: 'Dissertation corpus not initialized. Create corpus/dissertation/ with in_progress/ and finalized/ subfolders.',
+      inProgressCount: 0,
+      finalizedCount: 0
+    };
+  }
+}
+
+/**
+ * Update dissertation corpus context on a session.
+ * Called to refresh the context with latest corpus state.
+ *
+ * @param session - The pipeline session to update
+ * @param projectRoot - Project root directory (optional)
+ * @returns The updated session
+ */
+export function updateDissertationCorpusContext(
+  session: PipelineSession,
+  projectRoot?: string
+): PipelineSession {
+  session.dissertationCorpus = getDissertationCorpusContext(projectRoot);
+  return session;
+}
+
+/**
+ * Format dissertation corpus context for agent prompt injection.
+ *
+ * @param context - The dissertation corpus context
+ * @returns Formatted markdown string for prompt injection
+ */
+export function formatDissertationCorpusForPrompt(
+  context: DissertationCorpusContext | undefined
+): string {
+  if (!context) {
+    return '';
+  }
+
+  const lines = [
+    '',
+    '---',
+    '## DISSERTATION CORPUS STATE',
+    '',
+    '### In Progress (corpus/dissertation/in_progress/)',
+    context.inProgressSummary || 'No items',
+    '',
+    '### Finalized (corpus/dissertation/finalized/)',
+    context.finalizedSummary || 'No items',
+    '',
+    `**Available Chapters:** ${context.availableChapters.length > 0 ? context.availableChapters.join(', ') : 'None'}`,
+    `**In Progress Count:** ${context.inProgressCount}`,
+    `**Finalized Count:** ${context.finalizedCount}`,
+    '',
+    `**Recommendation:** ${context.recommendation}`,
+    ''
+  ];
+
+  if (context.lastActivity) {
+    lines.push(`**Last Activity:** ${context.lastActivity}`);
+    lines.push('');
+  }
+
+  return lines.join('\n');
+}
+
+// ============================================================================
+// PHASE-3: User Satisfaction Collection
+// ============================================================================
+
+/**
+ * Store user satisfaction rating for a chapter.
+ * PHASE-3-001: User Rating Interface
+ *
+ * @param session - The pipeline session
+ * @param chapterId - Chapter ID
+ * @param soundsLikeMeScore - 1-5 "sounds like me" score
+ * @param qualitySatisfactionScore - 1-5 quality satisfaction score
+ * @param wouldUseAsIs - Would use chapter as-is
+ * @param feedback - Optional free-text feedback
+ * @returns Updated session
+ */
+export function addUserSatisfactionRating(
+  session: PipelineSession,
+  chapterId: number,
+  soundsLikeMeScore: SatisfactionScore,
+  qualitySatisfactionScore: SatisfactionScore,
+  wouldUseAsIs: boolean,
+  feedback?: string
+): PipelineSession {
+  const rating: UserSatisfactionRating = {
+    chapterId,
+    soundsLikeMeScore,
+    qualitySatisfactionScore,
+    wouldUseAsIs,
+    feedback,
+    timestamp: new Date().toISOString(),
+  };
+
+  // Initialize userRatings if not present
+  if (!session.userRatings) {
+    session.userRatings = {};
+  }
+
+  session.userRatings[chapterId] = rating;
+  return session;
+}
+
+/**
+ * Get user satisfaction rating for a chapter.
+ *
+ * @param session - The pipeline session
+ * @param chapterId - Chapter ID
+ * @returns The rating or undefined if not rated
+ */
+export function getUserSatisfactionRating(
+  session: PipelineSession,
+  chapterId: number
+): UserSatisfactionRating | undefined {
+  return session.userRatings?.[chapterId];
+}
+
+/**
+ * Get all user satisfaction ratings for a session.
+ *
+ * @param session - The pipeline session
+ * @returns Array of all ratings
+ */
+export function getAllUserSatisfactionRatings(
+  session: PipelineSession
+): UserSatisfactionRating[] {
+  if (!session.userRatings) {
+    return [];
+  }
+  return Object.values(session.userRatings);
+}
+
+/**
+ * Calculate user satisfaction statistics for a session.
+ * PHASE-3-001: User Rating Interface
+ *
+ * @param session - The pipeline session
+ * @returns Satisfaction statistics
+ */
+export function calculateSatisfactionStats(
+  session: PipelineSession
+): SatisfactionStats {
+  const ratings = getAllUserSatisfactionRatings(session);
+
+  if (ratings.length === 0) {
+    return {
+      totalRatings: 0,
+      avgSoundsLikeMeScore: 0,
+      avgQualitySatisfactionScore: 0,
+      wouldUseAsIsPercentage: 0,
+      chaptersRated: [],
+    };
+  }
+
+  const soundsLikeSum = ratings.reduce((sum, r) => sum + r.soundsLikeMeScore, 0);
+  const qualitySum = ratings.reduce((sum, r) => sum + r.qualitySatisfactionScore, 0);
+  const useAsIsCount = ratings.filter(r => r.wouldUseAsIs).length;
+
+  return {
+    totalRatings: ratings.length,
+    avgSoundsLikeMeScore: soundsLikeSum / ratings.length,
+    avgQualitySatisfactionScore: qualitySum / ratings.length,
+    wouldUseAsIsPercentage: (useAsIsCount / ratings.length) * 100,
+    chaptersRated: ratings.map(r => r.chapterId),
+  };
+}
+
+/**
+ * Format satisfaction stats for display.
+ *
+ * @param stats - The satisfaction statistics
+ * @returns Formatted string
+ */
+export function formatSatisfactionStats(stats: SatisfactionStats): string {
+  if (stats.totalRatings === 0) {
+    return 'No user satisfaction ratings collected yet.';
+  }
+
+  return [
+    `User Satisfaction Summary (${stats.totalRatings} ratings):`,
+    `  "Sounds Like Me" avg: ${stats.avgSoundsLikeMeScore.toFixed(2)}/5`,
+    `  Quality Satisfaction avg: ${stats.avgQualitySatisfactionScore.toFixed(2)}/5`,
+    `  Would Use As-Is: ${stats.wouldUseAsIsPercentage.toFixed(1)}%`,
+    `  Chapters Rated: ${stats.chaptersRated.join(', ')}`,
+  ].join('\n');
 }

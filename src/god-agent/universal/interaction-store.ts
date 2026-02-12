@@ -182,6 +182,7 @@ export class InteractionStore {
       metadata: {
         entryId: entry.id,
         domain: entry.domain,
+        category: entry.category,
         type: entry.type,
         tags: entry.tags || [],
         contentLength: entry.content.length,

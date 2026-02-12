@@ -274,7 +274,8 @@ export class ExploreBridge {
    */
   private async execute<T>(args: string[]): Promise<T> {
     return new Promise((resolve, reject) => {
-      const fullArgs = ['-m', 'scripts.explore.cli.god_explore', ...args, '--json'];
+      // --json must come BEFORE subcommand for argparse global flags
+      const fullArgs = ['-m', 'scripts.explore.cli.god_explore', '--json', ...args];
 
       const proc = spawn(this.pythonPath, fullArgs, {
         cwd: this.projectRoot,

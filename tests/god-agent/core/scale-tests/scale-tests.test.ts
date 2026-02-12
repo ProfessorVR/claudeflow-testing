@@ -315,10 +315,10 @@ describe('RateLimiter', () => {
 describe('VectorScaleTest', () => {
   describe('vector generation', () => {
     it('should generate normalized vectors', () => {
-      const vectors = generateNormalizedVectors(10, 768);
+      const vectors = generateNormalizedVectors(10, 1536);
 
       expect(vectors.length).toBe(10);
-      expect(vectors[0].length).toBe(768);
+      expect(vectors[0].length).toBe(1536);
 
       // Check normalization (magnitude should be ~1)
       const v = vectors[0];
@@ -369,7 +369,7 @@ describe('VectorScaleTest', () => {
 
   describe('default config', () => {
     it('should have sensible defaults', () => {
-      expect(DEFAULT_VECTOR_SCALE_CONFIG.dimensions).toBe(768);
+      expect(DEFAULT_VECTOR_SCALE_CONFIG.dimensions).toBe(1536);
       expect(DEFAULT_VECTOR_SCALE_CONFIG.scalePoints).toContain(1000000);
       expect(DEFAULT_VECTOR_SCALE_CONFIG.compressionEnabled).toBe(true);
     });

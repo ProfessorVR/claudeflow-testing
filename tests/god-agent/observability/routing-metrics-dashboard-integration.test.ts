@@ -93,6 +93,11 @@ describe('Dashboard Routing Metrics Integration Tests', () => {
     resetRoutingMetrics();
   });
 
+  afterEach(() => {
+    // Reset metrics after each test to prevent interference with other test files
+    resetRoutingMetrics();
+  });
+
   describe('TEST 1: API Endpoint Availability', () => {
     it('should have /api/health endpoint responding correctly', async () => {
       const start = Date.now();

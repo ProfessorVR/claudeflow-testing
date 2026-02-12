@@ -23,6 +23,14 @@ import {
   ClientRejectionReason,
   isDaemonError,
 } from '../../../../src/god-agent/core/daemon/daemon-types.js';
+import {
+  _resetHookRegistryForTesting,
+  _resetHookExecutorForTesting,
+  _resetAutoInjectionForTesting,
+  _clearQualityAssessmentCallbackForTesting,
+  _clearCapturedResultsForTesting,
+  _clearLearningFeedbackCallbackForTesting,
+} from '../../../../src/god-agent/core/hooks/index.js';
 
 // Use unique socket paths for parallel test execution
 const TEST_SOCKET_PATH = `/tmp/godagent-test-${process.pid}.sock`;
@@ -39,6 +47,17 @@ describe('DaemonServer', () => {
     if (server.getState() === 'running' || server.getState() === 'stopping') {
       await server.stop();
     }
+
+    // Reset all hook-related singletons so subsequent tests can re-register hooks.
+    // The HookRegistry singleton enforces CONSTITUTION RULE-032 which prevents
+    // registering hooks after initialization. Without this reset, any test that
+    // calls server.start() will poison the singleton for all later tests.
+    _resetHookRegistryForTesting();
+    _resetHookExecutorForTesting();
+    _resetAutoInjectionForTesting();
+    _clearQualityAssessmentCallbackForTesting();
+    _clearCapturedResultsForTesting();
+    _clearLearningFeedbackCallbackForTesting();
   });
 
   describe('constructor', () => {
@@ -100,7 +119,7 @@ describe('DaemonServer', () => {
       expect(startHandler).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'start',
-          data: { socketPath: TEST_SOCKET_PATH },
+          data: expect.objectContaining({ socketPath: TEST_SOCKET_PATH }),
         })
       );
     });
@@ -132,6 +151,14 @@ describe('DaemonServer', () => {
       // Start and stop to create file
       await server.start();
       await server.stop();
+
+      // Reset hook singletons so the new server can re-register hooks
+      _resetHookRegistryForTesting();
+      _resetHookExecutorForTesting();
+      _resetAutoInjectionForTesting();
+      _clearQualityAssessmentCallbackForTesting();
+      _clearCapturedResultsForTesting();
+      _clearLearningFeedbackCallbackForTesting();
 
       // Create new server with same path
       const newServer = new DaemonServer(TEST_SOCKET_PATH);
@@ -226,9 +253,11 @@ describe('DaemonServer', () => {
       const rejectHandler = vi.fn();
       maxServer.on('client_rejected', rejectHandler);
 
-      // Connect max clients
+      // Connect max clients (add error handlers to prevent unhandled ECONNRESET)
       const client1 = await connectClient(TEST_SOCKET_PATH);
+      client1.on('error', () => { /* expected during cleanup */ });
       const client2 = await connectClient(TEST_SOCKET_PATH);
+      client2.on('error', () => { /* expected during cleanup */ });
       await waitFor(() => maxServer.getStats().activeConnections >= 2);
 
       // Try to connect one more - use connectClientWithErrorHandling for rejection

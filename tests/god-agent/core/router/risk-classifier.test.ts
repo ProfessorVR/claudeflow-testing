@@ -275,8 +275,9 @@ describe('RiskClassifier', () => {
         },
       });
 
-      expect(lowSuccessAssessment.riskLevel).toBe('high');
-      expect(lowSuccessAssessment.signals.some(s => s.includes('historical_failure'))).toBe(true);
+      // Local-first strategy is more aggressive - 50% success rate is now medium risk
+      expect(lowSuccessAssessment.riskLevel).toBe('medium');
+      expect(lowSuccessAssessment.signals.some(s => s.includes('historical_success'))).toBe(true);
     });
 
     it('should require minimum samples for historical routing', () => {
@@ -589,10 +590,11 @@ describe('Routing Philosophy', () => {
     expect(assessment.feedbackSpeed).toBe('slow');
   });
 
-  it('should route simple refactoring to local with review', () => {
+  it('should route simple refactoring to local (local-first strategy)', () => {
     const assessment = assessTaskRisk('Extract this method into a separate function');
 
-    expect(assessment.recommendedRoute).toBe('local_then_review');
+    // Local-first strategy routes low-risk refactoring to pure local
+    expect(assessment.recommendedRoute).toBe('local');
   });
 
   it('should route security code to expensive', () => {
@@ -637,10 +639,11 @@ describe('Edge Cases', () => {
     expect(assessment.riskLevel).toBeDefined();
   });
 
-  it('should default to medium risk with review for ambiguous prompts', () => {
+  it('should default to local for ambiguous prompts (local-first strategy)', () => {
     const assessment = assessTaskRisk('Do something with the code');
 
-    expect(assessment.recommendedRoute).toBe('local_then_review');
+    // Local-first strategy routes ambiguous prompts to pure local
+    expect(assessment.recommendedRoute).toBe('local');
   });
 });
 
