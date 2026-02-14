@@ -231,19 +231,100 @@ export function createICPRouter(): Router {
   /**
    * GET /api/icp/corpus-folders — List available corpus subfolders
    */
-  router.get('/corpus-folders', (_req: Request, res: Response) => {
+  router.get('/corpus-folders', async (_req: Request, res: Response) => {
     try {
-      const corpusDir = path.join(process.cwd(), 'corpus');
-      if (!fs.existsSync(corpusDir)) {
-        res.json({ folders: [] });
-        return;
+      const chromaUrl = process.env.CHROMA_URL || 'http://localhost:8001';
+      const folders = new Set<string>();
+
+      try {
+        const colResp = await fetch(
+          `${chromaUrl}/api/v2/tenants/default_tenant/databases/default_database/collections`,
+          { signal: AbortSignal.timeout(5000) },
+        );
+        if (!colResp.ok) throw new Error(`Collections list: HTTP ${colResp.status}`);
+        const collections = await colResp.json() as Array<{ id: string; name: string }>;
+        const kc = collections.find(c => c.name === 'knowledge_chunks');
+        if (!kc) throw new Error('knowledge_chunks collection not found');
+
+        // Sample first 200 chunks for collection metadata
+        const getResp = await fetch(
+          `${chromaUrl}/api/v2/tenants/default_tenant/databases/default_database/collections/${kc.id}/get`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ limit: 200, include: ['metadatas'] }),
+            signal: AbortSignal.timeout(10000),
+          },
+        );
+        if (!getResp.ok) throw new Error(`Get metadatas: HTTP ${getResp.status}`);
+        const data = await getResp.json() as { metadatas?: Array<Record<string, unknown>> };
+        for (const meta of data.metadatas || []) {
+          if (meta?.collection && typeof meta.collection === 'string') {
+            folders.add(meta.collection);
+          }
+        }
+
+        // Collections are clustered — sample the tail too if only 1 found
+        if (folders.size <= 1) {
+          const countResp = await fetch(
+            `${chromaUrl}/api/v2/tenants/default_tenant/databases/default_database/collections/${kc.id}/count`,
+            { signal: AbortSignal.timeout(5000) },
+          );
+          if (countResp.ok) {
+            const total = await countResp.json() as number;
+            if (total > 200) {
+              const tailResp = await fetch(
+                `${chromaUrl}/api/v2/tenants/default_tenant/databases/default_database/collections/${kc.id}/get`,
+                {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ limit: 200, offset: Math.max(0, total - 200), include: ['metadatas'] }),
+                  signal: AbortSignal.timeout(10000),
+                },
+              );
+              if (tailResp.ok) {
+                const tailData = await tailResp.json() as { metadatas?: Array<Record<string, unknown>> };
+                for (const meta of tailData.metadatas || []) {
+                  if (meta?.collection && typeof meta.collection === 'string') {
+                    folders.add(meta.collection);
+                  }
+                }
+              }
+              // Also sample middle
+              if (folders.size <= 2 && total > 600) {
+                const midResp = await fetch(
+                  `${chromaUrl}/api/v2/tenants/default_tenant/databases/default_database/collections/${kc.id}/get`,
+                  {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ limit: 200, offset: Math.floor(total / 2), include: ['metadatas'] }),
+                    signal: AbortSignal.timeout(10000),
+                  },
+                );
+                if (midResp.ok) {
+                  const midData = await midResp.json() as { metadatas?: Array<Record<string, unknown>> };
+                  for (const meta of midData.metadatas || []) {
+                    if (meta?.collection && typeof meta.collection === 'string') {
+                      folders.add(meta.collection);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (chromaErr: any) {
+        log.warn('ChromaDB corpus folder discovery failed, falling back to filesystem', { error: chromaErr.message });
+        const corpusDir = path.join(process.cwd(), 'corpus');
+        if (fs.existsSync(corpusDir)) {
+          const entries = fs.readdirSync(corpusDir, { withFileTypes: true });
+          for (const e of entries) {
+            if (e.isDirectory()) folders.add(e.name);
+          }
+        }
       }
-      const entries = fs.readdirSync(corpusDir, { withFileTypes: true });
-      const folders = entries
-        .filter(e => e.isDirectory())
-        .map(e => e.name)
-        .sort();
-      res.json({ folders });
+
+      res.json({ folders: [...folders].sort() });
     } catch (error: any) {
       log.error('Failed to list corpus folders', error);
       res.status(500).json({ error: 'Failed to list corpus folders', details: error.message });
