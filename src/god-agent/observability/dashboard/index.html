@@ -30,6 +30,7 @@
             <button class="main-tab" data-tab="phd-pipeline">PhD Pipeline</button>
             <button class="main-tab" data-tab="god-write">God Write</button>
             <button class="main-tab" data-tab="claim-map">Claim Map</button>
+            <button class="main-tab" data-tab="icp">ICP Pipeline</button>
         </nav>
         <div class="header-right">
             <button class="refresh-btn" id="refreshBtn" title="Refresh current tab (Ctrl+R)">&#8635;</button>
@@ -1980,6 +1981,11 @@
                 </div>
             </div>
 
+            <!-- ICP Pipeline Tab -->
+            <div class="tab-panel" id="icp-tab">
+                <div id="icp-container"></div>
+            </div>
+
         </main>
     </div>
 
@@ -2015,6 +2021,7 @@
     <!-- Toast Notifications Container -->
     <div id="toastContainer" class="toast-container"></div>
 
+    <script src="icp-panel.js"></script>
     <script src="app.js?v=20260210a"></script>
 </body>
 </html>

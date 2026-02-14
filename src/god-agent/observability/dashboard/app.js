@@ -244,6 +244,9 @@ class DashboardApp {
                 case 'claim-map':
                     await this.loadClaimMapData();
                     break;
+                case 'icp':
+                    this.loadICPPanel();
+                    break;
             }
 
             // Mark tab as loaded
@@ -6064,6 +6067,16 @@ class DashboardApp {
     /**
      * Load claim map tab data
      */
+    loadICPPanel() {
+        const container = document.getElementById('icp-container');
+        if (container && typeof initICPPanel === 'function') {
+            if (!container.dataset.initialized) {
+                initICPPanel(container);
+                container.dataset.initialized = 'true';
+            }
+        }
+    }
+
     async loadClaimMapData() {
         this.cmBindEvents();
         await Promise.all([

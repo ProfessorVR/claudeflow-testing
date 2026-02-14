@@ -53,6 +53,9 @@ import {
   type GraphOptions,
 } from './explore-bridge.js';
 
+// ICP Pipeline routes
+import { createICPRouter } from './icp-api-routes.js';
+
 // Service logger for express server
 const log = createServiceLogger('observe-server');
 
@@ -339,6 +342,9 @@ export class ExpressServer implements IExpressServer {
     // 1. Serve static dashboard files (no caching in dev to avoid stale JS)
     app.use(express.static(dashboardPath, { etag: false, lastModified: false, setHeaders: (res) => { res.setHeader('Cache-Control', 'no-store'); } }));
     app.get('/', this.serveDashboard.bind(this));
+
+    // 1b. ICP Pipeline API routes
+    app.use('/api/icp', createICPRouter());
 
     // 2. SSE event stream
     app.get('/api/stream', this.handleSSE.bind(this));
