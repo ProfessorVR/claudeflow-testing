@@ -32,8 +32,13 @@ if (existsSync(envPath)) {
     if (eqIdx === -1) continue;
     const key = trimmed.slice(0, eqIdx).trim();
     const val = trimmed.slice(eqIdx + 1).trim().replace(/^["']|["']$/g, '');
-    // Only override if env var is unset OR shorter than .env value (truncated key)
-    if (!process.env[key] || process.env[key]!.length < val.length) {
+    // Only override ANTHROPIC_API_KEY if env var is shorter (truncated key fix).
+    // For all other vars, only set if not already present.
+    if (key === 'ANTHROPIC_API_KEY') {
+      if (!process.env[key] || process.env[key]!.length < val.length) {
+        process.env[key] = val;
+      }
+    } else if (!process.env[key]) {
       process.env[key] = val;
     }
   }
@@ -1392,11 +1397,18 @@ async function main() {
         const styleProfileId = getFlag(flags, 'style-profile', 'p') as string | undefined;
 
         // Parse corpus options (Phase 3 RAG integration)
+        // Whitelist mode: source constraint from manifest, no chunk injection (gold standard approach)
+        const whitelistMode = getFlag(flags, 'whitelist') === true || getFlag(flags, 'w') === true;
         const useCorpus = getFlag(flags, 'use-corpus') === true;
         const corpusCollectionsStr = getFlag(flags, 'corpus-collections') as string | undefined;
         const corpusCollections = corpusCollectionsStr ? corpusCollectionsStr.split(',').map(s => s.trim()) : undefined;
-        const corpusChunkCount = parseInt(getFlag(flags, 'corpus-chunk-count') as string || '15');
-        const corpusMinRelevance = parseFloat(getFlag(flags, 'corpus-min-relevance') as string || '0.75');
+        const corpusChunkCountStr = getFlag(flags, 'corpus-chunk-count') as string | undefined;
+        // Gold standard mode: 28 chunks (matches original gold standard prompt's 28 chunks).
+        // Fewer chunks = shorter prompt = more output tokens for the LLM.
+        const corpusChunkCount = corpusChunkCountStr
+          ? parseInt(corpusChunkCountStr)
+          : (whitelistMode ? 28 : 15);
+        const corpusMinRelevance = parseFloat(getFlag(flags, 'corpus-min-relevance') as string || '0.35');
 
         // Parse endnote options (requires --use-corpus)
         const enableEndnotes = getFlag(flags, 'enable-endnotes') === true;
@@ -1436,6 +1448,11 @@ async function main() {
         const citationMinPassRate = parseFloat(getFlag(flags, 'citation-min-pass-rate') as string || '0.85');
         const citationMaxHallucinations = parseInt(getFlag(flags, 'citation-max-hallucinations') as string || '3');
 
+        // Multi-step drafting flags (dissertation_strict mode)
+        const multiStep = getFlag(flags, 'multi-step') === true;
+        const nliVerify = getFlag(flags, 'nli-verify') === true;
+        const candidateSelection = getFlag(flags, 'candidate-selection') === true;
+
         // Staged composition flags
         const useStagedComposition = getFlag(flags, 'use-staged-composition') === true;
         const chapterOutlineRaw = getFlag(flags, 'chapter-outline') as string | undefined;
@@ -1448,7 +1465,8 @@ async function main() {
             length,
             format,
             styleProfileId,
-            useCorpus,
+            useCorpus: whitelistMode ? false : useCorpus, // Whitelist mode handles its own constraint
+            whitelistMode,
             corpusCollections,
             corpusChunkCount,
             corpusMinRelevance,
@@ -1469,6 +1487,9 @@ async function main() {
             useStagedComposition,
             chapterOutline,
             dataSourceMode,
+            multiStep,
+            nliVerify,
+            candidateSelection,
           });
 
           if (jsonMode) {
@@ -1517,6 +1538,7 @@ async function main() {
                 proseSanitization: writeResult.proseSanitization ?? null,
                 inlineValidation: writeResult.inlineValidation ?? null,
                 endnotes: writeResult.endnotes,
+                multiStepDiagnostics: writeResult.multiStepDiagnostics ?? null,
               },
               success: true,
               trajectoryId: writeResult.trajectoryId,

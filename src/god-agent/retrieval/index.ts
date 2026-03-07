@@ -16,7 +16,10 @@ export type {
   SmartRetrievalConfig,
   RetrievalDirection,
   RelatedChunksOptions,
+  Logger,
 } from './types.js';
+
+export { stderrLogger } from './types.js';
 
 // Semantic chunking (Phase A enhancement)
 export {

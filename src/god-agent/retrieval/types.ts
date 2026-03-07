@@ -60,6 +60,9 @@ export interface RetrievalOptions {
 
   /** Use cross-encoder re-ranking for better results (default: true) */
   rerank?: boolean;
+
+  /** ChromaDB where filter for metadata-based filtering (e.g., author) */
+  whereFilter?: Record<string, unknown>;
 }
 
 export interface HybridSearchWeights {
@@ -133,7 +136,7 @@ export interface SmartRetrievalConfig {
   chromadb?: {
     host?: string;
     port?: number;
-    /** Collection ID (UUID) for knowledge_chunks */
+    /** Collection ID (UUID) for knowledge_chunks — optional, resolved by name if omitted */
     collectionId?: string;
     /** Collection name for knowledge_chunks */
     collectionName?: string;
@@ -157,7 +160,29 @@ export interface SmartRetrievalConfig {
     parallelQueries?: number;
     queryTimeout?: number;
   };
+
+  /** Logger for structured output (defaults to stderrLogger) */
+  logger?: Logger;
 }
+
+/**
+ * Logger interface for structured logging.
+ * Injected into retrieval and pipeline components to replace console.log/console.error.
+ */
+export interface Logger {
+  info(...args: unknown[]): void;
+  warn(...args: unknown[]): void;
+  error(...args: unknown[]): void;
+}
+
+/**
+ * Default logger that writes to stderr (safe for JSON-mode stdout).
+ */
+export const stderrLogger: Logger = {
+  info: (...args: unknown[]) => process.stderr.write(`[INFO] ${args.map(String).join(' ')}\n`),
+  warn: (...args: unknown[]) => process.stderr.write(`[WARN] ${args.map(String).join(' ')}\n`),
+  error: (...args: unknown[]) => process.stderr.write(`[ERROR] ${args.map(String).join(' ')}\n`),
+};
 
 export type RetrievalDirection = 'before' | 'after' | 'both';
 

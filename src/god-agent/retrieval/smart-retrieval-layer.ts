@@ -26,22 +26,28 @@ import {
   SmartRetrievalConfig,
   RetrievalDirection,
   RelatedChunksOptions,
+  Logger,
+  stderrLogger,
 } from './types.js';
 
 export class SmartRetrievalLayer {
   private config: SmartRetrievalConfig;
   private cache: Map<string, CacheEntry<ContextChunk[]>>;
   private readonly DEFAULT_MAX_CHUNKS = 10;
-  private readonly DEFAULT_MIN_RELEVANCE = 0.7;
+  private readonly DEFAULT_MIN_RELEVANCE = 0.35;
   private readonly CACHE_MAX_SIZE = 1000;
   private readonly CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
 
   // Default endpoints
   private readonly EMBEDDING_API_URL: string;
   private readonly CHROMADB_URL: string;
-  private readonly COLLECTION_ID: string;
+  private COLLECTION_ID: string;
+  private collectionResolved = false;
+  private readonly logger: Logger;
 
   constructor(config: SmartRetrievalConfig = {}) {
+    this.logger = config.logger || stderrLogger;
+
     this.config = {
       cache: {
         enabled: true,
@@ -57,8 +63,6 @@ export class SmartRetrievalLayer {
       chromadb: {
         host: 'localhost',
         port: 8001,
-        // knowledge_chunks collection UUID from ChromaDB
-        collectionId: '256473d0-5091-4494-af4d-007e8f62d43f',
         collectionName: 'knowledge_chunks',
         ...config.chromadb,
       },
@@ -79,11 +83,69 @@ export class SmartRetrievalLayer {
     const chromaPort = this.config.chromadb?.port || 8001;
     this.CHROMADB_URL = `http://${chromaHost}:${chromaPort}`;
 
-    this.COLLECTION_ID =
-      this.config.chromadb?.collectionId ||
-      '256473d0-5091-4494-af4d-007e8f62d43f';
+    // Start with configured ID (if any); will be resolved by name on first use
+    this.COLLECTION_ID = this.config.chromadb?.collectionId || '';
 
     this.cache = new Map();
+  }
+
+  /**
+   * Resolve collection ID by name via ChromaDB API.
+   * If a UUID is also configured, verifies it matches the name-resolved UUID.
+   * Called lazily on first retrieval operation.
+   */
+  private async resolveCollectionId(): Promise<void> {
+    if (this.collectionResolved) return;
+
+    const collectionName = this.config.chromadb?.collectionName || 'knowledge_chunks';
+    const configuredId = this.config.chromadb?.collectionId;
+
+    try {
+      const listUrl = `${this.CHROMADB_URL}/api/v2/tenants/default_tenant/databases/default_database/collections`;
+      const resp = await fetch(listUrl);
+
+      if (!resp.ok) {
+        if (configuredId) {
+          this.logger.warn(`ChromaDB collection list failed (${resp.status}), using configured UUID: ${configuredId}`);
+          this.COLLECTION_ID = configuredId;
+          this.collectionResolved = true;
+          return;
+        }
+        throw new Error(`ChromaDB collection list failed: ${resp.status}`);
+      }
+
+      const collections: Array<{ id: string; name: string }> = await resp.json();
+      const match = collections.find(c => c.name === collectionName);
+
+      if (!match) {
+        if (configuredId) {
+          this.logger.warn(`Collection "${collectionName}" not found by name, using configured UUID: ${configuredId}`);
+          this.COLLECTION_ID = configuredId;
+          this.collectionResolved = true;
+          return;
+        }
+        throw new Error(`Collection "${collectionName}" not found and no UUID configured`);
+      }
+
+      // Name resolved successfully
+      if (configuredId && configuredId !== match.id) {
+        throw new Error(
+          `Collection name "${collectionName}" resolved to UUID ${match.id}, but config specifies UUID ${configuredId} — update config or verify corpus`
+        );
+      }
+
+      this.COLLECTION_ID = match.id;
+      this.logger.info(`ChromaDB collection "${collectionName}" resolved to ${match.id}`);
+      this.collectionResolved = true;
+    } catch (error) {
+      if (configuredId) {
+        this.logger.warn(`Collection resolution failed (${error}), using configured UUID: ${configuredId}`);
+        this.COLLECTION_ID = configuredId;
+        this.collectionResolved = true;
+        return;
+      }
+      throw error;
+    }
   }
 
   /**
@@ -103,10 +165,11 @@ export class SmartRetrievalLayer {
     const opts: Required<RetrievalOptions> = {
       collections: options.collections || [],
       maxChunks: options.maxChunks || this.DEFAULT_MAX_CHUNKS,
-      minRelevance: options.minRelevance || this.DEFAULT_MIN_RELEVANCE,
+      minRelevance: options.minRelevance ?? this.DEFAULT_MIN_RELEVANCE,
       pageContext: options.pageContext || 0,
       diversityBoost: options.diversityBoost ?? true,
       rerank: options.rerank ?? true,
+      whereFilter: options.whereFilter || {},
     };
 
     // Check cache
@@ -117,35 +180,38 @@ export class SmartRetrievalLayer {
     }
 
     try {
+      // Ensure collection ID is resolved
+      await this.resolveCollectionId();
+
       // Step 1: Semantic search via AgentDB/ChromaDB
       const rawResults = await this.semanticSearch(query, opts);
-      console.log(`[SmartRetrievalLayer] Step 1 raw results: ${rawResults.length}, minRelevance: ${opts.minRelevance}`);
+      this.logger.info(`[SmartRetrievalLayer] Step 1 raw results: ${rawResults.length}, minRelevance: ${opts.minRelevance}`);
       if (rawResults.length > 0) {
         const scores = rawResults.map(c => c.relevanceScore);
-        console.log(`[SmartRetrievalLayer] Score range: ${Math.min(...scores).toFixed(4)} to ${Math.max(...scores).toFixed(4)}`);
+        this.logger.info(`[SmartRetrievalLayer] Score range: ${Math.min(...scores).toFixed(4)} to ${Math.max(...scores).toFixed(4)}`);
       }
 
       // Step 2: Filter by relevance threshold
       const filtered = rawResults.filter(
         (chunk) => chunk.relevanceScore >= opts.minRelevance
       );
-      console.log(`[SmartRetrievalLayer] Step 2 after relevance filter: ${filtered.length}`);
+      this.logger.info(`[SmartRetrievalLayer] Step 2 after relevance filter: ${filtered.length}`);
 
       // Step 3: Diversity boosting (avoid redundant chunks)
       const diverse = opts.diversityBoost
         ? this.boostDiversity(filtered)
         : filtered;
-      console.log(`[SmartRetrievalLayer] Step 3 after diversity boost: ${diverse.length}`);
+      this.logger.info(`[SmartRetrievalLayer] Step 3 after diversity boost: ${diverse.length}`);
 
       // Step 4: Re-ranking with cross-encoder (if enabled)
       const reranked = opts.rerank
         ? await this.rerankResults(query, diverse)
         : diverse;
-      console.log(`[SmartRetrievalLayer] Step 4 after rerank: ${reranked.length}`);
+      this.logger.info(`[SmartRetrievalLayer] Step 4 after rerank: ${reranked.length}`);
 
       // Step 5: Limit to max chunks
       const limited = reranked.slice(0, opts.maxChunks);
-      console.log(`[SmartRetrievalLayer] Step 5 after limit (${opts.maxChunks}): ${limited.length}`);
+      this.logger.info(`[SmartRetrievalLayer] Step 5 after limit (${opts.maxChunks}): ${limited.length}`);
 
       // Step 6: Expand with page context if requested
       const expanded =
@@ -158,7 +224,7 @@ export class SmartRetrievalLayer {
 
       return expanded;
     } catch (error) {
-      console.error('SmartRetrievalLayer.retrieveContext error:', error);
+      this.logger.error('SmartRetrievalLayer.retrieveContext error:', error);
       return [];
     }
   }
@@ -195,6 +261,9 @@ export class SmartRetrievalLayer {
     }
 
     try {
+      // Ensure collection ID is resolved
+      await this.resolveCollectionId();
+
       // Run semantic and keyword searches in parallel
       const [semanticResults, keywordResults] = await Promise.all([
         this.semanticSearch(semanticQuery, {
@@ -218,7 +287,7 @@ export class SmartRetrievalLayer {
       this.setCache(cacheKey, topResults);
       return topResults;
     } catch (error) {
-      console.error('SmartRetrievalLayer.hybridSearch error:', error);
+      this.logger.error('SmartRetrievalLayer.hybridSearch error:', error);
       return [];
     }
   }
@@ -275,7 +344,7 @@ export class SmartRetrievalLayer {
 
       return related;
     } catch (error) {
-      console.error('SmartRetrievalLayer.getRelatedChunks error:', error);
+      this.logger.error('SmartRetrievalLayer.getRelatedChunks error:', error);
       return [];
     }
   }
@@ -355,7 +424,7 @@ export class SmartRetrievalLayer {
 
       return crossRefs;
     } catch (error) {
-      console.error('SmartRetrievalLayer.findCrossReferences error:', error);
+      this.logger.error('SmartRetrievalLayer.findCrossReferences error:', error);
       return [];
     }
   }
@@ -410,7 +479,7 @@ export class SmartRetrievalLayer {
   ): Promise<ContextChunk[]> {
     const maxChunks = options.maxChunks || this.DEFAULT_MAX_CHUNKS;
 
-    console.log(
+    this.logger.info(
       `[SmartRetrievalLayer] Semantic search: "${query.slice(0, 50)}..." (max: ${maxChunks})`
     );
 
@@ -423,7 +492,7 @@ export class SmartRetrievalLayer {
       });
 
       if (!embeddingResponse.ok) {
-        console.error(
+        this.logger.error(
           `[SmartRetrievalLayer] Embedding API error: ${embeddingResponse.status}`
         );
         return [];
@@ -433,26 +502,33 @@ export class SmartRetrievalLayer {
       const queryEmbedding = embeddingResult.embeddings?.[0];
 
       if (!queryEmbedding || !Array.isArray(queryEmbedding)) {
-        console.error('[SmartRetrievalLayer] Invalid embedding response');
+        this.logger.error('[SmartRetrievalLayer] Invalid embedding response');
         return [];
       }
 
       // Step 2: Query ChromaDB knowledge_chunks collection
       const chromaQueryUrl = `${this.CHROMADB_URL}/api/v2/tenants/default_tenant/databases/default_database/collections/${this.COLLECTION_ID}/query`;
 
+      const queryBody: Record<string, unknown> = {
+        query_embeddings: [queryEmbedding],
+        n_results: maxChunks * 2, // Get extra for filtering
+        include: ['documents', 'metadatas', 'distances'],
+      };
+      // Add where filter if provided (e.g., author-targeted queries)
+      const whereFilter = options.whereFilter;
+      if (whereFilter && Object.keys(whereFilter).length > 0) {
+        queryBody.where = whereFilter;
+      }
+
       const chromaResponse = await fetch(chromaQueryUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query_embeddings: [queryEmbedding],
-          n_results: maxChunks * 2, // Get extra for filtering
-          include: ['documents', 'metadatas', 'distances'],
-        }),
+        body: JSON.stringify(queryBody),
       });
 
       if (!chromaResponse.ok) {
         const errorText = await chromaResponse.text();
-        console.error(
+        this.logger.error(
           `[SmartRetrievalLayer] ChromaDB query error: ${chromaResponse.status} - ${errorText}`
         );
         return [];
@@ -495,13 +571,13 @@ export class SmartRetrievalLayer {
         });
       }
 
-      console.log(
+      this.logger.info(
         `[SmartRetrievalLayer] Found ${chunks.length} chunks from ChromaDB`
       );
 
       return chunks;
     } catch (error) {
-      console.error('[SmartRetrievalLayer] Semantic search error:', error);
+      this.logger.error('[SmartRetrievalLayer] Semantic search error:', error);
       return [];
     }
   }
@@ -513,7 +589,7 @@ export class SmartRetrievalLayer {
     keywords: string[],
     options: { maxChunks: number }
   ): Promise<ContextChunk[]> {
-    console.log(
+    this.logger.info(
       `[SmartRetrievalLayer] Keyword search: ${keywords.join(', ')}`
     );
 
@@ -579,13 +655,13 @@ export class SmartRetrievalLayer {
       // Sort by relevance and limit
       allChunks.sort((a, b) => b.relevanceScore - a.relevanceScore);
 
-      console.log(
+      this.logger.info(
         `[SmartRetrievalLayer] Keyword search found ${allChunks.length} chunks`
       );
 
       return allChunks.slice(0, options.maxChunks);
     } catch (error) {
-      console.error('[SmartRetrievalLayer] Keyword search error:', error);
+      this.logger.error('[SmartRetrievalLayer] Keyword search error:', error);
       return [];
     }
   }
@@ -616,15 +692,36 @@ export class SmartRetrievalLayer {
   private boostDiversity(chunks: ContextChunk[]): ContextChunk[] {
     if (chunks.length <= 1) return chunks;
 
-    const diverse: ContextChunk[] = [chunks[0]];
+    // Phase 1: Author-aware selection — prevent any single author from dominating.
+    // Cap each author to ~30% of total requested chunks (min 3), then backfill with overflow.
+    const authorCounts = new Map<string, number>();
+    const maxPerAuthor = Math.max(Math.ceil(chunks.length * 0.3), 3);
+    const authorCapped: ContextChunk[] = [];
+    const overflow: ContextChunk[] = [];
+
+    for (const chunk of chunks) {
+      const author = (chunk.metadata.author || 'unknown').toLowerCase();
+      const count = authorCounts.get(author) || 0;
+      if (count < maxPerAuthor) {
+        authorCapped.push(chunk);
+        authorCounts.set(author, count + 1);
+      } else {
+        overflow.push(chunk);
+      }
+    }
+
+    // Backfill with overflow if we don't have enough
+    const combined = [...authorCapped, ...overflow];
+
+    // Phase 2: Content-similarity deduplication (original logic)
+    const diverse: ContextChunk[] = [combined[0]];
     const SIMILARITY_THRESHOLD = 0.85;
 
-    for (let i = 1; i < chunks.length; i++) {
-      const candidate = chunks[i];
+    for (let i = 1; i < combined.length; i++) {
+      const candidate = combined[i];
       let tooSimilar = false;
 
       for (const existing of diverse) {
-        // Simple content similarity check (can be improved with embeddings)
         const similarity = this.simpleSimilarity(
           candidate.content,
           existing.content
@@ -692,6 +789,16 @@ export class SmartRetrievalLayer {
     weights: HybridSearchWeights
   ): ContextChunk[] {
     const merged = new Map<string, ContextChunk>();
+
+    // Fix 29: When keyword results are empty, return semantic results at full score.
+    // Without this fix, semantic scores get multiplied by 0.7 (semantic weight),
+    // dropping chunks below minRelevance even though they had good semantic matches.
+    if (keywordResults.length === 0) {
+      return semanticResults;
+    }
+    if (semanticResults.length === 0) {
+      return keywordResults;
+    }
 
     // Add semantic results with weighted scores
     for (const chunk of semanticResults) {
