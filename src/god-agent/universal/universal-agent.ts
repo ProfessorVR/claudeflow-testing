@@ -380,6 +380,8 @@ export interface WriteResult {
   style: string;
   sources: string[];
   wordCount: number;
+  /** Body word count (main text only, excluding validation appendix) */
+  bodyWordCount?: number;
   /** Trajectory ID for feedback (FR-11) */
   trajectoryId?: string;
   /** Quality metrics from quality gauntlet validation */
@@ -394,6 +396,7 @@ export interface WriteResult {
     chunkCount: number;
     collections: string[];
     citations: string[];
+    whitelistMode?: boolean;
   };
   /** Phase 5: Staged composition metadata */
   stagedComposition?: {
@@ -451,6 +454,33 @@ export interface WriteResult {
       line: number;
     }>;
   };
+  /** Multi-step drafting diagnostics (v1→investigate→v2) */
+  multiStepDiagnostics?: {
+    v1Diagnostics: {
+      wordCount: number;
+      citationCount: number;
+      quotationCount: number;
+      claimsWithoutCitation: number;
+      factualClaimsWithoutCitation: number;
+      interpretiveClaimsWithoutCitation: number;
+      uniqueAuthors: string[];
+      issues: Array<{ type: string; severity: string; detail: string }>;
+      qualityScore?: number;
+    };
+    preventionPlan: {
+      blacklistedAuthors: string[];
+      strengthenedConstraints: string[];
+      underCitedSources: string[];
+      overCitedSources: string[];
+    };
+    v2Diagnostics: {
+      blacklistedAuthorsUsedInV2: number;
+      blacklistedAuthorsInMainText: number;
+      blacklistedAuthorsInAppendix: number;
+    };
+  };
+  /** Pipeline health from v2 staged pipeline (clean/degraded/failed) */
+  pipelineHealth?: 'clean' | 'degraded' | 'failed';
   /** Phase 11: Inline validation results (hallucination prevention DURING generation) */
   inlineValidation?: {
     used: boolean;
@@ -1103,7 +1133,11 @@ export class UniversalAgent {
       freshnessThreshold: 24 * 60 * 60 * 1000, // 24h
       verbose: this.config.verbose,
     });
-    await this.capabilityIndex.initialize();
+    try {
+      await this.capabilityIndex.initialize();
+    } catch (e) {
+      this.log?.('[Routing] CapabilityIndex init failed (embedding service may be down), routing will use fallbacks');
+    }
 
     this.failureClassifier = new FailureClassifier();
 
@@ -2655,6 +2689,11 @@ export class UniversalAgent {
     inlineEnableCitationLookup?: boolean;
     inlineMinChunks?: number;
     dataSourceMode?: 'corpus' | 'hybrid' | 'external';
+    whitelistMode?: boolean;
+    multiStep?: boolean;
+    nliVerify?: boolean;
+    candidateSelection?: boolean;
+    pipelineVersion?: 'legacy' | 'v2';
   } = {}): Promise<WriteResult> {
     return this.writePipeline.write(topic, options);
   }

@@ -1453,6 +1453,10 @@ async function main() {
         const nliVerify = getFlag(flags, 'nli-verify') === true;
         const candidateSelection = getFlag(flags, 'candidate-selection') === true;
 
+        // Pipeline version flag (v2 staged pipeline)
+        const pipelineVersionFlag = getFlag(flags, 'pipeline-version') as string | undefined;
+        const pipelineVersion = pipelineVersionFlag === 'v2' ? 'v2' as const : undefined;
+
         // Staged composition flags
         const useStagedComposition = getFlag(flags, 'use-staged-composition') === true;
         const chapterOutlineRaw = getFlag(flags, 'chapter-outline') as string | undefined;
@@ -1490,6 +1494,7 @@ async function main() {
             multiStep,
             nliVerify,
             candidateSelection,
+            pipelineVersion,
           });
 
           if (jsonMode) {
@@ -1539,6 +1544,7 @@ async function main() {
                 inlineValidation: writeResult.inlineValidation ?? null,
                 endnotes: writeResult.endnotes,
                 multiStepDiagnostics: writeResult.multiStepDiagnostics ?? null,
+                pipelineHealth: writeResult.pipelineHealth ?? null,
               },
               success: true,
               trajectoryId: writeResult.trajectoryId,
