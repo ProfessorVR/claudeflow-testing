@@ -187,8 +187,9 @@ describe('ModelRouter', () => {
 
     it('should cache backend results', async () => {
       const router = createRouter();
-      // Set cached value via private field
+      // Set cached value via private field (must also set timestamp for TTL)
       (router as any).availableBackends = ['anthropic'];
+      (router as any).backendsCheckedAt = Date.now();
       const result = await router.getAvailableBackends();
       expect(result).toEqual(['anthropic']);
     });

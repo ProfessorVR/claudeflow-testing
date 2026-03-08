@@ -208,15 +208,17 @@ export class QualityIntegration {
       return this.createBypassResult(content);
     }
 
+    // Save base config for restoration in finally block
+    const baseThreshold = QualityIntegration.DEFAULT_THRESHOLD;
+    const baseMaxRevisions = QualityIntegration.DEFAULT_MAX_REVISIONS;
+
     try {
-      // Override threshold if specified
+      // Apply per-request overrides (restored after call via finally block)
       if (options.qualityThreshold !== undefined) {
         this.gauntlet.updateConfig({
           overallThreshold: options.qualityThreshold,
         });
       }
-
-      // Override max revisions if specified
       if (options.maxRevisions !== undefined) {
         this.orchestrator.updateConfig({
           maxIterations: options.maxRevisions,
@@ -351,6 +353,10 @@ export class QualityIntegration {
       // Graceful degradation - if quality gauntlet fails, return original content
       this.logError('Quality validation failed, using original content', error);
       return this.createErrorResult(content, error);
+    } finally {
+      // Restore base config so per-request overrides don't leak
+      this.gauntlet.updateConfig({ overallThreshold: baseThreshold });
+      this.orchestrator.updateConfig({ maxIterations: baseMaxRevisions });
     }
   }
 

@@ -85,6 +85,8 @@ export class ModelRouter {
   private anthropicAvailable: boolean;
   private vllmClient?: OpenAI;
   private availableBackends: BackendType[] | null = null;
+  private backendsCheckedAt: number = 0;
+  private static readonly BACKEND_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
   constructor(config: ModelRouterConfig = {}) {
     // Strip undefined values so they don't overwrite defaults via spread
@@ -172,10 +174,30 @@ export class ModelRouter {
   }
 
   /**
+   * Generate text from a single prompt string.
+   * Convenience wrapper around call() for the common single-user-message pattern.
+   */
+  async generateText(
+    prompt: string,
+    options: { model?: string; maxTokens?: number; timeout?: number; costTier?: 'low' | 'high' } = {},
+  ): Promise<string> {
+    const response = await this.call({
+      systemPrompt: '',
+      userPrompt: prompt,
+      maxTokens: options.maxTokens ?? 4000,
+      costTier: options.costTier ?? 'high',
+    });
+    return response.content;
+  }
+
+  /**
    * Detect which backends are available.
    */
   async getAvailableBackends(): Promise<BackendType[]> {
-    if (this.availableBackends) return this.availableBackends;
+    const now = Date.now();
+    if (this.availableBackends && (now - this.backendsCheckedAt) < ModelRouter.BACKEND_CACHE_TTL_MS) {
+      return this.availableBackends;
+    }
 
     const backends: BackendType[] = [];
 
@@ -207,6 +229,7 @@ export class ModelRouter {
     }
 
     this.availableBackends = backends;
+    this.backendsCheckedAt = now;
     return backends;
   }
 
@@ -215,6 +238,7 @@ export class ModelRouter {
    */
   resetBackendCache(): void {
     this.availableBackends = null;
+    this.backendsCheckedAt = 0;
   }
 
   // ===========================================================================
