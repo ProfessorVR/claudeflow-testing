@@ -127,7 +127,24 @@ export interface WritePipelineDeps {
 }
 
 export class WritePipelineOrchestrator {
+  private manifestCache: Map<string, { sources: CorpusSource[]; ts: number }> = new Map();
+  private static readonly MANIFEST_CACHE_TTL_MS = 60_000; // 1 minute
+
   constructor(private deps: WritePipelineDeps) {}
+
+  /** Cached wrapper around loadCorpusManifest(). */
+  private async cachedLoadCorpusManifest(
+    opts: { collections?: string[] } = {},
+  ): Promise<CorpusSource[]> {
+    const key = JSON.stringify(opts.collections ?? []);
+    const cached = this.manifestCache.get(key);
+    if (cached && (Date.now() - cached.ts) < WritePipelineOrchestrator.MANIFEST_CACHE_TTL_MS) {
+      return cached.sources;
+    }
+    const sources = await loadCorpusManifest(opts);
+    this.manifestCache.set(key, { sources, ts: Date.now() });
+    return sources;
+  }
 
   // ===== Retrieval Query Decomposition =====
 
@@ -512,16 +529,16 @@ export class WritePipelineOrchestrator {
 
     if (sentences.length === 0) return content.substring(0, targetChars);
 
-    // Score each sentence by value
-    const scored = sentences.map(s => {
+    // Score each sentence by value (track original index from the start — Issue #17)
+    const conceptPattern = buildConceptPattern(loadDomainConfig());
+    const scored = sentences.map((s, idx) => {
       let score = 0;
       // Quotation marks — verbatim quotes are gold
       if (/[""\u201c\u201d]/.test(s)) score += 3;
       // Page references
       if (/\bp\.?\s*\d|pp\.\s*\d/i.test(s)) score += 2;
       // Philosophical key terms (argument-dense)
-      const keyTerms = buildConceptPattern(loadDomainConfig());
-      const termMatches = s.match(keyTerms);
+      const termMatches = s.match(conceptPattern);
       if (termMatches) score += Math.min(termMatches.length, 3);
       // Signal phrases (author-prominent citations)
       if (/\b(argues|observes|maintains|contends|suggests|demonstrates|emphasizes|notes)\b/i.test(s)) score += 1;
@@ -529,7 +546,7 @@ export class WritePipelineOrchestrator {
       if (/^[A-Z\s]{10,}$/.test(s)) score -= 5; // ALL CAPS headers
       if (/^\d+\s*$/.test(s)) score -= 5; // Bare page numbers
       if (/^(chapter|section|part)\s+\d/i.test(s)) score -= 3;
-      return { sentence: s, score };
+      return { sentence: s, score, originalIdx: idx };
     });
 
     // Sort by score (best first), then greedily fill to target
@@ -538,11 +555,7 @@ export class WritePipelineOrchestrator {
     const selected: { sentence: string; score: number; originalIdx: number }[] = [];
     let currentLength = 0;
 
-    // Add original index for preserving reading order
-    const withIdx = scored.map((s, _) => ({
-      ...s,
-      originalIdx: sentences.indexOf(s.sentence),
-    }));
+    const withIdx = scored;
 
     for (const item of withIdx) {
       if (currentLength + item.sentence.length + 1 > targetChars) {
@@ -1610,9 +1623,12 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
     // LEGACY PATH — existing monolithic logic (unchanged)
     // =========================================================================
 
+    // Deep-clone options to prevent mutation of caller's object (Issue #5)
+    options = { ...options };
+
     // Fix 27: Resolve data source mode and enforce corpus-only invariants
     const dataSourceMode = options.dataSourceMode ?? 'hybrid';
-    const resolved = { ...options };
+    const resolved = options;
 
     if (dataSourceMode === 'corpus') {
       // Hard error on explicit invariant violations (catches UI bugs early)
@@ -2193,7 +2209,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
 
         // Step 5: Build corpus constraint for post-gen verification
         if (corpusChunks.length > 0) {
-          const additionalSources = await loadCorpusManifest({
+          const additionalSources = await this.cachedLoadCorpusManifest({
             collections: options.corpusCollections?.length ? options.corpusCollections : undefined,
           }).catch(() => [] as CorpusSource[]);
 
@@ -2206,7 +2222,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
           goldLog(`Corpus constraint built: ${corpusConstraint.sources.length} verified sources`);
         } else {
           // Fallback: constraint from manifest only
-          const manifestSources = await loadCorpusManifest({
+          const manifestSources = await this.cachedLoadCorpusManifest({
             collections: options.corpusCollections?.length ? options.corpusCollections : undefined,
           }).catch(() => [] as CorpusSource[]);
           if (manifestSources.length > 0) {
@@ -2303,7 +2319,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
         try {
           const additionalSources = dataSourceMode === 'corpus'
             ? []
-            : await loadCorpusManifest({
+            : await this.cachedLoadCorpusManifest({
                 collections: options.corpusCollections?.length ? options.corpusCollections : undefined,
               });
 
@@ -2718,7 +2734,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
     let scrubConstraint = corpusConstraint;
     if (corpusConstraint && corpusConstraint.sources.length > 0 && !options.whitelistMode) {
       try {
-        const manifestSources = await loadCorpusManifest({
+        const manifestSources = await this.cachedLoadCorpusManifest({
           collections: options.corpusCollections?.length ? options.corpusCollections : undefined,
         });
         if (manifestSources.length > 0) {
@@ -3336,14 +3352,14 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
 
         // Build corpus constraint
         if (corpusChunks.length > 0) {
-          const additionalSources = await loadCorpusManifest({
+          const additionalSources = await this.cachedLoadCorpusManifest({
             collections: options.corpusCollections?.length ? options.corpusCollections : undefined,
           }).catch(() => [] as CorpusSource[]);
           corpusConstraint = buildCorpusConstraint(corpusChunks, {
             enforcement: 'strict', missingCitationPlaceholder: '', minRelevance: 0.0, additionalSources,
           });
         } else {
-          const manifestSources = await loadCorpusManifest({
+          const manifestSources = await this.cachedLoadCorpusManifest({
             collections: options.corpusCollections?.length ? options.corpusCollections : undefined,
           }).catch(() => [] as CorpusSource[]);
           if (manifestSources.length > 0) {
@@ -3564,7 +3580,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
     let scrubConstraint = corpusConstraint;
     if (corpusConstraint && corpusConstraint.sources.length > 0 && !options.whitelistMode) {
       try {
-        const manifestSources = await loadCorpusManifest({
+        const manifestSources = await this.cachedLoadCorpusManifest({
           collections: options.corpusCollections?.length ? options.corpusCollections : undefined,
         });
         if (manifestSources.length > 0) {

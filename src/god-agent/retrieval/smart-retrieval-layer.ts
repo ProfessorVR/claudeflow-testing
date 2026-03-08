@@ -111,7 +111,9 @@ export class SmartRetrievalLayer {
           this.collectionResolved = true;
           return;
         }
-        throw new Error(`ChromaDB collection list failed: ${resp.status}`);
+        this.logger.warn(`ChromaDB collection list failed (${resp.status}), no UUID configured`);
+        this.collectionResolved = true;
+        return;
       }
 
       const collections: Array<{ id: string; name: string }> = await resp.json();
@@ -124,7 +126,9 @@ export class SmartRetrievalLayer {
           this.collectionResolved = true;
           return;
         }
-        throw new Error(`Collection "${collectionName}" not found and no UUID configured`);
+        this.logger.warn(`Collection "${collectionName}" not found and no UUID configured`);
+        this.collectionResolved = true;
+        return;
       }
 
       // Name resolved successfully
@@ -141,10 +145,10 @@ export class SmartRetrievalLayer {
       if (configuredId) {
         this.logger.warn(`Collection resolution failed (${error}), using configured UUID: ${configuredId}`);
         this.COLLECTION_ID = configuredId;
-        this.collectionResolved = true;
-        return;
+      } else {
+        this.logger.warn(`Collection resolution failed (${error}), no UUID configured — queries will fail until ChromaDB is available`);
       }
-      throw error;
+      this.collectionResolved = true;
     }
   }
 
@@ -168,7 +172,7 @@ export class SmartRetrievalLayer {
       minRelevance: options.minRelevance ?? this.DEFAULT_MIN_RELEVANCE,
       pageContext: options.pageContext || 0,
       diversityBoost: options.diversityBoost ?? true,
-      rerank: options.rerank ?? true,
+      rerank: options.rerank ?? false,
       whereFilter: options.whereFilter || {},
     };
 
@@ -882,7 +886,8 @@ These chunks have a "${relationship}" relationship. Synthesize their perspective
    * Build cache key from query and options
    */
   private buildCacheKey(prefix: string, query: string, options: any): string {
-    const optionsStr = JSON.stringify(options);
+    // Sort keys for deterministic cache hits regardless of property order
+    const optionsStr = JSON.stringify(options, Object.keys(options ?? {}).sort());
     return `${prefix}:${query}:${optionsStr}`;
   }
 

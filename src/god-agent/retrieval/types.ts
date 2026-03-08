@@ -58,7 +58,7 @@ export interface RetrievalOptions {
   /** Boost diversity to avoid redundant results (default: true) */
   diversityBoost?: boolean;
 
-  /** Use cross-encoder re-ranking for better results (default: true) */
+  /** Use cross-encoder re-ranking for better results (default: false — not yet implemented) */
   rerank?: boolean;
 
   /** ChromaDB where filter for metadata-based filtering (e.g., author) */
