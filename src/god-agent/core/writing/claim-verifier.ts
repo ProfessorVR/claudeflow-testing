@@ -348,7 +348,7 @@ export class ClaimVerifier {
       const classificationResult = await this.entailmentClassifier.classify({
         claimText,
         evidenceChunks: [{
-          id: bestChunk.id || bestChunk.chunkId || 'unknown',
+          id: bestChunk.chunkId || 'unknown',
           content: bestChunk.content,
           metadata: bestChunk.metadata,
         }],

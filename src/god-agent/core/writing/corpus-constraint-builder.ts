@@ -18,30 +18,9 @@ const logger = createComponentLogger('CorpusConstraintBuilder');
  * Note: This interface is designed to be compatible with both the retrieval layer's
  * ContextChunk type and simpler chunk representations.
  */
-export interface ContextChunk {
-  /** Unique identifier for this chunk (may be 'id' or 'chunkId') */
-  id?: string;
-  /** Alternative chunk ID field from retrieval layer */
-  chunkId?: string;
-  /** Document identifier (for compatibility with retrieval layer) */
-  docId?: string;
-  /** Chunk content text */
-  content: string;
-  /** Relevance score from retrieval (0-1) */
-  relevanceScore: number;
-  /** Metadata about the source */
-  metadata: {
-    author?: string;
-    year?: number;
-    title?: string;
-    page_start?: number;
-    page_end?: number;
-    pageRef?: string;
-    docId?: string;
-    collection?: string;
-    [key: string]: unknown;
-  };
-}
+// Canonical ContextChunk from retrieval/types — single source of truth.
+import type { ContextChunk } from '../../retrieval/types.js';
+export type { ContextChunk };
 
 /**
  * Options for building corpus constraints

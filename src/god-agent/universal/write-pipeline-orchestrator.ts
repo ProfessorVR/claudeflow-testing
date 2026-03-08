@@ -21,6 +21,15 @@ import {
   type ValidationResult as StageValidationResult,
 } from './stages/index.js';
 import { estimateTokenBudget } from './stages/pipeline-utils.js';
+import {
+  loadDomainConfig,
+  buildAuthorPattern,
+  buildConceptPattern,
+  isPrimarySource,
+  getDomainKeywords,
+  type DomainConfig,
+} from './domain-config.js';
+import { GOLD_STANDARD_CONFIG } from './gold-standard-config.js';
 import type { QualityIntegration, QualityValidationOptions, QualityValidationResult } from './quality-integration.js';
 import type { ProseSanitizer, SanitizationResult, ArtifactViolation } from '../cli/composition/prose-sanitizer.js';
 import type { StyleProfileManager, StoredStyleProfile } from './style-profile.js';
@@ -165,8 +174,9 @@ export class WritePipelineOrchestrator {
 
     // Pattern 3: Extract author+concept cross-product queries
     if (sectionQueries.length === 0) {
-      const authorPattern = /(?:Aristotle|Heidegger|Plato|Frede|Papachristou|Caston|O'Gorman|Hawhee|Rickert|Burke)/gi;
-      const conceptPattern = /(?:motion|kinesis|time|chronos|perception|aisthesis|phantasia|imagination|temporal|rhetoric|being)/gi;
+      const domainConfig = loadDomainConfig();
+      const authorPattern = buildAuthorPattern(domainConfig);
+      const conceptPattern = buildConceptPattern(domainConfig);
 
       const authors = new Set<string>();
       const concepts = new Set<string>();
@@ -208,10 +218,9 @@ export class WritePipelineOrchestrator {
    * 3. Add cross-product author×concept queries for coverage
    */
   private extractSemanticRetrievalQueries(topic: string): string[] {
-    // Known philosophical authors in the corpus
-    const authorPattern = /(?:Aristotle|Heidegger|Plato|Frede|Nussbaum|Papachristou|Caston|O'Gorman|Hawhee|Rickert|Burke|White|Gonzalez|Bowin)/gi;
-    // Key philosophical concepts
-    const conceptPattern = /(?:motion|kinesis|time|chronos|perception|aisthesis|phantasia|imagination|temporal|rhetoric|being|stimmung|dasein|befindlichkeit|geworfenheit|orexis|nous|pathos|logos|ethos|kairos|energeia|dunamis|phronesis|eudaimonia|attunem|disclos|thrownness|mood|affect)/gi;
+    const domainConfig = loadDomainConfig();
+    const authorPattern = buildAuthorPattern(domainConfig);
+    const conceptPattern = buildConceptPattern(domainConfig);
 
     // Extract all authors and concepts from the full topic
     const authors = new Set<string>();
@@ -288,7 +297,7 @@ export class WritePipelineOrchestrator {
    * primary coverage of Aristotle.
    */
   private extractPrimaryAuthors(topic: string): string[] {
-    const authorPattern = /(?:Aristotle|Heidegger|Plato|Frede|Nussbaum|Papachristou|Caston|O'Gorman|Hawhee|Rickert|Burke|White|Gonzalez|Bowin)/gi;
+    const authorPattern = buildAuthorPattern(loadDomainConfig());
     const found = new Set<string>();
     for (const m of Array.from(topic.matchAll(authorPattern))) {
       found.add(m[0].charAt(0).toUpperCase() + m[0].slice(1).toLowerCase());
@@ -366,7 +375,7 @@ export class WritePipelineOrchestrator {
   }
 
   private extractKeyAuthors(topic: string): string[] {
-    const authorPattern = /(?:Aristotle|Heidegger|Plato|Frede|Nussbaum|Papachristou|Caston|O'Gorman|Hawhee|Rickert|Burke|White|Gonzalez|Bowin)/gi;
+    const authorPattern = buildAuthorPattern(loadDomainConfig());
     const counts = new Map<string, number>();
     for (const m of Array.from(topic.matchAll(authorPattern))) {
       const name = m[0].charAt(0).toUpperCase() + m[0].slice(1).toLowerCase();
@@ -390,8 +399,8 @@ export class WritePipelineOrchestrator {
     chunks: ContextChunk[],
     options: { maxPerSource?: number; targetTotal?: number } = {}
   ): ContextChunk[] {
-    const maxPerSource = options.maxPerSource ?? 8;
-    const targetTotal = options.targetTotal ?? 35;
+    const maxPerSource = options.maxPerSource ?? GOLD_STANDARD_CONFIG.maxChunksPerSource;
+    const targetTotal = options.targetTotal ?? GOLD_STANDARD_CONFIG.targetTotalChunks;
 
     // Sort all chunks by relevance (best first)
     const sorted = [...chunks].sort((a, b) => b.relevanceScore - a.relevanceScore);
@@ -490,7 +499,7 @@ export class WritePipelineOrchestrator {
    * 3. Argument-dense sentences (philosophical key terms)
    * 4. Remove OCR artifacts, headers, boilerplate
    */
-  private trimChunkContent(content: string, targetChars: number = 450): string {
+  private trimChunkContent(content: string, targetChars: number = GOLD_STANDARD_CONFIG.chunkTrimTarget): string {
     if (content.length <= targetChars) return content;
 
     // Split into sentences (handle abbreviations like "p." and "pp." and "Dr." etc.)
@@ -511,7 +520,7 @@ export class WritePipelineOrchestrator {
       // Page references
       if (/\bp\.?\s*\d|pp\.\s*\d/i.test(s)) score += 2;
       // Philosophical key terms (argument-dense)
-      const keyTerms = /\b(kinesis|phantasia|aisthesis|energeia|dunamis|entelecheia|dasein|befindlichkeit|pathos|logos|ethos|kairos|phronesis|rhetoric|being|motion|time|perception|soul|faculty|temporal|ontolog)/gi;
+      const keyTerms = buildConceptPattern(loadDomainConfig());
       const termMatches = s.match(keyTerms);
       if (termMatches) score += Math.min(termMatches.length, 3);
       // Signal phrases (author-prominent citations)
@@ -593,13 +602,7 @@ export class WritePipelineOrchestrator {
     const secondarySources: typeof constraint.sources = [];
 
     for (const source of constraint.sources) {
-      const isPrimary =
-        source.author.includes('Aristotle') ||
-        source.author.includes('Heidegger') ||
-        source.author.includes('Plato') ||
-        source.title.includes('De Anima') ||
-        source.title.includes('Being and Time') ||
-        source.title.includes('Rhetoric');
+      const isPrimary = isPrimarySource(source.author, source.title, loadDomainConfig());
 
       if (isPrimary) {
         primarySources.push(source);
@@ -667,7 +670,7 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
 
     let chunkNumber = 1;
     let totalChars = block.length;
-    const MAX_CHARS = 60000; // ~15K tokens budget for corpus context
+    const MAX_CHARS = GOLD_STANDARD_CONFIG.maxCorpusBlockChars; // ~15K tokens budget for corpus context
 
     for (const [sourceKey, sourceChunks] of bySource) {
       const header = `\n### ${sourceKey}\n`;
@@ -811,7 +814,7 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
     // Compute unique source count from chunks for the diversity requirement.
     // Only count sources with at least one chunk above relevance 0.25 as "available"
     // so we don't demand citation from tangentially-related sources.
-    const relevantChunks = options.chunks.filter(c => c.relevanceScore >= 0.25);
+    const relevantChunks = options.chunks.filter(c => c.relevanceScore >= GOLD_STANDARD_CONFIG.relevanceFloor);
     const uniqueChunkSources = new Set(relevantChunks.map(c =>
       `${c.metadata.author}, *${c.metadata.title}*`
     ));
@@ -891,7 +894,7 @@ INSTRUCTIONS FOR SOURCE DIVERSITY:
 
 ### Length (MANDATORY — READ CAREFULLY)
 - Target: ${options.wordTarget} words of MAIN TEXT prose (NOT including the Validation Appendix)
-- Each section MUST be at least 350 words. Do NOT write sections shorter than 350 words.
+- Each section MUST be at least ${GOLD_STANDARD_CONFIG.minSectionWords} words. Do NOT write sections shorter than ${GOLD_STANDARD_CONFIG.minSectionWords} words.
 - The Validation Appendix comes AFTER the main text and does NOT count toward the word target.
 - Write the full ${options.wordTarget} words of scholarly prose FIRST, then add the appendix.`);
 
@@ -923,7 +926,7 @@ Citation Ledger: Author – count …
 Summary: total citations, corpus-verified %, style compliance note
 \`\`\`
 
-REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥ ${minSourceDiversity} authors cited, ≥ 3 verbatim quotations. Style: long architectonic sentences, semicolons, transitions (thus/indeed/hence/accordingly/specifically/subsequently/similarly). Paragraphs ~140+ words.`);
+REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDARD_CONFIG.minSectionWords} words, ≥ ${minSourceDiversity} authors cited, ≥ 3 verbatim quotations. Style: long architectonic sentences, semicolons, transitions (thus/indeed/hence/accordingly/specifically/subsequently/similarly). Paragraphs ~140+ words.`);
 
     return sections.join('\n\n');
   }
@@ -952,7 +955,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
 
     let chunkNum = 1;
     let totalChars = block.length;
-    const MAX_CHARS = 60000;
+    const MAX_CHARS = GOLD_STANDARD_CONFIG.maxCorpusBlockChars;
 
     for (const [sourceKey, sourceChunks] of bySource) {
       // Add a prominent source header before each group
@@ -1386,7 +1389,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
     const overCited: string[] = [];
     const underCited: string[] = [];
     for (const [author, count] of authorCitationCounts) {
-      if (totalCitations > 0 && count / totalCitations > 0.4) {
+      if (totalCitations > 0 && count / totalCitations > GOLD_STANDARD_CONFIG.overCitationThreshold) {
         overCited.push(author);
         issues.push({
           type: 'over-cited-source',
@@ -1409,11 +1412,11 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
 
     // --- Check 5: Section word counts ---
     for (const section of sectionWordCounts) {
-      if (section.words < 350) {
+      if (section.words < GOLD_STANDARD_CONFIG.minSectionWords) {
         issues.push({
           type: 'short-section',
           severity: 'major',
-          detail: `Section "${section.heading}" has only ${section.words} words (minimum: 350)`,
+          detail: `Section "${section.heading}" has only ${section.words} words (minimum: ${GOLD_STANDARD_CONFIG.minSectionWords})`,
         });
       }
     }
@@ -1440,8 +1443,8 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
       strengthened.push(`Write AT LEAST 3,000 words of main text. Current v1 was only ${wordCount} words.`);
     }
     for (const section of sectionWordCounts) {
-      if (section.words < 350) {
-        strengthened.push(`Section "${section.heading}" MUST be at least 350 words (was ${section.words} in v1).`);
+      if (section.words < GOLD_STANDARD_CONFIG.minSectionWords) {
+        strengthened.push(`Section "${section.heading}" MUST be at least ${GOLD_STANDARD_CONFIG.minSectionWords} words (was ${section.words} in v1).`);
       }
     }
     if (underCited.length > 0) {
@@ -1483,7 +1486,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
     minChunksPerAuthor: number = 2
   ): { missingAuthors: string[]; weakAuthors: string[]; coverageReport: string[] } {
     // Extract authors mentioned in topic/section headings
-    const authorPattern = /(?:Aristotle|Heidegger|Plato|Frede|Nussbaum|Papachristou|Caston|O'Gorman|Hawhee|Rickert|Burke|White|Gonzalez|Bowin)/gi;
+    const authorPattern = buildAuthorPattern(loadDomainConfig());
     const topicAuthors = new Set<string>();
     for (const m of Array.from(topic.matchAll(authorPattern))) {
       topicAuthors.add(m[0].charAt(0).toUpperCase() + m[0].slice(1).toLowerCase());
@@ -1749,7 +1752,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
         // Step 1: Multi-query chunk retrieval (replicates parent Claude's manual process)
         // Phase 1a: Semantic keyword queries (not raw heading text)
         const subQueries = this.extractSemanticRetrievalQueries(topic);
-        const targetChunks = options.corpusChunkCount ?? 28; // Match gold standard's 28 chunks (less = shorter prompt = longer output)
+        const targetChunks = options.corpusChunkCount ?? GOLD_STANDARD_CONFIG.targetChunks; // Match gold standard's 28 chunks (less = shorter prompt = longer output)
         const retrievalOpts: RetrievalOptions = {
           collections: options.corpusCollections || [],
           minRelevance: options.corpusMinRelevance ?? 0.0, // Low threshold, rank later
@@ -1856,7 +1859,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
             ).length;
             const primaryRatio = corpusChunks.length > 0 ? primaryChunkCount / corpusChunks.length : 0;
             goldLog(`Phase 1c+: Primary author ratio: ${primaryChunkCount}/${corpusChunks.length} = ${(primaryRatio * 100).toFixed(0)}% (target: ≥30%)`);
-            if (primaryRatio < 0.3) {
+            if (primaryRatio < GOLD_STANDARD_CONFIG.primaryRatioThreshold) {
               goldLog(`  ⚠️ PRIMARY UNDER-COVERAGE: Only ${(primaryRatio * 100).toFixed(0)}% of chunks are from primary authors (${primaryAuthors.join(', ')})`);
               goldLog(`  The model will be warned to weaken unsupported claims about under-represented authors.`);
             }
@@ -1872,7 +1875,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
           const avgPreTrim = Math.round(preTrimedTotal / Math.max(corpusChunks.length, 1));
           for (const chunk of corpusChunks) {
             if (chunk.content) {
-              chunk.content = this.trimChunkContent(chunk.content, 450);
+              chunk.content = this.trimChunkContent(chunk.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
             }
           }
           const postTrimTotal = corpusChunks.reduce((sum, c) => sum + (c.content?.length || 0), 0);
@@ -1907,7 +1910,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
                   const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
                   if (!seenIds.has(id)) {
                     seenIds.add(id);
-                    if (c.content) c.content = this.trimChunkContent(c.content, 450);
+                    if (c.content) c.content = this.trimChunkContent(c.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
                     corpusChunks.push(c);
                     added++;
                   }
@@ -1925,7 +1928,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
                     const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
                     if (!seenIds.has(id)) {
                       seenIds.add(id);
-                      if (c.content) c.content = this.trimChunkContent(c.content, 450);
+                      if (c.content) c.content = this.trimChunkContent(c.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
                       corpusChunks.push(c);
                       added++;
                     }
@@ -1958,8 +1961,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
             const allKUs = lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
             // Extract domain keywords from topic for filtering
             const topicLower = topic.toLowerCase();
-            const domainKeywords = ['aristotle', 'heidegger', 'plato', 'phantasia', 'kinesis', 'time', 'chronos',
-              'perception', 'aisthesis', 'rhetoric', 'being', 'motion', 'stimmung', 'dasein', 'imagination'];
+            const domainKeywords = getDomainKeywords(loadDomainConfig());
             const relevantDomains = domainKeywords.filter(d => topicLower.includes(d));
             const relevant = allKUs.filter((ku: any) =>
               relevantDomains.some(d => (ku.claim || ku.content || '').toLowerCase().includes(d))
@@ -2014,7 +2016,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
           try {
             v1Content = await this.generateViaClaudeCode(v1Prompt, {
               model: 'claude-opus-4-6',
-              maxTokens: 16384,
+              maxTokens: GOLD_STANDARD_CONFIG.opusMaxTokens,
             });
             goldLog(`V1 generation complete: ${v1Content.split(/\s+/).length} words`);
           } catch (e) {
@@ -2131,7 +2133,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
                     const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
                     if (!existingIds.has(id)) {
                       existingIds.add(id);
-                      if (c.content) c.content = this.trimChunkContent(c.content, 450);
+                      if (c.content) c.content = this.trimChunkContent(c.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
                       corpusChunks.push(c);
                       added++;
                     }
@@ -2162,7 +2164,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
             primaryLower.some(pa => (c.metadata.author || '').toLowerCase().includes(pa))
           ).length;
           const primaryRatio = corpusChunks.length > 0 ? primaryChunkCount / corpusChunks.length : 0;
-          if (primaryRatio < 0.3) {
+          if (primaryRatio < GOLD_STANDARD_CONFIG.primaryRatioThreshold) {
             // Find which specific primary authors are under-represented
             primaryUnderCoverage = primaryAuthors.filter(author => {
               const count = corpusChunks.filter(c =>
@@ -2541,7 +2543,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
 
           content = await this.generateViaClaudeCode(agentSelection.prompt, {
             model: options.whitelistMode ? 'claude-opus-4-6' : 'claude-sonnet-4-20250514',
-            maxTokens: options.whitelistMode ? 16384 : undefined, // Gold standard needs more tokens (~6K words + appendix)
+            maxTokens: options.whitelistMode ? GOLD_STANDARD_CONFIG.opusMaxTokens : undefined, // Gold standard needs more tokens (~6K words + appendix)
           });
 
           goldLog(`Generation complete: ${content.split(/\s+/).length} words`);
@@ -3201,7 +3203,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
         // Same logic as legacy: multi-query retrieval + diversity + trimming + KUs + style
         goldLog('v2: Multi-query retrieval + style + single-shot generation...');
         subsections = this.extractSemanticRetrievalQueries(topic);
-        const targetChunks = options.corpusChunkCount ?? 28;
+        const targetChunks = options.corpusChunkCount ?? GOLD_STANDARD_CONFIG.targetChunks;
         const retrievalOpts: RetrievalOptions = {
           collections: options.corpusCollections || [],
           minRelevance: options.corpusMinRelevance ?? 0.0,
@@ -3257,7 +3259,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
 
           // Phase 1d: Chunk trimming
           for (const chunk of corpusChunks) {
-            if (chunk.content) chunk.content = this.trimChunkContent(chunk.content, 450);
+            if (chunk.content) chunk.content = this.trimChunkContent(chunk.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
           }
 
           // Phase 1e: Attention reordering
@@ -3276,7 +3278,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
                   const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
                   if (!seenIds.has(id)) {
                     seenIds.add(id);
-                    if (c.content) c.content = this.trimChunkContent(c.content, 450);
+                    if (c.content) c.content = this.trimChunkContent(c.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
                     corpusChunks.push(c);
                   }
                 }
@@ -3293,7 +3295,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
               primaryLower.some(pa => (c.metadata.author || '').toLowerCase().includes(pa))
             ).length;
             const primaryRatio = corpusChunks.length > 0 ? primaryChunkCount / corpusChunks.length : 0;
-            if (primaryRatio < 0.3) {
+            if (primaryRatio < GOLD_STANDARD_CONFIG.primaryRatioThreshold) {
               primaryUnderCoverage = primaryAuthors.filter(author => {
                 const count = corpusChunks.filter(c =>
                   (c.metadata.author || '').toLowerCase().includes(author.toLowerCase())
@@ -3315,8 +3317,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
             const lines = fs.readFileSync(kuPath, 'utf-8').split('\n').filter(Boolean);
             const allKUs = lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
             const topicLower = topic.toLowerCase();
-            const domainKeywords = ['aristotle', 'heidegger', 'plato', 'phantasia', 'kinesis', 'time', 'chronos',
-              'perception', 'aisthesis', 'rhetoric', 'being', 'motion', 'stimmung', 'dasein', 'imagination'];
+            const domainKeywords = getDomainKeywords(loadDomainConfig());
             const relevantDomains = domainKeywords.filter(d => topicLower.includes(d));
             const relevant = allKUs.filter((ku: any) =>
               relevantDomains.some(d => (ku.claim || ku.content || '').toLowerCase().includes(d))
@@ -3388,7 +3389,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
 
         let v1Content: string;
         try {
-          v1Content = await this.generateViaClaudeCode(v1Prompt, { model: 'claude-opus-4-6', maxTokens: 16384 });
+          v1Content = await this.generateViaClaudeCode(v1Prompt, { model: 'claude-opus-4-6', maxTokens: GOLD_STANDARD_CONFIG.opusMaxTokens });
         } catch (e) {
           recordDegraded(ctx, 'drafting', `V1 generation failed: ${e}, falling back to single-shot`);
           v1Content = '';
@@ -3453,7 +3454,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
                   const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
                   if (!existingIds.has(id)) {
                     existingIds.add(id);
-                    if (c.content) c.content = this.trimChunkContent(c.content, 450);
+                    if (c.content) c.content = this.trimChunkContent(c.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
                     corpusChunks.push(c);
                   }
                 }
@@ -3473,10 +3474,10 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ 350 words, ≥
 
       // Generate
       try {
-        content = await this.generateViaClaudeCode(goldPrompt, { model: 'claude-opus-4-6', maxTokens: 16384 });
+        content = await this.generateViaClaudeCode(goldPrompt, { model: 'claude-opus-4-6', maxTokens: GOLD_STANDARD_CONFIG.opusMaxTokens });
       } catch (e) {
         recordDegraded(ctx, 'drafting', `Claude Code failed: ${e}, trying Anthropic API`);
-        content = await this.generateViaAnthropicAPI(goldPrompt, { model: 'claude-opus-4-6', maxTokens: 16384 });
+        content = await this.generateViaAnthropicAPI(goldPrompt, { model: 'claude-opus-4-6', maxTokens: GOLD_STANDARD_CONFIG.opusMaxTokens });
       }
     } else {
       // Non-whitelist: build writing instructions + generate
