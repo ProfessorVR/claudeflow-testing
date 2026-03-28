@@ -184,23 +184,21 @@ async function storeToMemory(
   value: unknown,
   namespace: string = DEFAULT_CONFIG.memoryNamespace
 ): Promise<boolean> {
-  const { exec } = await import('child_process');
+  const { execFile } = await import('child_process');
   const { promisify } = await import('util');
-  const execAsync = promisify(exec);
+  const execFileAsync = promisify(execFile);
 
   try {
     const jsonValue = JSON.stringify(value);
-    // Escape single quotes in JSON for shell safety
-    const escapedValue = jsonValue.replace(/'/g, "'\\''");
-
-    const command = `npx claude-flow memory store "${key}" '${escapedValue}' --namespace "${namespace}"`;
 
     if (process.env.PHD_CLI_DEBUG) {
       console.error(`[MEMORY] Storing: ${key} (${jsonValue.length} bytes)`);
     }
 
-    await execAsync(command, {
-      timeout: 10000, // 10 second timeout
+    await execFileAsync('npx', [
+      'claude-flow', 'memory', 'store', key, jsonValue, '--namespace', namespace
+    ], {
+      timeout: 10000,
       cwd: process.cwd(),
     });
 
@@ -227,14 +225,14 @@ async function retrieveFromMemory(
   key: string,
   namespace: string = DEFAULT_CONFIG.memoryNamespace
 ): Promise<unknown | null> {
-  const { exec } = await import('child_process');
+  const { execFile } = await import('child_process');
   const { promisify } = await import('util');
-  const execAsync = promisify(exec);
+  const execFileAsync = promisify(execFile);
 
   try {
-    const command = `npx claude-flow memory retrieve "${key}" --namespace "${namespace}"`;
-
-    const { stdout } = await execAsync(command, {
+    const { stdout } = await execFileAsync('npx', [
+      'claude-flow', 'memory', 'retrieve', key, '--namespace', namespace
+    ], {
       timeout: 10000,
       cwd: process.cwd(),
     });

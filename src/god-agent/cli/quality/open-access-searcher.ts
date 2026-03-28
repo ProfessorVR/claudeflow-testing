@@ -400,9 +400,21 @@ export class OpenAccessSearcher {
   /**
    * HTTP GET helper
    */
-  private httpGet(url: string): Promise<string> {
+  private static readonly ALLOWED_HOSTS = new Set([
+    'api.semanticscholar.org',
+    'archive.org',
+    'philpapers.org',
+  ]);
+
+  private httpGet(url: string, maxBytes: number = 512 * 1024): Promise<string> {
     return new Promise((resolve, reject) => {
       const parsedUrl = new URL(url);
+
+      if (!OpenAccessSearcher.ALLOWED_HOSTS.has(parsedUrl.hostname)) {
+        reject(new Error(`Host not allowed: ${parsedUrl.hostname}`));
+        return;
+      }
+
       const request = https.get(url, {
         timeout: this.config.timeout,
         headers: {
@@ -415,7 +427,16 @@ export class OpenAccessSearcher {
         }
 
         let data = '';
-        response.on('data', chunk => data += chunk);
+        let receivedBytes = 0;
+        response.on('data', (chunk: Buffer | string) => {
+          receivedBytes += typeof chunk === 'string' ? Buffer.byteLength(chunk) : chunk.length;
+          if (receivedBytes > maxBytes) {
+            request.destroy();
+            reject(new Error(`Response exceeded ${maxBytes} bytes`));
+            return;
+          }
+          data += chunk;
+        });
         response.on('end', () => resolve(data));
       });
 

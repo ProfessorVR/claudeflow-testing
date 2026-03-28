@@ -23,6 +23,7 @@ import {
   type GetCitationResult,
   type GetFullSectionResult,
   type ListAvailableSourcesResult,
+  type SourceListItem,
   type ToolExecutionStats,
   type SearchResultItem,
 } from './tool-result-types.js';
@@ -62,8 +63,8 @@ export const DEFAULT_EXECUTOR_CONFIG: ToolExecutorConfig = {
 };
 
 /**
- * Mock citation database for demonstration
- * In production, this would be connected to actual corpus
+ * Mock citation database — TEST ONLY.
+ * Not used in production paths. Retained for unit test fixtures.
  */
 const MOCK_CITATIONS: Record<string, GetCitationResult> = {
   'heidegger-being-time-1962': {
@@ -293,8 +294,8 @@ export class ToolExecutor {
       // Fall through to mock
     }
 
-    // Fallback to mock citations
-    const citation = MOCK_CITATIONS[sourceId] || this.parseCitationString(citationStr, sourceId);
+    // Use real corpus citation; mock citations are for testing only
+    const citation = this.parseCitationString(citationStr, sourceId);
 
     if (!citation) {
       return { tool: 'getCitation', data: null };
@@ -367,14 +368,10 @@ export class ToolExecutor {
     const typeFilter = (args.type as 'primary' | 'secondary' | 'all') || 'all';
     const limit = (args.limit as number) || 20;
 
-    // Get sources from mock database
-    let sources = Object.values(MOCK_CITATIONS).map((c) => ({
-      sourceId: c.sourceId,
-      author: c.author,
-      title: c.title,
-      year: c.year,
-      type: c.type,
-    }));
+    // ColdContextAccessor has no list/metadata API — RetrievedChunk only contains
+    // content + source + relevanceScore, not the structured fields SourceListItem needs.
+    // Return empty until a proper corpus listing API is added.
+    let sources: SourceListItem[] = [];
 
     // Apply type filter
     if (typeFilter !== 'all') {
