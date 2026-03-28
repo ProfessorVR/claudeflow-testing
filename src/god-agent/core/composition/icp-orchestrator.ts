@@ -224,7 +224,7 @@ export class ICPOrchestrator {
     if (this.retrievedChunks.length > 0) {
       this.corpusConstraint = buildCorpusConstraint(this.retrievedChunks, {
         enforcement: 'strict',
-        minRelevance: 0.5,
+        minRelevance: 0.0,
       });
     }
 

@@ -366,7 +366,7 @@ export class QuotationFidelityValidator {
         closestDistance = distance;
         closestCitation = {
           author: match[1],
-          year: parseInt(match[2], 10),
+          year: Math.abs(parseInt(match[2], 10)),
           pageRef: match[3]?.trim(),
         };
       }

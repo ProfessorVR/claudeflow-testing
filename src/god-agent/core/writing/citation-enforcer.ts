@@ -198,6 +198,11 @@ export class CitationEnforcer {
     // Use quotation-corrected content for citation enforcement
     content = quotationCorrectedContent;
 
+    // WRIT-C4 fix: Re-run validation on the CORRECTED content so positions are accurate.
+    // The original validation ran against pre-correction content; using those positions
+    // for replacement on post-correction content caused offset mismatches.
+    const updatedValidation = await this.validator.validate(content, validationOptions);
+
     // Phase 8: Validate claim grounding (paraphrase verification)
     let claimGrounding: ClaimGroundingValidationResult | undefined;
     let ungroundedClaimsCount = 0;
@@ -213,11 +218,11 @@ export class CitationEnforcer {
           action: 'rejected',
           content: '',
           originalContent: content,
-          validation,
+          validation: updatedValidation,
           correctionsCount: 0,
-          missingPageNumbersCount: validation.missingPageNumbers.length,
+          missingPageNumbersCount: updatedValidation.missingPageNumbers.length,
           passed: false,
-          report: this.generateReport('rejected', validation, [], quotationFidelity, claimGrounding),
+          report: this.generateReport('rejected', updatedValidation, [], quotationFidelity, claimGrounding),
           correctedCitations: [],
           quotationFidelity,
           quotationsCorrectionsCount,
@@ -228,10 +233,10 @@ export class CitationEnforcer {
     }
 
     // Determine action based on mode and results
-    if (validation.hallucinated.length === 0) {
+    if (updatedValidation.hallucinated.length === 0) {
       // All citations valid - check quotation fidelity and claim grounding
-      const quotationPassed = !quotationFidelity || quotationFidelity.fidelityRate >= 0.95;
-      const claimsPassed = !claimGrounding || claimGrounding.groundingRate >= 0.8;
+      const quotationPassed = !quotationFidelity || quotationFidelity.fidelityRate >= (this.config.quotationMinSimilarity ?? 0.95);
+      const claimsPassed = !claimGrounding || claimGrounding.groundingRate >= (this.config.claimMinTopicOverlap ?? 0.3);
       const allPassed = quotationPassed && claimsPassed;
 
       // Determine appropriate action
@@ -244,11 +249,11 @@ export class CitationEnforcer {
         action,
         content,
         originalContent: content,
-        validation,
+        validation: updatedValidation,
         correctionsCount: quotationsCorrectionsCount,
-        missingPageNumbersCount: validation.missingPageNumbers.length,
+        missingPageNumbersCount: updatedValidation.missingPageNumbers.length,
         passed: allPassed,
-        report: this.generateReport(action, validation, [], quotationFidelity, claimGrounding),
+        report: this.generateReport(action, updatedValidation, [], quotationFidelity, claimGrounding),
         correctedCitations: [],
         quotationFidelity,
         quotationsCorrectionsCount,
@@ -261,19 +266,19 @@ export class CitationEnforcer {
     let result: EnforcementResult;
     switch (this.config.mode) {
       case 'strict':
-        result = this.handleStrict(content, validation, quotationFidelity, claimGrounding);
+        result = this.handleStrict(content, updatedValidation, quotationFidelity, claimGrounding);
         break;
 
       case 'auto-correct':
-        result = await this.handleAutoCorrect(content, validation, validationOptions, quotationFidelity, claimGrounding);
+        result = await this.handleAutoCorrect(content, updatedValidation, validationOptions, quotationFidelity, claimGrounding);
         break;
 
       case 'warn':
-        result = this.handleWarn(content, validation, quotationFidelity, claimGrounding);
+        result = this.handleWarn(content, updatedValidation, quotationFidelity, claimGrounding);
         break;
 
       default:
-        result = await this.handleAutoCorrect(content, validation, validationOptions, quotationFidelity, claimGrounding);
+        result = await this.handleAutoCorrect(content, updatedValidation, validationOptions, quotationFidelity, claimGrounding);
     }
 
     // Add quotation fidelity and claim grounding results to the result

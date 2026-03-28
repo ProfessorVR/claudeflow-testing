@@ -253,15 +253,15 @@ export async function loadCorpusManifest(options?: LoadManifestOptions): Promise
     }
 
     const author = entry.meta.author_raw;
-    const year = entry.meta.year ?? 0;
+    const year = entry.meta.year ?? undefined;
     const title = entry.meta.title_raw ?? 'Unknown Title';
 
     sources.push({
       author,
-      year,
+      year: year ?? 0,
       title,
       docId: entry.doc_id,
-      citationKey: generateCitationKey(author, year),
+      citationKey: generateCitationKey(author, year ?? 0),
     });
   }
 
@@ -304,10 +304,11 @@ export function validateCitation(
       const sourceLastName = source.citationKey?.split(' ')[0]?.toLowerCase() ||
         source.author.split(',')[0].toLowerCase();
 
-      if (sourceLastName.includes(authorPart) || authorPart.includes(sourceLastName)) {
+      const isSubstringMatch = sourceLastName.includes(authorPart) || authorPart.includes(sourceLastName);
+      if (authorPart.length < 4 ? sourceLastName === authorPart : isSubstringMatch) {
         // If year is 4 digits, validate it matches
         if (yearOrPage.length === 4) {
-          if (Math.abs(source.year) === year || source.year === year) {
+          if (source.year == null || source.year === 0 || Math.abs(source.year) === year || source.year === year) {
             return { valid: true, matchedSource: source };
           }
         } else {
@@ -330,7 +331,8 @@ export function validateCitation(
       const sourceLastName = source.citationKey?.split(' ')[0]?.toLowerCase() ||
         source.author.split(',')[0].toLowerCase();
 
-      if (sourceLastName.includes(authorPart) || authorPart.includes(sourceLastName)) {
+      const isSubstringMatch = sourceLastName.includes(authorPart) || authorPart.includes(sourceLastName);
+      if (authorPart.length < 4 ? sourceLastName === authorPart : isSubstringMatch) {
         return { valid: true, matchedSource: source };
       }
     }

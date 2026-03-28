@@ -546,13 +546,23 @@ export class CitationValidator {
   /**
    * Normalize author name for matching
    */
+  private static readonly SURNAME_PREFIXES = new Set([
+    'von', 'de', 'van', 'di', 'du', 'le', 'la', 'el', 'al', 'bin', 'ibn',
+  ]);
+
   private normalizeAuthor(author: string): string {
     // Handle "Last, First" format
     if (author.includes(',')) {
       return author.split(',')[0].trim().toLowerCase();
     }
-    // Handle "First Last" format - take last word
+    // Handle "First Last" format — account for compound surnames with prefixes
     const parts = author.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      const secondToLast = parts[parts.length - 2].toLowerCase();
+      if (CitationValidator.SURNAME_PREFIXES.has(secondToLast)) {
+        return parts[parts.length - 1].toLowerCase();
+      }
+    }
     return parts[parts.length - 1].toLowerCase();
   }
 
