@@ -872,7 +872,7 @@ export class ICPPipelineAdapter {
       await this.generateRollingContext(
         session, config, topic, subsections, chunks,
         knowledgeUnits, structuralEdges, stylePrompt,
-        manifestAuthors, wsEmit,
+        manifestAuthors, wsEmit, abortSignal,
       );
     } else {
       // --- BASIC SINGLE-PASS (no investigation) ---
@@ -1015,6 +1015,7 @@ export class ICPPipelineAdapter {
     stylePrompt: string,
     manifestAuthors: string[],
     wsEmit?: (event: string, data: any) => void,
+    abortSignal?: AbortSignal,
   ): Promise<void> {
     // If multiStepDrafting is on, generate v1 first for investigation
     let preventionPlan: InvestigationResult['preventionPlan'] | undefined;

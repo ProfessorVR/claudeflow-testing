@@ -242,7 +242,7 @@ export class TrainingHistoryManager {
     };
 
     // RULE-072: Database operations MUST retry on failure (max 3 attempts)
-    withRetrySync(
+    return withRetrySync(
       () => this.insertStmt!.run(params),
       { operationName: 'TrainingHistoryManager.recordBatch' }
     );

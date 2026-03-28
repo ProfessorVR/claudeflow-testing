@@ -195,6 +195,11 @@ export class ICPOrchestrator {
    * Run the full ICP pipeline.
    */
   async run(userPrompt: string, sourceScope: SourceScopeSpec): Promise<ICPPipelineResult> {
+    // Reset per-run state to prevent cross-run leakage (COMP-C1)
+    this.corpusConstraint = undefined;
+    this.retrievedChunks = [];
+    this.stylePromptCache = undefined;
+
     const allBlockReasons: BlockReason[] = [];
 
     // =========================================================================
