@@ -29,6 +29,8 @@ export class FallbackGraph implements IGraphBackend {
   private dataFile: string;
   private lockTimeout: number;
   private enablePersistence: boolean;
+  private dirty = false;
+  private flushTimer: NodeJS.Timeout | null = null;
 
   constructor(dataDir: string = '.agentdb/graphs', lockTimeout: number = 5000, enablePersistence: boolean = true) {
     this.nodes = new Map();
@@ -40,10 +42,30 @@ export class FallbackGraph implements IGraphBackend {
     this.enablePersistence = enablePersistence;
   }
 
+  private scheduleFlush(): void {
+    this.dirty = true;
+    if (!this.flushTimer) {
+      this.flushTimer = setTimeout(() => {
+        this.flushTimer = null;
+        this.save().catch(err => console.warn('[FallbackGraph] Flush failed:', err));
+      }, 500);
+    }
+  }
+
+  async close(): Promise<void> {
+    if (this.flushTimer) {
+      clearTimeout(this.flushTimer);
+      this.flushTimer = null;
+    }
+    if (this.dirty) {
+      this.scheduleFlush();
+    }
+  }
+
   // Node Operations
   async insertNode(node: INode): Promise<void> {
     this.nodes.set(node.id, node);
-    await this.save();
+    this.scheduleFlush();
   }
 
   async getNode(id: NodeID): Promise<INode | null> {
@@ -62,12 +84,12 @@ export class FallbackGraph implements IGraphBackend {
     };
 
     this.nodes.set(id, updatedNode);
-    await this.save();
+    this.scheduleFlush();
   }
 
   async deleteNode(id: NodeID): Promise<void> {
     this.nodes.delete(id);
-    await this.save();
+    this.scheduleFlush();
   }
 
   async getAllNodes(): Promise<INode[]> {
@@ -81,7 +103,7 @@ export class FallbackGraph implements IGraphBackend {
   // Edge Operations
   async insertEdge(edge: IEdge): Promise<void> {
     this.edges.set(edge.id, edge);
-    await this.save();
+    this.scheduleFlush();
   }
 
   async getEdge(id: EdgeID): Promise<IEdge | null> {
@@ -105,7 +127,7 @@ export class FallbackGraph implements IGraphBackend {
 
   async deleteEdge(id: EdgeID): Promise<void> {
     this.edges.delete(id);
-    await this.save();
+    this.scheduleFlush();
   }
 
   async getAllEdges(): Promise<IEdge[]> {
@@ -115,7 +137,7 @@ export class FallbackGraph implements IGraphBackend {
   // Hyperedge Operations
   async insertHyperedge(hyperedge: IHyperedge | ITemporalHyperedge): Promise<void> {
     this.hyperedges.set(hyperedge.id, hyperedge);
-    await this.save();
+    this.scheduleFlush();
   }
 
   async getHyperedge(id: HyperedgeID): Promise<IHyperedge | ITemporalHyperedge | null> {
@@ -128,7 +150,7 @@ export class FallbackGraph implements IGraphBackend {
 
   async deleteHyperedge(id: HyperedgeID): Promise<void> {
     this.hyperedges.delete(id);
-    await this.save();
+    this.scheduleFlush();
   }
 
   async getAllHyperedges(): Promise<(IHyperedge | ITemporalHyperedge)[]> {
@@ -140,7 +162,7 @@ export class FallbackGraph implements IGraphBackend {
     this.nodes.clear();
     this.edges.clear();
     this.hyperedges.clear();
-    await this.save();
+    this.scheduleFlush();
   }
 
   // Persistence Operations
@@ -181,7 +203,10 @@ export class FallbackGraph implements IGraphBackend {
           }
         });
 
-        await fs.writeFile(this.dataFile, jsonData, 'utf-8');
+        const tmpPath = this.dataFile + '.tmp';
+        await fs.writeFile(tmpPath, jsonData, 'utf-8');
+        await fs.rename(tmpPath, this.dataFile);
+        this.dirty = false;
       } finally {
         if (release) await release();
       }

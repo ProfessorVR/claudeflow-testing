@@ -595,9 +595,10 @@ export class WritePipelineOrchestrator {
     const mid = sorted.slice(third, third * 2);    // Medium relevance
     const bottom = sorted.slice(third * 2);        // Lower relevance
 
-    // Place top at start, bottom (still somewhat relevant) in middle, mid at end
-    // This gives edges the highest-value content
-    return [...top, ...bottom, ...mid];
+    // [high, ..., high] pattern: split top into two halves, place at both edges
+    // This exploits LLM attention bias toward sequence start and end
+    const topHalf = Math.ceil(top.length / 2);
+    return [...top.slice(0, topHalf), ...mid, ...bottom, ...top.slice(topHalf)];
   }
 
   // ===== Corpus Constraint Prompt Builder =====
@@ -794,7 +795,7 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
       // Conclusion gets fewer words, other sections share equally
       const conclusionIdx = options.subsections.findIndex(s => /conclusion/i.test(s));
       const conclusionWords = 200;
-      const regularSections = options.subsections.length - (conclusionIdx >= 0 ? 1 : 0);
+      const regularSections = Math.max(1, options.subsections.length - (conclusionIdx >= 0 ? 1 : 0));
       const wordsPerSection = Math.round((totalTarget - (conclusionIdx >= 0 ? conclusionWords : 0)) / regularSections);
 
       taskSection += `### Required Sections (${options.wordTarget} words total — ~${wordsPerSection} words per section)\n`;
@@ -2414,7 +2415,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
     const uniqueSources = new Set(corpusChunks.map(c => c.metadata?.author ?? c.metadata?.source_id ?? 'unknown')).size;
     // Gold standard mode skips inline validation — uses single-shot generation like the original.
     // Post-generation verification handles citation checking instead.
-    const shouldUseInlineValidation = options.whitelistMode ? false : (options.useInlineValidation ?? hasUsableCorpus);
+    const shouldUseInlineValidation = (options.whitelistMode || (options as Record<string, unknown>).rollingContext) ? false : (options.useInlineValidation ?? hasUsableCorpus);
 
     // Log activation decision for debuggability
     const inlineReason = options.useInlineValidation === false

@@ -180,7 +180,7 @@ export class UsageTracker extends EventEmitter {
     const percentUsed = (totalUsage / contextWindow) * 100;
 
     // Warning threshold (80%)
-    const warningThreshold = this.config.warningThreshold ?? 0.8;
+    const warningThreshold = (this.config.warningThreshold ?? 0.8) * 100;
     const warningKey = `warning-${phase}`;
 
     if (percentUsed >= warningThreshold && !this.warningEmitted.has(warningKey)) {

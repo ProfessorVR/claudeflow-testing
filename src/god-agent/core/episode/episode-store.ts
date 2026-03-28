@@ -249,9 +249,6 @@ export class EpisodeStore {
         for (const targetId of linkedEpisodes) {
           this.insertLinkStmt!.run(episode.id, targetId, 'semantic', linkCreatedAt);
         }
-
-        // Insert embedding to vector index
-        this.vectorBackend!.insert(episode.id, episode.embedding);
       });
 
       // Execute transaction with retry (RULE-072: database operations must retry)
@@ -259,6 +256,9 @@ export class EpisodeStore {
         () => transaction(),
         { operationName: 'EpisodeStore.createEpisode' }
       );
+
+      // Insert embedding to vector index AFTER SQL transaction commits successfully
+      this.vectorBackend!.insert(episode.id, episode.embedding);
 
       if (this.verbose) {
         console.log(`[EpisodeStore] Created episode ${id} for task ${options.taskId}`);

@@ -79,7 +79,7 @@ export function scrubNonCorpusAuthors(
   let removedCount = 0;
 
   // Split into sentences for targeted removal
-  const sentences = content.split(/(?<=[.!?])\s+/);
+  const sentences = content.split(/(?<=[.!?]) +(?=[A-Z"\u201c])/);
   const cleanSentences: string[] = [];
 
   for (const sentence of sentences) {
