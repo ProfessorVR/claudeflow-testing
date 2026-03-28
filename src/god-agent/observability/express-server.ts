@@ -15,6 +15,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 import Database from 'better-sqlite3';
+import { WebSocketServer, WebSocket } from 'ws';
 import { IActivityStream } from './activity-stream.js';
 import { IAgentExecutionTracker } from './agent-tracker.js';
 import { IPipelineTracker } from './pipeline-tracker.js';
@@ -154,6 +155,13 @@ export class ExpressServer implements IExpressServer {
   // Daemon start time for uptime calculation
   private startTime: number = 0;
 
+  // WebSocket server for ICP generation streaming
+  private wss: WebSocketServer | null = null;
+  // Active ICP generation abort controllers: sessionId → AbortController
+  private icpAbortControllers = new Map<string, AbortController>();
+  // Active ICP generation WebSocket clients: sessionId → Set<WebSocket>
+  private icpSessionClients = new Map<string, Set<WebSocket>>();
+
   /**
    * Create a new ExpressServer
    * @param dependencies Server dependencies
@@ -167,8 +175,8 @@ export class ExpressServer implements IExpressServer {
     this.eventStore = dependencies.eventStore;
     this.sseBroadcaster = dependencies.sseBroadcaster;
 
-    // TIER-1.3: Get defaults from centralized config (RULE-OBS-006: Bind to localhost)
-    this.host = config?.host || getConfig<string>('services.observe.host', '127.0.0.1');
+    // TIER-1.3: Bind '::' for dual-stack IPv4+IPv6 (Brave resolves localhost → ::1 first)
+    this.host = config?.host || getConfig<string>('services.observe.host', '::');
     this.verbose = config?.verbose || getConfig<boolean>('logging.verbose', false);
 
     // Initialize Express app
@@ -344,7 +352,7 @@ export class ExpressServer implements IExpressServer {
     app.get('/', this.serveDashboard.bind(this));
 
     // 1b. ICP Pipeline API routes
-    app.use('/api/icp', createICPRouter());
+    app.use('/api/icp', createICPRouter({ server: this }));
 
     // 2. SSE event stream
     app.get('/api/stream', this.handleSSE.bind(this));
@@ -542,6 +550,9 @@ export class ExpressServer implements IExpressServer {
 
     // 54. God Write delete history entry
     app.delete('/api/god-write/history/:jobId', this.deleteGodWriteHistory.bind(this));
+
+    // 54b. God Write history feedback (soak instrumentation)
+    app.patch('/api/god-write/history/:jobId/feedback', this.patchGodWriteHistoryFeedback.bind(this));
 
     // 55. God Write source download
     app.post('/api/god-write/sources/download', this.downloadGodWriteSource.bind(this));
@@ -2756,8 +2767,11 @@ export class ExpressServer implements IExpressServer {
           this.port = port;
         }
 
+        // Initialize WebSocket server on the same HTTP server
+        this.setupICPWebSocket();
+
         if (this.verbose) {
-          log.info('Server started', { url: `http://${this.host}:${this.port}` });
+          log.info('Server started', { url: `http://${this.host}:${this.port}`, ws: true });
         }
         resolve();
       });
@@ -3144,6 +3158,9 @@ export class ExpressServer implements IExpressServer {
           endnotes: result.endnotes ?? null,
           sourceVerification: result.sourceVerification ?? null,
           citationEnforcement: result.citationEnforcement ?? null,
+          pipelineHealth: result.pipelineHealth ?? 'unknown',
+          multiStepDiagnostics: result.multiStepDiagnostics ?? null,
+          rollingContext: result.rollingContext ?? null,
         },
         trajectoryId: parsed.trajectoryId,
         generatedAt: new Date().toISOString(),
@@ -3224,10 +3241,28 @@ export class ExpressServer implements IExpressServer {
 
     // Endnotes
     if (flags.enableEndnotes) args.push('--enable-endnotes');
+    if (flags.maxQuotationsPerEndnote) args.push('--max-quotations-per-endnote', String(flags.maxQuotationsPerEndnote));
+    if (flags.minEndnoteRelevance)     args.push('--min-endnote-relevance', String(flags.minEndnoteRelevance));
 
     // Staged composition
     if (flags.useStagedComposition) args.push('--use-staged-composition');
     if (flags.chapterOutline)      args.push('--chapter-outline', JSON.stringify(flags.chapterOutline));
+
+    // Whitelist mode (gold-standard corpus constraint)
+    if (flags.whitelistMode) args.push('--whitelist');
+
+    // Pipeline version (v2 staged pipeline)
+    if (flags.pipelineVersion === 'v2') args.push('--pipeline-version', 'v2');
+
+    // Multi-step drafting (v1 → investigate → prevention → v2)
+    if (flags.multiStep) args.push('--multi-step');
+
+    // Rolling context generation (per-section with sliding window)
+    if (flags.rollingContext) args.push('--rolling-context');
+
+    // Advanced flags
+    if (flags.nliVerify)          args.push('--nli-verify');
+    if (flags.candidateSelection) args.push('--candidate-selection');
 
     return args;
   }
@@ -3469,7 +3504,9 @@ export class ExpressServer implements IExpressServer {
         qualityScore: row.quality_score, wordCount: row.word_count,
         citations: row.citations_json ? JSON.parse(row.citations_json) : null,
         createdAt: row.created_at, completedAt: row.completed_at,
-        durationMs: row.duration_ms, trajectoryId: row.trajectory_id
+        durationMs: row.duration_ms, trajectoryId: row.trajectory_id,
+        neededResteering: !!row.needed_resteering,
+        resteeringNotes: row.resteering_notes || null,
       }));
 
       res.json({ jobs, total, hasMore: offset + limit < total });
@@ -3491,6 +3528,27 @@ export class ExpressServer implements IExpressServer {
       res.json({ success: true });
     } catch (error: any) {
       res.status(500).json({ error: error.message || 'Failed to delete' });
+    }
+  }
+
+  /**
+   * PATCH /api/god-write/history/:jobId/feedback - Soak instrumentation
+   * Records whether a job needed manual re-steering and what constraint was missing.
+   */
+  private patchGodWriteHistoryFeedback(req: Request, res: Response): void {
+    const { jobId } = req.params;
+    const { neededResteering, resteeringNotes } = req.body;
+    try {
+      const db = new Database(LEARNING_DB_PATH);
+      // Ensure columns exist (safe ALTER — SQLite ignores if already present)
+      try { db.exec('ALTER TABLE god_write_history ADD COLUMN needed_resteering INTEGER DEFAULT 0'); } catch { /* column exists */ }
+      try { db.exec('ALTER TABLE god_write_history ADD COLUMN resteering_notes TEXT'); } catch { /* column exists */ }
+      db.prepare('UPDATE god_write_history SET needed_resteering = ?, resteering_notes = ? WHERE job_id = ?')
+        .run(neededResteering ? 1 : 0, resteeringNotes || null, jobId);
+      db.close();
+      res.json({ ok: true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message || 'Failed to save feedback' });
     }
   }
 
@@ -4458,6 +4516,14 @@ export class ExpressServer implements IExpressServer {
         return;
       }
 
+      // Close WebSocket server first
+      if (this.wss) {
+        this.wss.close();
+        this.wss = null;
+      }
+      this.icpAbortControllers.clear();
+      this.icpSessionClients.clear();
+
       this.server.close(() => {
         if (this.verbose) {
           log.info('Server stopped');
@@ -4481,6 +4547,113 @@ export class ExpressServer implements IExpressServer {
    */
   public getPort(): number {
     return this.port;
+  }
+
+  // ===========================================================================
+  // ICP WebSocket — Generation Streaming + Abort
+  // ===========================================================================
+
+  /**
+   * Set up WebSocket server on the same HTTP server.
+   * Handles /ws/icp path for ICP generation streaming.
+   */
+  private setupICPWebSocket(): void {
+    if (!this.server) return;
+
+    this.wss = new WebSocketServer({ server: this.server, path: '/ws/icp' });
+
+    this.wss.on('connection', (ws: WebSocket) => {
+      let subscribedSessionId: string | null = null;
+
+      ws.on('message', (raw: Buffer | string) => {
+        try {
+          const msg = JSON.parse(typeof raw === 'string' ? raw : raw.toString('utf-8'));
+
+          if (msg.type === 'subscribe' && typeof msg.sessionId === 'string') {
+            // Subscribe this client to a session's generation events
+            subscribedSessionId = msg.sessionId;
+            if (!this.icpSessionClients.has(msg.sessionId)) {
+              this.icpSessionClients.set(msg.sessionId, new Set());
+            }
+            this.icpSessionClients.get(msg.sessionId)!.add(ws);
+            ws.send(JSON.stringify({ type: 'subscribed', sessionId: msg.sessionId }));
+          }
+
+          if (msg.type === 'abort' && typeof msg.sessionId === 'string') {
+            // Abort an active generation
+            const controller = this.icpAbortControllers.get(msg.sessionId);
+            if (controller) {
+              controller.abort();
+              log.info('ICP generation aborted via WebSocket', { sessionId: msg.sessionId });
+            } else {
+              ws.send(JSON.stringify({
+                type: 'error',
+                message: 'No active generation to abort',
+                sessionId: msg.sessionId,
+              }));
+            }
+          }
+        } catch {
+          // Ignore malformed messages
+        }
+      });
+
+      ws.on('close', () => {
+        // Clean up subscription
+        if (subscribedSessionId) {
+          const clients = this.icpSessionClients.get(subscribedSessionId);
+          if (clients) {
+            clients.delete(ws);
+            if (clients.size === 0) {
+              this.icpSessionClients.delete(subscribedSessionId);
+            }
+          }
+        }
+      });
+    });
+
+    log.info('ICP WebSocket server initialized', { path: '/ws/icp' });
+  }
+
+  /**
+   * Create an abort controller for an ICP generation session.
+   * Returns the AbortSignal to pass to the adapter.
+   */
+  public createICPAbortController(sessionId: string): AbortSignal {
+    const controller = new AbortController();
+    this.icpAbortControllers.set(sessionId, controller);
+    return controller.signal;
+  }
+
+  /**
+   * Clean up an abort controller after generation completes.
+   */
+  public cleanupICPAbortController(sessionId: string): void {
+    this.icpAbortControllers.delete(sessionId);
+  }
+
+  /**
+   * Create a wsEmit function that broadcasts to all clients subscribed to a session.
+   */
+  public createICPEmitter(sessionId: string): (event: string, data: unknown) => void {
+    return (event: string, data: unknown) => {
+      const clients = this.icpSessionClients.get(sessionId);
+      if (!clients || clients.size === 0) return;
+
+      const message = JSON.stringify({ type: event, sessionId, data, ts: new Date().toISOString() });
+      Array.from(clients).forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+          try { client.send(message); } catch { /* client gone */ }
+        }
+      });
+    };
+  }
+
+  /**
+   * Get the WebSocket server instance (for testing).
+   */
+  public getWSS(): WebSocketServer | null {
+    return this.wss;
   }
 }
 

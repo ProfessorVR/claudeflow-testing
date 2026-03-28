@@ -36,6 +36,17 @@ import { AutoVerifier } from '../core/composition/auto-verifier.js';
 import { SmartRetrievalLayer } from '../retrieval/smart-retrieval-layer.js';
 import { StyleProfileManager } from '../universal/style-profile.js';
 import { ICPProviderFactory, type ICPFactoryResult } from '../core/composition/icp-provider-factory.js';
+import {
+  buildGoldStandardPrompt,
+  type GoldStandardPromptOptions,
+} from '../universal/gold-standard-prompt-builder.js';
+import { GOLD_STANDARD_CONFIG } from '../universal/gold-standard-config.js';
+import { loadDomainConfig } from '../universal/domain-config.js';
+import {
+  ICPPipelineAdapter,
+  getDefaultAdapterConfig,
+  type ICPAdapterConfig,
+} from '../core/composition/icp-pipeline-adapter.js';
 
 // Load .env for ANTHROPIC_API_KEY (Fix 26: shell may have truncated key; .env has full 108-char key)
 try {
@@ -82,6 +93,16 @@ async function getFactoryResult(): Promise<ICPFactoryResult> {
 // =============================================================================
 
 const sessions = new Map<string, ICPSession>();
+
+let _adapter: ICPPipelineAdapter | null = null;
+function getAdapter(): ICPPipelineAdapter {
+  if (!_adapter) {
+    _adapter = new ICPPipelineAdapter({
+      anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    });
+  }
+  return _adapter;
+}
 
 // Diagnostic: check factory state (temporary)
 const _envKeyLength = process.env.ANTHROPIC_API_KEY?.length ?? 0;
@@ -168,6 +189,12 @@ function serializeSession(session: ICPSession): Record<string, unknown> {
     draft_category: session.draft_category,
     corpus_folder: session.corpus_folder,
     quality_gates: session.quality_gates,
+    pipeline_phase: session.pipeline_phase,
+    investigation_results: session.investigation_results,
+    section_summaries: session.section_summaries,
+    trajectory_id: session.trajectory_id,
+    adapter_config: session.adapter_config,
+    corrected_text: session.corrected_text ? Object.fromEntries(session.corrected_text) : undefined,
   };
 }
 
@@ -178,8 +205,17 @@ function serializeSession(session: ICPSession): Record<string, unknown> {
 /**
  * Create the ICP API router.
  * Mount at `/api/icp` in the parent express app.
+ * @param options Optional server reference for WebSocket streaming + abort
  */
-export function createICPRouter(): Router {
+export interface ICPRouterOptions {
+  server?: {
+    createICPEmitter(sessionId: string): (event: string, data: unknown) => void;
+    createICPAbortController(sessionId: string): AbortSignal;
+    cleanupICPAbortController(sessionId: string): void;
+  };
+}
+
+export function createICPRouter(options?: ICPRouterOptions): Router {
   const router = Router();
 
   // =========================================================================
@@ -406,19 +442,30 @@ export function createICPRouter(): Router {
       const execFileAsync = promisify(execFile);
 
       const highlightText = typeof req.query.highlight === 'string' ? req.query.highlight : '';
+      const bboxesParam = typeof req.query.bboxes === 'string' ? req.query.bboxes : '';
       const tmpOutput = path.join(os.tmpdir(), `icp-pdf-${req.params.docId}-${pageNum}-${Date.now()}.png`);
 
       if (highlightText) {
         // Use PyMuPDF to render with highlighted text (searches adjacent pages too)
+        // Falls back to chunk-level bboxes (light blue) if text search fails
         const scriptPath = path.join(process.cwd(), 'scripts', 'pdf', 'highlight-page.py');
-        const { stdout } = await execFileAsync('python3', [
+        const scriptArgs = [
           scriptPath, pdfPath, String(pageNum), tmpOutput, highlightText, '300',
-        ], { timeout: 20000 });
+        ];
+        if (bboxesParam) {
+          scriptArgs.push('--fallback-bboxes', bboxesParam);
+        }
+        const { stdout } = await execFileAsync('python3', scriptArgs, { timeout: 20000 });
         // If text was found on an adjacent page, include that info in a header
         const foundMatch = stdout.match(/FOUND_ON_PAGE:(\d+)/);
         if (foundMatch) {
           res.setHeader('X-ICP-Actual-Page', foundMatch[1]);
         }
+        // Forward match type: 'text', 'bbox-fallback', or 'none'
+        const matchType = stdout.includes('MATCH_TYPE:text') ? 'text'
+          : stdout.includes('MATCH_TYPE:bbox-fallback') ? 'bbox-fallback'
+          : 'none';
+        res.setHeader('X-ICP-Match-Type', matchType);
       } else {
         // Use pdftoppm for plain rendering (no highlight)
         const tmpPrefix = path.join(os.tmpdir(), `icp-pdf-${req.params.docId}-${pageNum}`);
@@ -1103,6 +1150,148 @@ export function createICPRouter(): Router {
   });
 
   // =========================================================================
+  // GOLD STANDARD PROMPT BUILDER (unified with CLI pipeline)
+  // =========================================================================
+
+  /**
+   * POST /api/icp/build-gold-prompt/:sessionId — Build a gold-standard prompt
+   *
+   * Uses the SAME buildGoldStandardPrompt() as the CLI pipeline, ensuring
+   * identical MLA citation rules, style profile injection, grounding constraints,
+   * source diversity requirements, and structural relationships.
+   *
+   * Body params (all optional — sensible defaults from session):
+   *   - wordTarget: string (e.g., "3,000-3,500")
+   *   - subsections: string[] (section titles; auto-derived from topic if omitted)
+   *   - knowledgeUnits: string[]
+   *   - structuralEdges: string[]
+   *   - preventionPlan: { blacklistedAuthors, strengthenedConstraints, underCitedSources, overCitedSources }
+   *   - sectionConstraints: string[]
+   */
+  router.post('/build-gold-prompt/:sessionId', async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req.params.sessionId, res);
+      if (!session) return;
+
+      const {
+        wordTarget = session.desired_word_count || '3,000-3,500',
+        subsections,
+        knowledgeUnits = [],
+        structuralEdges = [],
+        preventionPlan,
+        sectionConstraints = [],
+      } = req.body || {};
+
+      // Convert session quote_spans to ContextChunk format for the prompt builder
+      const chunks = session.quote_spans.map((span, idx) => {
+        const pageNum = Array.isArray(span.page) ? span.page[0] : (span.page ?? 0);
+        const pageEnd = Array.isArray(span.page) ? span.page[1] : pageNum;
+        return {
+          id: span.quote_id || `chunk-${idx}`,
+          content: span.text,
+          relevanceScore: span.auto_confidence ?? 0.5,
+          metadata: {
+            author: span.doc_id.split('/').pop()?.replace(/\.[^.]+$/, '') || 'Unknown',
+            title: span.doc_id.split('/').pop()?.replace(/\.[^.]+$/, '') || 'Unknown',
+            year: 0,
+            page_start: pageNum,
+            page_end: pageEnd,
+            chunk_id: span.quote_id || `chunk-${idx}`,
+          },
+        };
+      }) as any[];
+
+      // Derive subsections from topic if not provided
+      let finalSubsections = subsections;
+      if (!finalSubsections || finalSubsections.length === 0) {
+        // Try to extract from the prompt text (numbered lines or markdown headings)
+        const lines = session.prompt_spec.original_prompt.split('\n').map((l: string) => l.trim()).filter(Boolean);
+        finalSubsections = lines
+          .filter((l: string) => /^\d+\.\s+/.test(l))
+          .map((l: string) => l.replace(/^\d+\.\s+/, '').trim());
+        if (finalSubsections.length === 0) {
+          finalSubsections = lines
+            .filter((l: string) => /^#{1,3}\s+/.test(l))
+            .map((l: string) => l.replace(/^#{1,3}\s+/, '').trim());
+        }
+      }
+
+      // Load reasoning edges if not provided
+      let finalEdges = structuralEdges;
+      if (finalEdges.length === 0) {
+        try {
+          const edgePath = path.join(process.cwd(), 'god-reason', 'reasoning.jsonl');
+          if (fs.existsSync(edgePath)) {
+            const edgeLines = fs.readFileSync(edgePath, 'utf-8').split('\n').filter(Boolean);
+            const allEdges = edgeLines.map((l: string) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+            const topicLower = session.prompt_spec.original_prompt.toLowerCase();
+            const topicTerms = topicLower.split(/\s+/).filter((t: string) => t.length > 3);
+            const relevantEdges = allEdges.filter((e: any) => {
+              const src = (e.source || '').toLowerCase().replace(/_/g, ' ');
+              const tgt = (e.target || '').toLowerCase().replace(/_/g, ' ');
+              return topicTerms.some((t: string) => src.includes(t) || tgt.includes(t) || t.includes(src) || t.includes(tgt));
+            });
+            relevantEdges.sort((a: any, b: any) => (b.corroboration_score || 1) - (a.corroboration_score || 1));
+            finalEdges = relevantEdges.slice(0, 30).map((e: any) =>
+              `- ${e.source} ${(e.relation || 'relates_to').toUpperCase()} ${e.target}` +
+              (e.pipeline ? ` (${e.pipeline})` : '') +
+              (e.corroboration_score && e.corroboration_score > 1 ? ` [corroborated]` : '')
+            );
+          }
+        } catch { /* edge loading is best-effort */ }
+      }
+
+      // Load knowledge units if not provided
+      let finalKUs = knowledgeUnits;
+      if (finalKUs.length === 0) {
+        try {
+          const kuPath = path.join(process.cwd(), 'god-learn', 'knowledge.jsonl');
+          if (fs.existsSync(kuPath)) {
+            const kuLines = fs.readFileSync(kuPath, 'utf-8').split('\n').filter(Boolean);
+            finalKUs = kuLines.slice(0, 10).map((l: string) => {
+              try {
+                const ku = JSON.parse(l);
+                return `- [${ku.id}] ${ku.claim || ku.content || ''}`;
+              } catch { return ''; }
+            }).filter(Boolean);
+          }
+        } catch { /* KU loading is best-effort */ }
+      }
+
+      const promptOptions: GoldStandardPromptOptions = {
+        topic: session.prompt_spec.original_prompt,
+        subsections: finalSubsections,
+        chunks,
+        knowledgeUnits: finalKUs,
+        structuralEdges: finalEdges,
+        stylePrompt: session.style_prompt || '',
+        wordTarget,
+        preventionPlan,
+        sectionConstraints,
+      };
+
+      const prompt = buildGoldStandardPrompt(promptOptions);
+
+      res.json({
+        prompt,
+        metadata: {
+          wordTarget,
+          sectionCount: finalSubsections.length,
+          chunkCount: chunks.length,
+          knowledgeUnitCount: finalKUs.length,
+          structuralEdgeCount: finalEdges.length,
+          styleProfileApplied: !!session.style_prompt,
+          promptLength: prompt.length,
+          estimatedTokens: Math.ceil(prompt.length / 4),
+        },
+      });
+    } catch (error: any) {
+      log.error('Failed to build gold standard prompt', error);
+      res.status(500).json({ error: 'Failed to build prompt', details: error.message });
+    }
+  });
+
+  // =========================================================================
   // EXPORT ENDPOINTS
   // =========================================================================
 
@@ -1286,6 +1475,212 @@ export function createICPRouter(): Router {
     } catch (error: any) {
       res.status(500).json({ error: 'Failed to update facet', details: error.message });
     }
+  });
+
+  // ===========================================================================
+  // ADAPTER ENDPOINTS (Convergence Plan — multi-step + rolling context)
+  // ===========================================================================
+
+  /**
+   * POST /api/icp/adapter/generate/:sessionId — Run adapter-based generation
+   * Body: { config?: Partial<ICPAdapterConfig> }
+   *
+   * Runs the full god-write generation pipeline via ICPPipelineAdapter:
+   * - Chunk trimming + attention reordering
+   * - Multi-step drafting (v1 → investigate → v2) if enabled
+   * - Rolling context (section-by-section) if enabled
+   * - Streams progress via WebSocket if available
+   */
+  router.post('/adapter/generate/:sessionId', async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req.params.sessionId, res);
+      if (!session) return;
+
+      const adapter = getAdapter();
+      const userConfig = req.body?.config || {};
+      const config: ICPAdapterConfig = { ...getDefaultAdapterConfig(), ...userConfig };
+
+      // Store config in session for reproducibility
+      session.adapter_config = config as any;
+
+      const sessionId = req.params.sessionId;
+
+      // Build emit function: WS broadcast if server available, otherwise collect events
+      const events: Array<{ event: string; data: any }> = [];
+      const wsEmit = options?.server
+        ? (() => {
+            const serverEmit = options.server!.createICPEmitter(sessionId);
+            return (event: string, data: any) => {
+              events.push({ event, data });
+              serverEmit(event, data);
+            };
+          })()
+        : (event: string, data: any) => { events.push({ event, data }); };
+
+      // Create AbortController if server available
+      const abortSignal = options?.server
+        ? options.server.createICPAbortController(sessionId)
+        : undefined;
+
+      try {
+        await adapter.generate(session, config, wsEmit, abortSignal);
+      } finally {
+        // Always clean up abort controller
+        if (options?.server) options.server.cleanupICPAbortController(sessionId);
+      }
+
+      res.json({
+        sessionId,
+        pipeline_phase: session.pipeline_phase,
+        investigation_results: session.investigation_results,
+        generated_text: Object.fromEntries(session.generated_text),
+        section_summaries: session.section_summaries,
+        quality_gates: session.quality_gates,
+        events,
+      });
+    } catch (error: any) {
+      // Clean up abort controller on error path too
+      if (options?.server) options.server.cleanupICPAbortController(req.params.sessionId);
+      log.error('Adapter generate failed', error);
+      res.status(500).json({ error: 'Adapter generation failed', details: error.message });
+    }
+  });
+
+  /**
+   * POST /api/icp/adapter/regenerate/:sessionId — Re-generate with prevention plan
+   * Requires session to be in INVESTIGATED phase (v1 analyzed)
+   */
+  router.post('/adapter/regenerate/:sessionId', async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req.params.sessionId, res);
+      if (!session) return;
+
+      if (session.pipeline_phase !== 'INVESTIGATED') {
+        res.status(400).json({
+          error: 'Session must be in INVESTIGATED phase to regenerate',
+          current_phase: session.pipeline_phase,
+        });
+        return;
+      }
+
+      const adapter = getAdapter();
+      const config: ICPAdapterConfig = {
+        ...getDefaultAdapterConfig(),
+        ...(session.adapter_config || {}),
+      } as ICPAdapterConfig;
+
+      const sessionId = req.params.sessionId;
+      const events: Array<{ event: string; data: any }> = [];
+      const wsEmit = options?.server
+        ? (() => {
+            const serverEmit = options.server!.createICPEmitter(sessionId);
+            return (event: string, data: any) => { events.push({ event, data }); serverEmit(event, data); };
+          })()
+        : (event: string, data: any) => { events.push({ event, data }); };
+      const abortSignal = options?.server ? options.server.createICPAbortController(sessionId) : undefined;
+
+      try {
+        await adapter.regenerateV2(session, config, wsEmit, abortSignal);
+      } finally {
+        if (options?.server) options.server.cleanupICPAbortController(sessionId);
+      }
+
+      res.json({
+        sessionId: req.params.sessionId,
+        pipeline_phase: session.pipeline_phase,
+        generated_text: Object.fromEntries(session.generated_text),
+        events,
+      });
+    } catch (error: any) {
+      log.error('Adapter regenerate failed', error);
+      res.status(500).json({ error: 'Adapter regeneration failed', details: error.message });
+    }
+  });
+
+  /**
+   * POST /api/icp/adapter/validate/:sessionId — Run all quality gates
+   * Runs: author scrubbing, APA stripping, endnote leaks, prose sanitization
+   */
+  router.post('/adapter/validate/:sessionId', async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req.params.sessionId, res);
+      if (!session) return;
+
+      const adapter = getAdapter();
+      const config: ICPAdapterConfig = {
+        ...getDefaultAdapterConfig(),
+        ...(session.adapter_config || {}),
+      } as ICPAdapterConfig;
+
+      await adapter.validate(session, config);
+
+      res.json({
+        sessionId: req.params.sessionId,
+        pipeline_phase: session.pipeline_phase,
+        quality_gates: session.quality_gates,
+        generated_text: Object.fromEntries(session.generated_text),
+      });
+    } catch (error: any) {
+      log.error('Adapter validate failed', error);
+      res.status(500).json({ error: 'Adapter validation failed', details: error.message });
+    }
+  });
+
+  /**
+   * POST /api/icp/adapter/feedback/:sessionId — Submit SoNA trajectory feedback
+   * Body: { correctedText?: Record<string, string> }
+   */
+  router.post('/adapter/feedback/:sessionId', async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req.params.sessionId, res);
+      if (!session) return;
+
+      // Store user corrections if provided
+      if (req.body?.correctedText) {
+        session.corrected_text = new Map(Object.entries(req.body.correctedText));
+      }
+
+      const adapter = getAdapter();
+      await adapter.submitFeedback(session);
+
+      res.json({
+        sessionId: req.params.sessionId,
+        trajectory_id: session.trajectory_id,
+        message: 'Feedback submitted to SoNA trajectory system',
+      });
+    } catch (error: any) {
+      log.error('Adapter feedback failed', error);
+      res.status(500).json({ error: 'Feedback submission failed', details: error.message });
+    }
+  });
+
+  /**
+   * GET /api/icp/adapter/cost-estimate — Estimate token cost for given config
+   * Query: config params as JSON string, sectionCount
+   */
+  router.get('/adapter/cost-estimate', (req: Request, res: Response) => {
+    try {
+      const adapter = getAdapter();
+      const configStr = typeof req.query.config === 'string' ? req.query.config : '{}';
+      const sectionCount = parseInt(typeof req.query.sectionCount === 'string' ? req.query.sectionCount : '5', 10);
+
+      let userConfig: Partial<ICPAdapterConfig> = {};
+      try { userConfig = JSON.parse(configStr); } catch { /* use defaults */ }
+
+      const config: ICPAdapterConfig = { ...getDefaultAdapterConfig(), ...userConfig };
+      const estimate = adapter.estimateCost(config, sectionCount);
+
+      res.json({ estimate, config });
+    } catch (error: any) {
+      res.status(500).json({ error: 'Cost estimation failed', details: error.message });
+    }
+  });
+
+  /**
+   * GET /api/icp/adapter/config-defaults — Get default ICPAdapterConfig
+   */
+  router.get('/adapter/config-defaults', (_req: Request, res: Response) => {
+    res.json({ defaults: getDefaultAdapterConfig() });
   });
 
   return router;

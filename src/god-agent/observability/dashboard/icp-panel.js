@@ -66,9 +66,11 @@ function initICPPanel(container) {
       <div class="icp-nav">
         <button class="icp-nav-btn active" data-panel="prompt" onclick="icpSwitchPanel('prompt')">Prompt</button>
         <button class="icp-nav-btn" data-panel="evidence" onclick="icpSwitchPanel('evidence')">Evidence</button>
+        <button class="icp-nav-btn" data-panel="investigation" onclick="icpSwitchPanel('investigation')">Investigation</button>
         <button class="icp-nav-btn" data-panel="binding" onclick="icpSwitchPanel('binding')">Binding</button>
         <button class="icp-nav-btn" data-panel="stress" onclick="icpSwitchPanel('stress')">Stress Test</button>
         <button class="icp-nav-btn" data-panel="planner" onclick="icpSwitchPanel('planner')">Planner</button>
+        <button class="icp-nav-btn" data-panel="gen-progress" onclick="icpSwitchPanel('gen-progress')">Gen Progress</button>
         <button class="icp-nav-btn" data-panel="heatmap" onclick="icpSwitchPanel('heatmap')">Heatmap</button>
         <button class="icp-nav-btn" data-panel="diff" onclick="icpSwitchPanel('diff')">Corpus Diff</button>
         <button class="icp-nav-btn" data-panel="facets" onclick="icpSwitchPanel('facets')">Facets</button>
@@ -256,8 +258,61 @@ function renderPromptPanel(container) {
           </select>
         </div>
 
+        <div class="icp-convergence-controls" style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <h4 style="margin: 0 0 12px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Pipeline Features</h4>
+          <div class="icp-checkbox-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <label class="icp-checkbox-label"><input type="checkbox" id="icp-multi-step" checked> Multi-Step Drafting</label>
+            <label class="icp-checkbox-label"><input type="checkbox" id="icp-rolling-context" ${session?.draft_category === 'chapter' || session?.draft_category === 'paper' ? 'checked' : ''}> Rolling Context</label>
+            <label class="icp-checkbox-label"><input type="checkbox" id="icp-chunk-optimization" checked> Chunk Optimization</label>
+            <label class="icp-checkbox-label"><input type="checkbox" id="icp-kg-boosting" checked> KG Boosting</label>
+            <label class="icp-checkbox-label"><input type="checkbox" id="icp-knowledge-units" checked> Knowledge Units</label>
+            <label class="icp-checkbox-label"><input type="checkbox" id="icp-structural-edges" checked> Structural Edges</label>
+            <label class="icp-checkbox-label"><input type="checkbox" id="icp-author-scrubbing" checked> Author Scrubbing</label>
+            <label class="icp-checkbox-label"><input type="checkbox" id="icp-conclusion-summaries" checked> Conclusion Summaries</label>
+            <label class="icp-checkbox-label"><input type="checkbox" id="icp-inline-validation"> Inline Validation</label>
+            <label class="icp-checkbox-label"><input type="checkbox" id="icp-quality-gauntlet"> Quality Gauntlet</label>
+            <label class="icp-checkbox-label"><input type="checkbox" id="icp-revision-loop"> Revision Loop</label>
+            <label class="icp-checkbox-label"><input type="checkbox" id="icp-page-context"> Page Context Expansion</label>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+            <div class="icp-form-group">
+              <label>Grounding Strictness</label>
+              <select id="icp-grounding-strictness" class="icp-select">
+                <option value="strict" selected>Strict</option>
+                <option value="moderate">Moderate</option>
+                <option value="permissive">Permissive</option>
+              </select>
+            </div>
+            <div class="icp-form-group">
+              <label>Cost Tier</label>
+              <select id="icp-cost-tier" class="icp-select">
+                <option value="high" selected>High (Anthropic)</option>
+                <option value="low">Low (vLLM)</option>
+              </select>
+            </div>
+          </div>
+          <details class="icp-advanced-settings" style="margin-top: 12px;">
+            <summary style="cursor: pointer; font-size: 12px; color: var(--text-secondary);">Advanced Settings</summary>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+              <div class="icp-form-group"><label>Chunk Trim Target</label><input type="number" id="icp-chunk-trim" value="450" class="icp-input" min="100" max="1000"></div>
+              <div class="icp-form-group"><label>Shared Pool Size</label><input type="number" id="icp-shared-pool" value="5" class="icp-input" min="1" max="15"></div>
+              <div class="icp-form-group"><label>Context Window</label><input type="number" id="icp-context-window" value="2" class="icp-input" min="1" max="5"></div>
+              <div class="icp-form-group"><label>Section Words</label><input type="number" id="icp-section-words" value="700" class="icp-input" min="300" max="1500"></div>
+              <div class="icp-form-group"><label>Max Chunks/Source</label><input type="number" id="icp-max-chunks-source" value="8" class="icp-input" min="1" max="20"></div>
+              <div class="icp-form-group"><label>Relevance Floor</label><input type="number" id="icp-relevance-floor" value="0.25" class="icp-input" min="0" max="1" step="0.05"></div>
+              <div class="icp-form-group"><label>Over-Citation %</label><input type="number" id="icp-overcitation" value="40" class="icp-input" min="10" max="80"></div>
+              <div class="icp-form-group"><label>Token Ceiling</label><input type="number" id="icp-token-ceiling" value="12000" class="icp-input" min="4000" max="30000"></div>
+            </div>
+          </details>
+          <div id="icp-cost-estimator" class="icp-cost-estimator" style="margin-top: 12px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; font-size: 12px; display: none;">
+            <div style="font-weight: 600; margin-bottom: 6px;">Estimated Cost</div>
+            <div id="icp-cost-breakdown"></div>
+          </div>
+        </div>
+
         <div class="icp-prompt-actions">
           <button id="icp-run-btn" onclick="icpCreateSession()" class="btn btn-primary btn-run">Run Pipeline</button>
+          <button class="icp-btn icp-btn-primary" onclick="icpAdapterGenerate()" style="margin-left: 8px;">Generate (Adapter)</button>
           <div id="icp-pipeline-status" class="icp-pipeline-status"></div>
         </div>
       </div>
@@ -370,9 +425,11 @@ function icpSwitchPanel(panel) {
 
   const renderers = {
     evidence: renderEvidencePanel,
+    investigation: icpRenderInvestigationPanel,
     binding: renderBindingPanel,
     stress: renderStressPanel,
     planner: renderPlannerPanel,
+    'gen-progress': icpRenderGenerationProgressPanel,
     heatmap: renderHeatmapPanel,
     diff: renderDiffPanel,
     facets: renderFacetPanel,
@@ -650,6 +707,7 @@ function icpOpenQuoteDetail(quoteId) {
     html += '        <div class="icp-pdf-nav">';
     html += '          <button onclick="icpPdfPageNav(\'' + spanDocId + '\', ' + (page - 1) + ')" class="btn btn-sm"' + (page <= 1 ? ' disabled' : '') + '>Prev</button>';
     html += '          <span id="icp-pdf-page-label">Page ' + page + '</span>';
+    html += '          <span id="icp-match-type-badge" class="icp-match-badge" style="display:none"></span>';
     html += '          <button onclick="icpPdfPageNav(\'' + spanDocId + '\', ' + (page + 1) + ')" class="btn btn-sm">Next</button>';
     html += '        </div>';
     html += '      </div>';
@@ -669,8 +727,10 @@ function icpOpenQuoteDetail(quoteId) {
       }
     }).catch(function() { /* doc info unavailable */ });
 
-    // Load the PDF page image with highlighted quote text
-    icpLoadPdfPage(docId, page, spanText);
+    // Load the PDF page image with highlighted quote text + bbox fallback
+    var spanBboxes = span.bboxes || span.chunk_bboxes || null;
+    var spanSourceMethod = span.source_method || null;
+    icpLoadPdfPage(docId, page, spanText, spanBboxes, spanSourceMethod);
 
     // Load rich text formatting + footnotes asynchronously
     icpLoadPdfMeta(docId, page, spanText);
@@ -679,7 +739,7 @@ function icpOpenQuoteDetail(quoteId) {
   }
 }
 
-function icpLoadPdfPage(docId, page, highlightText) {
+function icpLoadPdfPage(docId, page, highlightText, bboxes, sourceMethod) {
   var viewer = document.getElementById('icp-pdf-viewer');
   var label = document.getElementById('icp-pdf-page-label');
   if (!viewer) return;
@@ -688,17 +748,34 @@ function icpLoadPdfPage(docId, page, highlightText) {
   if (label) label.textContent = 'Page ' + page;
 
   var url = '/api/icp/pdf-page/' + encodeURIComponent(docId) + '/' + page;
-  if (highlightText) {
-    url += '?highlight=' + encodeURIComponent(highlightText);
-  }
+  var params = [];
+  if (highlightText) params.push('highlight=' + encodeURIComponent(highlightText));
+  if (bboxes) params.push('bboxes=' + encodeURIComponent(typeof bboxes === 'string' ? bboxes : JSON.stringify(bboxes)));
+  if (params.length) url += '?' + params.join('&');
 
-  // Use fetch so we can read the X-ICP-Actual-Page header
+  // Use fetch so we can read response headers
   fetch(url).then(function(resp) {
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     // If the highlight was found on a different page, update the label
     var actualPage = resp.headers.get('X-ICP-Actual-Page');
     if (actualPage && label) {
       label.textContent = 'Page ' + actualPage + ' (text found here, requested ' + page + ')';
+    }
+    // Display match type badge
+    var matchType = resp.headers.get('X-ICP-Match-Type');
+    var badge = document.getElementById('icp-match-type-badge');
+    if (badge && matchType) {
+      if (matchType === 'text') {
+        badge.textContent = 'Exact Quote Match';
+        badge.className = 'icp-match-badge icp-match-exact';
+      } else if (matchType === 'bbox-fallback') {
+        badge.textContent = 'Structural Match (Paragraph)';
+        badge.className = 'icp-match-badge icp-match-structural';
+      } else {
+        badge.textContent = 'No Match';
+        badge.className = 'icp-match-badge icp-match-none';
+      }
+      badge.style.display = 'inline-block';
     }
     return resp.blob();
   }).then(function(blob) {
@@ -1512,6 +1589,91 @@ function renderQualityPanel(container, session) {
         ${endnotesHtml}
         ${checkpointsHtml}
         ${reviewHtml}
+
+        ${qg?.author_scrubbing ? `
+        <div class="quality-card quality-pass">
+          <div class="quality-card-header">
+            <span class="quality-icon">\u2713</span>
+            <h4>Author Scrubbing</h4>
+            <span class="quality-badge badge-pass">APPLIED</span>
+          </div>
+          <div class="quality-card-body">
+            <div class="quality-stats">
+              <div class="quality-stat">
+                <span class="stat-val">${qg.author_scrubbing.removedCount}</span>
+                <span class="stat-lbl">Removed</span>
+              </div>
+              <div class="quality-stat">
+                <span class="stat-val">${(qg.author_scrubbing.removedAuthors || []).join(', ') || 'None'}</span>
+                <span class="stat-lbl">Authors</span>
+              </div>
+            </div>
+          </div>
+        </div>` : ''}
+
+        ${qg?.apa_stripping ? `
+        <div class="quality-card quality-pass">
+          <div class="quality-card-header">
+            <span class="quality-icon">\u2713</span>
+            <h4>APA Citation Stripping</h4>
+            <span class="quality-badge badge-pass">APPLIED</span>
+          </div>
+          <div class="quality-card-body">
+            <div class="quality-stats">
+              <div class="quality-stat">
+                <span class="stat-val">${qg.apa_stripping.strippedCount}</span>
+                <span class="stat-lbl">Bare Citations Stripped</span>
+              </div>
+            </div>
+          </div>
+        </div>` : ''}
+
+        ${qg?.endnote_leaks ? `
+        <div class="quality-card quality-pass">
+          <div class="quality-card-header">
+            <span class="quality-icon">\u2713</span>
+            <h4>Endnote Leak Detection</h4>
+            <span class="quality-badge badge-pass">APPLIED</span>
+          </div>
+          <div class="quality-card-body">
+            <div class="quality-stats">
+              <div class="quality-stat">
+                <span class="stat-val">${qg.endnote_leaks.leaksRemoved}</span>
+                <span class="stat-lbl">Leaks Removed</span>
+              </div>
+            </div>
+          </div>
+        </div>` : ''}
+
+        ${qg?.investigation ? `
+        <div class="quality-card ${qg.investigation.hallucinatedAuthors.length === 0 ? 'quality-pass' : 'quality-fail'}">
+          <div class="quality-card-header">
+            <span class="quality-icon">${qg.investigation.hallucinatedAuthors.length === 0 ? '\u2713' : '\u2717'}</span>
+            <h4>Investigation</h4>
+            <span class="quality-badge ${qg.investigation.hallucinatedAuthors.length === 0 ? 'badge-pass' : 'badge-fail'}">${qg.investigation.hallucinatedAuthors.length === 0 ? 'CLEAN' : 'ISSUES'}</span>
+          </div>
+          <div class="quality-card-body">
+            <div class="quality-stats">
+              <div class="quality-stat ${qg.investigation.hallucinatedAuthors.length > 0 ? 'stat-warn' : ''}">
+                <span class="stat-val">${qg.investigation.hallucinatedAuthors.length}</span>
+                <span class="stat-lbl">Hallucinated</span>
+              </div>
+              <div class="quality-stat">
+                <span class="stat-val">${qg.investigation.phantomQuotations}</span>
+                <span class="stat-lbl">Phantom Quotes</span>
+              </div>
+              <div class="quality-stat ${qg.investigation.shortSections > 0 ? 'stat-warn' : ''}">
+                <span class="stat-val">${qg.investigation.shortSections}</span>
+                <span class="stat-lbl">Short Sections</span>
+              </div>
+            </div>
+          </div>
+        </div>` : ''}
+      </div>
+
+      <div class="icp-qg-actions" style="margin-top: 16px; display: flex; gap: 8px;">
+        <button class="icp-btn icp-btn-secondary" onclick="icpRunValidation()">Run All Gates</button>
+        <button class="icp-btn icp-btn-secondary" onclick="icpSubmitFeedback()">Submit Feedback to SoNA</button>
       </div>
     </div>
   `;
@@ -1545,11 +1707,11 @@ function renderExportPanel(container, session) {
     <div class="icp-export">
       <h3>Export</h3>
       ${qgSummary}
-      ${!hasText ? '<p class="muted">No generated text to export. Run the pipeline first.</p>' : `
-        <div class="export-controls">
-          <button onclick="icpExport()" class="btn btn-primary">Generate Export Package</button>
-        </div>
-      `}
+      <div class="export-controls">
+        <button onclick="icpBuildGoldPrompt()" class="btn btn-secondary">Preview Gold Standard Prompt</button>
+        ${hasText ? `<button onclick="icpExport()" class="btn btn-primary">Generate Export Package</button>` : '<p class="muted">No generated text to export. Run the pipeline first.</p>'}
+      </div>
+      <div id="gold-prompt-result"></div>
       ${manifest ? `
         <div class="export-manifest">
           <h4>Run Manifest</h4>
@@ -1562,6 +1724,45 @@ function renderExportPanel(container, session) {
       <div id="export-result"></div>
     </div>
   `;
+}
+
+async function icpBuildGoldPrompt() {
+  if (!icpState.currentSessionId) {
+    showICPError('No active session. Run the pipeline first.');
+    return;
+  }
+  const resultEl = document.getElementById('gold-prompt-result');
+  if (resultEl) resultEl.innerHTML = '<p class="muted">Building gold standard prompt...</p>';
+
+  try {
+    const session = icpState.session;
+    const data = await icpPost(`/build-gold-prompt/${icpState.currentSessionId}`, {
+      wordTarget: session?.desired_word_count || '3,000-3,500',
+    });
+
+    if (resultEl && data.prompt) {
+      const meta = data.metadata || {};
+      resultEl.innerHTML = `
+        <div class="gold-prompt-preview">
+          <h4>Gold Standard Prompt Preview</h4>
+          <div class="gold-prompt-meta">
+            <span>Sections: ${meta.sectionCount || '?'}</span>
+            <span>Chunks: ${meta.chunkCount || '?'}</span>
+            <span>KUs: ${meta.knowledgeUnitCount || '?'}</span>
+            <span>Edges: ${meta.structuralEdgeCount || '?'}</span>
+            <span>Style: ${meta.styleProfileApplied ? 'Applied' : 'None'}</span>
+            <span>~${meta.estimatedTokens?.toLocaleString() || '?'} tokens</span>
+            <span>${meta.promptLength?.toLocaleString() || '?'} chars</span>
+          </div>
+          <pre class="gold-prompt-text">${escapeHtml(data.prompt)}</pre>
+          <button onclick="navigator.clipboard.writeText(window._lastGoldPrompt).then(() => this.textContent = 'Copied!')" class="btn btn-secondary" style="margin-top:8px">Copy to Clipboard</button>
+        </div>
+      `;
+      window._lastGoldPrompt = data.prompt;
+    }
+  } catch (err) {
+    if (resultEl) resultEl.innerHTML = `<p class="error">Failed to build prompt: ${escapeHtml(err.message)}</p>`;
+  }
 }
 
 async function icpExport() {
@@ -1663,6 +1864,454 @@ function icpFilterEvents() {
     if (category && entry.dataset.category !== category) show = false;
     entry.style.display = show ? '' : 'none';
   });
+}
+
+// =============================================================================
+// PANEL: INVESTIGATION
+// =============================================================================
+
+function icpRenderInvestigationPanel(container, session) {
+  if (!session?.investigation_results) {
+    container.innerHTML = `
+      <div class="icp-empty-state">
+        <h3>Investigation Panel</h3>
+        <p>No investigation results yet. Run generation with Multi-Step Drafting enabled to see v1 analysis.</p>
+      </div>`;
+    return;
+  }
+
+  const inv = session.investigation_results;
+  const plan = inv.preventionPlan;
+  const stats = inv.stats;
+
+  // Group issues by severity
+  const critical = inv.issues.filter(i => i.severity === 'critical');
+  const major = inv.issues.filter(i => i.severity === 'major');
+  const minor = inv.issues.filter(i => i.severity === 'minor');
+
+  container.innerHTML = `
+    <div class="icp-investigation-panel">
+      <h3>v1 Investigation Results</h3>
+
+      <div class="icp-stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px;">
+        <div class="icp-stat-card"><div class="icp-stat-value">${stats.wordCount}</div><div class="icp-stat-label">Words</div></div>
+        <div class="icp-stat-card"><div class="icp-stat-value">${stats.citationCount}</div><div class="icp-stat-label">Citations</div></div>
+        <div class="icp-stat-card"><div class="icp-stat-value">${stats.quotationCount}</div><div class="icp-stat-label">Quotations</div></div>
+        <div class="icp-stat-card"><div class="icp-stat-value">${stats.sectionCount}</div><div class="icp-stat-label">Sections</div></div>
+      </div>
+
+      <div class="icp-issues-summary" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
+        <div class="icp-stat-card" style="border-left: 3px solid #e74c3c;"><div class="icp-stat-value">${critical.length}</div><div class="icp-stat-label">Critical</div></div>
+        <div class="icp-stat-card" style="border-left: 3px solid #f39c12;"><div class="icp-stat-value">${major.length}</div><div class="icp-stat-label">Major</div></div>
+        <div class="icp-stat-card" style="border-left: 3px solid #3498db;"><div class="icp-stat-value">${minor.length}</div><div class="icp-stat-label">Minor</div></div>
+      </div>
+
+      ${plan.blacklistedAuthors.length > 0 ? `
+      <div class="icp-investigation-section">
+        <h4>Blacklisted Authors (Hallucinated)</h4>
+        <div class="icp-chips">${plan.blacklistedAuthors.map(a => `<span class="icp-chip icp-chip-danger">${escapeHtml(a)}</span>`).join('')}</div>
+      </div>` : ''}
+
+      ${plan.overCitedSources.length > 0 ? `
+      <div class="icp-investigation-section">
+        <h4>Over-Cited Sources (&gt;40%)</h4>
+        <div class="icp-chips">${plan.overCitedSources.map(a => `<span class="icp-chip icp-chip-warning">${escapeHtml(a)}</span>`).join('')}</div>
+      </div>` : ''}
+
+      ${plan.underCitedSources.length > 0 ? `
+      <div class="icp-investigation-section">
+        <h4>Under-Cited Sources</h4>
+        <div class="icp-chips">${plan.underCitedSources.map(a => `<span class="icp-chip icp-chip-info">${escapeHtml(a)}</span>`).join('')}</div>
+      </div>` : ''}
+
+      ${plan.strengthenedConstraints.length > 0 ? `
+      <div class="icp-investigation-section">
+        <h4>Prevention Plan</h4>
+        <ul class="icp-constraint-list">${plan.strengthenedConstraints.map(c => `<li>${escapeHtml(c)}</li>`).join('')}</ul>
+      </div>` : ''}
+
+      ${inv.issues.length > 0 ? `
+      <div class="icp-investigation-section">
+        <h4>All Issues (${inv.issues.length})</h4>
+        <div class="icp-issues-list">
+          ${inv.issues.map(issue => `
+            <div class="icp-issue-card icp-issue-${safeAttr(issue.severity)}">
+              <span class="icp-issue-badge icp-badge-${safeAttr(issue.severity)}">${escapeHtml(issue.severity)}</span>
+              <span class="icp-issue-type">${escapeHtml(issue.type.replace(/-/g, ' '))}</span>
+              <div class="icp-issue-detail">${escapeHtml(issue.detail.length > 120 ? issue.detail.substring(0, 120) + '...' : issue.detail)}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>` : ''}
+
+      ${session.pipeline_phase === 'INVESTIGATED' ? `
+      <div style="margin-top: 16px; text-align: center;">
+        <button class="icp-btn icp-btn-primary" onclick="icpRegenerateV2()">Re-generate with Prevention Plan</button>
+      </div>` : ''}
+
+      <div class="icp-investigation-section" style="margin-top: 16px;">
+        <h4>Section Word Counts</h4>
+        <div class="icp-section-words">
+          ${stats.sectionWordCounts.map(s => `
+            <div class="icp-section-word-bar" style="display: flex; align-items: center; margin-bottom: 4px;">
+              <span class="icp-section-name" style="width: 200px; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(s.heading.substring(0, 40))}</span>
+              <div class="icp-progress-bar" style="flex: 1; margin: 0 8px; height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
+                <div class="icp-progress-fill" style="height: 100%; width: ${Math.min(100, (s.words / 700) * 100)}%; background: ${s.words < 350 ? '#e74c3c' : s.words < 500 ? '#f39c12' : '#2ecc71'}; border-radius: 4px;"></div>
+              </div>
+              <span class="icp-word-count" style="font-size: 12px; min-width: 50px; text-align: right;">${s.words}w</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+// =============================================================================
+// PANEL: GENERATION PROGRESS
+// =============================================================================
+
+function icpRenderGenerationProgressPanel(container, session) {
+  const phase = session?.pipeline_phase || 'CREATED';
+  const summaries = session?.section_summaries || [];
+  const genText = session?.generated_text || {};
+  const genEntries = typeof genText === 'object' ? Object.entries(genText) : [];
+
+  container.innerHTML = `
+    <div class="icp-generation-progress">
+      <h3>Generation Progress</h3>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+        <div class="icp-phase-badge icp-phase-${safeAttr(phase.toLowerCase())}" style="display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; background: var(--bg-tertiary);">${escapeHtml(phase)}</div>
+        <button id="icp-cancel-btn" class="icp-btn" style="display: none; background: #e74c3c; color: #fff; font-size: 12px; padding: 4px 12px;" onclick="icpAbortGeneration()">Cancel</button>
+      </div>
+
+      <div id="icp-ws-progress" class="icp-ws-progress" style="margin-bottom: 16px;"></div>
+
+      <div class="icp-gen-stats" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0;">
+        <div class="icp-stat-card"><div class="icp-stat-value">${genEntries.length}</div><div class="icp-stat-label">Sections</div></div>
+        <div class="icp-stat-card"><div class="icp-stat-value">${genEntries.reduce((sum, [,t]) => sum + (t || '').split(/\\s+/).length, 0)}</div><div class="icp-stat-label">Words</div></div>
+        <div class="icp-stat-card"><div class="icp-stat-value">${summaries.length}</div><div class="icp-stat-label">Summaries</div></div>
+      </div>
+
+      ${genEntries.length > 0 ? `
+      <div class="icp-gen-sections">
+        <h4>Generated Sections</h4>
+        ${genEntries.map(([key, text], idx) => `
+          <div class="icp-gen-section-card" style="margin-bottom: 12px; padding: 12px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+            <div class="icp-gen-section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span class="icp-gen-section-num" style="font-weight: 600;">Section ${idx + 1}</span>
+              <span class="icp-gen-section-words" style="font-size: 12px; color: var(--text-secondary);">${(text || '').split(/\\s+/).length} words</span>
+            </div>
+            <div class="icp-gen-section-preview" style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">${escapeHtml((text || '').substring(0, 200))}...</div>
+          </div>
+        `).join('')}
+      </div>` : `
+      <div class="icp-empty-state">
+        <p>No sections generated yet. Configure pipeline features and click "Generate (Adapter)".</p>
+      </div>`}
+    </div>`;
+}
+
+// =============================================================================
+// ADAPTER PIPELINE FUNCTIONS
+// =============================================================================
+
+function icpBuildAdapterConfig() {
+  return {
+    multiStepDrafting: document.getElementById('icp-multi-step')?.checked ?? true,
+    rollingContext: document.getElementById('icp-rolling-context')?.checked ?? false,
+    chunkOptimization: document.getElementById('icp-chunk-optimization')?.checked ?? true,
+    kgBoosting: document.getElementById('icp-kg-boosting')?.checked ?? true,
+    knowledgeUnits: document.getElementById('icp-knowledge-units')?.checked ?? true,
+    structuralEdges: document.getElementById('icp-structural-edges')?.checked ?? true,
+    authorScrubbing: document.getElementById('icp-author-scrubbing')?.checked ?? true,
+    conclusionSummaries: document.getElementById('icp-conclusion-summaries')?.checked ?? true,
+    inlineValidation: document.getElementById('icp-inline-validation')?.checked ?? false,
+    qualityGauntlet: document.getElementById('icp-quality-gauntlet')?.checked ?? false,
+    revisionLoop: document.getElementById('icp-revision-loop')?.checked ?? false,
+    pageContextExpansion: document.getElementById('icp-page-context')?.checked ?? false,
+    groundingStrictness: document.getElementById('icp-grounding-strictness')?.value ?? 'strict',
+    costTier: document.getElementById('icp-cost-tier')?.value ?? 'high',
+    chunkTrimTarget: parseInt(document.getElementById('icp-chunk-trim')?.value) || 450,
+    sharedPoolSize: parseInt(document.getElementById('icp-shared-pool')?.value) || 5,
+    rollingContextWindowSize: parseInt(document.getElementById('icp-context-window')?.value) || 2,
+    sectionWordTarget: parseInt(document.getElementById('icp-section-words')?.value) || 700,
+    conclusionWordTarget: 200,
+    maxChunksPerSource: parseInt(document.getElementById('icp-max-chunks-source')?.value) || 8,
+    relevanceFloor: parseFloat(document.getElementById('icp-relevance-floor')?.value) || 0.25,
+    overCitationThreshold: (parseInt(document.getElementById('icp-overcitation')?.value) || 40) / 100,
+    tokenBudgetCeiling: parseInt(document.getElementById('icp-token-ceiling')?.value) || 12000,
+    downgradeTokenTrigger: (parseInt(document.getElementById('icp-token-ceiling')?.value) || 12000) - 1500,
+  };
+}
+
+async function icpAdapterGenerate() {
+  const sessionId = window._icpSessionId || icpState.currentSessionId;
+  if (!sessionId) { alert('No active session. Run the pipeline first.'); return; }
+
+  const config = icpBuildAdapterConfig();
+  const btn = document.querySelector('[onclick="icpAdapterGenerate()"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Generating...'; }
+
+  // Show Cancel button and clear progress area
+  const cancelBtn = document.getElementById('icp-cancel-btn');
+  if (cancelBtn) { cancelBtn.style.display = 'inline-block'; cancelBtn.disabled = false; cancelBtn.textContent = 'Cancel'; }
+  const progressEl = document.getElementById('icp-ws-progress');
+  if (progressEl) progressEl.innerHTML = '';
+
+  // Subscribe to WS events for this session
+  icpWsSubscribe(sessionId);
+
+  try {
+    const resp = await fetch(`/api/icp/adapter/generate/${sessionId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ config }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || 'Generation failed');
+
+    // Refresh session
+    await icpRefreshSession(sessionId);
+
+    // If investigation results present, auto-switch to investigation panel
+    if (data.investigation_results && data.pipeline_phase === 'INVESTIGATED') {
+      icpSwitchPanel('investigation');
+    }
+  } catch (err) {
+    alert('Generation error: ' + err.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Generate (Adapter)'; }
+    if (cancelBtn) cancelBtn.style.display = 'none';
+  }
+}
+
+async function icpRegenerateV2() {
+  const sessionId = window._icpSessionId || icpState.currentSessionId;
+  if (!sessionId) return;
+
+  const btn = document.querySelector('[onclick="icpRegenerateV2()"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Regenerating...'; }
+
+  try {
+    const resp = await fetch(`/api/icp/adapter/regenerate/${sessionId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || 'Regeneration failed');
+    await icpRefreshSession();
+  } catch (err) {
+    alert('Regeneration error: ' + err.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Re-generate with Prevention Plan'; }
+  }
+}
+
+async function icpRunValidation() {
+  const sessionId = window._icpSessionId || icpState.currentSessionId;
+  if (!sessionId) return;
+
+  try {
+    const resp = await fetch(`/api/icp/adapter/validate/${sessionId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || 'Validation failed');
+    await icpRefreshSession();
+  } catch (err) {
+    alert('Validation error: ' + err.message);
+  }
+}
+
+async function icpSubmitFeedback() {
+  const sessionId = window._icpSessionId || icpState.currentSessionId;
+  if (!sessionId) return;
+
+  try {
+    const resp = await fetch(`/api/icp/adapter/feedback/${sessionId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || 'Feedback failed');
+    alert('Feedback submitted. Trajectory ID: ' + (data.trajectory_id || 'N/A'));
+  } catch (err) {
+    alert('Feedback error: ' + err.message);
+  }
+}
+
+// =============================================================================
+// WEBSOCKET — Generation Streaming + Abort
+// =============================================================================
+
+/** @type {WebSocket|null} */
+let _icpWs = null;
+let _icpWsReconnectTimer = null;
+
+/**
+ * Connect to ICP WebSocket for real-time generation events.
+ * Auto-reconnects on disconnect.
+ */
+function icpConnectWebSocket() {
+  if (_icpWs && _icpWs.readyState === WebSocket.OPEN) return;
+
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const wsUrl = `${protocol}//${window.location.host}/ws/icp`;
+
+  try {
+    _icpWs = new WebSocket(wsUrl);
+  } catch (err) {
+    console.warn('[ICP WS] Connection failed:', err.message);
+    return;
+  }
+
+  _icpWs.onopen = () => {
+    console.log('[ICP WS] Connected');
+    // Subscribe to current session if one is active
+    if (window._icpSessionId) {
+      _icpWs.send(JSON.stringify({ type: 'subscribe', sessionId: window._icpSessionId }));
+    }
+  };
+
+  _icpWs.onmessage = (event) => {
+    try {
+      const msg = JSON.parse(event.data);
+      icpHandleWsEvent(msg);
+    } catch { /* ignore parse errors */ }
+  };
+
+  _icpWs.onclose = () => {
+    console.log('[ICP WS] Disconnected');
+    _icpWs = null;
+    // Reconnect after 5 seconds
+    if (!_icpWsReconnectTimer) {
+      _icpWsReconnectTimer = setTimeout(() => {
+        _icpWsReconnectTimer = null;
+        icpConnectWebSocket();
+      }, 5000);
+    }
+  };
+
+  _icpWs.onerror = () => {
+    // onclose will fire after onerror, so reconnect is handled there
+  };
+}
+
+/**
+ * Subscribe to a session's generation events over WebSocket.
+ */
+function icpWsSubscribe(sessionId) {
+  if (_icpWs && _icpWs.readyState === WebSocket.OPEN) {
+    _icpWs.send(JSON.stringify({ type: 'subscribe', sessionId }));
+  }
+}
+
+/**
+ * Send abort command over WebSocket.
+ */
+function icpAbortGeneration() {
+  const sessionId = window._icpSessionId;
+  if (!sessionId) return;
+
+  if (_icpWs && _icpWs.readyState === WebSocket.OPEN) {
+    _icpWs.send(JSON.stringify({ type: 'abort', sessionId }));
+    const btn = document.getElementById('icp-cancel-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Aborting...'; }
+  } else {
+    alert('WebSocket not connected. Cannot abort.');
+  }
+}
+
+/**
+ * Handle incoming WebSocket events for ICP generation.
+ */
+function icpHandleWsEvent(msg) {
+  const progressEl = document.getElementById('icp-ws-progress');
+
+  switch (msg.type) {
+    case 'subscribed':
+      console.log('[ICP WS] Subscribed to', msg.sessionId);
+      break;
+
+    case 'section-complete': {
+      const d = msg.data;
+      // Update generation progress panel in real-time
+      if (progressEl) {
+        const card = document.createElement('div');
+        card.className = 'icp-gen-section-card';
+        card.innerHTML = `
+          <div class="icp-gen-section-header">
+            <span class="icp-gen-section-num">Section ${(d.index || 0) + 1}</span>
+            <span class="icp-gen-section-words">${d.wordCount || '?'} words</span>
+          </div>
+          <div class="icp-gen-section-preview">${(d.text || '').substring(0, 200)}...</div>
+        `;
+        progressEl.appendChild(card);
+      }
+      // Update section counter
+      const counterEl = document.getElementById('icp-gen-section-count');
+      if (counterEl && d.index != null) {
+        counterEl.textContent = String((d.index || 0) + 1);
+      }
+      break;
+    }
+
+    case 'investigation-complete': {
+      // Show investigation results notification
+      const findings = msg.data;
+      const count = findings?.issues?.length || 0;
+      console.log(`[ICP WS] Investigation complete: ${count} issues found`);
+      break;
+    }
+
+    case 'budget-warning': {
+      const d = msg.data;
+      console.warn(`[ICP WS] Budget warning: ${d.action}`, d);
+      if (progressEl) {
+        const warning = document.createElement('div');
+        warning.className = 'icp-budget-warning';
+        warning.textContent = `Token budget: ${d.action} — ${d.detail || ''}`;
+        progressEl.appendChild(warning);
+      }
+      break;
+    }
+
+    case 'generation-complete': {
+      const d = msg.data;
+      console.log(`[ICP WS] Generation complete: ${d.totalSections} sections, ${d.totalWords} words`);
+      // Re-enable generate button, hide cancel
+      const genBtn = document.querySelector('[onclick="icpAdapterGenerate()"]');
+      if (genBtn) { genBtn.disabled = false; genBtn.textContent = 'Generate (Adapter)'; }
+      const cancelBtn = document.getElementById('icp-cancel-btn');
+      if (cancelBtn) cancelBtn.style.display = 'none';
+      break;
+    }
+
+    case 'abort-acknowledged': {
+      const d = msg.data;
+      console.log(`[ICP WS] Abort acknowledged: ${d.completedSections}/${d.totalSections} sections saved`);
+      const genBtn = document.querySelector('[onclick="icpAdapterGenerate()"]');
+      if (genBtn) { genBtn.disabled = false; genBtn.textContent = 'Generate (Adapter)'; }
+      const cancelBtn = document.getElementById('icp-cancel-btn');
+      if (cancelBtn) { cancelBtn.style.display = 'none'; cancelBtn.disabled = false; cancelBtn.textContent = 'Cancel'; }
+      // Refresh session to show partial results
+      if (window._icpSessionId) icpRefreshSession(window._icpSessionId);
+      break;
+    }
+
+    case 'gate-result': {
+      const d = msg.data;
+      console.log(`[ICP WS] Gate result: ${d.gate} — ${d.passed ? 'PASSED' : 'FAILED'}`);
+      break;
+    }
+  }
+}
+
+// Auto-connect WebSocket when the page loads
+if (typeof window !== 'undefined') {
+  // Defer to avoid blocking page load
+  setTimeout(icpConnectWebSocket, 1000);
 }
 
 // =============================================================================

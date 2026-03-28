@@ -128,7 +128,14 @@ export type ICPEventAction =
   | 'atom_auto_migrate'
   | 'polish_normalize'
   | 'justified_relaxation'
-  | 'facet_migrate';
+  | 'facet_migrate'
+  | 'investigate'
+  | 'regenerate'
+  | 'validate_gate'
+  | 'abort'
+  | 'feedback'
+  | 'budget_warning'
+  | 'section_complete';
 
 /** ICP event actor */
 export type ICPEventActor = 'system' | 'user' | 'llm';
@@ -143,7 +150,9 @@ export type ICPEventCategory =
   | 'generation'
   | 'staleness'
   | 'verification'
-  | 'export';
+  | 'export'
+  | 'investigation'
+  | 'feedback';
 
 // =============================================================================
 // POLICIES (versioned, content-addressed)
@@ -1044,6 +1053,37 @@ export interface ICPSession {
   corpus_folder?: string;
   /** Quality gate results from post-generation pipeline */
   quality_gates?: QualityGateResults;
+  /** Pipeline phase state machine */
+  pipeline_phase?: 'CREATED' | 'DECOMPOSED' | 'RETRIEVED' | 'VERIFIED' | 'BOUND' | 'GENERATED' | 'PARTIALLY_GENERATED' | 'INVESTIGATED' | 'REGENERATED' | 'VALIDATED' | 'EXPORTED';
+  /** Investigation results from v1 analysis */
+  investigation_results?: {
+    issues: Array<{ type: string; severity: 'critical' | 'major' | 'minor'; detail: string }>;
+    preventionPlan: {
+      blacklistedAuthors: string[];
+      strengthenedConstraints: string[];
+      underCitedSources: string[];
+      overCitedSources: string[];
+    };
+    stats: {
+      wordCount: number;
+      sectionCount: number;
+      citationCount: number;
+      quotationCount: number;
+      claimsWithoutCitation: number;
+      factualClaimsWithoutCitation: number;
+      interpretiveClaimsWithoutCitation: number;
+      uniqueAuthors: string[];
+      sectionWordCounts: Array<{ heading: string; words: number }>;
+    };
+  };
+  /** Haiku summaries of completed sections (for tiered compression) */
+  section_summaries?: string[];
+  /** SoNA trajectory ID for learning feedback */
+  trajectory_id?: string;
+  /** Adapter configuration used for this session */
+  adapter_config?: Record<string, unknown>;
+  /** User-corrected text (for SoNA feedback delta) */
+  corrected_text?: Map<string, string>;
 }
 
 /**
@@ -1090,6 +1130,34 @@ export interface QualityGateResults {
   };
   /** Checkpoints created (WS10) */
   checkpoints?: string[];
+  /** Author scrubbing results */
+  author_scrubbing?: {
+    removedCount: number;
+    removedAuthors: string[];
+    contexts: Record<string, string[]>;
+  };
+  /** APA citation stripping results */
+  apa_stripping?: {
+    strippedCount: number;
+    stripped: string[];
+  };
+  /** Endnote leak detection results */
+  endnote_leaks?: {
+    leaksRemoved: number;
+  };
+  /** Edge coherence validation results */
+  edge_coherence?: {
+    score: number;
+    contradictions: Array<{ assertion: string; conflictsWith: string }>;
+  };
+  /** Investigation results (from multi-step drafting) */
+  investigation?: {
+    hallucinatedAuthors: string[];
+    phantomQuotations: number;
+    shortSections: number;
+    overCitedSources: string[];
+    underCitedSources: string[];
+  };
 }
 
 /**
@@ -1510,6 +1578,7 @@ export function createICPSession(
     revision: 0,
     created_at: now,
     updated_at: now,
+    pipeline_phase: 'CREATED',
   };
 }
 
