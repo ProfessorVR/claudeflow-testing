@@ -12,7 +12,6 @@ import {
   init,
   next,
   complete,
-  completeAndNext,
   status,
   resume,
 } from './coding-pipeline-cli.js';
@@ -129,13 +128,13 @@ export class PipelineDaemonService {
   private async handleInit(params: Record<string, unknown>): Promise<unknown> {
     const task = params.task as string;
     if (!task) throw new Error('Missing required parameter: task');
-    return init(task, this.bundle!);
+    return init(task);
   }
 
   private async handleNext(params: Record<string, unknown>): Promise<unknown> {
     const sessionId = params.sessionId as string;
     if (!sessionId) throw new Error('Missing required parameter: sessionId');
-    return next(sessionId, this.bundle!);
+    return next(sessionId);
   }
 
   private async handleComplete(params: Record<string, unknown>): Promise<unknown> {
@@ -143,7 +142,7 @@ export class PipelineDaemonService {
     const agentKey = params.agentKey as string;
     if (!sessionId || !agentKey) throw new Error('Missing required parameters: sessionId, agentKey');
     const file = params.file as string | undefined;
-    return complete(sessionId, agentKey, file ? { file } : undefined, this.bundle!);
+    return complete(sessionId, agentKey, file ? { file } : undefined);
   }
 
   private async handleCompleteAndNext(params: Record<string, unknown>): Promise<unknown> {
@@ -152,9 +151,8 @@ export class PipelineDaemonService {
     if (!sessionId || !agentKey) throw new Error('Missing required parameters: sessionId, agentKey');
     const file = params.file as string | undefined;
 
-    // Use the daemon's warm bundle directly (bypasses completeAndNext's own bundle creation)
-    const completedData = await complete(sessionId, agentKey, file ? { file } : undefined, this.bundle!);
-    const nextData = await next(sessionId, this.bundle!);
+    const completedData = await complete(sessionId, agentKey, file ? { file } : undefined);
+    const nextData = await next(sessionId);
     return { completed: completedData, next: nextData };
   }
 
@@ -169,7 +167,7 @@ export class PipelineDaemonService {
   private async handleResume(params: Record<string, unknown>): Promise<unknown> {
     const sessionId = params.sessionId as string;
     if (!sessionId) throw new Error('Missing required parameter: sessionId');
-    return resume(sessionId, this.bundle!);
+    return resume(sessionId);
   }
 
   // ── Helpers ────────────────────────────────────────────────────────────

@@ -150,7 +150,7 @@ export class RetrievalOrchestrator {
   ): Promise<GenerationResult> {
     const startTime = Date.now();
     let currentPrompt = initialPrompt;
-    let response: LLMResponse;
+    let response: LLMResponse | undefined;
     let success = true;
     let error: string | undefined;
 
@@ -216,14 +216,14 @@ export class RetrievalOrchestrator {
           );
         }
       } while (
-        response.toolCalls &&
+        response?.toolCalls &&
         response.toolCalls.length > 0 &&
         this.retrievalRounds < this.config.maxRetrievalRounds
       );
 
       // If we exited the loop due to tool calls, make a final generation pass
       // This ensures Claude writes content instead of just requesting more tools
-      if (response.toolCalls && response.toolCalls.length > 0) {
+      if (response?.toolCalls && response.toolCalls.length > 0) {
         console.log(
           '[RetrievalOrchestrator] Making final generation pass (no tools available)'
         );
@@ -257,12 +257,12 @@ You have retrieved sufficient context. Now write the complete section as request
     const totalTimeMs = Date.now() - startTime;
 
     return {
-      content: response.content,
+      content: response?.content ?? '',
       retrievalRounds: this.retrievalRounds,
       totalRetrievalTokens: this.totalRetrievalTokens,
       executedTools: this.executedTools,
       totalTimeMs,
-      usage: response.usage,
+      usage: response?.usage ?? { inputTokens: 0, outputTokens: 0 },
       success,
       error,
     };

@@ -185,7 +185,7 @@ export class StructuredLogger {
   /**
    * Internal log method
    */
-  private log(level: LogLevel, message: string, additionalContext?: LogContext): void {
+  log(level: LogLevel, message: string, additionalContext?: LogContext): void {
     if (level < this.minLevel) return;
 
     const entry: LogEntry = {

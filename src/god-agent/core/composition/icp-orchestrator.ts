@@ -686,7 +686,8 @@ export class ICPOrchestrator {
                    s.verification_status === 'human_verified' ||
                    s.verification_status === 'human_corrected')
       .map(span => ({
-        id: span.quote_id,
+        chunkId: span.quote_id,
+        docId: span.doc_id,
         content: span.repaired_text ?? span.text,
         relevanceScore: span.provenance_scorecard.fidelity_score,
         metadata: {
@@ -695,7 +696,7 @@ export class ICPOrchestrator {
           title: span.doc_id,
           page_start: typeof span.page === 'number' ? span.page : span.page[0],
           page_end: typeof span.page === 'number' ? span.page : span.page[1],
-          docId: span.doc_id,
+          collection: '',
         },
       }));
   }

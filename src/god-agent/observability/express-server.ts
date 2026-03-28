@@ -4041,7 +4041,7 @@ export class ExpressServer implements IExpressServer {
                         retrievalQuery: claim.text.slice(0, 200),
                         topKRank: ei,
                         thresholds: { relevance: 0.5, entailment: 0.5 },
-                        chunkIds: ev.chunk?.id ? [ev.chunk.id] : (ev.chunk?.chunkId ? [ev.chunk.chunkId] : []),
+                        chunkIds: ev.chunk?.chunkId ? [ev.chunk.chunkId] : [],
                         matchingSnippet: ev.matchingSnippet || '',
                         confidence: ev.entailmentScore || ev.relevanceScore || 0,
                         relevanceScore: ev.relevanceScore || 0,
@@ -4065,7 +4065,7 @@ export class ExpressServer implements IExpressServer {
                         JSON.stringify({
                           matchMethod: 'embedding',
                           confidence: ev.relevanceScore || 0.5,
-                          chunkIds: ev.chunk?.id ? [ev.chunk.id] : [],
+                          chunkIds: ev.chunk?.chunkId ? [ev.chunk.chunkId] : [],
                         })
                       );
                     }
