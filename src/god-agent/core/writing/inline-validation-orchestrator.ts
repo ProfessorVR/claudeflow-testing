@@ -777,11 +777,12 @@ export class InlineValidationOrchestrator {
 
     lines.push('## Available Corpus Authors:');
     const authors = this.validator.getAvailableAuthors();
-    for (const author of authors.slice(0, 20)) {
+    const authorLimit = authors.length <= 100 ? authors.length : 50;
+    for (const author of authors.slice(0, authorLimit)) {
       lines.push(`- ${author}`);
     }
-    if (authors.length > 20) {
-      lines.push(`... and ${authors.length - 20} more`);
+    if (authors.length > authorLimit) {
+      lines.push(`... and ${authors.length - authorLimit} more`);
     }
     lines.push('');
 
@@ -971,7 +972,7 @@ export class InlineValidationOrchestrator {
     const passingRate = summary.totalQuotes > 0 ? passingQuotes / summary.totalQuotes : 1;
 
     // Pass if >= 70% of quotes are at least borderline-accurate
-    return passingRate >= 0.70;
+    return passingRate >= threshold;
   }
 
   /**

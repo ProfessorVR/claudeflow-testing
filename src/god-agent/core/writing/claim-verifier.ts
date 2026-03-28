@@ -444,7 +444,7 @@ export class ClaimVerifier {
     const textLower = text.toLowerCase();
 
     // Referential blocklist - tokens at sentence start that indicate unresolved coreference
-    const sentenceStartBlocklist = ['this', 'it', 'such', 'these', 'those'];
+    const sentenceStartBlocklist = ['such', 'these', 'those', 'the former', 'the latter', 'said'];
 
     // Check if sentence starts with a blocklist token
     for (const token of sentenceStartBlocklist) {
@@ -455,8 +455,7 @@ export class ClaimVerifier {
 
     // Check for discourse phrases
     const discoursePatterns = [
-      'this view', 'this account', 'this argument', 'this position',
-      'this reading', 'this interpretation', 'this analysis', 'this approach',
+      'this position', 'this reading', 'this interpretation',
       'this conceptualization', 'this understanding', 'this formulation',
       'this notion', 'this concept', 'this distinction', 'this observation',
     ];

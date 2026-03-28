@@ -531,7 +531,7 @@ export class ComprehensiveClaimValidator {
     }
 
     // Check for conjunctions
-    const conjunctionPattern = /\b(and|but|however|moreover|furthermore|additionally|while|whereas|although)\b/i;
+    const conjunctionPattern = /\b(however|moreover|furthermore|additionally|while|whereas|although|therefore|thus|hence|consequently)\b/i;
     return conjunctionPattern.test(claim.text);
   }
 
@@ -706,6 +706,7 @@ export class ComprehensiveClaimValidator {
           case 'UNSUPPORTED': stats.unsupported++; break;
           case 'CONTRADICTED': stats.contradicted++; break;
           case 'UNCERTAIN': stats.uncertain++; break;
+          case 'BLOCKED': stats.skipped++; break;
         }
       }
 
@@ -725,6 +726,11 @@ export class ComprehensiveClaimValidator {
     const verifiedClaims = stats.totalClaims - stats.skipped - stats.uncertain;
     if (verifiedClaims > 0) {
       stats.supportRatio = (stats.supported + stats.partiallySupported * 0.5) / verifiedClaims;
+    }
+
+    // If all claims are uncertain, flag for review rather than defaulting to 0 support
+    if (stats.uncertain === stats.totalClaims && stats.totalClaims > 0) {
+      stats.supportRatio = -1; // Sentinel: all claims uncertain, needs manual review
     }
 
     return stats;
