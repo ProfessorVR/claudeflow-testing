@@ -91,6 +91,7 @@ interface QueuedRequest {
 interface WindowEntry {
   timestamp: number;
   tokens: number;
+  requestId?: string;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -239,7 +240,7 @@ export class RateLimiter {
     // Request allowed - record it
     const now = Date.now();
     this.requestWindow.push({ timestamp: now, tokens: estimatedTokens });
-    this.tokenWindow.push({ timestamp: now, tokens: estimatedTokens });
+    this.tokenWindow.push({ timestamp: now, tokens: estimatedTokens, requestId });
     this.activeRequests.add(requestId);
 
     return {
@@ -256,12 +257,9 @@ export class RateLimiter {
 
     // Update token count if actual differs from estimate
     if (actualTokens !== undefined) {
-      const now = Date.now();
-      const recentEntry = this.tokenWindow.find(
-        e => e.timestamp > now - 1000 // Within last second
-      );
-      if (recentEntry) {
-        recentEntry.tokens = actualTokens;
+      const entry = this.tokenWindow.find(e => e.requestId === requestId);
+      if (entry) {
+        entry.tokens = actualTokens;
       }
     }
 

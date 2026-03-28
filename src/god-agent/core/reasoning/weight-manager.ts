@@ -158,6 +158,7 @@ export class WeightManager {
   private persistPath: string;
   private checkpointConfig: ICheckpointConfig;
   private updateCount: number = 0;
+  private saveLocks: Map<string, Promise<void>> = new Map();
   private autoLoadEnabled: boolean;
   private loadedFromDisk: Set<string> = new Set();
 
@@ -399,15 +400,7 @@ export class WeightManager {
     // Store metadata in memory
     this.metadata.set(layerId, metadata);
 
-    // Handle checkpointing if enabled
-    // Implements: TASK-GNN-003 AC-004
-    this.updateCount++;
-    if (
-      this.checkpointConfig.enabled &&
-      this.updateCount % this.checkpointConfig.intervalUpdates === 0
-    ) {
-      await this.createCheckpoint(layerId);
-    }
+    // Checkpointing handled by saveWeightsAtomic — no updateCount++ here to avoid double-increment
   }
 
   /**
@@ -423,6 +416,18 @@ export class WeightManager {
    * @throws Error if checksum verification fails or atomic rename fails
    */
   async saveWeightsAtomic(layerId: string): Promise<void> {
+    const prior = this.saveLocks.get(layerId) ?? Promise.resolve();
+    const next = prior.then(() => this._saveWeightsAtomicImpl(layerId));
+    this.saveLocks.set(layerId, next);
+    return next.finally(() => {
+      // Only delete if no newer save was chained while we were running
+      if (this.saveLocks.get(layerId) === next) {
+        this.saveLocks.delete(layerId);
+      }
+    });
+  }
+
+  private async _saveWeightsAtomicImpl(layerId: string): Promise<void> {
     const weights = this.weights.get(layerId);
     if (!weights || weights.length === 0) {
       throw new Error(`No weights found for layer: ${layerId}`);

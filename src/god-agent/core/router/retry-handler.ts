@@ -423,12 +423,17 @@ export class RetryHandler {
     operation: () => Promise<T>,
     timeoutMs: number
   ): Promise<T> {
-    return Promise.race([
-      operation(),
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Operation timed out')), timeoutMs)
-      ),
-    ]);
+    let timeoutId: NodeJS.Timeout;
+    try {
+      return await Promise.race([
+        operation(),
+        new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(() => reject(new Error('Operation timed out')), timeoutMs);
+        }),
+      ]);
+    } finally {
+      clearTimeout(timeoutId!);
+    }
   }
 
   private calculateDelay(attempt: number, error: unknown): number {

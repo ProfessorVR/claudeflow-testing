@@ -262,8 +262,12 @@ export class CircuitBreaker extends EventEmitter {
         return false;
 
       case 'half-open':
-        // Allow limited requests in half-open
-        return this.halfOpenAttempts < this.config.halfOpenMaxAttempts;
+        // Allow limited requests in half-open — increment BEFORE returning
+        if (this.halfOpenAttempts < this.config.halfOpenMaxAttempts) {
+          this.halfOpenAttempts++;
+          return true;
+        }
+        return false;
     }
   }
 
@@ -406,19 +410,23 @@ export class CircuitBreaker extends EventEmitter {
 
   private async executeWithTimeout<T>(operation: () => Promise<T>): Promise<T> {
     if (this.state === 'half-open') {
-      this.halfOpenAttempts++;
       this.emit('half_open_attempt', this.createEvent('half_open_attempt'));
     }
 
-    return Promise.race([
-      operation(),
-      new Promise<never>((_, reject) =>
-        setTimeout(
-          () => reject(new Error('Circuit breaker request timeout')),
-          this.config.requestTimeoutMs
-        )
-      ),
-    ]);
+    let timeoutId: NodeJS.Timeout;
+    try {
+      return await Promise.race([
+        operation(),
+        new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(
+            () => reject(new Error('Circuit breaker request timeout')),
+            this.config.requestTimeoutMs
+          );
+        }),
+      ]);
+    } finally {
+      clearTimeout(timeoutId!);
+    }
   }
 
   private cleanupHistory(): void {

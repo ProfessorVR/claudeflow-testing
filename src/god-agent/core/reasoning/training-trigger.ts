@@ -219,7 +219,7 @@ export class TrainingTriggerController {
   private totalTrainingRuns: number = 0;
   private totalTrajectoriesProcessed: number = 0;
   private lastTrainingLoss: number = 0;
-  private trainingInProgress: boolean = false;
+  private trainingPromise: Promise<TriggerResult> | null = null;
   private autoCheckTimer?: NodeJS.Timeout;
 
   /**
@@ -283,11 +283,9 @@ export class TrainingTriggerController {
       bufferSize: this.trajectoryBuffer.length,
     });
 
-    // Persist buffer if enabled
+    // Persist buffer if enabled (debounced)
     if (this.config.enablePersistence) {
-      this.persistBufferToDisk().catch(error => {
-        logger.warn('Buffer persistence failed', { error: String(error) });
-      });
+      this.schedulePersist();
     }
 
     // Check if we should auto-trigger due to max pending
@@ -308,7 +306,7 @@ export class TrainingTriggerController {
    */
   shouldTrigger(): boolean {
     // Don't trigger if training is already in progress
-    if (this.trainingInProgress) {
+    if (this.trainingPromise) {
       return false;
     }
 
@@ -335,8 +333,8 @@ export class TrainingTriggerController {
    * @returns Result indicating whether training was triggered and outcomes
    */
   async checkAndTrain(): Promise<TriggerResult> {
-    // Check if already training
-    if (this.trainingInProgress) {
+    // Check if already training — return existing promise for single-flight
+    if (this.trainingPromise) {
       return {
         triggered: false,
         reason: 'Training already in progress',
@@ -361,8 +359,11 @@ export class TrainingTriggerController {
       };
     }
 
-    // Run training
-    return this.executeTraining('threshold');
+    // Run training with single-flight promise
+    this.trainingPromise = this.executeTraining('threshold').finally(() => {
+      this.trainingPromise = null;
+    });
+    return this.trainingPromise;
   }
 
   /**
@@ -380,25 +381,29 @@ export class TrainingTriggerController {
     }
 
     // Wait for any in-progress training to complete
-    if (this.trainingInProgress) {
+    if (this.trainingPromise) {
       logger.info('Waiting for in-progress training to complete before force training');
-      // Simple polling wait (in production, use proper async coordination)
-      let waitCount = 0;
-      while (this.trainingInProgress && waitCount < 60) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        waitCount++;
-      }
-
-      if (this.trainingInProgress) {
-        return {
-          triggered: false,
-          reason: 'Timed out waiting for in-progress training',
-        };
+      try {
+        await Promise.race([
+          this.trainingPromise,
+          new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 60000)),
+        ]);
+      } catch {
+        // Check if training is still running (the .finally() may have already cleared it)
+        if (this.trainingPromise !== null) {
+          return {
+            triggered: false,
+            reason: 'Timed out waiting for in-progress training',
+          };
+        }
       }
     }
 
-    // Execute training
-    return this.executeTraining('force');
+    // Execute training with single-flight promise
+    this.trainingPromise = this.executeTraining('force').finally(() => {
+      this.trainingPromise = null;
+    });
+    return this.trainingPromise;
   }
 
   /**
@@ -422,7 +427,7 @@ export class TrainingTriggerController {
       lastTrainingTime: this.lastTrainingTime,
       totalTrajectoriesProcessed: this.totalTrajectoriesProcessed,
       lastTrainingLoss: this.lastTrainingLoss,
-      trainingInProgress: this.trainingInProgress,
+      trainingInProgress: this.trainingPromise !== null,
     };
   }
 
@@ -463,6 +468,12 @@ export class TrainingTriggerController {
       this.autoCheckTimer = undefined;
     }
 
+    // Flush any pending debounced persist
+    if (this.persistDebounceTimer) {
+      clearTimeout(this.persistDebounceTimer);
+      this.persistDebounceTimer = undefined;
+    }
+
     // Persist final buffer state
     if (this.config.enablePersistence) {
       this.persistBufferToDisk().catch(error => {
@@ -485,7 +496,6 @@ export class TrainingTriggerController {
    */
   private async executeTraining(triggerType: 'threshold' | 'force'): Promise<TriggerResult> {
     const startTime = performance.now();
-    this.trainingInProgress = true;
 
     try {
       logger.info('Starting training', {
@@ -497,7 +507,6 @@ export class TrainingTriggerController {
       const dataset = this.createTrainingDataset();
 
       if (dataset.training.length === 0) {
-        this.trainingInProgress = false;
         return {
           triggered: false,
           reason: 'No valid training data in buffer',
@@ -533,8 +542,6 @@ export class TrainingTriggerController {
         await this.clearPersistedBuffer();
       }
 
-      this.trainingInProgress = false;
-
       return {
         triggered: true,
         reason: triggerType === 'force' ? 'Force triggered' : 'Threshold reached',
@@ -543,7 +550,6 @@ export class TrainingTriggerController {
         trainingDurationMs,
       };
     } catch (error) {
-      this.trainingInProgress = false;
       logger.error('Training failed', { error: String(error) });
 
       return {
@@ -617,13 +623,33 @@ export class TrainingTriggerController {
    *
    * Implements: AC-004 (buffer persists to disk)
    */
+  private persistDebounceTimer?: NodeJS.Timeout;
+
+  private schedulePersist(): void {
+    if (this.persistDebounceTimer) clearTimeout(this.persistDebounceTimer);
+    this.persistDebounceTimer = setTimeout(() => {
+      this.persistDebounceTimer = undefined;
+      this.persistBufferToDisk().catch(err =>
+        logger.warn('Buffer persistence failed', { error: String(err) })
+      );
+    }, 500);
+  }
+
+  private async atomicWriteFile(targetPath: string, data: string): Promise<void> {
+    const fs = await import('fs/promises');
+    const tmpPath = targetPath + '.tmp';
+    await fs.writeFile(tmpPath, data, 'utf-8');
+    await fs.rename(tmpPath, targetPath);
+  }
+
   private async persistBufferToDisk(): Promise<void> {
-    const { writeFileSync, mkdirSync, existsSync } = await import('fs');
+    const fs = await import('fs/promises');
+    const { existsSync } = await import('fs');
     const { join } = await import('path');
 
     // Ensure directory exists
     if (!existsSync(this.config.persistenceDir)) {
-      mkdirSync(this.config.persistenceDir, { recursive: true });
+      await fs.mkdir(this.config.persistenceDir, { recursive: true });
     }
 
     const filepath = join(this.config.persistenceDir, BUFFER_PERSISTENCE_FILENAME);
@@ -646,7 +672,7 @@ export class TrainingTriggerController {
       },
     };
 
-    writeFileSync(filepath, JSON.stringify(serialized, null, 2));
+    await this.atomicWriteFile(filepath, JSON.stringify(serialized, null, 2));
     logger.debug('Buffer persisted to disk', { filepath, trajectoryCount: this.trajectoryBuffer.length });
   }
 
@@ -701,13 +727,14 @@ export class TrainingTriggerController {
    * Clear persisted buffer from disk
    */
   private async clearPersistedBuffer(): Promise<void> {
-    const { unlinkSync, existsSync } = await import('fs');
+    const fs = await import('fs/promises');
+    const { existsSync } = await import('fs');
     const { join } = await import('path');
 
     const filepath = join(this.config.persistenceDir, BUFFER_PERSISTENCE_FILENAME);
 
     if (existsSync(filepath)) {
-      unlinkSync(filepath);
+      await fs.unlink(filepath);
       logger.debug('Persisted buffer cleared', { filepath });
     }
   }
