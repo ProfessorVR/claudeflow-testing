@@ -144,7 +144,7 @@ describe('ToolExecutor', () => {
   });
 
   describe('execute getCitation', () => {
-    it('should return citation from mock database', async () => {
+    it('should return citation parsed from corpus accessor', async () => {
       const toolCall: ToolCall = {
         id: 'call_5',
         name: 'getCitation',
@@ -157,7 +157,8 @@ describe('ToolExecutor', () => {
       expect(result.result.tool).toBe('getCitation');
 
       if (result.result.tool === 'getCitation' && result.result.data) {
-        expect(result.result.data.author).toBe('Heidegger, Martin');
+        // parseCitationString extracts abbreviated author from citation string
+        expect(result.result.data.author).toBe('Heidegger, M.');
         expect(result.result.data.year).toBe(1962);
       }
     });
