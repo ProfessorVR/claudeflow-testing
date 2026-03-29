@@ -31,6 +31,7 @@
             <button class="main-tab" data-tab="god-write">God Write</button>
             <button class="main-tab" data-tab="claim-map">Claim Map</button>
             <button class="main-tab" data-tab="icp">ICP Pipeline</button>
+            <button class="main-tab" data-tab="icp-v2">ICP V2</button>
         </nav>
         <div class="header-right">
             <button class="refresh-btn" id="refreshBtn" title="Refresh current tab (Ctrl+R)">&#8635;</button>
@@ -1076,6 +1077,8 @@
                                 <select id="gwPresetSelect" class="form-control">
                                     <option value="">Custom Configuration</option>
                                     <optgroup label="Built-in">
+                                        <option value="gold-standard">Gold Standard (Dissertation)</option>
+                                        <option value="dissertation-section">Dissertation Section (2-3k)</option>
                                         <option value="dissertation-chapter">Dissertation Chapter</option>
                                         <option value="quick-draft">Quick Draft</option>
                                         <option value="technical-report">Technical Report</option>
@@ -1187,6 +1190,98 @@
                                 </div>
                             </div>
 
+                            <!-- v2 Pipeline Controls -->
+                            <div class="flag-category">
+                                <h3 class="flag-category-title">Pipeline</h3>
+                                <div class="flag-items">
+                                    <div class="flag-item" data-flag="whitelist-mode">
+                                        <label class="flag-checkbox">
+                                            <input type="checkbox" id="flag-whitelist-mode">
+                                            <span class="flag-name" data-tooltip="whitelist-mode">Whitelist Mode (Gold Standard)</span>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="whitelist-mode">
+                                            <div class="tooltip-header">Whitelist Mode</div>
+                                            <div class="tooltip-cli"><code>--whitelist</code></div>
+                                            <div class="tooltip-desc">Uses corpus manifest as a source whitelist. Auto-sets 28 chunks at 0.35 min relevance. Recommended for academic writing — ensures all citations are grounded in your corpus.</div>
+                                            <div class="tooltip-default">Default: <strong>Off</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Highest citation fidelity. Prevents hallucinated sources.</div>
+                                        </div>
+                                    </div>
+                                    <div class="flag-item" data-flag="pipeline-version">
+                                        <label class="flag-select-label">
+                                            <span class="flag-name" data-tooltip="pipeline-version">Pipeline Version</span>
+                                            <select id="flag-pipeline-version" class="flag-control flag-select">
+                                                <option value="legacy">Legacy</option>
+                                                <option value="v2">v2 (Staged)</option>
+                                            </select>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="pipeline-version">
+                                            <div class="tooltip-header">Pipeline Version</div>
+                                            <div class="tooltip-cli"><code>--pipeline-version</code></div>
+                                            <div class="tooltip-desc">v2 uses a 3-stage pipeline (Retrieval → Drafting → Validation) with PipelineContext tracking. Legacy uses the monolithic write path.</div>
+                                            <div class="tooltip-default">Default: <strong>legacy</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> v2 provides better error observability and stage-level diagnostics.</div>
+                                        </div>
+                                    </div>
+                                    <div class="flag-item" data-flag="multi-step">
+                                        <label class="flag-checkbox">
+                                            <input type="checkbox" id="flag-multi-step">
+                                            <span class="flag-name" data-tooltip="multi-step">Multi-Step Drafting</span>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="multi-step">
+                                            <div class="tooltip-header">Multi-Step Drafting</div>
+                                            <div class="tooltip-cli"><code>--multi-step</code></div>
+                                            <div class="tooltip-desc">Generates a v1 draft, investigates citation issues, builds a prevention plan, then generates an improved v2 draft. Produces significantly better citation coverage.</div>
+                                            <div class="tooltip-default">Default: <strong>Off</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> 2-3x longer generation time, but much higher quality output.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flag-item" data-flag="rolling-context">
+                                        <label class="flag-checkbox">
+                                            <input type="checkbox" id="flag-rolling-context">
+                                            <span class="flag-name" data-tooltip="rolling-context">Rolling Context</span>
+                                        </label>
+                                        <div class="flag-tooltip" data-for="rolling-context">
+                                            <div class="tooltip-header">Rolling Context Generation</div>
+                                            <div class="tooltip-cli"><code>--rolling-context</code></div>
+                                            <div class="tooltip-desc">Generates sections sequentially (~700 words each) with a sliding context window. Prior sections feed into subsequent prompts for argumentative threading. Requires Whitelist mode.</div>
+                                            <div class="tooltip-default">Default: <strong>Off</strong></div>
+                                            <div class="tooltip-impact"><span class="impact-label">Impact:</span> Eliminates token-distribution fatigue and inter-section incoherence. 8 API calls instead of 1.</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Advanced drawer -->
+                                    <div class="flag-item">
+                                        <button class="btn-link btn-xs" id="gwAdvancedToggle" style="font-size: 0.85em; opacity: 0.7;">Advanced...</button>
+                                    </div>
+                                    <div id="gwAdvancedDrawer" style="display: none; width: 100%;">
+                                        <div class="flag-item" data-flag="nli-verify">
+                                            <label class="flag-checkbox">
+                                                <input type="checkbox" id="flag-nli-verify">
+                                                <span class="flag-name">NLI Verify</span>
+                                            </label>
+                                        </div>
+                                        <div class="flag-item" data-flag="candidate-selection">
+                                            <label class="flag-checkbox">
+                                                <input type="checkbox" id="flag-candidate-selection">
+                                                <span class="flag-name">Candidate Selection</span>
+                                            </label>
+                                        </div>
+                                        <div class="flag-item" data-flag="endnote-detail">
+                                            <label class="flag-select-label">
+                                                <span class="flag-name">Endnote Detail</span>
+                                                <select id="flag-endnote-detail" class="flag-control flag-select">
+                                                    <option value="minimal">Minimal (1 quote, 0.80 relevance)</option>
+                                                    <option value="standard" selected>Standard (3 quotes, 0.65 relevance)</option>
+                                                    <option value="detailed">Detailed (5 quotes, 0.50 relevance)</option>
+                                                </select>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Corpus Integration Category -->
                             <div class="flag-category">
                                 <h3 class="flag-category-title">Corpus Integration</h3>
@@ -1246,15 +1341,15 @@
                                         <label class="flag-select-label">
                                             <span class="flag-name" data-tooltip="corpus-relevance">Relevance Threshold</span>
                                             <div class="range-with-value">
-                                                <input type="range" id="flag-corpus-relevance" class="flag-control flag-range" min="0" max="1" step="0.05" value="0.75">
-                                                <span class="range-value" id="corpus-relevance-value">0.75</span>
+                                                <input type="range" id="flag-corpus-relevance" class="flag-control flag-range" min="0" max="1" step="0.05" value="0.35">
+                                                <span class="range-value" id="corpus-relevance-value">0.35</span>
                                             </div>
                                         </label>
                                         <div class="flag-tooltip" data-for="corpus-relevance">
                                             <div class="tooltip-header">Relevance Threshold</div>
                                             <div class="tooltip-cli"><code>--corpus-relevance</code></div>
                                             <div class="tooltip-desc">Minimum similarity score (0.0-1.0) for retrieved corpus chunks. Higher values return fewer but more relevant chunks. Lower values cast a wider net but may include tangential content.</div>
-                                            <div class="tooltip-default">Default: <strong>0.75</strong></div>
+                                            <div class="tooltip-default">Default: <strong>0.35</strong></div>
                                             <div class="tooltip-impact"><span class="impact-label">Impact:</span> Below 0.5 introduces noise. Above 0.9 may return too few chunks.</div>
                                         </div>
                                     </div>
@@ -1637,6 +1732,7 @@
                         <div class="panel-header">
                             <h2>Output</h2>
                             <div class="panel-actions output-actions" id="gwOutputActions" style="display: none;">
+                                <span class="pipeline-health-badge" id="gwPipelineHealth" style="display: none;">Pipeline: <strong id="gwPipelineHealthLabel">--</strong></span>
                                 <span class="quality-badge" id="gwQualityBadge">Score: <strong id="gwQualityScore">--</strong></span>
                                 <span class="word-count-badge" id="gwWordCount">-- words</span>
                                 <span class="separator">|</span>
@@ -1655,7 +1751,23 @@
                                 <p class="empty-hint">Configure options above, enter a prompt, and click Generate</p>
                             </div>
                             <div class="output-content" id="gwOutputContent" style="display: none;">
+                                <!-- Multi-Step Diagnostics Timeline -->
+                                <div class="msd-timeline" id="gwMultiStepTimeline" style="display: none;">
+                                    <div class="msd-content" id="gwMultiStepContent"></div>
+                                </div>
                                 <div class="output-rendered" id="gwOutputRendered"></div>
+                                <!-- Soak Feedback Panel -->
+                                <div class="soak-feedback-panel" id="gwSoakFeedback" style="display: none;">
+                                    <div class="soak-feedback-header">Soak Feedback</div>
+                                    <label class="soak-resteering-label">
+                                        <input type="checkbox" id="gwResteeringCheck">
+                                        Needed manual re-steering?
+                                    </label>
+                                    <div class="soak-notes-wrap" id="gwResteeringNotesWrap" style="display: none;">
+                                        <textarea id="gwResteeringNotes" class="soak-notes-input" placeholder="What needed fixing? (e.g., citation issues, wrong tone, missing sources...)"></textarea>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary" id="gwSaveFeedback">Save Feedback</button>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -1986,6 +2098,10 @@
                 <div id="icp-container"></div>
             </div>
 
+            <div class="tab-panel" id="icp-v2-tab">
+                <div id="icp-v2-container"></div>
+            </div>
+
         </main>
     </div>
 
@@ -2022,6 +2138,7 @@
     <div id="toastContainer" class="toast-container"></div>
 
     <script src="icp-panel.js"></script>
-    <script src="app.js?v=20260210a"></script>
+    <script src="icp-panel-v2.js"></script>
+    <script src="app.js?v=20260329a"></script>
 </body>
 </html>

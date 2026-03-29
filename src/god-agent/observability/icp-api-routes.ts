@@ -43,6 +43,21 @@ import {
 import { GOLD_STANDARD_CONFIG } from '../universal/gold-standard-config.js';
 import { loadDomainConfig } from '../universal/domain-config.js';
 import { ICPOrchestrator } from '../core/composition/icp-orchestrator.js';
+// V2 from-evidence generation: quality gate imports
+import { ProseSanitizer } from '../cli/composition/prose-sanitizer.js';
+import { buildCorpusConstraint } from '../core/writing/corpus-constraint-builder.js';
+import type { ContextChunk } from '../retrieval/types.js';
+import { CitationEnforcer } from '../core/writing/citation-enforcer.js';
+import { createDefaultGauntlet } from '../cli/quality/quality-gauntlet.js';
+import { EndnoteGenerator, type CorpusSearchFn } from '../cli/quality/endnote-generator.js';
+import {
+  scrubNonCorpusAuthors,
+  stripBareApaParentheticals,
+  buildCorpusSourcesFromChunks,
+} from '../universal/author-scrubber.js';
+import { stripEndnoteLeaks } from '../universal/quality-integration.js';
+import type { CorpusConstraint } from '../core/writing/writing-generator.js';
+import type { ModelRouter } from '../core/composition/model-router.js';
 
 // Load .env for ANTHROPIC_API_KEY (Fix 26: shell may have truncated key; .env has full 108-char key)
 try {
@@ -1473,54 +1488,273 @@ export function createICPRouter(options?: ICPRouterOptions): Router {
   });
 
   // ===========================================================================
-  // PIPELINE ENDPOINTS (migrated from ICPPipelineAdapter → ICPOrchestrator)
-  // Quality gates: CitationEnforcer, author scrubbing, APA stripping,
-  //   endnote leak stripping, prose sanitization (2-pass), quality gauntlet,
-  //   endnote generation — all enforced in ICPOrchestrator.run()
+  // PIPELINE ENDPOINTS
+  // Supports two modes:
+  //   mode='full' — ICPOrchestrator.run() (all 11 stages, used by Express mode)
+  //   mode='from-evidence' — generate from session's existing verified evidence
+  //     using gold-standard prompt + full quality gate sequence
+  //     (used by Standard/Full mode after user reviews evidence)
   // ===========================================================================
 
   /**
-   * POST /api/icp/adapter/generate/:sessionId — Run full ICP pipeline
+   * Generate text from a session's existing verified evidence.
+   * Builds a gold-standard prompt from verified quotes, calls LLM, runs quality gates.
+   */
+  async function generateFromEvidence(
+    session: ICPSession,
+    router: ModelRouter,
+    retrieval: SmartRetrievalLayer,
+  ): Promise<{
+    generatedText: string;
+    qualityGates: Record<string, unknown>;
+    success: boolean;
+  }> {
+    // 1. Convert verified quotes to ContextChunks
+    const verifiedStatuses = new Set(['auto_verified', 'human_verified', 'human_corrected']);
+    const chunks: ContextChunk[] = session.quote_spans
+      .filter(s => verifiedStatuses.has(s.verification_status))
+      .map(span => ({
+        chunkId: span.quote_id,
+        docId: span.doc_id,
+        content: (span as any).repaired_text ?? span.text,
+        relevanceScore: span.provenance_scorecard?.fidelity_score ?? 0.7,
+        metadata: {
+          author: span.source_anchor?.split(',')[0] ?? span.doc_id,
+          year: 0,
+          title: span.doc_id,
+          page_start: typeof span.page === 'number' ? span.page : span.page[0],
+          page_end: typeof span.page === 'number' ? span.page : span.page[1],
+          collection: '',
+        },
+      }));
+
+    if (chunks.length === 0) {
+      throw new Error('No verified evidence available. Verify at least one quote before generating.');
+    }
+
+    // 2. Build corpus constraint
+    const corpusConstraint = buildCorpusConstraint(chunks, {
+      enforcement: 'strict',
+      minRelevance: 0.0,
+    });
+
+    // 3. Extract subsections from prompt
+    const topic = session.prompt_spec.original_prompt || '';
+    const subsections = session.facets
+      .filter(f => !f.archived)
+      .map(f => f.name);
+
+    // 4. Load style profile
+    let stylePrompt = session.style_prompt || '';
+    if (!stylePrompt) {
+      try {
+        const sm = getStyleManager();
+        stylePrompt = sm.generateStylePrompt() || '';
+      } catch { /* best-effort */ }
+    }
+
+    // 5. Build gold-standard prompt
+    const prompt = buildGoldStandardPrompt({
+      topic,
+      subsections: subsections.length > 0 ? subsections : [topic],
+      chunks,
+      knowledgeUnits: [],
+      structuralEdges: [],
+      stylePrompt,
+      wordTarget: session.desired_word_count || '2,000-2,500',
+    });
+
+    // 6. Generate via LLM
+    const llmResponse = await router.call({
+      systemPrompt: '',
+      userPrompt: prompt,
+      maxTokens: GOLD_STANDARD_CONFIG.opusMaxTokens,
+      costTier: 'high',
+    });
+
+    let text = llmResponse.content;
+    const gates: Record<string, unknown> = {};
+    let sanitizationArtifacts = 0;
+
+    // 7. Quality Gate: Citation enforcement
+    try {
+      const enforcer = new CitationEnforcer(corpusConstraint, {
+        mode: 'auto-correct',
+        minPassRate: 0.9,
+        maxHallucinations: 3,
+        enableQuotationFidelity: true,
+        quotationMinSimilarity: 0.70,
+        autoCorrectQuotations: true,
+        enableClaimGrounding: true,
+        claimMinTopicOverlap: 0.3,
+      }, chunks);
+      const enfResult = await enforcer.enforce(text);
+      if (enfResult.action === 'corrected') text = enfResult.content;
+      gates.citation_enforcement = {
+        passed: enfResult.passed,
+        action: enfResult.action,
+        corrections: enfResult.correctionsCount ?? 0,
+        hallucinations_caught: enfResult.validation?.hallucinated?.length ?? 0,
+        total_citations: enfResult.validation?.totalCitations ?? 0,
+      };
+    } catch { /* non-fatal */ }
+
+    // 8. Quality Gate: Author scrubbing
+    try {
+      const scrubResult = scrubNonCorpusAuthors(text, corpusConstraint);
+      text = scrubResult.content;
+      gates.author_scrubbing = { removedCount: scrubResult.removedCount, removedAuthors: scrubResult.removedAuthors };
+    } catch { /* non-fatal */ }
+
+    // 9. Quality Gate: Strip APA parentheticals
+    try {
+      const apaResult = stripBareApaParentheticals(text);
+      text = apaResult.content;
+      gates.apa_stripping = { strippedCount: apaResult.strippedCount };
+    } catch { /* non-fatal */ }
+
+    // 10. Quality Gate: Strip endnote leaks
+    try {
+      text = stripEndnoteLeaks(text);
+      gates.endnote_leaks = { cleaned: true };
+    } catch { /* non-fatal */ }
+
+    // 11. Quality Gate: Prose sanitization (2-pass)
+    const sanitizer = new ProseSanitizer();
+    try {
+      const pass1 = await sanitizer.sanitize(text);
+      text = pass1.sanitized;
+      sanitizationArtifacts += pass1.artifactCount ?? 0;
+      const pass2 = await sanitizer.sanitize(text);
+      text = pass2.sanitized;
+      sanitizationArtifacts += pass2.artifactCount ?? 0;
+      gates.sanitization = { artifacts_removed: sanitizationArtifacts, passes: 2 };
+    } catch { /* non-fatal */ }
+
+    // 12. Quality Gate: Quality gauntlet
+    try {
+      const gauntlet = createDefaultGauntlet();
+      const gauntletResult = await gauntlet.runGauntlet(text, 1, {
+        corpusChunks: chunks as any,
+        knownAuthors: corpusConstraint.sources.map(s => s.author),
+      });
+      gates.gauntlet = {
+        passed: gauntletResult.passed,
+        overall_score: gauntletResult.overallScore,
+        stages_passed: gauntletResult.summary?.stagesPassed ?? 0,
+        total_stages: gauntletResult.summary?.totalStages ?? 0,
+        critical_issues: gauntletResult.criticalIssues?.length ?? 0,
+        revision_required: gauntletResult.revisionRequired ?? false,
+        stage_results: gauntletResult.stageResults?.map((s: any) => ({
+          name: s.stageName ?? s.name ?? 'unknown',
+          score: s.score ?? 0,
+          passed: s.passed ?? false,
+        })) ?? [],
+      };
+    } catch { /* non-fatal */ }
+
+    // 13. Quality Gate: Endnote generation
+    try {
+      const endnoteGen = new EndnoteGenerator({
+        maxQuotationsPerEndnote: 3,
+        minRelevanceThreshold: 0.65,
+      });
+      const corpusSearchFn: CorpusSearchFn = async (query: string, limit: number) => {
+        try {
+          const results = await retrieval.retrieveContext(query, { maxChunks: limit });
+          return results.map(r => ({
+            id: (r as any).chunkId ?? '',
+            text: (r as any).content ?? '',
+            metadata: (r as any).metadata ?? {},
+            score: (r as any).relevanceScore ?? 0,
+          }));
+        } catch { return []; }
+      };
+      const endnoteResult = await endnoteGen.generateEndnotes(text, corpusSearchFn);
+      text = endnoteResult.contentWithMarkers;
+      gates.endnotes = {
+        total: endnoteResult.stats.totalEndnotes,
+        sources_used: endnoteResult.stats.sourcesUsed,
+      };
+    } catch { /* non-fatal */ }
+
+    return { generatedText: text, qualityGates: gates, success: true };
+  }
+
+  /**
+   * POST /api/icp/adapter/generate/:sessionId — Run pipeline
+   * Body: { mode?: 'full' | 'from-evidence' }
    *
-   * Runs the ICPOrchestrator 11-stage pipeline:
-   *   decomposition → retrieval → verification → binding → generation →
-   *   citation enforcement → author scrubbing → APA/endnote stripping →
-   *   sanitization (2-pass) → quality gauntlet → endnotes → export
+   * mode='full' (default): ICPOrchestrator.run() — all 11 stages (Express mode)
+   * mode='from-evidence': Generate from session's existing verified evidence
+   *   using gold-standard prompt + quality gates (Standard/Full mode)
    */
   router.post('/adapter/generate/:sessionId', async (req: Request, res: Response) => {
     try {
       const session = getSession(req.params.sessionId, res);
       if (!session) return;
 
-      const orchestrator = await getOrchestrator();
-      const prompt = session.prompt_spec.original_prompt || '';
-      const sourceScope = session.source_scope;
+      const mode = req.body?.mode || 'full';
 
-      const result = await orchestrator.run(prompt, sourceScope);
+      if (mode === 'from-evidence') {
+        // Standard/Full mode: generate from reviewed evidence
+        const factory = await getFactoryResult();
+        const result = await generateFromEvidence(session, factory.router, new SmartRetrievalLayer());
 
-      // Merge pipeline results into existing session
-      session.generated_text = result.session.generated_text;
-      session.quality_gates = result.session.quality_gates;
-      session.review_results = result.session.review_results;
-      session.quote_spans = result.session.quote_spans;
-      session.atoms = result.session.atoms;
-      session.bindings = result.session.bindings;
-      session.paragraph_plan = result.session.paragraph_plan;
-      session.paragraph_ledger = result.session.paragraph_ledger;
-      session.sentence_scopes = result.session.sentence_scopes;
-      session.run_manifest = result.session.run_manifest;
-      session.event_log = result.session.event_log;
-      (session as any).pipeline_phase = 'GENERATED';
+        session.generated_text = new Map([['full', result.generatedText]]);
+        session.quality_gates = result.qualityGates as any;
+        (session as any).pipeline_phase = 'GENERATED';
 
-      res.json({
-        sessionId: req.params.sessionId,
-        pipeline_phase: 'GENERATED',
-        generated_text: Object.fromEntries(session.generated_text),
-        quality_gates: session.quality_gates,
-        review_results: session.review_results,
-        success: result.success,
-        block_reasons: result.blockReasons,
-      });
+        emitSessionEvent(session, {
+          ts: new Date().toISOString(),
+          actor: 'system',
+          action: 'generate',
+          payload_summary: `Generated from ${session.quote_spans.filter(s => s.verification_status === 'auto_verified' || s.verification_status === 'human_verified' || s.verification_status === 'human_corrected').length} verified quotes`,
+          affected_ids: [],
+          severity: 'info',
+          user_visible: true,
+          category: 'generation',
+        });
+
+        res.json({
+          sessionId: req.params.sessionId,
+          pipeline_phase: 'GENERATED',
+          generated_text: Object.fromEntries(session.generated_text),
+          quality_gates: session.quality_gates,
+          success: result.success,
+        });
+      } else {
+        // Express mode: full pipeline via orchestrator
+        const orchestrator = await getOrchestrator();
+        const prompt = session.prompt_spec.original_prompt || '';
+        const sourceScope = session.source_scope;
+
+        const result = await orchestrator.run(prompt, sourceScope);
+
+        // Merge pipeline results into existing session
+        session.generated_text = result.session.generated_text;
+        session.quality_gates = result.session.quality_gates;
+        session.review_results = result.session.review_results;
+        session.quote_spans = result.session.quote_spans;
+        session.atoms = result.session.atoms;
+        session.bindings = result.session.bindings;
+        session.paragraph_plan = result.session.paragraph_plan;
+        session.paragraph_ledger = result.session.paragraph_ledger;
+        session.sentence_scopes = result.session.sentence_scopes;
+        session.run_manifest = result.session.run_manifest;
+        session.event_log = result.session.event_log;
+        (session as any).pipeline_phase = 'GENERATED';
+
+        res.json({
+          sessionId: req.params.sessionId,
+          pipeline_phase: 'GENERATED',
+          generated_text: Object.fromEntries(session.generated_text),
+          quality_gates: session.quality_gates,
+          review_results: session.review_results,
+          success: result.success,
+          block_reasons: result.blockReasons,
+        });
+      }
     } catch (error: any) {
       log.error('Pipeline generate failed', error);
       res.status(500).json({ error: 'Pipeline generation failed', details: error.message });

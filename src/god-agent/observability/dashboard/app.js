@@ -247,6 +247,9 @@ class DashboardApp {
                 case 'icp':
                     this.loadICPPanel();
                     break;
+                case 'icp-v2':
+                    this.loadICPV2Panel();
+                    break;
             }
 
             // Mark tab as loaded
@@ -658,19 +661,52 @@ class DashboardApp {
 
     /** Built-in presets */
     static GOD_WRITE_PRESETS = {
-        'dissertation-chapter': {
-            name: 'Dissertation Chapter',
-            description: 'Full academic pipeline with inline validation, corpus grounding, staged composition, and source verification',
+        'gold-standard': {
+            name: 'Gold Standard (Dissertation)',
+            description: 'Full pipeline: whitelist, multi-step drafting, inline validation, gold standard prompt',
             flags: {
                 style: 'academic', format: 'section', length: 'comprehensive',
-                'use-corpus': true, 'corpus-chunks': 20, 'corpus-relevance': 0.75,
+                'whitelist-mode': true, 'use-corpus': true, 'corpus-chunks': 28, 'corpus-relevance': 0.35,
                 'verify-sources': true, 'acquire-missing': false,
                 'use-inline-validation': true, 'inline-validation-strictness': 'moderate',
                 'inline-max-retries': 3, 'inline-enable-citation-lookup': true,
                 'citation-enforcement-mode': 'auto-correct', 'citation-min-pass-rate': 0.85,
                 'citation-max-hallucinations': 3, 'enable-endnotes': true,
+                'multi-step': true, 'rolling-context': true, 'pipeline-version': 'legacy',
+                'use-staged-composition': false, 'chapter-outline': '', 'download-dir': './corpus/downloads',
+                'corpus-collections': '', 'endnote-detail': 'standard'
+            }
+        },
+        'dissertation-section': {
+            name: 'Dissertation Section (2-3k)',
+            description: 'Single focused section: whitelist, multi-step, 18 chunks, v2 pipeline. Ideal for 2000-3000 word sections targeting 2-5 corpus scholars.',
+            flags: {
+                style: 'academic', format: 'section', length: 'long',
+                'whitelist-mode': true, 'use-corpus': true, 'corpus-chunks': 18, 'corpus-relevance': 0.35,
+                'verify-sources': true, 'acquire-missing': false,
+                'use-inline-validation': true, 'inline-validation-strictness': 'moderate',
+                'inline-max-retries': 3, 'inline-enable-citation-lookup': true,
+                'citation-enforcement-mode': 'auto-correct', 'citation-min-pass-rate': 0.85,
+                'citation-max-hallucinations': 3, 'enable-endnotes': true,
+                'multi-step': true, 'pipeline-version': 'legacy',
+                'use-staged-composition': false, 'chapter-outline': '', 'download-dir': './corpus/downloads',
+                'corpus-collections': '', 'endnote-detail': 'standard'
+            }
+        },
+        'dissertation-chapter': {
+            name: 'Dissertation Chapter',
+            description: 'Staged composition with whitelist and multi-step drafting',
+            flags: {
+                style: 'academic', format: 'section', length: 'comprehensive',
+                'whitelist-mode': true, 'use-corpus': true, 'corpus-chunks': 28, 'corpus-relevance': 0.35,
+                'verify-sources': true, 'acquire-missing': false,
+                'use-inline-validation': true, 'inline-validation-strictness': 'moderate',
+                'inline-max-retries': 3, 'inline-enable-citation-lookup': true,
+                'citation-enforcement-mode': 'auto-correct', 'citation-min-pass-rate': 0.85,
+                'citation-max-hallucinations': 3, 'enable-endnotes': true,
+                'multi-step': true, 'pipeline-version': 'legacy',
                 'use-staged-composition': true, 'chapter-outline': '', 'download-dir': './corpus/downloads',
-                'corpus-collections': ''
+                'corpus-collections': '', 'endnote-detail': 'standard'
             }
         },
         'quick-draft': {
@@ -678,14 +714,15 @@ class DashboardApp {
             description: 'Fast generation without corpus or validation - good for brainstorming',
             flags: {
                 style: 'casual', format: 'essay', length: 'short',
-                'use-corpus': false, 'corpus-chunks': 15, 'corpus-relevance': 0.75,
+                'whitelist-mode': false, 'use-corpus': false, 'corpus-chunks': 15, 'corpus-relevance': 0.75,
                 'verify-sources': false, 'acquire-missing': false,
                 'use-inline-validation': false, 'inline-validation-strictness': 'lenient',
                 'inline-max-retries': 1, 'inline-enable-citation-lookup': false,
                 'citation-enforcement-mode': 'warn', 'citation-min-pass-rate': 0.5,
                 'citation-max-hallucinations': 10, 'enable-endnotes': false,
+                'multi-step': false, 'pipeline-version': 'legacy',
                 'use-staged-composition': false, 'chapter-outline': '', 'download-dir': './corpus/downloads',
-                'corpus-collections': ''
+                'corpus-collections': '', 'endnote-detail': 'minimal'
             }
         },
         'technical-report': {
@@ -693,29 +730,31 @@ class DashboardApp {
             description: 'Technical writing with source verification and citation enforcement',
             flags: {
                 style: 'technical', format: 'report', length: 'long',
-                'use-corpus': true, 'corpus-chunks': 15, 'corpus-relevance': 0.80,
+                'whitelist-mode': false, 'use-corpus': true, 'corpus-chunks': 15, 'corpus-relevance': 0.50,
                 'verify-sources': true, 'acquire-missing': true,
                 'use-inline-validation': false, 'inline-validation-strictness': 'moderate',
                 'inline-max-retries': 3, 'inline-enable-citation-lookup': true,
                 'citation-enforcement-mode': 'auto-correct', 'citation-min-pass-rate': 0.80,
                 'citation-max-hallucinations': 5, 'enable-endnotes': false,
+                'multi-step': false, 'pipeline-version': 'legacy',
                 'use-staged-composition': false, 'chapter-outline': '', 'download-dir': './corpus/downloads',
-                'corpus-collections': ''
+                'corpus-collections': '', 'endnote-detail': 'minimal'
             }
         },
         'research-synthesis': {
             name: 'Research Synthesis',
-            description: 'Maximum quality: inline validation, strict citation enforcement, endnotes, and staged composition',
+            description: 'Maximum quality: multi-step, strict citation enforcement, v2 pipeline',
             flags: {
                 style: 'academic', format: 'paper', length: 'comprehensive',
-                'use-corpus': true, 'corpus-chunks': 25, 'corpus-relevance': 0.70,
-                'verify-sources': true, 'acquire-missing': true,
+                'whitelist-mode': true, 'use-corpus': true, 'corpus-chunks': 28, 'corpus-relevance': 0.35,
+                'verify-sources': true, 'acquire-missing': false,
                 'use-inline-validation': true, 'inline-validation-strictness': 'strict',
                 'inline-max-retries': 5, 'inline-enable-citation-lookup': true,
                 'citation-enforcement-mode': 'strict', 'citation-min-pass-rate': 0.95,
                 'citation-max-hallucinations': 0, 'enable-endnotes': true,
-                'use-staged-composition': true, 'chapter-outline': '', 'download-dir': './corpus/downloads',
-                'corpus-collections': ''
+                'multi-step': true, 'pipeline-version': 'legacy',
+                'use-staged-composition': false, 'chapter-outline': '', 'download-dir': './corpus/downloads',
+                'corpus-collections': '', 'endnote-detail': 'detailed'
             }
         }
     };
@@ -816,6 +855,41 @@ class DashboardApp {
         // History search
         document.getElementById('gwHistorySearch')?.addEventListener('input', (e) => this.filterGodWriteHistory(e.target.value));
         document.getElementById('gwHistorySort')?.addEventListener('change', (e) => this.sortGodWriteHistory(e.target.value));
+
+        // Whitelist mode auto-adjust: when toggled on, set optimal corpus params
+        const whitelistToggle = document.getElementById('flag-whitelist-mode');
+        if (whitelistToggle) {
+            whitelistToggle.addEventListener('change', () => {
+                if (whitelistToggle.checked) {
+                    const chunksEl = document.getElementById('flag-corpus-chunks');
+                    const relEl = document.getElementById('flag-corpus-relevance');
+                    const corpusEl = document.getElementById('flag-use-corpus');
+                    if (chunksEl) chunksEl.value = '28';
+                    if (relEl) { relEl.value = '0.35'; const d = document.getElementById('corpus-relevance-value'); if (d) d.textContent = '0.35'; }
+                    if (corpusEl) corpusEl.checked = true;
+                    this.updateCorpusDependentFields();
+                }
+                this.updateGodWriteEstimates();
+            });
+        }
+
+        // Advanced drawer toggle
+        document.getElementById('gwAdvancedToggle')?.addEventListener('click', () => {
+            const drawer = document.getElementById('gwAdvancedDrawer');
+            const toggle = document.getElementById('gwAdvancedToggle');
+            if (drawer) {
+                const show = drawer.style.display === 'none';
+                drawer.style.display = show ? 'block' : 'none';
+                if (toggle) toggle.textContent = show ? 'Hide Advanced...' : 'Advanced...';
+            }
+        });
+
+        // Soak feedback handlers
+        document.getElementById('gwResteeringCheck')?.addEventListener('change', (e) => {
+            const notesEl = document.getElementById('gwResteeringNotesWrap');
+            if (notesEl) notesEl.style.display = e.target.checked ? 'block' : 'none';
+        });
+        document.getElementById('gwSaveFeedback')?.addEventListener('click', () => this.saveGodWriteSoakFeedback());
 
         // Flag change listener for estimates
         document.querySelectorAll('#god-write-tab .flag-control, #god-write-tab input[type="checkbox"]').forEach(el => {
@@ -1216,6 +1290,15 @@ class DashboardApp {
         const val = (id) => document.getElementById(id)?.value || '';
         const checked = (id) => document.getElementById(id)?.checked || false;
 
+        // Endnote detail dropdown maps to numeric params
+        const endnoteDetail = val('flag-endnote-detail') || 'standard';
+        const endnoteMap = {
+            minimal:  { maxQuotationsPerEndnote: 1, minEndnoteRelevance: 0.80 },
+            standard: { maxQuotationsPerEndnote: 3, minEndnoteRelevance: 0.65 },
+            detailed: { maxQuotationsPerEndnote: 5, minEndnoteRelevance: 0.50 },
+        };
+        const endnoteParams = endnoteMap[endnoteDetail] || endnoteMap.standard;
+
         return {
             style: val('flag-style'),
             format: val('flag-format'),
@@ -1223,7 +1306,7 @@ class DashboardApp {
             useCorpus: checked('flag-use-corpus'),
             corpusCollections: this.getSelectedCollections().join(','),
             corpusChunks: parseInt(val('flag-corpus-chunks')) || 15,
-            corpusRelevance: parseFloat(val('flag-corpus-relevance')) || 0.75,
+            corpusRelevance: parseFloat(val('flag-corpus-relevance')) || 0.35,
             verifySources: checked('flag-verify-sources'),
             acquireMissing: checked('flag-acquire-missing'),
             downloadDir: val('flag-download-dir'),
@@ -1236,7 +1319,16 @@ class DashboardApp {
             citationMaxHallucinations: parseInt(val('flag-citation-max-hallucinations')) || 3,
             enableEndnotes: checked('flag-enable-endnotes'),
             useStagedComposition: checked('flag-use-staged-composition'),
-            chapterOutline: val('flag-chapter-outline') || null
+            chapterOutline: val('flag-chapter-outline') || null,
+            // v2 pipeline flags
+            whitelistMode: checked('flag-whitelist-mode'),
+            pipelineVersion: val('flag-pipeline-version') || 'legacy',
+            multiStep: checked('flag-multi-step'),
+            rollingContext: checked('flag-rolling-context'),
+            // Advanced flags
+            nliVerify: checked('flag-nli-verify'),
+            candidateSelection: checked('flag-candidate-selection'),
+            ...endnoteParams,
         };
     }
 
@@ -1252,7 +1344,7 @@ class DashboardApp {
         setVal('flag-length', flags.length || flags['length'] || 'comprehensive');
         setChecked('flag-use-corpus', flags.useCorpus ?? flags['use-corpus'] ?? true);
         setVal('flag-corpus-chunks', flags.corpusChunks ?? flags['corpus-chunks'] ?? 15);
-        setVal('flag-corpus-relevance', flags.corpusRelevance ?? flags['corpus-relevance'] ?? 0.75);
+        setVal('flag-corpus-relevance', flags.corpusRelevance ?? flags['corpus-relevance'] ?? 0.35);
         setChecked('flag-verify-sources', flags.verifySources ?? flags['verify-sources'] ?? false);
         setChecked('flag-acquire-missing', flags.acquireMissing ?? flags['acquire-missing'] ?? false);
         setVal('flag-download-dir', flags.downloadDir ?? flags['download-dir'] ?? './corpus/downloads');
@@ -1267,9 +1359,20 @@ class DashboardApp {
         setChecked('flag-use-staged-composition', flags.useStagedComposition ?? flags['use-staged-composition'] ?? false);
         setVal('flag-chapter-outline', flags.chapterOutline ?? flags['chapter-outline'] ?? '');
 
+        // v2 pipeline flags
+        setChecked('flag-whitelist-mode', flags.whitelistMode ?? flags['whitelist-mode'] ?? false);
+        setVal('flag-pipeline-version', flags.pipelineVersion ?? flags['pipeline-version'] ?? 'legacy');
+        setChecked('flag-multi-step', flags.multiStep ?? flags['multi-step'] ?? false);
+        setChecked('flag-rolling-context', flags.rollingContext ?? flags['rolling-context'] ?? false);
+
+        // Advanced flags
+        setChecked('flag-nli-verify', flags.nliVerify ?? flags['nli-verify'] ?? false);
+        setChecked('flag-candidate-selection', flags.candidateSelection ?? flags['candidate-selection'] ?? false);
+        setVal('flag-endnote-detail', flags.endnoteDetail ?? flags['endnote-detail'] ?? 'standard');
+
         // Update slider displays
         const relDisplay = document.getElementById('corpus-relevance-value');
-        if (relDisplay) relDisplay.textContent = document.getElementById('flag-corpus-relevance')?.value || '0.75';
+        if (relDisplay) relDisplay.textContent = document.getElementById('flag-corpus-relevance')?.value || '0.35';
         const citDisplay = document.getElementById('citation-pass-rate-value');
         if (citDisplay) citDisplay.textContent = document.getElementById('flag-citation-min-pass-rate')?.value || '0.85';
 
@@ -1800,7 +1903,79 @@ class DashboardApp {
             if (diffBtn) diffBtn.style.display = 'inline-block';
         }
 
+        // Pipeline health badge (Phase 4 lite)
+        const healthBadge = document.getElementById('gwPipelineHealth');
+        if (healthBadge) {
+            const health = result.metadata?.pipelineHealth || 'unknown';
+            healthBadge.style.display = 'inline-block';
+            healthBadge.textContent = health;
+            healthBadge.className = 'pipeline-health-badge pipeline-health-' + health;
+            healthBadge.title = health === 'clean' ? 'No issues detected'
+                : health === 'degraded' ? 'Some non-critical issues occurred'
+                : health === 'failed' ? 'Critical failures in pipeline'
+                : 'Pipeline health not available';
+        }
+
+        // Multi-step diagnostics timeline (Phase 4 lite)
+        const msd = result.metadata?.multiStepDiagnostics;
+        const timelineEl = document.getElementById('gwMultiStepTimeline');
+        if (timelineEl && msd) {
+            timelineEl.style.display = 'block';
+            const steps = [];
+            if (msd.v1) steps.push(`<div class="msd-step"><span class="msd-label">v1 Draft</span><span class="msd-detail">${msd.v1.wordCount || '?'} words | ${msd.v1.citationCount || '?'} citations | ${msd.v1.issueCount || '?'} issues</span></div>`);
+            if (msd.investigation) steps.push(`<div class="msd-step"><span class="msd-label">Investigation</span><span class="msd-detail">${msd.investigation.underCitedCount || '?'} under-cited | ${msd.investigation.constraintCount || '?'} constraints</span></div>`);
+            if (msd.v2) steps.push(`<div class="msd-step"><span class="msd-label">v2 Revision</span><span class="msd-detail">${msd.v2.wordCount || '?'} words | ${msd.v2.sourceCount || '?'} sources</span></div>`);
+            const timelineContent = document.getElementById('gwMultiStepContent');
+            if (timelineContent) timelineContent.innerHTML = steps.join('<div class="msd-arrow">&#8594;</div>');
+        } else if (timelineEl) {
+            timelineEl.style.display = 'none';
+        }
+
+        // Soak feedback panel — show after each completed generation
+        const soakPanel = document.getElementById('gwSoakFeedback');
+        if (soakPanel) {
+            soakPanel.style.display = 'block';
+            // Reset state
+            const check = document.getElementById('gwResteeringCheck');
+            const notes = document.getElementById('gwResteeringNotes');
+            const wrap = document.getElementById('gwResteeringNotesWrap');
+            if (check) check.checked = false;
+            if (notes) notes.value = '';
+            if (wrap) wrap.style.display = 'none';
+            // Store current job ID for feedback submission
+            soakPanel.dataset.jobId = result.trajectoryId || this.godWriteData.currentJob?.jobId || '';
+        }
+
         this.toastSuccess('Generation Complete', `${(result.wordCount || 0).toLocaleString()} words generated`);
+    }
+
+    /**
+     * Save soak feedback (resteering data) for current job
+     */
+    async saveGodWriteSoakFeedback() {
+        const panel = document.getElementById('gwSoakFeedback');
+        const jobId = panel?.dataset.jobId || this.godWriteData.currentJob?.jobId;
+        if (!jobId) { this.toastError('Error', 'No job ID for feedback'); return; }
+
+        const neededResteering = document.getElementById('gwResteeringCheck')?.checked || false;
+        const resteeringNotes = document.getElementById('gwResteeringNotes')?.value || '';
+
+        try {
+            const response = await fetch(`/api/god-write/history/${jobId}/feedback`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ neededResteering, resteeringNotes }),
+            });
+            if (response.ok) {
+                this.toastSuccess('Feedback Saved', neededResteering ? 'Re-steering noted' : 'Clean run noted');
+                const panel = document.getElementById('gwSoakFeedback');
+                if (panel) panel.style.display = 'none';
+            } else {
+                this.toastError('Error', 'Failed to save feedback');
+            }
+        } catch (err) {
+            this.toastError('Error', err.message);
+        }
     }
 
     /**
@@ -6072,6 +6247,16 @@ class DashboardApp {
         if (container && typeof initICPPanel === 'function') {
             if (!container.dataset.initialized) {
                 initICPPanel(container);
+                container.dataset.initialized = 'true';
+            }
+        }
+    }
+
+    loadICPV2Panel() {
+        const container = document.getElementById('icp-v2-container');
+        if (container && typeof initV2Panel === 'function') {
+            if (!container.dataset.initialized) {
+                initV2Panel(container);
                 container.dataset.initialized = 'true';
             }
         }
