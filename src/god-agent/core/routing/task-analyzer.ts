@@ -26,6 +26,8 @@ import type {
 import { TaskAnalysisError } from './routing-errors.js';
 import { EmbeddingProviderFactory } from '../memory/embedding-provider.js';
 import type { IEmbeddingProvider } from '../memory/types.js';
+// Cross-layer shared types (ADR-001: router/routing boundary deduplication)
+import type { TaskClassification } from '../router/shared-types.js';
 
 // ==================== Domain & Verb Patterns ====================
 

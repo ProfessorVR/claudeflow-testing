@@ -22,7 +22,7 @@ import type {
   ExportPackage,
   QuoteSpan,
 } from '../core/composition/icp-types.js';
-import { createICPSession } from '../core/composition/icp-types.js';
+import { createICPSession, emitSessionEvent } from '../core/composition/icp-types.js';
 import {
   emitVerificationEvent,
   emitRetrievalEvent,
@@ -42,11 +42,7 @@ import {
 } from '../universal/gold-standard-prompt-builder.js';
 import { GOLD_STANDARD_CONFIG } from '../universal/gold-standard-config.js';
 import { loadDomainConfig } from '../universal/domain-config.js';
-import {
-  ICPPipelineAdapter,
-  getDefaultAdapterConfig,
-  type ICPAdapterConfig,
-} from '../core/composition/icp-pipeline-adapter.js';
+import { ICPOrchestrator } from '../core/composition/icp-orchestrator.js';
 
 // Load .env for ANTHROPIC_API_KEY (Fix 26: shell may have truncated key; .env has full 108-char key)
 try {
@@ -94,14 +90,13 @@ async function getFactoryResult(): Promise<ICPFactoryResult> {
 
 const sessions = new Map<string, ICPSession>();
 
-let _adapter: ICPPipelineAdapter | null = null;
-function getAdapter(): ICPPipelineAdapter {
-  if (!_adapter) {
-    _adapter = new ICPPipelineAdapter({
-      anthropicApiKey: process.env.ANTHROPIC_API_KEY,
-    });
+let _orchestrator: ICPOrchestrator | null = null;
+async function getOrchestrator(): Promise<ICPOrchestrator> {
+  if (!_orchestrator) {
+    const factory = await getFactoryResult();
+    _orchestrator = new ICPOrchestrator(factory.deps, factory.orchestratorConfig);
   }
-  return _adapter;
+  return _orchestrator;
 }
 
 // Diagnostic: check factory state (temporary)
@@ -1478,156 +1473,122 @@ export function createICPRouter(options?: ICPRouterOptions): Router {
   });
 
   // ===========================================================================
-  // ADAPTER ENDPOINTS (Convergence Plan — multi-step + rolling context)
+  // PIPELINE ENDPOINTS (migrated from ICPPipelineAdapter → ICPOrchestrator)
+  // Quality gates: CitationEnforcer, author scrubbing, APA stripping,
+  //   endnote leak stripping, prose sanitization (2-pass), quality gauntlet,
+  //   endnote generation — all enforced in ICPOrchestrator.run()
   // ===========================================================================
 
   /**
-   * POST /api/icp/adapter/generate/:sessionId — Run adapter-based generation
-   * Body: { config?: Partial<ICPAdapterConfig> }
+   * POST /api/icp/adapter/generate/:sessionId — Run full ICP pipeline
    *
-   * Runs the full god-write generation pipeline via ICPPipelineAdapter:
-   * - Chunk trimming + attention reordering
-   * - Multi-step drafting (v1 → investigate → v2) if enabled
-   * - Rolling context (section-by-section) if enabled
-   * - Streams progress via WebSocket if available
+   * Runs the ICPOrchestrator 11-stage pipeline:
+   *   decomposition → retrieval → verification → binding → generation →
+   *   citation enforcement → author scrubbing → APA/endnote stripping →
+   *   sanitization (2-pass) → quality gauntlet → endnotes → export
    */
   router.post('/adapter/generate/:sessionId', async (req: Request, res: Response) => {
     try {
       const session = getSession(req.params.sessionId, res);
       if (!session) return;
 
-      const adapter = getAdapter();
-      const userConfig = req.body?.config || {};
-      const config: ICPAdapterConfig = { ...getDefaultAdapterConfig(), ...userConfig };
+      const orchestrator = await getOrchestrator();
+      const prompt = session.prompt_spec.original_prompt || '';
+      const sourceScope = session.source_scope;
 
-      // Store config in session for reproducibility
-      session.adapter_config = config as any;
+      const result = await orchestrator.run(prompt, sourceScope);
 
-      const sessionId = req.params.sessionId;
-
-      // Build emit function: WS broadcast if server available, otherwise collect events
-      const events: Array<{ event: string; data: any }> = [];
-      const wsEmit = options?.server
-        ? (() => {
-            const serverEmit = options.server!.createICPEmitter(sessionId);
-            return (event: string, data: any) => {
-              events.push({ event, data });
-              serverEmit(event, data);
-            };
-          })()
-        : (event: string, data: any) => { events.push({ event, data }); };
-
-      // Create AbortController if server available
-      const abortSignal = options?.server
-        ? options.server.createICPAbortController(sessionId)
-        : undefined;
-
-      try {
-        await adapter.generate(session, config, wsEmit, abortSignal);
-      } finally {
-        // Always clean up abort controller
-        if (options?.server) options.server.cleanupICPAbortController(sessionId);
-      }
+      // Merge pipeline results into existing session
+      session.generated_text = result.session.generated_text;
+      session.quality_gates = result.session.quality_gates;
+      session.review_results = result.session.review_results;
+      session.quote_spans = result.session.quote_spans;
+      session.atoms = result.session.atoms;
+      session.bindings = result.session.bindings;
+      session.paragraph_plan = result.session.paragraph_plan;
+      session.paragraph_ledger = result.session.paragraph_ledger;
+      session.sentence_scopes = result.session.sentence_scopes;
+      session.run_manifest = result.session.run_manifest;
+      session.event_log = result.session.event_log;
+      (session as any).pipeline_phase = 'GENERATED';
 
       res.json({
-        sessionId,
-        pipeline_phase: session.pipeline_phase,
-        investigation_results: session.investigation_results,
+        sessionId: req.params.sessionId,
+        pipeline_phase: 'GENERATED',
         generated_text: Object.fromEntries(session.generated_text),
-        section_summaries: session.section_summaries,
         quality_gates: session.quality_gates,
-        events,
+        review_results: session.review_results,
+        success: result.success,
+        block_reasons: result.blockReasons,
       });
     } catch (error: any) {
-      // Clean up abort controller on error path too
-      if (options?.server) options.server.cleanupICPAbortController(req.params.sessionId);
-      log.error('Adapter generate failed', error);
-      res.status(500).json({ error: 'Adapter generation failed', details: error.message });
+      log.error('Pipeline generate failed', error);
+      res.status(500).json({ error: 'Pipeline generation failed', details: error.message });
     }
   });
 
   /**
-   * POST /api/icp/adapter/regenerate/:sessionId — Re-generate with prevention plan
-   * Requires session to be in INVESTIGATED phase (v1 analyzed)
+   * POST /api/icp/adapter/regenerate/:sessionId — Re-run pipeline
+   * Re-runs the full ICP pipeline for the same prompt.
    */
   router.post('/adapter/regenerate/:sessionId', async (req: Request, res: Response) => {
     try {
       const session = getSession(req.params.sessionId, res);
       if (!session) return;
 
-      if (session.pipeline_phase !== 'INVESTIGATED') {
-        res.status(400).json({
-          error: 'Session must be in INVESTIGATED phase to regenerate',
-          current_phase: session.pipeline_phase,
-        });
-        return;
-      }
+      const orchestrator = await getOrchestrator();
+      const prompt = session.prompt_spec.original_prompt || '';
+      const sourceScope = session.source_scope;
 
-      const adapter = getAdapter();
-      const config: ICPAdapterConfig = {
-        ...getDefaultAdapterConfig(),
-        ...(session.adapter_config || {}),
-      } as ICPAdapterConfig;
+      const result = await orchestrator.run(prompt, sourceScope);
 
-      const sessionId = req.params.sessionId;
-      const events: Array<{ event: string; data: any }> = [];
-      const wsEmit = options?.server
-        ? (() => {
-            const serverEmit = options.server!.createICPEmitter(sessionId);
-            return (event: string, data: any) => { events.push({ event, data }); serverEmit(event, data); };
-          })()
-        : (event: string, data: any) => { events.push({ event, data }); };
-      const abortSignal = options?.server ? options.server.createICPAbortController(sessionId) : undefined;
-
-      try {
-        await adapter.regenerateV2(session, config, wsEmit, abortSignal);
-      } finally {
-        if (options?.server) options.server.cleanupICPAbortController(sessionId);
-      }
+      // Merge regenerated results
+      session.generated_text = result.session.generated_text;
+      session.quality_gates = result.session.quality_gates;
+      session.review_results = result.session.review_results;
+      session.quote_spans = result.session.quote_spans;
+      session.atoms = result.session.atoms;
+      session.bindings = result.session.bindings;
+      session.paragraph_plan = result.session.paragraph_plan;
+      session.run_manifest = result.session.run_manifest;
+      (session as any).pipeline_phase = 'REGENERATED';
 
       res.json({
         sessionId: req.params.sessionId,
-        pipeline_phase: session.pipeline_phase,
+        pipeline_phase: 'REGENERATED',
         generated_text: Object.fromEntries(session.generated_text),
-        events,
+        quality_gates: session.quality_gates,
       });
     } catch (error: any) {
-      log.error('Adapter regenerate failed', error);
-      res.status(500).json({ error: 'Adapter regeneration failed', details: error.message });
+      log.error('Pipeline regenerate failed', error);
+      res.status(500).json({ error: 'Pipeline regeneration failed', details: error.message });
     }
   });
 
   /**
-   * POST /api/icp/adapter/validate/:sessionId — Run all quality gates
-   * Runs: author scrubbing, APA stripping, endnote leaks, prose sanitization
+   * POST /api/icp/adapter/validate/:sessionId — Return quality gate results
+   * Quality gates are now applied during generation via ICPOrchestrator.run().
+   * This endpoint returns the already-computed gate results.
    */
   router.post('/adapter/validate/:sessionId', async (req: Request, res: Response) => {
     try {
       const session = getSession(req.params.sessionId, res);
       if (!session) return;
 
-      const adapter = getAdapter();
-      const config: ICPAdapterConfig = {
-        ...getDefaultAdapterConfig(),
-        ...(session.adapter_config || {}),
-      } as ICPAdapterConfig;
-
-      await adapter.validate(session, config);
-
       res.json({
         sessionId: req.params.sessionId,
-        pipeline_phase: session.pipeline_phase,
+        pipeline_phase: (session as any).pipeline_phase ?? session.pipeline_phase,
         quality_gates: session.quality_gates,
         generated_text: Object.fromEntries(session.generated_text),
       });
     } catch (error: any) {
-      log.error('Adapter validate failed', error);
-      res.status(500).json({ error: 'Adapter validation failed', details: error.message });
+      log.error('Validate query failed', error);
+      res.status(500).json({ error: 'Validation query failed', details: error.message });
     }
   });
 
   /**
-   * POST /api/icp/adapter/feedback/:sessionId — Submit SoNA trajectory feedback
+   * POST /api/icp/adapter/feedback/:sessionId — Submit user feedback
    * Body: { correctedText?: Record<string, string> }
    */
   router.post('/adapter/feedback/:sessionId', async (req: Request, res: Response) => {
@@ -1635,52 +1596,79 @@ export function createICPRouter(options?: ICPRouterOptions): Router {
       const session = getSession(req.params.sessionId, res);
       if (!session) return;
 
-      // Store user corrections if provided
       if (req.body?.correctedText) {
         session.corrected_text = new Map(Object.entries(req.body.correctedText));
       }
 
-      const adapter = getAdapter();
-      await adapter.submitFeedback(session);
+      emitSessionEvent(session, {
+        ts: new Date().toISOString(),
+        actor: 'user',
+        action: 'review_fail',
+        payload_summary: 'User submitted feedback',
+        affected_ids: [],
+        severity: 'info',
+        user_visible: true,
+        category: 'generation',
+      });
 
       res.json({
         sessionId: req.params.sessionId,
         trajectory_id: session.trajectory_id,
-        message: 'Feedback submitted to SoNA trajectory system',
+        message: 'Feedback submitted',
       });
     } catch (error: any) {
-      log.error('Adapter feedback failed', error);
+      log.error('Feedback failed', error);
       res.status(500).json({ error: 'Feedback submission failed', details: error.message });
     }
   });
 
   /**
-   * GET /api/icp/adapter/cost-estimate — Estimate token cost for given config
-   * Query: config params as JSON string, sectionCount
+   * GET /api/icp/adapter/cost-estimate — Estimate token cost for ICP pipeline
+   * Query: sectionCount (default: 5)
    */
   router.get('/adapter/cost-estimate', (req: Request, res: Response) => {
     try {
-      const adapter = getAdapter();
-      const configStr = typeof req.query.config === 'string' ? req.query.config : '{}';
-      const sectionCount = parseInt(typeof req.query.sectionCount === 'string' ? req.query.sectionCount : '5', 10);
+      const sectionCount = parseInt(
+        typeof req.query.sectionCount === 'string' ? req.query.sectionCount : '5', 10,
+      );
 
-      let userConfig: Partial<ICPAdapterConfig> = {};
-      try { userConfig = JSON.parse(configStr); } catch { /* use defaults */ }
+      // Anthropic pricing (per million tokens, as of 2026-03)
+      const model = 'claude-sonnet-4-5-20250929';
+      const inputPricePerMillion = 3.0;
+      const outputPricePerMillion = 15.0;
 
-      const config: ICPAdapterConfig = { ...getDefaultAdapterConfig(), ...userConfig };
-      const estimate = adapter.estimateCost(config, sectionCount);
+      const stages = [
+        { name: 'Decomposition', estimatedTokens: 2000,
+          estimatedCost: (2000 * inputPricePerMillion) / 1_000_000 },
+        { name: 'Retrieval', estimatedTokens: 0, estimatedCost: 0 },
+        { name: 'Verification', estimatedTokens: 3000,
+          estimatedCost: (3000 * inputPricePerMillion) / 1_000_000 },
+        { name: `Generation (${sectionCount} sections)`,
+          estimatedTokens: (4000 + 6000) * sectionCount,
+          estimatedCost: ((4000 * inputPricePerMillion + 6000 * outputPricePerMillion) / 1_000_000) * sectionCount },
+        { name: 'Quality Gates', estimatedTokens: 0, estimatedCost: 0 },
+      ];
 
-      res.json({ estimate, config });
+      const totalTokens = stages.reduce((sum, s) => sum + s.estimatedTokens, 0);
+      const totalCost = stages.reduce((sum, s) => sum + s.estimatedCost, 0);
+
+      res.json({ estimate: { stages, totalTokens, totalCost, model } });
     } catch (error: any) {
       res.status(500).json({ error: 'Cost estimation failed', details: error.message });
     }
   });
 
   /**
-   * GET /api/icp/adapter/config-defaults — Get default ICPAdapterConfig
+   * GET /api/icp/adapter/config-defaults — Get pipeline defaults
    */
   router.get('/adapter/config-defaults', (_req: Request, res: Response) => {
-    res.json({ defaults: getDefaultAdapterConfig() });
+    res.json({
+      defaults: {
+        autoVerifyOnly: true,
+        defaultAtomsMode: 'analytics',
+        defaultReverseCheckMode: 'warn',
+      },
+    });
   });
 
   return router;

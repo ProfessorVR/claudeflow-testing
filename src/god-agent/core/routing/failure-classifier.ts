@@ -24,6 +24,8 @@ import type {
   IFailureClassification,
   FailureType,
 } from './routing-types.js';
+// Cross-layer shared types (ADR-001: router/routing boundary deduplication)
+import type { FailureTaxonomy } from '../router/shared-types.js';
 
 /**
  * Failure classifier for routing feedback
@@ -222,5 +224,29 @@ export class FailureClassifier {
     } else {
       return 0.3;
     }
+  }
+
+  /**
+   * Convert an IFailureClassification to the shared FailureTaxonomy.
+   * Bridges routing-level failure classification to the unified taxonomy
+   * defined in core/router/shared-types.ts (ADR-001).
+   */
+  public toTaxonomy(classification: IFailureClassification): FailureTaxonomy {
+    const ACTION_MAP: Record<IFailureClassification['recommendedAction'], FailureTaxonomy['recommendedAction']> = {
+      retry_same_agent: 'retry_same',
+      retry_different_agent: 'retry_different',
+      escalate: 'escalate',
+      abandon: 'abandon',
+    };
+
+    return {
+      category: classification.failureType,
+      source: 'routing',
+      confidence: classification.classificationConfidence,
+      penalizeRouting: classification.penalizeRouting,
+      penalizeAgent: classification.penalizeAgent,
+      recommendedAction: ACTION_MAP[classification.recommendedAction],
+      reasoning: classification.reasoning,
+    };
   }
 }

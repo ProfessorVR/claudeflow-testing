@@ -68,6 +68,8 @@ import type { CorpusConstraint, CorpusSource } from '../writing/writing-generato
 import { CitationEnforcer, type EnforcementResult } from '../writing/citation-enforcer.js';
 import { QualityGauntlet, createDefaultGauntlet, type GauntletResult } from '../../cli/quality/quality-gauntlet.js';
 import { EndnoteGenerator, type CorpusSearchFn } from '../../cli/quality/endnote-generator.js';
+import { stripBareApaParentheticals } from '../../universal/author-scrubber.js';
+import { stripEndnoteLeaks } from '../../universal/quality-integration.js';
 
 // =============================================================================
 // CONFIGURATION
@@ -415,6 +417,7 @@ export class ICPOrchestrator {
     // =========================================================================
     let assembledProse = this.assembleFinalProse(session);
     let enforcementResult: EnforcementResult | undefined;
+    let sanitizationArtifacts = 0;
 
     // Initialize review results with claim coverage
     session.review_results = {
@@ -454,9 +457,22 @@ export class ICPOrchestrator {
       // WS4: Non-corpus author scrubbing (Fix 25 pattern)
       assembledProse = this.scrubNonCorpusAuthors(assembledProse, this.corpusConstraint);
 
-      // WS5: Second sanitizer pass after enforcement
+      // WS4b: Strip bare APA parentheticals (ported from adapter quality gates)
+      const apaResult = stripBareApaParentheticals(assembledProse);
+      assembledProse = apaResult.content;
+
+      // WS4c: Strip endnote leaks (ported from adapter quality gates)
+      assembledProse = stripEndnoteLeaks(assembledProse);
+
+      // WS5: First sanitizer pass after enforcement/stripping
+      const firstPass = await this.sanitizer.sanitize(assembledProse);
+      assembledProse = firstPass.sanitized;
+      sanitizationArtifacts += firstPass.artifactCount ?? 0;
+
+      // WS5b: Second sanitizer pass (catches post-enforcement artifacts)
       const secondPass = await this.sanitizer.sanitize(assembledProse);
       assembledProse = secondPass.sanitized;
+      sanitizationArtifacts += secondPass.artifactCount ?? 0;
 
       // Store enforcement results in review
       session.review_results = {
@@ -567,8 +583,8 @@ export class ICPOrchestrator {
         sources_count: this.corpusConstraint?.sources.length ?? 0,
       } : undefined,
       sanitization: {
-        artifacts_removed: 0,
-        passes: this.corpusConstraint ? 2 : 1,
+        artifacts_removed: sanitizationArtifacts,
+        passes: this.corpusConstraint ? 2 : 0,
       },
       style_profile: this.stylePromptCache ? {
         id: this.config.styleProfileId ?? 'default',
@@ -681,7 +697,8 @@ export class ICPOrchestrator {
                    s.verification_status === 'human_verified' ||
                    s.verification_status === 'human_corrected')
       .map(span => ({
-        id: span.quote_id,
+        chunkId: span.quote_id,
+        docId: span.doc_id,
         content: span.repaired_text ?? span.text,
         relevanceScore: span.provenance_scorecard.fidelity_score,
         metadata: {
@@ -690,7 +707,7 @@ export class ICPOrchestrator {
           title: span.doc_id,
           page_start: typeof span.page === 'number' ? span.page : span.page[0],
           page_end: typeof span.page === 'number' ? span.page : span.page[1],
-          docId: span.doc_id,
+          collection: '',
         },
       }));
   }

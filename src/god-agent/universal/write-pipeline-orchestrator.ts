@@ -149,6 +149,84 @@ export interface WritePipelineDeps {
   ) => Promise<TaskExecutionResult>;
 }
 
+// =============================================================================
+// WRITE OPTIONS — extracted from write() parameter for shared type safety
+// =============================================================================
+
+export interface WriteOptions {
+  style?: 'academic' | 'professional' | 'casual' | 'technical';
+  length?: 'short' | 'medium' | 'long' | 'comprehensive';
+  format?: 'essay' | 'report' | 'article' | 'paper';
+  /** Use a specific learned style profile by ID */
+  styleProfileId?: string;
+  /** Use the currently active style profile (default: true if one is set) */
+  useActiveStyleProfile?: boolean;
+  /** Phase 3: Use corpus for source-grounded content generation */
+  useCorpus?: boolean;
+  /** Phase 3: Target specific corpus collections */
+  corpusCollections?: string[];
+  /** Phase 3: Number of corpus chunks to retrieve (default: 15) */
+  corpusChunkCount?: number;
+  /** Phase 3: Minimum relevance for corpus chunks (default: 0.75) */
+  corpusMinRelevance?: number;
+  /** Phase 5: Use staged composition system (auto-detected for chapters/sections) */
+  useStagedComposition?: boolean;
+  /** Phase 5: Chapter outline for staged composition */
+  chapterOutline?: ChapterOutline;
+  /** Force direct execution, bypassing pipeline detection (for testing) */
+  forceExecute?: boolean;
+  /** Enable endnote generation with supporting quotations (requires useCorpus) */
+  enableEndnotes?: boolean;
+  /** Maximum supporting quotations per endnote (default: 3) */
+  maxQuotationsPerEndnote?: number;
+  /** Minimum relevance threshold for endnote quotations (default: 0.65) */
+  minEndnoteRelevance?: number;
+  /** Render visual provenance bbox overlays for endnote citations (default: false) */
+  renderBboxOverlays?: boolean;
+  /** Source Verification: Verify all citations exist in corpus */
+  verifySources?: boolean;
+  /** Source Acquisition: Automatically acquire missing sources */
+  acquireMissing?: boolean;
+  /** Download directory for acquired sources (default: ./corpus/downloads) */
+  downloadDir?: string;
+  /** Citation Enforcement: Mode for hallucination prevention (default: 'auto-correct') */
+  citationEnforcementMode?: 'strict' | 'auto-correct' | 'warn';
+  /** Citation Enforcement: Minimum pass rate for citations (default: 0.85) */
+  citationMinPassRate?: number;
+  /** Citation Enforcement: Maximum hallucinations allowed (default: 3) */
+  citationMaxHallucinations?: number;
+  /** Phase 11: Use inline validation during generation (prevents hallucinations DURING generation, not after) */
+  useInlineValidation?: boolean;
+  /** Phase 11: Inline validation strictness level (default: 'moderate') */
+  inlineValidationStrictness?: 'strict' | 'moderate' | 'lenient';
+  /** Phase 11: Maximum retry attempts per paragraph (default: 3) */
+  inlineMaxRetriesPerUnit?: number;
+  /** Phase 11: Enable citation lookup tool-use during generation (default: true) */
+  inlineEnableCitationLookup?: boolean;
+  /** Phase 11: Minimum corpus chunks required to auto-enable inline validation (default: 3) */
+  inlineMinChunks?: number;
+  /** Data source mode: 'corpus' = retrieved chunks only, 'hybrid' = chunks + manifest, 'external' = no constraint */
+  dataSourceMode?: 'corpus' | 'hybrid' | 'external';
+  /** Gold standard mode: multi-query chunk retrieval + style profile injection +
+   *  knowledge units + 7-section prompt + single-shot generation.
+   *  Replicates the exact approach that produced the gold standard document. */
+  whitelistMode?: boolean;
+  /** Multi-step drafting: v1 (no style) → investigate → v2 (styled, with prevention plan).
+   *  Produces higher-assurance output for dissertation chapters. */
+  multiStep?: boolean;
+  /** NLI-based claim verification (optional, high-cost). Run after v1 or v2. */
+  nliVerify?: boolean;
+  /** Per-section candidate selection (optional). Generate 2-3 candidates, pick best. */
+  candidateSelection?: boolean;
+  /** Rolling context generation: sequential per-section generation with sliding context window.
+   *  Requires whitelistMode. Eliminates token-distribution fatigue and inter-section incoherence. */
+  rollingContext?: boolean;
+  /** Pipeline version: 'legacy' (monolithic) or 'v2' (staged pipeline).
+   *  CLI flag --pipeline-version overrides env WRITING_PIPELINE_VERSION.
+   *  Default: 'legacy' until v2 is fully validated. */
+  pipelineVersion?: PipelineVersion;
+}
+
 export class WritePipelineOrchestrator {
   private manifestCache: Map<string, { sources: CorpusSource[]; ts: number }> = new Map();
   private static readonly MANIFEST_CACHE_TTL_MS = 60_000; // 1 minute
@@ -1341,79 +1419,7 @@ ${sectionContent}`;
 
   // ===== Main Write Pipeline =====
 
-  async write(topic: string, options: {
-    style?: 'academic' | 'professional' | 'casual' | 'technical';
-    length?: 'short' | 'medium' | 'long' | 'comprehensive';
-    format?: 'essay' | 'report' | 'article' | 'paper';
-    /** Use a specific learned style profile by ID */
-    styleProfileId?: string;
-    /** Use the currently active style profile (default: true if one is set) */
-    useActiveStyleProfile?: boolean;
-    /** Phase 3: Use corpus for source-grounded content generation */
-    useCorpus?: boolean;
-    /** Phase 3: Target specific corpus collections */
-    corpusCollections?: string[];
-    /** Phase 3: Number of corpus chunks to retrieve (default: 15) */
-    corpusChunkCount?: number;
-    /** Phase 3: Minimum relevance for corpus chunks (default: 0.75) */
-    corpusMinRelevance?: number;
-    /** Phase 5: Use staged composition system (auto-detected for chapters/sections) */
-    useStagedComposition?: boolean;
-    /** Phase 5: Chapter outline for staged composition */
-    chapterOutline?: ChapterOutline;
-    /** Force direct execution, bypassing pipeline detection (for testing) */
-    forceExecute?: boolean;
-    /** Enable endnote generation with supporting quotations (requires useCorpus) */
-    enableEndnotes?: boolean;
-    /** Maximum supporting quotations per endnote (default: 3) */
-    maxQuotationsPerEndnote?: number;
-    /** Minimum relevance threshold for endnote quotations (default: 0.65) */
-    minEndnoteRelevance?: number;
-    /** Render visual provenance bbox overlays for endnote citations (default: false) */
-    renderBboxOverlays?: boolean;
-    /** Source Verification: Verify all citations exist in corpus */
-    verifySources?: boolean;
-    /** Source Acquisition: Automatically acquire missing sources */
-    acquireMissing?: boolean;
-    /** Download directory for acquired sources (default: ./corpus/downloads) */
-    downloadDir?: string;
-    /** Citation Enforcement: Mode for hallucination prevention (default: 'auto-correct') */
-    citationEnforcementMode?: 'strict' | 'auto-correct' | 'warn';
-    /** Citation Enforcement: Minimum pass rate for citations (default: 0.85) */
-    citationMinPassRate?: number;
-    /** Citation Enforcement: Maximum hallucinations allowed (default: 3) */
-    citationMaxHallucinations?: number;
-    /** Phase 11: Use inline validation during generation (prevents hallucinations DURING generation, not after) */
-    useInlineValidation?: boolean;
-    /** Phase 11: Inline validation strictness level (default: 'moderate') */
-    inlineValidationStrictness?: 'strict' | 'moderate' | 'lenient';
-    /** Phase 11: Maximum retry attempts per paragraph (default: 3) */
-    inlineMaxRetriesPerUnit?: number;
-    /** Phase 11: Enable citation lookup tool-use during generation (default: true) */
-    inlineEnableCitationLookup?: boolean;
-    /** Phase 11: Minimum corpus chunks required to auto-enable inline validation (default: 3) */
-    inlineMinChunks?: number;
-    /** Data source mode: 'corpus' = retrieved chunks only, 'hybrid' = chunks + manifest, 'external' = no constraint */
-    dataSourceMode?: 'corpus' | 'hybrid' | 'external';
-    /** Gold standard mode: multi-query chunk retrieval + style profile injection +
-     *  knowledge units + 7-section prompt + single-shot generation.
-     *  Replicates the exact approach that produced the gold standard document. */
-    whitelistMode?: boolean;
-    /** Multi-step drafting: v1 (no style) → investigate → v2 (styled, with prevention plan).
-     *  Produces higher-assurance output for dissertation chapters. */
-    multiStep?: boolean;
-    /** NLI-based claim verification (optional, high-cost). Run after v1 or v2. */
-    nliVerify?: boolean;
-    /** Per-section candidate selection (optional). Generate 2-3 candidates, pick best. */
-    candidateSelection?: boolean;
-    /** Rolling context generation: sequential per-section generation with sliding context window.
-     *  Requires whitelistMode. Eliminates token-distribution fatigue and inter-section incoherence. */
-    rollingContext?: boolean;
-    /** Pipeline version: 'legacy' (monolithic) or 'v2' (staged pipeline).
-     *  CLI flag --pipeline-version overrides env WRITING_PIPELINE_VERSION.
-     *  Default: 'legacy' until v2 is fully validated. */
-    pipelineVersion?: PipelineVersion;
-  } = {}): Promise<WriteResult> {
+  async write(topic: string, options: WriteOptions = {}): Promise<WriteResult> {
     await this.deps.ensureInitialized();
 
     // =========================================================================
@@ -3144,7 +3150,7 @@ ${sectionContent}`;
   // three lifecycle stages: Retrieval → Drafting → Validation.
   // =========================================================================
 
-  private async writeV2(topic: string, options: Record<string, any>): Promise<WriteResult> {
+  private async writeV2(topic: string, options: WriteOptions): Promise<WriteResult> {
     const ctx = createPipelineContext(stderrLogger);
 
     // --- Resolve options (same as legacy) ---

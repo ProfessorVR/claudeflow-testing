@@ -30,6 +30,8 @@ import { FailureClassifier } from './failure-classifier.js';
 import { RoutingLearningError } from './routing-errors.js';
 import type { ReasoningBank } from '../reasoning/reasoning-bank.js';
 import type { ILearningFeedback } from '../reasoning/reasoning-types.js';
+// Cross-layer shared types (ADR-001: router/routing boundary deduplication)
+import type { OutcomeEvent } from '../router/shared-types.js';
 
 /**
  * Configuration for RoutingLearner
@@ -532,5 +534,25 @@ export class RoutingLearner implements IRoutingLearner {
         console.warn('[RoutingLearner] Failed to submit to ReasoningBank:', error);
       }
     }
+  }
+
+  /**
+   * Handle an outcome event from the router layer's OutcomeTracker.
+   * Converts the cross-layer OutcomeEvent into routing feedback for learning.
+   * See ADR-001 for the architectural boundary rationale.
+   */
+  public async onOutcome(event: OutcomeEvent): Promise<void> {
+    const feedback: IRoutingFeedback = {
+      routingId: event.outcomeId,
+      task: event.taskPattern,
+      selectedAgent: event.routedTo,
+      success: event.status === 'success',
+      userAbandoned: event.status === 'reverted',
+      executionTimeMs: 0,
+      errorMessage: event.failure?.reasoning,
+      feedbackAt: event.timestamp.getTime(),
+    };
+
+    await this.processFeedback(feedback);
   }
 }
