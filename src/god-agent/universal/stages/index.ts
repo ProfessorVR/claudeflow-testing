@@ -24,3 +24,9 @@ export {
 } from './stage-types.js';
 
 export { deduplicateChunks, estimateTokenBudget } from './pipeline-utils.js';
+
+export {
+  runRetrievalStage,
+  type RetrievalStageDeps,
+  type RetrievalStageOptions,
+} from './retrieval-stage.js';

@@ -5,6 +5,8 @@
  * Contains write(), corpus helpers, generation helpers, and content pipeline.
  */
 
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import type { SmartRetrievalLayer, ContextChunk, RetrievalOptions, Logger } from '../retrieval/index.js';
 import { stderrLogger } from '../retrieval/index.js';
 import {
@@ -14,23 +16,43 @@ import {
   recordDegraded,
   recordWarning,
   recordHardFailure,
+  runRetrievalStage,
   type PipelineVersion,
   type PipelineContext,
   type RetrievalResult as StageRetrievalResult,
   type DraftingResult as StageDraftingResult,
   type ValidationResult as StageValidationResult,
+  type RetrievalStageDeps,
 } from './stages/index.js';
 import { estimateTokenBudget } from './stages/pipeline-utils.js';
+import {
+  investigateV1 as investigateV1Fn,
+  trimChunkContent as trimChunkContentFn,
+  reorderChunksForAttention as reorderChunksForAttentionFn,
+  enforceSourceDiversity as enforceSourceDiversityFn,
+  validateRetrievalCoverage as validateRetrievalCoverageFn,
+} from '../core/composition/retrieval-utils.js';
 import {
   loadDomainConfig,
   buildAuthorPattern,
   buildConceptPattern,
   isPrimarySource,
   getDomainKeywords,
+  extractWorkReferences,
   type DomainConfig,
 } from './domain-config.js';
 import { GOLD_STANDARD_CONFIG } from './gold-standard-config.js';
+import {
+  buildGoldStandardPrompt as buildGoldStandardPromptFn,
+  buildGoldStandardChunkBlock as buildGoldStandardChunkBlockFn,
+  assignSourcesToSections as assignSourcesToSectionsFn,
+  buildRollingContextSectionPrompt,
+  type GoldStandardPromptOptions,
+  type RollingContextCitationTracker,
+  type RollingContextSectionPromptOptions,
+} from './gold-standard-prompt-builder.js';
 import type { QualityIntegration, QualityValidationOptions, QualityValidationResult } from './quality-integration.js';
+import { stripEndnoteLeaks } from './quality-integration.js';
 import type { ProseSanitizer, SanitizationResult, ArtifactViolation } from '../cli/composition/prose-sanitizer.js';
 import type { StyleProfileManager, StoredStyleProfile } from './style-profile.js';
 import type { StyleCharacteristics } from './style-analyzer.js';
@@ -84,11 +106,12 @@ import {
   getMissingSourceAcquisitionLayer,
   type AcquisitionResult,
 } from '../cli/quality/missing-source-acquisition.js';
-import { scrubNonCorpusAuthors, buildCorpusSourcesFromChunks } from './author-scrubber.js';
+import { scrubNonCorpusAuthors, stripBareApaParentheticals, buildCorpusSourcesFromChunks } from './author-scrubber.js';
 import { estimateQuality, assessQuality, type QualityInteraction } from './quality-estimator.js';
 import type { AgentMode, WriteResult, TaskExecutionResult, IWriteTaskPreparation } from './universal-agent.js';
 import type { IAgentSelectionResult } from '../core/agents/index.js';
 import { ClaudeCodeExecutor, type ICodeExecutionRequest } from '../core/executor/index.js';
+import { PipelineAbortController, PipelineAbortError } from '../core/abort/index.js';
 
 export interface WritePipelineDeps {
   smartRetrieval: SmartRetrievalLayer | null;
@@ -129,8 +152,24 @@ export interface WritePipelineDeps {
 export class WritePipelineOrchestrator {
   private manifestCache: Map<string, { sources: CorpusSource[]; ts: number }> = new Map();
   private static readonly MANIFEST_CACHE_TTL_MS = 60_000; // 1 minute
+  /** Active abort controller for the current pipeline run (set during write()) */
+  private activeAbortCtrl: PipelineAbortController | null = null;
 
   constructor(private deps: WritePipelineDeps) {}
+
+  /** Build RetrievalStageDeps from this orchestrator's private methods. */
+  private buildRetrievalStageDeps(goldLog: (msg: string) => void): RetrievalStageDeps {
+    return {
+      smartRetrieval: this.deps.smartRetrieval,
+      extractSemanticRetrievalQueries: (t) => this.extractSemanticRetrievalQueries(t),
+      extractPrimaryAuthors: (t) => this.extractPrimaryAuthors(t),
+      extractKeyAuthors: (t) => this.extractKeyAuthors(t),
+      extractRetrievalQueries: (t) => this.extractRetrievalQueries(t),
+      buildSectionConstraints: (s, p) => this.buildSectionConstraints(s, p),
+      cachedLoadCorpusManifest: (opts) => this.cachedLoadCorpusManifest(opts),
+      goldLog,
+    };
+  }
 
   /** Cached wrapper around loadCorpusManifest(). */
   private async cachedLoadCorpusManifest(
@@ -189,7 +228,49 @@ export class WritePipelineOrchestrator {
       }
     }
 
-    // Pattern 3: Extract author+concept cross-product queries
+    // Pattern 3a: Use reasoning edges to derive concept-rich section queries
+    // Instead of generic author×concept cross-products, pull from the knowledge graph
+    if (sectionQueries.length === 0) {
+      try {
+        const edgePath = path.join(process.cwd(), 'god-reason', 'reasoning.jsonl');
+        if (fs.existsSync(edgePath)) {
+          const edgeLines = fs.readFileSync(edgePath, 'utf-8').split('\n').filter(Boolean);
+          const allEdges = edgeLines.map((l: string) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+
+          // Match edges whose source or target appears in the topic
+          const topicLower = topic.toLowerCase();
+          const topicTerms = topicLower.split(/\s+/).filter((t: string) => t.length > 3);
+          const relevantEdges = allEdges.filter((e: any) => {
+            const src = (e.source || '').toLowerCase().replace(/_/g, ' ');
+            const tgt = (e.target || '').toLowerCase().replace(/_/g, ' ');
+            return topicTerms.some((t: string) => src.includes(t) || tgt.includes(t) || t.includes(src) || t.includes(tgt));
+          });
+
+          if (relevantEdges.length >= 4) {
+            // Sort by corroboration score, then deduplicate concept pairs
+            relevantEdges.sort((a: any, b: any) => (b.corroboration_score || 1) - (a.corroboration_score || 1));
+            const seen = new Set<string>();
+            const edgeSections: string[] = [];
+            for (const e of relevantEdges) {
+              const src = (e.source || '').replace(/_/g, ' ');
+              const tgt = (e.target || '').replace(/_/g, ' ');
+              const key = [src, tgt].sort().join('|');
+              if (seen.has(key)) continue;
+              seen.add(key);
+              // Capitalize for section title: "kinesis and chronos" → "Kinesis and Chronos"
+              const title = `${src.charAt(0).toUpperCase() + src.slice(1)} and ${tgt.charAt(0).toUpperCase() + tgt.slice(1)}`;
+              edgeSections.push(title);
+              if (edgeSections.length >= 8) break;
+            }
+            if (edgeSections.length >= 3) {
+              return edgeSections;
+            }
+          }
+        }
+      } catch { /* fall through to Pattern 3b */ }
+    }
+
+    // Pattern 3b (fallback): Extract author+concept cross-product queries
     if (sectionQueries.length === 0) {
       const domainConfig = loadDomainConfig();
       const authorPattern = buildAuthorPattern(domainConfig);
@@ -368,6 +449,15 @@ export class WritePipelineOrchestrator {
         }
       }
 
+      // Fix 73: Uexküll/biosemiotic section rules (previously only Aristotle/Heidegger had rules)
+      if (headingLower.includes('uex') || headingLower.includes('umwelt') ||
+          headingLower.includes('merkbild') || headingLower.includes('biosemiotic') ||
+          headingLower.includes('biological') || headingLower.includes('foray')) {
+        constraints.push(
+          `Section ${i + 1} ("${heading}") covers Uexküll/biosemiotic concepts — include at least 1 citation to von Uexküll's *Foray* with page numbers, and at least 1 direct quotation.`
+        );
+      }
+
       // Phantasia sections: require internal Aristotelian detail
       if (headingLower.includes('phantasia') || headingLower.includes('imagination')) {
         constraints.push(
@@ -416,39 +506,7 @@ export class WritePipelineOrchestrator {
     chunks: ContextChunk[],
     options: { maxPerSource?: number; targetTotal?: number } = {}
   ): ContextChunk[] {
-    const maxPerSource = options.maxPerSource ?? GOLD_STANDARD_CONFIG.maxChunksPerSource;
-    const targetTotal = options.targetTotal ?? GOLD_STANDARD_CONFIG.targetTotalChunks;
-
-    // Sort all chunks by relevance (best first)
-    const sorted = [...chunks].sort((a, b) => b.relevanceScore - a.relevanceScore);
-
-    // First pass: take chunks in relevance order, capping per source
-    const authorCounts = new Map<string, number>();
-    const result: ContextChunk[] = [];
-
-    for (const chunk of sorted) {
-      if (result.length >= targetTotal) break;
-      const author = chunk.metadata.author || 'Unknown';
-      const count = authorCounts.get(author) || 0;
-      if (count < maxPerSource) {
-        result.push(chunk);
-        authorCounts.set(author, count + 1);
-      }
-    }
-
-    // Second pass: if we haven't hit target, add remaining capped-out chunks
-    if (result.length < targetTotal) {
-      const resultIds = new Set(result.map(c => c.chunkId || `${c.metadata.author}:${c.metadata.page_start}`));
-      for (const chunk of sorted) {
-        if (result.length >= targetTotal) break;
-        const id = chunk.chunkId || `${chunk.metadata.author}:${chunk.metadata.page_start}`;
-        if (!resultIds.has(id)) {
-          result.push(chunk);
-        }
-      }
-    }
-
-    return result;
+    return enforceSourceDiversityFn(chunks, options);
   }
 
   /**
@@ -459,49 +517,7 @@ export class WritePipelineOrchestrator {
     subsections: string[],
     chunks: ContextChunk[]
   ): Map<number, string[]> {
-    const result = new Map<number, string[]>();
-    if (chunks.length === 0) return result;
-
-    for (let i = 0; i < subsections.length; i++) {
-      const sectionLower = subsections[i].toLowerCase();
-      // Extract key terms from section title
-      const terms = sectionLower
-        .split(/\s+/)
-        .filter(t => t.length > 3)
-        .filter(t => !['with', 'from', 'that', 'this', 'their', 'between', 'focus'].includes(t));
-
-      // Score each chunk by how many section terms appear in its content
-      const chunkScores = chunks.map(c => {
-        const contentLower = (c.content || '').toLowerCase();
-        const authorLower = (c.metadata.author || '').toLowerCase();
-        let score = 0;
-        for (const term of terms) {
-          if (contentLower.includes(term)) score++;
-          if (authorLower.includes(term)) score += 2; // Author name match is strong signal
-        }
-        return { chunk: c, score };
-      });
-
-      // Get top-scoring chunks and extract unique authors
-      const topChunks = chunkScores
-        .filter(cs => cs.score > 0)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 10);
-
-      const authors = new Set<string>();
-      for (const { chunk } of topChunks) {
-        const author = chunk.metadata.author || 'Unknown';
-        if (authors.size < 3) { // Suggest up to 3 sources per section
-          authors.add(`${author}, *${chunk.metadata.title}*`);
-        }
-      }
-
-      if (authors.size > 0) {
-        result.set(i, Array.from(authors));
-      }
-    }
-
-    return result;
+    return assignSourcesToSectionsFn(subsections, chunks);
   }
 
   // ===== Chunk Trimming (P0 — Research-validated) =====
@@ -517,62 +533,7 @@ export class WritePipelineOrchestrator {
    * 4. Remove OCR artifacts, headers, boilerplate
    */
   private trimChunkContent(content: string, targetChars: number = GOLD_STANDARD_CONFIG.chunkTrimTarget): string {
-    if (content.length <= targetChars) return content;
-
-    // Split into sentences (handle abbreviations like "p." and "pp." and "Dr." etc.)
-    const sentences = content
-      .replace(/\n+/g, ' ')
-      .replace(/\s+/g, ' ')
-      .split(/(?<=[.!?])\s+(?=[A-Z""\u201c])/)
-      .map(s => s.trim())
-      .filter(s => s.length > 10);
-
-    if (sentences.length === 0) return content.substring(0, targetChars);
-
-    // Score each sentence by value (track original index from the start — Issue #17)
-    const conceptPattern = buildConceptPattern(loadDomainConfig());
-    const scored = sentences.map((s, idx) => {
-      let score = 0;
-      // Quotation marks — verbatim quotes are gold
-      if (/[""\u201c\u201d]/.test(s)) score += 3;
-      // Page references
-      if (/\bp\.?\s*\d|pp\.\s*\d/i.test(s)) score += 2;
-      // Philosophical key terms (argument-dense)
-      const termMatches = s.match(conceptPattern);
-      if (termMatches) score += Math.min(termMatches.length, 3);
-      // Signal phrases (author-prominent citations)
-      if (/\b(argues|observes|maintains|contends|suggests|demonstrates|emphasizes|notes)\b/i.test(s)) score += 1;
-      // Penalize OCR artifacts and boilerplate
-      if (/^[A-Z\s]{10,}$/.test(s)) score -= 5; // ALL CAPS headers
-      if (/^\d+\s*$/.test(s)) score -= 5; // Bare page numbers
-      if (/^(chapter|section|part)\s+\d/i.test(s)) score -= 3;
-      return { sentence: s, score, originalIdx: idx };
-    });
-
-    // Sort by score (best first), then greedily fill to target
-    scored.sort((a, b) => b.score - a.score);
-
-    const selected: { sentence: string; score: number; originalIdx: number }[] = [];
-    let currentLength = 0;
-
-    const withIdx = scored;
-
-    for (const item of withIdx) {
-      if (currentLength + item.sentence.length + 1 > targetChars) {
-        // If we haven't selected anything yet, take a truncated version
-        if (selected.length === 0) {
-          selected.push({ ...item, sentence: item.sentence.substring(0, targetChars) });
-        }
-        break;
-      }
-      selected.push(item);
-      currentLength += item.sentence.length + 1;
-    }
-
-    // Restore original reading order
-    selected.sort((a, b) => a.originalIdx - b.originalIdx);
-
-    return selected.map(s => s.sentence).join(' ');
+    return trimChunkContentFn(content, targetChars);
   }
 
   /**
@@ -584,20 +545,7 @@ export class WritePipelineOrchestrator {
    * Pattern: [high, high, ..., medium, medium, ..., high, high]
    */
   private reorderChunksForAttention(chunks: ContextChunk[]): ContextChunk[] {
-    if (chunks.length <= 3) return chunks;
-
-    // Sort by relevance (best first)
-    const sorted = [...chunks].sort((a, b) => b.relevanceScore - a.relevanceScore);
-
-    // Split into thirds
-    const third = Math.ceil(sorted.length / 3);
-    const top = sorted.slice(0, third);           // Highest relevance
-    const mid = sorted.slice(third, third * 2);    // Medium relevance
-    const bottom = sorted.slice(third * 2);        // Lower relevance
-
-    // Place top at start, bottom (still somewhat relevant) in middle, mid at end
-    // This gives edges the highest-value content
-    return [...top, ...bottom, ...mid];
+    return reorderChunksForAttentionFn(chunks);
   }
 
   // ===== Corpus Constraint Prompt Builder =====
@@ -712,292 +660,417 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
 
   // ===== Gold Standard Prompt Builder =====
 
-  private buildGoldStandardPrompt(options: {
-    topic: string;
-    subsections: string[];
-    chunks: ContextChunk[];
-    knowledgeUnits: string[];
-    stylePrompt: string;
-    wordTarget: string;
-    preventionPlan?: {
-      blacklistedAuthors: string[];
-      strengthenedConstraints: string[];
-      underCitedSources: string[];
-      overCitedSources: string[];
-    };
-    sectionConstraints?: string[];
-    primaryUnderCoverage?: string[];
-  }): string {
-    const sections: string[] = [];
+  /** Delegates to the standalone gold-standard-prompt-builder module (single source of truth). */
+  private buildGoldStandardPrompt(options: GoldStandardPromptOptions): string {
+    return buildGoldStandardPromptFn(options);
+  }
 
-    // [1] ROLE FRAMING
-    sections.push(
-      `You are an academic writing agent generating a scholarly dissertation section of ${options.wordTarget} words. ` +
-      `You must write in the trained style profile provided below and draw EXCLUSIVELY ` +
-      `from the corpus chunks and knowledge units provided. ` +
-      `The target length is ${options.wordTarget} words of scholarly prose — this is a firm requirement.`
-    );
+  /** Delegates to the standalone gold-standard-prompt-builder module. */
+  private buildGoldStandardChunkBlock(chunks: ContextChunk[]): string {
+    return buildGoldStandardChunkBlockFn(chunks);
+  }
 
-    // [2] STYLE PROFILE
-    // The generated stylePrompt covers basics (sentence structure, vocabulary, tone, transitions).
-    // Supplement with critical details the gold standard prompt included but generateStylePrompt() omits.
-    if (options.stylePrompt) {
-      let enrichedStyle = options.stylePrompt;
+  // ===== Rolling Context Generation =====
 
-      // Add structural and citation details if not already present
-      if (!enrichedStyle.includes('Paragraph') && !enrichedStyle.includes('paragraph')) {
-        enrichedStyle += `\n\nStructure:\n- Paragraph length: substantial, approximately 140+ words per paragraph`;
-        enrichedStyle += `\n- Question frequency: ~2.8% (use rhetorical questions occasionally to advance argument)`;
-        enrichedStyle += `\n- First-person "we" constructions are acceptable for guiding the reader`;
-      }
+  /**
+   * Allocate corpus chunks to sections: shared pool (top N by relevance) + section-specific.
+   * The shared pool is filtered per-section by the citation tracker to enforce source diversity.
+   */
+  private allocateChunksToSections(
+    subsections: string[],
+    chunks: ContextChunk[],
+    sharedPoolSize: number,
+    maxPerSection: number,
+  ): { sharedPool: ContextChunk[]; sectionChunks: Map<number, ContextChunk[]> } {
+    // Sort by relevance descending
+    const sorted = [...chunks].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0));
 
-      if (!enrichedStyle.includes('Citation Style') && !enrichedStyle.includes('citation style')) {
-        enrichedStyle += `\n\nCitation Style: Title-page format with page numbers, e.g., (Author, *Title*, p. X) or (Author, "Article Title," p. X). For classical texts use (Aristotle, *Physics*, p. 17) format. MLA-influenced.`;
-      }
+    // Top N → shared pool
+    const sharedPool = sorted.slice(0, sharedPoolSize);
+    const remaining = sorted.slice(sharedPoolSize);
 
-      if (!enrichedStyle.includes('Characteristic') && !enrichedStyle.includes('characteristic')) {
-        enrichedStyle += `\n\nCharacteristic stylistic features:\n- Philosophical and declarative opening statements`;
-        enrichedStyle += `\n- Use of em-dashes for parenthetical asides`;
-        enrichedStyle += `\n- Close engagement with primary texts through direct quotation`;
-        enrichedStyle += `\n- Pattern of presenting a concept, then immediately grounding it in textual evidence`;
-        enrichedStyle += `\n- Tendency toward long, architectonic sentences followed by shorter declarative ones for emphasis`;
-      }
+    // Use term-overlap scoring to assign remaining chunks to sections
+    const sectionSourceMap = assignSourcesToSectionsFn(subsections, remaining);
+    const sectionChunks = new Map<number, ContextChunk[]>();
 
-      sections.push(`## STYLE PROFILE\n\n${enrichedStyle}`);
+    // Build term-overlap scores per chunk per section
+    for (let i = 0; i < subsections.length; i++) {
+      const sectionLower = subsections[i].toLowerCase();
+      const terms = sectionLower
+        .split(/\s+/)
+        .filter(t => t.length > 3)
+        .filter(t => !['with', 'from', 'that', 'this', 'their', 'between', 'focus'].includes(t));
+
+      const scored = remaining.map(c => {
+        const contentLower = (c.content || '').toLowerCase();
+        const authorLower = (c.metadata.author || '').toLowerCase();
+        let score = 0;
+        for (const term of terms) {
+          if (contentLower.includes(term)) score++;
+          if (authorLower.includes(term)) score += 2;
+        }
+        return { chunk: c, score };
+      });
+
+      const topForSection = scored
+        .filter(s => s.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, maxPerSection)
+        .map(s => s.chunk);
+
+      sectionChunks.set(i, topForSection);
     }
 
-    // [3] WRITING TASK
-    let taskSection = `## WRITING TASK\n\n`;
-    // Extract a proper topic title — skip instruction/meta lines at the top
-    // (e.g., "You are generating a scholarly..." is an instruction, not a title)
-    const topicLines = options.topic.split('\n').map(l => l.trim()).filter(Boolean);
-    let titleLine = '';
+    // Sections with < 3 chunks get supplemented from remaining
+    for (let i = 0; i < subsections.length; i++) {
+      const current = sectionChunks.get(i) || [];
+      if (current.length < 3) {
+        const usedIds = new Set(current.map(c => c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`));
+        for (const chunk of remaining) {
+          if (current.length >= 3) break;
+          const id = chunk.metadata.chunk_id || `${chunk.metadata.source_id}:${chunk.metadata.page_start}`;
+          if (!usedIds.has(id)) {
+            current.push(chunk);
+            usedIds.add(id);
+          }
+        }
+        sectionChunks.set(i, current);
+      }
+    }
+
+    return { sharedPool, sectionChunks };
+  }
+
+  /**
+   * Extract citation/quotation stats from generated section content.
+   * Reuses citation/quotation regexes from investigateV1().
+   */
+  private extractSectionStats(content: string): {
+    wordCount: number;
+    citationCount: number;
+    quotationCount: number;
+    citedAuthors: string[];
+  } {
+    const words = content.trim().split(/\s+/).filter(Boolean);
+    const wordCount = words.length;
+
+    // Citation extraction (same pattern as investigateV1)
+    const citRegex = /\(([^)]+?,\s*\*[^*]+\*[^)]*)\)|(?:As\s+|According\s+to\s+)(\w[\w\s]*?)\s+(?:observes|argues|maintains|suggests|notes|contends|emphasizes|demonstrates)\s+in\s+\*([^*]+)\*/gi;
+    const citedAuthors: string[] = [];
+    let citationCount = 0;
+    let match: RegExpExecArray | null;
+    while ((match = citRegex.exec(content)) !== null) {
+      citationCount++;
+      const author = (match[1] || match[2] || '').split(',')[0].trim().toLowerCase();
+      if (author && !citedAuthors.includes(author)) citedAuthors.push(author);
+    }
+
+    // Quotation extraction
+    const quoteRegex = /[""\u201c]([^""\u201d]{15,})[""\u201d]/g;
+    let quotationCount = 0;
+    while (quoteRegex.exec(content) !== null) quotationCount++;
+
+    return { wordCount, citationCount, quotationCount, citedAuthors };
+  }
+
+  /**
+   * Generate a 50-word summary of a section using Haiku (cheap, fast).
+   * Used for conclusion's hybrid context window.
+   */
+  private async generateSectionSummary(sectionHeading: string, sectionContent: string): Promise<string> {
+    const summaryPrompt = `Summarize the following academic section in EXACTLY one sentence (max 50 words). ` +
+      `Focus on the main argument and its contribution to the broader thesis. Do not add commentary.\n\n` +
+      `## ${sectionHeading}\n\n${sectionContent}`;
+
+    try {
+      return await this.generateViaAnthropicAPI(summaryPrompt, {
+        model: 'claude-haiku-4-5-20251001',
+        maxTokens: 100,
+      });
+    } catch {
+      // Fallback: first 50 words
+      return sectionContent.split(/\s+/).slice(0, 50).join(' ') + '...';
+    }
+  }
+
+  /**
+   * Core rolling context generation loop.
+   *
+   * Generates sections sequentially, feeding previously generated text back into
+   * subsequent prompts. Maintains a citation tracker and filters the shared chunk
+   * pool to enforce source diversity.
+   */
+  private async writeRollingContext(
+    topic: string,
+    subsections: string[],
+    corpusChunks: ContextChunk[],
+    knowledgeUnitLines: string[],
+    structuralEdgeLines: string[],
+    stylePrompt: string,
+    wordTarget: string,
+    preventionPlan: GoldStandardPromptOptions['preventionPlan'] | undefined,
+    sectionConstraints: string[],
+  ): Promise<{
+    content: string;
+    diagnostics: NonNullable<import('./universal-agent.js').WriteResult['rollingContext']>;
+  }> {
+    const goldLog = (msg: string) => process.stderr.write(`[ROLLING CTX] ${msg}\n`);
+    const config = GOLD_STANDARD_CONFIG;
+
+    // Allocate chunks to sections
+    const { sharedPool, sectionChunks } = this.allocateChunksToSections(
+      subsections, corpusChunks, config.rollingContextSharedPoolSize, config.rollingContextMaxChunksPerSection
+    );
+    goldLog(`Chunk allocation: ${sharedPool.length} shared pool, ${subsections.length} sections`);
+    for (let i = 0; i < subsections.length; i++) {
+      goldLog(`  Section ${i + 1}: ${(sectionChunks.get(i) || []).length} section-specific chunks`);
+    }
+
+    // All unique authors from corpus (for citation tracker)
+    const allCorpusAuthors = [...new Set(corpusChunks.map(c => (c.metadata.author || 'Unknown').toLowerCase()))];
+
+    // Rolling state
+    const generatedSections: Array<{ heading: string; content: string }> = [];
+    const sectionSummaries: string[] = [];
+    const citationTracker: RollingContextCitationTracker = {
+      authorsCitedSoFar: [],
+      authorsNotYetCited: [...allCorpusAuthors],
+      authorCitationCounts: {},
+      totalCitationCount: 0,
+      totalQuotationCount: 0,
+    };
+    const sectionDiagnostics: NonNullable<import('./universal-agent.js').WriteResult['rollingContext']>['sectionStats'] = [];
+    let sharedPoolEvictions = 0;
+
+    // Compute per-section word target
+    const totalTarget = parseInt(wordTarget.replace(/,/g, '').split('-')[0]) || 3000;
+    const conclusionIdx = subsections.findIndex(s => /conclusion/i.test(s));
+    const regularSections = subsections.length - (conclusionIdx >= 0 ? 1 : 0);
+    const wordsPerSection = Math.round(
+      (totalTarget - (conclusionIdx >= 0 ? config.rollingContextConclusionWords : 0)) / regularSections
+    );
+
+    for (let i = 0; i < subsections.length; i++) {
+      const isConclusion = i === conclusionIdx;
+      const sectionWordTarget = isConclusion
+        ? String(config.rollingContextConclusionWords)
+        : `${wordsPerSection - 100}-${wordsPerSection + 100}`;
+
+      goldLog(`\n=== Section ${i + 1}/${subsections.length}: ${subsections[i]} ===`);
+
+      // Build rolling context window
+      let priorSectionsText = '';
+      let priorSummariesForPrompt: string[] | undefined;
+
+      if (isConclusion) {
+        // Conclusion: full text of last 2 sections + summaries for earlier ones
+        const windowStart = Math.max(0, generatedSections.length - config.rollingContextWindowSize);
+        const fullTextSections = generatedSections.slice(windowStart);
+        priorSectionsText = fullTextSections
+          .map(s => `## ${s.heading}\n\n${s.content}`)
+          .join('\n\n');
+        // Summaries for everything before the window
+        if (config.rollingContextUseSummaries && sectionSummaries.length > windowStart) {
+          priorSummariesForPrompt = sectionSummaries.slice(0, windowStart);
+        }
+      } else if (generatedSections.length > 0) {
+        // Regular section: last N sections from sliding window
+        const windowStart = Math.max(0, generatedSections.length - config.rollingContextWindowSize);
+        const windowSections = generatedSections.slice(windowStart);
+        priorSectionsText = windowSections
+          .map(s => `## ${s.heading}\n\n${s.content}`)
+          .join('\n\n');
+      }
+
+      // Filter shared pool by citation tracker (Amendment A4)
+      const filteredSharedPool = sharedPool.filter(chunk => {
+        const author = (chunk.metadata.author || '').toLowerCase();
+        const count = citationTracker.authorCitationCounts[author] ?? 0;
+        if (count >= config.rollingContextSharedPoolMaxCitations) {
+          sharedPoolEvictions++;
+          return false;
+        }
+        return true;
+      });
+
+      // Merge section-specific chunks + filtered shared pool (dedup by ID)
+      const sectionSpecific = sectionChunks.get(i) || [];
+      const mergedIds = new Set<string>();
+      const mergedChunks: ContextChunk[] = [];
+      for (const chunk of [...sectionSpecific, ...filteredSharedPool]) {
+        const id = chunk.metadata.chunk_id || `${chunk.metadata.source_id}:${chunk.metadata.page_start}`;
+        if (!mergedIds.has(id)) {
+          mergedIds.add(id);
+          mergedChunks.push(chunk);
+        }
+      }
+
+      goldLog(`  Chunks: ${mergedChunks.length} (${sectionSpecific.length} specific + ${filteredSharedPool.length} shared)`);
+      goldLog(`  Prior context: ${priorSectionsText.length} chars${priorSummariesForPrompt ? ` + ${priorSummariesForPrompt.length} summaries` : ''}`);
+
+      // Build the per-section prompt
+      const promptOptions: RollingContextSectionPromptOptions = {
+        topic,
+        globalOutline: subsections,
+        currentSectionIndex: i,
+        currentSectionHeading: subsections[i],
+        sectionWordTarget,
+        chunks: mergedChunks,
+        knowledgeUnits: knowledgeUnitLines,
+        structuralEdges: structuralEdgeLines,
+        stylePrompt,
+        preventionPlan,
+        priorSectionsText,
+        priorSectionSummaries: priorSummariesForPrompt,
+        citationTracker,
+        isConclusion,
+        nextSectionHeading: i + 1 < subsections.length ? subsections[i + 1] : undefined,
+        sectionConstraint: sectionConstraints[i] || undefined,
+      };
+
+      const sectionPrompt = buildRollingContextSectionPrompt(promptOptions);
+      goldLog(`  Prompt: ${sectionPrompt.length} chars`);
+
+      // Generate section content
+      let sectionContent: string;
+      try {
+        sectionContent = await this.generateViaClaudeCode(sectionPrompt, {
+          model: 'claude-opus-4-6',
+          maxTokens: config.rollingContextMaxTokens,
+        });
+        goldLog(`  Generated: ${sectionContent.split(/\s+/).length} words`);
+      } catch (e) {
+        goldLog(`  Generation failed: ${e}. Using placeholder.`);
+        sectionContent = `[Section ${i + 1} generation failed: ${e}]`;
+      }
+
+      // Extract stats and update citation tracker
+      const stats = this.extractSectionStats(sectionContent);
+      goldLog(`  Stats: ${stats.wordCount} words, ${stats.citationCount} citations, ${stats.quotationCount} quotations`);
+      goldLog(`  Authors: ${stats.citedAuthors.join(', ') || 'none'}`);
+
+      for (const author of stats.citedAuthors) {
+        citationTracker.authorCitationCounts[author] = (citationTracker.authorCitationCounts[author] ?? 0) + 1;
+        if (!citationTracker.authorsCitedSoFar.includes(author)) {
+          citationTracker.authorsCitedSoFar.push(author);
+        }
+      }
+      citationTracker.authorsNotYetCited = allCorpusAuthors.filter(
+        a => !citationTracker.authorsCitedSoFar.includes(a)
+      );
+      citationTracker.totalCitationCount += stats.citationCount;
+      citationTracker.totalQuotationCount += stats.quotationCount;
+
+      // Store generated section
+      generatedSections.push({ heading: subsections[i], content: sectionContent });
+
+      // Generate Haiku summary (async, for conclusion context)
+      if (!isConclusion && config.rollingContextUseSummaries) {
+        // Fire and forget — we'll await all before conclusion
+        const summary = await this.generateSectionSummary(subsections[i], sectionContent);
+        sectionSummaries.push(summary);
+        goldLog(`  Summary: "${summary.substring(0, 80)}..."`);
+      }
+
+      sectionDiagnostics.push({
+        heading: subsections[i],
+        wordCount: stats.wordCount,
+        citationCount: stats.citationCount,
+        quotationCount: stats.quotationCount,
+        citedAuthors: stats.citedAuthors,
+        promptChars: sectionPrompt.length,
+      });
+    }
+
+    // Extract document title from the topic (first non-section line)
+    const topicLines = topic.split('\n').map(l => l.trim()).filter(Boolean);
     const instructionStarts = /^(you are|critical rules|use |every |do not |if a |present |this task |quoted |additionally|generate |ensure )/i;
+    let documentTitle = '';
     for (const line of topicLines) {
       const cleaned = line.replace(/^["']|["']$/g, '').replace(/^write\s+(a\s+)?/i, '');
       if (!instructionStarts.test(cleaned) && cleaned.length > 10 && !/^\d+\.\s/.test(cleaned)) {
-        titleLine = cleaned;
+        documentTitle = cleaned;
         break;
       }
     }
-    // Fallback: synthesize from subsections
-    if (!titleLine && options.subsections.length > 0) {
-      titleLine = options.subsections.slice(0, 3).join(', ');
-    }
-    if (!titleLine) {
-      titleLine = topicLines[0]?.replace(/^["']|["']$/g, '') || 'Scholarly Section';
-    }
-    taskSection += `Write: ${titleLine}\n\n`;
-    if (options.subsections.length > 1) {
-      // Calculate per-section word target
-      const totalTarget = parseInt(options.wordTarget.replace(/,/g, '').split('-')[0]) || 3000;
-      // Conclusion gets fewer words, other sections share equally
-      const conclusionIdx = options.subsections.findIndex(s => /conclusion/i.test(s));
-      const conclusionWords = 200;
-      const regularSections = options.subsections.length - (conclusionIdx >= 0 ? 1 : 0);
-      const wordsPerSection = Math.round((totalTarget - (conclusionIdx >= 0 ? conclusionWords : 0)) / regularSections);
+    if (!documentTitle) documentTitle = subsections.slice(0, 3).join(', ');
 
-      taskSection += `### Required Sections (${options.wordTarget} words total — ~${wordsPerSection} words per section)\n`;
-      // Assign suggested sources to each section based on chunk content relevance
-      const sectionSourceMap = this.assignSourcesToSections(options.subsections, options.chunks);
-      for (let i = 0; i < options.subsections.length; i++) {
-        const isConclusion = i === conclusionIdx;
-        const sectionTarget = isConclusion ? conclusionWords : wordsPerSection;
-        const sources = sectionSourceMap.get(i);
-        taskSection += `${i + 1}. ${options.subsections[i]} (~${sectionTarget} words)\n`;
-        if (sources && sources.length > 0) {
-          taskSection += `   *Draw from*: ${sources.join('; ')}\n`;
-        }
-      }
-    } else {
-      // When no subsections extracted, include topic but strip conflicting instructions
-      const strippedTopic = topicLines.filter(line => {
-        // Remove lines with word count instructions or tool references
-        if (/\b\d{1,2},?\d{3}\s+words?\b/i.test(line)) return false;
-        if (/\bcitation_lookup\b/i.test(line)) return false;
-        if (/\bstress[- ]test\b/i.test(line)) return false;
-        if (/\bplaceholder\b/i.test(line)) return false;
-        return true;
-      }).join('\n');
-      taskSection += strippedTopic;
-    }
-    sections.push(taskSection);
+    // Concatenate all sections with title and headings
+    const sectionContent = generatedSections
+      .map((s, i) => `## ${i + 1}. ${s.heading}\n\n${s.content}`)
+      .join('\n\n');
 
-    // [4] CRITICAL CONSTRAINTS
-    // Compute unique source count from chunks for the diversity requirement.
-    // Only count sources with at least one chunk above relevance 0.25 as "available"
-    // so we don't demand citation from tangentially-related sources.
-    const relevantChunks = options.chunks.filter(c => c.relevanceScore >= GOLD_STANDARD_CONFIG.relevanceFloor);
-    const uniqueChunkSources = new Set(relevantChunks.map(c =>
-      `${c.metadata.author}, *${c.metadata.title}*`
-    ));
-    // Group by author (not author+title) for diversity since one author may have multiple works
-    const uniqueAuthors = new Set(relevantChunks.map(c => c.metadata.author || 'Unknown'));
-    const minSourceDiversity = Math.min(Math.max(3, Math.floor(uniqueAuthors.size * 0.5)), 8);
+    // Generate validation appendix via a cheap API call
+    goldLog('Generating validation appendix...');
+    let validationAppendix = '';
+    try {
+      const appendixPrompt = `You are a scholarly citation auditor. Given the following academic text, produce ONLY a Validation Appendix in this exact format. Do not write any prose or commentary — output ONLY the appendix tables.
 
-    // Build explicit source list — group by author, showing best chunk relevance
-    const authorBestScore = new Map<string, { source: string; score: number }>();
-    for (const c of relevantChunks) {
-      const key = c.metadata.author || 'Unknown';
-      const source = `${c.metadata.author}, *${c.metadata.title}*`;
-      const existing = authorBestScore.get(key);
-      if (!existing || c.relevanceScore > existing.score) {
-        authorBestScore.set(key, { source, score: c.relevanceScore });
-      }
-    }
-    // Sort by relevance so the LLM sees the most relevant sources first
-    const sortedSources = Array.from(authorBestScore.entries())
-      .sort((a, b) => b[1].score - a[1].score);
-    const sourceListFormatted = sortedSources
-      .map(([, { source }], i) => `  ${i + 1}. ${source}`)
-      .join('\n');
-
-    sections.push(`## CRITICAL CONSTRAINTS
-
-### Grounding Rules (TOP PRIORITY — READ FIRST)
-- ONLY quote and cite from the corpus chunks below. No exceptions.
-- NEVER introduce any author names that do not appear in the corpus chunks below.
-- Every non-trivial claim must be backed by a citation from these chunks.
-- Any citation not matching a Source Index author is an error.
-${options.preventionPlan?.blacklistedAuthors?.length ? `\n**BLACKLISTED AUTHORS (DO NOT CITE):** ${options.preventionPlan.blacklistedAuthors.join(', ')}\n` : ''}${options.preventionPlan?.strengthenedConstraints?.length ? `\n**ADDITIONAL CONSTRAINTS FROM V1 INVESTIGATION:**\n${options.preventionPlan.strengthenedConstraints.map(c => `- ${c}`).join('\n')}\n` : ''}${options.sectionConstraints?.length ? `\n### Per-Section Citation Requirements (WARNING-LEVEL)\n${options.sectionConstraints.map(c => `- ${c}`).join('\n')}\n` : ''}${options.primaryUnderCoverage?.length ? `\n**PRIMARY AUTHOR UNDER-COVERAGE WARNING:** The corpus has limited material from ${options.primaryUnderCoverage.join(', ')}. You must weaken claims about these authors accordingly — qualify as interpretive/speculative rather than stating definitively.\n` : ''}
-### Quotation Fidelity & Requirement (MANDATORY)
-You are REQUIRED to include at least 3 direct quotations from the corpus chunks. Quotations must be VERBATIM — copy the exact words from the chunk text.
-
-**Correct example:**
-As Aristotle observes, "each of them has within itself a principle of motion and of stationariness" (*Physics*, p. 17).
-
-**Incorrect example (paraphrase in quotes — NEVER do this):**
-As Aristotle observes, "everything contains its own movement principle" (*Physics*, p. 17).
-
-- Every direct quotation MUST have a citation immediately following it
-- If you cannot find a suitable verbatim passage in the chunks, paraphrase instead and cite normally
-
-### Source Diversity (MANDATORY — THIS IS A HARD REQUIREMENT)
-You have chunks from ${uniqueAuthors.size} different authors. You MUST cite from at least ${minSourceDiversity} different authors.
-
-**Available sources (ranked by relevance to your topic):**
-${sourceListFormatted}
-
-INSTRUCTIONS FOR SOURCE DIVERSITY:
-- You MUST cite at least ${minSourceDiversity} different authors from the list above
-- Each major section should cite 2+ different authors
-- Do NOT let any single source account for more than 40% of your citations
-- When making a claim, check if multiple sources in the chunks support it and cite them together
-- Paraphrase and cite even when a source is only tangentially relevant — this demonstrates scholarly breadth
-
-### Citation Requirements
-- Citation format: (Author, *Title*, p. X) — MLA-influenced, title in italics
-- For signal-phrase citations: As Author observes in *Title*, "quotation" (p. X)
-- Every citation MUST include page number(s). Use the chunk's page range if no specific page is evident.
-- 15+ citations total across the document
-- ALL citations ONLY from authors listed in the Source Index above
-- Do NOT cite any author or work not listed above. If a corpus chunk mentions another scholar's name within its text, cite the CHUNK's author, not the referenced scholar.
-- Include at least 3 VERBATIM quotations (exact text from the corpus chunks, in quotation marks)
-
-### Primary-Text Priority (IMPORTANT)
-- Prioritize DIRECT ENGAGEMENT with primary texts (e.g. Aristotle, Heidegger) over secondary scholarship.
-- Spend time INSIDE crucial passages: quote them at length, then build interpretation from the quoted text.
-- Secondary sources (e.g. Bowin, Burke, Rickert) should SUPPLEMENT primary-text close reading, not replace it.
-- When a primary text chunk is available in the corpus, prefer quoting and analyzing it over paraphrasing and citing a secondary scholar's summary of the same idea.
-
-### Structure (MANDATORY)
-- Print each section heading as a standalone Markdown \`## N. Title\` line, followed by a blank line before the body text.
-- Do NOT embed headings inline within paragraphs.
-- The Conclusion section must be at least 200 words. Citations in the conclusion are optional unless you introduce a new factual claim or attribution.
-
-### Length (MANDATORY — READ CAREFULLY)
-- Target: ${options.wordTarget} words of MAIN TEXT prose (NOT including the Validation Appendix)
-- Each section MUST be at least ${GOLD_STANDARD_CONFIG.minSectionWords} words. Do NOT write sections shorter than ${GOLD_STANDARD_CONFIG.minSectionWords} words.
-- The Validation Appendix comes AFTER the main text and does NOT count toward the word target.
-- Write the full ${options.wordTarget} words of scholarly prose FIRST, then add the appendix.`);
-
-    // [5] CORPUS CHUNKS
-    if (options.chunks.length > 0) {
-      sections.push(this.buildGoldStandardChunkBlock(options.chunks));
-    }
-
-    // [6] KNOWLEDGE UNITS
-    if (options.knowledgeUnits.length > 0) {
-      sections.push(
-        `## KNOWLEDGE UNITS (additional scholarly context — thematic guidance only, not quotable)\n\n` +
-        options.knowledgeUnits.join('\n')
-      );
-    }
-
-    // [7] OUTPUT FORMAT + REMEMBER BLOCK
-    sections.push(`## OUTPUT FORMAT
-
-Write the complete dissertation section (${options.wordTarget} words) with proper scholarly depth.
-
-After the main text, append:
-
-\`\`\`
 # VALIDATION APPENDIX
-Claim Map: C1: <claim> → (Author, *Title*, p. X) …
-Quotation Ledger: Q1: "<quote>" → Author, *Title*, p. X, corpus-verified: yes/no …
-Citation Ledger: Author – count …
-Summary: total citations, corpus-verified %, style compliance note
-\`\`\`
 
-REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDARD_CONFIG.minSectionWords} words, ≥ ${minSourceDiversity} authors cited, ≥ 3 verbatim quotations. Style: long architectonic sentences, semicolons, transitions (thus/indeed/hence/accordingly/specifically/subsequently/similarly). Paragraphs ~140+ words.`);
+## Claim Map
 
-    return sections.join('\n\n');
-  }
+| # | Claim | Source | Page(s) |
+|---|-------|--------|---------|
+(List every substantive claim with its citation)
 
-  private buildGoldStandardChunkBlock(chunks: ContextChunk[]): string {
-    let block = `## CORPUS CHUNKS (Use ONLY these for quotations and citations)\n\n`;
-    block += `The following are excerpts from the ingested scholarly corpus. ` +
-      `You MUST ground your citations in this material. When directly quoting, ` +
-      `extract ONLY the meaningful scholarly text — strip out any OCR artifacts.\n`;
+## Quotation Ledger
 
-    // Group by source
-    const bySource = new Map<string, ContextChunk[]>();
-    for (const chunk of chunks) {
-      const key = `${chunk.metadata.author}, *${chunk.metadata.title}* (${chunk.metadata.year})`;
-      if (!bySource.has(key)) bySource.set(key, []);
-      bySource.get(key)!.push(chunk);
+| # | Quotation | Source | Page(s) | Corpus Chunk Verified |
+|---|-----------|--------|---------|----------------------|
+(List every direct quotation with source)
+
+## Citation Ledger
+
+| Work | Author(s) | Pages Referenced |
+|------|-----------|-----------------|
+(List every distinct work cited)
+
+## Validation Summary
+
+1. **Corpus Grounding**: X of Y citations verified against corpus chunks.
+2. **Quotation Fidelity**: X of Y quotations verified verbatim.
+3. **Source Diversity**: X distinct works cited across Y sections.
+4. **Style Compliance**: Sentence length, passive voice ratio, transition usage.
+5. **Argument Structure**: Toulmin claim-data-warrant coverage assessment.
+
+---
+
+TEXT TO AUDIT:
+
+${sectionContent}`;
+
+      validationAppendix = await this.generateViaAnthropicAPI(appendixPrompt, {
+        model: 'claude-haiku-4-5-20251001',
+        maxTokens: 4096,
+      });
+      goldLog(`Validation appendix generated: ${validationAppendix.split(/\s+/).length} words`);
+    } catch (e) {
+      goldLog(`Validation appendix generation failed: ${e}`);
     }
 
-    // Add source index at the top so the LLM sees all available sources upfront
-    block += `\n### Source Index (${bySource.size} distinct works — cite from as many as possible)\n`;
-    let srcIdx = 1;
-    for (const sourceKey of bySource.keys()) {
-      block += `${srcIdx}. ${sourceKey}\n`;
-      srcIdx++;
-    }
+    const fullContent = `# ${documentTitle}\n\n${sectionContent}${validationAppendix ? `\n\n${validationAppendix}` : ''}`;
 
-    let chunkNum = 1;
-    let totalChars = block.length;
-    const MAX_CHARS = GOLD_STANDARD_CONFIG.maxCorpusBlockChars;
+    goldLog(`\n=== ROLLING CONTEXT COMPLETE ===`);
+    goldLog(`Total: ${fullContent.split(/\s+/).length} words, ${citationTracker.totalCitationCount} citations, ${citationTracker.totalQuotationCount} quotations`);
+    goldLog(`Authors cited: ${citationTracker.authorsCitedSoFar.join(', ')}`);
+    goldLog(`Authors NOT cited: ${citationTracker.authorsNotYetCited.join(', ') || 'none'}`);
+    goldLog(`Shared pool evictions: ${sharedPoolEvictions}`);
 
-    for (const [sourceKey, sourceChunks] of bySource) {
-      // Add a prominent source header before each group
-      const header = `\n### SOURCE: ${sourceKey} (${sourceChunks.length} chunks)\n`;
-      totalChars += header.length;
-      if (totalChars > MAX_CHARS) {
-        block += `\n*[Remaining chunks truncated for context budget]*\n`;
-        break;
-      }
-      block += header;
-
-      for (const chunk of sourceChunks) {
-        const pages = chunk.metadata.page_start === chunk.metadata.page_end
-          ? `p. ${chunk.metadata.page_start}`
-          : `pp. ${chunk.metadata.page_start}-${chunk.metadata.page_end}`;
-        const entry = `--- CHUNK ${chunkNum}, ${pages} ---\n${chunk.content}\n\n`;
-        totalChars += entry.length;
-        if (totalChars > MAX_CHARS) {
-          block += `\n*[Remaining chunks truncated for context budget]*\n`;
-          break;
-        }
-        block += entry;
-        chunkNum++;
-      }
-      if (totalChars > MAX_CHARS) break;
-    }
-
-    block += `\n---\n**Total corpus chunks provided: ${chunkNum - 1} from ${bySource.size} sources**`;
-    return block;
+    return {
+      content: fullContent,
+      diagnostics: {
+        used: true,
+        totalSections: subsections.length,
+        sectionStats: sectionDiagnostics,
+        citationTracker: {
+          totalCitations: citationTracker.totalCitationCount,
+          totalQuotations: citationTracker.totalQuotationCount,
+          authorCitationCounts: citationTracker.authorCitationCounts,
+        },
+        sharedPoolEvictions,
+      },
+    };
   }
 
   // ===== Claude Code Generation =====
@@ -1065,7 +1138,9 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(180000), // 3 min timeout
+      signal: this.activeAbortCtrl
+        ? AbortSignal.any([AbortSignal.timeout(180000), this.activeAbortCtrl.signal])
+        : AbortSignal.timeout(180000), // 3 min timeout
     });
 
     if (!response.ok) {
@@ -1248,245 +1323,8 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
    * Returns a structured investigation result with issues and a prevention plan.
    * Cost: ~0ms (no LLM calls). All checks are regex/string-based.
    */
-  investigateV1(v1Content: string, chunks: ContextChunk[], manifestAuthors: string[]): {
-    issues: Array<{ type: string; severity: 'critical' | 'major' | 'minor'; detail: string }>;
-    preventionPlan: {
-      blacklistedAuthors: string[];
-      strengthenedConstraints: string[];
-      underCitedSources: string[];
-      overCitedSources: string[];
-    };
-    stats: {
-      wordCount: number;
-      sectionCount: number;
-      citationCount: number;
-      quotationCount: number;
-      claimsWithoutCitation: number;
-      factualClaimsWithoutCitation: number;
-      interpretiveClaimsWithoutCitation: number;
-      uniqueAuthors: string[];
-      sectionWordCounts: Array<{ heading: string; words: number }>;
-    };
-  } {
-    const issues: Array<{ type: string; severity: 'critical' | 'major' | 'minor'; detail: string }> = [];
-    const mainText = v1Content.split(/^#+ *validation appendix/im)[0] || v1Content;
-    const words = mainText.trim().split(/\s+/).filter(Boolean);
-    const wordCount = words.length;
-
-    // --- Citation extraction ---
-    // Match (Author, *Title*, p. X) and (Author, *Title*, pp. X-Y) and signal-phrase citations
-    const citationPattern = /\(([^)]+?,\s*\*[^*]+\*[^)]*)\)|(?:As\s+|According\s+to\s+)(\w[\w\s]*?)\s+(?:observes|argues|maintains|suggests|notes|contends|emphasizes|demonstrates)\s+in\s+\*([^*]+)\*/gi;
-    const rawCitations: Array<{ author: string; raw: string }> = [];
-    let match: RegExpExecArray | null;
-    const citRegex = new RegExp(citationPattern.source, citationPattern.flags);
-    while ((match = citRegex.exec(mainText)) !== null) {
-      const raw = match[0];
-      const author = (match[1] || match[2] || '').split(',')[0].trim();
-      if (author) rawCitations.push({ author, raw });
-    }
-
-    // --- Quotation extraction ---
-    const quotations: string[] = [];
-    const quoteRegex = /[""\u201c]([^""\u201d]{15,})[""\u201d]/g;
-    while ((match = quoteRegex.exec(mainText)) !== null) {
-      quotations.push(match[1]);
-    }
-
-    // --- Section analysis ---
-    const sectionRegex = /^#{1,3}\s+\d*\.?\s*(.+)$/gm;
-    const sectionHeadings: Array<{ heading: string; startIdx: number }> = [];
-    while ((match = sectionRegex.exec(mainText)) !== null) {
-      sectionHeadings.push({ heading: match[1].trim(), startIdx: match.index });
-    }
-    const sectionWordCounts: Array<{ heading: string; words: number }> = [];
-    for (let i = 0; i < sectionHeadings.length; i++) {
-      const start = sectionHeadings[i].startIdx;
-      const end = i + 1 < sectionHeadings.length ? sectionHeadings[i + 1].startIdx : mainText.length;
-      const sectionText = mainText.substring(start, end);
-      const sectionWords = sectionText.trim().split(/\s+/).filter(Boolean).length;
-      sectionWordCounts.push({ heading: sectionHeadings[i].heading, words: sectionWords });
-    }
-
-    // --- Build manifest author set (normalized) ---
-    const manifestAuthorSet = new Set(manifestAuthors.map(a => a.toLowerCase().trim()));
-    // Also build chunk author set
-    const chunkAuthorSet = new Set(chunks.map(c => (c.metadata.author || '').toLowerCase().trim()).filter(Boolean));
-
-    // --- Check 1: Citations whose author is not in manifest ---
-    const citedAuthors = new Set<string>();
-    const hallucinated: string[] = [];
-    for (const cit of rawCitations) {
-      const authorLower = cit.author.toLowerCase().trim();
-      citedAuthors.add(authorLower);
-      // Check against both manifest and chunk authors
-      const inManifest = [...manifestAuthorSet].some(ma => ma.includes(authorLower) || authorLower.includes(ma));
-      const inChunks = [...chunkAuthorSet].some(ca => ca.includes(authorLower) || authorLower.includes(ca));
-      if (!inManifest && !inChunks) {
-        hallucinated.push(cit.author);
-        issues.push({
-          type: 'hallucinated-citation',
-          severity: 'critical',
-          detail: `Author "${cit.author}" not found in corpus manifest or retrieved chunks: ${cit.raw.substring(0, 80)}`,
-        });
-      }
-    }
-
-    // --- Check 2: Quotations not found verbatim in any chunk ---
-    for (const quote of quotations) {
-      const normalizedQuote = quote.replace(/\s+/g, ' ').toLowerCase().trim();
-      // Check against all chunk content (substring match with some fuzzy allowance)
-      const foundInChunk = chunks.some(c => {
-        const normalizedContent = (c.content || '').replace(/\s+/g, ' ').toLowerCase();
-        // Try exact substring first
-        if (normalizedContent.includes(normalizedQuote)) return true;
-        // Try first 40 chars as fuzzy match (OCR artifacts)
-        if (normalizedQuote.length > 40) {
-          const prefix = normalizedQuote.substring(0, 40);
-          return normalizedContent.includes(prefix);
-        }
-        return false;
-      });
-      if (!foundInChunk) {
-        issues.push({
-          type: 'phantom-quotation',
-          severity: 'critical',
-          detail: `Quotation not found in any chunk: "${quote.substring(0, 60)}..."`,
-        });
-      }
-    }
-
-    // --- Check 3: Claims without nearby citation (factual vs interpretive split) ---
-    let factualClaimsWithoutCitation = 0;
-    let interpretiveClaimsWithoutCitation = 0;
-    const sentences = mainText.split(/(?<=[.!?])\s+(?=[A-Z""\u201c])/);
-    // Factual patterns: require citation
-    const factualPattern = /\b(?:defines?|is defined as|states? that|argues? that|maintains? that|contends? that|asserts? that|according to \w|as \w+ (?:observes?|notes?|argues?|maintains?|suggests?|claims?))\b/i;
-    // Interpretive patterns: citation optional (author's own synthesis)
-    const interpretivePattern = /^\s*(?:thus|accordingly|hence|therefore|this suggests|it follows|in this sense|consequently|in other words)\b/i;
-    for (const sentence of sentences) {
-      const sentenceWords = sentence.trim().split(/\s+/).length;
-      if (sentenceWords > 20) {
-        const idx = mainText.indexOf(sentence);
-        const window = mainText.substring(idx, idx + sentence.length + 200);
-        const hasCitation = /\([^)]*,\s*\*[^*]+\*[^)]*\)/.test(window) ||
-          /(?:As|According to)\s+\w/.test(sentence);
-        if (!hasCitation) {
-          if (factualPattern.test(sentence)) {
-            factualClaimsWithoutCitation++;
-            issues.push({
-              type: 'uncited-factual-claim',
-              severity: 'major',
-              detail: `Factual claim without citation: "${sentence.substring(0, 60)}..."`,
-            });
-          } else if (!interpretivePattern.test(sentence)) {
-            interpretiveClaimsWithoutCitation++;
-            issues.push({
-              type: 'uncited-claim',
-              severity: 'minor',
-              detail: `Long sentence without nearby citation: "${sentence.substring(0, 60)}..."`,
-            });
-          }
-          // Sentences matching interpretivePattern are exempt — no issue raised
-        }
-      }
-    }
-    const claimsWithoutCitation = factualClaimsWithoutCitation + interpretiveClaimsWithoutCitation;
-
-    // --- Check 4: Source balance ---
-    const authorCitationCounts = new Map<string, number>();
-    for (const cit of rawCitations) {
-      const key = cit.author.toLowerCase();
-      authorCitationCounts.set(key, (authorCitationCounts.get(key) || 0) + 1);
-    }
-    const totalCitations = rawCitations.length;
-    const overCited: string[] = [];
-    const underCited: string[] = [];
-    for (const [author, count] of authorCitationCounts) {
-      if (totalCitations > 0 && count / totalCitations > GOLD_STANDARD_CONFIG.overCitationThreshold) {
-        overCited.push(author);
-        issues.push({
-          type: 'over-cited-source',
-          severity: 'major',
-          detail: `"${author}" accounts for ${count}/${totalCitations} citations (${((count / totalCitations) * 100).toFixed(0)}%)`,
-        });
-      }
-    }
-    // Check chunk authors not cited at all
-    for (const chunkAuthor of chunkAuthorSet) {
-      if (!citedAuthors.has(chunkAuthor) && chunkAuthor !== 'unknown') {
-        underCited.push(chunkAuthor);
-        issues.push({
-          type: 'under-cited-source',
-          severity: 'minor',
-          detail: `Chunk author "${chunkAuthor}" has 0 citations despite being in retrieved set`,
-        });
-      }
-    }
-
-    // --- Check 5: Section word counts ---
-    for (const section of sectionWordCounts) {
-      if (section.words < GOLD_STANDARD_CONFIG.minSectionWords) {
-        issues.push({
-          type: 'short-section',
-          severity: 'major',
-          detail: `Section "${section.heading}" has only ${section.words} words (minimum: ${GOLD_STANDARD_CONFIG.minSectionWords})`,
-        });
-      }
-    }
-
-    // --- Check 6: Overall word count ---
-    if (wordCount < 2500) {
-      issues.push({
-        type: 'insufficient-word-count',
-        severity: 'major',
-        detail: `Main text is only ${wordCount} words (target: 3,000-3,500)`,
-      });
-    }
-
-    // --- Build prevention plan ---
-    const uniqueHallucinated = [...new Set(hallucinated)];
-    const strengthened: string[] = [];
-    if (uniqueHallucinated.length > 0) {
-      strengthened.push(`Do NOT cite the following authors/works (they are NOT in your corpus): ${uniqueHallucinated.join(', ')}`);
-    }
-    if (issues.some(i => i.type === 'phantom-quotation')) {
-      strengthened.push('EVERY quotation in quotation marks MUST appear VERBATIM in a corpus chunk. If unsure, paraphrase instead.');
-    }
-    if (issues.some(i => i.type === 'insufficient-word-count')) {
-      strengthened.push(`Write AT LEAST 3,000 words of main text. Current v1 was only ${wordCount} words.`);
-    }
-    for (const section of sectionWordCounts) {
-      if (section.words < GOLD_STANDARD_CONFIG.minSectionWords) {
-        strengthened.push(`Section "${section.heading}" MUST be at least ${GOLD_STANDARD_CONFIG.minSectionWords} words (was ${section.words} in v1).`);
-      }
-    }
-    if (underCited.length > 0) {
-      strengthened.push(`Deliberately cite these under-represented sources: ${underCited.slice(0, 5).join(', ')}`);
-    }
-    if (factualClaimsWithoutCitation > 0) {
-      strengthened.push(`${factualClaimsWithoutCitation} factual attributions lacked citations in v1. Every "X argues/defines/states" sentence MUST include a citation.`);
-    }
-
-    return {
-      issues,
-      preventionPlan: {
-        blacklistedAuthors: uniqueHallucinated,
-        strengthenedConstraints: strengthened,
-        underCitedSources: underCited,
-        overCitedSources: overCited,
-      },
-      stats: {
-        wordCount,
-        sectionCount: sectionHeadings.length,
-        citationCount: totalCitations,
-        quotationCount: quotations.length,
-        claimsWithoutCitation,
-        factualClaimsWithoutCitation,
-        interpretiveClaimsWithoutCitation,
-        uniqueAuthors: [...citedAuthors],
-        sectionWordCounts,
-      },
-    };
+  investigateV1(v1Content: string, chunks: ContextChunk[], manifestAuthors: string[]) {
+    return investigateV1Fn(v1Content, chunks, manifestAuthors);
   }
 
   /**
@@ -1498,43 +1336,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
     chunks: ContextChunk[],
     minChunksPerAuthor: number = 2
   ): { missingAuthors: string[]; weakAuthors: string[]; coverageReport: string[] } {
-    // Extract authors mentioned in topic/section headings
-    const authorPattern = buildAuthorPattern(loadDomainConfig());
-    const topicAuthors = new Set<string>();
-    for (const m of Array.from(topic.matchAll(authorPattern))) {
-      topicAuthors.add(m[0].charAt(0).toUpperCase() + m[0].slice(1).toLowerCase());
-    }
-
-    // Count chunks per author
-    const chunkCounts = new Map<string, number>();
-    for (const chunk of chunks) {
-      const author = (chunk.metadata.author || '').toLowerCase().trim();
-      if (author) chunkCounts.set(author, (chunkCounts.get(author) || 0) + 1);
-    }
-
-    const missingAuthors: string[] = [];
-    const weakAuthors: string[] = [];
-    const coverageReport: string[] = [];
-
-    for (const author of topicAuthors) {
-      const authorLower = author.toLowerCase();
-      // Find matching chunk author (fuzzy — "aristotle" matches "Aristotle" or chunk metadata)
-      const matchingCount = [...chunkCounts.entries()]
-        .filter(([ca]) => ca.includes(authorLower) || authorLower.includes(ca))
-        .reduce((sum, [, count]) => sum + count, 0);
-
-      if (matchingCount === 0) {
-        missingAuthors.push(author);
-        coverageReport.push(`  ❌ ${author}: 0 chunks (MISSING — will attempt targeted retrieval)`);
-      } else if (matchingCount < minChunksPerAuthor) {
-        weakAuthors.push(author);
-        coverageReport.push(`  ⚠️ ${author}: ${matchingCount} chunk(s) (weak coverage, min: ${minChunksPerAuthor})`);
-      } else {
-        coverageReport.push(`  ✅ ${author}: ${matchingCount} chunks`);
-      }
-    }
-
-    return { missingAuthors, weakAuthors, coverageReport };
+    return validateRetrievalCoverageFn(topic, chunks, minChunksPerAuthor);
   }
 
   // ===== Main Write Pipeline =====
@@ -1567,6 +1369,8 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
     maxQuotationsPerEndnote?: number;
     /** Minimum relevance threshold for endnote quotations (default: 0.65) */
     minEndnoteRelevance?: number;
+    /** Render visual provenance bbox overlays for endnote citations (default: false) */
+    renderBboxOverlays?: boolean;
     /** Source Verification: Verify all citations exist in corpus */
     verifySources?: boolean;
     /** Source Acquisition: Automatically acquire missing sources */
@@ -1602,6 +1406,9 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
     nliVerify?: boolean;
     /** Per-section candidate selection (optional). Generate 2-3 candidates, pick best. */
     candidateSelection?: boolean;
+    /** Rolling context generation: sequential per-section generation with sliding context window.
+     *  Requires whitelistMode. Eliminates token-distribution fatigue and inter-section incoherence. */
+    rollingContext?: boolean;
     /** Pipeline version: 'legacy' (monolithic) or 'v2' (staged pipeline).
      *  CLI flag --pipeline-version overrides env WRITING_PIPELINE_VERSION.
      *  Default: 'legacy' until v2 is fully validated. */
@@ -1623,8 +1430,20 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
     // LEGACY PATH — existing monolithic logic (unchanged)
     // =========================================================================
 
+    // Pipeline abort mechanism (Phase 5 Stream Deck integration)
+    const abortCtrl = new PipelineAbortController(process.cwd(), (msg) => this.deps.log(msg));
+    abortCtrl.start();
+    this.activeAbortCtrl = abortCtrl;
+
+    try {
+
     // Deep-clone options to prevent mutation of caller's object (Issue #5)
     options = { ...options };
+
+    // Rolling context requires whitelist mode
+    if (options.rollingContext && !options.whitelistMode) {
+      throw new Error('--rolling-context requires --whitelist mode (corpus chunk allocation needs whitelist retrieval)');
+    }
 
     // Fix 27: Resolve data source mode and enforce corpus-only invariants
     const dataSourceMode = options.dataSourceMode ?? 'hybrid';
@@ -1755,6 +1574,8 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
       qualityScore?: number;
     } | undefined;
     let primaryAuthors: string[] = [];
+    let rollingContextDiagnostics: import('./universal-agent.js').WriteResult['rollingContext'] | undefined;
+    let rollingContextContent: string | undefined;
 
     if (options.whitelistMode) {
       // ===== GOLD STANDARD MODE =====
@@ -1846,6 +1667,34 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
               }
             }
             goldLog(`Phase 1b result: ${allChunks.length} total unique chunks`);
+          }
+
+          // Phase 1b+: Title-targeted retrieval (Fix 68)
+          // When the prompt references specific works (e.g., "De Anima III.3"), run
+          // title-filtered queries so those works get adequate representation even when
+          // other texts by the same author dominate by sheer chunk volume.
+          const workRefs = extractWorkReferences(topic, loadDomainConfig());
+          if (workRefs.length > 0) {
+            goldLog(`Phase 1b+: Title-targeted retrieval for ${workRefs.length} referenced work(s)`);
+            for (const { titleRaw, mentions } of workRefs) {
+              try {
+                // Use short title + key concepts as query (not full topic — poor match for specific works)
+                // Drop minRelevance to 0.0 — the title filter is the constraint, not similarity
+                const shortQuery = `${titleRaw.split(/[-:(]/)[0].trim()} ${topic.substring(0, 150)}`;
+                const titleChunks = await this.deps.smartRetrieval!.retrieveContext(shortQuery, {
+                  ...retrievalOpts,
+                  minRelevance: 0.0, // title filter is the selectivity, not embedding score
+                  maxChunks: Math.min(4 + mentions * 2, 12), // more mentions = more chunks
+                  whereFilter: { title_raw: { $eq: titleRaw } },
+                });
+                const before = allChunks.length;
+                addChunks(titleChunks);
+                goldLog(`  "${titleRaw}" (${mentions} mention${mentions > 1 ? 's' : ''}): +${allChunks.length - before} new chunks (${titleChunks.length} retrieved)`);
+              } catch (e) {
+                goldLog(`  "${titleRaw}" title retrieval failed: ${e}`);
+              }
+            }
+            goldLog(`Phase 1b+ result: ${allChunks.length} total unique chunks`);
           }
 
           // Phase 1c: Source diversity enforcement
@@ -1993,6 +1842,43 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
           goldLog(`Knowledge unit loading failed: ${e}`);
         }
 
+        // Step 2b: Load structural reasoning edges (graceful if file missing)
+        // See docs/research/ku-reasoning-edge-system-analysis.md §9.2
+        let structuralEdgeLines: string[] = [];
+        try {
+          const fs2 = await import('fs');
+          const path2 = await import('path');
+          const edgePath = path2.join(process.cwd(), 'god-reason', 'reasoning.jsonl');
+          if (fs2.existsSync(edgePath)) {
+            const edgeLines = fs2.readFileSync(edgePath, 'utf-8').split('\n').filter(Boolean);
+            const allEdges = edgeLines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+            // Filter edges relevant to the topic by matching source/target against topic terms
+            const topicTerms = topic.toLowerCase().split(/\s+/).filter(t => t.length > 3);
+            const relevantEdges = allEdges.filter((e: any) => {
+              const src = (e.source || '').toLowerCase();
+              const tgt = (e.target || '').toLowerCase();
+              return topicTerms.some(t => src.includes(t) || tgt.includes(t) || t.includes(src) || t.includes(tgt));
+            });
+            // Sort by corroboration_score (if present), then by generation_epoch (newer first)
+            relevantEdges.sort((a: any, b: any) => {
+              const scoreDiff = (b.corroboration_score || 1) - (a.corroboration_score || 1);
+              if (scoreDiff !== 0) return scoreDiff;
+              return (b.generation_epoch || 0) - (a.generation_epoch || 0);
+            });
+            // Format as readable constraint lines (limit to 30 to avoid prompt bloat)
+            structuralEdgeLines = relevantEdges.slice(0, 30).map((e: any) =>
+              `- ${e.source} ${(e.relation || 'relates_to').toUpperCase()} ${e.target}` +
+              (e.pipeline ? ` (${e.pipeline})` : '') +
+              (e.corroboration_score && e.corroboration_score > 1 ? ` [corroborated]` : '')
+            );
+            goldLog(`Loaded ${structuralEdgeLines.length} structural edges (${relevantEdges.length} relevant of ${allEdges.length} total)`);
+          } else {
+            goldLog('No reasoning.jsonl found — skipping structural edges');
+          }
+        } catch (e) {
+          goldLog(`Structural edge loading failed: ${e}`);
+        }
+
         // Step 3: Load style profile
         // GOLD_V1=1 disables style injection (replicates v1 timeline: Feb 7 8:16 AM)
         let goldStylePrompt = '';
@@ -2023,6 +1909,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
             subsections,
             chunks: corpusChunks,
             knowledgeUnits: knowledgeUnitLines,
+            structuralEdges: structuralEdgeLines,
             stylePrompt: '', // No style for diagnostic v1
             wordTarget,
           });
@@ -2041,6 +1928,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
             const goldPrompt = this.buildGoldStandardPrompt({
               topic, subsections, chunks: corpusChunks,
               knowledgeUnits: knowledgeUnitLines,
+              structuralEdges: structuralEdgeLines,
               stylePrompt: goldStylePrompt, wordTarget,
             });
             agentSelection.prompt = goldPrompt;
@@ -2172,6 +2060,59 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
           goldLog(`Per-section constraints: ${sectionConstraints.length} rules derived from prompt structure`);
         }
 
+        // ---- Rolling Context Branch ----
+        // If --rolling-context is enabled, use per-section rolling generation instead of single-shot.
+        // The v1→investigate→v2 multi-step path runs first (if enabled) to produce preventionPlan,
+        // then rolling context takes over for v2 generation.
+        if (options.rollingContext) {
+          goldLog('=== ROLLING CONTEXT MODE ===');
+
+          // Build corpus constraint BEFORE rolling generation (needed for post-processing)
+          if (corpusChunks.length > 0) {
+            const additionalSources = await this.cachedLoadCorpusManifest({
+              collections: options.corpusCollections?.length ? options.corpusCollections : undefined,
+            }).catch(() => [] as CorpusSource[]);
+            corpusConstraint = buildCorpusConstraint(corpusChunks, {
+              enforcement: 'strict',
+              missingCitationPlaceholder: '',
+              minRelevance: 0.0,
+              additionalSources,
+            });
+            goldLog(`Corpus constraint built: ${corpusConstraint.sources.length} verified sources`);
+          }
+
+          const rollingResult = await this.writeRollingContext(
+            topic,
+            subsections,
+            corpusChunks,
+            knowledgeUnitLines,
+            structuralEdgeLines,
+            goldStylePrompt,
+            wordTarget,
+            preventionPlan,
+            sectionConstraints,
+          );
+
+          // Set content for post-processing pipeline (hoisted variable — `content` isn't declared yet)
+          rollingContextContent = rollingResult.content;
+          rollingContextDiagnostics = rollingResult.diagnostics;
+
+          // Build corpus context info
+          const citations = corpusChunks.map(chunk =>
+            `${chunk.metadata.author} (${chunk.metadata.year}), p.${chunk.metadata.page_start}`
+          );
+          corpusContextInfo = {
+            used: true,
+            chunkCount: corpusChunks.length,
+            collections: options.corpusCollections || [],
+            citations: Array.from(new Set(citations)),
+          };
+
+          // Skip single-shot gold prompt generation — jump to post-processing
+          // (The rest of the whitelist block below only builds the single-shot prompt)
+        } else {
+        // ---- Single-Shot Gold Standard Path ----
+
         // Compute primary under-coverage for warning injection
         let primaryUnderCoverage: string[] | undefined;
         if (primaryAuthors.length > 0) {
@@ -2196,6 +2137,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
           subsections,
           chunks: corpusChunks,
           knowledgeUnits: knowledgeUnitLines,
+          structuralEdges: structuralEdgeLines,
           stylePrompt: goldStylePrompt,
           wordTarget,
           preventionPlan,
@@ -2245,6 +2187,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
           collections: options.corpusCollections || [],
           citations: Array.from(new Set(citations)),
         };
+        } // end single-shot else block
       } catch (error) {
         this.deps.log(`Warning: Gold standard mode setup failed: ${error}`);
         // If retrieval fails, the prompt still has the base writing instructions
@@ -2521,6 +2464,12 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
     // Initialize content variable
     let content: string;
 
+    // If rolling context already generated content, use it directly — skip single-shot generation
+    if (rollingContextDiagnostics?.used && rollingContextContent) {
+      content = rollingContextContent;
+      goldLog(`Rolling context content: ${content.split(/\s+/).length} words — skipping single-shot generation`);
+    } else {
+
     // If inline validation was successful, use that content — but only if
     // more than half the units passed. Otherwise fall back to direct generation,
     // since placeholder-filled output is worse than unvalidated prose.
@@ -2578,6 +2527,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
         }
       }
     }
+    } // end rolling context else block
 
     // Phase A: Prose Sanitization - Remove research artifacts for publication-ready output
     // Target: 100% clean rate (zero tolerance for artifacts like Q1:, Confidence:, [SYNTHESIS NEEDED])
@@ -2765,6 +2715,34 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
       }
     }
 
+    // Fix 62: Strip bare APA-style parenthetical citations — (Author Year)
+    // These are stylistically wrong (MLA requires title+page) and leak through
+    // because the citation validator marks them valid when the author IS in the corpus.
+    try {
+      const apaResult = stripBareApaParentheticals(content);
+      if (apaResult.strippedCount > 0) {
+        content = apaResult.content;
+        this.deps.log(`Fix 62: Stripped ${apaResult.strippedCount} bare APA parenthetical(s): ${apaResult.stripped.join(', ')}`);
+      }
+    } catch (error) {
+      this.deps.log(`Warning: APA parenthetical stripping failed: ${error}`);
+    }
+
+    // Fix 61: Strip endnote reference artifacts that leak into main text body
+    // during multi-step generation. Must run BEFORE real endnotes are generated
+    // so that hallucinated [1], [EN1], or superscript markers from the LLM are
+    // removed before the endnote generator inserts legitimate markers.
+    try {
+      const preEndnoteContent = content;
+      content = stripEndnoteLeaks(content);
+      const strippedChars = preEndnoteContent.length - content.length;
+      if (strippedChars > 0) {
+        this.deps.log(`Fix 61: Stripped ${strippedChars} chars of endnote leak artifacts from main text`);
+      }
+    } catch (error) {
+      this.deps.log(`Warning: Endnote leak stripping failed: ${error}`);
+    }
+
     // Phase 5: Staged Composition System Integration
     // Auto-detect if staged composition should be used
     let compositionMetadata: {
@@ -2879,6 +2857,11 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
               year: chunk.metadata?.year,
               pageRef: chunk.metadata?.pageRef,
               docId: chunk.metadata?.docId,
+              // Visual provenance (v7)
+              has_bboxes: chunk.metadata?.has_bboxes ?? false,
+              source_method: chunk.metadata?.source_method ?? '',
+              bboxes: chunk.metadata?.has_bboxes ? (chunk.metadata?.bboxes ?? '') : '',
+              path_rel: chunk.metadata?.path_rel ?? '',
             },
             score: chunk.relevanceScore,
           }));
@@ -2896,6 +2879,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
           maxQuotationLength: 500,
           formatStyle: 'numeric',
           generateInlineMarkers: true,
+          renderBboxOverlays: options.renderBboxOverlays ?? false,
         };
 
         const endnoteResult = await generateEndnotes(content, corpusSearch, {
@@ -3130,7 +3114,28 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
       } : undefined,
       // Multi-step diagnostics (v1→investigate→v2)
       multiStepDiagnostics: multiStepDiagnosticsResult,
+      // Rolling context diagnostics
+      rollingContext: rollingContextDiagnostics,
     };
+
+    } catch (err) {
+      if (err instanceof PipelineAbortError || (err instanceof Error && err.name === 'AbortError')) {
+        this.deps.log('Pipeline aborted by user -- partial results may be available');
+        return {
+          topic,
+          content: '[Pipeline aborted by user]',
+          style: options.style ?? 'professional',
+          sources: [],
+          wordCount: 0,
+          bodyWordCount: 0,
+          qualityScore: 0,
+        } as WriteResult;
+      }
+      throw err; // Re-throw non-abort errors
+    } finally {
+      abortCtrl.stop();
+      this.activeAbortCtrl = null;
+    }
   }
 
   // =========================================================================
@@ -3197,191 +3202,35 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
     // ===== STAGE 1: RETRIEVAL =====
     ctx.logger.info('[v2] === STAGE 1: RETRIEVAL ===');
 
-    let corpusChunks: ContextChunk[] = [];
-    let corpusContextInfo = { used: false, chunkCount: 0, collections: [] as string[], citations: [] as string[] };
-    let corpusConstraint: CorpusConstraint | undefined;
-    let primaryAuthors: string[] = [];
-    let knowledgeUnitLines: string[] = [];
-    let preventionPlan: StageRetrievalResult['preventionPlan'];
-    let multiStepV1Stats: StageRetrievalResult['multiStepV1Stats'];
-    let sectionConstraints: string[] = [];
-    let subsections: string[] = [];
-    let primaryUnderCoverage: string[] | undefined;
-
     const goldLog = (msg: string) => {
       if (options.whitelistMode) {
         process.stderr.write(`[GOLD STD] ${msg}\n`);
       }
     };
 
-    if (options.whitelistMode) {
-      try {
-        // Same logic as legacy: multi-query retrieval + diversity + trimming + KUs + style
-        goldLog('v2: Multi-query retrieval + style + single-shot generation...');
-        subsections = this.extractSemanticRetrievalQueries(topic);
-        const targetChunks = options.corpusChunkCount ?? GOLD_STANDARD_CONFIG.targetChunks;
-        const retrievalOpts: RetrievalOptions = {
-          collections: options.corpusCollections || [],
-          minRelevance: options.corpusMinRelevance ?? 0.0,
-          diversityBoost: true,
-          rerank: true,
-        };
+    const retrieval = await runRetrievalStage(topic, {
+      whitelistMode: options.whitelistMode,
+      corpusChunkCount: options.corpusChunkCount,
+      corpusCollections: options.corpusCollections,
+      corpusMinRelevance: options.corpusMinRelevance,
+      length,
+    }, this.buildRetrievalStageDeps(goldLog), ctx);
 
-        if (this.deps.smartRetrieval) {
-          const allChunks: ContextChunk[] = [];
-          const seenIds = new Set<string>();
-          const addChunks = (chunks: ContextChunk[]) => {
-            for (const c of chunks) {
-              const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
-              if (!seenIds.has(id)) { seenIds.add(id); allChunks.push(c); }
-            }
-          };
-
-          // Phase 1a: Multi-query semantic retrieval
-          const perQueryMax = Math.ceil(targetChunks / Math.max(subsections.length, 1)) + 5;
-          for (const sq of subsections) {
-            try {
-              const chunks = await this.deps.smartRetrieval.retrieveContext(sq, { ...retrievalOpts, maxChunks: perQueryMax });
-              addChunks(chunks);
-            } catch (e) {
-              recordWarning(ctx, 'retrieval', `Sub-query failed for "${sq}": ${e}`);
-            }
-          }
-
-          // Phase 1b: Primary-author supplementation
-          primaryAuthors = this.extractPrimaryAuthors(topic);
-          const keyAuthors = primaryAuthors.length > 0 ? primaryAuthors : this.extractKeyAuthors(topic);
-          if (keyAuthors.length > 0) {
-            for (const author of keyAuthors.slice(0, 3)) {
-              try {
-                const authorChunks = await this.deps.smartRetrieval.retrieveContext(topic.substring(0, 300), {
-                  ...retrievalOpts, maxChunks: 16, whereFilter: { author_raw: { $eq: author } },
-                });
-                addChunks(authorChunks);
-                if (authorChunks.length < 4) {
-                  const looseChunks = await this.deps.smartRetrieval.retrieveContext(
-                    `${author} ${topic.substring(0, 100)}`, { ...retrievalOpts, maxChunks: 10 }
-                  );
-                  addChunks(looseChunks.filter(c => (c.metadata.author || '').toLowerCase().includes(author.toLowerCase())));
-                }
-              } catch (e) {
-                recordWarning(ctx, 'retrieval', `${author} supplementation failed: ${e}`);
-              }
-            }
-          }
-
-          // Phase 1c: Diversity enforcement
-          corpusChunks = this.enforceSourceDiversity(allChunks, { maxPerSource: 8, targetTotal: targetChunks });
-
-          // Phase 1d: Chunk trimming
-          for (const chunk of corpusChunks) {
-            if (chunk.content) chunk.content = this.trimChunkContent(chunk.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
-          }
-
-          // Phase 1e: Attention reordering
-          corpusChunks = this.reorderChunksForAttention(corpusChunks);
-
-          // Phase 1f: Coverage validation
-          const coverage = this.validateRetrievalCoverage(topic, corpusChunks, 2);
-          if (coverage.missingAuthors.length > 0 || coverage.weakAuthors.length > 0) {
-            for (const author of [...coverage.missingAuthors, ...coverage.weakAuthors]) {
-              try {
-                const authorChunks = await this.deps.smartRetrieval.retrieveContext(
-                  `${author} ${topic.substring(0, 150)}`,
-                  { ...retrievalOpts, maxChunks: 8, whereFilter: { author_raw: { $eq: author } } }
-                );
-                for (const c of authorChunks) {
-                  const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
-                  if (!seenIds.has(id)) {
-                    seenIds.add(id);
-                    if (c.content) c.content = this.trimChunkContent(c.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
-                    corpusChunks.push(c);
-                  }
-                }
-              } catch (e) {
-                recordWarning(ctx, 'retrieval', `${author} coverage retrieval failed: ${e}`);
-              }
-            }
-          }
-
-          // Primary ratio check
-          if (primaryAuthors.length > 0) {
-            const primaryLower = primaryAuthors.map(a => a.toLowerCase());
-            const primaryChunkCount = corpusChunks.filter(c =>
-              primaryLower.some(pa => (c.metadata.author || '').toLowerCase().includes(pa))
-            ).length;
-            const primaryRatio = corpusChunks.length > 0 ? primaryChunkCount / corpusChunks.length : 0;
-            if (primaryRatio < GOLD_STANDARD_CONFIG.primaryRatioThreshold) {
-              primaryUnderCoverage = primaryAuthors.filter(author => {
-                const count = corpusChunks.filter(c =>
-                  (c.metadata.author || '').toLowerCase().includes(author.toLowerCase())
-                ).length;
-                return count < 2;
-              });
-            }
-          }
-        } else {
-          recordDegraded(ctx, 'retrieval', 'No smartRetrieval available');
-        }
-
-        // Knowledge units
-        try {
-          const fs = await import('fs');
-          const path = await import('path');
-          const kuPath = path.join(process.cwd(), 'god-learn', 'knowledge.jsonl');
-          if (fs.existsSync(kuPath)) {
-            const lines = fs.readFileSync(kuPath, 'utf-8').split('\n').filter(Boolean);
-            const allKUs = lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
-            const topicLower = topic.toLowerCase();
-            const domainKeywords = getDomainKeywords(loadDomainConfig());
-            const relevantDomains = domainKeywords.filter(d => topicLower.includes(d));
-            const relevant = allKUs.filter((ku: any) =>
-              relevantDomains.some(d => (ku.claim || ku.content || '').toLowerCase().includes(d))
-            );
-            knowledgeUnitLines = (relevant.length > 0 ? relevant : allKUs)
-              .slice(0, 10)
-              .map((ku: any) => `- ${ku.claim || ku.content} (${ku.source || 'corpus'})`);
-          }
-        } catch (e) {
-          recordWarning(ctx, 'retrieval', `Knowledge unit loading failed: ${e}`);
-        }
-
-        // Section constraints
-        const allSubsections = this.extractRetrievalQueries(topic);
-        sectionConstraints = this.buildSectionConstraints(allSubsections, primaryAuthors);
-
-        // Build corpus constraint
-        if (corpusChunks.length > 0) {
-          const additionalSources = await this.cachedLoadCorpusManifest({
-            collections: options.corpusCollections?.length ? options.corpusCollections : undefined,
-          }).catch(() => [] as CorpusSource[]);
-          corpusConstraint = buildCorpusConstraint(corpusChunks, {
-            enforcement: 'strict', missingCitationPlaceholder: '', minRelevance: 0.0, additionalSources,
-          });
-        } else {
-          const manifestSources = await this.cachedLoadCorpusManifest({
-            collections: options.corpusCollections?.length ? options.corpusCollections : undefined,
-          }).catch(() => [] as CorpusSource[]);
-          if (manifestSources.length > 0) {
-            corpusConstraint = { sources: manifestSources, enforcement: 'strict', missingCitationPlaceholder: '' };
-          }
-        }
-
-        const citations = corpusChunks.map(chunk =>
-          `${chunk.metadata.author} (${chunk.metadata.year}), p.${chunk.metadata.page_start}`
-        );
-        corpusContextInfo = { used: true, chunkCount: corpusChunks.length, collections: options.corpusCollections || [], citations: Array.from(new Set(citations)) };
-
-      } catch (error) {
-        recordDegraded(ctx, 'retrieval', `Whitelist mode setup failed: ${error}`);
-      }
-    }
+    let corpusChunks = retrieval.chunks;
+    const corpusContextInfo = retrieval.corpusContextInfo;
+    let corpusConstraint: CorpusConstraint | undefined = retrieval.corpusConstraint ?? undefined;
+    let primaryAuthors = retrieval.primaryAuthors;
+    let knowledgeUnitLines = retrieval.knowledgeUnits;
+    let structuralEdgeLines = retrieval.structuralEdges;
+    let preventionPlan: StageRetrievalResult['preventionPlan'];
+    let multiStepV1Stats: StageRetrievalResult['multiStepV1Stats'];
+    let sectionConstraints = retrieval.sectionConstraints;
+    const subsections = retrieval.subsections;
+    let primaryUnderCoverage = retrieval.primaryUnderCoverage;
 
     // Token budget check
     const goldStylePrompt = stylePrompt || '';
-    const wordTarget = length === 'comprehensive' || (!length && options.whitelistMode) ? '3,000-3,500' :
-                  length === 'long' ? '2,000-2,500' :
-                  length === 'medium' ? '1,500-2,000' : '800-1,000';
+    const wordTarget = retrieval.wordTarget;
 
     if (corpusChunks.length > 0) {
       const budget = estimateTokenBudget(corpusChunks, goldStylePrompt, sectionConstraints.join('\n'));
@@ -3400,7 +3249,7 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
       if (options.multiStep) {
         const v1Prompt = this.buildGoldStandardPrompt({
           topic, subsections, chunks: corpusChunks, knowledgeUnits: knowledgeUnitLines,
-          stylePrompt: '', wordTarget,
+          structuralEdges: structuralEdgeLines, stylePrompt: '', wordTarget,
         });
 
         let v1Content: string;
@@ -3485,7 +3334,8 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
       // Build final prompt (v2 with prevention plan, or single-shot)
       const goldPrompt = this.buildGoldStandardPrompt({
         topic, subsections, chunks: corpusChunks, knowledgeUnits: knowledgeUnitLines,
-        stylePrompt: goldStylePrompt, wordTarget, preventionPlan, sectionConstraints, primaryUnderCoverage,
+        structuralEdges: structuralEdgeLines, stylePrompt: goldStylePrompt, wordTarget,
+        preventionPlan, sectionConstraints, primaryUnderCoverage,
       });
 
       // Generate
@@ -3597,9 +3447,88 @@ REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDAR
       }
     }
 
+    // Fix 62: Strip bare APA-style parenthetical citations
+    try {
+      const apaResult = stripBareApaParentheticals(content);
+      if (apaResult.strippedCount > 0) {
+        content = apaResult.content;
+        ctx.logger.info(`[v2] Fix 62: Stripped ${apaResult.strippedCount} bare APA parenthetical(s): ${apaResult.stripped.join(', ')}`);
+      }
+    } catch (error) {
+      recordWarning(ctx, 'validation', `APA parenthetical stripping failed: ${error}`);
+    }
+
+    // Fix 61: Strip endnote reference artifacts from main text body
+    try {
+      const preStrip = content.length;
+      content = stripEndnoteLeaks(content);
+      if (content.length < preStrip) {
+        ctx.logger.info(`[v2] Fix 61: Stripped ${preStrip - content.length} chars of endnote leak artifacts`);
+      }
+    } catch (error) {
+      recordWarning(ctx, 'validation', `Endnote leak stripping failed: ${error}`);
+    }
+
     // Post-generation heading fix
     content = content.replace(/([^\n])(##\s*\d+\s*\.?\s*\w)/g, '$1\n\n$2');
     content = content.replace(/(^##\s*\d+\.?\s+[^\n]+)\n(?!\n)/gm, '$1\n\n');
+
+    // V2 Endnote generation (if --enable-endnotes flag is set)
+    let endnotesMetadataV2: { generated: boolean; count: number; supportingQuotationsCount: number } = { generated: false, count: 0, supportingQuotationsCount: 0 };
+    if (options.enableEndnotes && corpusContextInfo.used && this.deps.smartRetrieval) {
+      try {
+        ctx.logger.info('[v2] Generating endnotes with visual provenance...');
+
+        const corpusSearch: CorpusSearchFn = async (query: string, limit: number) => {
+          const chunks = await this.deps.smartRetrieval!.retrieveContext(query, {
+            maxChunks: limit,
+            collections: corpusContextInfo.collections,
+            minRelevance: 0.65,
+          });
+          return chunks.map(chunk => ({
+            id: chunk.chunkId,
+            text: chunk.content,
+            metadata: {
+              author: chunk.metadata?.author,
+              title: chunk.metadata?.title,
+              year: chunk.metadata?.year,
+              pageRef: chunk.metadata?.pageRef,
+              docId: chunk.metadata?.docId,
+              has_bboxes: chunk.metadata?.has_bboxes ?? false,
+              source_method: chunk.metadata?.source_method ?? '',
+              bboxes: chunk.metadata?.has_bboxes ? (chunk.metadata?.bboxes ?? '') : '',
+              path_rel: chunk.metadata?.path_rel ?? '',
+            },
+            score: chunk.relevanceScore,
+          }));
+        };
+
+        const endnoteResult = await generateEndnotes(content, corpusSearch, {
+          config: {
+            maxQuotationsPerEndnote: options.maxQuotationsPerEndnote ?? 3,
+            minRelevanceThreshold: options.minEndnoteRelevance ?? 0.65,
+            includeSameSource: true,
+            includeDifferentSources: true,
+            maxQuotationLength: 500,
+            formatStyle: 'numeric',
+            generateInlineMarkers: true,
+            renderBboxOverlays: options.renderBboxOverlays ?? false,
+          },
+        });
+
+        if (endnoteResult.endnotes.length > 0) {
+          content = endnoteResult.contentWithMarkers + '\n\n' + endnoteResult.endnotesSection;
+          endnotesMetadataV2 = {
+            generated: true,
+            count: endnoteResult.stats.totalEndnotes,
+            supportingQuotationsCount: endnoteResult.stats.totalSupportingQuotations,
+          };
+          ctx.logger.info(`[v2] Generated ${endnoteResult.endnotes.length} endnotes with ${endnoteResult.stats.totalSupportingQuotations} supporting quotations`);
+        }
+      } catch (error) {
+        recordWarning(ctx, 'endnotes', `Endnote generation failed: ${error}`);
+      }
+    }
 
     const bodyWordCount = content.trim().split(/\s+/).filter(Boolean).length;
 

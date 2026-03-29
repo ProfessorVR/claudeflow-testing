@@ -90,10 +90,13 @@ export interface RetrievalResult {
   };
   primaryAuthors: string[];
   knowledgeUnits: string[];
+  structuralEdges: string[];
   stylePrompt: string;
   sectionConstraints: string[];
   subsections: string[];
   wordTarget: string;
+  /** Chunk IDs seen during retrieval — prevents duplicates in supplemental passes */
+  seenIds: Set<string>;
   preventionPlan?: {
     blacklistedAuthors: string[];
     strengthenedConstraints: string[];
