@@ -419,7 +419,8 @@ export class EndnoteGenerator {
     const citations: ExtractedCitation[] = [];
 
     // Pattern 1: Hybrid citations (Author, *Title* page) - e.g., (Aristotle, *De Anima* 403a 23-24)
-    const hybridAuthorTitlePattern = /\(([A-Z][a-zA-Z]+),\s*\*([^*]+)\*\s+([^)]+)\)/g;
+    // The ,? after the closing * handles LLM output like (Heidegger, *Being and Time*, p. 91)
+    const hybridAuthorTitlePattern = /\(([A-Z][a-zA-Z]+),\s*\*([^*]+)\*,?\s+([^)]+)\)/g;
 
     // Pattern 2: Inline citations like (Author, Year, p. XX) or (Author Year)
     const inlineCitationPattern = /\(([A-Z][a-zA-Z]+(?:\s+(?:and|&)\s+[A-Z][a-zA-Z]+)?),?\s*(\d{4})?(?:,?\s*p\.?\s*(\d+(?:-\d+)?))?\)/g;
