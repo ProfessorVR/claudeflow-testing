@@ -27,6 +27,29 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Set, Tuple
 
 
+# Canonical relation vocabulary (aligned with manual analysis pipelines)
+# See docs/research/ku-reasoning-edge-system-analysis.md §11 Sprint 1 Task 5
+VOCAB_MAP: Dict[str, str] = {
+    "contrast": "contrasts_with",
+    "elaboration": "explains",
+    "is_variant_of": "is_variant_of",  # near-duplicate textual similarity
+    "supports": "supports",
+    "similar": "supports",  # weak support without causal mechanism
+    "defined_as": "defined_as",
+    "refines": "refines",
+    "presupposes": "presupposes",
+    # Legacy mappings (kept for backward compatibility with existing edges)
+    "inheritance": "is_variant_of",
+    "support": "supports",
+}
+
+CANONICAL_RELATIONS: Set[str] = {
+    "depends_on", "presupposes", "contrasts_with", "explains", "refines",
+    "operationalizes", "supports", "completes", "defined_as", "defined_by",
+    "instantiates", "is_meaning_of", "is_species_of", "is_principle_of",
+    "is_variant_of",
+}
+
 STOPWORDS: Set[str] = {
     # small, fixed list to keep determinism simple (expand if needed)
     "the","a","an","and","or","of","to","in","on","for","with","by","as","is","are",
@@ -37,6 +60,9 @@ STOPWORDS: Set[str] = {
 
 CONTRAST_MARKERS = {"however", "but", "rather", "yet", "nevertheless", "although", "whereas"}
 ELAB_MARKERS = {"for example", "e.g.", "specifically", "in particular", "thus", "therefore", "because"}
+DEFINITION_MARKERS = {"is defined as", "means", "refers to", "is understood as", "denotes"}
+REFINEMENT_MARKERS = {"more precisely", "narrower", "specifically", "in a stricter sense", "properly speaking"}
+PRESUPPOSITION_MARKERS = {"requires", "assumes", "prior to", "precondition", "only possible if"}
 
 TOKEN_RE = re.compile(r"[a-zA-Z][a-zA-Z\-']+")
 
@@ -100,6 +126,18 @@ def infer_relation(claim_a: str, claim_b: str, score: float, shared: Set[str]) -
     a_l = claim_a.lower()
     b_l = claim_b.lower()
 
+    # Definition detection
+    if score >= 0.06 and (contains_any_phrase(a_l, DEFINITION_MARKERS) or contains_any_phrase(b_l, DEFINITION_MARKERS)):
+        return "defined_as"
+
+    # Refinement detection
+    if score >= 0.06 and (contains_any_phrase(a_l, REFINEMENT_MARKERS) or contains_any_phrase(b_l, REFINEMENT_MARKERS)):
+        return "refines"
+
+    # Presupposition detection
+    if score >= 0.06 and (contains_any_phrase(a_l, PRESUPPOSITION_MARKERS) or contains_any_phrase(b_l, PRESUPPOSITION_MARKERS)):
+        return "presupposes"
+
     # Contrast / elaboration rely on explicit discourse markers
     if score >= 0.06 and (contains_any_phrase(a_l, CONTRAST_MARKERS) or contains_any_phrase(b_l, CONTRAST_MARKERS)):
         return "contrast"
@@ -107,13 +145,13 @@ def infer_relation(claim_a: str, claim_b: str, score: float, shared: Set[str]) -
     if score >= 0.06 and (contains_any_phrase(a_l, ELAB_MARKERS) or contains_any_phrase(b_l, ELAB_MARKERS)):
         return "elaboration"
 
-    # "Inheritance" here means near-duplicate / very strong similarity
+    # Near-duplicate / very strong textual similarity → distinct from logical support
     if score >= 0.18:
-        return "inheritance"
+        return "is_variant_of"
 
-    # Default: support when there is modest similarity
+    # Default: logical corroboration when there is modest similarity
     if score >= 0.08:
-        return "support"
+        return "supports"
 
     return None
 
@@ -219,11 +257,16 @@ def build_reasoning(
                 gb = char_ngrams(b.claim, n=4)
                 shared = ga & gb
                 score = jaccard(ga, gb)
-                rel = infer_relation(a.claim, b.claim, score, shared)
+                raw_rel = infer_relation(a.claim, b.claim, score, shared)
 
                 stats["pairs_considered"] += 1
-                if rel is None:
+                if raw_rel is None:
                     continue
+
+                # Map to canonical relation vocabulary
+                rel = VOCAB_MAP.get(raw_rel, raw_rel)
+                if rel not in CANONICAL_RELATIONS:
+                    continue  # drop unmapped / non-canonical relations
 
                 # Deterministic small sample of shared n-grams (avoid huge JSONL rows)
                 shared_sample = sorted(shared)[:25]

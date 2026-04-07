@@ -888,6 +888,9 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
     wordTarget: string,
     preventionPlan: GoldStandardPromptOptions['preventionPlan'] | undefined,
     sectionConstraints: string[],
+    ontologyLines: string[] = [],
+    hookLines: string[] = [],
+    tensionLines: string[] = [],
   ): Promise<{
     content: string;
     diagnostics: NonNullable<import('./universal-agent.js').WriteResult['rollingContext']>;
@@ -996,6 +999,9 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
         chunks: mergedChunks,
         knowledgeUnits: knowledgeUnitLines,
         structuralEdges: structuralEdgeLines,
+        ontologyNodes: ontologyLines,
+        crossPipelineHooks: hookLines,
+        tensionEdges: tensionLines,
         stylePrompt,
         preventionPlan,
         priorSectionsText,
@@ -1885,6 +1891,25 @@ ${sectionContent}`;
           goldLog(`Structural edge loading failed: ${e}`);
         }
 
+        // Step 2c: Load corpus index context
+        let ontologyLines: string[] = [];
+        let hookLines: string[] = [];
+        let tensionLines: string[] = [];
+        try {
+          const { loadCorpusIndexContext } = await import('./corpus-index-provider.js');
+          const corpusCtx = loadCorpusIndexContext(topic, {
+            maxOntologyNodes: 12, maxHooks: 3, maxTensionEdges: 5,
+          });
+          ontologyLines = corpusCtx.ontologyLines;
+          hookLines = corpusCtx.hookLines;
+          tensionLines = corpusCtx.tensionLines;
+          if (ontologyLines.length > 0 || hookLines.length > 0 || tensionLines.length > 0) {
+            goldLog(`Corpus index: ${ontologyLines.length} nodes, ${hookLines.length} hooks, ${tensionLines.length} tensions`);
+          }
+        } catch (e) {
+          goldLog(`Corpus index loading failed: ${e}`);
+        }
+
         // Step 3: Load style profile
         // GOLD_V1=1 disables style injection (replicates v1 timeline: Feb 7 8:16 AM)
         let goldStylePrompt = '';
@@ -1916,6 +1941,9 @@ ${sectionContent}`;
             chunks: corpusChunks,
             knowledgeUnits: knowledgeUnitLines,
             structuralEdges: structuralEdgeLines,
+            ontologyNodes: ontologyLines,
+            crossPipelineHooks: hookLines,
+            tensionEdges: tensionLines,
             stylePrompt: '', // No style for diagnostic v1
             wordTarget,
           });
@@ -1935,6 +1963,9 @@ ${sectionContent}`;
               topic, subsections, chunks: corpusChunks,
               knowledgeUnits: knowledgeUnitLines,
               structuralEdges: structuralEdgeLines,
+              ontologyNodes: ontologyLines,
+              crossPipelineHooks: hookLines,
+              tensionEdges: tensionLines,
               stylePrompt: goldStylePrompt, wordTarget,
             });
             agentSelection.prompt = goldPrompt;
@@ -2097,6 +2128,9 @@ ${sectionContent}`;
             wordTarget,
             preventionPlan,
             sectionConstraints,
+            ontologyLines,
+            hookLines,
+            tensionLines,
           );
 
           // Set content for post-processing pipeline (hoisted variable — `content` isn't declared yet)
@@ -2144,6 +2178,9 @@ ${sectionContent}`;
           chunks: corpusChunks,
           knowledgeUnits: knowledgeUnitLines,
           structuralEdges: structuralEdgeLines,
+          ontologyNodes: ontologyLines,
+          crossPipelineHooks: hookLines,
+          tensionEdges: tensionLines,
           stylePrompt: goldStylePrompt,
           wordTarget,
           preventionPlan,
@@ -3208,14 +3245,19 @@ ${sectionContent}`;
     // ===== STAGE 1: RETRIEVAL =====
     ctx.logger.info('[v2] === STAGE 1: RETRIEVAL ===');
 
+    // In v2, --use-corpus activates the same retrieval pipeline as --whitelist.
+    // The legacy path kept these as distinct modes, but v2 merged them into
+    // a single staged retrieval path (RetrievalStage only checks whitelistMode).
+    const effectiveWhitelistMode = options.whitelistMode || options.useCorpus || false;
+
     const goldLog = (msg: string) => {
-      if (options.whitelistMode) {
+      if (effectiveWhitelistMode) {
         process.stderr.write(`[GOLD STD] ${msg}\n`);
       }
     };
 
     const retrieval = await runRetrievalStage(topic, {
-      whitelistMode: options.whitelistMode,
+      whitelistMode: effectiveWhitelistMode,
       corpusChunkCount: options.corpusChunkCount,
       corpusCollections: options.corpusCollections,
       corpusMinRelevance: options.corpusMinRelevance,
@@ -3228,6 +3270,9 @@ ${sectionContent}`;
     let primaryAuthors = retrieval.primaryAuthors;
     let knowledgeUnitLines = retrieval.knowledgeUnits;
     let structuralEdgeLines = retrieval.structuralEdges;
+    const ontologyLines = retrieval.ontologyLines;
+    const hookLines = retrieval.hookLines;
+    const tensionLines = retrieval.tensionLines;
     let preventionPlan: StageRetrievalResult['preventionPlan'];
     let multiStepV1Stats: StageRetrievalResult['multiStepV1Stats'];
     let sectionConstraints = retrieval.sectionConstraints;
@@ -3250,12 +3295,14 @@ ${sectionContent}`;
 
     let content: string;
 
-    if (options.whitelistMode) {
+    if (effectiveWhitelistMode) {
       // Multi-step: v1 → investigate → v2
       if (options.multiStep) {
         const v1Prompt = this.buildGoldStandardPrompt({
           topic, subsections, chunks: corpusChunks, knowledgeUnits: knowledgeUnitLines,
-          structuralEdges: structuralEdgeLines, stylePrompt: '', wordTarget,
+          structuralEdges: structuralEdgeLines, ontologyNodes: ontologyLines,
+          crossPipelineHooks: hookLines, tensionEdges: tensionLines,
+          stylePrompt: '', wordTarget,
         });
 
         let v1Content: string;
@@ -3340,7 +3387,9 @@ ${sectionContent}`;
       // Build final prompt (v2 with prevention plan, or single-shot)
       const goldPrompt = this.buildGoldStandardPrompt({
         topic, subsections, chunks: corpusChunks, knowledgeUnits: knowledgeUnitLines,
-        structuralEdges: structuralEdgeLines, stylePrompt: goldStylePrompt, wordTarget,
+        structuralEdges: structuralEdgeLines, ontologyNodes: ontologyLines,
+        crossPipelineHooks: hookLines, tensionEdges: tensionLines,
+        stylePrompt: goldStylePrompt, wordTarget,
         preventionPlan, sectionConstraints, primaryUnderCoverage,
       });
 
@@ -3402,7 +3451,7 @@ ${sectionContent}`;
     // Citation enforcement
     let citationEnforcementResult: EnforcementResult | undefined;
     const shouldEnforceCitations = corpusConstraint && corpusConstraint.sources.length > 0 &&
-      (options.whitelistMode || corpusChunks.length > 0);
+      (effectiveWhitelistMode || corpusChunks.length > 0);
     if (shouldEnforceCitations) {
       try {
         const enforcer = new CitationEnforcer(corpusConstraint!, {
@@ -3411,7 +3460,7 @@ ${sectionContent}`;
           maxHallucinations: options.citationMaxHallucinations ?? 3,
           placeholder: '',
           includeReport: true,
-        }, options.whitelistMode ? [] : corpusChunks);
+        }, effectiveWhitelistMode ? [] : corpusChunks);
 
         citationEnforcementResult = await enforcer.enforce(content);
         if (citationEnforcementResult.action === 'corrected') {
@@ -3434,7 +3483,7 @@ ${sectionContent}`;
 
     // Author scrubbing
     let scrubConstraint = corpusConstraint;
-    if (corpusConstraint && corpusConstraint.sources.length > 0 && !options.whitelistMode) {
+    if (corpusConstraint && corpusConstraint.sources.length > 0 && !effectiveWhitelistMode) {
       try {
         const manifestSources = await this.cachedLoadCorpusManifest({
           collections: options.corpusCollections?.length ? options.corpusCollections : undefined,
@@ -3580,7 +3629,7 @@ ${sectionContent}`;
       qualityMetrics: qualityValidation?.metrics,
       qualityScore: qualityValidation?.qualityScore,
       revisionIterations: qualityValidation?.revisionIterations ?? 0,
-      corpusContext: corpusContextInfo.used ? { ...corpusContextInfo, whitelistMode: options.whitelistMode ?? false } : undefined,
+      corpusContext: corpusContextInfo.used ? { ...corpusContextInfo, whitelistMode: effectiveWhitelistMode } : undefined,
       proseSanitization: sanitizationResult ? {
         sanitized: true,
         artifactsRemoved: sanitizationResult.artifactCount,

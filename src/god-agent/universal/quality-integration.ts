@@ -29,6 +29,8 @@
  * ```
  */
 
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import {
   QualityGauntlet,
   RevisionOrchestrator,
@@ -46,6 +48,7 @@ import {
   type VerificationDecision,
   type ReviewContext,
 } from '../__experimental__/human-verification.js';
+import { type ReasoningEdge, parseReasoningEdge } from '../retrieval/types.js';
 
 // ============================================================================
 // Quality Integration Types
@@ -145,6 +148,504 @@ export interface QualityMetrics {
 }
 
 // ============================================================================
+// Edge Coherence Validation
+// ============================================================================
+
+// ReasoningEdge imported from ../retrieval/types.js (shared Zod-validated schema)
+
+/** Derivation values used for contradiction severity tiering */
+type DerivationTier = 'manual' | 'llm' | 'phase7' | 'bridge' | 'unknown';
+const VALID_DERIVATIONS = new Set<DerivationTier>(['manual', 'llm', 'phase7', 'bridge']);
+
+function toDerivationTier(d: string | undefined): DerivationTier {
+  const lower = (d ?? 'unknown').toLowerCase();
+  return VALID_DERIVATIONS.has(lower as DerivationTier) ? lower as DerivationTier : 'unknown';
+}
+
+/**
+ * Structured contradiction detail with provenance derivation tier
+ */
+export interface EdgeContradiction {
+  description: string;
+  expectedRelation: string;
+  foundAssertion: string;
+  derivation: DerivationTier;
+}
+
+/**
+ * Result from edge-based coherence validation
+ */
+export interface EdgeCoherenceResult {
+  /** Score from 0.0 (many contradictions) to 1.0 (no contradictions) */
+  score: number;
+  /** Structured contradiction details with provenance derivation */
+  contradictions: EdgeContradiction[];
+  /** Total relationship assertions detected in the text */
+  assertionsFound: number;
+  /** Total edges loaded from the knowledge base */
+  edgesLoaded: number;
+}
+
+/**
+ * Relationship patterns to detect in generated text.
+ * Each entry maps a textual verb phrase to the canonical relation type it implies.
+ */
+const RELATION_PATTERNS: { pattern: RegExp; relation: string }[] = [
+  { pattern: /(\w[\w\s-]*?)\s+depends\s+on\s+(\w[\w\s-]*)/gi, relation: 'depends_on' },
+  { pattern: /(\w[\w\s-]*?)\s+presupposes\s+(\w[\w\s-]*)/gi, relation: 'presupposes' },
+  { pattern: /(\w[\w\s-]*?)\s+contrasts\s+with\s+(\w[\w\s-]*)/gi, relation: 'contrasts_with' },
+  { pattern: /(\w[\w\s-]*?)\s+is\s+contrasted\s+with\s+(\w[\w\s-]*)/gi, relation: 'contrasts_with' },
+  { pattern: /(\w[\w\s-]*?)\s+explains\s+(\w[\w\s-]*)/gi, relation: 'explains' },
+  { pattern: /(\w[\w\s-]*?)\s+refines\s+(\w[\w\s-]*)/gi, relation: 'refines' },
+  { pattern: /(\w[\w\s-]*?)\s+completes\s+(\w[\w\s-]*)/gi, relation: 'completes' },
+  { pattern: /(\w[\w\s-]*?)\s+operationalizes\s+(\w[\w\s-]*)/gi, relation: 'operationalizes' },
+  { pattern: /(\w[\w\s-]*?)\s+is\s+the\s+meaning\s+of\s+(\w[\w\s-]*)/gi, relation: 'is_meaning_of' },
+];
+
+/**
+ * Relation pairs that are considered contradictory when one is asserted but
+ * the other is the known edge. The key is the asserted relation, the value
+ * is a set of known relations that would constitute a contradiction.
+ */
+const CONTRADICTORY_RELATIONS: Record<string, Set<string>> = {
+  depends_on: new Set(['contrasts_with', 'independent_of']),
+  contrasts_with: new Set(['depends_on', 'presupposes', 'explains', 'refines', 'completes']),
+  presupposes: new Set(['contrasts_with', 'independent_of']),
+  explains: new Set(['contrasts_with']),
+  refines: new Set(['contrasts_with']),
+  completes: new Set(['contrasts_with']),
+  operationalizes: new Set(['contrasts_with']),
+};
+
+/** Module-level edge cache — loaded once, reused across all calls */
+let _edgeCache: ReasoningEdge[] | null = null;
+let _edgeCachePath: string | null = null;
+let _edgeCacheMtimeMs = 0;
+
+/**
+ * Load reasoning edges from god-reason/reasoning.jsonl.
+ * Cached at module level with mtime invalidation (H-03).
+ *
+ * @param projectRoot - Root directory of the project (defaults to cwd)
+ * @returns Array of reasoning edges (empty if file missing or malformed)
+ */
+function loadReasoningEdges(projectRoot?: string): ReasoningEdge[] {
+  const root = projectRoot ?? process.cwd();
+  const edgePath = path.join(root, 'god-reason', 'reasoning.jsonl');
+
+  try {
+    if (!fs.existsSync(edgePath)) {
+      _edgeCache = [];
+      _edgeCachePath = edgePath;
+      _edgeCacheMtimeMs = 0;
+      return _edgeCache;
+    }
+
+    // H-03: Check mtime — return cache only if file unchanged
+    const mtimeMs = fs.statSync(edgePath).mtimeMs;
+    if (_edgeCache !== null && _edgeCachePath === edgePath && mtimeMs === _edgeCacheMtimeMs) {
+      return _edgeCache;
+    }
+
+    const raw = fs.readFileSync(edgePath, 'utf-8');
+    const edges: ReasoningEdge[] = [];
+
+    for (const line of raw.split('\n')) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      const edge = parseReasoningEdge(trimmed);
+      if (edge && edge.source && edge.relation && edge.target) {
+        // Lowercase source/relation/target for coherence matching
+        edge.source = edge.source.toLowerCase();
+        edge.relation = edge.relation.toLowerCase();
+        edge.target = edge.target.toLowerCase();
+        edges.push(edge);
+      }
+    }
+
+    _edgeCache = edges;
+    _edgeCachePath = edgePath;
+    _edgeCacheMtimeMs = mtimeMs;
+    return edges;
+  } catch {
+    // Graceful degradation — file unreadable
+    _edgeCache = [];
+    _edgeCachePath = edgePath;
+    _edgeCacheMtimeMs = 0;
+    return _edgeCache;
+  }
+}
+
+/**
+ * Build a lookup key for an edge (source → target)
+ */
+function edgeKey(source: string, target: string): string {
+  return `${source.toLowerCase()}::${target.toLowerCase()}`;
+}
+
+/**
+ * Normalize a concept term extracted from text for matching against edges.
+ * Strips articles, trims whitespace, lowercases, and replaces spaces with underscores.
+ */
+function normalizeConcept(raw: string): string {
+  return raw
+    .toLowerCase()
+    .replace(/^(the|a|an)\s+/i, '')
+    .trim()
+    .replace(/\s+/g, '_');
+}
+
+/**
+ * Validate generated text for coherence against known reasoning edges.
+ *
+ * Extracts relationship assertions from prose using pattern matching and checks
+ * each against the loaded edge graph. If the text asserts a relationship that
+ * contradicts a known edge (e.g., text says "A depends on B" but edges record
+ * "A contrasts_with B"), it is flagged as a contradiction.
+ *
+ * @param text - The generated text to validate
+ * @param projectRoot - Project root for locating reasoning.jsonl (defaults to cwd)
+ * @returns EdgeCoherenceResult with score and contradiction details
+ */
+export function validateEdgeCoherence(
+  text: string,
+  projectRoot?: string
+): EdgeCoherenceResult {
+  const edges = loadReasoningEdges(projectRoot);
+
+  if (edges.length === 0) {
+    return { score: 1.0, contradictions: [], assertionsFound: 0, edgesLoaded: 0 };
+  }
+
+  // Build lookup maps: (source::target) → edges grouped by key
+  const edgeMap = new Map<string, Set<string>>();
+  const edgeLookup = new Map<string, ReasoningEdge[]>();
+  for (const edge of edges) {
+    const key = edgeKey(edge.source, edge.target);
+    if (!edgeMap.has(key)) {
+      edgeMap.set(key, new Set());
+      edgeLookup.set(key, []);
+    }
+    edgeMap.get(key)!.add(edge.relation);
+    edgeLookup.get(key)!.push(edge);
+  }
+
+  // Extract assertions from text
+  interface Assertion {
+    source: string;
+    relation: string;
+    target: string;
+    rawMatch: string;
+  }
+
+  const assertions: Assertion[] = [];
+
+  for (const { pattern, relation } of RELATION_PATTERNS) {
+    // Reset regex state for each scan
+    pattern.lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(text)) !== null) {
+      const source = normalizeConcept(match[1]);
+      const target = normalizeConcept(match[2]);
+
+      // Only consider assertions where at least one term appears as an edge node
+      const key = edgeKey(source, target);
+      const reverseKey = edgeKey(target, source);
+      if (edgeMap.has(key) || edgeMap.has(reverseKey)) {
+        assertions.push({
+          source,
+          relation,
+          target,
+          rawMatch: match[0].trim(),
+        });
+      }
+    }
+  }
+
+  // Check each assertion for contradictions
+  const contradictions: EdgeContradiction[] = [];
+
+  for (const assertion of assertions) {
+    const key = edgeKey(assertion.source, assertion.target);
+    const knownRelations = edgeMap.get(key);
+
+    if (knownRelations) {
+      // Check if the asserted relation contradicts any known relation
+      const contradictorySet = CONTRADICTORY_RELATIONS[assertion.relation];
+      if (contradictorySet) {
+        const knownArr = Array.from(knownRelations);
+        for (let i = 0; i < knownArr.length; i++) {
+          const known = knownArr[i];
+          if (contradictorySet.has(known)) {
+            // Find the matching edge to extract derivation
+            const matchingEdge = (edgeLookup.get(key) ?? []).find(e => e.relation === known);
+            contradictions.push({
+              description: `text asserts "${assertion.rawMatch}" (${assertion.relation}) but edge records "${assertion.source} ${known} ${assertion.target}"`,
+              expectedRelation: `${assertion.source} ${known} ${assertion.target}`,
+              foundAssertion: assertion.rawMatch,
+              derivation: toDerivationTier(matchingEdge?.derivation),
+            });
+          }
+        }
+      }
+    }
+
+    // Also check the reverse direction — if text says "A depends_on B" but
+    // edges record "B contrasts_with A", that is still a contradiction
+    const reverseKey = edgeKey(assertion.target, assertion.source);
+    const reverseRelations = edgeMap.get(reverseKey);
+
+    if (reverseRelations) {
+      const contradictorySet = CONTRADICTORY_RELATIONS[assertion.relation];
+      if (contradictorySet) {
+        const reverseArr = Array.from(reverseRelations);
+        for (let i = 0; i < reverseArr.length; i++) {
+          const known = reverseArr[i];
+          if (contradictorySet.has(known)) {
+            // Find the matching edge to extract derivation
+            const matchingEdge = (edgeLookup.get(reverseKey) ?? []).find(e => e.relation === known);
+            contradictions.push({
+              description: `text asserts "${assertion.rawMatch}" (${assertion.relation}) but edge records "${assertion.target} ${known} ${assertion.source}"`,
+              expectedRelation: `${assertion.target} ${known} ${assertion.source}`,
+              foundAssertion: assertion.rawMatch,
+              derivation: toDerivationTier(matchingEdge?.derivation),
+            });
+          }
+        }
+      }
+    }
+  }
+
+  // Score: 1.0 if no contradictions, decreasing with more contradictions
+  // Each contradiction deducts 0.15, floor at 0.0
+  const penalty = Math.min(contradictions.length * 0.15, 1.0);
+  const score = Math.max(1.0 - penalty, 0.0);
+
+  return {
+    score,
+    contradictions,
+    assertionsFound: assertions.length,
+    edgesLoaded: edges.length,
+  };
+}
+
+/**
+ * Clear the module-level edge cache (useful for testing or after file updates)
+ */
+export function clearEdgeCache(): void {
+  _edgeCache = null;
+  _edgeCachePath = null;
+}
+
+// ============================================================================
+// Bbox Citation Page Validation
+// ============================================================================
+
+export interface BboxCitationValidationResult {
+  validatedCount: number;
+  mismatchCount: number;
+  mismatches: Array<{
+    citedPage: number;
+    availablePages: number[];
+    sourceTitle: string;
+    citationSnippet: string;
+  }>;
+  score: number;
+}
+
+/**
+ * Validate that cited page numbers in the text match pages available in the
+ * corpus chunks' bbox metadata. Catches phantom page citations that cannot
+ * be traced back to any ingested source material.
+ *
+ * @param text - Generated text containing citations with page numbers
+ * @param corpusChunks - Corpus chunks with metadata (title, bboxes, page_start/end)
+ * @returns Validation result with mismatch details and penalty score
+ */
+export function validateCitationPagesWithBbox(
+  text: string,
+  corpusChunks: Array<{ metadata: Record<string, any>; relevanceScore?: number }>
+): BboxCitationValidationResult {
+  const titlePageMap = new Map<string, Set<number>>();
+
+  // Build lookup: title -> available pages from bbox data
+  for (const chunk of corpusChunks) {
+    const title = (chunk.metadata.title_raw || chunk.metadata.title || '').toLowerCase();
+    if (!title) continue;
+
+    if (!titlePageMap.has(title)) titlePageMap.set(title, new Set());
+    const pages = titlePageMap.get(title)!;
+
+    // From bbox data
+    if (chunk.metadata.has_bboxes && chunk.metadata.bboxes) {
+      try {
+        const bboxes = typeof chunk.metadata.bboxes === 'string'
+          ? JSON.parse(chunk.metadata.bboxes) : chunk.metadata.bboxes;
+        for (const bb of bboxes) {
+          if (bb.page_num != null) pages.add(Number(bb.page_num));
+        }
+      } catch { /* skip malformed bbox */ }
+    }
+
+    // Fallback: page_start / page_end
+    if (chunk.metadata.page_start != null) pages.add(Number(chunk.metadata.page_start));
+    if (chunk.metadata.page_end != null) pages.add(Number(chunk.metadata.page_end));
+  }
+
+  // Extract citations from text
+  const citationRegex = /\(([^)]*?),\s*\*([^*]+)\*[^)]*?pp?\.\s*(\d+)(?:\s*[-\u2013]\s*(\d+))?\)/g;
+  let match;
+  let validatedCount = 0;
+  const mismatches: BboxCitationValidationResult['mismatches'] = [];
+
+  while ((match = citationRegex.exec(text)) !== null) {
+    const citedTitle = match[2].toLowerCase().trim();
+    const citedPage = parseInt(match[3], 10);
+    const snippet = match[0].slice(0, 80);
+
+    // Find matching title in our lookup
+    let matchedTitle: string | null = null;
+    const titleKeys = Array.from(titlePageMap.keys());
+    for (let ti = 0; ti < titleKeys.length; ti++) {
+      const title = titleKeys[ti];
+      if (title.includes(citedTitle) || citedTitle.includes(title)) {
+        matchedTitle = title;
+        break;
+      }
+    }
+
+    if (!matchedTitle) continue; // Title not in corpus, skip
+
+    const availablePages = titlePageMap.get(matchedTitle)!;
+    if (availablePages.size === 0) continue; // No page data
+
+    validatedCount++;
+    if (!availablePages.has(citedPage)) {
+      // Check range: page might be between page_start and page_end
+      const pagesArr = Array.from(availablePages).sort((a, b) => a - b);
+      const inRange = pagesArr.some((p, i) =>
+        i + 1 < pagesArr.length && citedPage >= p && citedPage <= pagesArr[i + 1]
+      );
+      if (!inRange) {
+        mismatches.push({
+          citedPage,
+          availablePages: pagesArr,
+          sourceTitle: citedTitle,
+          citationSnippet: snippet,
+        });
+      }
+    }
+  }
+
+  const mismatchCount = mismatches.length;
+  const score = Math.max(0, 1.0 - mismatchCount * 0.1);
+
+  return { validatedCount, mismatchCount, mismatches, score };
+}
+
+// ============================================================================
+// Endnote Leak Detection
+// ============================================================================
+
+/**
+ * Section delimiter patterns that mark the boundary between main body and
+ * endnotes/appendix sections. Content after the first match is preserved as-is.
+ */
+const ENDNOTE_SECTION_DELIMITERS = [
+  /^#+\s*ENDNOTES?\b/mi,
+  /^#+\s*VALIDATION\s+APPENDIX\b/mi,
+  /^#+\s*Notes\b/mi,
+  /^---\s*\n\s*##\s*Endnotes?\b/mi,
+];
+
+/**
+ * Strip endnote reference artifacts that leak into the main text body during
+ * multi-step generation.
+ *
+ * Targets three categories of leaks:
+ *   1. Explicit endnote markers: [EN1], [EN2], etc.
+ *   2. Standalone superscript unicode numbers: superscript digits not part of words
+ *   3. Standalone numeric references: [1], [2], etc. that are NOT part of
+ *      citation parentheticals like (Author, *Title*, p. 1)
+ *
+ * Only the main body (before the first endnote/appendix delimiter) is cleaned.
+ * The endnotes section itself is left untouched.
+ *
+ * @param text - Full document text (may include endnotes section)
+ * @returns Cleaned text with endnote leak artifacts removed
+ */
+export function stripEndnoteLeaks(text: string): string {
+  if (!text) return text;
+
+  // Find the earliest section delimiter to split main body from endnotes
+  let splitIndex = text.length;
+  for (const delimiter of ENDNOTE_SECTION_DELIMITERS) {
+    const match = delimiter.exec(text);
+    if (match && match.index < splitIndex) {
+      splitIndex = match.index;
+    }
+  }
+
+  let mainBody = text.substring(0, splitIndex);
+  const endnotesSection = text.substring(splitIndex);
+
+  // 1. Remove explicit endnote markers: [EN1], [EN2], [EN14], etc.
+  mainBody = mainBody.replace(/\[EN\d+\]/g, '');
+
+  // 2. Remove standalone superscript unicode digits that look like endnote markers.
+  //    Only match when preceded by punctuation, closing quotes/brackets, or whitespace
+  //    (NOT directly after word characters, to avoid stripping legitimate uses like
+  //    chemical formulas or mathematical notation).
+  //    Superscript digits: \u2070(0), \u00B9(1), \u00B2(2), \u00B3(3), \u2074-\u2079(4-9)
+  const superscriptDigits = '[\u2070\u00B9\u00B2\u00B3\u2074\u2075\u2076\u2077\u2078\u2079]';
+  const superscriptPattern = new RegExp(
+    `(?<=[.,;:!?)"'\\]\\*\\u201D\\u2019])${superscriptDigits}+(?=\\s|[.,;:!?\\-\\u2014]|$)`,
+    'gm'
+  );
+  mainBody = mainBody.replace(superscriptPattern, '');
+
+  // 3. Remove standalone numeric references [1], [2], etc. that are NOT part of
+  //    citation format. We consider a reference "standalone" if it is NOT immediately
+  //    preceded by text patterns like "p. ", "pp. ", ", " inside a parenthetical,
+  //    or other citation-like context.
+  //
+  //    Strategy: match [N] where N is 1-3 digits, but only if the preceding context
+  //    does NOT look like a page reference or citation continuation.
+  mainBody = mainBody.replace(
+    /(?<!\bp\.?\s*)(?<!\bpp\.?\s*)(?<!,\s*)(?<![\w*])\[(\d{1,3})\](?!\()/g,
+    (match, digits, offset) => {
+      // Additional safety check: if this appears inside a parenthetical citation
+      // like (Author, *Title*, [1]), preserve it.
+      // Look back up to 80 chars for an opening parenthesis without a closing one.
+      const lookback = mainBody.substring(Math.max(0, offset - 80), offset);
+      const lastOpen = lookback.lastIndexOf('(');
+      const lastClose = lookback.lastIndexOf(')');
+      if (lastOpen > lastClose) {
+        // We're inside a parenthetical — this might be a legitimate citation reference
+        return match;
+      }
+
+      // If the digit is very large (> 50), it's unlikely to be an endnote marker;
+      // could be a legitimate reference like "[100]" in a list or code.
+      const num = parseInt(digits, 10);
+      if (num > 50) {
+        return match;
+      }
+
+      return '';
+    }
+  );
+
+  // Clean up artifacts from removal: double spaces, spaces before punctuation
+  mainBody = mainBody.replace(/  +/g, ' ');
+  mainBody = mainBody.replace(/ ([.,;:!?])/g, '$1');
+  // Remove lines that became empty after stripping (but preserve intentional blank lines)
+  mainBody = mainBody.replace(/\n[ \t]+\n/g, '\n\n');
+
+  return mainBody + endnotesSection;
+}
+
+// ============================================================================
 // Quality Integration Class
 // ============================================================================
 
@@ -237,6 +738,74 @@ export class QualityIntegration {
       // Log initial quality metrics
       this.logQualityMetrics(initialResult, options.trajectoryId, 0);
 
+      // Run edge coherence check — provenance-tiered enforcement
+      let edgeRevisionInstructions: string[] = [];
+      try {
+        const edgeResult = validateEdgeCoherence(content);
+        if (edgeResult.edgesLoaded > 0 && edgeResult.contradictions.length > 0) {
+          for (const contradiction of edgeResult.contradictions) {
+            if (contradiction.derivation === 'manual' || contradiction.derivation === 'bridge') {
+              // HARD FAILURE — manual/bridge edges are hand-verified gold standard
+              edgeRevisionInstructions.push(
+                `MANDATORY CORRECTION: The text contradicts a verified scholarly relationship: ${contradiction.description}. ` +
+                `The corpus analysis establishes: ${contradiction.expectedRelation}. Amend the relevant passage.`
+              );
+              console.error(`[QualityIntegration] HARD edge contradiction (${contradiction.derivation}): ${contradiction.description}`);
+            } else if (contradiction.derivation === 'llm') {
+              // SOFT FAILURE — 0.10 penalty per LLM contradiction to factual-accuracy
+              console.error(`[QualityIntegration] Soft edge contradiction (llm): ${contradiction.description}`);
+            } else {
+              // ADVISORY — Phase 7 auto-derived edges are heuristic, log only
+              console.error(`[QualityIntegration] Advisory edge note (${contradiction.derivation}): ${contradiction.description}`);
+            }
+          }
+
+          // Apply LLM-edge soft penalty
+          const llmContradictions = edgeResult.contradictions.filter(c => c.derivation === 'llm').length;
+          if (llmContradictions > 0) {
+            const penalty = Math.min(0.30, llmContradictions * 0.10);
+            for (const sr of initialResult.stageResults) {
+              if (sr.stageName === 'factual-accuracy') {
+                (sr as any).score = Math.max(0, sr.score - penalty);
+              }
+            }
+            console.error(`[QualityIntegration] LLM-edge penalty: ${penalty.toFixed(2)} applied to factual-accuracy`);
+          }
+
+          // If manual/bridge contradictions found, force revision
+          if (edgeRevisionInstructions.length > 0) {
+            (initialResult as any).passed = false;
+            (initialResult as any).edgeRevisionInstructions = edgeRevisionInstructions;
+          }
+        }
+      } catch {
+        // Edge coherence is optional — never block the pipeline on infrastructure failure
+      }
+
+      // Bbox citation page validation
+      try {
+        if (options.corpusChunks && options.corpusChunks.length > 0) {
+          const bboxResult = validateCitationPagesWithBbox(content, options.corpusChunks as any);
+          if (bboxResult.mismatchCount > 0) {
+            const penalty = Math.min(0.30, bboxResult.mismatchCount * 0.1);
+            for (const sr of initialResult.stageResults) {
+              if (sr.stageName === 'citation-completeness') {
+                (sr as any).score = Math.max(0, sr.score - penalty);
+              }
+            }
+            console.error(
+              `[QualityIntegration] Bbox validation: ${bboxResult.mismatchCount} page mismatch(es), ` +
+              `penalty=${penalty.toFixed(2)} on citation-completeness`
+            );
+            for (const m of bboxResult.mismatches) {
+              console.error(`  - cited p.${m.citedPage} in "${m.sourceTitle}", available: [${m.availablePages.slice(0, 10).join(', ')}]`);
+            }
+          }
+        }
+      } catch {
+        // Bbox validation is optional
+      }
+
       // If already passing, return immediately
       if (initialResult.passed) {
         return this.createSuccessResult(content, initialResult, 0);
@@ -248,6 +817,7 @@ export class QualityIntegration {
       let iteration = 0;
       const threshold = options.qualityThreshold ?? QualityIntegration.DEFAULT_THRESHOLD;
       const maxIterations = options.maxRevisions ?? QualityIntegration.DEFAULT_MAX_REVISIONS;
+      const preRevisionContent = content;
 
       // Reset human verifier for new write operation
       this.humanVerifier.resetPrompts();
@@ -311,12 +881,19 @@ export class QualityIntegration {
         };
 
         // Build revision prompt
-        const revisionPrompt = this.buildRevisionPrompt(
+        let revisionPrompt = this.buildRevisionPrompt(
           revisionRequest,
           options.topic,
           options.style,
           options.format
         );
+
+        // Prepend mandatory edge corrections if present
+        if ((currentResult as any).edgeRevisionInstructions?.length > 0) {
+          revisionPrompt = `## MANDATORY EDGE CORRECTIONS\n\n` +
+            (currentResult as any).edgeRevisionInstructions.join('\n') + '\n\n' +
+            revisionPrompt;
+        }
 
         // Execute revision via universal agent
         const revisedContent = await this.executeRevision(revisionPrompt, options);
@@ -339,6 +916,16 @@ export class QualityIntegration {
         currentResult = newResult;
       }
 
+      // Max-retry exhaustion: revert to attempt 0 if manual edge contradictions unresolved
+      if ((currentResult as any).edgeRevisionInstructions?.length > 0 && !currentResult.passed) {
+        currentContent = preRevisionContent;
+        // Inject HTML comments at contradiction sites
+        for (const instruction of (currentResult as any).edgeRevisionInstructions) {
+          currentContent += `\n\n<!-- EDGE CONTRADICTION UNRESOLVED: ${instruction} -->\n`;
+        }
+        console.error(`[QualityIntegration] Max-retry exhaustion: reverted to attempt 0 with ${(currentResult as any).edgeRevisionInstructions.length} unresolved contradiction(s)`);
+      }
+
       // Return final result
       return {
         content: currentContent,
@@ -350,6 +937,11 @@ export class QualityIntegration {
         wasRevised: iteration > 0,
       };
     } catch (error) {
+      // Fix 72: Log full error details — previously silent, making 0.5 scores undiagnosable
+      console.error('[QualityIntegration] Gauntlet threw error:', error);
+      if (error instanceof Error) {
+        console.error('[QualityIntegration] Stack:', error.stack);
+      }
       // Graceful degradation - if quality gauntlet fails, return original content
       this.logError('Quality validation failed, using original content', error);
       return this.createErrorResult(content, error);
@@ -372,6 +964,23 @@ export class QualityIntegration {
       this.logError('Quality evaluation failed', error);
       return this.createDefaultMetrics();
     }
+  }
+
+  /**
+   * Validate generated text for coherence against known reasoning edges.
+   *
+   * This is a lightweight, non-LLM check that pattern-matches relationship
+   * assertions in the text (e.g., "X depends on Y") and flags any that
+   * contradict edges in god-reason/reasoning.jsonl.
+   *
+   * Can be called independently of the main gauntlet flow.
+   *
+   * @param text - Generated text to check
+   * @param projectRoot - Project root for locating reasoning.jsonl
+   * @returns EdgeCoherenceResult with score and contradiction list
+   */
+  validateEdgeCoherence(text: string, projectRoot?: string): EdgeCoherenceResult {
+    return validateEdgeCoherence(text, projectRoot);
   }
 
   // ============================================================================

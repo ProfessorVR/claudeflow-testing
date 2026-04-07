@@ -16,6 +16,10 @@
  * - Diversity boosting
  */
 
+import { readFile } from 'node:fs/promises';
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
 import {
   ContextChunk,
   RetrievalOptions,
@@ -28,7 +32,13 @@ import {
   RelatedChunksOptions,
   Logger,
   stderrLogger,
+  KnowledgeUnit,
+  ReasoningEdge,
+  parseKnowledgeUnit,
+  parseReasoningEdge,
 } from './types.js';
+
+// KnowledgeUnit and ReasoningEdge are imported from ./types.js (shared Zod-validated schemas)
 
 export class SmartRetrievalLayer {
   private config: SmartRetrievalConfig;
@@ -44,6 +54,16 @@ export class SmartRetrievalLayer {
   private COLLECTION_ID: string;
   private collectionResolved = false;
   private readonly logger: Logger;
+
+  // Knowledge graph cache with mtime invalidation (H-03)
+  private kgKUs: KnowledgeUnit[] | null = null;
+  private kgEdges: ReasoningEdge[] | null = null;
+  private kgLoaded = false;
+  private kgKUMtimeMs = 0;
+  private kgEdgeMtimeMs = 0;
+
+  // Dynamic whitelist: canonical ontology terms exempt from stopword filtering (C-03)
+  private protectedTerms: Set<string> | null = null;
 
   constructor(config: SmartRetrievalConfig = {}) {
     this.logger = config.logger || stderrLogger;
@@ -174,6 +194,8 @@ export class SmartRetrievalLayer {
       diversityBoost: options.diversityBoost ?? true,
       rerank: options.rerank ?? false,
       whereFilter: options.whereFilter || {},
+      boostWithKG: options.boostWithKG ?? false,
+      maxHops: Math.min(options.maxHops ?? 1, 2),
     };
 
     // Check cache
@@ -213,8 +235,16 @@ export class SmartRetrievalLayer {
         : diverse;
       this.logger.info(`[SmartRetrievalLayer] Step 4 after rerank: ${reranked.length}`);
 
+      // Step 4b: Knowledge graph boosting (if enabled)
+      const kgBoosted = opts.boostWithKG
+        ? await this.boostWithKnowledgeGraph(reranked, query, opts.maxHops)
+        : reranked;
+      if (opts.boostWithKG) {
+        this.logger.info(`[SmartRetrievalLayer] Step 4b after KG boost: ${kgBoosted.length}`);
+      }
+
       // Step 5: Limit to max chunks
-      const limited = reranked.slice(0, opts.maxChunks);
+      const limited = kgBoosted.slice(0, opts.maxChunks);
       this.logger.info(`[SmartRetrievalLayer] Step 5 after limit (${opts.maxChunks}): ${limited.length}`);
 
       // Step 6: Expand with page context if requested
@@ -467,6 +497,316 @@ export class SmartRetrievalLayer {
   }
 
   // ============================================================
+  // KNOWLEDGE GRAPH BOOSTING
+  // ============================================================
+
+  /**
+   * Boost chunk relevance scores using Knowledge Units and reasoning edges.
+   *
+   * 1. For each chunk, compute word overlap with KU claims. Chunks that
+   *    overlap significantly get a 1.2x score boost.
+   * 2. Collect concept terms from matched edges (source/target) and return
+   *    them as expansion candidates for follow-up retrieval.
+   *
+   * The method is additive — it never removes chunks, only re-scores them.
+   * If JSONL files are missing or malformed, it silently returns the
+   * original chunks unchanged.
+   */
+  private async boostWithKnowledgeGraph(
+    chunks: ContextChunk[],
+    topic: string,
+    maxHops?: number
+  ): Promise<ContextChunk[]> {
+    if (chunks.length === 0) return chunks;
+
+    try {
+      await this.loadKnowledgeGraph();
+
+      const kus = this.kgKUs;
+      const edges = this.kgEdges;
+      if (!kus || kus.length === 0) return chunks;
+
+      // Tokenize topic once
+      const topicWords = this.tokenize(topic);
+
+      // --- Phase 1: Score boost for KU-matching chunks ---
+      const KU_BOOST_FACTOR = 1.2;
+      const KU_OVERLAP_THRESHOLD = 0.15; // 15% word overlap with a KU claim
+
+      const boosted = chunks.map((chunk) => {
+        const chunkWords = this.tokenize(chunk.content);
+        let bestOverlap = 0;
+
+        for (const ku of kus) {
+          const claimWords = ku._claimWords!;
+          const overlap = this.setOverlap(chunkWords, claimWords);
+          if (overlap > bestOverlap) {
+            bestOverlap = overlap;
+          }
+        }
+
+        if (bestOverlap >= KU_OVERLAP_THRESHOLD) {
+          return {
+            ...chunk,
+            relevanceScore: Math.min(1.0, chunk.relevanceScore * KU_BOOST_FACTOR),
+          };
+        }
+        return chunk;
+      });
+
+      // --- Phase 2: Edge expansion — find connected concepts ---
+      if (!edges || edges.length === 0) {
+        boosted.sort((a, b) => b.relevanceScore - a.relevanceScore);
+        return boosted;
+      }
+
+      // Collect concepts mentioned in the topic
+      // C-03 fix: also check against raw topic string as fallback for multi-word
+      // concepts or terms that survive as ontology terms but get filtered by tokenize()
+      const rawTopicLower = topic.toLowerCase();
+      const topicConcepts = new Set<string>();
+      for (const edge of edges) {
+        const src = edge.source.toLowerCase();
+        const tgt = edge.target.toLowerCase();
+        if (topicWords.has(src) || rawTopicLower.includes(src)) topicConcepts.add(src);
+        if (topicWords.has(tgt) || rawTopicLower.includes(tgt)) topicConcepts.add(tgt);
+      }
+
+      // Traverse one hop: if topic mentions concept X, collect all Y where X→Y or Y→X
+      const expansionConcepts = new Set<string>();
+      for (const concept of topicConcepts) {
+        for (const edge of edges) {
+          const src = edge.source.toLowerCase();
+          const tgt = edge.target.toLowerCase();
+          if (src === concept && !topicConcepts.has(tgt)) {
+            expansionConcepts.add(tgt);
+          }
+          if (tgt === concept && !topicConcepts.has(src)) {
+            expansionConcepts.add(src);
+          }
+        }
+      }
+
+      // Apply a smaller boost (1.1x) to chunks that mention expansion concepts
+      const EDGE_BOOST_FACTOR = 1.1;
+      const EDGE_HOP2_BOOST = 1.05;
+
+      if (expansionConcepts.size > 0) {
+        for (let i = 0; i < boosted.length; i++) {
+          const chunkLower = boosted[i].content.toLowerCase();
+          for (const concept of expansionConcepts) {
+            if (chunkLower.includes(concept)) {
+              boosted[i] = {
+                ...boosted[i],
+                relevanceScore: Math.min(1.0, boosted[i].relevanceScore * EDGE_BOOST_FACTOR),
+              };
+              break; // one boost per chunk from edge expansion
+            }
+          }
+        }
+
+        this.logger.info(
+          `[SmartRetrievalLayer] KG boost: ${topicConcepts.size} topic concepts, ${expansionConcepts.size} expansion concepts`
+        );
+      }
+
+      // --- Phase 2b: 2-hop expansion (if maxHops >= 2) ---
+      if ((maxHops || 1) >= 2 && expansionConcepts.size > 0) {
+        const hop2Concepts = new Set<string>();
+        for (const concept of expansionConcepts) {
+          for (const edge of edges) {
+            const src = (edge.source || '').toLowerCase();
+            const tgt = (edge.target || '').toLowerCase();
+            if (src === concept && !topicConcepts.has(tgt) && !expansionConcepts.has(tgt)) {
+              hop2Concepts.add(tgt);
+            }
+            if (tgt === concept && !topicConcepts.has(src) && !expansionConcepts.has(src)) {
+              hop2Concepts.add(src);
+            }
+          }
+        }
+
+        // Apply 1.05x boost for 2-hop concepts
+        if (hop2Concepts.size > 0) {
+          for (let i = 0; i < boosted.length; i++) {
+            const chunkLower = boosted[i].content.toLowerCase();
+            for (const concept of hop2Concepts) {
+              if (chunkLower.includes(concept)) {
+                boosted[i] = {
+                  ...boosted[i],
+                  relevanceScore: Math.min(1.0, boosted[i].relevanceScore * EDGE_HOP2_BOOST),
+                };
+                break; // one boost per chunk from 2-hop expansion
+              }
+            }
+          }
+
+          this.logger.info(
+            `[SmartRetrievalLayer] KG 2-hop boost: ${hop2Concepts.size} hop-2 concepts`
+          );
+        }
+      }
+
+      // Re-sort by boosted score
+      boosted.sort((a, b) => b.relevanceScore - a.relevanceScore);
+      return boosted;
+    } catch (error) {
+      this.logger.warn(`[SmartRetrievalLayer] KG boost failed, returning original chunks: ${error}`);
+      return chunks;
+    }
+  }
+
+  /**
+   * Load knowledge.jsonl and reasoning.jsonl, caching in memory.
+   * Re-reads if file mtime has changed since last load (H-03).
+   * Silently skips if files are missing.
+   */
+  private async loadKnowledgeGraph(): Promise<void> {
+    // Resolve paths relative to project root (cwd)
+    const kuPath = resolve(process.cwd(), 'god-learn', 'knowledge.jsonl');
+    const edgePath = resolve(process.cwd(), 'god-reason', 'reasoning.jsonl');
+
+    // H-03: Check mtimes — skip reload if files haven't changed
+    if (this.kgLoaded) {
+      try {
+        const { stat } = await import('node:fs/promises');
+        const [kuStat, edgeStat] = await Promise.all([
+          stat(kuPath).catch(() => null),
+          stat(edgePath).catch(() => null),
+        ]);
+        const kuMtime = kuStat?.mtimeMs ?? 0;
+        const edgeMtime = edgeStat?.mtimeMs ?? 0;
+        if (kuMtime === this.kgKUMtimeMs && edgeMtime === this.kgEdgeMtimeMs) {
+          return; // No changes
+        }
+        this.logger.info('[SmartRetrievalLayer] KG files changed on disk, reloading');
+      } catch {
+        return; // Can't stat, keep existing cache
+      }
+    }
+    this.kgLoaded = true;
+
+    // Load KUs (Zod-validated at parse boundary)
+    try {
+      const kuRaw = await readFile(kuPath, 'utf-8');
+      const lines = kuRaw.split('\n').filter((line) => line.trim().length > 0);
+      let dropped = 0;
+      this.kgKUs = [];
+      for (const line of lines) {
+        const ku = parseKnowledgeUnit(line);
+        if (ku) {
+          ku._claimWords = this.tokenize(ku.claim);
+          this.kgKUs.push(ku);
+        } else {
+          dropped++;
+        }
+      }
+      const { stat } = await import('node:fs/promises');
+      this.kgKUMtimeMs = (await stat(kuPath).catch(() => null))?.mtimeMs ?? 0;
+      this.logger.info(`[SmartRetrievalLayer] Loaded ${this.kgKUs.length} KUs from ${kuPath}${dropped ? ` (${dropped} failed validation)` : ''}`);
+    } catch {
+      this.logger.info('[SmartRetrievalLayer] knowledge.jsonl not found, KU boosting disabled');
+      this.kgKUs = [];
+      this.kgKUMtimeMs = 0;
+    }
+
+    // Load edges (Zod-validated at parse boundary)
+    try {
+      const edgeRaw = await readFile(edgePath, 'utf-8');
+      const lines = edgeRaw.split('\n').filter((line) => line.trim().length > 0);
+      let dropped = 0;
+      this.kgEdges = [];
+      for (const line of lines) {
+        const edge = parseReasoningEdge(line);
+        if (edge) {
+          this.kgEdges.push(edge);
+        } else {
+          dropped++;
+        }
+      }
+      const { stat } = await import('node:fs/promises');
+      this.kgEdgeMtimeMs = (await stat(edgePath).catch(() => null))?.mtimeMs ?? 0;
+      this.logger.info(`[SmartRetrievalLayer] Loaded ${this.kgEdges.length} edges from ${edgePath}${dropped ? ` (${dropped} failed validation)` : ''}`);
+    } catch {
+      this.logger.info('[SmartRetrievalLayer] reasoning.jsonl not found, edge expansion disabled');
+      this.kgEdges = [];
+      this.kgEdgeMtimeMs = 0;
+    }
+  }
+
+  /**
+   * Load canonical ontology terms from compiled-index.json.
+   * These terms are exempt from stopword filtering (fixes C-03: "Being" etc.).
+   */
+  private loadProtectedTerms(): Set<string> {
+    if (this.protectedTerms) return this.protectedTerms;
+    this.protectedTerms = new Set<string>();
+    try {
+      const indexPath = resolve(process.cwd(), 'corpus', 'index', 'compiled-index.json');
+      if (!existsSync(indexPath)) return this.protectedTerms;
+      const index = JSON.parse(readFileSync(indexPath, 'utf-8'));
+      for (const node of index.ontologyNodes ?? []) {
+        for (const field of ['name', 'transliteration', 'greek'] as const) {
+          const val = node[field];
+          if (val && typeof val === 'string') this.protectedTerms.add(val.trim().toLowerCase());
+        }
+        for (const alias of node.aliases ?? []) {
+          if (alias && typeof alias === 'string') this.protectedTerms.add(alias.trim().toLowerCase());
+        }
+      }
+      // Also add canonicalTerms if present
+      for (const term of index.canonicalTerms ?? []) {
+        if (term && typeof term === 'string') this.protectedTerms.add(term.trim().toLowerCase());
+      }
+    } catch {
+      // Non-fatal: whitelist just stays empty
+    }
+    return this.protectedTerms;
+  }
+
+  /**
+   * Tokenize text into a set of lowercase words, filtering stopwords and short tokens.
+   * Ontology terms from compiled-index.json are exempt from stopword filtering (C-03).
+   * Regex includes Latin, German, and Greek Unicode blocks (H-12).
+   */
+  private tokenize(text: string): Set<string> {
+    const STOPWORDS = new Set([
+      'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+      'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+      'should', 'may', 'might', 'shall', 'can', 'not', 'no', 'nor', 'and',
+      'or', 'but', 'if', 'then', 'than', 'that', 'this', 'these', 'those',
+      'it', 'its', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by',
+      'from', 'as', 'into', 'about', 'between', 'through', 'after', 'before',
+      'above', 'below', 'up', 'down', 'out', 'off', 'over', 'under',
+    ]);
+    const protected_ = this.loadProtectedTerms();
+    const words = text.toLowerCase().split(/\s+/);
+    const result = new Set<string>();
+    for (const w of words) {
+      // H-12: Include Greek (U+0370-03FF) and Extended Greek (U+1F00-1FFF) Unicode blocks
+      const cleaned = w.replace(/[^a-z\u00e4\u00f6\u00fc\u00df\u0370-\u03ff\u1f00-\u1fff\-]/g, '');
+      if (cleaned.length >= 3 && (!STOPWORDS.has(cleaned) || protected_.has(cleaned))) {
+        result.add(cleaned);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Compute overlap ratio: |A ∩ B| / |B| (fraction of B's words found in A).
+   * Uses the smaller set (B = claim words) as denominator so short claims
+   * can still match long chunk texts.
+   */
+  private setOverlap(chunkWords: Set<string>, claimWords: Set<string>): number {
+    if (claimWords.size === 0) return 0;
+    let count = 0;
+    for (const w of claimWords) {
+      if (chunkWords.has(w)) count++;
+    }
+    return count / claimWords.size;
+  }
+
+  // ============================================================
   // PRIVATE METHODS
   // ============================================================
 
@@ -570,6 +910,9 @@ export class SmartRetrievalLayer {
             chunk_index: metadata.chunk_index,
             path_rel: metadata.path_rel,
             content_type: metadata.content_type,
+            has_bboxes: metadata.has_bboxes ?? false,
+            source_method: metadata.source_method ?? '',
+            bboxes: metadata.has_bboxes ? (metadata.bboxes ?? '') : '',
           },
           relevanceScore,
         });
@@ -650,6 +993,9 @@ export class SmartRetrievalLayer {
               page_start: metadata.page_start || 0,
               page_end: metadata.page_end || 0,
               collection: metadata.collection || 'knowledge_chunks',
+              has_bboxes: metadata.has_bboxes ?? false,
+              source_method: metadata.source_method ?? '',
+              bboxes: metadata.has_bboxes ? (metadata.bboxes ?? '') : '',
             },
             relevanceScore,
           });

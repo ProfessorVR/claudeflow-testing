@@ -19,10 +19,25 @@ export type PipelineVersion = 'legacy' | 'v2';
 
 export function getPipelineVersion(options: { pipelineVersion?: PipelineVersion }): PipelineVersion {
   // CLI flag overrides env var
-  if (options.pipelineVersion) return options.pipelineVersion;
+  if (options.pipelineVersion) {
+    if (options.pipelineVersion === 'legacy') {
+      process.stderr.write(
+        '[DEPRECATION] --pipeline-version legacy is deprecated and will be removed. ' +
+        'The v2 staged pipeline (RetrievalStage → DraftingStage → ValidationStage) is now the default.\n'
+      );
+    }
+    return options.pipelineVersion;
+  }
   const env = process.env.WRITING_PIPELINE_VERSION;
+  if (env === 'legacy') {
+    process.stderr.write(
+      '[DEPRECATION] WRITING_PIPELINE_VERSION=legacy is deprecated. ' +
+      'Remove this env var to use the v2 pipeline (now default).\n'
+    );
+    return 'legacy';
+  }
   if (env === 'v2') return 'v2';
-  return 'legacy';
+  return 'v2';
 }
 
 // ============================================================
@@ -91,6 +106,9 @@ export interface RetrievalResult {
   primaryAuthors: string[];
   knowledgeUnits: string[];
   structuralEdges: string[];
+  ontologyLines: string[];
+  hookLines: string[];
+  tensionLines: string[];
   stylePrompt: string;
   sectionConstraints: string[];
   subsections: string[];

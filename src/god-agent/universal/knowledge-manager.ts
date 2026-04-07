@@ -505,4 +505,101 @@ export class KnowledgeManager {
   async updateUsageStats(patternId: string): Promise<void> {
     this.deps.log(`Pattern accessed: ${patternId}`);
   }
+
+  // =========================================================================
+  // JSONL Read-Through Adapter (Sprint 2 Task 7)
+  // See docs/research/ku-reasoning-edge-system-analysis.md §7.8
+  // Bridges the JSONL-backed KU store (god-learn/knowledge.jsonl) with
+  // the in-memory KnowledgeManager so both systems share the same data.
+  // =========================================================================
+
+  /** KUs loaded from JSONL backing store */
+  private jsonlKUs: Array<{ id: string; claim: string; domain: string; source: string; confidence: number }> = [];
+  private jsonlLoaded = false;
+
+  /**
+   * Load KUs from the canonical JSONL file into memory.
+   * Called lazily on first query that benefits from JSONL data.
+   */
+  async loadFromJSONL(jsonlPath?: string): Promise<number> {
+    const fs = await import('fs');
+    const path = await import('path');
+    const kuPath = jsonlPath ?? path.join(process.cwd(), 'god-learn', 'knowledge.jsonl');
+
+    if (!fs.existsSync(kuPath)) {
+      this.deps.log(`JSONL adapter: No knowledge.jsonl found at ${kuPath}`);
+      return 0;
+    }
+
+    const lines = fs.readFileSync(kuPath, 'utf-8').split('\n').filter(Boolean);
+    this.jsonlKUs = [];
+
+    const confidenceMap: Record<string, number> = { high: 0.9, medium: 0.6, low: 0.3 };
+    for (const line of lines) {
+      try {
+        const obj = JSON.parse(line);
+        if (obj && obj.id && obj.claim) {
+          const rawConf = obj.confidence;
+          const confidence = typeof rawConf === 'number' ? rawConf
+            : typeof rawConf === 'string' ? (confidenceMap[rawConf.toLowerCase()] ?? 0.5)
+            : 0.5;
+          this.jsonlKUs.push({
+            id: obj.id,
+            claim: obj.claim,
+            domain: obj.domain || 'unknown',
+            source: obj.source || (obj.sources?.[0]?.author) || 'corpus',
+            confidence,
+          });
+        }
+      } catch {
+        // skip malformed lines
+      }
+    }
+
+    this.jsonlLoaded = true;
+    this.deps.log(`JSONL adapter: Loaded ${this.jsonlKUs.length} KUs from ${kuPath}`);
+    return this.jsonlKUs.length;
+  }
+
+  /**
+   * Get all KUs from the JSONL backing store.
+   * Loads lazily on first call.
+   */
+  async getJSONLKnowledgeUnits(): Promise<Array<{ id: string; claim: string; domain: string; source: string; confidence: number }>> {
+    if (!this.jsonlLoaded) {
+      await this.loadFromJSONL();
+    }
+    return [...this.jsonlKUs];
+  }
+
+  /**
+   * Flush a new knowledge entry to the JSONL backing store.
+   * Called after storeKnowledge() to keep both systems in sync.
+   */
+  async flushToJSONL(entry: { id: string; claim: string; domain: string; source?: string; confidence?: number }, jsonlPath?: string): Promise<void> {
+    const fs = await import('fs');
+    const path = await import('path');
+    const kuPath = jsonlPath ?? path.join(process.cwd(), 'god-learn', 'knowledge.jsonl');
+
+    const jsonlEntry = {
+      id: entry.id,
+      claim: entry.claim,
+      domain: entry.domain,
+      sources: [{ chunk_id: null, doc_id: null, pages: [], author: entry.source || 'unknown' }],
+      confidence: entry.confidence ?? 0.5,
+      created_from_query: 'knowledge_manager_sync',
+    };
+
+    fs.appendFileSync(kuPath, JSON.stringify(jsonlEntry) + '\n', 'utf-8');
+    this.deps.log(`JSONL adapter: Flushed KU ${entry.id} to ${kuPath}`);
+
+    // Also update in-memory cache
+    this.jsonlKUs.push({
+      id: entry.id,
+      claim: entry.claim,
+      domain: entry.domain,
+      source: entry.source || 'unknown',
+      confidence: entry.confidence ?? 0.5,
+    });
+  }
 }

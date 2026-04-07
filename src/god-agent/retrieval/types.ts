@@ -4,6 +4,101 @@
  * Phase 1 of RAG Integration - Core retrieval types
  */
 
+import { z } from 'zod';
+
+// ============================================================================
+// JSONL Schema Validation (Zod)
+// Runtime-validated schemas for data crossing the Python→TypeScript boundary.
+// These are the single source of truth for KnowledgeUnit and ReasoningEdge shapes.
+// ============================================================================
+
+/** Normalize string confidence ("high"/"medium"/"low") to numeric 0-1. */
+const confidenceToNumber = z.union([
+  z.number(),
+  z.string().transform((s) => {
+    const map: Record<string, number> = { high: 0.9, medium: 0.6, low: 0.3 };
+    return map[s.toLowerCase()] ?? 0.5;
+  }),
+]).pipe(z.number());
+
+const KnowledgeUnitSourceSchema = z.object({
+  author: z.string(),
+  title: z.string().optional(),
+  path_rel: z.string().optional(),
+  pages: z.union([z.string(), z.array(z.number())]).optional(),
+  chunk_id: z.string().nullable().optional(),
+  has_bboxes: z.boolean().optional(),
+  source_method: z.string().optional(),
+  bboxes: z.string().optional(),
+}).passthrough();
+
+const KnowledgeUnitSchema = z.object({
+  id: z.string(),
+  claim: z.string(),
+  sources: z.array(KnowledgeUnitSourceSchema).default([]),
+  confidence: confidenceToNumber,
+  domain: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  created_from_query: z.string().optional(),
+}).passthrough();
+
+const ReasoningEdgeSchema = z.object({
+  id: z.string(),
+  source: z.string(),
+  relation: z.string(),
+  target: z.string(),
+  domain: z.string().optional(),
+  confidence: confidenceToNumber.optional(),
+  pipeline: z.string().optional(),
+  units: z.string().optional(),
+  chapter: z.string().optional(),
+  knowledge_ids: z.array(z.string()).optional(),
+  corroboration_score: z.number().optional(),
+  generation_epoch: z.number().optional(),
+  derivation: z.string().optional(),
+  corroboration_method: z.string().optional(),
+  status: z.string().optional(),
+}).passthrough();
+
+/** Parsed, runtime-validated KnowledgeUnit with numeric confidence. */
+export type KnowledgeUnit = z.infer<typeof KnowledgeUnitSchema> & {
+  /** Lowercase claim words, computed after parse (not from JSONL). */
+  _claimWords?: Set<string>;
+};
+
+/** Parsed, runtime-validated ReasoningEdge with numeric confidence. */
+export type ReasoningEdge = z.infer<typeof ReasoningEdgeSchema>;
+
+/**
+ * Parse a single JSONL line into a KnowledgeUnit.
+ * Returns null (with stderr warning) if the line fails validation.
+ */
+export function parseKnowledgeUnit(line: string): KnowledgeUnit | null {
+  try {
+    const raw = JSON.parse(line);
+    return KnowledgeUnitSchema.parse(raw);
+  } catch (e) {
+    const id = JSON.parse(line)?.id ?? '??';
+    process.stderr.write(`[JSONL] KnowledgeUnit validation failed for ${id}: ${e instanceof z.ZodError ? e.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ') : e}\n`);
+    return null;
+  }
+}
+
+/**
+ * Parse a single JSONL line into a ReasoningEdge.
+ * Returns null (with stderr warning) if the line fails validation.
+ */
+export function parseReasoningEdge(line: string): ReasoningEdge | null {
+  try {
+    const raw = JSON.parse(line);
+    return ReasoningEdgeSchema.parse(raw);
+  } catch (e) {
+    const id = (() => { try { return JSON.parse(line)?.id ?? '??'; } catch { return '??'; } })();
+    process.stderr.write(`[JSONL] ReasoningEdge validation failed for ${id}: ${e instanceof z.ZodError ? e.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ') : e}\n`);
+    return null;
+  }
+}
+
 export interface ContextChunk {
   /** Unique chunk identifier */
   chunkId: string;
@@ -32,6 +127,12 @@ export interface ContextChunk {
     clean_sha256?: string;
     /** pdftotext version used for extraction */
     pdftotext_version?: string;
+    /** Whether this chunk has bounding box coordinates (v7 pipeline) */
+    has_bboxes?: boolean;
+    /** Extraction method: 'marker+bbox', 'pymupdf+bbox', 'pdftotext', etc. */
+    source_method?: string;
+    /** JSON string of bounding box coordinates per page */
+    bboxes?: string;
     [key: string]: any;
   };
 
@@ -63,6 +164,12 @@ export interface RetrievalOptions {
 
   /** ChromaDB where filter for metadata-based filtering (e.g., author) */
   whereFilter?: Record<string, unknown>;
+
+  /** Boost retrieval scores using Knowledge Units and reasoning edges (default: false) */
+  boostWithKG?: boolean;
+
+  /** Maximum hops for knowledge graph edge traversal (default: 1, max: 2) */
+  maxHops?: number;
 }
 
 export interface HybridSearchWeights {

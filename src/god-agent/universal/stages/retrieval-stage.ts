@@ -18,6 +18,7 @@
  */
 
 import * as fs from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import type { ContextChunk, RetrievalOptions } from '../../retrieval/types.js';
 import type { CorpusConstraint, CorpusSource } from '../../core/writing/index.js';
@@ -26,6 +27,7 @@ import type { SmartRetrievalLayer } from '../../retrieval/smart-retrieval-layer.
 import type { RetrievalResult } from './stage-types.js';
 import type { PipelineContext } from './stage-types.js';
 import { recordDegraded, recordWarning } from './stage-types.js';
+import { loadCorpusIndexContext, expandQueryWithOntology, getCompiledIndex } from '../corpus-index-provider.js';
 import { GOLD_STANDARD_CONFIG } from '../gold-standard-config.js';
 import {
   loadDomainConfig,
@@ -96,6 +98,9 @@ export async function runRetrievalStage(
   let primaryAuthors: string[] = [];
   let knowledgeUnitLines: string[] = [];
   let structuralEdgeLines: string[] = [];
+  let ontologyLines: string[] = [];
+  let hookLines: string[] = [];
+  let tensionLines: string[] = [];
   let sectionConstraints: string[] = [];
   let subsections: string[] = [];
   let primaryUnderCoverage: string[] | undefined;
@@ -105,7 +110,8 @@ export async function runRetrievalStage(
     // Non-whitelist mode: return empty retrieval result
     return buildResult({
       corpusChunks, corpusConstraint, primaryAuthors, knowledgeUnitLines,
-      structuralEdgeLines, sectionConstraints, subsections, primaryUnderCoverage,
+      structuralEdgeLines, ontologyLines: [], hookLines: [], tensionLines: [],
+      sectionConstraints, subsections, primaryUnderCoverage,
       seenIds, options,
     });
   }
@@ -115,12 +121,32 @@ export async function runRetrievalStage(
   try {
     // ===== Phase 1a: Multi-query semantic retrieval =====
     subsections = deps.extractSemanticRetrievalQueries(topic);
+
+    // Hybrid query expansion via corpus ontology
+    let ontologyKeywordTerms: string[] = [];
+    try {
+      const compiledIdx = getCompiledIndex();
+      if (compiledIdx) {
+        for (let i = 0; i < subsections.length; i++) {
+          const expansion = expandQueryWithOntology(subsections[i], compiledIdx.ontologyNodes);
+          if (expansion.semanticTerms.length > 0) {
+            subsections[i] = `${subsections[i]} ${expansion.semanticTerms.join(' ')}`;
+            goldLog(`Query expanded: added ${expansion.semanticTerms.join(', ')}`);
+          }
+          ontologyKeywordTerms.push(...expansion.keywordTerms);
+        }
+        ontologyKeywordTerms = [...new Set(ontologyKeywordTerms)];
+      }
+    } catch { /* query expansion is non-critical */ }
+
     const targetChunks = options.corpusChunkCount ?? GOLD_STANDARD_CONFIG.targetChunks;
     const retrievalOpts: RetrievalOptions = {
       collections: options.corpusCollections || [],
       minRelevance: options.corpusMinRelevance ?? 0.0,
       diversityBoost: true,
       rerank: true,
+      boostWithKG: true,
+      maxHops: 2,
     };
 
     if (deps.smartRetrieval) {
@@ -188,6 +214,25 @@ export async function runRetrievalStage(
         }
       }
 
+      // Supplemental keyword search for Greek/German terms from ontology
+      if (ontologyKeywordTerms.length > 0 && deps.smartRetrieval) {
+        for (const term of ontologyKeywordTerms.slice(0, 5)) {
+          try {
+            const kwChunks = await deps.smartRetrieval.retrieveContext(term, {
+              ...retrievalOpts, maxChunks: 3,
+            });
+            kwChunks.forEach(c => {
+              const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
+              if (!seenIds.has(id)) {
+                c.relevanceScore = 0.85;
+              }
+            });
+            addChunks(kwChunks);
+            if (kwChunks.length > 0) goldLog(`Keyword expansion: "${term}" → ${kwChunks.length} chunks`);
+          } catch { /* non-critical */ }
+        }
+      }
+
       // ===== Phase 1c: Source diversity enforcement =====
       corpusChunks = enforceSourceDiversity(allChunks, { maxPerSource: 8, targetTotal: targetChunks });
 
@@ -242,37 +287,86 @@ export async function runRetrievalStage(
       recordDegraded(ctx, 'retrieval', 'No smartRetrieval available');
     }
 
-    // ===== Knowledge units =====
+    // ===== Knowledge units (H-10: async read) =====
     try {
       const kuPath = path.join(process.cwd(), 'god-learn', 'knowledge.jsonl');
       if (fs.existsSync(kuPath)) {
-        const lines = fs.readFileSync(kuPath, 'utf-8').split('\n').filter(Boolean);
+        const lines = (await readFile(kuPath, 'utf-8')).split('\n').filter(Boolean);
         const allKUs = lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
         const topicLower = topic.toLowerCase();
         const domainKeywords = getDomainKeywords(loadDomainConfig());
         const relevantDomains = domainKeywords.filter(d => topicLower.includes(d));
-        const relevant = allKUs.filter((ku: any) =>
+
+        // Path 1: domain keyword match (existing)
+        const relevantByKeyword = allKUs.filter((ku: any) =>
           relevantDomains.some(d => (ku.claim || ku.content || '').toLowerCase().includes(d))
         );
-        knowledgeUnitLines = (relevant.length > 0 ? relevant : allKUs)
-          .slice(0, 10)
+
+        // Path 2: domain label match (NEW)
+        const primaryAuthorsLower = primaryAuthors.map(a => a.toLowerCase());
+        const relevantByDomain = allKUs.filter((ku: any) => {
+          const dom = (ku as any).domain || '';
+          const domLower = dom.toLowerCase();
+          return primaryAuthorsLower.some(a =>
+            domLower.includes(a.split(',')[0].trim()) || a.includes(domLower.split('_')[0])
+          );
+        });
+
+        // Merge and deduplicate
+        const seenKuIds = new Set<string>();
+        const allRelevant = [...relevantByKeyword, ...relevantByDomain].filter((ku: any) => {
+          const id = ku.id || ku.claim;
+          if (seenKuIds.has(id)) return false;
+          seenKuIds.add(id);
+          return true;
+        });
+
+        knowledgeUnitLines = (allRelevant.length > 0 ? allRelevant : allKUs)
+          .slice(0, 15)
           .map((ku: any) => `- ${ku.claim || ku.content} (${ku.source || 'corpus'})`);
+
+        // Pre-flight KU domain coverage check
+        if (primaryAuthors.length > 0) {
+          const domainCounts = new Map<string, number>();
+          for (const ku of allKUs) {
+            const d = (ku as any).domain || 'unknown';
+            domainCounts.set(d, (domainCounts.get(d) || 0) + 1);
+          }
+          for (const author of primaryAuthors) {
+            const authorLower = author.toLowerCase().split(',')[0].trim();
+            const matchingDomain = [...domainCounts.entries()].find(([d]) =>
+              d.toLowerCase().includes(authorLower) || authorLower.includes(d.split('_')[0])
+            );
+            const count = matchingDomain ? matchingDomain[1] : 0;
+            if (count < 5) {
+              console.error(
+                `[retrieval] ⚠ Domain '${matchingDomain?.[0] || authorLower}' has critically low ` +
+                `KU coverage (${count} unit${count !== 1 ? 's' : ''}). ` +
+                `Run 'god-learn update --query "<${authorLower} concept>"' to improve quality.`
+              );
+              recordWarning(ctx, 'retrieval',
+                `Low KU coverage for ${author}: ${count} units (recommend ≥20)`
+              );
+            }
+          }
+        }
       }
     } catch (e) {
       recordWarning(ctx, 'retrieval', `Knowledge unit loading failed: ${e}`);
     }
 
-    // ===== Structural reasoning edges =====
+    // ===== Structural reasoning edges (H-10: async read) =====
     try {
       const edgePath = path.join(process.cwd(), 'god-reason', 'reasoning.jsonl');
       if (fs.existsSync(edgePath)) {
-        const edgeLines = fs.readFileSync(edgePath, 'utf-8').split('\n').filter(Boolean);
+        const edgeLines = (await readFile(edgePath, 'utf-8')).split('\n').filter(Boolean);
         const allEdges = edgeLines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
         const topicTerms = topic.toLowerCase().split(/\s+/).filter(t => t.length > 3);
         const relevantEdges = allEdges.filter((e: any) => {
           const src = (e.source || '').toLowerCase();
           const tgt = (e.target || '').toLowerCase();
-          return topicTerms.some(t => src.includes(t) || tgt.includes(t) || t.includes(src) || t.includes(tgt));
+          if (!src && !tgt) return false;
+          return topicTerms.some(t => (src && src.includes(t)) || (tgt && tgt.includes(t)) || (src && t.includes(src)) || (tgt && t.includes(tgt)));
         });
         relevantEdges.sort((a: any, b: any) => {
           const scoreDiff = (b.corroboration_score || 1) - (a.corroboration_score || 1);
@@ -287,6 +381,23 @@ export async function runRetrievalStage(
       }
     } catch (e) {
       recordWarning(ctx, 'retrieval', `Structural edge loading failed: ${e}`);
+    }
+
+    // ===== Corpus index context =====
+    try {
+      const corpusCtx = loadCorpusIndexContext(topic, {
+        maxOntologyNodes: 12,
+        maxHooks: 3,
+        maxTensionEdges: 5,
+      });
+      ontologyLines = corpusCtx.ontologyLines;
+      hookLines = corpusCtx.hookLines;
+      tensionLines = corpusCtx.tensionLines;
+      if (ontologyLines.length > 0 || hookLines.length > 0 || tensionLines.length > 0) {
+        goldLog(`Corpus index: ${ontologyLines.length} nodes, ${hookLines.length} hooks, ${tensionLines.length} tensions`);
+      }
+    } catch (e) {
+      recordWarning(ctx, 'retrieval', `Corpus index loading failed: ${e}`);
     }
 
     // ===== Section constraints =====
@@ -316,7 +427,8 @@ export async function runRetrievalStage(
 
   return buildResult({
     corpusChunks, corpusConstraint, primaryAuthors, knowledgeUnitLines,
-    structuralEdgeLines, sectionConstraints, subsections, primaryUnderCoverage,
+    structuralEdgeLines, ontologyLines, hookLines, tensionLines,
+    sectionConstraints, subsections, primaryUnderCoverage,
     seenIds, options,
   });
 }
@@ -331,6 +443,9 @@ function buildResult(args: {
   primaryAuthors: string[];
   knowledgeUnitLines: string[];
   structuralEdgeLines: string[];
+  ontologyLines: string[];
+  hookLines: string[];
+  tensionLines: string[];
   sectionConstraints: string[];
   subsections: string[];
   primaryUnderCoverage: string[] | undefined;
@@ -361,6 +476,9 @@ function buildResult(args: {
     primaryAuthors: args.primaryAuthors,
     knowledgeUnits: args.knowledgeUnitLines,
     structuralEdges: args.structuralEdgeLines,
+    ontologyLines: args.ontologyLines,
+    hookLines: args.hookLines,
+    tensionLines: args.tensionLines,
     stylePrompt: '', // Set by caller (style profile loading is not part of retrieval)
     sectionConstraints: args.sectionConstraints,
     subsections: args.subsections,
