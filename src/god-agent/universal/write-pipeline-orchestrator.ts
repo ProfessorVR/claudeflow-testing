@@ -225,6 +225,9 @@ export interface WriteOptions {
    *  CLI flag --pipeline-version overrides env WRITING_PIPELINE_VERSION.
    *  Default: 'legacy' until v2 is fully validated. */
   pipelineVersion?: PipelineVersion;
+  /** Maximum quality gauntlet revision iterations (default: 0 = scoring only).
+   *  Each revision re-calls the LLM. Use with caution for cost/latency. */
+  maxGauntletRevisions?: number;
 }
 
 export class WritePipelineOrchestrator {
@@ -2928,6 +2931,10 @@ ${sectionContent}`;
         const endnoteResult = await generateEndnotes(content, corpusSearch, {
           config: endnoteConfig,
           provenanceLedger,
+          knownSources: corpusConstraint?.sources?.map(s => ({
+            author: (s as any).author ?? '',
+            title: (s as any).title ?? '',
+          })).filter(s => s.author && s.title),
         });
 
         // Update content with endnotes
@@ -3433,12 +3440,12 @@ ${sectionContent}`;
       recordWarning(ctx, 'validation', `Prose sanitization failed: ${error}`);
     }
 
-    // Quality gauntlet (scoring only)
+    // Quality gauntlet (scoring only by default; configurable via --max-revisions)
     let qualityValidation: QualityValidationResult | undefined;
     if (this.deps.qualityIntegration) {
       try {
         qualityValidation = await this.deps.qualityIntegration.validateAndRevise(content, {
-          topic, style, format, trajectoryId, enabled: true, maxRevisions: 0,
+          topic, style, format, trajectoryId, enabled: true, maxRevisions: options.maxGauntletRevisions ?? 0,
           corpusChunks: corpusChunks.length > 0 ? corpusChunks : undefined,
           knownAuthors: corpusConstraint?.sources?.map((s: any) => s.author).filter(Boolean) ?? [],
         });
@@ -3569,6 +3576,10 @@ ${sectionContent}`;
             generateInlineMarkers: true,
             renderBboxOverlays: options.renderBboxOverlays ?? false,
           },
+          knownSources: corpusConstraint?.sources?.map(s => ({
+            author: (s as any).author ?? '',
+            title: (s as any).title ?? '',
+          })).filter(s => s.author && s.title),
         });
 
         if (endnoteResult.endnotes.length > 0) {
@@ -3647,6 +3658,7 @@ ${sectionContent}`;
         report: citationEnforcementResult.report,
       } : undefined,
       multiStepDiagnostics: multiStepDiagnosticsResult,
+      endnotes: endnotesMetadataV2.generated ? endnotesMetadataV2 : undefined,
       pipelineHealth,
     };
   }

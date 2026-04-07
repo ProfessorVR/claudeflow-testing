@@ -10,6 +10,77 @@
 
 import { createComponentLogger, ConsoleLogHandler, LogLevel } from '../../core/observability/index.js';
 import type { ProvenanceLedger, ProvenanceEntry } from './provenance-ledger.js';
+import * as path from 'path';
+
+/**
+ * Render a quote-level highlight on a PDF page using highlight-page.py.
+ * Uses the ICP 6-strategy text search cascade (dehyphenation, Unicode normalization,
+ * sentence chunking, overlapping phrase windows, progressive snippets, start/end windows).
+ * Scans ±2 adjacent pages automatically. Falls back to chunk-level bboxes (light blue)
+ * when all text strategies fail. Single subprocess call per citation.
+ */
+async function renderBboxOverlayAsync(
+  pathRel: string,
+  quoteText: string,
+  targetPage: number,
+  fallbackBboxPages?: Array<{ page: number; coords: number[] }>
+): Promise<string | null> {
+  if (!targetPage || !pathRel || !quoteText) return null;
+
+  const fs = await import('fs');
+  const pdfPath = path.resolve('corpus', pathRel);
+  const outDir = path.resolve('tmp', 'citation-renders');
+  const safeName = pathRel.replace(/[^a-zA-Z0-9_]/g, '_').replace(/_+/g, '_');
+  const outPath = path.join(outDir, `${safeName}_p${targetPage}.png`);
+
+  try {
+    await fs.promises.mkdir(outDir, { recursive: true });
+
+    const { execFile } = await import('child_process');
+    const { promisify: pfy } = await import('util');
+    const execFileAsync = pfy(execFile);
+
+    const args = [
+      'scripts/pdf/highlight-page.py',
+      pdfPath,
+      String(targetPage),
+      outPath,
+      quoteText,
+      '150',
+    ];
+
+    if (fallbackBboxPages?.length) {
+      args.push('--fallback-bboxes', JSON.stringify(fallbackBboxPages));
+    }
+
+    const { stdout } = await execFileAsync('python3', args, { timeout: 15000 });
+
+    // Parse stdout for adjacent page correction
+    const pageMatch = stdout.match(/FOUND_ON_PAGE:(\d+)/);
+    const actualPage = pageMatch ? parseInt(pageMatch[1], 10) : targetPage;
+
+    // Rename if highlight-page rendered an adjacent page
+    if (actualPage !== targetPage && fs.existsSync(outPath)) {
+      const correctedPath = path.join(outDir, `${safeName}_p${actualPage}.png`);
+      fs.renameSync(outPath, correctedPath);
+      return correctedPath;
+    }
+
+    // Only return path if highlights were drawn
+    const matchType = stdout.includes('MATCH_TYPE:text') ? 'text'
+      : stdout.includes('MATCH_TYPE:bbox-fallback') ? 'bbox-fallback'
+      : 'none';
+
+    if (matchType === 'none') {
+      try { fs.unlinkSync(outPath); } catch { /* ignore */ }
+      return null;
+    }
+
+    return fs.existsSync(outPath) ? outPath : null;
+  } catch {
+    return null;
+  }
+}
 
 const logger = createComponentLogger('EndnoteGenerator', {
   minLevel: LogLevel.INFO,
@@ -50,6 +121,21 @@ export interface SupportingQuotation {
 
   /** Chunk ID if from RAG retrieval */
   chunkId?: string;
+
+  /** Full untruncated chunk text (for bbox rendering — not displayed) */
+  fullChunkText?: string;
+
+  /** Whether this quotation has visual provenance (bbox coordinates) */
+  hasBboxes?: boolean;
+
+  /** Bounding box page coordinates (parsed from JSON) */
+  bboxPages?: Array<{ page: number; coords: number[] }>;
+
+  /** Relative path to source PDF (for bbox rendering) */
+  pathRel?: string;
+
+  /** Path to rendered bbox overlay PNG */
+  visualRefPath?: string;
 }
 
 /**
@@ -76,6 +162,14 @@ export interface Endnote {
     year?: number;
     pageRef?: string;
     quotation?: string;
+    /** Whether this citation has visual provenance */
+    hasBboxes?: boolean;
+    /** Bounding box page coordinates */
+    bboxPages?: Array<{ page: number; coords: number[] }>;
+    /** Relative path to source PDF */
+    pathRel?: string;
+    /** Path to rendered bbox overlay PNG */
+    visualRefPath?: string;
   };
 
   /** Additional supporting quotations */
@@ -112,6 +206,9 @@ export interface EndnoteGeneratorConfig {
 
   /** Whether to generate inline markers */
   generateInlineMarkers: boolean;
+
+  /** Whether to render bbox overlay images for visual provenance (default: false) */
+  renderBboxOverlays?: boolean;
 }
 
 /**
@@ -139,6 +236,14 @@ export interface CorpusChunk {
     year?: number;
     pageRef?: string;
     docId?: string;
+    /** Whether this chunk has bounding box coordinates (v7 pipeline) */
+    has_bboxes?: boolean;
+    /** Extraction method: 'marker+bbox', 'pymupdf+bbox', etc. */
+    source_method?: string;
+    /** JSON string of bounding box coordinates per page */
+    bboxes?: string;
+    /** Relative path to source PDF */
+    path_rel?: string;
   };
   score?: number;
 }
@@ -177,13 +282,47 @@ export interface EndnoteGenerationResult {
 /**
  * Generates scholarly endnotes with supporting quotations
  */
+/** Known source from corpus constraint, used for deterministic author resolution. */
+export interface KnownSource {
+  author: string;
+  title: string;
+}
+
 export class EndnoteGenerator {
   private config: EndnoteGeneratorConfig;
   private endnotes: Map<number, Endnote> = new Map();
   private nextEndnoteNumber: number = 1;
+  private knownSources: KnownSource[] = [];
 
   constructor(config: Partial<EndnoteGeneratorConfig> = {}) {
     this.config = { ...DEFAULT_ENDNOTE_CONFIG, ...config };
+  }
+
+  /** Set known corpus sources for deterministic author resolution. */
+  setKnownSources(sources: KnownSource[]): void {
+    this.knownSources = sources;
+  }
+
+  /**
+   * Resolve author from known corpus sources by title match.
+   * Uses substring matching to handle title variations
+   * (e.g., "Being and Time" vs "Being and Time_(1962)_[My Copy]").
+   */
+  private resolveAuthorFromCorpus(title: string): string | undefined {
+    if (!title || this.knownSources.length === 0) return undefined;
+    const cleanTitle = title.replace(/\*/g, '').trim().toLowerCase();
+    if (cleanTitle.length < 3) return undefined;
+
+    // Exact match first
+    const exact = this.knownSources.find(s => s.title.toLowerCase() === cleanTitle);
+    if (exact) return exact.author;
+
+    // Substring match: corpus title contains the citation title or vice versa
+    const sub = this.knownSources.find(s => {
+      const corpusTitle = s.title.toLowerCase();
+      return corpusTitle.includes(cleanTitle) || cleanTitle.includes(corpusTitle);
+    });
+    return sub?.author;
   }
 
   /**
@@ -222,6 +361,40 @@ export class EndnoteGenerator {
 
     // Step 3: Insert markers into content
     const contentWithMarkers = this.insertEndnoteMarkers(content, endnotes);
+
+    // Step 3b: Render bbox overlays concurrently (if enabled)
+    if (this.config.renderBboxOverlays) {
+      const renderTasks: Promise<void>[] = [];
+
+      for (const endnote of endnotes) {
+        // Primary citation
+        const pc = endnote.primaryCitation;
+        if (pc.hasBboxes && pc.pathRel && pc.quotation && pc.bboxPages?.length) {
+          const pcText = pc.quotation.replace(/\.\.\.$/g, '').trim();
+          renderTasks.push(
+            renderBboxOverlayAsync(pc.pathRel, pcText, pc.bboxPages[0].page, pc.bboxPages)
+              .then(p => { if (p) pc.visualRefPath = p; })
+          );
+        }
+        // Supporting quotations
+        for (const sq of endnote.supportingQuotations) {
+          if (sq.hasBboxes && sq.pathRel && sq.text && sq.bboxPages?.length) {
+            const searchText = sq.text.replace(/\.\.\.$/g, '').trim();
+            renderTasks.push(
+              renderBboxOverlayAsync(sq.pathRel, searchText, sq.bboxPages[0].page, sq.bboxPages)
+                .then(p => { if (p) sq.visualRefPath = p; })
+            );
+          }
+        }
+      }
+
+      if (renderTasks.length > 0) {
+        logger.info(`Rendering ${renderTasks.length} bbox overlays concurrently...`);
+        await Promise.all(renderTasks);
+        const rendered = endnotes.filter(e => e.primaryCitation.visualRefPath).length;
+        logger.info(`Rendered ${rendered} bbox overlays`);
+      }
+    }
 
     // Step 4: Format endnotes section
     const endnotesSection = this.formatEndnotesSection(endnotes);
@@ -445,6 +618,23 @@ export class EndnoteGenerator {
     // Get surrounding context for claim text
     const claimText = this.getClaimContext(citation);
 
+    // Find bbox data for primary citation from the best matching chunk
+    let primaryBboxPages: Array<{ page: number; coords: number[] }> | undefined;
+    let primaryHasBboxes = false;
+    let primaryPathRel: string | undefined;
+    const primaryChunk = chunks.find(c =>
+      c.metadata.author === citation.author &&
+      c.metadata.has_bboxes
+    );
+    if (primaryChunk?.metadata.bboxes) {
+      try {
+        const parsed = JSON.parse(primaryChunk.metadata.bboxes);
+        primaryBboxPages = parsed.map((b: any) => ({ page: b.page_num, coords: b.coords }));
+        primaryHasBboxes = true;
+        primaryPathRel = primaryChunk.metadata.path_rel;
+      } catch { /* ignore */ }
+    }
+
     // Create endnote
     const endnote: Endnote = {
       number: this.nextEndnoteNumber++,
@@ -454,11 +644,14 @@ export class EndnoteGenerator {
         charOffset: citation.position,
       },
       primaryCitation: {
-        author: citation.author || 'Unknown',
+        author: citation.author || this.resolveAuthorFromCorpus(citation.title || '') || 'Unknown',
         title: citation.title || '',
         year: citation.year,
         pageRef: citation.pageRef,
         quotation: citation.quotation,
+        hasBboxes: primaryHasBboxes,
+        bboxPages: primaryBboxPages,
+        pathRel: primaryPathRel,
       },
       supportingQuotations,
       createdAt: new Date().toISOString(),
@@ -536,6 +729,18 @@ export class EndnoteGenerator {
         continue;
       }
 
+      // Parse bbox coordinates if available
+      let bboxPages: Array<{ page: number; coords: number[] }> | undefined;
+      if (chunk.metadata.has_bboxes && chunk.metadata.bboxes) {
+        try {
+          const parsed = JSON.parse(chunk.metadata.bboxes);
+          bboxPages = parsed.map((b: any) => ({
+            page: b.page_num,
+            coords: b.coords,
+          }));
+        } catch { /* ignore parse errors */ }
+      }
+
       quotations.push({
         id: `sq_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         text: quotationText,
@@ -546,6 +751,10 @@ export class EndnoteGenerator {
         relevance,
         sourceDocId: chunk.metadata.docId,
         chunkId: chunk.id,
+        fullChunkText: chunk.text,
+        hasBboxes: chunk.metadata.has_bboxes ?? false,
+        bboxPages,
+        pathRel: chunk.metadata.path_rel,
       });
     }
 
@@ -574,18 +783,24 @@ export class EndnoteGenerator {
 
   /**
    * Extract best quotation from chunk text
+   *
+   * Fix 75: Filters OCR boilerplate, copyright pages, JSTOR headers,
+   * bibliographic entries, and other non-scholarly-prose content.
    */
   private extractBestQuotation(chunkText: string, query: string): string {
     // Split into sentences
     const sentences = chunkText.split(/(?<=[.!?])\s+/);
 
-    // Find most relevant sentence(s)
-    const queryTerms = query.toLowerCase().split(/\s+/);
+    // Find most relevant sentence(s), skipping junk
+    const queryTerms = query.toLowerCase().split(/\s+/).filter(t => t.length > 2);
 
     let bestSentence = '';
     let bestScore = 0;
 
     for (const sentence of sentences) {
+      // Fix 75: Skip OCR boilerplate and non-prose content
+      if (this.isJunkSentence(sentence)) continue;
+
       const sentenceLower = sentence.toLowerCase();
       let score = 0;
 
@@ -610,6 +825,57 @@ export class EndnoteGenerator {
   }
 
   /**
+   * Detect junk sentences that shouldn't be used as supporting quotations.
+   * Fix 75: Filters OCR artifacts, copyright notices, bibliographic entries, etc.
+   */
+  private isJunkSentence(sentence: string): boolean {
+    const s = sentence.trim();
+
+    // Too short to be useful
+    if (s.length < 30) return true;
+
+    // OCR/publishing boilerplate
+    const junkPatterns = [
+      /This content downloaded from/i,
+      /All use subject to/i,
+      /https?:\/\/about\.jstor\.org/i,
+      /BOLLINGEN SERIES/i,
+      /Princeton University Press/i,
+      /Copyright ©/i,
+      /Library of Congre/i,
+      /ISBN[-\s]/i,
+      /Printed in the United States/i,
+      /acid-free paper/i,
+      /\bVOLUME\s+(ONE|TWO|THREE|I|II|III)\b/i,
+      /Loeb Classical Library/i,
+      /Cambridge University Press/i,
+      /Oxford University Press/i,
+      /translated by\s+[A-Z]\.\s*[A-Z]/i,  // "translated by A. L. Peck"
+      /edited by\s+[A-Z]\.\s/i,
+      /W\.\s*Heinemann\s*Ltd/i,
+      /Harvard University Press/i,
+      /Clarendon Press/i,
+      /^[A-Z\s.]+$/, // ALL-CAPS lines (headers)
+      /^\d+\s*$/, // Bare page numbers
+      /^[A-Z]+\s+[A-Z]+$/,  // "RHETORIC W." etc.
+      /DOI:\s*http/i,
+      /ISSN\s+\d/i,
+      /www\.revistas/i,
+      /Commentaria in Aristotelem/i,
+    ];
+
+    for (const pattern of junkPatterns) {
+      if (pattern.test(s)) return true;
+    }
+
+    // Bibliographic entry pattern: "Author. Title, Publisher, Year."
+    // (Has multiple commas, ends with year or publisher location)
+    if (/^\w+,\s+\w+\.\s+.*\d{4}/.test(s) && s.split(',').length > 3) return true;
+
+    return false;
+  }
+
+  /**
    * Get claim context around citation
    */
   private getClaimContext(citation: ExtractedCitation): string {
@@ -620,7 +886,16 @@ export class EndnoteGenerator {
   }
 
   /**
-   * Insert endnote markers into content
+   * Insert endnote markers into content.
+   *
+   * ARCHITECTURAL NOTE (Fix 61): This method inserts [N] markers at citation
+   * positions. During multi-step generation, the LLM may hallucinate identical
+   * markers ([1], [2], [EN1], or superscript numbers) in the draft text before
+   * this method runs. The caller (WritePipelineOrchestrator) must invoke
+   * `stripEndnoteLeaks()` on the content BEFORE passing it to `generateEndnotes()`
+   * to ensure that only legitimately inserted markers remain in the final output.
+   * If marker format changes (e.g., from [N] to something else), update both
+   * `formatMarker()` below and `stripEndnoteLeaks()` in quality-integration.ts.
    */
   private insertEndnoteMarkers(content: string, endnotes: Endnote[]): string {
     if (!this.config.generateInlineMarkers) {
@@ -667,6 +942,10 @@ export class EndnoteGenerator {
 
   /**
    * Format the endnotes section
+   *
+   * Fix 75: Proper MLA-style endnotes. Each endnote lists:
+   *   1. The primary source in MLA format
+   *   2. Supporting quotations as indented bullets with source citations
    */
   private formatEndnotesSection(endnotes: Endnote[]): string {
     if (endnotes.length === 0) {
@@ -679,54 +958,88 @@ export class EndnoteGenerator {
       '',
       '## Endnotes',
       '',
+      '| # | Primary Source | Page(s) | Visual | Supporting Quotations |',
+      '|---|--------------|---------|--------|----------------------|',
     ];
 
     for (const endnote of endnotes) {
-      lines.push(`**[${endnote.number}]** Supporting quotations for: "${this.truncate(endnote.claimText, 80)}"`);
-      lines.push('');
+      const primary = endnote.primaryCitation;
+      const primarySource = primary.title
+        ? `${primary.author || 'Unknown'}, *${primary.title}*${primary.year ? ` (${primary.year})` : ''}`
+        : primary.author || 'Unknown';
+      const pageRef = primary.pageRef || '—';
 
-      if (endnote.supportingQuotations.length === 0) {
-        lines.push('- *No additional supporting quotations found in corpus*');
-      } else {
-        for (const sq of endnote.supportingQuotations) {
-          const citation = this.formatCitation(sq);
-          lines.push(`- "${sq.text}" ${citation}`);
+      // Visual provenance indicator
+      let visualCell = '—';
+      if (primary.hasBboxes && primary.bboxPages && primary.bboxPages.length > 0) {
+        const pageNums = primary.bboxPages.map(b => b.page).join(', ');
+        if (primary.visualRefPath) {
+          visualCell = `[bbox p.${pageNums}](${primary.visualRefPath})`;
+        } else {
+          visualCell = `bbox p.${pageNums}`;
         }
       }
 
-      lines.push('');
+      // Build supporting quotations cell
+      let sqCell = '—';
+      if (endnote.supportingQuotations.length > 0) {
+        const sqParts = endnote.supportingQuotations.map(sq => {
+          const sqSource = sq.title
+            ? `${sq.author}, *${sq.title}*`
+            : sq.author;
+          const sqPage = sq.pageRef || '';
+          // Truncate long quotations for table readability
+          const truncText = sq.text.length > 120
+            ? sq.text.substring(0, 117) + '...'
+            : sq.text;
+          const bboxMarker = sq.visualRefPath
+            ? ` [bbox](${sq.visualRefPath})`
+            : sq.hasBboxes ? ' [bbox]' : '';
+          return `"${truncText}" (${sqSource}${sqPage ? ', ' + sqPage : ''}${bboxMarker})`;
+        });
+        sqCell = sqParts.join(' · ');
+      }
+
+      // Escape pipe characters in cell content
+      const safePrimary = primarySource.replace(/\|/g, '\\|');
+      const safePageRef = pageRef.replace(/\|/g, '\\|');
+      const safeVisual = visualCell.replace(/\|/g, '\\|');
+      const safeSqCell = sqCell.replace(/\|/g, '\\|');
+
+      lines.push(`| [${endnote.number}] | ${safePrimary} | ${safePageRef} | ${safeVisual} | ${safeSqCell} |`);
     }
 
+    lines.push('');
     return lines.join('\n');
   }
 
   /**
-   * Format a citation for a supporting quotation
+   * Format a citation in MLA style:
+   *   Author. *Title*. Year, p. XX.
+   *   or: Author. *Title*. Year.
    */
-  private formatCitation(sq: SupportingQuotation): string {
+  private formatMLACitation(author: string, title?: string, year?: number, pageRef?: string): string {
     const parts: string[] = [];
 
-    // Author
-    parts.push(`(${sq.author}`);
-
-    // Year
-    if (sq.year) {
-      parts.push(`, ${sq.year}`);
-    }
-
-    // Close author-year part
-    parts.push(')');
+    // Author (last name first if comma-separated, otherwise as-is)
+    parts.push(author || 'Unknown');
 
     // Title in italics
-    if (sq.title) {
-      parts.push(`, *${sq.title}*`);
+    if (title) {
+      parts.push(`. *${title}*`);
+    }
+
+    // Year
+    if (year) {
+      parts.push(`. ${year}`);
     }
 
     // Page reference
-    if (sq.pageRef) {
-      parts.push(`, p. ${sq.pageRef}`);
+    if (pageRef) {
+      parts.push(`, ${pageRef}`);
     }
 
+    parts.push('.');
     return parts.join('');
   }
 
@@ -861,9 +1174,13 @@ export async function generateEndnotes(
   options?: {
     config?: Partial<EndnoteGeneratorConfig>;
     provenanceLedger?: ProvenanceLedger;
+    knownSources?: KnownSource[];
   }
 ): Promise<EndnoteGenerationResult> {
   const generator = new EndnoteGenerator(options?.config);
+  if (options?.knownSources) {
+    generator.setKnownSources(options.knownSources);
+  }
   return generator.generateEndnotes(
     content,
     corpusSearch,

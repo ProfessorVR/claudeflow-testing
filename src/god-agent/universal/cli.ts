@@ -1414,6 +1414,7 @@ async function main() {
         const enableEndnotes = getFlag(flags, 'enable-endnotes') === true;
         const maxQuotationsPerEndnote = parseInt(getFlag(flags, 'max-quotations-per-endnote') as string || '3');
         const minEndnoteRelevance = parseFloat(getFlag(flags, 'min-endnote-relevance') as string || '0.65');
+        const renderBboxOverlays = getFlag(flags, 'render-bbox-overlays') === true;
 
         // Check for --execute flag for backward compatibility
         // Implements [REQ-GODWRITE-011]: Backward compatibility with --execute flag
@@ -1453,6 +1454,13 @@ async function main() {
         const nliVerify = getFlag(flags, 'nli-verify') === true;
         const candidateSelection = getFlag(flags, 'candidate-selection') === true;
 
+        // Rolling context generation flag
+        const rollingContext = getFlag(flags, 'rolling-context') === true;
+
+        // Quality gauntlet revision flag (default: 0 = scoring only)
+        const maxGauntletRevisionsStr = getFlag(flags, 'max-revisions') as string | undefined;
+        const maxGauntletRevisions = maxGauntletRevisionsStr ? parseInt(maxGauntletRevisionsStr) : undefined;
+
         // Pipeline version flag (v2 staged pipeline)
         const pipelineVersionFlag = getFlag(flags, 'pipeline-version') as string | undefined;
         const pipelineVersion = pipelineVersionFlag === 'v2' ? 'v2' as const : undefined;
@@ -1478,6 +1486,7 @@ async function main() {
             enableEndnotes,
             maxQuotationsPerEndnote,
             minEndnoteRelevance,
+            renderBboxOverlays,
             verifySources,
             acquireMissing,
             downloadDir,
@@ -1494,7 +1503,9 @@ async function main() {
             multiStep,
             nliVerify,
             candidateSelection,
+            rollingContext,
             pipelineVersion,
+            maxGauntletRevisions,
           });
 
           if (jsonMode) {
@@ -1544,6 +1555,7 @@ async function main() {
                 inlineValidation: writeResult.inlineValidation ?? null,
                 endnotes: writeResult.endnotes,
                 multiStepDiagnostics: writeResult.multiStepDiagnostics ?? null,
+                rollingContext: writeResult.rollingContext ?? null,
                 pipelineHealth: writeResult.pipelineHealth ?? null,
               },
               success: true,
