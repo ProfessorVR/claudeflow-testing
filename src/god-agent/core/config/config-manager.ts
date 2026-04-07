@@ -272,7 +272,7 @@ export const DEFAULT_CONFIG: GodAgentConfig = {
     },
     observe: {
       port: 3847,
-      host: '127.0.0.1',
+      host: '::',
       enabled: true,
     },
     daemon: {

@@ -28,6 +28,90 @@ from typing import List, Optional, Tuple
 
 
 # ----------------------------
+# Edge contradiction detection
+# ----------------------------
+
+HARD_CONTRADICTIONS = {
+    frozenset({"supports", "contrasts_with"}),
+    frozenset({"explains", "contrasts_with"}),
+}
+
+SOFT_TENSIONS = {
+    frozenset({"depends_on", "contrasts_with"}),
+    frozenset({"presupposes", "contrasts_with"}),
+}
+
+
+def check_edge_contradictions(reasoning_path: Path) -> dict:
+    """
+    Read all edges from reasoning.jsonl and detect conflicting relations
+    between the same (source, target) pair (checked in both directions).
+
+    Returns:
+        {"hard": [...], "soft": [...], "total_edges": int}
+        Each entry in hard/soft is a dict with keys:
+            source, target, relations, pipelines
+    """
+    edges: List[dict] = []
+    with reasoning_path.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                edges.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+
+    # Build a map: frozenset({source, target}) -> list of (relation, pipeline, source, target)
+    # We use frozenset so A->B and B->A are grouped together.
+    from collections import defaultdict
+    pair_map: dict[frozenset, list] = defaultdict(list)
+    for edge in edges:
+        src = edge.get("source", "")
+        tgt = edge.get("target", "")
+        rel = edge.get("relation", "")
+        pipeline = edge.get("pipeline", edge.get("provenance", "unknown"))
+        if src and tgt and rel:
+            pair_key = frozenset({src, tgt})
+            pair_map[pair_key].append({
+                "source": src,
+                "target": tgt,
+                "relation": rel,
+                "pipeline": pipeline,
+            })
+
+    hard: List[dict] = []
+    soft: List[dict] = []
+
+    for pair_key, pair_edges in pair_map.items():
+        relations = {e["relation"] for e in pair_edges}
+        pipelines = {e["pipeline"] for e in pair_edges}
+        # For reporting, pick a canonical source/target from the pair
+        members = sorted(pair_key)
+        canonical_src = members[0] if len(members) == 2 else list(pair_key)[0]
+        canonical_tgt = members[1] if len(members) == 2 else canonical_src
+
+        # Check all relation pairs for contradictions
+        rel_list = sorted(relations)
+        for i in range(len(rel_list)):
+            for j in range(i + 1, len(rel_list)):
+                pair = frozenset({rel_list[i], rel_list[j]})
+                entry = {
+                    "source": canonical_src,
+                    "target": canonical_tgt,
+                    "relations": sorted(pair),
+                    "pipelines": sorted(pipelines),
+                }
+                if pair in HARD_CONTRADICTIONS:
+                    hard.append(entry)
+                elif pair in SOFT_TENSIONS:
+                    soft.append(entry)
+
+    return {"hard": hard, "soft": soft, "total_edges": len(edges)}
+
+
+# ----------------------------
 # GPU Mode Switching
 # ----------------------------
 
@@ -478,9 +562,13 @@ def cmd_update(args: argparse.Namespace) -> None:
 
     try:
         # Phase 1–3: compile substrate first
-        print_phase_header("Phase 1-3", "Compiling corpus substrate (ingest/audit/verify)", verbose)
-        run_compile_substrate(rr=rr, root=root, log_path=log_path)
-        print_phase_complete("Phase 1-3", verbose)
+        if getattr(args, 'skip_compile', False):
+            if not quiet:
+                print("[god-learn:update] Skipping Phases 1-3 (--skip-compile)", flush=True)
+        else:
+            print_phase_header("Phase 1-3", "Compiling corpus substrate (ingest/audit/verify)", verbose)
+            run_compile_substrate(rr=rr, root=root, log_path=log_path)
+            print_phase_complete("Phase 1-3", verbose)
 
         # Generate hits JSON if needed (Phase 4: Retrieval)
         print_phase_header("Phase 4", "Running retrieval query", verbose)
@@ -540,6 +628,40 @@ def cmd_update(args: argparse.Namespace) -> None:
         verify_knowledge_strict_with_autofix(rr=rr, log_path=log_path)
         print_phase_complete("Phase 6 Promotion", verbose)
 
+        # Phase 7: Auto-derive reasoning edges from updated knowledge
+        if getattr(args, 'skip_reasoning', False):
+            if not quiet:
+                print("[god-learn:update] Skipping Phase 7 (--skip-reasoning)", flush=True)
+        else:
+            print_phase_header("Phase 7", "Deriving reasoning edges from knowledge units", verbose)
+            phase7_script = rr / "scripts" / "reason" / "reason_over_knowledge.py"
+            if phase7_script.exists():
+                tee_run(
+                    ["python3", str(phase7_script),
+                     "--knowledge", "god-learn/knowledge.jsonl",
+                     "--out", "god-reason"],
+                    cwd=rr,
+                    log_path=log_path,
+                )
+                print_phase_complete("Phase 7 Reasoning", verbose)
+
+                # Post-Phase 7: Contradiction gate
+                reasoning_path = rr / "god-reason" / "reasoning.jsonl"
+                if reasoning_path.exists():
+                    result = check_edge_contradictions(reasoning_path)
+                    if result["hard"]:
+                        print(f"\n[god-learn] BLOCKED: {len(result['hard'])} hard contradiction(s) detected!")
+                        for c in result["hard"]:
+                            print(f"  !! {c['source']} {c['relations']} {c['target']} (pipelines: {c['pipelines']})")
+                        print("[god-learn] Resolve contradictions before proceeding.")
+                        raise SystemExit(1)
+                    if result["soft"]:
+                        print(f"\n[god-learn] WARNING: {len(result['soft'])} soft tension(s) detected (not blocking)")
+                        for c in result["soft"]:
+                            print(f"  ?  {c['source']} {c['relations']} {c['target']} (pipelines: {c['pipelines']})")
+            else:
+                print(f"[god-learn:update] Phase 7 script not found at {phase7_script}, skipping reasoning", file=sys.stderr)
+
         if run_dir is not None:
             snapshot_tmp_artifacts(run_dir)
     finally:
@@ -555,11 +677,45 @@ def cmd_update(args: argparse.Namespace) -> None:
         print("[god-learn:update] OK")
 
 
+def deduplicate_manifest(rr: Path, log_path: Optional[Path] = None) -> None:
+    """Keep only the latest manifest entry per path_abs. Reduces bloat from reruns."""
+    manifest_path = rr / "scripts" / "ingest" / "manifest.jsonl"
+    if not manifest_path.exists():
+        return
+    lines = manifest_path.read_text(encoding="utf-8").strip().split("\n")
+    if not lines or lines == [""]:
+        return
+    latest: dict = {}
+    for line in lines:
+        if not line.strip():
+            continue
+        try:
+            obj = json.loads(line)
+            key = obj.get("path_abs") or obj.get("path_rel", "")
+            latest[key] = line
+        except json.JSONDecodeError:
+            continue
+    before = len(lines)
+    after = len(latest)
+    if after < before:
+        manifest_path.write_text("\n".join(latest.values()) + "\n", encoding="utf-8")
+        msg = f"[god-learn] manifest dedup: {before} → {after} entries ({before - after} duplicates removed)"
+        print(msg)
+        if log_path:
+            with log_path.open("a", encoding="utf-8") as lf:
+                lf.write(msg + "\n")
+    else:
+        print(f"[god-learn] manifest dedup: {after} entries (no duplicates)")
+
+
 def cmd_verify(args: argparse.Namespace) -> None:
     rr = repo_root()
     root = Path(args.root).resolve()
 
     log_path = Path(args.log).resolve() if args.log else None
+
+    # Deduplicate manifest before verification
+    deduplicate_manifest(rr, log_path)
 
     tee_run(["python3", "scripts/ingest/audit_ingest.py", "--root", str(root)], cwd=rr, log_path=log_path)
     tee_run(["python3", "scripts/ingest/verify_ingest.py", "--root", str(root)], cwd=rr, log_path=log_path)
@@ -631,6 +787,10 @@ def main() -> int:
     pu.add_argument("--where", default=None, help="Optional Chroma where JSON (string) passed to query_chunks.py")
     pu.add_argument("--verbose", "-v", action="store_true", help="Show detailed progress with timestamps")
     pu.add_argument("--quiet", "-q", action="store_true", help="Suppress non-error output")
+    pu.add_argument("--skip-compile", action="store_true",
+                    help="Skip Phases 1-3 (substrate compile). Use when corpus is already ingested.")
+    pu.add_argument("--skip-reasoning", action="store_true",
+                    help="Skip Phase 7 (reasoning edge derivation). Run once manually after batch.")
     pu.set_defaults(func=cmd_update)
 
     pv = sub.add_parser("verify", help="Run verification gates (Phase 3/6/8)")

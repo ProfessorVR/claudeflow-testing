@@ -261,22 +261,22 @@ function renderPromptPanel(container) {
         <div class="icp-convergence-controls" style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
           <h4 style="margin: 0 0 12px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Pipeline Features</h4>
           <div class="icp-checkbox-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <label class="icp-checkbox-label"><input type="checkbox" id="icp-multi-step" checked> Multi-Step Drafting</label>
-            <label class="icp-checkbox-label"><input type="checkbox" id="icp-rolling-context" ${session?.draft_category === 'chapter' || session?.draft_category === 'paper' ? 'checked' : ''}> Rolling Context</label>
-            <label class="icp-checkbox-label"><input type="checkbox" id="icp-chunk-optimization" checked> Chunk Optimization</label>
-            <label class="icp-checkbox-label"><input type="checkbox" id="icp-kg-boosting" checked> KG Boosting</label>
-            <label class="icp-checkbox-label"><input type="checkbox" id="icp-knowledge-units" checked> Knowledge Units</label>
-            <label class="icp-checkbox-label"><input type="checkbox" id="icp-structural-edges" checked> Structural Edges</label>
-            <label class="icp-checkbox-label"><input type="checkbox" id="icp-author-scrubbing" checked> Author Scrubbing</label>
-            <label class="icp-checkbox-label"><input type="checkbox" id="icp-conclusion-summaries" checked> Conclusion Summaries</label>
-            <label class="icp-checkbox-label"><input type="checkbox" id="icp-inline-validation"> Inline Validation</label>
-            <label class="icp-checkbox-label"><input type="checkbox" id="icp-quality-gauntlet"> Quality Gauntlet</label>
-            <label class="icp-checkbox-label"><input type="checkbox" id="icp-revision-loop"> Revision Loop</label>
-            <label class="icp-checkbox-label"><input type="checkbox" id="icp-page-context"> Page Context Expansion</label>
+            <label class="icp-checkbox-label icp-tip" data-tip="Splits generation into multiple LLM passes — each pass drafts a section, then the next pass builds on the previous output. Produces more coherent long-form text."><input type="checkbox" id="icp-multi-step" checked> Multi-Step Drafting</label>
+            <label class="icp-checkbox-label icp-tip" data-tip="Carries context from previously generated sections into the current section's prompt. Essential for chapters and papers where sections must reference each other."><input type="checkbox" id="icp-rolling-context" ${session?.draft_category === 'chapter' || session?.draft_category === 'paper' ? 'checked' : ''}> Rolling Context</label>
+            <label class="icp-checkbox-label icp-tip" data-tip="Trims retrieved corpus chunks to remove low-signal content (headers, footers, bibliographies) before injection. Reduces noise and saves token budget."><input type="checkbox" id="icp-chunk-optimization" checked> Chunk Optimization</label>
+            <label class="icp-checkbox-label icp-tip" data-tip="Boosts retrieval scores for chunks connected via knowledge graph edges. Chunks that are structurally related to your query get ranked higher."><input type="checkbox" id="icp-kg-boosting" checked> KG Boosting</label>
+            <label class="icp-checkbox-label icp-tip" data-tip="Includes compiled Knowledge Units (KUs) — curated, distilled knowledge artifacts — alongside raw corpus chunks in the retrieval context."><input type="checkbox" id="icp-knowledge-units" checked> Knowledge Units</label>
+            <label class="icp-checkbox-label icp-tip" data-tip="Includes reasoning edges from the knowledge graph that connect concepts across sources. Helps the LLM understand relationships between ideas."><input type="checkbox" id="icp-structural-edges" checked> Structural Edges</label>
+            <label class="icp-checkbox-label icp-tip" data-tip="Replaces the original author's name with a placeholder during generation to prevent stylistic mimicry, then restores proper citations in post-processing."><input type="checkbox" id="icp-author-scrubbing" checked> Author Scrubbing</label>
+            <label class="icp-checkbox-label icp-tip" data-tip="Appends brief conclusion summaries from each source to the retrieval context. Gives the LLM access to each source's key takeaways."><input type="checkbox" id="icp-conclusion-summaries" checked> Conclusion Summaries</label>
+            <label class="icp-checkbox-label icp-tip" data-tip="Validates each generated paragraph against its source chunks in real-time during generation. Catches hallucinations and unsupported claims before final output."><input type="checkbox" id="icp-inline-validation"> Inline Validation</label>
+            <label class="icp-checkbox-label icp-tip" data-tip="Runs the full 7-stage Quality Gauntlet on the final output — checks citation fidelity, quotation accuracy, style drift, prose quality, grounding, and more."><input type="checkbox" id="icp-quality-gauntlet"> Quality Gauntlet</label>
+            <label class="icp-checkbox-label icp-tip" data-tip="If the initial draft fails quality checks, automatically revises and re-generates until quality thresholds are met or max retries are reached."><input type="checkbox" id="icp-revision-loop"> Revision Loop</label>
+            <label class="icp-checkbox-label icp-tip" data-tip="Expands retrieval to include chunks from neighboring pages in the source PDF. Captures context that spans page boundaries."><input type="checkbox" id="icp-page-context"> Page Context Expansion</label>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
             <div class="icp-form-group">
-              <label>Grounding Strictness</label>
+              <label class="icp-tip" data-tip="Controls how strictly output must be grounded in corpus sources. Strict = every claim needs a citation. Moderate = allows minor inferences. Permissive = allows broader synthesis beyond sources.">Grounding Strictness</label>
               <select id="icp-grounding-strictness" class="icp-select">
                 <option value="strict" selected>Strict</option>
                 <option value="moderate">Moderate</option>
@@ -284,7 +284,7 @@ function renderPromptPanel(container) {
               </select>
             </div>
             <div class="icp-form-group">
-              <label>Cost Tier</label>
+              <label class="icp-tip" data-tip="Which LLM provider to use. High = Anthropic Claude (better quality, higher cost). Low = local vLLM/Qwen (faster, cheaper, lower quality for academic writing).">Cost Tier</label>
               <select id="icp-cost-tier" class="icp-select">
                 <option value="high" selected>High (Anthropic)</option>
                 <option value="low">Low (vLLM)</option>
@@ -294,14 +294,14 @@ function renderPromptPanel(container) {
           <details class="icp-advanced-settings" style="margin-top: 12px;">
             <summary style="cursor: pointer; font-size: 12px; color: var(--text-secondary);">Advanced Settings</summary>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
-              <div class="icp-form-group"><label>Chunk Trim Target</label><input type="number" id="icp-chunk-trim" value="450" class="icp-input" min="100" max="1000"></div>
-              <div class="icp-form-group"><label>Shared Pool Size</label><input type="number" id="icp-shared-pool" value="5" class="icp-input" min="1" max="15"></div>
-              <div class="icp-form-group"><label>Context Window</label><input type="number" id="icp-context-window" value="2" class="icp-input" min="1" max="5"></div>
-              <div class="icp-form-group"><label>Section Words</label><input type="number" id="icp-section-words" value="700" class="icp-input" min="300" max="1500"></div>
-              <div class="icp-form-group"><label>Max Chunks/Source</label><input type="number" id="icp-max-chunks-source" value="8" class="icp-input" min="1" max="20"></div>
-              <div class="icp-form-group"><label>Relevance Floor</label><input type="number" id="icp-relevance-floor" value="0.25" class="icp-input" min="0" max="1" step="0.05"></div>
-              <div class="icp-form-group"><label>Over-Citation %</label><input type="number" id="icp-overcitation" value="40" class="icp-input" min="10" max="80"></div>
-              <div class="icp-form-group"><label>Token Ceiling</label><input type="number" id="icp-token-ceiling" value="12000" class="icp-input" min="4000" max="30000"></div>
+              <div class="icp-form-group"><label class="icp-tip" data-tip="Target word count per chunk after trimming. Lower values strip more noise (headers, footers). Default 450 balances signal density with context preservation.">Chunk Trim Target</label><input type="number" id="icp-chunk-trim" value="450" class="icp-input" min="100" max="1000"></div>
+              <div class="icp-form-group"><label class="icp-tip" data-tip="Number of top-scoring chunks shared across all sections in multi-step drafting. These chunks appear in every section's context to maintain coherence.">Shared Pool Size</label><input type="number" id="icp-shared-pool" value="5" class="icp-input" min="1" max="15"></div>
+              <div class="icp-form-group"><label class="icp-tip" data-tip="Number of previously generated sections to include as rolling context for the current section. Higher values improve cross-section coherence but cost more tokens.">Context Window</label><input type="number" id="icp-context-window" value="2" class="icp-input" min="1" max="5"></div>
+              <div class="icp-form-group"><label class="icp-tip" data-tip="Target word count per generated section. The LLM aims to produce this many words per section in multi-step drafting. Total output = sections × this value.">Section Words</label><input type="number" id="icp-section-words" value="700" class="icp-input" min="300" max="1500"></div>
+              <div class="icp-form-group"><label class="icp-tip" data-tip="Maximum number of chunks retrieved from any single source document. Prevents one dominant source from monopolizing the retrieval context. Encourages source diversity.">Max Chunks/Source</label><input type="number" id="icp-max-chunks-source" value="8" class="icp-input" min="1" max="20"></div>
+              <div class="icp-form-group"><label class="icp-tip" data-tip="Minimum cosine similarity score for a chunk to be included in retrieval results. Chunks below this threshold are discarded. Lower values include more but noisier chunks.">Relevance Floor</label><input type="number" id="icp-relevance-floor" value="0.25" class="icp-input" min="0" max="1" step="0.05"></div>
+              <div class="icp-form-group"><label class="icp-tip" data-tip="Percentage of extra citations to retrieve beyond what's needed, as a buffer for quality filtering. 40% means retrieve 40% more chunks than required, then trim the weakest.">Over-Citation %</label><input type="number" id="icp-overcitation" value="40" class="icp-input" min="10" max="80"></div>
+              <div class="icp-form-group"><label class="icp-tip" data-tip="Maximum total tokens (input + output) allowed per LLM call. Caps API cost per generation step. Increase for longer sections or more retrieval context.">Token Ceiling</label><input type="number" id="icp-token-ceiling" value="12000" class="icp-input" min="4000" max="30000"></div>
             </div>
           </details>
           <div id="icp-cost-estimator" class="icp-cost-estimator" style="margin-top: 12px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; font-size: 12px; display: none;">
@@ -311,8 +311,8 @@ function renderPromptPanel(container) {
         </div>
 
         <div class="icp-prompt-actions">
-          <button id="icp-run-btn" onclick="icpCreateSession()" class="btn btn-primary btn-run">Run Pipeline</button>
-          <button class="icp-btn icp-btn-primary" onclick="icpAdapterGenerate()" style="margin-left: 8px;">Generate (Adapter)</button>
+          <button id="icp-run-btn" onclick="icpCreateSession()" class="btn btn-primary btn-run icp-tip" data-tip="Start the full ICP writing pipeline with the current settings. Creates a new session, retrieves corpus chunks, and generates academic prose through multi-step drafting.">Run Pipeline</button>
+          <button class="icp-btn icp-btn-primary icp-tip" onclick="icpAdapterGenerate()" style="margin-left: 8px;" data-tip="Generate using the ICPPipelineAdapter — converges god-write features into the dashboard. Uses the same pipeline as the CLI but with dashboard-configured settings.">Generate (Adapter)</button>
           <div id="icp-pipeline-status" class="icp-pipeline-status"></div>
         </div>
       </div>
@@ -468,6 +468,27 @@ function renderEvidencePanel(container, session) {
   const statusCounts = {};
   spans.forEach(s => { statusCounts[s.verification_status] = (statusCounts[s.verification_status] || 0) + 1; });
 
+  // Build doc_id → title lookup, then patch the DOM once resolved
+  const uniqueDocIds = [...new Set(spans.map(s => s.doc_id).filter(Boolean))];
+  const docTitleCache = {};
+  Promise.all(uniqueDocIds.map(docId =>
+    fetch('/api/icp/doc-info/' + encodeURIComponent(docId))
+      .then(r => r.ok ? r.json() : null)
+      .then(info => {
+        if (info?.meta?.title_raw) docTitleCache[docId] = info.meta.title_raw;
+        else if (info?.path_rel) docTitleCache[docId] = info.path_rel.split('/').pop().replace(/\.[^.]+$/, '');
+      })
+      .catch(() => {})
+  )).then(() => {
+    document.querySelectorAll('.icp-doc-label').forEach(el => {
+      const docId = el.dataset.docId;
+      if (docId && docTitleCache[docId]) {
+        el.textContent = docTitleCache[docId];
+        el.title = docId;
+      }
+    });
+  });
+
   // Build pipeline summary banner
   const stages = icpState.pipelineStages;
   const pipelineBanner = stages ? `
@@ -522,7 +543,7 @@ function renderEvidencePanel(container, session) {
               <div class="quote-status-badge status-${safeAttr(s.verification_status)}" style="background:${statusColors[s.verification_status] || '#666'}">${escapeHtml(s.verification_status)}</div>
               <div class="quote-text">"${escapeHtml((s.text || '').slice(0, 200))}${s.text?.length > 200 ? '...' : ''}"</div>
               <div class="quote-meta">
-                <span>Doc: ${s.doc_id?.slice(0, 12) || 'unknown'}</span>
+                <span class="icp-doc-label" data-doc-id="${safeAttr(s.doc_id)}" title="${safeAttr(s.doc_id)}">${escapeHtml(s.doc_id?.slice(0, 12) || 'unknown')}</span>
                 <span>Page: ${s.page || '?'}</span>
                 ${s.auto_confidence != null ? `<span>Confidence: ${(s.auto_confidence * 100).toFixed(0)}%</span>` : ''}
               </div>
@@ -533,6 +554,14 @@ function renderEvidencePanel(container, session) {
               </div>
             </div>
           `).join('')}
+        </div>
+        <div class="icp-evidence-actions" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); display: flex; gap: 12px; align-items: center;">
+          <button class="btn btn-primary btn-run" onclick="icpAdapterGenerate()" style="font-size: 14px; padding: 10px 24px;">
+            Proceed to Generate
+          </button>
+          <span style="font-size: 12px; color: var(--text-secondary);">
+            ${spans.length} quotes collected — review, verify, or flag quotes above, then generate prose.
+          </span>
         </div>
       </div>
     </div>
@@ -656,7 +685,20 @@ function icpOpenQuoteDetail(quoteId) {
     html += '        </div>';
     html += '        <div class="icp-modal-section">';
     html += '          <label>Source</label>';
-    html += '          <div id="icp-quote-doc-source" class="quote-detail-source">' + escapeHtml(docLabel) + '</div>';
+    html += '          <div id="icp-quote-doc-source" class="quote-detail-source icp-doc-label" data-doc-id="' + safeAttr(docId) + '">' + escapeHtml(docLabel) + '</div>';
+    // Resolve doc title for the modal
+    fetch('/api/icp/doc-info/' + encodeURIComponent(docId))
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(info) {
+        if (info) {
+          var title = (info.meta && info.meta.title_raw) || (info.path_rel ? info.path_rel.split('/').pop().replace(/\.[^.]+$/, '') : null);
+          if (title) {
+            var el = document.getElementById('icp-quote-doc-source');
+            if (el) { el.textContent = title; el.title = docId; }
+          }
+        }
+      })
+      .catch(function() {});
     html += '          <div class="quote-detail-page">Page ' + page + (span.source_anchor ? ' (' + escapeHtml(span.source_anchor) + ')' : '') + '</div>';
     html += '        </div>';
     html += '        <div class="icp-modal-section">';
@@ -1684,16 +1726,18 @@ function renderQualityPanel(container, session) {
 // =============================================================================
 
 function renderExportPanel(container, session) {
-  const hasText = Object.keys(session.generated_text || {}).length > 0;
+  const genText = session.generated_text || {};
+  const hasText = Object.keys(genText).length > 0;
   const manifest = session.run_manifest;
   const qg = session.quality_gates;
+  const plan = session.paragraph_plan || [];
 
-  // Quality gate summary for export header
+  // Quality gate summary
   const qgSummary = qg ? `
     <div class="export-quality-summary">
       <h4>Quality Gate Status</h4>
       <div class="export-quality-badges">
-        ${qg.citation_enforcement ? `<span class="export-qg-badge ${qg.citation_enforcement.passed ? 'qg-pass' : 'qg-fail'}">Citations: ${qg.citation_enforcement.passed ? 'OK' : 'FAIL'}</span>` : ''}
+        ${qg.citation_enforcement ? `<span class="export-qg-badge ${qg.citation_enforcement.passed ? 'qg-pass' : 'qg-fail'}">Citations: ${qg.citation_enforcement.passed ? 'OK' : 'FAIL'}${qg.citation_enforcement.corrections ? ' (' + qg.citation_enforcement.corrections + ' corrections)' : ''}</span>` : ''}
         ${qg.gauntlet ? `<span class="export-qg-badge ${qg.gauntlet.passed ? 'qg-pass' : 'qg-fail'}">Gauntlet: ${(qg.gauntlet.overall_score * 100).toFixed(0)}%</span>` : ''}
         ${qg.sanitization ? `<span class="export-qg-badge qg-pass">Sanitized (${qg.sanitization.passes}x)</span>` : ''}
         ${qg.style_profile ? `<span class="export-qg-badge qg-pass">Style: ${escapeHtml(qg.style_profile.id)}</span>` : ''}
@@ -1703,27 +1747,86 @@ function renderExportPanel(container, session) {
     </div>
   ` : '';
 
+  // Assemble the final document from paragraph_plan order or raw generated_text
+  let assembledProse = '';
+  let wordCount = 0;
+  if (hasText && plan.length > 0) {
+    const orderedParagraphs = [...plan]
+      .sort((a, b) => (a.paragraph_order || 0) - (b.paragraph_order || 0))
+      .map(p => genText[p.paragraph_id])
+      .filter(t => t);
+    assembledProse = orderedParagraphs.join('\n\n');
+    wordCount = assembledProse.split(/\s+/).filter(Boolean).length;
+  } else if (hasText) {
+    // from-evidence mode stores text under 'full' key; join all values
+    assembledProse = Object.values(genText).join('\n\n');
+    wordCount = assembledProse.split(/\s+/).filter(Boolean).length;
+  }
+
   container.innerHTML = `
     <div class="icp-export">
-      <h3>Export</h3>
+      <h3>Output</h3>
       ${qgSummary}
-      <div class="export-controls">
-        <button onclick="icpBuildGoldPrompt()" class="btn btn-secondary">Preview Gold Standard Prompt</button>
-        ${hasText ? `<button onclick="icpExport()" class="btn btn-primary">Generate Export Package</button>` : '<p class="muted">No generated text to export. Run the pipeline first.</p>'}
-      </div>
-      <div id="gold-prompt-result"></div>
-      ${manifest ? `
-        <div class="export-manifest">
-          <h4>Run Manifest</h4>
-          <div class="manifest-meta">
-            <span>Run ID: ${manifest.run_id}</span>
-            <span>Created: ${manifest.created_at}</span>
+
+      ${hasText ? `
+        <div class="export-document" style="margin-top: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h4 style="margin: 0;">Final Document <span style="font-weight: normal; font-size: 12px; color: var(--text-secondary);">(${wordCount.toLocaleString()} words, ${Object.keys(genText).length} sections)</span></h4>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="navigator.clipboard.writeText(document.getElementById('icp-final-prose').innerText).then(() => this.textContent = 'Copied!').catch(() => {})" class="btn btn-secondary" style="font-size: 12px; padding: 4px 12px;">Copy Text</button>
+              <button onclick="icpExport()" class="btn btn-secondary" style="font-size: 12px; padding: 4px 12px;">Export JSON</button>
+              <button onclick="icpDownloadExport()" class="btn btn-secondary" style="font-size: 12px; padding: 4px 12px;">Download</button>
+            </div>
           </div>
+          <div id="icp-final-prose" class="export-prose" style="white-space: pre-wrap; max-height: 600px; overflow-y: auto; padding: 20px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; line-height: 1.8; font-size: 14px;">${escapeHtml(assembledProse)}</div>
         </div>
-      ` : ''}
+
+        ${session.quality_gates?.endnotes?.content ? `
+          <details style="margin-top: 16px;">
+            <summary style="cursor: pointer; font-weight: 600;">Endnotes (${session.quality_gates.endnotes.total})</summary>
+            <div class="export-endnotes" style="padding: 12px; margin-top: 8px; background: var(--bg-tertiary); border-radius: 6px; white-space: pre-wrap; font-size: 13px;">${escapeHtml(session.quality_gates.endnotes.content)}</div>
+          </details>
+        ` : ''}
+
+        ${session.quality_gates?.bibliography?.content ? `
+          <details style="margin-top: 12px;">
+            <summary style="cursor: pointer; font-weight: 600;">Bibliography (${session.quality_gates.bibliography.sources_count} sources)</summary>
+            <div class="export-bibliography" style="padding: 12px; margin-top: 8px; background: var(--bg-tertiary); border-radius: 6px; white-space: pre-wrap; font-size: 13px;">${escapeHtml(session.quality_gates.bibliography.content)}</div>
+          </details>
+        ` : ''}
+      ` : `
+        <div style="margin-top: 24px; padding: 24px; text-align: center; background: var(--bg-tertiary); border-radius: 8px;">
+          <p style="color: var(--text-secondary); margin: 0;">No generated text yet. Go to the Evidence tab and click <strong>Proceed to Generate</strong>, or use the button below.</p>
+          <button onclick="icpAdapterGenerate()" class="btn btn-primary" style="margin-top: 12px;">Generate Now</button>
+        </div>
+      `}
+
+      <details style="margin-top: 16px;">
+        <summary style="cursor: pointer; font-size: 13px; color: var(--text-secondary);">Advanced: Gold Standard Prompt / Export Package</summary>
+        <div style="margin-top: 12px; display: flex; gap: 8px;">
+          <button onclick="icpBuildGoldPrompt()" class="btn btn-secondary">Preview Gold Standard Prompt</button>
+        </div>
+        <div id="gold-prompt-result"></div>
+        ${manifest ? `
+          <div class="export-manifest" style="margin-top: 12px;">
+            <h4>Run Manifest</h4>
+            <div class="manifest-meta">
+              <span>Run ID: ${manifest.run_id}</span>
+              <span>Created: ${manifest.created_at}</span>
+            </div>
+          </div>
+        ` : ''}
+      </details>
       <div id="export-result"></div>
     </div>
   `;
+
+  // Auto-load the export data in the background for the download button
+  if (hasText && !window._lastExport) {
+    icpPost('/export/' + icpState.currentSessionId, {}).then(data => {
+      if (data?.export) window._lastExport = data.export;
+    }).catch(() => {});
+  }
 }
 
 async function icpBuildGoldPrompt() {
@@ -2065,7 +2168,7 @@ async function icpAdapterGenerate() {
     const resp = await fetch(`/api/icp/adapter/generate/${sessionId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ config }),
+      body: JSON.stringify({ config, mode: 'from-evidence' }),
     });
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || 'Generation failed');
@@ -2073,9 +2176,11 @@ async function icpAdapterGenerate() {
     // Refresh session
     await icpRefreshSession(sessionId);
 
-    // If investigation results present, auto-switch to investigation panel
+    // Auto-switch based on pipeline result
     if (data.investigation_results && data.pipeline_phase === 'INVESTIGATED') {
       icpSwitchPanel('investigation');
+    } else if (data.pipeline_phase === 'GENERATED' || data.pipeline_phase === 'REGENERATED') {
+      icpSwitchPanel('export');
     }
   } catch (err) {
     alert('Generation error: ' + err.message);

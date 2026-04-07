@@ -362,9 +362,14 @@ def main() -> int:
     latest_manifest = load_latest_manifest_by_path(manifest_path)
 
     # Walk
+    SKIP_DIRS = {".extracted_media", "__pycache__", "node_modules", ".git", ".ingest_cache"}
+
     files: List[Path] = []
     for p in root.rglob("*"):
         if not p.is_file():
+            continue
+        # Skip files inside excluded directories
+        if any(d in p.parts for d in SKIP_DIRS):
             continue
         if p.suffix.lower() in ALLOWED_EXTS:
             files.append(p)

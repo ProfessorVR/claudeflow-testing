@@ -13,6 +13,9 @@ export interface DomainConfig {
   secondaryAuthors: string[];
   keyConcepts: string[];
   primaryTitles: string[];
+  /** Maps prompt-level aliases → actual title_raw in ChromaDB.
+   *  Each key is a case-insensitive alias; value is the exact title_raw string. */
+  titleAliases: Record<string, string>;
 }
 
 const DEFAULT_DOMAIN_CONFIG: DomainConfig = {
@@ -33,6 +36,43 @@ const DEFAULT_DOMAIN_CONFIG: DomainConfig = {
     'attunem', 'disclos', 'thrownness', 'mood', 'affect',
   ],
   primaryTitles: ['De Anima', 'Being and Time', 'Rhetoric', 'Physics'],
+  titleAliases: {
+    // Aristotle
+    'de anima': 'On The Soul (De Anima)',
+    'da': 'On The Soul (De Anima)',
+    'on the soul': 'On The Soul (De Anima)',
+    'peri psyches': 'On The Soul (De Anima)',
+    'rhetoric': 'Rhetoric',
+    'physics': 'Physics',
+    'metaphysics': 'Metaphysics',
+    'de motu': 'Movement Of Animals',
+    'de motu animalium': 'Movement Of Animals',
+    'movement of animals': 'Movement Of Animals',
+    'de sensu': 'Sense And Sensibilia',
+    'sense and sensibilia': 'Sense And Sensibilia',
+    'de memoria': 'On Memory',
+    'on memory': 'On Memory',
+    // Heidegger
+    'being and time': 'Being and Time',
+    'sein und zeit': 'Being and Time',
+    'basic concepts of aristotelian philosophy': 'Basic Concepts of Aristotelian Philosophy',
+    'grundbegriffe': 'Basic Concepts of Aristotelian Philosophy',
+    'ga 18': 'Basic Concepts of Aristotelian Philosophy',
+    // Uexküll
+    'foray': 'A Foray Into the Worlds of Animals and Humans with A Theory of Meaning',
+    'a foray': 'A Foray Into the Worlds of Animals and Humans with A Theory of Meaning',
+    'foray into the worlds': 'A Foray Into the Worlds of Animals and Humans with A Theory of Meaning',
+    'streifzüge': 'A Foray Into the Worlds of Animals and Humans with A Theory of Meaning',
+    'theory of meaning': 'A Foray Into the Worlds of Animals and Humans with A Theory of Meaning',
+    'umwelt': 'A Foray Into the Worlds of Animals and Humans with A Theory of Meaning',
+    // Rickert
+    'ambient rhetoric': 'Ambient Rhetoric- The Attunements of Rhetorical Being',
+    // Burke
+    'grammar of motives': 'A Grammar of Motives',
+    'rhetoric of motives': 'A Rhetoric of Motives',
+    // Gibson
+    'ecological approach': 'The Ecological Approach to Visual Perception.',
+  },
 };
 
 let cachedConfig: DomainConfig | null = null;
@@ -63,6 +103,7 @@ export function loadDomainConfig(projectRoot?: string): DomainConfig {
       secondaryAuthors: parsed.secondaryAuthors || DEFAULT_DOMAIN_CONFIG.secondaryAuthors,
       keyConcepts: parsed.keyConcepts,
       primaryTitles: parsed.primaryTitles || DEFAULT_DOMAIN_CONFIG.primaryTitles,
+      titleAliases: { ...DEFAULT_DOMAIN_CONFIG.titleAliases, ...(parsed.titleAliases || {}) },
     };
     return cachedConfig;
   } catch {
@@ -102,6 +143,51 @@ export function getDomainKeywords(config: DomainConfig): string[] {
     ...config.primaryAuthors.map(a => a.toLowerCase()),
     ...config.keyConcepts,
   ];
+}
+
+/**
+ * Extract referenced works from a prompt, mapped to their ChromaDB title_raw values.
+ * Returns an array of { titleRaw, mentions } sorted by mention count (descending).
+ * More mentions = higher priority for retrieval.
+ */
+export function extractWorkReferences(
+  topic: string,
+  config: DomainConfig,
+): { titleRaw: string; mentions: number }[] {
+  const topicLower = topic.toLowerCase();
+  const titleCounts = new Map<string, number>();
+
+  // Sort aliases longest-first to avoid partial matches (e.g., "de anima" before "da")
+  const sortedAliases = Object.entries(config.titleAliases)
+    .sort((a, b) => b[0].length - a[0].length);
+
+  for (const [alias, titleRaw] of sortedAliases) {
+    // Count non-overlapping occurrences of this alias in the topic
+    const aliasLower = alias.toLowerCase();
+    let count = 0;
+    let searchFrom = 0;
+    while (true) {
+      const idx = topicLower.indexOf(aliasLower, searchFrom);
+      if (idx === -1) break;
+      // Check word boundary (not mid-word match)
+      const before = idx > 0 ? topicLower[idx - 1] : ' ';
+      const after = idx + aliasLower.length < topicLower.length
+        ? topicLower[idx + aliasLower.length] : ' ';
+      if (/[\s.,;:!?'"()\-–—/]/.test(before) && /[\s.,;:!?'"()\-–—/]/.test(after)) {
+        count++;
+      }
+      searchFrom = idx + aliasLower.length;
+    }
+
+    if (count > 0) {
+      const existing = titleCounts.get(titleRaw) || 0;
+      titleCounts.set(titleRaw, existing + count);
+    }
+  }
+
+  return Array.from(titleCounts.entries())
+    .map(([titleRaw, mentions]) => ({ titleRaw, mentions }))
+    .sort((a, b) => b.mentions - a.mentions);
 }
 
 /** Reset cached config (for testing). */

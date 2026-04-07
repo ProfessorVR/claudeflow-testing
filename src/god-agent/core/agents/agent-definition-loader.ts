@@ -72,7 +72,8 @@ function parseYaml(yamlContent: string): IAgentFrontmatter {
     return parsed as unknown as IAgentFrontmatter;
   } catch (error) {
     // Fallback: extract essential fields with regex
-    console.warn('[AgentLoader] YAML parse error, using fallback extraction');
+    // Fallback extraction works correctly; demote from warn to debug to reduce log noise
+    if (process.env.DEBUG) console.debug('[AgentLoader] YAML parse error, using fallback extraction');
     return extractEssentialFields(yamlContent);
   }
 }

@@ -131,7 +131,7 @@ def pick_claim_sentence(text: str) -> str:
 
 
     # Fallback: first 200 chars as a pseudo-sentence
-    fallback = strip_leading_layout_junk(fallback)
+    fallback = strip_leading_layout_junk(t[:200])
     if fallback and fallback[-1] not in ".!?":
         fallback += "."
     return fallback

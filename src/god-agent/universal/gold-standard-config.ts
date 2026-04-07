@@ -35,6 +35,32 @@ export const GOLD_STANDARD_CONFIG = Object.freeze({
 
   /** Max tokens for Opus generation (gold standard needs ~6K words + appendix). */
   opusMaxTokens: 16384,
+
+  // ---- Rolling Context Generation ----
+
+  /** Number of prior sections to include in the sliding window. */
+  rollingContextWindowSize: 2,
+
+  /** Target words per rolling section (Opus sweet spot). */
+  rollingContextSectionWords: 700,
+
+  /** Target words for the conclusion section. */
+  rollingContextConclusionWords: 200,
+
+  /** Max output tokens per rolling section API call. */
+  rollingContextMaxTokens: 2048,
+
+  /** Number of top-relevance chunks in the shared pool (available to every section). */
+  rollingContextSharedPoolSize: 5,
+
+  /** Max corpus chunks per section prompt. */
+  rollingContextMaxChunksPerSection: 10,
+
+  /** Use Haiku 50-word summaries for conclusion context (vs raw prior text). */
+  rollingContextUseSummaries: true,
+
+  /** Deprioritize a shared-pool chunk after its author reaches this many citations. */
+  rollingContextSharedPoolMaxCitations: 3,
 });
 
 export type GoldStandardConfig = typeof GOLD_STANDARD_CONFIG;

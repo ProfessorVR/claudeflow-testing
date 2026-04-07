@@ -22,6 +22,7 @@ import hashlib
 import json
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -120,6 +121,7 @@ def main() -> None:
     ap.add_argument("--min_chars", type=int, default=40, help="Minimum chars for extracted claim")
     ap.add_argument("--max_units", type=int, default=0, help="Cap number of promoted units (0 = no cap)")
     ap.add_argument("--dry_run", action="store_true", help="Print promoted units JSON and exit (no writes)")
+    ap.add_argument("--domain", type=str, default="aristotle", help="Domain tag for promoted KUs (default: aristotle)")
     args = ap.parse_args()
 
     hits_path = Path(args.hits_json)
@@ -203,6 +205,10 @@ def main() -> None:
             "path_rel": path_rel,
             "pages": pages_str,
             "chunk_id": chunk_id,
+            # Visual provenance from v7 pipeline
+            "has_bboxes": bool(meta.get("has_bboxes", False)),
+            "source_method": str(meta.get("source_method", "")),
+            "bboxes": str(meta.get("bboxes", "")) if meta.get("has_bboxes") else "",
         }
 
 
@@ -211,7 +217,8 @@ def main() -> None:
             "claim": claim,
             "sources": [source],
             "confidence": "high",
-            "tags": [],  # optional; keep empty for now
+            "tags": [],
+            "domain": args.domain,
             "created_from_query": args.query,
             "debug": {
                 "extract_reason": reason,
@@ -272,6 +279,27 @@ def main() -> None:
     print(f"[Phase6:promote_hits] promoted={len(promoted)} total_indexed={len(index)}")
     print(f"[Phase6:promote_hits] wrote: {KNOWLEDGE_JSONL}")
     print(f"[Phase6:promote_hits] index: {INDEX_JSON}")
+
+    # ===== Domain balance check =====
+    try:
+        all_kus = [json.loads(l) for l in open(KNOWLEDGE_JSONL).read().split('\n') if l.strip()]
+        domain_counts = Counter(ku.get('domain', 'unknown') for ku in all_kus)
+        max_count = max(domain_counts.values()) if domain_counts else 0
+        underrepresented = [d for d, c in domain_counts.items() if c < max_count * 0.1]
+        if underrepresented:
+            print(f"\n⚠ DOMAIN IMBALANCE: {underrepresented} have <10% of top domain ({max_count})")
+            print(f"  Suggested: god-learn update --query '<concept>' for these domains")
+            DOMAIN_SUGGESTIONS = {
+                'heidegger_bt': ['Befindlichkeit', 'Erschlossenheit', 'Zeitlichkeit'],
+                'heidegger_bcap': ['zoe praktike', 'logos apophantikos', 'pathe'],
+                'rickert': ['ambient rhetoric', 'attunement', 'dwelling'],
+                'uexkull': ['Umwelt', 'Funktionskreis', 'Merkwelt'],
+            }
+            for d in underrepresented:
+                suggestions = DOMAIN_SUGGESTIONS.get(d, [f'{d} key concepts'])
+                print(f"    {d}: {', '.join(suggestions)}")
+    except Exception:
+        pass  # Domain check is advisory only
 
 
 if __name__ == "__main__":

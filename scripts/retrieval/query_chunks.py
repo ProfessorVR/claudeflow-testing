@@ -228,6 +228,10 @@ def main() -> int:
             "page_end": safe_get_meta(meta, "page_end", "NA"),
             "text": doc.strip() if args.include_docs else None,
             "meta": meta,
+            # Visual provenance (v7)
+            "has_bboxes": bool(meta.get("has_bboxes", False)),
+            "source_method": str(meta.get("source_method", "")),
+            "bboxes": str(meta.get("bboxes", "")) if meta.get("has_bboxes") else "",
         })
 
     # 5) Optional highlight rerank (ordering only)

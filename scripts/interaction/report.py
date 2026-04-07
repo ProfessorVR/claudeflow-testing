@@ -322,6 +322,19 @@ def surface_knowledge_units(
 
 
 # ----------------------------
+# Stemming for structural edge matching
+# ----------------------------
+
+def simple_stem(word: str) -> str:
+    """Simple suffix stripping for morphological matching."""
+    w = word.lower().strip()
+    for suffix in ('ment', 'ness', 'tion', 'sion', 'ing', 'ity', 'ous', 'ive', 'ful', 'less', 'able', 'ible', 'ed', 'er', 'es', 's'):
+        if len(w) > len(suffix) + 3 and w.endswith(suffix):
+            return w[:-len(suffix)]
+    return w
+
+
+# ----------------------------
 # Phase 7: Reasoning edges
 # ----------------------------
 
@@ -394,6 +407,99 @@ def surface_reasoning_edges(
 
 
 # ----------------------------
+# Phase 9.3: Structural edge surfacing (stemmed concept matching)
+# ----------------------------
+
+def surface_structural_edges(
+    query: str,
+    reasoning_path: Path,
+    top_edges: int,
+    exclude_reason_ids: Optional[set] = None,
+) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    """
+    Path 2: Match edges by stemmed source/target concept names against query terms.
+    This surfaces edges that lack KU links but whose concepts match the query.
+    Edges already found via KU overlap (Path 1) are excluded.
+    """
+    edges_raw = load_jsonl(reasoning_path)
+    edges_norm: List[Dict[str, Any]] = []
+    for o in edges_raw:
+        n = normalize_edge(o)
+        if n:
+            # Carry forward raw source/target concept names
+            n["_source"] = o.get("source", "")
+            n["_target"] = o.get("target", "")
+            edges_norm.append(n)
+
+    exclude_ids = exclude_reason_ids or set()
+    q_terms = tokenize_query(query)
+    q_stems = set(simple_stem(t) for t in q_terms)
+    q_lower = query.lower()
+
+    hits: List[Dict[str, Any]] = []
+    by_rel: Dict[str, int] = {}
+
+    for e in edges_norm:
+        if e["reason_id"] in exclude_ids:
+            continue
+
+        src_raw = str(e.get("_source", "")).strip()
+        tgt_raw = str(e.get("_target", "")).strip()
+
+        if not src_raw and not tgt_raw:
+            continue
+
+        # Stem each word in multi-word source/target fields
+        src_stems = set(simple_stem(w) for w in re.findall(r"[a-z0-9]+", src_raw.lower()))
+        tgt_stems = set(simple_stem(w) for w in re.findall(r"[a-z0-9]+", tgt_raw.lower()))
+
+        matched = False
+
+        # Check 1: stemmed query term matches or is contained in a stemmed source/target
+        for qs in q_stems:
+            for cs in src_stems | tgt_stems:
+                if qs == cs or qs in cs or cs in qs:
+                    matched = True
+                    break
+            if matched:
+                break
+
+        # Check 2: raw source/target appears in the query (handles Greek/technical terms)
+        if not matched:
+            if src_raw.lower() in q_lower or tgt_raw.lower() in q_lower:
+                matched = True
+
+        if not matched:
+            continue
+
+        rel = e.get("relation", "UNKNOWN_RELATION")
+        by_rel[rel] = by_rel.get(rel, 0) + 1
+
+        hits.append({
+            "reason_id": e["reason_id"],
+            "relation": rel,
+            "topic": e.get("topic"),
+            "source": src_raw,
+            "target": tgt_raw,
+            "knowledge_ids": e.get("knowledge_ids", []),
+        })
+
+    # Deterministic sorting: relation then reason_id
+    hits.sort(key=lambda x: (x.get("relation", ""), x.get("reason_id", "")))
+
+    stats = {
+        "n_total": len(edges_norm),
+        "n_hits": len(hits),
+        "n_excluded_ku_overlap": len(exclude_ids),
+        "by_relation": dict(sorted(by_rel.items(), key=lambda kv: kv[0])),
+        "reasoning_path": str(reasoning_path),
+        "method": "stemmed_concept_match",
+    }
+
+    return hits[:top_edges], stats
+
+
+# ----------------------------
 # Phase 9A envelope
 # ----------------------------
 
@@ -431,10 +537,20 @@ def build_report_envelope(
         top_edges=args.top_edges,
     )
 
+    # Phase 9.3: Structural edge surfacing (stemmed concept matching)
+    ku_edge_ids = set(e.get("reason_id") for e in edge_hits if e.get("reason_id"))
+    struct_hits, struct_stats = surface_structural_edges(
+        query=query,
+        reasoning_path=reasoning_path,
+        top_edges=args.top_edges,
+        exclude_reason_ids=ku_edge_ids,
+    )
+
     # Coverage grade: retrieval + KU presence + reasoning edges + semantic relevance
     retr_n = int(retrieval_stats["n_returned"])
     ku_n = len(ku_hits)
     edge_n = int(edge_stats.get("n_hits", 0))
+    struct_n = int(struct_stats.get("n_hits", 0))
 
     # GAP-H02: Consider semantic relevance via distance scores
     # Cosine distance: 0 = identical, 1 = orthogonal, 2 = opposite
@@ -442,11 +558,17 @@ def build_report_envelope(
     dist_min = retrieval_stats.get("distance_min", 999.0)
     is_semantically_relevant = dist_min < 0.85  # Best match has reasonable similarity
 
+    # Total edge hits = KU-linked + structural (Plan 9.7: edge count in coverage grade)
+    total_edge_n = edge_n + struct_n
+
     if retr_n == 0:
         grade = "NONE"
-    elif retr_n >= 8 and ku_n >= 3 and is_semantically_relevant:
+    elif retr_n >= 8 and ku_n >= 3 and total_edge_n >= 5 and is_semantically_relevant:
         grade = "HIGH"
     elif retr_n >= 3 and ku_n >= 1 and is_semantically_relevant:
+        grade = "MED"
+    elif retr_n >= 3 and total_edge_n >= 3 and is_semantically_relevant:
+        # Edges can compensate for missing KU hits (edges provide structural coverage)
         grade = "MED"
     elif retr_n > 0 and not is_semantically_relevant:
         # Retrieved chunks but poor semantic match = effectively no useful coverage
@@ -489,6 +611,10 @@ def build_report_envelope(
             "edges": edge_hits,
             "stats": edge_stats,
         },
+        "structural_edges": {
+            "edges": struct_hits,
+            "stats": struct_stats,
+        },
         "vocab_bridge": {
             "query_terms": [],
             "mapped_terms": [],
@@ -502,6 +628,7 @@ def build_report_envelope(
                 f"distinct_docs={retrieval_stats['distinct_docs']}",
                 f"ku_hits={ku_n}",
                 f"reason_edges={edge_n}",
+                f"structural_edges={struct_n}",
                 f"distance_min={dist_min:.3f}",
                 f"semantic_relevant={is_semantically_relevant}",
             ],
@@ -515,6 +642,7 @@ def build_report_envelope(
             "Report does not modify corpus/embeddings/knowledge store.",
             "Report does not perform generative interpretation.",
             "Phase 9A: Knowledge Units are surfaced via overlap + lexical scoring; reasoning edges are filtered by surfaced KU ids.",
+            "Phase 9.3: Structural edges are surfaced via stemmed concept matching against query terms (no KU link required).",
         ],
     }
 
@@ -545,6 +673,7 @@ def validate_report_minimal(report: Dict[str, Any]) -> None:
         "retrieval",
         "knowledge_units",
         "reasoning_edges",
+        "structural_edges",
         "vocab_bridge",
         "coverage_summary",
         "limitations",
@@ -571,6 +700,13 @@ def validate_report_minimal(report: Dict[str, Any]) -> None:
         raise ValueError("Report reasoning_edges.edges must be a list")
     if not isinstance(report["reasoning_edges"].get("stats", {}), dict):
         raise ValueError("Report reasoning_edges.stats must be an object")
+
+    if not isinstance(report.get("structural_edges"), dict):
+        raise ValueError("Report missing structural_edges")
+    if not isinstance(report["structural_edges"].get("edges", []), list):
+        raise ValueError("Report structural_edges.edges must be a list")
+    if not isinstance(report["structural_edges"].get("stats", {}), dict):
+        raise ValueError("Report structural_edges.stats must be an object")
 
 
 # ----------------------------
@@ -661,6 +797,32 @@ def render_markdown(report: Dict[str, Any]) -> str:
             kids = e.get("knowledge_ids", [])
             kids_show = ", ".join(kids[:2]) + ("..." if len(kids) > 2 else "")
             lines.append(f"- `{rid}` **{rel}** — {kids_show}")
+        lines.append("")
+
+    # Structural edges (Phase 9.3)
+    lines.append("## Structural Edges (Phase 9.3 — stemmed concept match)")
+    s_stats = report.get("structural_edges", {}).get("stats", {}) or {}
+    s_hits = report.get("structural_edges", {}).get("edges", []) or []
+    lines.append(f"- Total edges scanned: **{s_stats.get('n_total', 0)}**")
+    lines.append(f"- Matching edges: **{s_stats.get('n_hits', 0)}**")
+    lines.append(f"- Excluded (KU overlap): **{s_stats.get('n_excluded_ku_overlap', 0)}**")
+    s_by_rel = s_stats.get("by_relation", {}) or {}
+    if s_by_rel:
+        rel_bits = ", ".join([f"{k}={v}" for k, v in s_by_rel.items()])
+        lines.append(f"- By relation: {rel_bits}")
+    lines.append("")
+
+    if not s_hits:
+        lines.append("_No structural edges matched query terms._")
+        lines.append("")
+    else:
+        lines.append("### Top structural edges")
+        for e in s_hits[: min(15, len(s_hits))]:
+            rid = e.get("reason_id", "UNKNOWN")
+            rel = e.get("relation", "UNKNOWN")
+            src = e.get("source", "?")
+            tgt = e.get("target", "?")
+            lines.append(f"- `{rid}` **{rel}**: {src} -> {tgt}")
         lines.append("")
 
     gaps = report["coverage_summary"].get("gaps", []) or []

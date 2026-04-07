@@ -30,17 +30,28 @@ export function scrubNonCorpusAuthors(
   content: string,
   constraint: CorpusConstraint
 ): ScrubResult {
-  // Build set of allowed author last names (normalized)
+  // Build set of allowed author last names (normalized, diacritics stripped)
+  // Fix 67: Strip diacritics so "Uexküll" matches "Uexkull" in corpus
+  const stripDiacritics = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const allowedAuthors = new Set<string>();
   for (const source of constraint.sources) {
     // Extract last name from various formats
     const lastName = source.author.includes(',')
-      ? source.author.split(',')[0].trim().toLowerCase()
-      : source.author.split(/\s+/).pop()?.toLowerCase() || '';
+      ? stripDiacritics(source.author.split(',')[0].trim().toLowerCase())
+      : stripDiacritics(source.author.split(/\s+/).pop()?.toLowerCase() || '');
     if (lastName) allowedAuthors.add(lastName);
 
+    // Fix 70: For nobiliary particles (von, de, van, etc.), also add bare last name
+    // "von Uexkull" → allowedAuthors gets both "uexkull" and "von uexkull"
+    const fullLower = stripDiacritics(source.author.replace(/,.*/, '').trim().toLowerCase());
+    const nobiliary = /^(von|de|van|di|du|le|la|del|della|dos|das)\s+/i;
+    if (nobiliary.test(fullLower)) {
+      const bareLast = fullLower.replace(nobiliary, '');
+      if (bareLast) allowedAuthors.add(bareLast);
+    }
+
     // Also add first word for single-name authors like "Aristotle"
-    const firstWord = source.author.split(/[\s,]+/)[0].toLowerCase();
+    const firstWord = stripDiacritics(source.author.split(/[\s,]+/)[0].toLowerCase());
     if (firstWord) allowedAuthors.add(firstWord);
   }
 
@@ -92,7 +103,7 @@ export function scrubNonCorpusAuthors(
         const authorName = match[1]?.trim();
         if (!authorName) continue;
 
-        const normalized = authorName.split(/\s+/).pop()?.toLowerCase() || '';
+        const normalized = stripDiacritics(authorName.split(/\s+/).pop()?.toLowerCase() || '');
         // Check if this is NOT an allowed corpus author and NOT a false positive
         if (normalized && !allowedAuthors.has(normalized) && !falsePositives.has(normalized)) {
           hasExternalAuthor = true;
@@ -119,6 +130,33 @@ export function scrubNonCorpusAuthors(
     removedAuthors: Array.from(removedAuthors),
     contexts,
   };
+}
+
+/**
+ * Fix 61: Strip bare APA-style parenthetical citations — (Author Year) or (Author, Year).
+ * These are stylistically wrong (MLA requires title+page) and leak through because
+ * the citation validator marks them valid when the author IS in the corpus.
+ *
+ * Strategy: remove the bare parenthetical, preserving surrounding text.
+ * Does NOT remove MLA-style citations that include a title (* or ").
+ */
+export function stripBareApaParentheticals(content: string): { content: string; strippedCount: number; stripped: string[] } {
+  // Match (Author Year) or (Author, Year) or (Author Year, p. X) WITHOUT a title (* or ")
+  // Negative lookahead ensures we don't strip MLA citations that contain italics or quotes
+  const bareApa = /\(([A-Z][a-z]+(?:\s+(?:et\s+al\.?|and\s+[A-Z][a-z]+))?)[,\s]+(\d{4})(?:[,\s]+pp?\.?\s*[\d–-]+)?\)(?:\[\d+\])?/g;
+
+  const stripped: string[] = [];
+  const result = content.replace(bareApa, (match, _author, _year) => {
+    // If the match contains a title marker (* for italics, " for quotes), keep it — it's MLA
+    if (match.includes('*') || match.includes('"')) return match;
+    stripped.push(match);
+    return '';
+  });
+
+  // Clean up double spaces left by removal
+  const cleaned = result.replace(/\s{2,}/g, ' ').replace(/\s+([.,;:!?])/g, '$1');
+
+  return { content: cleaned, strippedCount: stripped.length, stripped };
 }
 
 /**

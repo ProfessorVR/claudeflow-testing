@@ -113,6 +113,40 @@ logger = logging.getLogger(__name__)
 EMBED_URL = "http://127.0.0.1:8000/embed"
 EMBED_DIM = 1536
 
+# Remote Marker-pdf OCR server (Machine 2, 2x RTX 3090)
+MARKER_URL = os.environ.get("MARKER_URL", "http://10.0.0.2:8001")
+MARKER_ENABLED = os.environ.get("MARKER_ENABLED", "false").lower() in ("true", "1", "yes")
+MARKER_TIMEOUT_S = int(os.environ.get("MARKER_TIMEOUT_S", "1200"))
+
+# Dual-GPU round-robin pool
+MARKER_URLS: List[str] = []
+_marker_url_cycle = None
+
+def _init_marker_pool():
+    """Initialize the Marker URL pool for round-robin across GPUs."""
+    global MARKER_URLS, _marker_url_cycle
+    import itertools
+    if not MARKER_URLS:
+        # Default: try both GPU ports
+        base = MARKER_URL.rsplit(":", 1)[0]  # e.g., "http://192.168.50.22"
+        MARKER_URLS = [f"{base}:8001", f"{base}:8002"]
+    _marker_url_cycle = itertools.cycle(MARKER_URLS)
+
+def get_next_marker_url() -> str:
+    """Get next Marker URL from round-robin pool."""
+    global _marker_url_cycle
+    if _marker_url_cycle is None:
+        _init_marker_pool()
+    return next(_marker_url_cycle)
+
+def _update_marker_config(args):
+    """Update Marker config from CLI args."""
+    global MARKER_ENABLED, MARKER_URL
+    if getattr(args, 'marker', False):
+        MARKER_ENABLED = True
+    if getattr(args, 'marker_url', None):
+        MARKER_URL = args.marker_url
+
 CHROMA_DIR = "vector_db_1536"
 CHROMA_COLLECTION = "knowledge_chunks"
 
@@ -126,7 +160,7 @@ TARGET_MAX_TOKENS = 1200
 HARD_MAX_TOKENS = 1400
 
 # Embedding batching
-EMBED_BATCH_SIZE = 8
+EMBED_BATCH_SIZE = 64
 EMBED_TIMEOUT_S = 600
 
 
@@ -260,6 +294,132 @@ def append_manifest(record: Dict[str, Any]) -> None:
 # -----------------------------
 # PDF extraction (locked: pdftotext -layout, keep \f)
 # -----------------------------
+
+def check_marker_health(session: requests.Session) -> bool:
+    """Pre-flight check for Marker server. Returns True if reachable."""
+    if not MARKER_ENABLED:
+        return False
+    try:
+        r = session.get(f"{MARKER_URL}/", timeout=5)
+        return r.status_code == 200
+    except Exception:
+        return False
+
+
+def extract_text_from_marker_json(marker_json: dict) -> str:
+    """Reconstruct full text from Marker JSON block tree for the Fidelity Gate.
+
+    Walks the block tree and concatenates text from Text/SectionHeader/Table blocks.
+    Eliminates the need for a second Marker API call for markdown output.
+    """
+    text_parts: List[str] = []
+
+    def walk(node: dict) -> None:
+        bt = node.get("block_type", "")
+        if bt in ("Text", "SectionHeader", "Table", "ListItem", "Caption"):
+            html = node.get("html", "")
+            text = re.sub(r'<[^>]+>', '', html).strip()
+            if text:
+                text_parts.append(text)
+        for child in node.get("children", []) or []:
+            walk(child)
+
+    walk(marker_json)
+    return "\n\n".join(text_parts)
+
+
+def run_marker_extract_json(path_abs: Path, session: requests.Session,
+                            marker_url: str = "", timeout: int = 0):
+    """Send PDF to Marker with output_format=json, return parsed block tree with bboxes.
+
+    Single API call — text for the fidelity gate is extracted from the JSON tree
+    via extract_text_from_marker_json() instead of a second Marker call.
+
+    Returns (marker_json_dict, extracted_text) or (None, None) on failure.
+    """
+    url = marker_url or MARKER_URL
+    effective_timeout = timeout if timeout > 0 else MARKER_TIMEOUT_S
+    try:
+        pdf_bytes = path_abs.read_bytes()
+        r = session.post(f"{url}/marker/upload",
+                         files={"file": (path_abs.name, pdf_bytes, "application/pdf")},
+                         data={"output_format": "json"},
+                         timeout=effective_timeout)
+        if r.status_code != 200:
+            return None, None
+        resp = r.json()
+        output_str = resp.get("output", "")
+        if not output_str:
+            return None, None
+        marker_json = json.loads(output_str) if isinstance(output_str, str) else output_str
+
+        # Extract text from JSON tree (no second API call needed)
+        extracted_text = extract_text_from_marker_json(marker_json)
+
+        return marker_json, extracted_text
+    except Exception as e:
+        logging.getLogger(__name__).warning("Marker JSON extract failed for %s: %s", path_abs.name, e)
+        return None, None
+
+
+def run_marker_extract(path_abs: Path, session: requests.Session) -> str:
+    """Send PDF to remote Marker server, return extracted markdown text.
+
+    The markdown may contain <!-- Page N --> markers for page-aware chunking.
+    Falls back to pdftotext if Marker fails.
+    """
+    try:
+        pdf_bytes = path_abs.read_bytes()
+        files = {"file": (path_abs.name, pdf_bytes, "application/pdf")}
+        data = {"paginate": "true"}
+
+        # Use /marker/upload for file uploads (multipart)
+        r = session.post(f"{MARKER_URL}/marker/upload", files=files, data=data,
+                         timeout=MARKER_TIMEOUT_S)
+
+        if r.status_code != 200:
+            logging.getLogger(__name__).warning(
+                "Marker returned %d for %s, falling back to pdftotext",
+                r.status_code, path_abs.name)
+            return run_pdftotext_layout(path_abs)
+
+        result = r.json()
+        markdown = result.get("markdown", result.get("output", ""))
+
+        if not markdown.strip():
+            logging.getLogger(__name__).warning(
+                "Marker returned empty markdown for %s, falling back to pdftotext",
+                path_abs.name)
+            return run_pdftotext_layout(path_abs)
+
+        return markdown
+
+    except Exception as e:
+        logging.getLogger(__name__).warning(
+            "Marker failed for %s (%s), falling back to pdftotext", path_abs.name, e)
+        return run_pdftotext_layout(path_abs)
+
+
+def split_marker_pages(markdown: str) -> List[Tuple[int, str]]:
+    """Split Marker paginated markdown on <!-- Page N --> markers."""
+    import re as _re
+    parts = _re.split(r'<!--\s*Page\s+(\d+)\s*-->', markdown)
+
+    if len(parts) <= 1:
+        # No page markers — treat as single page
+        return [(1, markdown)]
+
+    pages = []
+    # parts[0] is text before first marker (usually empty)
+    # Then alternating: page_num, page_text, page_num, page_text...
+    for i in range(1, len(parts), 2):
+        page_num = int(parts[i])
+        page_text = parts[i + 1] if i + 1 < len(parts) else ""
+        if page_text.strip():
+            pages.append((page_num, page_text))
+
+    return pages if pages else [(1, markdown)]
+
 
 def run_pdftotext_layout(path_abs: Path) -> str:
     cmd = ["pdftotext", "-layout", str(path_abs), "-"]
@@ -623,10 +783,7 @@ def embed_texts(texts: List[str], session: requests.Session) -> List[List[float]
 # -----------------------------
 
 def get_chroma_collection():
-    client = chromadb.PersistentClient(
-        path=CHROMA_DIR,
-        settings=Settings(anonymized_telemetry=False),
-    )
+    client = chromadb.HttpClient(host="127.0.0.1", port=8001)
     return client.get_or_create_collection(name=CHROMA_COLLECTION)
 
 
@@ -640,6 +797,8 @@ def main() -> int:
     ap.add_argument("--force", action="store_true", help="Ignore skip logic and re-embed/upsert.")
     ap.add_argument("--ocr-config", type=Path, help="Path to ocr_config.yaml (default: scripts/ingest/ocr_config.yaml)")
     ap.add_argument("--disable-ocr", action="store_true", help="Disable OCR processing (text-only mode)")
+    ap.add_argument("--marker", action="store_true", help="Enable Marker-pdf remote OCR (Machine 2)")
+    ap.add_argument("--marker-url", type=str, help=f"Marker server URL (default: {MARKER_URL})")
 
     # Phase 5: Optimization control arguments
     ap.add_argument("--enable-cache", action="store_true", help="Enable caching (overrides config)")
@@ -652,6 +811,9 @@ def main() -> int:
     if not root.exists() or not root.is_dir():
         print(f"ERROR: --root invalid: {root}")
         return 2
+
+    # Enable Marker via CLI flag or env var
+    _update_marker_config(args)
 
     # Initialize OCR if available and not disabled
     ocr_extractor = None
@@ -764,10 +926,13 @@ def main() -> int:
     latest_manifest = load_latest_manifest_by_path(MANIFEST_PATH)
     coll = get_chroma_collection()
 
+    SKIP_DIRS = {".extracted_media", "__pycache__", "node_modules", ".git", ".ingest_cache"}
+
     files: List[Path] = []
     for p in root.rglob("*"):
         if p.is_file() and p.suffix.lower() in ALLOWED_EXTS:
-            files.append(p)
+            if not any(d in p.parts for d in SKIP_DIRS):
+                files.append(p)
     files.sort()
 
     print(f"[Phase5+Optimization] root={root}")
@@ -785,10 +950,86 @@ def main() -> int:
     ok = failed = skipped = 0
     ocr_used = 0
     text_extraction_used = 0
+    marker_used = 0
     tables_extracted = 0
     images_extracted = 0
 
     with requests.Session() as session:
+        # Check Marker availability (Machine 2) — both GPUs
+        marker_available = False
+        if MARKER_ENABLED:
+            _init_marker_pool()
+            available_urls = []
+            for url in MARKER_URLS:
+                try:
+                    r_health = session.get(f"{url}/", timeout=5)
+                    if r_health.status_code == 200:
+                        available_urls.append(url)
+                except Exception:
+                    pass
+            if available_urls:
+                marker_available = True
+                MARKER_URLS[:] = available_urls  # Only keep reachable URLs
+                _init_marker_pool()  # Reinit cycle with valid URLs
+                print(f"[Phase5+Optimization] marker_pool={available_urls} [{len(available_urls)} GPUs CONNECTED]")
+            else:
+                print(f"[Phase5+Optimization] marker_pool={MARKER_URLS} [ALL UNREACHABLE — using pdftotext fallback]")
+        else:
+            print(f"[Phase5+Optimization] marker_server=disabled (set MARKER_ENABLED=true to enable)")
+
+        # ── Parallel Marker pre-fetch ──────────────────────────────────
+        # Pre-fetch Marker JSON for all PDFs concurrently across both GPUs.
+        # This is the primary bottleneck — everything else is fast.
+        marker_cache: Dict[str, Any] = {}  # path_abs → (marker_json, extracted_text)
+
+        if marker_available:
+            import queue
+            from concurrent.futures import ThreadPoolExecutor, as_completed
+
+            pdf_files = [p for p in files if p.suffix.lower() == '.pdf']
+            non_pdf_files = [p for p in files if p.suffix.lower() != '.pdf']
+
+            # Filter to only PDFs that need processing (not skipped)
+            pdfs_to_fetch = []
+            for p in pdf_files:
+                sha = hashlib.sha256(p.read_bytes()[:65536]).hexdigest()[:12]
+                path_rel_check = safe_relpath(p, root)
+                prev = latest_manifest.get(str(p))
+                if prev and prev.get("status") == "ok" and prev.get("sha256", "")[:12] == sha and not args.force:
+                    continue  # Will be skipped in main loop
+                pdfs_to_fetch.append(p)
+
+            if pdfs_to_fetch:
+                print(f"\n[Parallel] Pre-fetching Marker JSON for {len(pdfs_to_fetch)} PDFs across {len(MARKER_URLS)} GPUs...")
+                t_prefetch = time.time()
+
+                def _fetch_one(pdf_path: Path) -> tuple:
+                    url = get_next_marker_url()
+                    try:
+                        s = requests.Session()
+                        mj, mt = run_marker_extract_json(pdf_path, s, marker_url=url)
+                        s.close()
+                        return (str(pdf_path), mj, mt, None)
+                    except Exception as e:
+                        return (str(pdf_path), None, None, str(e))
+
+                # Use N workers = number of available Marker GPUs
+                n_workers = min(len(MARKER_URLS), len(pdfs_to_fetch))
+                with ThreadPoolExecutor(max_workers=n_workers) as executor:
+                    futures = {executor.submit(_fetch_one, p): p for p in pdfs_to_fetch}
+                    for future in as_completed(futures):
+                        path_str, mj, mt, err = future.result()
+                        if err:
+                            print(f"  [Parallel] FAIL {Path(path_str).name}: {err}")
+                        elif mj:
+                            marker_cache[path_str] = (mj, mt)
+                            print(f"  [Parallel] OK   {Path(path_str).name} ({len(mt)} chars)")
+                        else:
+                            print(f"  [Parallel] EMPTY {Path(path_str).name}")
+
+                print(f"[Parallel] Pre-fetched {len(marker_cache)}/{len(pdfs_to_fetch)} PDFs in {time.time()-t_prefetch:.1f}s\n")
+
+        # ── Main processing loop (now with cached Marker results) ─────
         for path_abs in files:
             t0 = time.time()
             path_rel = safe_relpath(path_abs, root)
@@ -888,7 +1129,83 @@ def main() -> int:
                     # Phase 1 Enhancement: Detect content type and route extraction
                     paragraphs: List[Tuple[int, str]] = []
 
-                    if ocr_extractor is not None:
+                    # Marker (remote GPU) with Scholarly Fidelity Gate + Bbox extraction
+                    bbox_chunks = None  # Will hold bbox-aware chunks if Marker JSON succeeds
+                    marker_json_available = False  # Track whether Marker JSON succeeded (for table bypass)
+
+                    if marker_available:
+                        logger.info(f"Using Marker (remote) for: {path_rel}")
+
+                        # Use pre-fetched Marker JSON if available (parallel pre-fetch)
+                        cached = marker_cache.get(str(path_abs))
+                        if cached:
+                            marker_json, md_text = cached
+                        else:
+                            # Fallback: fetch now (wasn't pre-fetched)
+                            marker_url = get_next_marker_url()
+                            marker_json, md_text = run_marker_extract_json(path_abs, session, marker_url=marker_url)
+
+                        if marker_json is None:
+                            # Fallback to markdown-only mode
+                            md_text = run_marker_extract(path_abs, session)
+
+                        if not md_text:
+                            md_text = run_marker_extract(path_abs, session)
+
+                        # ALWAYS extract bboxes from Marker JSON when available
+                        # Tables and bboxes are decoupled from the text routing decision
+                        if marker_json is not None:
+                            try:
+                                from markdown_chunker import chunk_marker_json
+                                bbox_chunks = chunk_marker_json(marker_json)
+                                marker_json_available = True
+                            except Exception as e:
+                                logger.warning(f"Failed to extract bbox chunks: {e}")
+
+                        # Run Scholarly Fidelity Gate — ONLY decides prose text source
+                        try:
+                            from scholarly_fidelity_gate import compare_scholarly_fidelity
+                            from markdown_chunker import chunk_markdown
+                            pt_text = run_pdftotext_layout(path_abs)
+                            fidelity = compare_scholarly_fidelity(pt_text, md_text, path_abs.name)
+                            base_record["fidelity_decision"] = fidelity.decision
+                            base_record["fidelity_confidence"] = fidelity.confidence
+                            print(f"  fidelity={fidelity.decision} (confidence={fidelity.confidence:.2f}) {fidelity.reason}")
+
+                            if fidelity.use_marker_for_text and bbox_chunks:
+                                # Marker wins for text: use bbox-aware chunks for paragraphs
+                                for bc in bbox_chunks:
+                                    paragraphs.extend(page_paragraphs(bc["page_start"], bc["text"]))
+                                base_record["extraction_method"] = "marker+bbox"
+                                base_record["has_bboxes"] = True
+                            elif fidelity.use_marker_for_text:
+                                # Marker wins but no JSON — use markdown chunker
+                                chunks_raw = chunk_markdown(md_text)
+                                for page_no, chunk_text in chunks_raw:
+                                    paragraphs.extend(page_paragraphs(page_no, chunk_text))
+                                base_record["extraction_method"] = "marker"
+                            else:
+                                # pdftotext wins for text — but Marker tables/bboxes still used
+                                pages = split_pages(pt_text)
+                                for page_no, page_text in pages:
+                                    paragraphs.extend(page_paragraphs(page_no, page_text))
+                                base_record["extraction_method"] = "pdftotext+marker_tables"
+                                base_record["has_bboxes"] = marker_json_available
+                        except ImportError:
+                            # Fidelity gate not available — use Marker directly
+                            if bbox_chunks:
+                                for bc in bbox_chunks:
+                                    paragraphs.extend(page_paragraphs(bc["page_start"], bc["text"]))
+                                base_record["extraction_method"] = "marker+bbox"
+                                base_record["has_bboxes"] = True
+                            else:
+                                pages = split_marker_pages(md_text)
+                                for page_no, page_text in pages:
+                                    paragraphs.extend(page_paragraphs(page_no, page_text))
+                                base_record["extraction_method"] = "marker"
+                        marker_used += 1
+
+                    elif ocr_extractor is not None:
                         # Detect content type (with monitoring)
                         if monitor:
                             with monitor.operation("content_detection", {"file": path_rel}):
@@ -925,13 +1242,22 @@ def main() -> int:
                                 base_record["extraction_method"] = "layout_aware"
                                 text_extraction_used += 1
                             else:
-                                # Use fast pdftotext path for text-based PDFs
-                                logger.info(f"Using pdftotext for text-based PDF: {path_rel}")
-                                pdf_text = run_pdftotext_layout(path_abs)
-                                pages = split_pages(pdf_text)
-                                for page_no, page_text in pages:
-                                    paragraphs.extend(page_paragraphs(page_no, page_text))
-                                base_record["extraction_method"] = "pdftotext"
+                                # Use Marker (remote GPU) if available, else pdftotext
+                                if marker_available:
+                                    logger.info(f"Using Marker for text-based PDF: {path_rel}")
+                                    md_text = run_marker_extract(path_abs, session)
+                                    pages = split_marker_pages(md_text)
+                                    for page_no, page_text in pages:
+                                        paragraphs.extend(page_paragraphs(page_no, page_text))
+                                    base_record["extraction_method"] = "marker"
+                                    marker_used += 1
+                                else:
+                                    logger.info(f"Using pdftotext for text-based PDF: {path_rel}")
+                                    pdf_text = run_pdftotext_layout(path_abs)
+                                    pages = split_pages(pdf_text)
+                                    for page_no, page_text in pages:
+                                        paragraphs.extend(page_paragraphs(page_no, page_text))
+                                    base_record["extraction_method"] = "pdftotext"
                                 text_extraction_used += 1
                         else:
                             # Use OCR for scanned/hybrid/image-heavy PDFs
@@ -990,21 +1316,35 @@ def main() -> int:
                                 base_record["ocr_confidence"] = None  # Could be enhanced
                             ocr_used += 1
                     else:
-                        # Fallback to pdftotext (OCR not available)
-                        logger.info(f"Using pdftotext (OCR not available): {path_rel}")
-                        pdf_text = run_pdftotext_layout(path_abs)
-                        pages = split_pages(pdf_text)
-                        for page_no, page_text in pages:
-                            paragraphs.extend(page_paragraphs(page_no, page_text))
-                        base_record["extraction_method"] = "pdftotext"
+                        # Fallback: Marker if available, else pdftotext
+                        if marker_available:
+                            logger.info(f"Using Marker (OCR extractor not available): {path_rel}")
+                            md_text = run_marker_extract(path_abs, session)
+                            pages = split_marker_pages(md_text)
+                            for page_no, page_text in pages:
+                                paragraphs.extend(page_paragraphs(page_no, page_text))
+                            base_record["extraction_method"] = "marker"
+                            marker_used += 1
+                        else:
+                            logger.info(f"Using pdftotext (OCR not available): {path_rel}")
+                            pdf_text = run_pdftotext_layout(path_abs)
+                            pages = split_pages(pdf_text)
+                            for page_no, page_text in pages:
+                                paragraphs.extend(page_paragraphs(page_no, page_text))
+                            base_record["extraction_method"] = "pdftotext"
                         base_record["content_type"] = "text_based"  # Assumed
                         text_extraction_used += 1
 
                     chunks = chunk_paragraphs_page_aware(doc_id, paragraphs)
 
                     # Phase 2 Enhancement: Extract tables from PDFs
+                    # Skip Camelot when Marker JSON succeeded (tables already extracted by GPU)
                     table_chunks = []
-                    if table_extractor is not None:
+                    if marker_json_available:
+                        # Tables already captured in bbox_chunks from Marker JSON
+                        # (block_type "Table" blocks are included with bboxes)
+                        logger.info(f"Skipping Camelot — tables extracted by Marker GPU for {path_rel}")
+                    elif table_extractor is not None:
                         try:
                             # Phase 5: Check cache for table extraction results
                             cached_tables = None
@@ -1040,7 +1380,7 @@ def main() -> int:
                                 logger.info(f"Found {table_result.total_tables} tables on pages {table_result.pages_with_tables}")
 
                                 # Create table directory for this document
-                                media_dir = Path(".extracted_media") / doc_id / "tables"
+                                media_dir = (root / ".extracted_media" / doc_id / "tables").resolve()
                                 media_dir.mkdir(parents=True, exist_ok=True)
 
                                 # Create chunks for each table
@@ -1066,8 +1406,12 @@ def main() -> int:
                                     )
 
                                     # Update metadata with file paths
-                                    chunk_data["metadata"]["table_file_csv"] = str(csv_path.relative_to(Path.cwd()))
-                                    chunk_data["metadata"]["table_file_json"] = str(json_path.relative_to(Path.cwd()))
+                                    try:
+                                        chunk_data["metadata"]["table_file_csv"] = str(csv_path.relative_to(root.resolve()))
+                                        chunk_data["metadata"]["table_file_json"] = str(json_path.relative_to(root.resolve()))
+                                    except ValueError:
+                                        chunk_data["metadata"]["table_file_csv"] = str(csv_path)
+                                        chunk_data["metadata"]["table_file_json"] = str(json_path)
 
                                     # Create Chunk object
                                     chunk_id = f"{doc_id}:{len(chunks) + len(table_chunks):05d}"
@@ -1112,13 +1456,13 @@ def main() -> int:
                             if cached_images:
                                 # Use cached results
                                 image_result = cached_images
-                                media_dir = Path(".extracted_media") / doc_id / "images"
+                                media_dir = (root / ".extracted_media" / doc_id / "images").resolve()
                             else:
                                 # Extract images and cache results
                                 logger.info(f"Extracting images from {path_rel}")
 
                                 # Create image directory for this document
-                                media_dir = Path(".extracted_media") / doc_id / "images"
+                                media_dir = (root / ".extracted_media" / doc_id / "images").resolve()
 
                                 # Phase 5: Wrap image extraction with monitoring
                                 if monitor:
@@ -1199,9 +1543,15 @@ def main() -> int:
                                     metadata_file_path = media_dir / f"{image_base_name}.json"
 
                                     if image_file_path.exists():
-                                        chunk_data["metadata"]["image_file"] = str(image_file_path.relative_to(Path.cwd()))
+                                        try:
+                                            chunk_data["metadata"]["image_file"] = str(image_file_path.relative_to(root.resolve()))
+                                        except ValueError:
+                                            chunk_data["metadata"]["image_file"] = str(image_file_path)
                                     if metadata_file_path.exists():
-                                        chunk_data["metadata"]["image_metadata_file"] = str(metadata_file_path.relative_to(Path.cwd()))
+                                        try:
+                                            chunk_data["metadata"]["image_metadata_file"] = str(metadata_file_path.relative_to(root.resolve()))
+                                        except ValueError:
+                                            chunk_data["metadata"]["image_metadata_file"] = str(metadata_file_path)
 
                                     # Create Chunk object
                                     chunk_id = f"{doc_id}:{len(chunks) + len(image_chunks):05d}"
@@ -1309,7 +1659,28 @@ def main() -> int:
                         # Add image-specific metadata if this is an image chunk
                         elif hasattr(c, '_image_metadata'):
                             chunk_metadata.update(c._image_metadata)
+
+                        # Inject bounding box data from bbox_chunks (visual grounding)
+                        if bbox_chunks is not None and c.chunk_index < len(bbox_chunks):
+                            bc = bbox_chunks[c.chunk_index]
+                            bboxes = bc.get("bboxes", [])
+                            if bboxes:
+                                # Store as JSON string (Chroma only accepts scalar metadata)
+                                chunk_metadata["bboxes"] = json.dumps(bboxes)
+                                chunk_metadata["has_bboxes"] = True
+                            else:
+                                chunk_metadata["has_bboxes"] = False
                         else:
+                            chunk_metadata["has_bboxes"] = False
+
+                        # Sanitize metadata for Chroma (only str/int/float/bool/None)
+                        for mk, mv in list(chunk_metadata.items()):
+                            if isinstance(mv, (list, tuple)):
+                                chunk_metadata[mk] = str(mv)
+                            elif mv is not None and not isinstance(mv, (str, int, float, bool)):
+                                chunk_metadata[mk] = str(mv)
+
+                        if not hasattr(c, '_table_metadata') and not hasattr(c, '_image_metadata'):
                             # Default values for non-table/non-image chunks
                             chunk_metadata.update({
                                 "content_type": "text",
@@ -1344,7 +1715,7 @@ def main() -> int:
     print("\n[Phase5+Optimization Summary]")
     print(f"  ok={ok} failed={failed} skipped={skipped} total={len(files)}")
     if ocr_extractor is not None:
-        print(f"  extraction_methods: ocr={ocr_used}, pdftotext={text_extraction_used}")
+        print(f"  extraction_methods: marker={marker_used}, ocr={ocr_used}, pdftotext={text_extraction_used}")
     if table_extractor is not None:
         print(f"  tables_extracted={tables_extracted}")
     if image_extractor is not None:

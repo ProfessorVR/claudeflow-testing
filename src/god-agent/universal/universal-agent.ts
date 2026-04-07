@@ -499,6 +499,25 @@ export interface WriteResult {
       issues: string[];
     }>;
   };
+  /** Rolling context generation diagnostics */
+  rollingContext?: {
+    used: boolean;
+    totalSections: number;
+    sectionStats: Array<{
+      heading: string;
+      wordCount: number;
+      citationCount: number;
+      quotationCount: number;
+      citedAuthors: string[];
+      promptChars: number;
+    }>;
+    citationTracker: {
+      totalCitations: number;
+      totalQuotations: number;
+      authorCitationCounts: Record<string, number>;
+    };
+    sharedPoolEvictions: number;
+  };
 }
 
 /**
@@ -2693,6 +2712,7 @@ export class UniversalAgent {
     multiStep?: boolean;
     nliVerify?: boolean;
     candidateSelection?: boolean;
+    rollingContext?: boolean;
     pipelineVersion?: 'legacy' | 'v2';
   } = {}): Promise<WriteResult> {
     return this.writePipeline.write(topic, options);

@@ -53,6 +53,12 @@
 
 set -euo pipefail
 
+# Ensure pyenv is on PATH (vLLM, Python tools)
+if [ -d "$HOME/.pyenv" ]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"
+fi
+
 # Resolve script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LAUNCH_DIR="${SCRIPT_DIR}/god-launch.d"

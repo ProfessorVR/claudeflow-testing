@@ -113,7 +113,7 @@ export class ModelRouter {
   /**
    * Make an LLM call with automatic fallback between backends.
    */
-  async call(request: LLMRequest): Promise<LLMResponse> {
+  async call(request: LLMRequest, abortSignal?: AbortSignal): Promise<LLMResponse> {
     const backends = this.resolveBackendOrder(request);
     const errors: string[] = [];
 
@@ -122,13 +122,13 @@ export class ModelRouter {
     for (const backend of backends) {
       for (let attempt = 0; attempt <= this.config.maxRetries; attempt++) {
         try {
-          return await this.callBackend(backend, request);
+          return await this.callBackend(backend, request, abortSignal);
         } catch (error) {
           lastError = error instanceof Error ? error : new Error(String(error));
           errors.push(`${backend}[${attempt}]: ${lastError.message}`);
 
-          // Don't retry on 4xx errors (bad request, auth failure)
-          if (this.isNonRetryable(lastError)) {
+          // Don't retry on 4xx errors (bad request, auth failure) or abort
+          if (this.isNonRetryable(lastError) || lastError.name === 'AbortError') {
             break;
           }
 
@@ -152,12 +152,13 @@ export class ModelRouter {
   async callJSON<T>(
     request: LLMRequest,
     validator: (raw: unknown) => T,
+    abortSignal?: AbortSignal,
   ): Promise<T> {
     const response = await this.call({
       ...request,
       jsonMode: true,
       temperature: request.temperature ?? 0.3, // Lower temp for structured output
-    });
+    }, abortSignal);
 
     // Extract JSON from response (handle markdown code blocks, etc.)
     const jsonStr = this.extractJSON(response.content);
@@ -179,14 +180,14 @@ export class ModelRouter {
    */
   async generateText(
     prompt: string,
-    options: { model?: string; maxTokens?: number; timeout?: number; costTier?: 'low' | 'high' } = {},
+    options: { model?: string; maxTokens?: number; timeout?: number; costTier?: 'low' | 'high'; abortSignal?: AbortSignal } = {},
   ): Promise<string> {
     const response = await this.call({
       systemPrompt: '',
       userPrompt: prompt,
       maxTokens: options.maxTokens ?? 4000,
       costTier: options.costTier ?? 'high',
-    });
+    }, options.abortSignal);
     return response.content;
   }
 
@@ -284,25 +285,29 @@ export class ModelRouter {
   private async callBackend(
     backend: BackendType,
     request: LLMRequest,
+    abortSignal?: AbortSignal,
   ): Promise<LLMResponse> {
     if (backend === 'anthropic') {
-      return this.callAnthropic(request);
+      return this.callAnthropic(request, abortSignal);
     }
-    return this.callVLLM(request);
+    return this.callVLLM(request, abortSignal);
   }
 
   /**
    * Call Anthropic API via native fetch (Fix 27: @anthropic-ai/sdk fails in daemon processes on WSL2).
    */
-  private async callAnthropic(request: LLMRequest): Promise<LLMResponse> {
+  private async callAnthropic(request: LLMRequest, externalSignal?: AbortSignal): Promise<LLMResponse> {
     if (!this.anthropicAvailable) {
       throw new Error('Anthropic not available (missing API key)');
     }
 
     const timeoutMs = Math.max(this.config.timeoutMs, 120000); // At least 2 minutes for long academic requests
+    const signals: AbortSignal[] = [AbortSignal.timeout(timeoutMs)];
+    if (externalSignal) signals.push(externalSignal);
+    const composedSignal = signals.length > 1 ? AbortSignal.any(signals) : signals[0];
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      signal: AbortSignal.timeout(timeoutMs),
+      signal: composedSignal,
       headers: {
         'content-type': 'application/json',
         'x-api-key': this.config.anthropicApiKey,
@@ -346,9 +351,14 @@ export class ModelRouter {
   /**
    * Call vLLM via OpenAI-compatible API.
    */
-  private async callVLLM(request: LLMRequest): Promise<LLMResponse> {
+  private async callVLLM(request: LLMRequest, externalSignal?: AbortSignal): Promise<LLMResponse> {
     if (!this.vllmClient) {
       throw new Error('vLLM client not initialized');
+    }
+
+    const requestOptions: Record<string, unknown> = {};
+    if (externalSignal) {
+      requestOptions.signal = externalSignal;
     }
 
     const response = await this.vllmClient.chat.completions.create({
@@ -359,7 +369,7 @@ export class ModelRouter {
         { role: 'system', content: request.systemPrompt },
         { role: 'user', content: request.userPrompt },
       ],
-    });
+    }, requestOptions);
 
     const content = response.choices[0]?.message?.content ?? '';
     const usage = response.usage;

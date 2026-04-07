@@ -301,6 +301,7 @@ describe('ModelRouter', () => {
 
       expect(callSpy).toHaveBeenCalledWith(
         expect.objectContaining({ temperature: 0.3, jsonMode: true }),
+        undefined, // abortSignal
       );
     });
   });

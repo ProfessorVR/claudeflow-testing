@@ -114,6 +114,9 @@ import {
 import { writeFileSync, readFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
 import { join } from 'path';
 
+// Pipeline abort mechanism (Phase 5 Stream Deck integration)
+import { PipelineAbortController, PipelineAbortError } from '../abort/index.js';
+
 // Note: ICheckpointData imported from coding-agent-executor.ts
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -294,9 +297,16 @@ export class CodingPipelineOrchestrator {
       pipelineId,
     }, this.log.bind(this));
 
+    // Pipeline abort mechanism (Phase 5 Stream Deck integration)
+    const abortCtrl = new PipelineAbortController(process.cwd(), (msg) => this.log(msg));
+    abortCtrl.start();
+
     // Execute phases
     try {
       for (const phase of pipelineConfig.phases) {
+        // Check abort between phases (sync check for blocked event loop)
+        abortCtrl.checkSync();
+
         this.log(`Executing phase: ${phase}`);
 
         // Update current phase in memory
@@ -335,9 +345,17 @@ export class CodingPipelineOrchestrator {
         }
       }
     } catch (error) {
-      this.log(`Pipeline execution error: ${error}`);
-      failedPhase = pipelineConfig.phases[completedPhases.length];
-      errorMessage = error instanceof Error ? error.message : String(error);
+      if (error instanceof PipelineAbortError || (error instanceof Error && error.name === 'AbortError')) {
+        this.log('Pipeline aborted by user -- partial results preserved');
+        failedPhase = pipelineConfig.phases[completedPhases.length];
+        errorMessage = 'Pipeline aborted by user';
+      } else {
+        this.log(`Pipeline execution error: ${error}`);
+        failedPhase = pipelineConfig.phases[completedPhases.length];
+        errorMessage = error instanceof Error ? error.message : String(error);
+      }
+    } finally {
+      abortCtrl.stop();
     }
 
     // [REQ-REFACTOR-003] Use extracted finalization function
