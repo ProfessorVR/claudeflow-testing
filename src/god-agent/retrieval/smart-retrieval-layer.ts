@@ -259,7 +259,11 @@ export class SmartRetrievalLayer {
       return expanded;
     } catch (error) {
       this.logger.error('SmartRetrievalLayer.retrieveContext error:', error);
-      return [];
+      // F-13: Throw on infrastructure errors instead of silently returning [].
+      // Callers (retrieval-stage per-query loop) have their own try/catch for
+      // graceful degradation on transient failures. The orchestrator's circuit
+      // breaker handles the case where ALL queries fail (0 chunks total).
+      throw error;
     }
   }
 
@@ -684,7 +688,6 @@ export class SmartRetrievalLayer {
         return; // Can't stat, keep existing cache
       }
     }
-    this.kgLoaded = true;
 
     // Load KUs (Zod-validated at parse boundary)
     try {
@@ -732,6 +735,10 @@ export class SmartRetrievalLayer {
       this.kgEdges = [];
       this.kgEdgeMtimeMs = 0;
     }
+
+    // F-42: Only mark as loaded AFTER both loads complete.
+    // Prevents reload loops when file reads persistently fail.
+    this.kgLoaded = true;
   }
 
   /**

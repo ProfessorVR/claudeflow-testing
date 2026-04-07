@@ -3278,6 +3278,15 @@ ${sectionContent}`;
     let corpusChunks = retrieval.chunks;
     const corpusContextInfo = retrieval.corpusContextInfo;
     let corpusConstraint: CorpusConstraint | undefined = retrieval.corpusConstraint ?? undefined;
+
+    // F-13 Circuit breaker: abort if corpus mode produced 0 chunks.
+    // This prevents silent degradation into ungrounded hallucination.
+    if (corpusChunks.length === 0 && effectiveWhitelistMode) {
+      throw new Error(
+        'Retrieval produced 0 corpus chunks — cannot generate corpus-grounded content without evidence. ' +
+        'Check services: curl http://localhost:8001/api/v2/heartbeat (ChromaDB) and curl http://localhost:8000/ (embedding)'
+      );
+    }
     let primaryAuthors = retrieval.primaryAuthors;
     let knowledgeUnitLines = retrieval.knowledgeUnits;
     let structuralEdgeLines = retrieval.structuralEdges;

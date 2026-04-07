@@ -48,7 +48,8 @@ import {
   type VerificationDecision,
   type ReviewContext,
 } from '../__experimental__/human-verification.js';
-import { type ReasoningEdge, parseReasoningEdge } from '../retrieval/types.js';
+import { type ReasoningEdge } from '../retrieval/types.js';
+import { loadReasoningEdgesSync } from '../shared/jsonl-loaders.js';
 
 // ============================================================================
 // Quality Integration Types
@@ -218,61 +219,22 @@ const CONTRADICTORY_RELATIONS: Record<string, Set<string>> = {
 };
 
 /** Module-level edge cache — loaded once, reused across all calls */
-let _edgeCache: ReasoningEdge[] | null = null;
-let _edgeCachePath: string | null = null;
-let _edgeCacheMtimeMs = 0;
-
 /**
- * Load reasoning edges from god-reason/reasoning.jsonl.
- * Cached at module level with mtime invalidation (H-03).
- *
- * @param projectRoot - Root directory of the project (defaults to cwd)
- * @returns Array of reasoning edges (empty if file missing or malformed)
+ * Load reasoning edges via shared loader (Zod-validated, mtime-cached).
+ * Lowercases source/relation/target for coherence matching.
  */
 function loadReasoningEdges(projectRoot?: string): ReasoningEdge[] {
-  const root = projectRoot ?? process.cwd();
-  const edgePath = path.join(root, 'god-reason', 'reasoning.jsonl');
-
   try {
-    if (!fs.existsSync(edgePath)) {
-      _edgeCache = [];
-      _edgeCachePath = edgePath;
-      _edgeCacheMtimeMs = 0;
-      return _edgeCache;
+    const edges = loadReasoningEdgesSync(projectRoot);
+    // Lowercase for coherence matching (this module compares against text patterns)
+    for (const edge of edges) {
+      edge.source = edge.source.toLowerCase();
+      edge.relation = edge.relation.toLowerCase();
+      edge.target = edge.target.toLowerCase();
     }
-
-    // H-03: Check mtime — return cache only if file unchanged
-    const mtimeMs = fs.statSync(edgePath).mtimeMs;
-    if (_edgeCache !== null && _edgeCachePath === edgePath && mtimeMs === _edgeCacheMtimeMs) {
-      return _edgeCache;
-    }
-
-    const raw = fs.readFileSync(edgePath, 'utf-8');
-    const edges: ReasoningEdge[] = [];
-
-    for (const line of raw.split('\n')) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
-      const edge = parseReasoningEdge(trimmed);
-      if (edge && edge.source && edge.relation && edge.target) {
-        // Lowercase source/relation/target for coherence matching
-        edge.source = edge.source.toLowerCase();
-        edge.relation = edge.relation.toLowerCase();
-        edge.target = edge.target.toLowerCase();
-        edges.push(edge);
-      }
-    }
-
-    _edgeCache = edges;
-    _edgeCachePath = edgePath;
-    _edgeCacheMtimeMs = mtimeMs;
     return edges;
   } catch {
-    // Graceful degradation — file unreadable
-    _edgeCache = [];
-    _edgeCachePath = edgePath;
-    _edgeCacheMtimeMs = 0;
-    return _edgeCache;
+    return [];
   }
 }
 
@@ -430,11 +392,11 @@ export function validateEdgeCoherence(
 }
 
 /**
- * Clear the module-level edge cache (useful for testing or after file updates)
+ * Clear the edge cache (delegates to shared loader)
  */
 export function clearEdgeCache(): void {
-  _edgeCache = null;
-  _edgeCachePath = null;
+  const { clearJSONLCaches } = require('../shared/jsonl-loaders.js');
+  clearJSONLCaches();
 }
 
 // ============================================================================

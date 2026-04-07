@@ -2551,16 +2551,12 @@ export class ExpressServer implements IExpressServer {
 
       const startTime = Date.now();
 
-      // Read god-learn knowledge units directly
-      const knowledgePath = path.join(process.cwd(), 'god-learn', 'knowledge.jsonl');
+      // Read god-learn knowledge units via shared Zod-validated loader (F-26)
+      const { loadKnowledgeUnitsSync } = await import('../shared/jsonl-loaders.js');
       let knowledgeResults: any[] = [];
 
       try {
-        const content = await fs.promises.readFile(knowledgePath, 'utf-8');
-        const allKUs = content
-          .split('\n')
-          .filter(line => line.trim())
-          .map(line => JSON.parse(line));
+        const allKUs = loadKnowledgeUnitsSync();
 
         // Filter by corpus if specified and do keyword search
         const queryLower = query.toLowerCase();
@@ -2581,8 +2577,7 @@ export class ExpressServer implements IExpressServer {
           })
           .slice(0, 10) // Limit to 10 results
           .map(ku => {
-            const confidenceMap: Record<string, number> = { high: 0.9, medium: 0.7, low: 0.5 };
-            const source = ku.sources && ku.sources.length > 0 ? ku.sources[0] : {};
+            const source = ku.sources && ku.sources.length > 0 ? ku.sources[0] : {} as any;
 
             return {
               type: 'knowledge',
@@ -2592,8 +2587,8 @@ export class ExpressServer implements IExpressServer {
               sourceAuthor: source.author || '',
               sourcePages: source.pages || '',
               domain: corpus || 'unknown',
-              quality: confidenceMap[ku.confidence] || 0.5,
-              tags: ku.tags || [],
+              quality: ku.confidence, // Already normalized to number by Zod
+              tags: (ku as any).tags || [],
             };
           });
       } catch (error: any) {

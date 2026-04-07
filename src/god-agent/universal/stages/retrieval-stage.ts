@@ -20,6 +20,7 @@
 import * as fs from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import * as path from 'node:path';
+import { loadKnowledgeUnitsSync, loadReasoningEdgesSync } from '../../shared/jsonl-loaders.js';
 import type { ContextChunk, RetrievalOptions } from '../../retrieval/types.js';
 import type { CorpusConstraint, CorpusSource } from '../../core/writing/index.js';
 import { buildCorpusConstraint } from '../../core/writing/index.js';
@@ -289,12 +290,10 @@ export async function runRetrievalStage(
       recordDegraded(ctx, 'retrieval', 'No smartRetrieval available');
     }
 
-    // ===== Knowledge units (H-10: async read) =====
+    // ===== Knowledge units (Zod-validated via shared loader) =====
     try {
-      const kuPath = path.join(process.cwd(), 'god-learn', 'knowledge.jsonl');
-      if (fs.existsSync(kuPath)) {
-        const lines = (await readFile(kuPath, 'utf-8')).split('\n').filter(Boolean);
-        const allKUs = lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+      const allKUs = loadKnowledgeUnitsSync();
+      if (allKUs.length > 0) {
         const topicLower = topic.toLowerCase();
         const domainKeywords = getDomainKeywords(loadDomainConfig());
         const relevantDomains = domainKeywords.filter(d => topicLower.includes(d));
@@ -357,12 +356,10 @@ export async function runRetrievalStage(
       recordWarning(ctx, 'retrieval', `Knowledge unit loading failed: ${e}`);
     }
 
-    // ===== Structural reasoning edges (H-10: async read) =====
+    // ===== Structural reasoning edges (Zod-validated via shared loader) =====
     try {
-      const edgePath = path.join(process.cwd(), 'god-reason', 'reasoning.jsonl');
-      if (fs.existsSync(edgePath)) {
-        const edgeLines = (await readFile(edgePath, 'utf-8')).split('\n').filter(Boolean);
-        const allEdges = edgeLines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+      const allEdges = loadReasoningEdgesSync();
+      if (allEdges.length > 0) {
         const topicTerms = topic.toLowerCase().split(/\s+/).filter(t => t.length > 3);
         const relevantEdges = allEdges.filter((e: any) => {
           const src = (e.source || '').toLowerCase();

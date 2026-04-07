@@ -43,7 +43,8 @@ const KnowledgeUnitSchema = z.object({
 }).passthrough();
 
 const ReasoningEdgeSchema = z.object({
-  id: z.string(),
+  id: z.string().optional(),
+  reason_id: z.string().optional(),
   source: z.string(),
   relation: z.string(),
   target: z.string(),
@@ -58,7 +59,10 @@ const ReasoningEdgeSchema = z.object({
   derivation: z.string().optional(),
   corroboration_method: z.string().optional(),
   status: z.string().optional(),
-}).passthrough();
+}).passthrough().transform((e) => ({
+  ...e,
+  id: e.id ?? e.reason_id ?? '',
+}));
 
 /** Parsed, runtime-validated KnowledgeUnit with numeric confidence. */
 export type KnowledgeUnit = z.infer<typeof KnowledgeUnitSchema> & {

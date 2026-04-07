@@ -71,9 +71,13 @@ try {
       if (eqIdx === -1) continue;
       const key = trimmed.slice(0, eqIdx).trim();
       const value = trimmed.slice(eqIdx + 1).trim().replace(/^["']|["']$/g, '');
-      // Always prefer .env value — shell may have truncated API keys
+      // F-40: Only set if not already defined by shell/CI/Docker env vars.
+      // Exception: ANTHROPIC_API_KEY is always overwritten because shell
+      // may truncate the 108-char key (Fix 26 legacy behavior).
       if (value) {
-        process.env[key] = value;
+        if (key === 'ANTHROPIC_API_KEY' || !process.env[key]) {
+          process.env[key] = value;
+        }
       }
     }
   }
