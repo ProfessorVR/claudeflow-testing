@@ -1527,6 +1527,7 @@ async function main() {
               // Metrics at root level
               qualityScore: writeResult.qualityScore ?? null,
               wordCount: writeResult.wordCount,
+              bodyWordCount: writeResult.bodyWordCount,
               provenanceLedger: {
                 sources: corpusCitations.map((cit: string) => ({
                   title: cit,
