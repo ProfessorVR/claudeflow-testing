@@ -228,6 +228,9 @@ export interface WriteOptions {
   /** Maximum quality gauntlet revision iterations (default: 0 = scoring only).
    *  Each revision re-calls the LLM. Use with caution for cost/latency. */
   maxGauntletRevisions?: number;
+  /** Explicit word target override (e.g., '500-1000', '800').
+   *  Takes precedence over the length-derived default. */
+  wordTarget?: string;
 }
 
 export class WritePipelineOrchestrator {
@@ -3269,6 +3272,7 @@ ${sectionContent}`;
       corpusCollections: options.corpusCollections,
       corpusMinRelevance: options.corpusMinRelevance,
       length,
+      wordTarget: options.wordTarget,
     }, this.buildRetrievalStageDeps(goldLog), ctx);
 
     let corpusChunks = retrieval.chunks;
@@ -3535,6 +3539,9 @@ ${sectionContent}`;
     content = content.replace(/([^\n])(##\s*\d+\s*\.?\s*\w)/g, '$1\n\n$2');
     content = content.replace(/(^##\s*\d+\.?\s+[^\n]+)\n(?!\n)/gm, '$1\n\n');
 
+    // Capture body word count BEFORE endnotes are appended (mirrors legacy path at line 2871)
+    const bodyWordCount = content.trim().split(/\s+/).filter(Boolean).length;
+
     // V2 Endnote generation (if --enable-endnotes flag is set)
     let endnotesMetadataV2: { generated: boolean; count: number; supportingQuotationsCount: number } = { generated: false, count: 0, supportingQuotationsCount: 0 };
     if (options.enableEndnotes && corpusContextInfo.used && this.deps.smartRetrieval) {
@@ -3595,8 +3602,6 @@ ${sectionContent}`;
         recordWarning(ctx, 'endnotes', `Endnote generation failed: ${error}`);
       }
     }
-
-    const bodyWordCount = content.trim().split(/\s+/).filter(Boolean).length;
 
     // V2 diagnostics
     let multiStepDiagnosticsResult: WriteResult['multiStepDiagnostics'] | undefined;

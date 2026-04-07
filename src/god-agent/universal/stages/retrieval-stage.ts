@@ -71,6 +71,8 @@ export interface RetrievalStageOptions {
   corpusCollections?: string[];
   corpusMinRelevance?: number;
   length?: 'short' | 'medium' | 'long' | 'comprehensive';
+  /** Explicit word target override (e.g., '500-1000'). Takes precedence over length-derived default. */
+  wordTarget?: string;
 }
 
 // =============================================================================
@@ -465,9 +467,12 @@ function buildResult(args: {
     citations: Array.from(new Set(citations)),
   };
 
-  const wordTarget = length === 'comprehensive' || (!length && options.whitelistMode) ? '3,000-3,500' :
-                length === 'long' ? '2,000-2,500' :
-                length === 'medium' ? '1,500-2,000' : '800-1,000';
+  // Explicit --word-target overrides the length-derived default
+  const wordTarget = options.wordTarget
+    ? options.wordTarget
+    : length === 'comprehensive' || (!length && options.whitelistMode) ? '3,000-3,500' :
+      length === 'long' ? '2,000-2,500' :
+      length === 'medium' ? '1,500-2,000' : '800-1,000';
 
   return {
     chunks: corpusChunks,

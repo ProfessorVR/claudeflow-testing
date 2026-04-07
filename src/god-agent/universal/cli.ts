@@ -1461,6 +1461,9 @@ async function main() {
         const maxGauntletRevisionsStr = getFlag(flags, 'max-revisions') as string | undefined;
         const maxGauntletRevisions = maxGauntletRevisionsStr ? parseInt(maxGauntletRevisionsStr) : undefined;
 
+        // Explicit word target override (e.g., --word-target 500-1000)
+        const wordTarget = getFlag(flags, 'word-target') as string | undefined;
+
         // Pipeline version flag (v2 staged pipeline)
         const pipelineVersionFlag = getFlag(flags, 'pipeline-version') as string | undefined;
         const pipelineVersion = pipelineVersionFlag === 'v2' ? 'v2' as const : undefined;
@@ -1506,6 +1509,7 @@ async function main() {
             rollingContext,
             pipelineVersion,
             maxGauntletRevisions,
+            wordTarget,
           });
 
           if (jsonMode) {
