@@ -50,6 +50,7 @@ import {
 } from '../__experimental__/human-verification.js';
 import { type ReasoningEdge } from '../retrieval/types.js';
 import { loadReasoningEdgesSync } from '../shared/jsonl-loaders.js';
+import { getActiveTensions } from '../shared/cross-author-utils.js';
 
 // ============================================================================
 // Quality Integration Types
@@ -267,13 +268,26 @@ function normalizeConcept(raw: string): string {
  *
  * @param text - The generated text to validate
  * @param projectRoot - Project root for locating reasoning.jsonl (defaults to cwd)
+ * @param preloadedEdges - Pre-loaded edges to avoid sync I/O (use loadReasoningEdgesAsync)
  * @returns EdgeCoherenceResult with score and contradiction details
  */
 export function validateEdgeCoherence(
   text: string,
-  projectRoot?: string
+  projectRoot?: string,
+  preloadedEdges?: ReasoningEdge[]
 ): EdgeCoherenceResult {
-  const edges = loadReasoningEdges(projectRoot);
+  let edges: ReasoningEdge[];
+  if (preloadedEdges) {
+    // Apply same lowercasing as loadReasoningEdges() for coherence matching
+    edges = preloadedEdges.map(e => ({
+      ...e,
+      source: e.source.toLowerCase(),
+      relation: e.relation.toLowerCase(),
+      target: e.target.toLowerCase(),
+    }));
+  } else {
+    edges = loadReasoningEdges(projectRoot);
+  }
 
   if (edges.length === 0) {
     return { score: 1.0, contradictions: [], assertionsFound: 0, edgesLoaded: 0 };
@@ -605,6 +619,294 @@ export function stripEndnoteLeaks(text: string): string {
   mainBody = mainBody.replace(/\n[ \t]+\n/g, '\n\n');
 
   return mainBody + endnotesSection;
+}
+
+// ============================================================================
+// Tension-Aware Quality Gate (Phase 3: Cross-Author Integration)
+// ============================================================================
+// Author Conflict Events (H-12)
+// ============================================================================
+
+export interface AuthorConflictEventInput {
+  tensionId: string;
+  nodeA: string;
+  nodeB: string;
+  description: string;
+}
+
+/**
+ * Derive author conflict events from a tension awareness result.
+ * Pure function — maps tension data to structured events without recomputing.
+ * Emits events for ALL detected tensions (both acknowledged and unacknowledged).
+ */
+export function deriveAuthorConflictEvents(
+  facetId: string,
+  tensionsChecked: number,
+  tensionsAcknowledged: number,
+  unacknowledgedTensions: AuthorConflictEventInput[],
+  allActiveTensions: AuthorConflictEventInput[],
+): Array<{
+  facetId: string;
+  authors: string[];
+  relation: string;
+  source: string;
+  target: string;
+  description: string;
+  unacknowledged: boolean;
+  timestamp: string;
+}> {
+  const events: Array<{
+    facetId: string;
+    authors: string[];
+    relation: string;
+    source: string;
+    target: string;
+    description: string;
+    unacknowledged: boolean;
+    timestamp: string;
+  }> = [];
+  const now = new Date().toISOString();
+  const unackIds = new Set(unacknowledgedTensions.map(t => t.tensionId));
+
+  for (const t of allActiveTensions) {
+    // Extract author names from nodeA/nodeB (first word before parenthesis or space)
+    const extractAuthor = (node: string) => node.split(/[\s(]/)[0].trim();
+    events.push({
+      facetId,
+      authors: [extractAuthor(t.nodeA), extractAuthor(t.nodeB)],
+      relation: 'contrasts_with',
+      source: t.nodeA,
+      target: t.nodeB,
+      description: t.description,
+      unacknowledged: unackIds.has(t.tensionId),
+      timestamp: now,
+    });
+  }
+
+  return events;
+}
+
+// ============================================================================
+// OCR Quality Summary (H-14)
+// ============================================================================
+
+/**
+ * Compute OCR quality summary from QuoteSpans that carry ocr_quality scores.
+ * Returns undefined if no spans have scores (current corpus state).
+ */
+export function summarizeOcrQuality(
+  spans: Array<{ ocr_quality?: number }>,
+  threshold = 0.8,
+): { average: number; min: number; max: number; low_quality_count: number } | undefined {
+  const withScores = spans.filter(s => typeof s.ocr_quality === 'number');
+  if (withScores.length === 0) return undefined;
+
+  const scores = withScores.map(s => s.ocr_quality as number);
+  const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+
+  return {
+    average: Math.round(avg * 1000) / 1000,
+    min: Math.min(...scores),
+    max: Math.max(...scores),
+    low_quality_count: scores.filter(s => s < threshold).length,
+  };
+}
+
+// ============================================================================
+// Unanchored Edge Detection (Task #20)
+// ============================================================================
+
+export interface UnanchoredEdge {
+  edgeId: string;
+  relation: string;
+  source: string;
+  target: string;
+  missingConcepts: string[];
+}
+
+/**
+ * Detect reasoning edges that were injected into generation but are not
+ * grounded in any of the bound QuoteSpans. An edge is "unanchored" if
+ * its source or target concept doesn't appear in the retrieved evidence.
+ *
+ * @param activeEdges - Reasoning edges from god-reason/reasoning.jsonl
+ * @param boundSpanTexts - Array of text content from bound QuoteSpans
+ * @param projectRoot - Project root for loading ontology expansions
+ */
+export function detectUnanchoredEdges(
+  activeEdges: ReasoningEdge[],
+  boundSpanTexts: string[],
+  projectRoot?: string,
+): UnanchoredEdge[] {
+  if (activeEdges.length === 0 || boundSpanTexts.length === 0) return [];
+
+  // Build a single lowercase corpus from all bound span texts
+  const corpusLower = boundSpanTexts.join(' ').toLowerCase();
+
+  // Load ontology for concept expansion (Greek/transliteration variants)
+  let ontologyExpansion: Map<string, string[]> = new Map();
+  try {
+    const { loadCompiledIndex } = require('../shared/jsonl-loaders.js');
+    const index = loadCompiledIndex(projectRoot);
+    if (index?.ontologyNodes) {
+      for (const node of index.ontologyNodes) {
+        const name = (node.name || '').toLowerCase();
+        const variants: string[] = [name];
+        if (node.greek) variants.push(node.greek.toLowerCase());
+        if (node.transliteration) variants.push(node.transliteration.toLowerCase());
+        if (node.translation) variants.push(node.translation.toLowerCase());
+        for (const alias of (node.aliases || [])) {
+          if (alias) variants.push(alias.toLowerCase());
+        }
+        ontologyExpansion.set(name, variants.filter(v => v.length >= 3));
+      }
+    }
+  } catch { /* non-fatal */ }
+
+  const unanchored: UnanchoredEdge[] = [];
+
+  for (const edge of activeEdges) {
+    const source = (edge.source || '').toLowerCase();
+    const target = (edge.target || '').toLowerCase();
+    if (!source || !target) continue;
+
+    const missingConcepts: string[] = [];
+
+    for (const concept of [{ name: source, label: edge.source }, { name: target, label: edge.target }]) {
+      // Get expanded variants from ontology
+      const variants = ontologyExpansion.get(concept.name) || [concept.name];
+
+      // Check if ANY variant appears in the bound spans
+      let found = false;
+      for (const variant of variants) {
+        if (variant.length < 5) {
+          // Short terms: use word-boundary match to prevent false positives
+          const re = new RegExp('\\b' + variant.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+          if (re.test(corpusLower)) { found = true; break; }
+        } else {
+          // Longer terms: substring match is safe
+          if (corpusLower.includes(variant)) { found = true; break; }
+        }
+      }
+
+      if (!found) {
+        missingConcepts.push(concept.label || concept.name);
+      }
+    }
+
+    if (missingConcepts.length > 0) {
+      unanchored.push({
+        edgeId: edge.id || edge.reason_id || '?',
+        relation: edge.relation,
+        source: edge.source,
+        target: edge.target,
+        missingConcepts,
+      });
+    }
+  }
+
+  return unanchored;
+}
+
+/** Contrastive discourse markers that indicate the author acknowledges a tension */
+const CONTRASTIVE_MARKERS = [
+  'however', 'in contrast', 'on the other hand', 'whereas', 'while',
+  'nevertheless', 'yet', 'but', 'although', 'despite', 'unlike',
+  'conversely', 'rather than', 'differs from', 'departs from',
+  'shifts from', 'in tension with', 'ambiguity', 'oscillat',
+  'unresolved', 'paradox', 'irreducib',
+  'aporia', 'ambival', 'equivoc', 'on the contrary', 'notwithstanding',
+  'even so', 'dilemma',
+];
+
+export interface TensionAwarenessResult {
+  /** Overall pass: true if all active tensions are acknowledged */
+  passed: boolean;
+  /** Number of active tensions for this topic */
+  tensionsChecked: number;
+  /** Number of tensions acknowledged via contrastive markers */
+  tensionsAcknowledged: number;
+  /** Tensions that were NOT acknowledged in the generated text */
+  unacknowledgedTensions: Array<{
+    tensionId: string;
+    nodeA: string;
+    nodeB: string;
+    description: string;
+  }>;
+}
+
+/**
+ * Validate that generated text acknowledges relevant conceptual tensions.
+ *
+ * When a section discusses concepts that appear in the corpus's documented
+ * tension edges, the text should contain contrastive discourse markers
+ * indicating the author has engaged with (not papered over) the tension.
+ *
+ * @param text - Generated text to validate
+ * @param topicWords - Topic words from the facet/section
+ * @param projectRoot - Project root for locating compiled-index.json
+ * @returns TensionAwarenessResult with pass/fail and details
+ */
+export function validateTensionAwareness(
+  text: string,
+  topicWords: string[],
+  projectRoot?: string,
+): TensionAwarenessResult {
+  const activeTensions = getActiveTensions(topicWords, projectRoot);
+  if (activeTensions.length === 0) {
+    return { passed: true, tensionsChecked: 0, tensionsAcknowledged: 0, unacknowledgedTensions: [] };
+  }
+
+  const textLower = text.toLowerCase();
+  const unacknowledged: TensionAwarenessResult['unacknowledgedTensions'] = [];
+  let acknowledged = 0;
+
+  for (const tension of activeTensions) {
+    // Check if both sides of the tension are mentioned in the text
+    const nodeALower = tension.nodeA.toLowerCase();
+    const nodeBLower = tension.nodeB.toLowerCase();
+
+    // Extract core concept terms from each node.
+    // Strip pipeline abbreviations (DA, BCAP, B&T) and possessives ('s)
+    // before splitting, so "DA's αἴσθησις" yields "αἴσθησις" not "da's".
+    const stripPrefixes = (s: string): string =>
+      s.replace(/^(da|bcap|b&t|bt|met|rhet|phys)\b[''`]?s?\s*/i, '')
+       .replace(/^[''`]s\s*/, '')
+       .trim();
+    const coreTermA = stripPrefixes(nodeALower).split(/[\s(]/)[0];
+    const coreTermB = stripPrefixes(nodeBLower).split(/[\s(]/)[0];
+
+    const mentionsA = coreTermA.length >= 4 && textLower.includes(coreTermA);
+    const mentionsB = coreTermB.length >= 4 && textLower.includes(coreTermB);
+
+    // Only check for contrastive markers if the text discusses BOTH sides
+    if (mentionsA && mentionsB) {
+      const hasContrastiveMarker = CONTRASTIVE_MARKERS.some(marker =>
+        textLower.includes(marker.toLowerCase())
+      );
+
+      if (hasContrastiveMarker) {
+        acknowledged++;
+      } else {
+        unacknowledged.push({
+          tensionId: tension.id || 'T?',
+          nodeA: tension.nodeA,
+          nodeB: tension.nodeB,
+          description: tension.description.slice(0, 200),
+        });
+      }
+    } else {
+      // Text doesn't discuss both sides — tension not applicable here
+      acknowledged++;
+    }
+  }
+
+  return {
+    passed: unacknowledged.length === 0,
+    tensionsChecked: activeTensions.length,
+    tensionsAcknowledged: acknowledged,
+    unacknowledgedTensions: unacknowledged,
+  };
 }
 
 // ============================================================================

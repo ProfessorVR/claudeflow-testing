@@ -44,7 +44,9 @@ export class ProseSanitizer {
     /\[TODO:.*?\]/gi,
     /<<<.*?>>>/g,
     /\[EVIDENCE REQUIRED\]/gi,
-    /\[CITATION NEEDED\]/gi,
+    // [CITATION NEEDED] intentionally NOT stripped — Stage 9a injects these as
+    // visible flags for paragraphs missing parenthetical citations. They must
+    // survive sanitization so the gap is visible in the final output.
 
     // Debug markers
     /\bDEBUG:[^\n]*/gi,

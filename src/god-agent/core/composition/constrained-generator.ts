@@ -402,6 +402,31 @@ export class ConstrainedGenerator {
     parts.push('- Only use quotation marks for approved quotes provided below.');
     parts.push('- Only cite sources that are explicitly provided.');
     parts.push('- Do not introduce claims not covered by the atom plan below.');
+    parts.push('');
+    parts.push('MANDATORY CITATION FORMAT:');
+    parts.push('Every claim, paraphrase, or use of information from a source MUST include an inline parenthetical citation.');
+    parts.push('Format: (Author, *Title*, p. X) or (Author, *Title*, Bekker/section ref).');
+    parts.push('Signal phrases are encouraged but do NOT replace the parenthetical — both must appear together.');
+    parts.push('CORRECT: As Heidegger argues, Dasein is Being-in-the-world (Heidegger, *Being and Time*, p. 78).');
+    parts.push('WRONG: As Heidegger argues, Dasein is Being-in-the-world.');
+    parts.push('');
+    parts.push('STRICT CORPUS CONSTRAINT:');
+    parts.push('You operate in a STRICTLY CLOSED-BOOK environment.');
+    parts.push('You MUST NOT reference, mention, or cite ANY authors, scholars, books, or concepts that are not explicitly provided in the QuoteSpans below.');
+    parts.push('Do NOT use your internal training data to introduce outside commentators (e.g., Nussbaum, Modrak, Kisiel, Caston, Frede) even if they are highly relevant to the topic.');
+    parts.push('If a source is not in the QuoteSpans, it does not exist. Rely EXCLUSIVELY on the provided corpus text.');
+    parts.push('');
+    parts.push('WORK-LEVEL RESTRICTION:');
+    parts.push('An author being present in the QuoteSpans does NOT authorize ALL works by that author.');
+    parts.push('You may only cite a specific work if that exact title appears in the [Source: Author - Title] metadata of the QuoteSpans provided.');
+    parts.push('Example: If QuoteSpans contain text from Heidegger\'s "Basic Concepts of Aristotelian Philosophy" but NOT from "Plato\'s Sophist," you MUST NOT cite "Plato\'s Sophist."');
+    parts.push('Verify every title you cite against the source metadata tags above each QuoteSpan.');
+    parts.push('');
+    parts.push('CITATION DENSITY EXPECTATION:');
+    parts.push('Paraphrasing, synthesizing, and interpreting corpus evidence is expected and required — you are not limited to direct quotation.');
+    parts.push('Every sentence that relies on, paraphrases, or is informed by a QuoteSpan MUST include a parenthetical citation.');
+    parts.push('Aim for at least 1 citation per 2-3 sentences. A paragraph without any citations is unacceptable.');
+    parts.push('When synthesizing multiple sources, cite each one: (Aristotle, *De Anima*, 428a1; Heidegger, *Being and Time*, p. 78).');
 
     if (atomsMode === 'strict') {
       parts.push('');

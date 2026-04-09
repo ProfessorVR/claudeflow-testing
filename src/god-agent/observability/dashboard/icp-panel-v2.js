@@ -812,33 +812,106 @@ function v2RenderQualityPanel(container) {
     ]));
   }
 
-  // Investigation traces (merged from old Investigation panel)
-  let investigationHtml = '';
-  if (session.investigation_results) {
-    const inv = session.investigation_results;
-    investigationHtml = `
-      <div class="v2-investigation-section">
-        <h4 onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? '' : 'none';"
-            style="cursor:pointer;">
-          Investigation Traces &#9660;
-        </h4>
-        <div style="display:none;">
-          ${inv.issues ? `<p>${inv.issues.length} issues found (${(inv.issues.filter(i => i.severity === 'critical') || []).length} critical)</p>` : ''}
-          ${inv.preventionPlan?.blacklistedAuthors?.length ? `<p><strong>Blacklisted:</strong> ${inv.preventionPlan.blacklistedAuthors.join(', ')}</p>` : ''}
-          ${inv.preventionPlan?.strengthenedConstraints?.length ? `<ul>${inv.preventionPlan.strengthenedConstraints.map(c => `<li>${escapeHtml(c)}</li>`).join('')}</ul>` : ''}
-        </div>
-      </div>
-    `;
+  // Edge Coherence
+  if (gates.edge_coherence) {
+    const ec = gates.edge_coherence;
+    const ecDetails = ec.contradictions.length > 0
+      ? ec.contradictions.map(c =>
+          `<div style="margin-bottom:4px;font-size:12px;">
+            <strong>${escapeHtml(c.assertion)}</strong>
+            <span style="color:#666;"> conflicts with </span>
+            <em>${escapeHtml(c.conflictsWith)}</em>
+          </div>`
+        ).join('')
+      : '';
+    gateCards.push(v2GateCard(`Edge Coherence (${(ec.score * 100).toFixed(0)}%)`,
+      ec.score >= 0.8,
+      [`Score: ${(ec.score * 100).toFixed(0)}%`, `Contradictions: ${ec.contradictions.length}`],
+      ecDetails
+    ));
+  }
+
+  // Endnote Leak Detection
+  if (gates.endnote_leaks) {
+    gateCards.push(v2GateCard('Endnote Leak Detection', true, [
+      `Leaks removed: ${gates.endnote_leaks.leaksRemoved || 0}`,
+    ]));
+  }
+
+  // Checkpoints
+  if (gates.checkpoints && gates.checkpoints.length > 0) {
+    gateCards.push(v2GateCard(`Checkpoints (${gates.checkpoints.length})`, true,
+      gates.checkpoints.map(cp => cp.replace(/_/g, ' '))
+    ));
+  }
+
+  // Style Profile
+  if (gates.style_profile) {
+    gateCards.push(v2GateCard('Style Profile', gates.style_profile.applied, [
+      `Profile: ${gates.style_profile.id || 'default'}`,
+      `Applied: ${gates.style_profile.applied ? 'Yes' : 'No'}`,
+    ]));
+  }
+
+  // Bibliography
+  if (gates.bibliography) {
+    gateCards.push(v2GateCard('Bibliography', true, [
+      `Sources: ${gates.bibliography.sources_count || 0}`,
+    ]));
+  }
+
+  // Review Results
+  if (session.review_results) {
+    const cov = session.review_results.claim_coverage;
+    gateCards.push(v2GateCard('Review Results', session.review_results.passed, [
+      `Sentences mapped: ${cov?.mapped_sentences || 0}/${cov?.total_sentences || 0}`,
+      `Orphan sentences: ${cov?.orphan_sentences?.length || 0}`,
+    ]));
+  }
+
+  // Investigation (merged from quality_gates + investigation_results)
+  const invGate = gates.investigation;
+  const invResults = session.investigation_results;
+  if (invGate || invResults) {
+    const invLines = [];
+    if (invGate) {
+      if (invGate.hallucinatedAuthors?.length > 0)
+        invLines.push(`Hallucinated authors: ${invGate.hallucinatedAuthors.join(', ')}`);
+      invLines.push(`Phantom quotations: ${invGate.phantomQuotations || 0}`);
+      invLines.push(`Short sections: ${invGate.shortSections || 0}`);
+    }
+    if (invResults?.issues)
+      invLines.push(`Issues: ${invResults.issues.length} (${invResults.issues.filter(i => i.severity === 'critical').length} critical)`);
+    if (invResults?.preventionPlan?.blacklistedAuthors?.length)
+      invLines.push(`Blacklisted: ${invResults.preventionPlan.blacklistedAuthors.join(', ')}`);
+
+    const invPassed = invGate ? invGate.hallucinatedAuthors.length === 0 : true;
+    gateCards.push(v2GateCard('Investigation', invPassed, invLines));
   }
 
   container.innerHTML = `
     <div class="v2-quality-panel">
+      <div id="v2-provider-health"></div>
       <div class="v2-quality-grid">
         ${gateCards.join('')}
       </div>
-      ${investigationHtml}
     </div>
   `;
+
+  // Provider health (non-blocking, best-effort)
+  fetch('/api/router/circuits')
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      const el = document.getElementById('v2-provider-health');
+      if (!el || !data?.data) return;
+      const circuits = Array.isArray(data.data) ? data.data : Object.entries(data.data).map(([k,v]) => ({...v, name: k}));
+      if (circuits.length === 0) return;
+      const hasOpen = circuits.some(c => c.state === 'open');
+      el.innerHTML = v2GateCard('Provider Health', !hasOpen,
+        circuits.map(c => `${c.name || c.identifier || 'unknown'}: ${c.state}`)
+      );
+    })
+    .catch(() => {});
 }
 
 function v2GateCard(name, passed, stats, expandedContent) {
@@ -1068,6 +1141,7 @@ function v2RenderAdvancedDrawer() {
       <button class="v2-drawer-tab" onclick="v2ShowDrawerTab('stress', this)">Stress Test</button>
       <button class="v2-drawer-tab" onclick="v2ShowDrawerTab('planner', this)">Planner</button>
       <button class="v2-drawer-tab" onclick="v2ShowDrawerTab('heatmap', this)">Heatmap</button>
+      <button class="v2-drawer-tab" onclick="v2ShowDrawerTab('diagnostics', this)">Diagnostics</button>
     </div>
     <div id="v2-drawer-content" class="v2-drawer-content">
       ${v2DrawerTab('binding', s)}
@@ -1081,6 +1155,31 @@ function v2ShowDrawerTab(tab, btn) {
 
   const content = document.getElementById('v2-drawer-content');
   if (content && v2.session) content.innerHTML = v2DrawerTab(tab, v2.session);
+
+  // Async data load for diagnostics tab
+  if (tab === 'diagnostics') {
+    fetch('/api/icp/diagnostics')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        const el = document.getElementById('v2-diagnostics-content');
+        if (!el || !data) return;
+        el.innerHTML = `<div class="v2-drawer-info">
+          <p><strong>API Key:</strong> ${data.envKeyLength || 0} chars</p>
+          <p><strong>CWD:</strong> ${escapeHtml(data.cwd || 'unknown')}</p>
+          <p><strong>Backends:</strong> ${(data.availableBackends || []).join(', ') || 'none'}</p>
+          <p><strong>Router:</strong> ${escapeHtml(data.routerType || 'unknown')}</p>
+          <p><strong>Decomposer:</strong> ${data.hasDecomposer ? 'Yes' : 'No'}</p>
+          <p><strong>Generation:</strong> ${data.hasGeneration ? 'Yes' : 'No'}</p>
+          <hr style="border-color:#333;margin:8px 0;">
+          <p><strong>Quote Similarity Threshold:</strong> 0.70</p>
+          <p><strong>Max Inline Retries:</strong> 2</p>
+        </div>`;
+      })
+      .catch(() => {
+        const el = document.getElementById('v2-diagnostics-content');
+        if (el) el.innerHTML = '<div class="v2-drawer-info muted">Failed to load diagnostics.</div>';
+      });
+  }
 }
 
 function v2DrawerTab(tab, session) {
@@ -1111,6 +1210,9 @@ function v2DrawerTab(tab, session) {
 
     case 'heatmap':
       return '<div class="v2-drawer-info">Heatmap visualization requires generation data. Available after quality gate completion.</div>';
+
+    case 'diagnostics':
+      return '<div id="v2-diagnostics-content" class="v2-drawer-info">Loading diagnostics...</div>';
 
     default:
       return '<div class="v2-drawer-info">Unknown tab.</div>';

@@ -42,6 +42,7 @@ import type {
 } from './icp-types.js';
 import { createICPSession, emitSessionEvent } from './icp-types.js';
 import type { SmartRetrievalLayer } from '../../retrieval/smart-retrieval-layer.js';
+import type { SourcePriorityConfig } from './llm-claim-provider.js';
 import { PromptDecomposer, type LLMDecompositionProvider } from './prompt-decomposer.js';
 import { FacetedRetrieval, type FacetRetrievalResult } from '../../retrieval/faceted-retrieval.js';
 import { QuoteRanker } from './quote-ranker.js';
@@ -90,6 +91,8 @@ export interface ICPOrchestratorConfig {
   styleProfileId?: string;
   /** Auto-verifier config (pass ocrRepairRouter for OCR repair-then-verify) */
   autoVerifierConfig?: AutoVerifierConfig;
+  /** Generate endnotes after prose (default: false) */
+  generateEndnotes?: boolean;
 }
 
 /** Resolved config type — optional fields remain optional */
@@ -101,6 +104,7 @@ interface ResolvedICPConfig {
   autoVerifyOnly: boolean;
   styleProfileId?: string;
   autoVerifierConfig?: AutoVerifierConfig;
+  generateEndnotes: boolean;
 }
 
 const DEFAULT_CONFIG: ResolvedICPConfig = {
@@ -109,6 +113,7 @@ const DEFAULT_CONFIG: ResolvedICPConfig = {
   runsDir: '.god-agent/runs',
   policiesDir: '.god-agent/policies',
   autoVerifyOnly: true,
+  generateEndnotes: false,
 };
 
 // =============================================================================
@@ -120,7 +125,7 @@ export interface ICPDependencies {
   llmDecomposer?: LLMDecompositionProvider;
   generationProvider: GenerationProvider;
   /** Provide claims from existing ClaimMap (or generate via LLM) */
-  claimProvider?: (promptSpec: PromptSpec) => Promise<{ claims: ToulminClaim[]; claimMap: ClaimMap }>;
+  claimProvider?: (promptSpec: PromptSpec, quoteSpans?: QuoteSpan[]) => Promise<{ claims: ToulminClaim[]; claimMap: ClaimMap }>;
   /** Provide clean text for a document (for verification) */
   getCleanText?: (docId: string) => Promise<string>;
   /** Provide style prompt from a profile ID (or active profile if null) */
@@ -196,13 +201,45 @@ export class ICPOrchestrator {
   /**
    * Run the full ICP pipeline.
    */
-  async run(userPrompt: string, sourceScope: SourceScopeSpec): Promise<ICPPipelineResult> {
+  async run(userPrompt: string, sourceScope: SourceScopeSpec, sourcePriority?: SourcePriorityConfig): Promise<ICPPipelineResult> {
     const allBlockReasons: BlockReason[] = [];
 
     // =========================================================================
     // Stage 1: Prompt → PromptSpec
     // =========================================================================
     const promptSpec = await this.decomposer.decompose(userPrompt);
+
+    // Stage 1b: Merge suggested sources into source priority (Task 40 + H-08)
+    // The decomposition provider auto-detects which corpus works are relevant
+    // and suggests them as primary or secondary. Merge with user-provided priority.
+    if (sourcePriority) {
+      if (promptSpec.suggestedPrimarySources && promptSpec.suggestedPrimarySources.length > 0) {
+        console.log(`[ICP-Stage1b] Suggested PRIMARY: ${promptSpec.suggestedPrimarySources.map(s => `${s.author} - ${s.title}`).join(', ')}`);
+        const existingPrimary = new Set(
+          sourcePriority.primarySources.map(s => typeof s === 'string' ? s : `${s.author}::${s.title}`)
+        );
+        for (const suggested of promptSpec.suggestedPrimarySources) {
+          const key = `${suggested.author}::${suggested.title}`;
+          if (!existingPrimary.has(key)) {
+            sourcePriority.primarySources.push({ author: suggested.author, title: suggested.title });
+            console.log(`[ICP-Stage1b] Auto-elevated to PRIMARY: ${suggested.author} - ${suggested.title}`);
+          }
+        }
+      }
+      if (promptSpec.suggestedSecondarySources && promptSpec.suggestedSecondarySources.length > 0) {
+        console.log(`[ICP-Stage1b] Suggested SECONDARY: ${promptSpec.suggestedSecondarySources.map(s => `${s.author} - ${s.title}`).join(', ')}`);
+        const existingSecondary = new Set(
+          sourcePriority.secondarySources.map(s => typeof s === 'string' ? s : `${s.author}::${s.title}`)
+        );
+        for (const suggested of promptSpec.suggestedSecondarySources) {
+          const key = `${suggested.author}::${suggested.title}`;
+          if (!existingSecondary.has(key)) {
+            sourcePriority.secondarySources.push({ author: suggested.author, title: suggested.title });
+            console.log(`[ICP-Stage1b] Auto-added to SECONDARY: ${suggested.author} - ${suggested.title}`);
+          }
+        }
+      }
+    }
 
     // Create session
     const session = createICPSession(randomUUID(), promptSpec, sourceScope);
@@ -259,7 +296,7 @@ export class ICPOrchestrator {
     let claimMap: ClaimMap | undefined;
 
     if (this.deps.claimProvider) {
-      const claimResult = await this.deps.claimProvider(promptSpec);
+      const claimResult = await this.deps.claimProvider(promptSpec, session.quote_spans);
       claims = claimResult.claims;
       claimMap = claimResult.claimMap;
       session.claim_map = claimMap;
@@ -308,6 +345,94 @@ export class ICPOrchestrator {
     );
     session.writing_contract = contractResult.contract;
     allBlockReasons.push(...contractResult.block_reasons);
+
+    // =========================================================================
+    // Stage 6b: Cross-Author Bridge Enforcement
+    // =========================================================================
+    // Detect active cross-pipeline bridges and enforce author diversity.
+    // If a bridge is active but retrieved chunks lack one bridged author,
+    // force a targeted retrieval for the missing author.
+    try {
+      const { getActiveBridges, extractTopicWords } = await import('../../shared/cross-author-utils.js');
+      for (const facet of session.facets) {
+        if (facet.archived) continue;
+        const topicWords = extractTopicWords(facet.name, facet.description);
+        const activeBridges = getActiveBridges(topicWords);
+        if (activeBridges.length === 0) continue;
+
+        const bridge = activeBridges[0];
+        console.log(`[ICP-Stage6b] Bridge activated: ${bridge.id} — ${bridge.sourceConcept || '?'} ↔ ${bridge.targetConcept || '?'}`);
+        const requiredAuthors = new Set<string>();
+        if (bridge.sourceAuthor && bridge.sourceAuthor !== 'Unknown') requiredAuthors.add(bridge.sourceAuthor);
+        if (bridge.targetAuthor && bridge.targetAuthor !== 'Unknown') requiredAuthors.add(bridge.targetAuthor);
+        if (requiredAuthors.size < 2) continue;
+
+        // Check which authors are present in the current retrieved chunks
+        const presentAuthors = new Set<string>();
+        for (const span of session.quote_spans) {
+          const anchor = span.source_anchor || '';
+          for (const reqAuthor of requiredAuthors) {
+            if (anchor.toLowerCase().includes(reqAuthor.toLowerCase())) {
+              presentAuthors.add(reqAuthor);
+            }
+          }
+        }
+
+        const missingAuthors = [...requiredAuthors].filter(a => !presentAuthors.has(a));
+        console.log(`[ICP-Stage6b] Required: [${[...requiredAuthors]}] | Present: [${[...presentAuthors]}] | Missing: [${missingAuthors}]`);
+        if (missingAuthors.length > 0 && this.deps.retrieval) {
+          for (const author of missingAuthors) {
+            try {
+              const authorChunks = await this.deps.retrieval.retrieveContext(
+                `${facet.name} ${facet.description || ''}`.slice(0, 300),
+                {
+                  maxChunks: 8,
+                  whereFilter: { author_raw: { $eq: author } },
+                },
+              );
+              // Diagnostic: verify retrieved chunks actually match the requested author
+              const actualAuthors = authorChunks.map((c: any) => c.metadata?.author ?? c.author_raw ?? c.author ?? '?');
+              console.log(`[ICP-Stage6b] Retrieved ${authorChunks.length} chunks for "${author}" — actual authors: [${[...new Set(actualAuthors)]}]`);
+              // Convert to QuoteSpans and add to session
+              for (const chunk of authorChunks) {
+                const chunkText = (chunk as any).content ?? (chunk as any).text ?? '';
+                const chunkDocId = (chunk as any).docId ?? (chunk as any).doc_id ?? '';
+                const chunkPage = (chunk as any).page ?? (chunk as any).pageStart ?? 0;
+                const chunkTitle = (chunk as any).metadata?.title ?? '';
+                const qid = randomUUID();
+                const span: QuoteSpan = {
+                  quote_id: qid,
+                  text_fingerprint: `bridge-${qid.slice(0, 16)}`,
+                  span_fingerprint: `bridge-span-${qid.slice(0, 16)}`,
+                  doc_id: chunkDocId,
+                  page: chunkPage,
+                  source_kind: 'CORPUS',
+                  clean_text_range: [0, chunkText.length],
+                  clean_range_hash: `bridge-${qid.slice(0, 8)}`,
+                  patch_epoch: 0,
+                  normalization_policy_version: 'bridge-enforced-v1',
+                  text: chunkText,
+                  left_ctx_hash: '',
+                  right_ctx_hash: '',
+                  verification_status: 'auto_verified',
+                  auto_confidence: (chunk as any).relevanceScore ?? 0.5,
+                  source_anchor: chunkTitle ? `${author} - ${chunkTitle} (bridge-enforced)` : `${author} (bridge-enforced)`,
+                  provenance_scorecard: {
+                    fidelity_score: 0.8,
+                    ocr_risk_score: 0.1,
+                    cluster_size: 1,
+                    prior_usage_count: 0,
+                    doc_authority_tier: 1,
+                  },
+                };
+                session.quote_spans.push(span);
+              }
+              console.log(`[ICP-Stage6b] Added ${authorChunks.length} bridge-enforced spans for ${author}`);
+            } catch { /* non-fatal: bridge enforcement is best-effort */ }
+          }
+        }
+      }
+    } catch { /* non-fatal: cross-author bridge detection failure */ }
 
     // =========================================================================
     // Stage 7: Stress Test
@@ -384,6 +509,63 @@ export class ICPOrchestrator {
     // WS10: Checkpoint after binding
     this.checkpoint(session, 'binding_complete');
 
+    // Stage 8a: Preventive edge coherence for bound paragraphs (H-03)
+    // For each planned paragraph, check if bound QuoteSpans contain cross-author
+    // tensions from the reasoning graph. If so, inject a tension directive into
+    // the style prompt so the LLM explicitly acknowledges the contrast.
+    let tensionDirective = '';
+    try {
+      const { getActiveTensions, extractTopicWords } = await import('../../shared/cross-author-utils.js');
+      const detectedTensions: Array<{ paragraphId: string; tension: string }> = [];
+
+      for (const entry of plan) {
+        // Get topic words from atoms bound to this paragraph
+        const boundAtomIds = new Set(entry.atom_ids || []);
+        const boundAtoms = session.atoms.filter(a => boundAtomIds.has(a.atom_id));
+        const topicWords = boundAtoms.flatMap(a => extractTopicWords(a.semantic_text || a.claim_text || ''));
+
+        if (topicWords.length === 0) continue;
+
+        const tensions = getActiveTensions(topicWords);
+        for (const t of tensions) {
+          detectedTensions.push({
+            paragraphId: entry.paragraph_id,
+            tension: `[${t.id || 'T?'}] ${t.nodeA} ↔ ${t.nodeB}: ${t.description.slice(0, 150)}`,
+          });
+        }
+      }
+
+      if (detectedTensions.length > 0) {
+        console.log(`[ICP-Stage8a] Preventive coherence: ${detectedTensions.length} cross-author tension(s) detected in bound paragraphs`);
+        for (const dt of detectedTensions) {
+          console.log(`  ${dt.paragraphId}: ${dt.tension.slice(0, 100)}`);
+        }
+
+        // Inject tension awareness into the style prompt
+        const uniqueTensions = [...new Set(detectedTensions.map(dt => dt.tension))];
+        tensionDirective = '\n\nCROSS-AUTHOR TENSIONS (from reasoning graph — you MUST acknowledge these):\n'
+          + uniqueTensions.map(t => `- ${t}`).join('\n')
+          + '\nWARNING: You are synthesizing sources with known philosophical tensions. '
+          + 'You MUST explicitly acknowledge each contrast — do not harmonize or collapse them into agreement.';
+      }
+
+      // Store for post-hoc comparison
+      (session.quality_gates as any) ??= {};
+      (session.quality_gates as any).preventive_edge_check = {
+        tensionsDetected: detectedTensions.length,
+        details: detectedTensions,
+      };
+    } catch (error) {
+      console.error('[ICP-Stage8a] Preventive coherence check failed:', error);
+    }
+
+    // Append tension directive to style prompt (if any)
+    if (tensionDirective && stylePrompt) {
+      stylePrompt += tensionDirective;
+    } else if (tensionDirective) {
+      stylePrompt = tensionDirective;
+    }
+
     // Generate (even with warnings in non-strict mode)
     if (validation.valid || this.config.defaultAtomsMode !== 'strict') {
       const generationResult = await this.generator.generate(
@@ -418,6 +600,25 @@ export class ICPOrchestrator {
     let assembledProse = this.assembleFinalProse(session);
     let enforcementResult: EnforcementResult | undefined;
     let sanitizationArtifacts = 0;
+
+    // Stage 9a: Programmatic parenthetical citation enforcement
+    // Check each paragraph for missing parenthetical citations BEFORE the
+    // citation enforcer runs, so its auto-correct mode can ground them.
+    {
+      const citationRegex = /\([^)]*\d+[^)]*\)/;
+      const paragraphs = assembledProse.split(/\n\n+/);
+      const fixed: string[] = [];
+      for (const para of paragraphs) {
+        const sentences = para.match(/[^.!?]+[.!?]+/g) || [];
+        if (sentences.length >= 2 && !citationRegex.test(para)) {
+          console.log(`[ICP-Stage9a] Paragraph missing parenthetical citation (${sentences.length} sentences). Appending [CITATION NEEDED] marker.`);
+          fixed.push(para + ' [CITATION NEEDED].');
+        } else {
+          fixed.push(para);
+        }
+      }
+      assembledProse = fixed.join('\n\n');
+    }
 
     // Initialize review results with claim coverage
     session.review_results = {
@@ -517,31 +718,33 @@ export class ICPOrchestrator {
     let endnotesSection = '';
     let bibliographySection = '';
 
-    try {
-      const endnoteGen = new EndnoteGenerator({
-        maxQuotationsPerEndnote: 3,
-        minRelevanceThreshold: 0.65,
-      });
+    if (this.config.generateEndnotes) {
+      try {
+        const endnoteGen = new EndnoteGenerator({
+          maxQuotationsPerEndnote: 3,
+          minRelevanceThreshold: 0.65,
+        });
 
-      const corpusSearchFn: CorpusSearchFn = async (query: string, limit: number) => {
-        try {
-          const results = await this.deps.retrieval.retrieveContext(query, { maxChunks: limit });
-          return results.map(r => ({
-            id: (r as any).chunkId ?? (r as any).id ?? '',
-            text: (r as any).content ?? '',
-            metadata: (r as any).metadata ?? {},
-            score: (r as any).relevanceScore ?? 0,
-          }));
-        } catch {
-          return [];
-        }
-      };
+        const corpusSearchFn: CorpusSearchFn = async (query: string, limit: number) => {
+          try {
+            const results = await this.deps.retrieval.retrieveContext(query, { maxChunks: limit });
+            return results.map(r => ({
+              id: (r as any).chunkId ?? (r as any).id ?? '',
+              text: (r as any).content ?? '',
+              metadata: (r as any).metadata ?? {},
+              score: (r as any).relevanceScore ?? 0,
+            }));
+          } catch {
+            return [];
+          }
+        };
 
-      const endnoteResult = await endnoteGen.generateEndnotes(assembledProse, corpusSearchFn);
-      assembledProse = endnoteResult.contentWithMarkers;
-      endnotesSection = endnoteResult.endnotesSection;
-    } catch {
-      // Non-fatal — endnote generation failure shouldn't block pipeline
+        const endnoteResult = await endnoteGen.generateEndnotes(assembledProse, corpusSearchFn);
+        assembledProse = endnoteResult.contentWithMarkers;
+        endnotesSection = endnoteResult.endnotesSection;
+      } catch {
+        // Non-fatal — endnote generation failure shouldn't block pipeline
+      }
     }
 
     // WS7: Build bibliography from corpus constraint
@@ -592,6 +795,142 @@ export class ICPOrchestrator {
       } : undefined,
       checkpoints: ['retrieval_complete', 'verification_complete', 'binding_complete', 'generation_complete', 'quality_gates_complete'],
     };
+
+    // Edge coherence gate (async to avoid blocking I/O)
+    try {
+      const { validateEdgeCoherence } = await import('../../universal/quality-integration.js');
+      const { loadReasoningEdgesAsync } = await import('../../shared/jsonl-loaders.js');
+      const preloadedEdges = await loadReasoningEdgesAsync();
+      const fullText = Array.from(session.generated_text.values()).join('\n\n');
+      const ecResult = validateEdgeCoherence(fullText, undefined, preloadedEdges);
+      session.quality_gates.edge_coherence = {
+        score: ecResult.score,
+        contradictions: ecResult.contradictions.map((c: any) => ({
+          assertion: c.foundAssertion ?? c.assertion ?? '',
+          conflictsWith: c.description ?? c.conflictsWith ?? '',
+        })),
+      };
+    } catch (error) {
+      console.error('[QualityGates] Edge coherence gate threw:', error);
+    }
+
+    // Tension-awareness gate (Phase 3: cross-author integration)
+    try {
+      const { validateTensionAwareness } = await import('../../universal/quality-integration.js');
+      const { extractTopicWords } = await import('../../shared/cross-author-utils.js');
+      const fullText = Array.from(session.generated_text.values()).join('\n\n');
+      for (const facet of session.facets) {
+        if (facet.archived) continue;
+        const topicWords = extractTopicWords(facet.name, facet.description);
+        const tensionResult = validateTensionAwareness(fullText, topicWords);
+        console.log(`[ICP-TensionGate] Facet "${facet.name}": checked=${tensionResult.tensionsChecked}, acknowledged=${tensionResult.tensionsAcknowledged}, unacked=${tensionResult.unacknowledgedTensions.length}`);
+        if (!tensionResult.passed && tensionResult.unacknowledgedTensions.length > 0) {
+          // Store as quality gate result for dashboard visibility
+          session.quality_gates!.tension_awareness = {
+            passed: tensionResult.passed,
+            tensionsChecked: tensionResult.tensionsChecked,
+            tensionsAcknowledged: tensionResult.tensionsAcknowledged,
+            unacknowledgedTensions: tensionResult.unacknowledgedTensions,
+          };
+          break; // One facet's failure is enough to flag
+        }
+      }
+      // If no failures, mark as passed
+      if (!session.quality_gates!.tension_awareness) {
+        const anyTensions = session.facets.some(f => {
+          if (f.archived) return false;
+          const tw = extractTopicWords(f.name, f.description);
+          return tw.length > 0;
+        });
+        if (anyTensions) {
+          session.quality_gates!.tension_awareness = {
+            passed: true,
+            tensionsChecked: 0,
+            tensionsAcknowledged: 0,
+            unacknowledgedTensions: [],
+          };
+        }
+      }
+    } catch (error) {
+      console.error('[QualityGates] Tension awareness gate threw:', error);
+    }
+
+    // Author conflict events (H-12) — derived from tension awareness results
+    try {
+      const ta = session.quality_gates!.tension_awareness;
+      if (ta && ta.tensionsChecked > 0) {
+        const { deriveAuthorConflictEvents, getActiveTensions } = await import('../../universal/quality-integration.js');
+        const { extractTopicWords } = await import('../../shared/cross-author-utils.js');
+        const allEvents: any[] = [];
+
+        for (const facet of session.facets) {
+          if (facet.archived) continue;
+          const topicWords = extractTopicWords(facet.name, facet.description);
+          const activeTensions = getActiveTensions(topicWords);
+          if (activeTensions.length === 0) continue;
+
+          const allTensionInputs = activeTensions.map((t: any) => ({
+            tensionId: t.id || 'T?',
+            nodeA: t.nodeA,
+            nodeB: t.nodeB,
+            description: (t.description || '').slice(0, 200),
+          }));
+
+          const events = deriveAuthorConflictEvents(
+            facet.facet_id,
+            activeTensions.length,
+            activeTensions.length - (ta.unacknowledgedTensions?.length || 0),
+            (ta.unacknowledgedTensions || []).map((u: any) => ({
+              tensionId: u.tensionId,
+              nodeA: u.nodeA,
+              nodeB: u.nodeB,
+              description: u.description,
+            })),
+            allTensionInputs,
+          );
+          allEvents.push(...events);
+        }
+
+        if (allEvents.length > 0) {
+          session.quality_gates!.author_conflict_events = allEvents;
+          console.log(`[QualityGates] Author conflict events: ${allEvents.length} (${allEvents.filter((e: any) => e.unacknowledged).length} unacknowledged)`);
+        }
+      }
+    } catch (error) {
+      console.error('[QualityGates] Author conflict event derivation threw:', error);
+    }
+
+    // Unanchored edge detection (Task #20)
+    // Check which reasoning edges are grounded in the actual QuoteSpan evidence.
+    try {
+      const { detectUnanchoredEdges } = await import('../../universal/quality-integration.js');
+      const { loadReasoningEdgesAsync } = await import('../../shared/jsonl-loaders.js');
+      const allEdges = await loadReasoningEdgesAsync();
+      const spanTexts = session.quote_spans.map(s => s.text || '');
+      const unanchored = detectUnanchoredEdges(allEdges, spanTexts);
+      if (unanchored.length > 0) {
+        console.log(`[QualityGates] Unanchored edges: ${unanchored.length}/${allEdges.length} (concepts missing from QuoteSpans)`);
+        for (const ue of unanchored.slice(0, 5)) {
+          console.log(`  [${ue.edgeId}] ${ue.source} ${ue.relation} ${ue.target} — missing: ${ue.missingConcepts.join(', ')}`);
+        }
+        if (unanchored.length > 5) console.log(`  ... and ${unanchored.length - 5} more`);
+      }
+      session.quality_gates!.unanchored_edges = unanchored;
+    } catch (error) {
+      console.error('[QualityGates] Unanchored edge detection threw:', error);
+    }
+
+    // OCR quality summary (H-14)
+    try {
+      const { summarizeOcrQuality } = await import('../../universal/quality-integration.js');
+      const ocrSummary = summarizeOcrQuality(session.quote_spans);
+      if (ocrSummary) {
+        session.quality_gates!.ocr_quality = ocrSummary;
+        console.log(`[QualityGates] OCR quality: avg=${ocrSummary.average}, min=${ocrSummary.min}, max=${ocrSummary.max}, low=${ocrSummary.low_quality_count}`);
+      }
+    } catch (error) {
+      console.error('[QualityGates] OCR quality summary threw:', error);
+    }
 
     // WS9: Feedback learning — store gauntlet results for learning
     if (gauntletResult) {

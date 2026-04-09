@@ -66,6 +66,10 @@ export interface LLMDecompositionResult {
   research_questions: string[];
   facets: ProposedFacet[];
   retrieval_lexicon: Record<string, string[]>;
+  /** Auto-suggested primary sources based on prompt concepts (from corpus catalog) */
+  suggestedPrimarySources?: Array<{ author: string; title: string; reason: string }>;
+  /** Auto-suggested secondary scholarship for interpretive context */
+  suggestedSecondarySources?: Array<{ author: string; title: string; reason: string }>;
 }
 
 /**
@@ -133,6 +137,8 @@ export class PromptDecomposer {
       optional_facets: optional,
       retrieval_lexicon: retrievalLexicon,
       success_criteria: successCriteria,
+      suggestedPrimarySources: proposal.suggestedPrimarySources,
+      suggestedSecondarySources: proposal.suggestedSecondarySources,
     };
   }
 

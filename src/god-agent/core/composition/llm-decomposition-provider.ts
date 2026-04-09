@@ -32,8 +32,10 @@ For each facet provide:
 - name: Short title (max 60 characters)
 - description: A detailed 50-100 word natural language description of the thematic dimension, phrased as a searchable research question. This description is used DIRECTLY as the semantic search query against the corpus, so it must contain the specific concepts, authors, texts, and terminology that would appear in relevant scholarly passages. Write it as a complete, self-contained research statement — not a brief label.
 - role: "core" (essential to the argument), "supporting" (provides context), or "exploratory" (optional enrichment)
-- retrieval_terms: 3-8 precise search terms for corpus retrieval. Use domain-specific vocabulary, key concepts, author names, and technical terms that would appear in scholarly texts.
+- retrieval_terms: 3-8 precise search terms for corpus retrieval. Use domain-specific vocabulary, technical translations (e.g., Greek/German equivalents), and key concepts derived STRICTLY from the core ideas in the user's prompt. You MUST NOT introduce external scholars, secondary commentators, or specific works from your training data (e.g., Modrak, Nussbaum, Kisiel, Volpi, Caston, Frede) unless they are explicitly named by the user.
 - success_criteria: What evidence would satisfy this facet (1 sentence)
+
+Additionally, based on the concepts detected in the prompt, suggest which corpus works should be prioritized. The AVAILABLE CORPUS WORKS list below is pre-categorized into PRIMARY TEXTS (the authors' own works) and SECONDARY SCHOLARSHIP (commentary). ONLY suggest works from this list — do not suggest works from your training data. Suggest primary texts that directly address the prompt's concepts, and secondary scholarship that provides interpretive context.
 
 Respond ONLY with valid JSON matching this schema:
 {
@@ -47,7 +49,21 @@ Respond ONLY with valid JSON matching this schema:
       "success_criteria": "string"
     }
   ],
-  "retrieval_lexicon": { "facet_name": ["term1", "term2"] }
+  "retrieval_lexicon": { "facet_name": ["term1", "term2"] },
+  "suggestedPrimarySources": [
+    {
+      "author": "string",
+      "title": "string",
+      "reason": "string (why this primary text is relevant)"
+    }
+  ],
+  "suggestedSecondarySources": [
+    {
+      "author": "string",
+      "title": "string",
+      "reason": "string (why this commentary is relevant)"
+    }
+  ]
 }`;
 
 const REFINEMENT_PREAMBLE = `The user has reviewed the previous decomposition and provided feedback. Refine the facets based on their guidance while maintaining 2-5 focused thematic facets.
@@ -80,11 +96,23 @@ export class LLMDecompositionProviderImpl implements LLMDecompositionProvider {
     prompt: string,
     options?: DecompositionOptions,
   ): Promise<LLMDecompositionResult> {
-    const userPrompt = options?.previousFacets
+    // Build tiered corpus catalog for source suggestion grounding (H-08)
+    let corpusCatalog = '';
+    try {
+      const { buildCorpusCatalog } = await import('../../shared/cross-author-utils.js');
+      const catalog = buildCorpusCatalog();
+      if (catalog) {
+        corpusCatalog = '\n\n' + catalog;
+      }
+    } catch { /* non-fatal */ }
+
+    const basePrompt = options?.previousFacets
       ? this.buildRefinementPrompt(prompt, options.previousFacets, options.feedback)
       : prompt;
 
-    return this.router.callJSON<LLMDecompositionResult>(
+    const userPrompt = basePrompt + corpusCatalog;
+
+    const result = await this.router.callJSON<LLMDecompositionResult>(
       {
         systemPrompt: DECOMPOSITION_SYSTEM_PROMPT,
         userPrompt,
@@ -95,6 +123,8 @@ export class LLMDecompositionProviderImpl implements LLMDecompositionProvider {
       },
       validateDecompositionResult,
     );
+
+    return result;
   }
 
   /**
@@ -172,10 +202,40 @@ function validateDecompositionResult(raw: unknown): LLMDecompositionResult {
     }
   }
 
+  // Validate suggestedPrimarySources (optional)
+  const suggestedPrimarySources: Array<{ author: string; title: string; reason: string }> = [];
+  if (Array.isArray(obj.suggestedPrimarySources)) {
+    for (const src of obj.suggestedPrimarySources) {
+      if (src && typeof src === 'object' && typeof (src as any).author === 'string' && typeof (src as any).title === 'string') {
+        suggestedPrimarySources.push({
+          author: (src as any).author,
+          title: (src as any).title,
+          reason: typeof (src as any).reason === 'string' ? (src as any).reason : '',
+        });
+      }
+    }
+  }
+
+  // Validate suggestedSecondarySources (optional)
+  const suggestedSecondarySources: Array<{ author: string; title: string; reason: string }> = [];
+  if (Array.isArray(obj.suggestedSecondarySources)) {
+    for (const src of obj.suggestedSecondarySources) {
+      if (src && typeof src === 'object' && typeof (src as any).author === 'string' && typeof (src as any).title === 'string') {
+        suggestedSecondarySources.push({
+          author: (src as any).author,
+          title: (src as any).title,
+          reason: typeof (src as any).reason === 'string' ? (src as any).reason : '',
+        });
+      }
+    }
+  }
+
   return {
     research_questions: researchQuestions.length > 0 ? researchQuestions : [facets[0].name],
     facets,
     retrieval_lexicon: lexicon,
+    suggestedPrimarySources: suggestedPrimarySources.length > 0 ? suggestedPrimarySources : undefined,
+    suggestedSecondarySources: suggestedSecondarySources.length > 0 ? suggestedSecondarySources : undefined,
   };
 }
 

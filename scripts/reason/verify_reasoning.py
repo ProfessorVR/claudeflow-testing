@@ -89,13 +89,34 @@ def main() -> None:
         if r.get("hash") != expected:
             raise SystemExit(f"Row {i}: hash mismatch expected={expected} got={r.get('hash')}")
 
+    # Cross-author constraint check: cross-author edges must not contain
+    # "is_variant_of" (always forbidden). "supports" is forbidden UNLESS
+    # the edge was licensed by a cross-pipeline hook (Refinement B).
+    cross_author_always_forbidden = {"is_variant_of"}
+    cross_author_supports_count = 0
+    for i, r in enumerate(rows):
+        topic = r.get("topic", "")
+        if topic.startswith("cross:"):
+            rel = r.get("relation", "")
+            if rel in cross_author_always_forbidden:
+                raise SystemExit(
+                    f"Row {i}: cross-author edge has forbidden relation '{rel}' "
+                    f"(topic={topic}, ids={r.get('knowledge_ids')})"
+                )
+            if rel == "supports":
+                cross_author_supports_count += 1  # These are hook-licensed
+
     # Deterministic ordering check (optional strict)
     if args.strict_order:
         sorted_rows = sorted(rows, key=lambda r: (r.get("topic"), r.get("relation"), r.get("reason_id")))
         if rows != sorted_rows:
             raise SystemExit("Reasoning JSONL is not in deterministic sorted order")
 
-    print(f"[Phase7:verify] OK reasoning_units={len(rows)} knowledge_ids={len(kidset)}")
+    # Count within-author vs cross-author edges for reporting
+    within_count = sum(1 for r in rows if not r.get("topic", "").startswith("cross:"))
+    cross_count = sum(1 for r in rows if r.get("topic", "").startswith("cross:"))
+    hook_note = f", hook-licensed-supports={cross_author_supports_count}" if cross_author_supports_count > 0 else ""
+    print(f"[Phase7:verify] OK reasoning_units={len(rows)} (within={within_count}, cross={cross_count}{hook_note}) knowledge_ids={len(kidset)}")
 
 
 if __name__ == "__main__":

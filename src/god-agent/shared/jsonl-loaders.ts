@@ -184,10 +184,127 @@ export async function loadReasoningEdgesAsync(projectRoot?: string): Promise<Rea
   return edges;
 }
 
+// ============================================================================
+// Compiled Index loader (centralized cache for compiled-index.json)
+// ============================================================================
+
+let _compiledIndexCache: { data: any; path: string; mtimeMs: number } | null = null;
+
+/**
+ * Load compiled-index.json with mtime-based caching.
+ * Single source of truth — both cross-author-utils.ts and corpus-index-provider.ts
+ * should delegate to this function instead of maintaining their own caches.
+ */
+export function loadCompiledIndex(projectRoot?: string): any | null {
+  const root = projectRoot ?? process.cwd();
+  const indexPath = resolve(root, 'corpus', 'index', 'compiled-index.json');
+
+  try {
+    if (!existsSync(indexPath)) return null;
+
+    const mtimeMs = statSync(indexPath).mtimeMs;
+    if (_compiledIndexCache && _compiledIndexCache.path === indexPath && _compiledIndexCache.mtimeMs === mtimeMs) {
+      return _compiledIndexCache.data;
+    }
+
+    const raw = readFileSync(indexPath, 'utf-8');
+    const parsed = JSON.parse(raw);
+
+    _compiledIndexCache = { data: parsed, path: indexPath, mtimeMs };
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+// ============================================================================
+// Author-KU Index (H-09: O(1) author-scoped KU queries)
+// ============================================================================
+
+let _authorKUIndexCache: { data: Map<string, KnowledgeUnit[]>; mtimeMs: number } | null = null;
+
+/**
+ * Load knowledge.jsonl and group KUs by primary author (sources[0].author).
+ * Cached with mtime invalidation keyed to knowledge.jsonl.
+ * Returns Map<authorRaw, KnowledgeUnit[]> for O(1) author lookups.
+ */
+export function loadAuthorKUIndex(projectRoot?: string): Map<string, KnowledgeUnit[]> {
+  const root = projectRoot ?? process.cwd();
+  const kuPath = resolve(root, 'god-learn', 'knowledge.jsonl');
+
+  // Check mtime — if unchanged, return cached index
+  if (_authorKUIndexCache) {
+    try {
+      const mtimeMs = statSync(kuPath).mtimeMs;
+      if (mtimeMs === _authorKUIndexCache.mtimeMs) {
+        return _authorKUIndexCache.data;
+      }
+    } catch { /* file may not exist */ }
+  }
+
+  // Build the index from the flat KU array
+  const kus = loadKnowledgeUnitsSync(projectRoot);
+  const index = new Map<string, KnowledgeUnit[]>();
+
+  for (const ku of kus) {
+    const sources = (ku as any).sources;
+    const author = (Array.isArray(sources) && sources.length > 0 && typeof sources[0]?.author === 'string')
+      ? sources[0].author
+      : 'Unknown';
+
+    if (!index.has(author)) {
+      index.set(author, []);
+    }
+    index.get(author)!.push(ku);
+  }
+
+  // Cache with mtime
+  try {
+    const mtimeMs = statSync(kuPath).mtimeMs;
+    _authorKUIndexCache = { data: index, mtimeMs };
+  } catch {
+    _authorKUIndexCache = { data: index, mtimeMs: 0 };
+  }
+
+  return index;
+}
+
+/**
+ * Get all KUs by a specific author, with manifest-based name resolution.
+ * Normalizes the input (e.g., "heidegger" → "Heidegger, Martin") before lookup.
+ */
+export function getKUsByAuthor(author: string, projectRoot?: string): KnowledgeUnit[] {
+  const index = loadAuthorKUIndex(projectRoot);
+  const lower = author.toLowerCase().trim();
+
+  // Direct match first
+  if (index.has(author)) return index.get(author)!;
+
+  // Case-insensitive match against all keys
+  for (const [key, kus] of index.entries()) {
+    if (key.toLowerCase() === lower) return kus;
+    // Last-name match (e.g., "heidegger" matches "Heidegger, Martin")
+    const commaIdx = key.indexOf(',');
+    const lastName = commaIdx > 0 ? key.slice(0, commaIdx).toLowerCase() : key.toLowerCase();
+    if (lastName === lower) return kus;
+    // Nobiliary stripping (e.g., "uexkull" matches "von Uexkull, Jacob")
+    const nobiliary = /^(von|de|van|di)\s+/i;
+    if (nobiliary.test(key)) {
+      const bare = key.replace(nobiliary, '');
+      const bareLastName = bare.split(',')[0].toLowerCase().trim();
+      if (bareLastName === lower) return kus;
+    }
+  }
+
+  return [];
+}
+
 /**
  * Clear all caches. Useful for testing.
  */
 export function clearJSONLCaches(): void {
   _kuCache = null;
   _edgeCache = null;
+  _compiledIndexCache = null;
+  _authorKUIndexCache = null;
 }

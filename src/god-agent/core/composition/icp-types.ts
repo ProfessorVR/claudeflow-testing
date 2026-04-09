@@ -378,6 +378,9 @@ export interface QuoteSpan {
 
   /** Whether OCR repair was applied to this span */
   repair_applied?: boolean;
+
+  /** Per-chunk OCR quality score (0-1, populated when ingestion provides it) (H-14) */
+  ocr_quality?: number;
 }
 
 /**
@@ -561,6 +564,10 @@ export interface PromptSpec {
   retrieval_lexicon: Map<string, string[]>;
   /** Success criteria per facet */
   success_criteria: Map<string, string>;
+  /** Suggested primary sources from decomposition (auto-derived from prompt concepts) */
+  suggestedPrimarySources?: Array<{ author: string; title: string; reason: string }>;
+  /** Suggested secondary scholarship for interpretive context */
+  suggestedSecondarySources?: Array<{ author: string; title: string; reason: string }>;
 }
 
 /**
@@ -1158,6 +1165,50 @@ export interface QualityGateResults {
     overCitedSources: string[];
     underCitedSources: string[];
   };
+  /** Tension awareness validation results (cross-author integration) */
+  tension_awareness?: {
+    passed: boolean;
+    tensionsChecked: number;
+    tensionsAcknowledged: number;
+    unacknowledgedTensions: Array<{
+      tensionId: string;
+      nodeA: string;
+      nodeB: string;
+      description: string;
+    }>;
+  };
+  /** Unanchored reasoning edges — edges injected into generation but not grounded in QuoteSpans */
+  unanchored_edges?: Array<{
+    edgeId: string;
+    relation: string;
+    source: string;
+    target: string;
+    missingConcepts: string[];
+  }>;
+  /** Cross-author conflict events — derived from tension awareness gate (H-12) */
+  author_conflict_events?: AuthorConflictEvent[];
+  /** OCR quality summary across bound QuoteSpans (H-14) */
+  ocr_quality?: OcrQualitySummary;
+}
+
+/** Cross-author conflict event — emitted for every detected tension (H-12) */
+export interface AuthorConflictEvent {
+  facetId: string;
+  authors: string[];
+  relation: string;
+  source: string;
+  target: string;
+  description: string;
+  unacknowledged: boolean;
+  timestamp: string;
+}
+
+/** OCR quality summary across QuoteSpans (H-14) */
+export interface OcrQualitySummary {
+  average: number;
+  min: number;
+  max: number;
+  low_quality_count: number;
 }
 
 /**

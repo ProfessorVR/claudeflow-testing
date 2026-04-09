@@ -1624,6 +1624,7 @@ function renderQualityPanel(container, session) {
         </span>
       </div>
       <div class="quality-grid">
+        <div id="icp-provider-health"></div>
         ${ceHtml}
         ${gauntletHtml}
         ${sanitizationHtml}
@@ -1711,14 +1712,104 @@ function renderQualityPanel(container, session) {
             </div>
           </div>
         </div>` : ''}
+
+        ${qg?.edge_coherence ? `
+        <div class="quality-card ${qg.edge_coherence.score >= 0.8 ? 'quality-pass' : 'quality-fail'}">
+          <div class="quality-card-header">
+            <span class="quality-icon">${qg.edge_coherence.score >= 0.8 ? '\u2713' : '\u2717'}</span>
+            <h4>Edge Coherence</h4>
+            <span class="quality-badge ${qg.edge_coherence.score >= 0.8 ? 'badge-pass' : 'badge-fail'}">${(qg.edge_coherence.score * 100).toFixed(0)}%</span>
+          </div>
+          <div class="quality-card-body">
+            <div class="quality-stats">
+              <div class="quality-stat">
+                <span class="stat-val">${(qg.edge_coherence.score * 100).toFixed(0)}%</span>
+                <span class="stat-lbl">Coherence</span>
+              </div>
+              <div class="quality-stat ${qg.edge_coherence.contradictions.length > 0 ? 'stat-warn' : ''}">
+                <span class="stat-val">${qg.edge_coherence.contradictions.length}</span>
+                <span class="stat-lbl">Contradictions</span>
+              </div>
+            </div>
+            ${qg.edge_coherence.contradictions.length > 0 ? `
+              <div class="quality-source-list">
+                <h5>Contradictions</h5>
+                ${qg.edge_coherence.contradictions.map(c => `
+                  <div style="padding:6px 0;border-bottom:1px solid #2a2a2a;font-size:12px;line-height:1.4;">
+                    <strong>${escapeHtml(c.assertion)}</strong>
+                    <span class="muted"> conflicts with </span>
+                    <em>${escapeHtml(c.conflictsWith)}</em>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        </div>` : ''}
       </div>
 
       <div class="icp-qg-actions" style="margin-top: 16px; display: flex; gap: 8px;">
         <button class="icp-btn icp-btn-secondary" onclick="icpRunValidation()">Run All Gates</button>
         <button class="icp-btn icp-btn-secondary" onclick="icpSubmitFeedback()">Submit Feedback to SoNA</button>
       </div>
+      <div style="margin-top:12px;">
+        <h5 style="cursor:pointer;color:#888;font-size:12px;" onclick="icpToggleDiagnostics()">
+          Pipeline Diagnostics &#9660;
+        </h5>
+        <div id="icp-diagnostics-body" style="display:none;"></div>
+      </div>
     </div>
   `;
+
+  // Provider health (non-blocking, best-effort)
+  fetch('/api/router/circuits')
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      const el = document.getElementById('icp-provider-health');
+      if (!el || !data?.data) return;
+      const circuits = Array.isArray(data.data) ? data.data : Object.entries(data.data).map(([k,v]) => ({...v, name: k}));
+      if (circuits.length === 0) return;
+      const hasOpen = circuits.some(c => c.state === 'open');
+      el.innerHTML = `
+        <div class="quality-card ${hasOpen ? 'quality-fail' : 'quality-pass'}">
+          <div class="quality-card-header">
+            <span class="quality-icon">${hasOpen ? '\u26a0' : '\u2713'}</span>
+            <h4>Provider Health</h4>
+            <span class="quality-badge ${hasOpen ? 'badge-fail' : 'badge-pass'}">${hasOpen ? 'DEGRADED' : 'HEALTHY'}</span>
+          </div>
+          <div class="quality-card-body">
+            <div class="quality-stats">
+              ${circuits.map(c => `
+                <div class="quality-stat">
+                  <span class="stat-val" style="color:${c.state === 'closed' ? '#4caf50' : c.state === 'half-open' ? '#ff9800' : '#f44336'}">${c.state}</span>
+                  <span class="stat-lbl">${escapeHtml(c.name || c.identifier || 'unknown')}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>`;
+    })
+    .catch(() => {});
+}
+
+function icpToggleDiagnostics() {
+  const body = document.getElementById('icp-diagnostics-body');
+  if (!body) return;
+  body.style.display = body.style.display === 'none' ? '' : 'none';
+  if (body.innerHTML) return;
+  icpFetch('/diagnostics')
+    .then(data => {
+      body.innerHTML = `<div style="font-size:12px;padding:8px;background:#1a1a1a;border-radius:4px;">
+        <p><strong>API Key:</strong> ${data.envKeyLength || 0} chars</p>
+        <p><strong>Backends:</strong> ${(data.availableBackends || []).join(', ') || 'none'}</p>
+        <p><strong>Router:</strong> ${escapeHtml(data.routerType || 'unknown')}</p>
+        <p><strong>Decomposer:</strong> ${data.hasDecomposer ? 'Yes' : 'No'}</p>
+        <p><strong>Generation:</strong> ${data.hasGeneration ? 'Yes' : 'No'}</p>
+        <hr style="border-color:#333;margin:8px 0;">
+        <p><strong>Quote Similarity Threshold:</strong> 0.70</p>
+        <p><strong>Max Inline Retries:</strong> 2</p>
+      </div>`;
+    })
+    .catch(() => { body.innerHTML = '<p class="muted">Failed to load diagnostics.</p>'; });
 }
 
 // =============================================================================

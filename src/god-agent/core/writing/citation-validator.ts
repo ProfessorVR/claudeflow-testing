@@ -20,6 +20,8 @@ export interface ExtractedCitation {
   year?: number;
   /** Page number if found */
   page?: number;
+  /** Title if found (from MLA-style citations with quoted or italic titles) */
+  title?: string;
   /** Position in text (character index) */
   position: number;
   /** Line number in text */
@@ -91,10 +93,12 @@ export interface ValidationOptions {
 export class CitationValidator {
   private sources: Map<string, CorpusSource>;
   private authorIndex: Map<string, CorpusSource[]>;
+  private authorTitlesIndex: Map<string, Set<string>>;
 
   constructor(constraint: CorpusConstraint) {
     this.sources = new Map();
     this.authorIndex = new Map();
+    this.authorTitlesIndex = new Map();
 
     // Index sources for fast lookup
     for (const source of constraint.sources) {
@@ -107,7 +111,20 @@ export class CitationValidator {
         this.authorIndex.set(authorKey, []);
       }
       this.authorIndex.get(authorKey)!.push(source);
+
+      // Build author→titles index for title validation (H-06)
+      if (!this.authorTitlesIndex.has(authorKey)) {
+        this.authorTitlesIndex.set(authorKey, new Set());
+      }
+      if (source.title) {
+        this.authorTitlesIndex.get(authorKey)!.add(this.normalizeTitle(source.title));
+      }
     }
+  }
+
+  /** Normalize title for fuzzy matching: lowercase, strip punctuation */
+  private normalizeTitle(title: string): string {
+    return title.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
   }
 
   /**
@@ -206,22 +223,22 @@ export class CitationValidator {
       /\(([A-Z][a-z']+(?:\s+[A-Z][a-z']+)*)[,\s]+(\d{4})\/\d{4}(?:[,\s]+pp?\.\s*\d+(?:[-–]\d+)?)?\)/gi,
     ];
 
-    // ── MLA / author-prominent patterns (capture group: [1]=author only) ──
+    // ── MLA / author-prominent patterns (capture groups: [1]=author, [2]=title if present) ──
     // These match the dalton-academic-mkn82c3v style profile output
     const mlaPatterns = [
       // (Author, "Quoted Title")
-      /\(([A-Z][a-z']+(?:\s+[A-Z][a-z']+)*),\s+"[^"]+"\)/g,
+      /\(([A-Z][a-z']+(?:\s+[A-Z][a-z']+)*),\s+"([^"]+)"\)/g,
       // (Author, "Quoted Title," p. 123) or (Author, "Title", p. 123)
-      /\(([A-Z][a-z']+(?:\s+[A-Z][a-z']+)*),\s+"[^"]+[,"]?\s+pp?\.\s*\d+(?:[-–]\d+)?\)/g,
+      /\(([A-Z][a-z']+(?:\s+[A-Z][a-z']+)*),\s+"([^"]+)[,"]?\s+pp?\.\s*\d+(?:[-–]\d+)?\)/g,
       // (Author, *Italic Title*)
-      /\(([A-Z][a-z']+(?:\s+[A-Z][a-z']+)*),\s+\*[^*]+\*\)/g,
+      /\(([A-Z][a-z']+(?:\s+[A-Z][a-z']+)*),\s+\*([^*]+)\*\)/g,
       // (Author, *Italic Title*, p. 123) or (Author, *Title*, pp. 123-456)
-      /\(([A-Z][a-z']+(?:\s+[A-Z][a-z']+)*),\s+\*[^*]+\*,\s+pp?\.\s*\d+(?:[-–]\d+)?\)/g,
+      /\(([A-Z][a-z']+(?:\s+[A-Z][a-z']+)*),\s+\*([^*]+)\*,\s+pp?\.\s*\d+(?:[-–]\d+)?\)/g,
       // (Author, *Title*, Book/Section/Chapter ref)
-      /\(([A-Z][a-z']+(?:\s+[A-Z][a-z']+)*),\s+\*[^*]+\*,\s+(?:Book|Section|Chapter|Part)\s+[IVXLC\d]+\)/g,
+      /\(([A-Z][a-z']+(?:\s+[A-Z][a-z']+)*),\s+\*([^*]+)\*,\s+(?:Book|Section|Chapter|Part)\s+[IVXLC\d]+\)/g,
       // (Author et al., "Title") or (Author et al., *Title*)
-      /\(([A-Z][a-z']+)\s+et\s+al\.,\s+["*][^"*]+["*]\)/g,
-      // (Author 123) or (Author 123-456) — MLA page-only
+      /\(([A-Z][a-z']+)\s+et\s+al\.,\s+["*]([^"*]+)["*]\)/g,
+      // (Author 123) or (Author 123-456) — MLA page-only (no title)
       /\(([A-Z][a-z']+(?:\s+[A-Z][a-z']+)*)\s+\d+(?:[-–]\d+)?\)/g,
     ];
 
@@ -295,9 +312,40 @@ export class CitationValidator {
         }
       }
 
-      // Process MLA, classical, nested patterns (author-only, no year capture)
-      const authorOnlyPatterns = [...mlaPatterns, ...classicalPatterns, ...nestedPatterns];
-      for (const pattern of authorOnlyPatterns) {
+      // Process MLA patterns (author + optional title in group [2])
+      for (const pattern of mlaPatterns) {
+        pattern.lastIndex = 0;
+        let match;
+
+        while ((match = pattern.exec(line)) !== null) {
+          const raw = match[0];
+          const author = match[1]?.trim();
+          const title = match[2]?.trim() || undefined; // Title from quoted/italic capture group
+
+          const position = charOffset + match.index;
+          const isDuplicate = citations.some(c =>
+            c.position === position ||
+            (position >= c.position && position < c.position + c.raw.length) ||
+            (c.position >= position && c.position < position + raw.length)
+          );
+
+          if (!isDuplicate) {
+            citations.push({
+              raw,
+              author,
+              year: undefined,
+              page: undefined,
+              title,
+              position,
+              line: lineNum + 1,
+            });
+          }
+        }
+      }
+
+      // Process classical and nested patterns (author-only, no title capture)
+      const classicalAndNestedPatterns = [...classicalPatterns, ...nestedPatterns];
+      for (const pattern of classicalAndNestedPatterns) {
         pattern.lastIndex = 0;
         let match;
 
@@ -308,7 +356,6 @@ export class CitationValidator {
           // For classical inline patterns like (*De Anima*, ...), extract work title as-is
           // The author lookup will handle Aristotle/Plato mapping in validateSingleCitation
           if (author?.startsWith('*')) {
-            // Map known works to authors for validation
             const workAuthorMap: Record<string, string> = {
               'De Anima': 'Aristotle', 'Physics': 'Aristotle', 'Metaphysics': 'Aristotle',
               'Rhetoric': 'Aristotle', 'Poetics': 'Aristotle', 'Nicomachean Ethics': 'Aristotle',
@@ -404,6 +451,36 @@ export class CitationValidator {
       const exactKey = this.makeKeyFromParts(normalizedAuthor, citation.year);
       const exactMatch = this.findSourceByKey(exactKey);
       if (exactMatch) {
+        // H-06: If citation includes a title, verify it belongs to this author
+        if (citation.title) {
+          const normalizedCitedTitle = this.normalizeTitle(citation.title);
+          const validTitles = this.authorTitlesIndex.get(normalizedAuthor);
+          if (validTitles && validTitles.size > 0 && !validTitles.has(normalizedCitedTitle)) {
+            return {
+              citation,
+              valid: false,
+              reason: `Author "${citation.author}" exists but title "${citation.title}" is not a work by this author in the corpus`,
+              suggestion: options.suggestReplacements
+                ? { source: exactMatch, formatted: `(${exactMatch.citationKey || `${this.getLastName(exactMatch.author)} ${exactMatch.year}`}, p. [PAGE NEEDED])` }
+                : undefined,
+            };
+          }
+        } else {
+          // H-06 fallback: title not extracted from citation text.
+          // If author has multiple works in corpus, an unverifiable citation
+          // is not a valid citation — it could reference any work.
+          const validTitles = this.authorTitlesIndex.get(normalizedAuthor);
+          if (validTitles && validTitles.size > 1) {
+            return {
+              citation,
+              valid: false,
+              reason: `Author "${citation.author}" has ${validTitles.size} works in corpus but citation title could not be extracted — manual review required`,
+              suggestion: options.suggestReplacements
+                ? { source: exactMatch, formatted: `(${exactMatch.citationKey || `${this.getLastName(exactMatch.author)} ${exactMatch.year}`}, *${exactMatch.title}*, p. [PAGE NEEDED])` }
+                : undefined,
+            };
+          }
+        }
         return {
           citation,
           valid: true,
@@ -421,6 +498,34 @@ export class CitationValidator {
     if (authorSources && authorSources.length > 0) {
       // If no year in citation, accept author match
       if (!citation.year) {
+        // H-06: If citation includes a title, verify it belongs to this author
+        if (citation.title) {
+          const normalizedCitedTitle = this.normalizeTitle(citation.title);
+          const validTitles = this.authorTitlesIndex.get(normalizedAuthor);
+          if (validTitles && validTitles.size > 0 && !validTitles.has(normalizedCitedTitle)) {
+            return {
+              citation,
+              valid: false,
+              reason: `Author "${citation.author}" exists but title "${citation.title}" is not a work by this author in the corpus`,
+              suggestion: options.suggestReplacements
+                ? { source: authorSources[0], formatted: `(${authorSources[0].citationKey || `${this.getLastName(authorSources[0].author)} ${authorSources[0].year}`}, p. [PAGE NEEDED])` }
+                : undefined,
+            };
+          }
+        } else {
+          // H-06 fallback: title not extracted. Multi-work authors require title verification.
+          const validTitles = this.authorTitlesIndex.get(normalizedAuthor);
+          if (validTitles && validTitles.size > 1) {
+            return {
+              citation,
+              valid: false,
+              reason: `Author "${citation.author}" has ${validTitles.size} works in corpus but citation title could not be extracted — manual review required`,
+              suggestion: options.suggestReplacements
+                ? { source: authorSources[0], formatted: `(${authorSources[0].citationKey || `${this.getLastName(authorSources[0].author)} ${authorSources[0].year}`}, *${authorSources[0].title}*, p. [PAGE NEEDED])` }
+                : undefined,
+            };
+          }
+        }
         return {
           citation,
           valid: true,

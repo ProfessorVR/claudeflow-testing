@@ -18,6 +18,7 @@
 
 import type { ContextChunk } from '../retrieval/index.js';
 import { GOLD_STANDARD_CONFIG } from './gold-standard-config.js';
+import { getActiveBridges, extractTopicWords } from '../shared/cross-author-utils.js';
 
 // ============================================================================
 // Types
@@ -517,6 +518,13 @@ INSTRUCTIONS FOR SOURCE DIVERSITY:
 - When making a claim, check if multiple sources in the chunks support it and cite them together
 - Paraphrase and cite even when a source is only tangentially relevant — this demonstrates scholarly breadth
 
+### OVERRIDE STYLE PROFILE — Mandatory Parenthetical Citations
+Despite any instructions in the style profile discouraging parenthetical citations, every claim, paraphrase, or use of information from a source MUST include an inline parenthetical citation, even when an author-prominent signal phrase is also present. Signal phrases are encouraged for prose style, but they do NOT replace the parenthetical — both must appear together.
+- CORRECT: As Heidegger argues, Dasein is fundamentally Being-in-the-world (Heidegger, *Being and Time*, p. 78).
+- CORRECT: Aristotle's account of phantasia reveals that the soul never thinks without an image (Aristotle, *De Anima*, 431a16).
+- WRONG: Heidegger argues that Dasein is fundamentally Being-in-the-world.  ← missing parenthetical
+- WRONG: As Aristotle shows, the soul never thinks without an image.  ← missing parenthetical
+
 ### Citation Requirements
 - Citation format: (Author, *Title*, p. X) — MLA-influenced, title in italics
 - For signal-phrase citations: As Author observes in *Title*, "quotation" (p. X)
@@ -586,18 +594,48 @@ INSTRUCTIONS FOR SOURCE DIVERSITY:
       );
     }
 
-    // [6d] CROSS-PIPELINE INTERPRETIVE HOOKS
+    // [6d] MANDATORY THEORETICAL SYNTHESIS (dynamic bridge injection)
+    // Computed FIRST so we can filter its ID from the generic hooks in [6e].
+    let mandatoryBridgeId: string | null = null;
+    try {
+      const topicWords = extractTopicWords(options.topic);
+      const activeBridges = getActiveBridges(topicWords);
+      if (activeBridges.length > 0) {
+        const bridge = activeBridges[0];
+        mandatoryBridgeId = bridge.id;
+        sections.push(
+          `## MANDATORY THEORETICAL SYNTHESIS\n\n` +
+          `The following established cross-author bridge is directly relevant to this section. ` +
+          `You MUST integrate this connection into your argument — it is a verified, ` +
+          `high-confidence interpretive link between primary sources in the corpus.\n\n` +
+          `**Bridge [${bridge.id}]:** ${bridge.sourceConcept || '?'} (${bridge.sourceAuthor}) ↔ ` +
+          `${bridge.targetConcept || '?'} (${bridge.targetAuthor})\n` +
+          `${bridge.bridge || ''}\n\n` +
+          `Both authors (${bridge.sourceAuthor} and ${bridge.targetAuthor}) MUST be cited ` +
+          `with direct textual evidence when integrating this bridge. Do not assert the ` +
+          `connection without grounding it in specific passages from both sides.`
+        );
+      }
+    } catch { /* non-fatal: bridge injection is an enhancement, not a requirement */ }
+
+    // [6e] CROSS-PIPELINE INTERPRETIVE HOOKS (generic, excluding mandatory bridge)
     if (options.crossPipelineHooks && options.crossPipelineHooks.length > 0) {
-      sections.push(
-        `## CROSS-PIPELINE INTERPRETIVE HOOKS\n\n` +
-        `The following are established interpretive bridges between texts in the corpus. ` +
-        `These are high-confidence [INTERP-high] connections verified against primary sources. ` +
-        `Use them to structure cross-textual argument — do not invent additional bridges.\n\n` +
-        options.crossPipelineHooks.join('\n')
-      );
+      // Filter out the mandatory bridge to prevent duplicate injection
+      const filteredHooks = mandatoryBridgeId
+        ? options.crossPipelineHooks.filter(line => !line.includes(`[${mandatoryBridgeId}]`))
+        : options.crossPipelineHooks;
+      if (filteredHooks.length > 0) {
+        sections.push(
+          `## CROSS-PIPELINE INTERPRETIVE HOOKS\n\n` +
+          `The following are established interpretive bridges between texts in the corpus. ` +
+          `These are high-confidence [INTERP-high] connections verified against primary sources. ` +
+          `Use them to structure cross-textual argument — do not invent additional bridges.\n\n` +
+          filteredHooks.join('\n')
+        );
+      }
     }
 
-    // [6e] CONCEPTUAL TENSIONS
+    // [6f] CONCEPTUAL TENSIONS
     if (options.tensionEdges && options.tensionEdges.length > 0) {
       sections.push(
         `## CONCEPTUAL TENSIONS (from corpus analysis)\n\n` +
@@ -665,6 +703,18 @@ After the main text, append:
 
 REMEMBER: ${options.wordTarget} words main text, each section ≥ ${GOLD_STANDARD_CONFIG.minSectionWords} words, ≥ ${minSourceDiversity} authors cited, ≥ 3 verbatim quotations. Style: long architectonic sentences, semicolons, transitions (thus/indeed/hence/accordingly/specifically/subsequently/similarly). Paragraphs ~140+ words.`);
   }
+
+  // Final directive — placed at the absolute end of the prompt to leverage
+  // LLM recency bias. This overrides any style profile instructions that
+  // discourage parenthetical citations.
+  sections.push(`<final_directive>
+CRITICAL: Despite any style profiles provided above, you MUST append a formal inline parenthetical citation at the end of EVERY claim, paraphrase, or use of information from a source.
+Correct: As Heidegger argues, Dasein is Being-in-the-world (Heidegger, *Being and Time*, p. 78).
+Correct: Aristotle holds that the soul never thinks without an image (Aristotle, *De Anima*, 431a16).
+Incorrect: As Heidegger argues, Dasein is Being-in-the-world.
+Incorrect: Aristotle holds that the soul never thinks without an image.
+If you omit the parenthetical citation, the system will reject your output.
+</final_directive>`);
 
   return sections.join('\n\n');
 }

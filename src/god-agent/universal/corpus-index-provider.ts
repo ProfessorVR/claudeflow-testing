@@ -9,6 +9,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { loadCompiledIndex as loadCompiledIndexShared } from '../shared/jsonl-loaders.js';
 
 // ---- Types ----
 
@@ -67,27 +68,12 @@ export interface QueryExpansion {
   keywordTerms: string[];
 }
 
-// ---- Module-level cache with mtime invalidation (H-03) ----
-
-let cachedIndex: CompiledIndex | null = null;
-let cachedIndexPath: string | null = null;
-let cachedIndexMtimeMs = 0;
+// ---- Compiled index loading (delegates to shared centralized cache, Task #21) ----
 
 function loadCompiledIndex(indexPath?: string): CompiledIndex | null {
-  const resolvedPath = indexPath || path.join(process.cwd(), 'corpus', 'index', 'compiled-index.json');
-  try {
-    if (!fs.existsSync(resolvedPath)) return null;
-    const mtimeMs = fs.statSync(resolvedPath).mtimeMs;
-    if (cachedIndex && cachedIndexPath === resolvedPath && mtimeMs === cachedIndexMtimeMs) {
-      return cachedIndex;
-    }
-    cachedIndex = JSON.parse(fs.readFileSync(resolvedPath, 'utf-8'));
-    cachedIndexPath = resolvedPath;
-    cachedIndexMtimeMs = mtimeMs;
-    return cachedIndex;
-  } catch {
-    return null;
-  }
+  // indexPath parameter preserved for API compatibility but ignored —
+  // the shared loader always resolves from project root.
+  return loadCompiledIndexShared() as CompiledIndex | null;
 }
 
 // ---- Scoring ----

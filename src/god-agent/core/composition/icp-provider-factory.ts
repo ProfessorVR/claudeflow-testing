@@ -16,6 +16,7 @@ import { readFileSync, existsSync } from 'fs';
 import { ModelRouter, type ModelRouterConfig } from './model-router.js';
 import { LLMDecompositionProviderImpl } from './llm-decomposition-provider.js';
 import { LLMGenerationProviderImpl } from './llm-generation-provider.js';
+import { LLMClaimProvider } from './llm-claim-provider.js';
 import type { AutoVerifierConfig } from './auto-verifier.js';
 import type { ICPDependencies, ICPOrchestratorConfig } from './icp-orchestrator.js';
 import type { SmartRetrievalLayer } from '../../retrieval/smart-retrieval-layer.js';
@@ -96,12 +97,15 @@ export class ICPProviderFactory {
 
     // 4. Build auto-verifier config with OCR repair
     const enableRepair = config.enableOCRRepair ?? availableBackends.includes('vllm');
-    const autoVerifierConfig: AutoVerifierConfig = enableRepair
-      ? {
-          ocrRepairRouter: router,
-          ocrRepairThreshold: config.ocrRepairThreshold ?? 0.2,
-        }
-      : {};
+    const autoVerifierConfig: AutoVerifierConfig = {
+      // Lower threshold from default 0.85 to 0.65 — corpus relevance scores
+      // typically range 0.76-0.83, which would all be 'flagged' at 0.85
+      autoVerifyThreshold: 0.65,
+      ...(enableRepair ? {
+        ocrRepairRouter: router,
+        ocrRepairThreshold: config.ocrRepairThreshold ?? 0.2,
+      } : {}),
+    };
 
     // 5. Build style prompt provider (uses config override or auto-loads from profile store)
     const stylePromptProvider = config.stylePromptProvider ?? ((profileId?: string) => {
@@ -130,15 +134,21 @@ export class ICPProviderFactory {
       }
     });
 
-    // 6. Assemble ICPDependencies
+    // 6. Build claim provider (WS5: Toulmin claim decomposition)
+    const claimProviderInstance = new LLMClaimProvider(router);
+
+    // 7. Assemble ICPDependencies
     const deps: ICPDependencies = {
       retrieval,
       llmDecomposer,
       generationProvider,
       stylePromptProvider,
+      claimProvider: async (promptSpec, quoteSpans) => {
+        return claimProviderInstance.generateClaims(promptSpec, quoteSpans || []);
+      },
     };
 
-    // 7. Build orchestrator config
+    // 8. Build orchestrator config
     const orchestratorConfig: ICPOrchestratorConfig = {
       styleProfileId: config.styleProfileId,
       autoVerifierConfig,

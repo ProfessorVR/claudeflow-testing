@@ -179,47 +179,83 @@ def load_knowledge(path: Path) -> List[KnowledgeUnit]:
     units.sort(key=lambda u: u.ku_id)
     return units
 
-#Disabled Topic Bucketing (below), this is a single bucket for minimal working version
+# Cross-author relations that are semantically valid across philosophical traditions.
+# "supports" is forbidden cross-author UNLESS a curated cross-pipeline hook licenses it.
+CROSS_AUTHOR_ALLOWED: Set[str] = {
+    "contrasts_with", "explains", "defined_as", "refines", "presupposes",
+}
+
+# Hook-licensed pairs: if a cross-pipeline hook bridges two concepts, "supports" is allowed
+# because the relationship has been manually verified by the corpus curator.
+_hook_licensed_pairs: Set[frozenset] | None = None
+
+def load_hook_licensed_pairs() -> Set[frozenset]:
+    """Load cross-pipeline hooks and build a set of licensed concept pairs."""
+    global _hook_licensed_pairs
+    if _hook_licensed_pairs is not None:
+        return _hook_licensed_pairs
+
+    _hook_licensed_pairs = set()
+    index_path = Path("corpus/index/compiled-index.json")
+    if not index_path.exists():
+        return _hook_licensed_pairs
+
+    try:
+        with open(index_path, encoding="utf-8") as f:
+            index = json.load(f)
+        for hook in index.get("crossPipelineHooks", []):
+            src = (hook.get("sourceConcept") or "").lower().strip()
+            tgt = (hook.get("targetConcept") or "").lower().strip()
+            if src and tgt:
+                _hook_licensed_pairs.add(frozenset({src, tgt}))
+    except Exception:
+        pass
+
+    return _hook_licensed_pairs
+
+
+def is_hook_licensed(claim_a: str, claim_b: str) -> bool:
+    """Check if two claims discuss concepts bridged by a cross-pipeline hook."""
+    pairs = load_hook_licensed_pairs()
+    if not pairs:
+        return False
+    a_lower = claim_a.lower()
+    b_lower = claim_b.lower()
+    for pair in pairs:
+        terms = list(pair)
+        if len(terms) == 2:
+            t0, t1 = terms
+            # Check if each claim contains one side of the bridge
+            if ((t0 in a_lower and t1 in b_lower) or (t1 in a_lower and t0 in b_lower)):
+                return True
+    return False
+
+
 def topic_bucket(units: List[KnowledgeUnit], query: str | None) -> Dict[str, List[KnowledgeUnit]]:
-    # Phase 7 early-stage: single bucket for dense cross-document reasoning.
-    # Bucketing will be reintroduced later as a scalability optimization.
+    """
+    Author-scoped bucketing: group KUs by primary author.
+    - If --query provided: single filtered bucket "query"
+    - Else: one bucket per distinct primary author (from sources[0].author)
+    Replaces the disabled keyword-vocabulary bucketing and the single-bucket fallback.
+    """
     if query:
         return {"query": [u for u in units if query.lower() in u.claim.lower()]}
-    return {"all": units}
 
+    buckets: Dict[str, List[KnowledgeUnit]] = {}
+    for u in units:
+        author = "unknown"
+        if u.sources and isinstance(u.sources, list) and len(u.sources) > 0:
+            src = u.sources[0]
+            if isinstance(src, dict):
+                author = src.get("author", "unknown")
+        author = author.strip() or "unknown"
+        buckets.setdefault(author, []).append(u)
 
-#def topic_bucket(units: List[KnowledgeUnit], query: str | None) -> Dict[str, List[KnowledgeUnit]]:
-    """
-    Deterministic topic bucketing:
-    - If --query provided: single bucket "query"
-    - Else: bucket by top keyword among a small controlled vocabulary (fallback "misc")
-    """
- #   if query:
-  #      return {"query": [u for u in units if query.lower() in u.claim.lower()]}
+    # Sort KUs within each bucket by ku_id (determinism)
+    for bucket in buckets.values():
+        bucket.sort(key=lambda u: u.ku_id)
 
-#    vocab = [
-#        "phantasia", "action", "movement", "perception", "desire", "rhetoric", "lexis", "appearance",
-#        "epideictic", "soul", "imagination", "deliberation"
- #   ]
-
-#    buckets: Dict[str, List[KnowledgeUnit]] = {k: [] for k in vocab}
-#    buckets["misc"] = []
-
-    #for u in units:
-     #   c = u.claim.lower()
-      #  placed = False
-       # for k in vocab:
-        #    if k in c:
-         #       buckets[k].append(u)
-          #      placed = True
-           #     break
-      #  if not placed:
-      #      buckets["misc"].append(u)
-
-    # Drop empty buckets for cleaner output
-   # buckets = {k: v for k, v in buckets.items() if v}
-    # Deterministic bucket order handled later by sorting keys
-   # return buckets
+    return buckets
 
 
 def build_reasoning(
@@ -240,6 +276,11 @@ def build_reasoning(
         "reasoning_units_pre_prune": 0,
         "reasoning_units_post_prune": 0,
         "top_k_per_unit": top_k_per_unit,
+        "author_bucketing": {
+            "enabled": True,
+            "author_count": len(buckets),
+            "cross_author_allowed_relations": sorted(CROSS_AUTHOR_ALLOWED),
+        },
     }
 
     for topic in sorted(buckets.keys()):
@@ -299,6 +340,77 @@ def build_reasoning(
 
             if stats["pairs_considered"] >= max_pairs:
                 break
+
+    # --- Cross-author pass (constrained relation vocabulary) ---
+    # Compare KUs across author boundaries, but ONLY allow relations that are
+    # semantically valid across philosophical traditions. "supports" is forbidden
+    # to prevent false harmonization of distinct frameworks.
+    author_keys = sorted(buckets.keys())
+    for ai in range(len(author_keys)):
+        for aj in range(ai + 1, len(author_keys)):
+            if stats["pairs_considered"] >= max_pairs:
+                break
+            bucket_a = buckets[author_keys[ai]]
+            bucket_b = buckets[author_keys[aj]]
+            cross_topic = f"cross:{author_keys[ai]}__vs__{author_keys[aj]}"
+
+            for ua in bucket_a:
+                if stats["pairs_considered"] >= max_pairs:
+                    break
+                for ub in bucket_b:
+                    if stats["pairs_considered"] >= max_pairs:
+                        break
+
+                    ga = char_ngrams(ua.claim, n=4)
+                    gb = char_ngrams(ub.claim, n=4)
+                    shared = ga & gb
+                    score = jaccard(ga, gb)
+                    raw_rel = infer_relation(ua.claim, ub.claim, score, shared)
+
+                    stats["pairs_considered"] += 1
+                    if raw_rel is None:
+                        continue
+
+                    rel = VOCAB_MAP.get(raw_rel, raw_rel)
+                    if rel not in CANONICAL_RELATIONS:
+                        continue
+                    # CONSTRAINT: forbid "supports" and "is_variant_of" across authors
+                    # EXCEPTION: allow "supports" if a curated cross-pipeline hook licenses
+                    # the relationship between the two concepts
+                    if rel not in CROSS_AUTHOR_ALLOWED:
+                        if rel == "supports" and is_hook_licensed(ua.claim, ub.claim):
+                            pass  # Hook licenses this cross-author supports edge
+                        else:
+                            continue
+
+                    shared_sample = sorted(shared)[:25]
+                    canonical = {
+                        "relation": rel,
+                        "topic": cross_topic,
+                        "knowledge_ids": [ua.ku_id, ub.ku_id],
+                        "shared_ngrams_sample": shared_sample,
+                    }
+                    canonical_s = json.dumps(canonical, sort_keys=True, ensure_ascii=False)
+                    rid = stable_reason_id([canonical_s])
+
+                    row = {
+                        "reason_id": rid,
+                        "relation": rel,
+                        "topic": cross_topic,
+                        "knowledge_ids": [ua.ku_id, ub.ku_id],
+                        "shared_ngrams_sample": shared_sample,
+                        "shared_ngrams_count": len(shared),
+                        "evidence": [
+                            {"ku_id": ua.ku_id, "claim": ua.claim, "sources": ua.sources},
+                            {"ku_id": ub.ku_id, "claim": ub.claim, "sources": ub.sources},
+                        ],
+                        "score": round(score, 6),
+                        "hash": "sha256:" + sha256_hex(canonical_s),
+                    }
+                    reasoning_rows.append(row)
+
+        if stats["pairs_considered"] >= max_pairs:
+            break
 
     # Deterministic ordering of emitted reasoning units (pre-prune)
     reasoning_rows.sort(key=lambda r: (r["topic"], r["relation"], r["reason_id"]))

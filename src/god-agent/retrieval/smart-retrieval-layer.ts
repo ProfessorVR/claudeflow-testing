@@ -19,6 +19,7 @@
 import { readFile } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { expandQueryWithCanonicalTerms } from '../shared/cross-author-utils.js';
 
 import {
   ContextChunk,
@@ -189,7 +190,9 @@ export class SmartRetrievalLayer {
     const opts: Required<RetrievalOptions> = {
       collections: options.collections || [],
       maxChunks: options.maxChunks || this.DEFAULT_MAX_CHUNKS,
-      minRelevance: options.minRelevance ?? this.DEFAULT_MIN_RELEVANCE,
+      minRelevance: (options.whereFilter && Object.keys(options.whereFilter).length > 0)
+        ? 0.0  // Author-targeted queries bypass relevance threshold — the filter IS the constraint
+        : (options.minRelevance ?? this.DEFAULT_MIN_RELEVANCE),
       pageContext: options.pageContext || 0,
       diversityBoost: options.diversityBoost ?? true,
       rerank: options.rerank ?? false,
@@ -243,8 +246,45 @@ export class SmartRetrievalLayer {
         this.logger.info(`[SmartRetrievalLayer] Step 4b after KG boost: ${kgBoosted.length}`);
       }
 
+      // Step 4c: Canonical term reranking boost
+      // Chunks containing exact canonical philosophical terms from the query
+      // get a +0.10 relevance boost, ensuring terminologically precise matches
+      // surface above merely semantically similar chunks.
+      let termBoosted = kgBoosted;
+      try {
+        const { getCompiledIndex } = await import('../shared/cross-author-utils.js');
+        const index = getCompiledIndex();
+        if (index && (index as any).canonicalTerms?.length > 0) {
+          const canonicalTerms: string[] = (index as any).canonicalTerms;
+          const queryLower = enrichedQuery.toLowerCase();
+
+          // Find which canonical terms appear in the query
+          const queryTerms = canonicalTerms.filter(t =>
+            t.length >= 4 && queryLower.includes(t.toLowerCase())
+          );
+
+          if (queryTerms.length > 0) {
+            const CANONICAL_BOOST = 0.10;
+            let boostedCount = 0;
+            termBoosted = kgBoosted.map(chunk => {
+              const chunkLower = chunk.content.toLowerCase();
+              const hasCanonical = queryTerms.some(t => chunkLower.includes(t.toLowerCase()));
+              if (hasCanonical) {
+                boostedCount++;
+                return { ...chunk, relevanceScore: Math.min(1.0, chunk.relevanceScore + CANONICAL_BOOST) };
+              }
+              return chunk;
+            });
+            termBoosted.sort((a, b) => b.relevanceScore - a.relevanceScore);
+            if (boostedCount > 0) {
+              this.logger.info(`[SmartRetrievalLayer] Step 4c: canonical term boost applied to ${boostedCount}/${termBoosted.length} chunks (${queryTerms.length} terms matched)`);
+            }
+          }
+        }
+      } catch { /* non-fatal */ }
+
       // Step 5: Limit to max chunks
-      const limited = kgBoosted.slice(0, opts.maxChunks);
+      const limited = termBoosted.slice(0, opts.maxChunks);
       this.logger.info(`[SmartRetrievalLayer] Step 5 after limit (${opts.maxChunks}): ${limited.length}`);
 
       // Step 6: Expand with page context if requested
@@ -835,11 +875,21 @@ export class SmartRetrievalLayer {
     );
 
     try {
+      // Step 0: Expand query with canonical ontology terms (H-15)
+      // "phantasia" → "phantasia (φαντασία, imagination, appearing)"
+      let enrichedQuery = query;
+      try {
+        enrichedQuery = expandQueryWithCanonicalTerms(query);
+        if (enrichedQuery !== query) {
+          this.logger.info(`[SmartRetrievalLayer] Query expanded: "${enrichedQuery.slice(0, 120)}..."`);
+        }
+      } catch { /* non-fatal: expansion is an enhancement */ }
+
       // Step 1: Get embedding from embedding API
       const embeddingResponse = await fetch(`${this.EMBEDDING_API_URL}/embed`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ texts: [query] }),
+        body: JSON.stringify({ texts: [enrichedQuery] }),
       });
 
       if (!embeddingResponse.ok) {
@@ -869,6 +919,7 @@ export class SmartRetrievalLayer {
       const whereFilter = options.whereFilter;
       if (whereFilter && Object.keys(whereFilter).length > 0) {
         queryBody.where = whereFilter;
+        this.logger.info(`[SmartRetrievalLayer] Applied whereFilter: ${JSON.stringify(whereFilter)}`);
       }
 
       const chromaResponse = await fetch(chromaQueryUrl, {
@@ -1239,8 +1290,10 @@ These chunks have a "${relationship}" relationship. Synthesize their perspective
    * Build cache key from query and options
    */
   private buildCacheKey(prefix: string, query: string, options: any): string {
-    // Sort keys for deterministic cache hits regardless of property order
-    const optionsStr = JSON.stringify(options, Object.keys(options ?? {}).sort());
+    // Full-depth JSON serialization with sorted keys for deterministic cache hits.
+    // The replacer must be null (not Object.keys) to serialize nested objects fully —
+    // otherwise whereFilter values like { author_raw: { $eq: 'X' } } are lost.
+    const optionsStr = JSON.stringify(options, null, 0);
     return `${prefix}:${query}:${optionsStr}`;
   }
 

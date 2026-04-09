@@ -1620,7 +1620,7 @@ export function createICPRouter(options?: ICPRouterOptions): Router {
     // 10. Quality Gate: Strip endnote leaks
     try {
       text = stripEndnoteLeaks(text);
-      gates.endnote_leaks = { cleaned: true };
+      gates.endnote_leaks = { leaksRemoved: 0 };
     } catch { /* non-fatal */ }
 
     // 11. Quality Gate: Prose sanitization (2-pass)
@@ -1654,6 +1654,21 @@ export function createICPRouter(options?: ICPRouterOptions): Router {
           score: s.score ?? 0,
           passed: s.passed ?? false,
         })) ?? [],
+      };
+    } catch { /* non-fatal */ }
+
+    // 12b. Quality Gate: Edge coherence (async to avoid blocking I/O)
+    try {
+      const { validateEdgeCoherence } = await import('../universal/quality-integration.js');
+      const { loadReasoningEdgesAsync } = await import('../shared/jsonl-loaders.js');
+      const edges = await loadReasoningEdgesAsync();
+      const ecResult = validateEdgeCoherence(text, undefined, edges);
+      gates.edge_coherence = {
+        score: ecResult.score,
+        contradictions: ecResult.contradictions.map((c: any) => ({
+          assertion: c.foundAssertion ?? c.assertion ?? '',
+          conflictsWith: c.description ?? c.conflictsWith ?? '',
+        })),
       };
     } catch { /* non-fatal */ }
 

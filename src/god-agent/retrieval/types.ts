@@ -32,6 +32,17 @@ const KnowledgeUnitSourceSchema = z.object({
   bboxes: z.string().optional(),
 }).passthrough();
 
+/**
+ * Known KU domain values from the current corpus (H-13).
+ * Used for warn-on-unknown validation — does NOT reject unknown domains,
+ * just logs a warning so new domains are surfaced during ingestion.
+ */
+export const KNOWN_KU_DOMAINS: readonly string[] = [
+  'aristotle',
+  'heidegger_bt',
+  'rickert',
+] as const;
+
 const KnowledgeUnitSchema = z.object({
   id: z.string(),
   claim: z.string(),
@@ -80,9 +91,26 @@ export type ReasoningEdge = z.infer<typeof ReasoningEdgeSchema>;
 export function parseKnowledgeUnit(line: string): KnowledgeUnit | null {
   try {
     const raw = JSON.parse(line);
-    return KnowledgeUnitSchema.parse(raw);
+    const ku = KnowledgeUnitSchema.parse(raw);
+
+    // H-13: Auto-normalize domain (lowercase, trim) and warn on unknown
+    if (ku.domain) {
+      const normalized = ku.domain.toLowerCase().trim();
+      if (normalized !== ku.domain) {
+        (ku as any).domain = normalized;
+      }
+      if (!KNOWN_KU_DOMAINS.includes(normalized)) {
+        process.stderr.write(
+          `[JSONL] WARNING: KU ${ku.id} has unknown domain "${normalized}". ` +
+          `Known domains: ${KNOWN_KU_DOMAINS.join(', ')}. ` +
+          `If this is a new domain, consider adding it to KNOWN_KU_DOMAINS in types.ts.\n`
+        );
+      }
+    }
+
+    return ku;
   } catch (e) {
-    const id = JSON.parse(line)?.id ?? '??';
+    const id = (() => { try { return JSON.parse(line)?.id ?? '??'; } catch { return '??'; } })();
     process.stderr.write(`[JSONL] KnowledgeUnit validation failed for ${id}: ${e instanceof z.ZodError ? e.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ') : e}\n`);
     return null;
   }

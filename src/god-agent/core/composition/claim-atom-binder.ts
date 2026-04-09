@@ -160,6 +160,17 @@ export class ClaimAtomBinder {
         staleness_status: 'current',
       };
 
+      // Cross-author tension check: if bound spans come from different authors
+      // with contrasts_with edges, annotate the binding with a tension warning.
+      // This informs Stage 8a's preventive coherence injection.
+      const boundAuthors = new Set(
+        candidates.map(c => (c.source_anchor || '').split(' - ')[0].replace(/\s*\(bridge-enforced\)/, '').trim()).filter(Boolean)
+      );
+      if (boundAuthors.size > 1) {
+        (binding as any).cross_author_tension = true;
+        (binding as any).bound_authors = [...boundAuthors];
+      }
+
       bindings.push(binding);
       atom.bound_quote_ids = candidates.map(c => c.quote_id);
     }
