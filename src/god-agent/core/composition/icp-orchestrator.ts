@@ -214,7 +214,7 @@ export class ICPOrchestrator {
     // and suggests them as primary or secondary. Merge with user-provided priority.
     if (sourcePriority) {
       if (promptSpec.suggestedPrimarySources && promptSpec.suggestedPrimarySources.length > 0) {
-        console.log(`[ICP-Stage1b] Suggested PRIMARY: ${promptSpec.suggestedPrimarySources.map(s => `${s.author} - ${s.title}`).join(', ')}`);
+        process.stderr.write(`[ICP-Stage1b] Suggested PRIMARY: ${promptSpec.suggestedPrimarySources.map(s => `${s.author} - ${s.title}`).join(', ')}\n`);
         const existingPrimary = new Set(
           sourcePriority.primarySources.map(s => typeof s === 'string' ? s : `${s.author}::${s.title}`)
         );
@@ -222,12 +222,12 @@ export class ICPOrchestrator {
           const key = `${suggested.author}::${suggested.title}`;
           if (!existingPrimary.has(key)) {
             sourcePriority.primarySources.push({ author: suggested.author, title: suggested.title });
-            console.log(`[ICP-Stage1b] Auto-elevated to PRIMARY: ${suggested.author} - ${suggested.title}`);
+            process.stderr.write(`[ICP-Stage1b] Auto-elevated to PRIMARY: ${suggested.author} - ${suggested.title}\n`);
           }
         }
       }
       if (promptSpec.suggestedSecondarySources && promptSpec.suggestedSecondarySources.length > 0) {
-        console.log(`[ICP-Stage1b] Suggested SECONDARY: ${promptSpec.suggestedSecondarySources.map(s => `${s.author} - ${s.title}`).join(', ')}`);
+        process.stderr.write(`[ICP-Stage1b] Suggested SECONDARY: ${promptSpec.suggestedSecondarySources.map(s => `${s.author} - ${s.title}`).join(', ')}\n`);
         const existingSecondary = new Set(
           sourcePriority.secondarySources.map(s => typeof s === 'string' ? s : `${s.author}::${s.title}`)
         );
@@ -235,7 +235,7 @@ export class ICPOrchestrator {
           const key = `${suggested.author}::${suggested.title}`;
           if (!existingSecondary.has(key)) {
             sourcePriority.secondarySources.push({ author: suggested.author, title: suggested.title });
-            console.log(`[ICP-Stage1b] Auto-added to SECONDARY: ${suggested.author} - ${suggested.title}`);
+            process.stderr.write(`[ICP-Stage1b] Auto-added to SECONDARY: ${suggested.author} - ${suggested.title}\n`);
           }
         }
       }
@@ -361,7 +361,7 @@ export class ICPOrchestrator {
         if (activeBridges.length === 0) continue;
 
         const bridge = activeBridges[0];
-        console.log(`[ICP-Stage6b] Bridge activated: ${bridge.id} — ${bridge.sourceConcept || '?'} ↔ ${bridge.targetConcept || '?'}`);
+        process.stderr.write(`[ICP-Stage6b] Bridge activated: ${bridge.id} — ${bridge.sourceConcept || '?'} ↔ ${bridge.targetConcept || '?'}\n`);
         const requiredAuthors = new Set<string>();
         if (bridge.sourceAuthor && bridge.sourceAuthor !== 'Unknown') requiredAuthors.add(bridge.sourceAuthor);
         if (bridge.targetAuthor && bridge.targetAuthor !== 'Unknown') requiredAuthors.add(bridge.targetAuthor);
@@ -379,7 +379,7 @@ export class ICPOrchestrator {
         }
 
         const missingAuthors = [...requiredAuthors].filter(a => !presentAuthors.has(a));
-        console.log(`[ICP-Stage6b] Required: [${[...requiredAuthors]}] | Present: [${[...presentAuthors]}] | Missing: [${missingAuthors}]`);
+        process.stderr.write(`[ICP-Stage6b] Required: [${[...requiredAuthors]}] | Present: [${[...presentAuthors]}] | Missing: [${missingAuthors}]\n`);
         if (missingAuthors.length > 0 && this.deps.retrieval) {
           for (const author of missingAuthors) {
             try {
@@ -392,7 +392,7 @@ export class ICPOrchestrator {
               );
               // Diagnostic: verify retrieved chunks actually match the requested author
               const actualAuthors = authorChunks.map((c: any) => c.metadata?.author ?? c.author_raw ?? c.author ?? '?');
-              console.log(`[ICP-Stage6b] Retrieved ${authorChunks.length} chunks for "${author}" — actual authors: [${[...new Set(actualAuthors)]}]`);
+              process.stderr.write(`[ICP-Stage6b] Retrieved ${authorChunks.length} chunks for "${author}" — actual authors: [${[...new Set(actualAuthors)]}]\n`);
               // Convert to QuoteSpans and add to session
               for (const chunk of authorChunks) {
                 const chunkText = (chunk as any).content ?? (chunk as any).text ?? '';
@@ -427,7 +427,7 @@ export class ICPOrchestrator {
                 };
                 session.quote_spans.push(span);
               }
-              console.log(`[ICP-Stage6b] Added ${authorChunks.length} bridge-enforced spans for ${author}`);
+              process.stderr.write(`[ICP-Stage6b] Added ${authorChunks.length} bridge-enforced spans for ${author}\n`);
             } catch { /* non-fatal: bridge enforcement is best-effort */ }
           }
         }
@@ -536,9 +536,9 @@ export class ICPOrchestrator {
       }
 
       if (detectedTensions.length > 0) {
-        console.log(`[ICP-Stage8a] Preventive coherence: ${detectedTensions.length} cross-author tension(s) detected in bound paragraphs`);
+        process.stderr.write(`[ICP-Stage8a] Preventive coherence: ${detectedTensions.length} cross-author tension(s) detected in bound paragraphs\n`);
         for (const dt of detectedTensions) {
-          console.log(`  ${dt.paragraphId}: ${dt.tension.slice(0, 100)}`);
+          process.stderr.write(`  ${dt.paragraphId}: ${dt.tension.slice(0, 100)}\n`);
         }
 
         // Inject tension awareness into the style prompt
@@ -556,7 +556,7 @@ export class ICPOrchestrator {
         details: detectedTensions,
       };
     } catch (error) {
-      console.error('[ICP-Stage8a] Preventive coherence check failed:', error);
+      process.stderr.write(`[ICP-Stage8a] Preventive coherence check failed: ${error}\n`);
     }
 
     // Append tension directive to style prompt (if any)
@@ -611,7 +611,7 @@ export class ICPOrchestrator {
       for (const para of paragraphs) {
         const sentences = para.match(/[^.!?]+[.!?]+/g) || [];
         if (sentences.length >= 2 && !citationRegex.test(para)) {
-          console.log(`[ICP-Stage9a] Paragraph missing parenthetical citation (${sentences.length} sentences). Appending [CITATION NEEDED] marker.`);
+          process.stderr.write(`[ICP-Stage9a] Paragraph missing parenthetical citation (${sentences.length} sentences). Appending [CITATION NEEDED] marker.\n`);
           fixed.push(para + ' [CITATION NEEDED].');
         } else {
           fixed.push(para);
@@ -811,7 +811,7 @@ export class ICPOrchestrator {
         })),
       };
     } catch (error) {
-      console.error('[QualityGates] Edge coherence gate threw:', error);
+      process.stderr.write(`[QualityGates] Edge coherence gate threw: ${error}\n`);
     }
 
     // Tension-awareness gate (Phase 3: cross-author integration)
@@ -823,7 +823,7 @@ export class ICPOrchestrator {
         if (facet.archived) continue;
         const topicWords = extractTopicWords(facet.name, facet.description);
         const tensionResult = validateTensionAwareness(fullText, topicWords);
-        console.log(`[ICP-TensionGate] Facet "${facet.name}": checked=${tensionResult.tensionsChecked}, acknowledged=${tensionResult.tensionsAcknowledged}, unacked=${tensionResult.unacknowledgedTensions.length}`);
+        process.stderr.write(`[ICP-TensionGate] Facet "${facet.name}": checked=${tensionResult.tensionsChecked}, acknowledged=${tensionResult.tensionsAcknowledged}, unacked=${tensionResult.unacknowledgedTensions.length}\n`);
         if (!tensionResult.passed && tensionResult.unacknowledgedTensions.length > 0) {
           // Store as quality gate result for dashboard visibility
           session.quality_gates!.tension_awareness = {
@@ -852,7 +852,7 @@ export class ICPOrchestrator {
         }
       }
     } catch (error) {
-      console.error('[QualityGates] Tension awareness gate threw:', error);
+      process.stderr.write(`[QualityGates] Tension awareness gate threw: ${error}\n`);
     }
 
     // Author conflict events (H-12) — derived from tension awareness results
@@ -893,11 +893,11 @@ export class ICPOrchestrator {
 
         if (allEvents.length > 0) {
           session.quality_gates!.author_conflict_events = allEvents;
-          console.log(`[QualityGates] Author conflict events: ${allEvents.length} (${allEvents.filter((e: any) => e.unacknowledged).length} unacknowledged)`);
+          process.stderr.write(`[QualityGates] Author conflict events: ${allEvents.length} (${allEvents.filter((e: any) => e.unacknowledged).length} unacknowledged)\n`);
         }
       }
     } catch (error) {
-      console.error('[QualityGates] Author conflict event derivation threw:', error);
+      process.stderr.write(`[QualityGates] Author conflict event derivation threw: ${error}\n`);
     }
 
     // Unanchored edge detection (Task #20)
@@ -909,15 +909,15 @@ export class ICPOrchestrator {
       const spanTexts = session.quote_spans.map(s => s.text || '');
       const unanchored = detectUnanchoredEdges(allEdges, spanTexts);
       if (unanchored.length > 0) {
-        console.log(`[QualityGates] Unanchored edges: ${unanchored.length}/${allEdges.length} (concepts missing from QuoteSpans)`);
+        process.stderr.write(`[QualityGates] Unanchored edges: ${unanchored.length}/${allEdges.length} (concepts missing from QuoteSpans)\n`);
         for (const ue of unanchored.slice(0, 5)) {
-          console.log(`  [${ue.edgeId}] ${ue.source} ${ue.relation} ${ue.target} — missing: ${ue.missingConcepts.join(', ')}`);
+          process.stderr.write(`  [${ue.edgeId}] ${ue.source} ${ue.relation} ${ue.target} — missing: ${ue.missingConcepts.join(', ')}\n`);
         }
-        if (unanchored.length > 5) console.log(`  ... and ${unanchored.length - 5} more`);
+        if (unanchored.length > 5) process.stderr.write(`  ... and ${unanchored.length - 5} more\n`);
       }
       session.quality_gates!.unanchored_edges = unanchored;
     } catch (error) {
-      console.error('[QualityGates] Unanchored edge detection threw:', error);
+      process.stderr.write(`[QualityGates] Unanchored edge detection threw: ${error}\n`);
     }
 
     // OCR quality summary (H-14)
@@ -926,10 +926,10 @@ export class ICPOrchestrator {
       const ocrSummary = summarizeOcrQuality(session.quote_spans);
       if (ocrSummary) {
         session.quality_gates!.ocr_quality = ocrSummary;
-        console.log(`[QualityGates] OCR quality: avg=${ocrSummary.average}, min=${ocrSummary.min}, max=${ocrSummary.max}, low=${ocrSummary.low_quality_count}`);
+        process.stderr.write(`[QualityGates] OCR quality: avg=${ocrSummary.average}, min=${ocrSummary.min}, max=${ocrSummary.max}, low=${ocrSummary.low_quality_count}\n`);
       }
     } catch (error) {
-      console.error('[QualityGates] OCR quality summary threw:', error);
+      process.stderr.write(`[QualityGates] OCR quality summary threw: ${error}\n`);
     }
 
     // WS9: Feedback learning — store gauntlet results for learning
