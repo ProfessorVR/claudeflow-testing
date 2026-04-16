@@ -48,7 +48,7 @@ describe('Lanham pipeline smoke test', () => {
   });
 
   it('active profile has lanhamMetrics', () => {
-    const profilePath = resolve(process.cwd(), '.agentdb-v2/universal/style-profiles.json');
+    const profilePath = resolve(process.cwd(), '.agentdb/universal/style-profiles.json');
     const data = JSON.parse(readFileSync(profilePath, 'utf-8'));
     const profile = data.profiles[data.activeProfile];
     expect(profile).toBeDefined();

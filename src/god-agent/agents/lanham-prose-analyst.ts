@@ -2,7 +2,7 @@
  * Lanham Prose Analyst Agent
  * Conversational agent for analyzing arbitrary text using Lanham's method.
  * Modes: describe (non-evaluative analysis) | revise (local transformations)
- * See plan: drifting-inventing-map.md Phase G
+ * See plan: plans/lanham-module-port-plan.md Phase 4
  */
 
 import { readFileSync, existsSync } from 'fs';

@@ -1,7 +1,7 @@
 /**
  * Lanham Style Policy - Single source of truth for genre-specific style assumptions
  * Imported by both prompt building and validation logic.
- * See plan: drifting-inventing-map.md Phase C
+ * See plan: plans/lanham-module-port-plan.md Phase 1
  */
 
 export interface LanhamThresholdConfig {

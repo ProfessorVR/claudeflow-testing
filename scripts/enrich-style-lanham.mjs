@@ -2,7 +2,7 @@
 /**
  * Enrich Style Profiles with Lanham Prose Metrics
  *
- * Reads .agentdb-v2/universal/style-profiles.json and enriches any profile
+ * Reads .agentdb/universal/style-profiles.json and enriches any profile
  * that lacks lanhamMetrics by running LanhamProseAnalyzer (or AdvancedLanhamAnalyzer)
  * on its stored sampleTexts.
  *
@@ -27,7 +27,7 @@ for (let i = 2; i < process.argv.length; i++) {
   }
 }
 
-const profilesPath = path.resolve('.agentdb-v2/universal/style-profiles.json');
+const profilesPath = path.resolve('.agentdb/universal/style-profiles.json');
 
 if (!fs.existsSync(profilesPath)) {
   console.error('Profiles file not found:', profilesPath);

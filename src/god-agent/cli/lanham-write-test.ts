@@ -129,7 +129,7 @@ async function main() {
 
   // ── Stage 1: Profile pre-flight ────────────────────────────────────────
   try {
-    const profilePath = resolve(process.cwd(), '.agentdb-v2/universal/style-profiles.json');
+    const profilePath = resolve(process.cwd(), '.agentdb/universal/style-profiles.json');
     if (!existsSync(profilePath)) {
       logStage(1, 'Profile pre-flight', 'FAIL', `Profile file not found: ${profilePath}`);
       blocked = true;

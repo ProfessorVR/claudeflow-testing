@@ -1,18 +1,51 @@
 #!/usr/bin/env node
 /**
  * Style Learning Script
- * Learns writing style from PDF directories
+ * Learns writing style from PDF and DOCX files in specified directories
  */
 
 import { UniversalAgent, PDFExtractor } from '../src/god-agent/universal/index.js';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createRequire } from 'module';
 
 const profileName = process.argv[2] || 'academic-papers';
 const directories = process.argv.slice(3);
 
 if (directories.length === 0) {
-  directories.push('docs2/social_science_papers', 'docs2/human_era_papers');
+  directories.push('style-training');
+}
+
+/**
+ * Extract text from a .docx file by reading the XML inside the zip.
+ */
+async function extractDocxText(filePath) {
+  const { execSync } = await import('child_process');
+  const { writeFileSync, unlinkSync, mkdtempSync } = await import('fs');
+  const { join } = await import('path');
+  const { tmpdir } = await import('os');
+  try {
+    const tmpDir = mkdtempSync(join(tmpdir(), 'docx-'));
+    const scriptPath = join(tmpDir, 'extract.py');
+    writeFileSync(scriptPath, `
+import zipfile, xml.etree.ElementTree as ET, sys
+z = zipfile.ZipFile(sys.argv[1])
+tree = ET.parse(z.open('word/document.xml'))
+ns = {'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
+for p in tree.findall('.//w:p', ns):
+    line = ''.join(r.text or '' for r in p.findall('.//w:t', ns))
+    if line.strip():
+        print(line.strip())
+`);
+    const result = execSync(`python3 "${scriptPath}" "${filePath}"`, {
+      maxBuffer: 10 * 1024 * 1024,
+      encoding: 'utf-8',
+    });
+    try { unlinkSync(scriptPath); } catch {}
+    return result.trim();
+  } catch (e) {
+    throw new Error(`DOCX extraction failed for ${filePath}: ${e.message}`);
+  }
 }
 
 console.log('=== God Agent Style Learning ===');
@@ -36,6 +69,8 @@ for (const dir of directories) {
   }
 
   console.log('\nProcessing:', dir);
+
+  // Extract PDFs
   const result = await extractor.extractFromDirectory(fullPath, { maxFiles: 100 });
 
   totalPdfs += result.totalFiles;
@@ -50,6 +85,25 @@ for (const dir of directories) {
 
   for (const pdf of result.failed) {
     console.log('  ✗', pdf.filename + ':', pdf.error);
+  }
+
+  // Extract DOCX files
+  const allFiles = fs.readdirSync(fullPath);
+  const docxFiles = allFiles.filter(f => f.toLowerCase().endsWith('.docx') && !f.includes(':Zone.Identifier'));
+  for (const docxFile of docxFiles) {
+    const docxPath = path.join(fullPath, docxFile);
+    try {
+      const text = await extractDocxText(docxPath);
+      if (text.length > 500) {
+        const wordCount = text.split(/\s+/).length;
+        allTexts.push(text);
+        totalPdfs++;
+        console.log('  ✓', docxFile, '(' + wordCount + ' words)');
+      }
+    } catch (e) {
+      failedPdfs++;
+      console.log('  ✗', docxFile + ':', e.message);
+    }
   }
 }
 

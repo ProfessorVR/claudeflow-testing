@@ -1,7 +1,7 @@
 /**
  * LanhamProseAnalyzer - Tier 1 heuristic implementation
  * Uses regex/counting heuristics to produce LanhamProseMetrics.
- * See plan: drifting-inventing-map.md Phase C
+ * See plan: plans/lanham-module-port-plan.md Phase 1
  */
 import type { LanhamProseMetrics } from '../../universal/style-analyzer.js';
 import type { ILanhamAnalyzer } from './lanham-analyzer-interface.js';
