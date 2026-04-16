@@ -182,8 +182,21 @@ export async function runRetrievalStage(
     } catch { /* query expansion is non-critical */ }
 
     const targetChunks = options.corpusChunkCount ?? GOLD_STANDARD_CONFIG.targetChunks;
+
+    // Include textual analysis collections when Lanham signals are present
+    const collections = [...(options.corpusCollections || [])];
+    if (shouldIncludeTextualAnalysis(options)) {
+      const lanhamCollections = ['textual_analysis', 'v2_knowledge_chunks'];
+      for (const col of lanhamCollections) {
+        if (!collections.includes(col)) {
+          collections.push(col);
+        }
+      }
+      goldLog(`Textual analysis collections added: ${lanhamCollections.join(', ')}`);
+    }
+
     const retrievalOpts: RetrievalOptions = {
-      collections: options.corpusCollections || [],
+      collections,
       minRelevance: options.corpusMinRelevance ?? 0.0,
       diversityBoost: true,
       rerank: true,

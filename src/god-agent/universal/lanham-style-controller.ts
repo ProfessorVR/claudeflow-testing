@@ -22,6 +22,7 @@ export interface LanhamControllerConfig {
   genre: Genre;
   targetMetrics?: LanhamProseMetrics;
   lanhamStyleTarget?: LanhamStyleTarget;
+  regenerationConfig?: RegenerationConfig;
 }
 
 interface RegenerationConfig {
@@ -98,12 +99,14 @@ export class LanhamStyleController {
 
   constructor(config: LanhamControllerConfig) {
     const tier = config.analyzerTier ?? 'heuristic';
-    this.analyzer = tier === 'deep'
-      ? new AdvancedLanhamAnalyzer(config.genre)
-      : new LanhamProseAnalyzer(config.genre);
+    if (tier === 'deep' || (tier === 'auto' && (config.genre === 'academic' || config.genre === 'legal'))) {
+      this.analyzer = new AdvancedLanhamAnalyzer(config.genre);
+    } else {
+      this.analyzer = new LanhamProseAnalyzer(config.genre);
+    }
     this.targetMetrics = config.targetMetrics;
     this.lanhamStyleTarget = config.lanhamStyleTarget;
-    this.regenConfig = DEFAULT_REGEN_CONFIG;
+    this.regenConfig = config.regenerationConfig ?? DEFAULT_REGEN_CONFIG;
   }
 
   /** Run full analysis on generated text, return metrics. */
@@ -229,6 +232,11 @@ export class LanhamStyleController {
       } else {
         correctionLines.push(`- ${axis} axis: generated "${genLabel}", target "${tgtLabel}".`);
       }
+    }
+
+    // Include genre context from lanhamStyleTarget so the LLM knows what it's targeting
+    if (this.lanhamStyleTarget) {
+      correctionLines.push(`Genre context: ${this.lanhamStyleTarget.genre}. AT/THROUGH mode: ${this.lanhamStyleTarget.atThroughMode}.`);
     }
 
     // Append revision guidance if agent is available

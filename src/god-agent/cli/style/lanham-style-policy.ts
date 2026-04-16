@@ -29,6 +29,8 @@ export interface LanhamThresholdConfig {
 
 export type Genre = 'academic' | 'legal' | 'narrative' | 'journalistic' | 'technical' | 'general';
 
+// NOTE: registerTarget values must stay consistent with GENRE_THRESHOLDS.register boundaries.
+// If register boundaries are updated, verify these defaults still make sense.
 export const GENRE_DEFAULTS: Record<Genre, { registerTarget: 'high' | 'middle' | 'low' | 'mixed'; allowRegisterPlay: boolean; tacitPersuasionLevel: 'almost none' | 'some' | 'moderate' | 'dense' }> = {
   academic:     { registerTarget: 'high',   allowRegisterPlay: false, tacitPersuasionLevel: 'moderate' },
   legal:        { registerTarget: 'high',   allowRegisterPlay: false, tacitPersuasionLevel: 'almost none' },

@@ -16,7 +16,7 @@
 import type { LanhamProseMetrics } from '../../universal/style-analyzer.js';
 import type { ILanhamAnalyzer } from './lanham-analyzer-interface.js';
 import { LanhamProseAnalyzer } from './lanham-prose-analyzer.js';
-import { GENRE_THRESHOLDS, type Genre } from './lanham-style-policy.js';
+import { GENRE_THRESHOLDS, type Genre, type LanhamThresholdConfig } from './lanham-style-policy.js';
 import {
   tokenize, splitSentences, clamp, roughStem, getContentWords,
   COMMON_VERBS, COORDINATING_CONJ, SUBORDINATING_CONJ, FORMAL_MARKERS,
@@ -151,7 +151,9 @@ function splitClauses(sentence: string): string[] {
 type POSTag = 'N' | 'V' | 'ADJ' | 'ADV' | 'DET' | 'PREP' | 'CONJ' | 'PRON' | 'OTHER';
 
 const DETERMINERS = new Set(['the', 'a', 'an', 'this', 'that', 'these', 'those', 'my', 'your', 'his', 'her', 'its', 'our', 'their', 'some', 'any', 'no', 'every', 'each', 'all', 'both', 'few', 'many', 'much', 'several']);
-const PRONOUNS = new Set(['i', 'me', 'my', 'mine', 'we', 'us', 'our', 'ours', 'you', 'your', 'yours', 'he', 'him', 'his', 'she', 'her', 'hers', 'it', 'its', 'they', 'them', 'their', 'theirs', 'who', 'whom', 'whose', 'which', 'that', 'what', 'this', 'these', 'those', 'one', 'ones', 'self', 'myself', 'yourself', 'himself', 'herself', 'itself', 'ourselves', 'themselves']);
+// 'that', 'this', 'these', 'those' removed — they overlap with DETERMINERS,
+// which is checked first in heuristicPOS(). Keeping them here would be dead code.
+const PRONOUNS = new Set(['i', 'me', 'my', 'mine', 'we', 'us', 'our', 'ours', 'you', 'your', 'yours', 'he', 'him', 'his', 'she', 'her', 'hers', 'it', 'its', 'they', 'them', 'their', 'theirs', 'who', 'whom', 'whose', 'which', 'what', 'one', 'ones', 'self', 'myself', 'yourself', 'himself', 'herself', 'itself', 'ourselves', 'themselves']);
 const ADJ_SUFFIXES = ['ful', 'less', 'ous', 'ive', 'able', 'ible', 'ical', 'ial', 'ent', 'ant'];
 const ADV_SUFFIXES = ['ly'];
 
@@ -464,6 +466,11 @@ export class AdvancedLanhamAnalyzer implements ILanhamAnalyzer {
   //   3. Tacit pattern density: from deep tacit pattern detection
   //   4. Genre-breaking: sudden register shifts = AT (attention-to-medium) moments
 
+  /**
+   * Deep opacity analysis — NOT called by fullAnalysis() (opacity is delegated to Tier 1
+   * because the deep 4-signal composite produces worse monotonicity than the simpler heuristic).
+   * Retained for interface compliance and potential future use.
+   */
   async analyzeOpacityTransparency(
     text: string,
     cachedTacit?: Partial<LanhamProseMetrics>,
@@ -824,7 +831,7 @@ export class AdvancedLanhamAnalyzer implements ILanhamAnalyzer {
 
   private deriveLabels(
     m: Partial<LanhamProseMetrics>,
-    t: { nounVerb: { lowBand: number; highBand: number }; parataxisHypotaxis: { lowBand: number; highBand: number }; periodicRunning: { lowBand: number; highBand: number }; voice: { lowBand: number; highBand: number }; opacity: { lowBand: number; highBand: number }; register: { lowToMiddle: number; middleToHigh: number }; nounStyleOverride: { nominalizationDensity: number; beVerbRatio: number; prepositionalPhraseDensity: number } },
+    t: LanhamThresholdConfig,
   ): LanhamProseMetrics['labels'] {
     const nvr = m.nounVerbRatio ?? 0.5;
     const phr = m.parataxisHypotaxisRatio ?? 0.5;

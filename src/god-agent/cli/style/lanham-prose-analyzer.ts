@@ -52,6 +52,8 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
       ...register,
       ...opacity,
       ...tacit,
+    // Cast is safe: labels, explanations, analysisDepth, and confidenceByAxis
+    // are set in the lines immediately below before the object is returned.
     } as LanhamProseMetrics;
 
     // Adjust opacity score to incorporate tacit pattern density
@@ -471,7 +473,7 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
     ];
     const textLower = text.toLowerCase();
     for (const [a, b] of antithesisPairs) {
-      const re = new RegExp(`\\b${a}\\b[^.]{1,40}\\b${b}\\b`, 'gi');
+      const re = new RegExp(`\\b${a}\\b[^.]{1,40}\\b${b}\\b`, 'g');
       const matches = textLower.match(re);
       if (matches) antithesisCount += matches.length;
     }

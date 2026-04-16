@@ -113,7 +113,31 @@ describe('LanhamProseAnalyzer', () => {
     });
   });
 
-  // 8. Labels derivation — values from expected union types
+  // 8. Edge cases
+  describe('edge cases', () => {
+    it('handles empty string without crashing', async () => {
+      const result = await analyzer.fullAnalysis('');
+      expect(result.labels.nounVerb).toBeDefined();
+      expect(result.analysisDepth).toBe('heuristic');
+    });
+
+    it('handles single word without crashing', async () => {
+      const result = await analyzer.fullAnalysis('Hello');
+      expect(result.labels.nounVerb).toBeDefined();
+    });
+
+    it('handles text with no sentence boundaries', async () => {
+      const result = await analyzer.fullAnalysis('this is text without any period or question mark or exclamation');
+      expect(result.labels.nounVerb).toBeDefined();
+    });
+
+    it('handles text with only numbers', async () => {
+      const result = await analyzer.fullAnalysis('123 456 789 012 345 678 901 234');
+      expect(result.labels.nounVerb).toBeDefined();
+    });
+  });
+
+  // 9. Labels derivation — values from expected union types
   describe('labels derivation', () => {
     it('returns labels within their expected union types', async () => {
       const result = await analyzer.fullAnalysis(NOUN_HEAVY);

@@ -26,19 +26,22 @@ import {
 import { LanhamProseAnalyzer } from '../../style/lanham-prose-analyzer.js';
 import type { LanhamProseMetrics } from '../../../universal/style-analyzer.js';
 import { GENRE_THRESHOLDS, GENRE_DEFAULTS, type Genre } from '../../style/lanham-style-policy.js';
+import { NOMINALIZATION_SUFFIXES, LATINATE_SUFFIXES, FORMAL_MARKERS } from '../../style/lanham-shared.js';
 
 // ============================================================================
 // Genre-specific thresholds
 // ============================================================================
 
-/** Maximum nominalization density (per 100 words) before flagging */
+/** Maximum nominalization density (per 100 words) before flagging.
+ *  Values are on the same scale as the analyzer output (e.g., 0.08 = 8 per 100 words
+ *  after the /100 normalization at the comparison site). */
 const NOMINALIZATION_THRESHOLDS: Record<Genre, number> = {
-  academic:     0.40,
-  legal:        0.55,
-  technical:    0.50,
-  narrative:    0.25,
-  journalistic: 0.35,
-  general:      0.35,
+  academic:     0.08,
+  legal:        0.10,
+  technical:    0.09,
+  narrative:    0.06,
+  journalistic: 0.07,
+  general:      0.07,
 };
 
 /**
@@ -239,7 +242,6 @@ export class ProseAnalysisValidator extends BaseQualityStage {
     paragraphs: string[],
     threshold: number
   ): Array<{ index: number; density: number; snippet: string }> {
-    const NOMINALIZATION_SUFFIXES = ['tion', 'sion', 'ment', 'ness', 'ity', 'ence', 'ance', 'ism', 'ure'];
     const results: Array<{ index: number; density: number; snippet: string }> = [];
 
     for (let i = 0; i < paragraphs.length; i++) {
@@ -386,17 +388,6 @@ export class ProseAnalysisValidator extends BaseQualityStage {
    * Returns 'high', 'middle', or 'low'.
    */
   private estimateLocalRegister(text: string): 'high' | 'middle' | 'low' {
-    const LATINATE_SUFFIXES = [
-      'tion', 'sion', 'ment', 'ance', 'ence', 'ity', 'ous',
-      'ive', 'able', 'ible', 'al', 'ual',
-    ];
-    const FORMAL_MARKERS = new Set([
-      'furthermore', 'moreover', 'nevertheless', 'notwithstanding',
-      'consequently', 'subsequently', 'henceforth', 'whereby', 'wherein',
-      'therein', 'thereof', 'herein', 'aforementioned', 'heretofore',
-      'thus', 'hence', 'accordingly', 'indeed', 'nonetheless',
-    ]);
-
     const words = text.toLowerCase().replace(/[^\w\s'-]/g, ' ').split(/\s+/).filter(w => w.length > 0);
     if (words.length === 0) return 'middle';
 

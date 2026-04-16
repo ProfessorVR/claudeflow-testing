@@ -86,6 +86,9 @@ export const FORMAL_MARKERS = new Set([
   'thus', 'hence', 'accordingly', 'indeed', 'nonetheless',
 ]);
 
+// WARNING: These regexes use the /g flag. Only use with .match() or .matchAll().
+// Never use with .test() or .exec() — the lastIndex state persists between calls.
+
 /** Tier 1 fixed version: genuine meta-linguistic references only (no concept/notion) */
 export const META_LINGUISTIC_MARKERS = [
   // Genuine meta-linguistic references: prose commenting on its own language
@@ -99,6 +102,9 @@ export const META_LINGUISTIC_MARKERS = [
   /\bthat is to say\b/gi,
 ];
 
+// WARNING: These regexes use the /g flag. Only use with .match() or .matchAll().
+// Never use with .test() or .exec() — the lastIndex state persists between calls.
+
 /** Content-level opacity signals: prose ABOUT language, form, style, or rhetoric */
 export const OPACITY_CONTENT_MARKERS = [
   /\b(prose|syntax|sentence|paragraph|diction|style|rhetoric|rhythm|cadence)\b/gi,
@@ -109,6 +115,8 @@ export const OPACITY_CONTENT_MARKERS = [
   /\b(foreground|self-conscious|self-referent|draws attention to)\b/gi,
 ];
 
+// WARNING: These regexes use the /g flag. Only use with .match() or .matchAll().
+// Never use with .test() or .exec() — the lastIndex state persists between calls.
 export const PERSONALITY_MARKERS = [
   /\bI (believe|think|argue|contend|suggest|maintain|hold)\b/gi,
   /\b(my|our) (view|position|argument|contention|claim)\b/gi,
@@ -118,7 +126,7 @@ export const PERSONALITY_MARKERS = [
   // Rhetorical/oratorical markers (broadened for voiced non-first-person prose)
   /\bwe (shall|will|must|can|cannot)\b/gi,
   /\blet us\b/gi,
-  /\b(never|always|forever)\b/gi,
+  /\b(never|always|forever)\b\s+\b(shall|will|must|can|cannot|again|forget)\b/gi,
   /\b(hear me|listen|mark my words|remember)\b/gi,
   /\b(she|he) (breathed|listened|watched|felt|saw|heard|tasted|smelled)\b/gi,
 ];
@@ -135,9 +143,10 @@ export function tokenize(text: string): string[] {
 
 export function splitSentences(text: string): string[] {
   return text
+    .replace(/\|/g, '<<PIPE>>')
     .replace(/([.!?])\s+/g, '$1|')
     .split('|')
-    .map(s => s.trim())
+    .map(s => s.replace(/<<PIPE>>/g, '|').trim())
     .filter(s => s.length > 0 && s.split(/\s+/).length > 2);
 }
 
@@ -153,9 +162,19 @@ export function isVerb(word: string): boolean {
   return false;
 }
 
+const NOM_EXCLUSIONS = new Set([
+  'question', 'fortune', 'nature', 'culture', 'adventure', 'furniture',
+  'picture', 'mixture', 'creature', 'structure', 'feature', 'future',
+  'capture', 'lecture', 'gesture', 'posture', 'moisture', 'nation',
+  'station', 'fashion', 'passion', 'version', 'tension', 'mention',
+  'attention', 'position', 'condition', 'tradition', 'opinion',
+  'religion', 'region', 'union', 'lesson', 'reason', 'season', 'person',
+]);
+
 export function isNominalization(word: string): boolean {
   const w = word.toLowerCase();
   if (w.length < 6) return false;
+  if (NOM_EXCLUSIONS.has(w)) return false;
   return NOMINALIZATION_SUFFIXES.some(s => w.endsWith(s));
 }
 

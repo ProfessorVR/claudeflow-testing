@@ -75,7 +75,8 @@ for (const id of profileIds) {
   }
 
   // Instantiate analyzer — read genre from profile metadata, default to 'academic'
-  const genre = profile.metadata.genre || 'academic';
+  const VALID_GENRES = ['academic', 'legal', 'narrative', 'journalistic', 'technical', 'general'];
+  const genre = VALID_GENRES.includes(profile.metadata?.genre) ? profile.metadata.genre : 'academic';
   const analyzer = analyzerTier === 'advanced'
     ? new AdvancedLanhamAnalyzer(genre)
     : new LanhamProseAnalyzer(genre);

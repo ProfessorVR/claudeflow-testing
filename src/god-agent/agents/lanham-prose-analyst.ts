@@ -94,7 +94,7 @@ export class LanhamProseAnalyst {
       if (para) return para;
     }
     // Tacit patterns if notable density
-    const tacitTotal = metrics.tacitPatterns.anaphoraCount + metrics.tacitPatterns.chiasmusCount + metrics.tacitPatterns.alliterationDensity;
+    const tacitTotal = metrics.tacitPatterns.anaphoraCount + metrics.tacitPatterns.chiasmusCount + metrics.tacitPatterns.antithesisCount + metrics.tacitPatterns.isocolonCount + metrics.tacitPatterns.climaxPatternCount;
     if (tacitTotal > 3) {
       const tacit = this.trajectories.find(t => t.axes_invoked.includes('tacit_persuasion'));
       if (tacit) return tacit;
@@ -163,18 +163,41 @@ export class LanhamProseAnalyst {
 
     // Noun -> verb transformations
     if (metrics.labels.nounVerb === 'predominantly noun-style') {
+      const DENOMINALIZATIONS: Record<string, string> = {
+        'implementation': 'implementing', 'assessment': 'assessing',
+        'establishment': 'establishing', 'evaluation': 'evaluating',
+        'determination': 'determining', 'investigation': 'investigating',
+        'identification': 'identifying', 'classification': 'classifying',
+        'examination': 'examining', 'administration': 'administering',
+        'organization': 'organizing', 'utilization': 'utilizing',
+        'application': 'applying', 'communication': 'communicating',
+        'interpretation': 'interpreting', 'representation': 'representing',
+        'consideration': 'considering', 'demonstration': 'demonstrating',
+        'participation': 'participating', 'transformation': 'transforming',
+        'development': 'developing', 'achievement': 'achieving',
+        'management': 'managing', 'improvement': 'improving',
+        'measurement': 'measuring', 'requirement': 'requiring',
+        'arrangement': 'arranging', 'engagement': 'engaging',
+        'enhancement': 'enhancing',
+      };
+
       for (const s of sentences.slice(0, 20)) {
         const nomRegex = /\bthe\s+(\w+(?:tion|ment|ness|ity|ence|ance))\s+of\b/gi;
         const match = nomRegex.exec(s);
         if (match && pairs.length < 5) {
           const original = match[0];
           const noun = match[1];
-          // Simple de-nominalization
-          let verb = noun;
-          if (noun.endsWith('tion')) verb = noun.slice(0, -4) + 'ting';
-          else if (noun.endsWith('ment')) verb = noun.slice(0, -4) + 'ing';
-          else if (noun.endsWith('ance')) verb = noun.slice(0, -4) + 'ing';
-          else if (noun.endsWith('ence')) verb = noun.slice(0, -4) + 'ing';
+          // Use lookup table first, fall back to heuristic for unknown words
+          const nounLower = noun.toLowerCase();
+          let verb = DENOMINALIZATIONS[nounLower];
+          if (!verb) {
+            // Heuristic fallback for words not in the lookup table
+            verb = noun;
+            if (noun.endsWith('tion')) verb = noun.slice(0, -4) + 'ting';
+            else if (noun.endsWith('ment')) verb = noun.slice(0, -4) + 'ing';
+            else if (noun.endsWith('ance')) verb = noun.slice(0, -4) + 'ing';
+            else if (noun.endsWith('ence')) verb = noun.slice(0, -4) + 'ing';
+          }
           pairs.push({
             original: original,
             revised: verb,
@@ -498,9 +521,10 @@ export class LanhamProseAnalyst {
         const len = rewritten[i].split(/\s+/).length;
         if (len > longestLen) { longestLen = len; longestIdx = i; }
       }
-      // Add a short declarative follow-up after the longest sentence
+      // Instead of inserting a literal sentence, add a revision instruction
+      // for the writer to compose a short declarative sentence here.
       if (longestLen > 25) {
-        rewritten.splice(longestIdx + 1, 0, 'This matters.');
+        rewritten.splice(longestIdx + 1, 0, '[REVISION: Insert a short, punchy declarative sentence here to break rhythmic monotony.]');
       }
     }
 
