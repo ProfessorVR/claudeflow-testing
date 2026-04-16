@@ -106,6 +106,7 @@ export async function runRetrievalStage(
   let tensionLines: string[] = [];
   let sectionConstraints: string[] = [];
   let subsections: string[] = [];
+  let hasExplicitHeadings = false;
   let primaryUnderCoverage: string[] | undefined;
   const seenIds = new Set<string>();
 
@@ -114,8 +115,8 @@ export async function runRetrievalStage(
     return buildResult({
       corpusChunks, corpusConstraint, primaryAuthors, knowledgeUnitLines,
       structuralEdgeLines, ontologyLines: [], hookLines: [], tensionLines: [],
-      sectionConstraints, subsections, primaryUnderCoverage,
-      seenIds, options,
+      sectionConstraints, subsections, hasExplicitHeadings: false,
+      primaryUnderCoverage, seenIds, options,
     });
   }
 
@@ -123,17 +124,39 @@ export async function runRetrievalStage(
 
   try {
     // ===== Phase 1a: Multi-query semantic retrieval =====
-    subsections = deps.extractSemanticRetrievalQueries(topic);
+
+    // Detect explicit section headings from user prompt (Change 1)
+    const explicitHeadings = deps.extractRetrievalQueries(topic);
+    hasExplicitHeadings = explicitHeadings.length >= 2
+      && /\bsections?\b/i.test(topic);
+
+    // Semantic queries always drive chunk retrieval
+    const semanticQueries = deps.extractSemanticRetrievalQueries(topic);
+
+    if (hasExplicitHeadings) {
+      // User provided explicit section headings — use them as the document outline
+      // Strip "Section N:" prefixes for clean display (Change 3)
+      subsections = explicitHeadings.map(h =>
+        h.replace(/^Section\s+\d+[:.]\s*/i, '').trim()
+      );
+      goldLog(`Using ${subsections.length} explicit section headings from prompt`);
+    } else {
+      // No explicit headings — fall back to semantic query-derived outline
+      subsections = semanticQueries;
+    }
+
+    // Retrieval queries: always use semantic queries for embedding search (Change 2)
+    const retrievalQueries = hasExplicitHeadings ? semanticQueries : subsections;
 
     // Hybrid query expansion via corpus ontology
     let ontologyKeywordTerms: string[] = [];
     try {
       const compiledIdx = getCompiledIndex();
       if (compiledIdx) {
-        for (let i = 0; i < subsections.length; i++) {
-          const expansion = expandQueryWithOntology(subsections[i], compiledIdx.ontologyNodes);
+        for (let i = 0; i < retrievalQueries.length; i++) {
+          const expansion = expandQueryWithOntology(retrievalQueries[i], compiledIdx.ontologyNodes);
           if (expansion.semanticTerms.length > 0) {
-            subsections[i] = `${subsections[i]} ${expansion.semanticTerms.join(' ')}`;
+            retrievalQueries[i] = `${retrievalQueries[i]} ${expansion.semanticTerms.join(' ')}`;
             goldLog(`Query expanded: added ${expansion.semanticTerms.join(', ')}`);
           }
           ontologyKeywordTerms.push(...expansion.keywordTerms);
@@ -161,10 +184,10 @@ export async function runRetrievalStage(
         }
       };
 
-      goldLog(`Phase 1a: Multi-query retrieval: ${subsections.length} semantic queries`);
-      const perQueryMax = Math.ceil(targetChunks / Math.max(subsections.length, 1)) + 5;
+      goldLog(`Phase 1a: Multi-query retrieval: ${retrievalQueries.length} semantic queries`);
+      const perQueryMax = Math.ceil(targetChunks / Math.max(retrievalQueries.length, 1)) + 5;
 
-      for (const sq of subsections) {
+      for (const sq of retrievalQueries) {
         try {
           const chunks = await deps.smartRetrieval.retrieveContext(sq, {
             ...retrievalOpts, maxChunks: perQueryMax,
@@ -399,9 +422,9 @@ export async function runRetrievalStage(
       recordWarning(ctx, 'retrieval', `Corpus index loading failed: ${e}`);
     }
 
-    // ===== Section constraints =====
-    const allSubsections = deps.extractRetrievalQueries(topic);
-    sectionConstraints = deps.buildSectionConstraints(allSubsections, primaryAuthors);
+    // ===== Section constraints (Change 4: aligned with outline source) =====
+    const constraintHeadings = hasExplicitHeadings ? subsections : deps.extractRetrievalQueries(topic);
+    sectionConstraints = deps.buildSectionConstraints(constraintHeadings, primaryAuthors);
 
     // ===== Corpus constraint =====
     if (corpusChunks.length > 0) {
@@ -427,8 +450,8 @@ export async function runRetrievalStage(
   return buildResult({
     corpusChunks, corpusConstraint, primaryAuthors, knowledgeUnitLines,
     structuralEdgeLines, ontologyLines, hookLines, tensionLines,
-    sectionConstraints, subsections, primaryUnderCoverage,
-    seenIds, options,
+    sectionConstraints, subsections, hasExplicitHeadings,
+    primaryUnderCoverage, seenIds, options,
   });
 }
 
@@ -447,6 +470,7 @@ function buildResult(args: {
   tensionLines: string[];
   sectionConstraints: string[];
   subsections: string[];
+  hasExplicitHeadings: boolean;
   primaryUnderCoverage: string[] | undefined;
   seenIds: Set<string>;
   options: RetrievalStageOptions;
@@ -484,6 +508,7 @@ function buildResult(args: {
     stylePrompt: '', // Set by caller (style profile loading is not part of retrieval)
     sectionConstraints: args.sectionConstraints,
     subsections: args.subsections,
+    hasExplicitHeadings: args.hasExplicitHeadings,
     wordTarget,
     seenIds: args.seenIds,
     primaryUnderCoverage: args.primaryUnderCoverage,

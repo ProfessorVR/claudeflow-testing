@@ -126,7 +126,7 @@ export class LLMGenerationProviderImpl implements GenerationProvider {
         jsonMode: true,
         costTier: 'high',
         temperature: 0.3,
-        maxTokens: 2000,
+        maxTokens: 4000,
       },
       validateSentenceMapping,
     );

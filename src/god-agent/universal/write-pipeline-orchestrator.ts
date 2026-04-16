@@ -41,6 +41,7 @@ import {
   extractWorkReferences,
   type DomainConfig,
 } from './domain-config.js';
+import { resolveAuthor } from '../shared/cross-author-utils.js';
 import { GOLD_STANDARD_CONFIG } from './gold-standard-config.js';
 import {
   buildGoldStandardPrompt as buildGoldStandardPromptFn,
@@ -289,11 +290,17 @@ export class WritePipelineOrchestrator {
       return stripped.length > 10;
     };
 
-    // Pattern 1: Numbered sections like "1. Aristotle on Motion" (skip sub-items "1.a.")
+    // Pattern 1: Numbered sections — "1. Aristotle on Motion" or "Section 1: Aristotle on Motion"
     const sectionPattern = /^\d+\.\s+(?![a-z]\.)/;
+    const labeledSectionPattern = /^Section\s+\d+[:.]\s*/i;
     for (const line of lines) {
       if (sectionPattern.test(line)) {
         const title = line.replace(/^\d+\.\s+/, '').trim();
+        if (isTopicSection(title)) {
+          sectionQueries.push(title);
+        }
+      } else if (labeledSectionPattern.test(line)) {
+        const title = line.replace(labeledSectionPattern, '').trim();
         if (isTopicSection(title)) {
           sectionQueries.push(title);
         }
@@ -482,7 +489,11 @@ export class WritePipelineOrchestrator {
     const authorPattern = buildAuthorPattern(loadDomainConfig());
     const found = new Set<string>();
     for (const m of Array.from(topic.matchAll(authorPattern))) {
-      found.add(m[0].charAt(0).toUpperCase() + m[0].slice(1).toLowerCase());
+      const raw = m[0].charAt(0).toUpperCase() + m[0].slice(1).toLowerCase();
+      // Resolve to canonical manifest name (e.g., "Rickert" → "Rickert, Thomas")
+      // so ChromaDB author_raw $eq filters match
+      const canonical = resolveAuthor(raw);
+      found.add(canonical);
     }
     return Array.from(found);
   }
@@ -569,8 +580,9 @@ export class WritePipelineOrchestrator {
     const authorPattern = buildAuthorPattern(loadDomainConfig());
     const counts = new Map<string, number>();
     for (const m of Array.from(topic.matchAll(authorPattern))) {
-      const name = m[0].charAt(0).toUpperCase() + m[0].slice(1).toLowerCase();
-      counts.set(name, (counts.get(name) || 0) + 1);
+      const raw = m[0].charAt(0).toUpperCase() + m[0].slice(1).toLowerCase();
+      const canonical = resolveAuthor(raw);
+      counts.set(canonical, (counts.get(canonical) || 0) + 1);
     }
     // Return authors mentioned 2+ times (they're important to the topic)
     return Array.from(counts.entries())
@@ -1184,7 +1196,7 @@ ${sectionContent}`;
     try {
       const { stdout } = await execFileAsync('claude', args, {
         maxBuffer: 10 * 1024 * 1024,  // 10MB
-        timeout: 120000,  // 2 min (reduced from 5 min — faster fallback)
+        timeout: 180000,  // 3 min (increased for longer multi-section targets)
         env: { ...process.env },
       });
       return stdout.trim();
@@ -1229,8 +1241,8 @@ ${sectionContent}`;
       },
       body: JSON.stringify(body),
       signal: this.activeAbortCtrl
-        ? AbortSignal.any([AbortSignal.timeout(180000), this.activeAbortCtrl.signal])
-        : AbortSignal.timeout(180000), // 3 min timeout
+        ? AbortSignal.any([AbortSignal.timeout(300000), this.activeAbortCtrl.signal])
+        : AbortSignal.timeout(300000), // 5 min timeout (increased for longer multi-section targets)
     });
 
     if (!response.ok) {
@@ -3547,6 +3559,28 @@ ${sectionContent}`;
     // Post-generation heading fix
     content = content.replace(/([^\n])(##\s*\d+\s*\.?\s*\w)/g, '$1\n\n$2');
     content = content.replace(/(^##\s*\d+\.?\s+[^\n]+)\n(?!\n)/gm, '$1\n\n');
+
+    // Change 5: Outline drift detection — warn when LLM ignores explicit headings
+    if (retrieval.hasExplicitHeadings && subsections.length > 0) {
+      const generatedHeadings = content.split('\n')
+        .filter(l => /^##\s/.test(l))
+        .map(l => l.replace(/^##\s*\d*\.?\s*/, '').trim());
+
+      const expectedHeadings = subsections.map(s => s.toLowerCase());
+
+      const matched = generatedHeadings.filter(gh =>
+        expectedHeadings.some(eh => gh.toLowerCase().includes(eh.substring(0, 20)))
+      );
+
+      if (matched.length < expectedHeadings.length * 0.6) {
+        const msg =
+          `Outline drifted from user-specified sections: ` +
+          `expected ${expectedHeadings.length} headings, matched ${matched.length}. ` +
+          `Generated: ${generatedHeadings.slice(0, 5).join('; ')}`;
+        recordWarning(ctx, 'validation', msg);
+        ctx.logger.warn(`[v2] ${msg}`);
+      }
+    }
 
     // Capture body word count BEFORE endnotes are appended (mirrors legacy path at line 2871)
     const bodyWordCount = content.trim().split(/\s+/).filter(Boolean).length;

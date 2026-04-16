@@ -112,6 +112,8 @@ export interface RetrievalResult {
   stylePrompt: string;
   sectionConstraints: string[];
   subsections: string[];
+  /** True when subsections were derived from explicit user-provided section headings. */
+  hasExplicitHeadings: boolean;
   wordTarget: string;
   /** Chunk IDs seen during retrieval — prevents duplicates in supplemental passes */
   seenIds: Set<string>;

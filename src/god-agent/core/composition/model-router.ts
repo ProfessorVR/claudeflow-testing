@@ -160,18 +160,85 @@ export class ModelRouter {
       temperature: request.temperature ?? 0.3, // Lower temp for structured output
     }, abortSignal);
 
-    // Extract JSON from response (handle markdown code blocks, etc.)
-    const jsonStr = this.extractJSON(response.content);
+    return this.parseAndRepairJSON(response.content, validator);
+  }
 
-    try {
-      const parsed = JSON.parse(jsonStr);
-      return validator(parsed);
-    } catch (error) {
-      throw new Error(
-        `JSON parsing/validation failed: ${error instanceof Error ? error.message : String(error)}. ` +
-        `Raw content: ${response.content.slice(0, 200)}...`,
+  /**
+   * Multi-stage JSON repair pipeline for callJSON.
+   *
+   * Stages:
+   *   1. Extract from code blocks / bracket-match outermost JSON
+   *   2. Try JSON.parse as-is
+   *   3. Escape literal newlines/tabs inside string values
+   *   4. Fix trailing commas before ] or }
+   *   5. Truncation repair (opt-in emergency fallback, marks result as DEGRADED)
+   *   6. Unwrap common LLM wrappers (e.g., {"sentences": [...]})
+   */
+  private parseAndRepairJSON<T>(
+    content: string,
+    validator: (raw: unknown) => T,
+  ): T {
+    // Stage 1: Extract JSON from code blocks or bracket-match
+    let jsonStr = this.extractJSON(content);
+
+    // Stage 2 + 6: Try parsing as-is, unwrap if needed
+    const attempt = (str: string): T | null => {
+      try {
+        let parsed = JSON.parse(str);
+        parsed = this.unwrapIfNeeded(parsed);
+        return validator(parsed);
+      } catch {
+        return null;
+      }
+    };
+
+    let result = attempt(jsonStr);
+    if (result !== null) return result;
+
+    // Stage 3: Escape literal newlines/tabs inside JSON string values
+    let repaired = escapeNewlinesInJSONStrings(jsonStr);
+    result = attempt(repaired);
+    if (result !== null) return result;
+
+    // Stage 4: Fix trailing commas before ] or }
+    repaired = repaired.replace(/,\s*([\]}])/g, '$1');
+    result = attempt(repaired);
+    if (result !== null) return result;
+
+    // Stage 5: Truncation repair — EMERGENCY ONLY, marks run as degraded
+    repaired = repairTruncatedJSONGeneric(repaired);
+    result = attempt(repaired);
+    if (result !== null) {
+      console.error(
+        `[WARN] Truncation repair fired — output may be incomplete. ` +
+        `Original length: ${jsonStr.length}, repaired length: ${repaired.length}. ` +
+        `Results from this run should be treated as DEGRADED.`,
       );
+      return result;
     }
+
+    throw new Error(
+      `JSON parsing/validation failed after all repair stages. ` +
+      `Raw content (first 300 chars): ${content.slice(0, 300)}...`,
+    );
+  }
+
+  /**
+   * Unwrap common LLM wrapper patterns.
+   * LLMs often return {"sentences": [...]} or {"mapping": [...]} when
+   * the validator expects a bare array.
+   */
+  private unwrapIfNeeded(parsed: unknown): unknown {
+    if (
+      parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+    ) {
+      const obj = parsed as Record<string, unknown>;
+      const keys = Object.keys(obj);
+      if (keys.length === 1 && Array.isArray(obj[keys[0]])) {
+        return obj[keys[0]];
+      }
+    }
+    return parsed;
   }
 
   /**
@@ -425,4 +492,93 @@ export class ModelRouter {
   private sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
+}
+
+// =============================================================================
+// JSON REPAIR HELPERS
+// =============================================================================
+
+/**
+ * Stage 3: Escape literal newlines, tabs, and control characters inside JSON string values.
+ */
+function escapeNewlinesInJSONStrings(json: string): string {
+  const out: string[] = [];
+  let inString = false;
+  let escaped = false;
+
+  for (let i = 0; i < json.length; i++) {
+    const ch = json[i];
+
+    if (escaped) {
+      out.push(ch);
+      escaped = false;
+      continue;
+    }
+
+    if (ch === '\\' && inString) {
+      out.push(ch);
+      escaped = true;
+      continue;
+    }
+
+    if (ch === '"') {
+      inString = !inString;
+      out.push(ch);
+      continue;
+    }
+
+    if (inString) {
+      if (ch === '\n') { out.push('\\n'); continue; }
+      if (ch === '\r') { out.push('\\r'); continue; }
+      if (ch === '\t') { out.push('\\t'); continue; }
+      const code = ch.charCodeAt(0);
+      if (code < 0x20) {
+        out.push('\\u' + code.toString(16).padStart(4, '0'));
+        continue;
+      }
+    }
+
+    out.push(ch);
+  }
+
+  return out.join('');
+}
+
+/**
+ * Stage 5: Close truncated JSON by tracking open brackets/braces.
+ * Removes the last incomplete element and closes all open structures.
+ * WARNING: This produces parseable but INCOMPLETE output — callers must
+ * treat the result as degraded.
+ */
+function repairTruncatedJSONGeneric(json: string): string {
+  const stack: string[] = [];
+  let inString = false;
+  let escaped = false;
+  let lastValidComma = -1;
+
+  for (let i = 0; i < json.length; i++) {
+    const ch = json[i];
+
+    if (escaped) { escaped = false; continue; }
+    if (ch === '\\' && inString) { escaped = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+
+    if (ch === '{') stack.push('}');
+    else if (ch === '[') stack.push(']');
+    else if (ch === '}' || ch === ']') stack.pop();
+    else if (ch === ',') lastValidComma = i;
+  }
+
+  if (inString) json += '"';
+
+  if (stack.length > 0 && lastValidComma > 0) {
+    json = json.slice(0, lastValidComma);
+  }
+
+  while (stack.length > 0) {
+    json += stack.pop();
+  }
+
+  return json;
 }
