@@ -87,7 +87,8 @@ const FORMAL_MARKERS = new Set([
 ]);
 
 const META_LINGUISTIC_MARKERS = [
-  /\bthe (word|term|phrase|concept|notion|expression)\b/gi,
+  // Genuine meta-linguistic references: prose commenting on its own language
+  /\bthe (word|term|phrase|expression|name|label|designation)\b/gi,
   /\bso[- ]called\b/gi,
   /\bqua\b/gi,
   /\bin (the )?(sense|way) (that|in which)\b/gi,
@@ -95,6 +96,16 @@ const META_LINGUISTIC_MARKERS = [
   /\bas (it were|such)\b/gi,
   /\bin other words\b/gi,
   /\bthat is to say\b/gi,
+];
+
+// Content-level opacity signals: prose ABOUT language, form, style, or rhetoric
+const OPACITY_CONTENT_MARKERS = [
+  /\b(prose|syntax|sentence|paragraph|diction|style|rhetoric|rhythm|cadence)\b/gi,
+  /\b(language|discourse|text|narrative form|literary form|formal properties)\b/gi,
+  /\b(metaphor|figure|trope|irony|allusion|echo|register|voice)\b.*\b(itself|here|this|own)\b/gi,
+  /\b(reading|writing|composing|phrasing)\b.*\b(as|itself|own|practice)\b/gi,
+  /\b(sound|acoustic|phonetic|alliterat|assonan|rhythm)\b/gi,
+  /\b(foreground|self-conscious|self-referent|draws attention to)\b/gi,
 ];
 
 const PERSONALITY_MARKERS = [
@@ -312,6 +323,7 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
 
   async analyzeParataxisHypotaxis(text: string): Promise<Partial<LanhamProseMetrics>> {
     const words = tokenize(text);
+    const sentences = splitSentences(text);
     const wordCount = words.length || 1;
 
     let coordCount = 0;
@@ -322,14 +334,47 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
       if (SUBORDINATING_CONJ.has(w)) subordCount++;
     }
 
+    // Implicit subordination signals (relative clauses, complement clauses)
+    // "that/which/who/whom" followed by a verb pattern = subordinate clause
+    const relativeClausePattern = /\b(that|which|who|whom|whose|where|whereby)\b\s+\w+/gi;
+    const relativeMatches = text.match(relativeClausePattern) || [];
+    // Filter out demonstrative "that" (followed by a noun, not a verb)
+    // Heuristic: "that the/a/an/this" is a complement clause; "that + verb-like" is a relative clause
+    const implicitSubordCount = relativeMatches.length;
+
+    // Prepositional phrase nesting depth as hypotaxis signal
+    // Multiple consecutive "of X" / "in Y" / "within Z" chains = hierarchical structure
+    let ppNestingSignal = 0;
+    for (const sent of sentences) {
+      const sentWords = sent.toLowerCase().split(/\s+/);
+      let consecutivePreps = 0;
+      let maxChain = 0;
+      for (const w of sentWords) {
+        const cleaned = w.replace(/[^a-z]/g, '');
+        if (PREPOSITIONS.has(cleaned)) {
+          consecutivePreps++;
+          maxChain = Math.max(maxChain, consecutivePreps);
+        } else {
+          consecutivePreps = 0;
+        }
+      }
+      // Chains of 2+ prepositions in close proximity signal nesting
+      if (maxChain >= 2) ppNestingSignal++;
+    }
+    const ppNestingDensity = sentences.length > 0 ? ppNestingSignal / sentences.length : 0;
+
+    // Combine explicit and implicit subordination
+    const effectiveSubord = subordCount + implicitSubordCount * 0.7; // weight implicit slightly less
+    const hypotaxisBoost = clamp(ppNestingDensity / 0.5) * 0.15; // nesting adds up to 0.15
+
     const coordinatingConjunctionDensity = coordCount / wordCount;
-    const subordinatingConjunctionDensity = subordCount / wordCount;
+    const subordinatingConjunctionDensity = (subordCount + implicitSubordCount) / wordCount;
 
     // Higher subordination = more hypotactic (1), more coordination = more paratactic (0)
-    const totalConj = coordCount + subordCount;
-    const parataxisHypotaxisRatio = totalConj > 0
-      ? clamp(subordCount / totalConj)
-      : 0.5; // neutral if no conjunctions found
+    const totalConj = coordCount + effectiveSubord;
+    let parataxisHypotaxisRatio = totalConj > 0
+      ? clamp(effectiveSubord / totalConj + hypotaxisBoost)
+      : clamp(0.5 + hypotaxisBoost); // neutral baseline + nesting boost
 
     return {
       parataxisHypotaxisRatio,
@@ -490,15 +535,23 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
     const sentences = splitSentences(text);
     const sentenceCount = sentences.length || 1;
 
-    // Self-consciousness: meta-linguistic references
-    let selfConsciousCount = 0;
+    // Signal 1: Meta-linguistic references (prose commenting on its own words)
+    let metaLingCount = 0;
     for (const pat of META_LINGUISTIC_MARKERS) {
       const matches = text.match(pat);
-      if (matches) selfConsciousCount += matches.length;
+      if (matches) metaLingCount += matches.length;
     }
-    const selfConsciousnessScore = clamp(selfConsciousCount / sentenceCount / 0.15);
+    const metaLingDensity = clamp(metaLingCount / sentenceCount / 0.12);
 
-    // Sound pattern density (from tacit patterns -- we do a quick check here)
+    // Signal 2: Content-level opacity (prose ABOUT language, form, style, rhetoric)
+    let contentOpacityCount = 0;
+    for (const pat of OPACITY_CONTENT_MARKERS) {
+      const matches = text.match(pat);
+      if (matches) contentOpacityCount += matches.length;
+    }
+    const contentOpacityDensity = clamp(contentOpacityCount / sentenceCount / 0.25);
+
+    // Signal 3: Sound pattern density (alliteration as foregrounding)
     const words = tokenize(text);
     const contentWords = getContentWords(words);
     let alliterationHits = 0;
@@ -510,17 +563,19 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
     }
     const soundDensity = clamp(alliterationHits / (sentenceCount || 1) / 0.3);
 
-    // Opacity = self-consciousness + sound pattern density
-    // KNOWN LIMITATION (calibration 2026-04-14, monotonicity -0.051):
-    // This heuristic relies on meta-linguistic markers ("the word", "so-called") and
-    // alliteration, which miss the most important opacity signals: conceptual self-reference
-    // (prose discussing its own methodology), rhythmic foregrounding, deliberate repetition,
-    // and self-conscious fragment use. Opacity remains a SOFT OBSERVATION axis — it must NOT
-    // drive drift warnings, regeneration, or quality gauntlet penalties.
-    // Path forward: AdvancedLanhamAnalyzer has an upgraded opacity detector with genre-breaking
-    // detection and deeper sound analysis. LLM-assisted detection of conceptual self-reference
-    // is the next tier beyond that.
-    const opacityScore = clamp(selfConsciousnessScore * 0.6 + soundDensity * 0.4);
+    // Combined self-consciousness score (meta-linguistic only, NOT content-about-language)
+    const selfConsciousnessScore = metaLingDensity;
+
+    // Opacity = weighted combination:
+    //   meta-linguistic (0.35): "the word X", "so-called", "as it were"
+    //   content-level (0.40): prose discussing language/form/style/rhetoric
+    //   sound patterns (0.25): alliteration foregrounding the medium
+    // Opacity remains a SOFT OBSERVATION axis — it must NOT drive drift or regeneration.
+    const opacityScore = clamp(
+      metaLingDensity * 0.35 +
+      contentOpacityDensity * 0.40 +
+      soundDensity * 0.25
+    );
 
     return {
       opacityScore,
