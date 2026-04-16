@@ -66,3 +66,16 @@ export {
   DeepStyleAnalyzer,
   type DeepStyleCharacteristics,
 } from './deep-style-analyzer.js';
+
+// Lanham Prose Analysis (7-axis framework)
+export { LanhamProseAnalyzer } from './lanham-prose-analyzer.js';
+export type { ILanhamAnalyzer } from './lanham-analyzer-interface.js';
+export {
+  GENRE_THRESHOLDS,
+  GENRE_DEFAULTS,
+  type LanhamThresholdConfig,
+  type Genre,
+} from './lanham-style-policy.js';
+
+// Advanced Lanham Analyzer (Tier 2 deep analysis)
+export { AdvancedLanhamAnalyzer } from './advanced-lanham-analyzer.js';

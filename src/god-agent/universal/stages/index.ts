@@ -12,6 +12,7 @@ export type {
   RetrievalResult,
   DraftingResult,
   ValidationResult,
+  LanhamStyleTarget,
 } from './stage-types.js';
 
 export {

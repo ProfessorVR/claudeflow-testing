@@ -56,7 +56,9 @@ import type { QualityIntegration, QualityValidationOptions, QualityValidationRes
 import { stripEndnoteLeaks } from './quality-integration.js';
 import type { ProseSanitizer, SanitizationResult, ArtifactViolation } from '../cli/composition/prose-sanitizer.js';
 import type { StyleProfileManager, StoredStyleProfile } from './style-profile.js';
-import type { StyleCharacteristics } from './style-analyzer.js';
+import type { StyleCharacteristics, LanhamProseMetrics } from './style-analyzer.js';
+import type { LanhamStyleTarget } from './stages/stage-types.js';
+import { LanhamStyleController, type LanhamControllerConfig } from './lanham-style-controller.js';
 import type { TrajectoryBridge } from './trajectory-bridge.js';
 import type { IEmbeddingProvider } from '../core/memory/types.js';
 import type { InteractionStore } from './interaction-store.js';
@@ -232,6 +234,10 @@ export interface WriteOptions {
   /** Explicit word target override (e.g., '500-1000', '800').
    *  Takes precedence over the length-derived default. */
   wordTarget?: string;
+  /** Lanham AT/THROUGH style target for prose control. */
+  lanhamStyleTarget?: LanhamStyleTarget;
+  /** Target Lanham metrics from style profile (for drift detection). */
+  targetLanhamMetrics?: LanhamProseMetrics;
 }
 
 export class WritePipelineOrchestrator {
@@ -909,6 +915,8 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
     ontologyLines: string[] = [],
     hookLines: string[] = [],
     tensionLines: string[] = [],
+    lanhamStyleTarget?: LanhamStyleTarget,
+    targetLanhamMetrics?: LanhamProseMetrics,
   ): Promise<{
     content: string;
     diagnostics: NonNullable<import('./universal-agent.js').WriteResult['rollingContext']>;
@@ -948,6 +956,18 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
     const wordsPerSection = Math.round(
       (totalTarget - (conclusionIdx >= 0 ? config.rollingContextConclusionWords : 0)) / regularSections
     );
+
+    // Lanham controller (null when lanhamStyleTarget is absent — zero overhead)
+    const lanhamController = lanhamStyleTarget
+      ? new LanhamStyleController({
+          analyzerTier: 'heuristic',
+          genre: lanhamStyleTarget.genre,
+          targetMetrics: targetLanhamMetrics,
+          lanhamStyleTarget,
+        })
+      : null;
+    let pendingLanhamRevisionGuidance: string | null = null;
+    let pendingDriftAdvisory: string | null = null;
 
     for (let i = 0; i < subsections.length; i++) {
       const isConclusion = i === conclusionIdx;
@@ -1028,7 +1048,18 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
         isConclusion,
         nextSectionHeading: i + 1 < subsections.length ? subsections[i + 1] : undefined,
         sectionConstraint: sectionConstraints[i] || undefined,
+        lanhamStyleTarget,
+        lanhamRevisionGuidance: pendingLanhamRevisionGuidance || undefined,
       };
+
+      // Inject drift advisory as additional guidance if pending
+      if (pendingDriftAdvisory) {
+        promptOptions.lanhamRevisionGuidance = [
+          promptOptions.lanhamRevisionGuidance || '',
+          pendingDriftAdvisory,
+        ].filter(Boolean).join('\n\n') || undefined;
+        pendingDriftAdvisory = null;
+      }
 
       const sectionPrompt = buildRollingContextSectionPrompt(promptOptions);
       goldLog(`  Prompt: ${sectionPrompt.length} chars`);
@@ -1062,6 +1093,27 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
       );
       citationTracker.totalCitationCount += stats.citationCount;
       citationTracker.totalQuotationCount += stats.quotationCount;
+
+      // Lanham drift analysis + conditional regen
+      if (lanhamController && !isConclusion) {
+        const result = await lanhamController.maybeRegenerateWithLanham(
+          sectionContent,
+          (advisory) => this.generateViaClaudeCode(
+            sectionPrompt + '\n\n' + advisory,
+            { model: 'claude-opus-4-6', maxTokens: config.rollingContextMaxTokens },
+          ),
+        );
+        sectionContent = result.content;
+        if (result.firmGuidanceAdvisory) {
+          pendingDriftAdvisory = result.firmGuidanceAdvisory;
+        }
+        if (result.regenerated) {
+          goldLog(`  [LANHAM] Regenerated for drift on: ${result.triggeredAxes.join(', ')}`);
+        }
+        // Revision guidance for next section
+        const guidance = await lanhamController.buildLanhamRevisionGuidance(sectionContent);
+        pendingLanhamRevisionGuidance = guidance;
+      }
 
       // Store generated section
       generatedSections.push({ heading: subsections[i], content: sectionContent });
@@ -2149,6 +2201,8 @@ ${sectionContent}`;
             ontologyLines,
             hookLines,
             tensionLines,
+            options.lanhamStyleTarget,
+            options.targetLanhamMetrics,
           );
 
           // Set content for post-processing pipeline (hoisted variable — `content` isn't declared yet)

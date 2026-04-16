@@ -74,6 +74,22 @@ export interface RetrievalStageOptions {
   length?: 'short' | 'medium' | 'long' | 'comprehensive';
   /** Explicit word target override (e.g., '500-1000'). Takes precedence over length-derived default. */
   wordTarget?: string;
+  /** Lanham style target — triggers textual analysis collection inclusion. */
+  lanhamStyleTarget?: import('./stage-types.js').LanhamStyleTarget;
+  /** Whether the active profile has lanhamMetrics (with lanhamMode on/auto). */
+  hasLanhamMetrics?: boolean;
+}
+
+/**
+ * Determine whether textual analysis collections should be included in retrieval.
+ * Explicit signals only — no regex fallback on topic strings.
+ */
+function shouldIncludeTextualAnalysis(options: RetrievalStageOptions): boolean {
+  // Signal 1: LanhamStyleTarget explicitly set on the task
+  if (options.lanhamStyleTarget) return true;
+  // Signal 2: Profile has lanhamMetrics with lanhamMode on/auto
+  if (options.hasLanhamMetrics) return true;
+  return false;
 }
 
 // =============================================================================

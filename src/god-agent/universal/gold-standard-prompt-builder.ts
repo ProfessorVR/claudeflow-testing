@@ -19,6 +19,7 @@
 import type { ContextChunk } from '../retrieval/index.js';
 import { GOLD_STANDARD_CONFIG } from './gold-standard-config.js';
 import { getActiveBridges, extractTopicWords } from '../shared/cross-author-utils.js';
+import type { LanhamStyleTarget } from './stages/stage-types.js';
 
 // ============================================================================
 // Types
@@ -43,6 +44,10 @@ export interface GoldStandardPromptOptions {
   };
   sectionConstraints?: string[];
   primaryUnderCoverage?: string[];
+  /** Lanham AT/THROUGH style target — prescriptive prose control. */
+  lanhamStyleTarget?: LanhamStyleTarget;
+  /** Lanham revision guidance from Prose Analyst Agent for inter-section correction. */
+  lanhamRevisionGuidance?: string;
 }
 
 // ============================================================================
@@ -194,6 +199,10 @@ export interface RollingContextSectionPromptOptions {
   isConclusion: boolean;
   nextSectionHeading?: string;
   sectionConstraint?: string;
+  /** Lanham AT/THROUGH style target — prescriptive prose control. */
+  lanhamStyleTarget?: LanhamStyleTarget;
+  /** Lanham revision guidance from Prose Analyst Agent for inter-section correction. */
+  lanhamRevisionGuidance?: string;
 }
 
 /**
@@ -230,6 +239,16 @@ export function buildRollingContextSectionPrompt(options: RollingContextSectionP
       enrichedStyle += `\n- Long, architectonic sentences followed by shorter declarative ones for emphasis`;
     }
     sections.push(`## STYLE PROFILE\n\n${enrichedStyle}`);
+  }
+
+  // [2b] Lanham prescriptive block (only when target is present)
+  if (options.lanhamStyleTarget) {
+    sections.push(buildLanhamStyleBlock(options.lanhamStyleTarget).join('\n'));
+  }
+
+  // [2d] Lanham revision guidance (inter-section correction)
+  if (options.lanhamRevisionGuidance) {
+    sections.push(`## LANHAM REVISION GUIDANCE\n\n${options.lanhamRevisionGuidance}`);
   }
 
   // [3] GLOBAL OUTLINE (shows argument trajectory)
@@ -363,6 +382,78 @@ export function buildRollingContextSectionPrompt(options: RollingContextSectionP
 // ============================================================================
 // Main Builder
 // ============================================================================
+// Lanham AT/THROUGH Style Control Block
+// ============================================================================
+
+/**
+ * Build Lanham AT/THROUGH prose style control instructions for the prompt.
+ * This is the sole PRESCRIPTIVE Lanham insertion point — it owns behavioral instructions.
+ * The DESCRIPTIVE block (axis labels/explanations) lives in style-analyzer.ts.
+ */
+function buildLanhamStyleBlock(lanhamStyleTarget: LanhamStyleTarget): string[] {
+  const lst = lanhamStyleTarget;
+  const parts: string[] = [];
+
+  parts.push('\n## PROSE STYLE CONTROL (Lanham framework)');
+
+  switch (lst.atThroughMode) {
+    case 'mostly transparent':
+      parts.push('AT/THROUGH MODE: mostly transparent');
+      parts.push('- Maintain transparent style; the reader should look THROUGH the language to meaning.');
+      parts.push('- Minimize style self-consciousness. Keep language invisible.');
+      break;
+    case 'transparent with AT moments':
+      parts.push('AT/THROUGH MODE: transparent with AT moments');
+      parts.push('- Maintain a mostly transparent style; the reader should look THROUGH the language to meaning.');
+      parts.push('- At key argumentative turns (thesis statements, conceptual pivots, concluding formulations),');
+      parts.push('  you are permitted to make the reader look AT the language via:');
+      parts.push('  tacit persuasion patterns (parallelism, chiasmus, anaphora),');
+      parts.push('  voiced flourishes (rhythmic variation, dynamic range),');
+      parts.push('  register elevation (periodic syntax, Latinate diction).');
+      parts.push('- These AT moments should be brief and purposeful, not sustained.');
+      break;
+    case 'oscillating':
+      parts.push('AT/THROUGH MODE: oscillating');
+      parts.push('- Essayistic style: reader moves between looking AT and THROUGH the language.');
+      parts.push('- Alternate between transparent analytical passages and foregrounded reflective moments.');
+      break;
+    case 'mostly opaque':
+      parts.push('AT/THROUGH MODE: mostly opaque');
+      parts.push('- Language should be foregrounded throughout; the reader looks AT the words.');
+      parts.push('- Use rhythm, sound patterns, and structural devices prominently.');
+      break;
+  }
+
+  const register = lst.registerTarget || 'high';
+  const voice = lst.voiceTarget;
+  const tacit = lst.tacitPersuasionLevel || 'moderate';
+
+  parts.push(`REGISTER: ${register}${lst.genre === 'academic' ? ' academic' : ''}`);
+  parts.push(
+    `VOICE: ${voice} — ${
+      voice === 'voiced'
+        ? 'your prose should reward reading aloud; vary rhythm and sentence length.'
+        : voice === 'moderate'
+          ? 'moderate vocal presence; some rhythmic variety.'
+          : 'flat, procedural tone appropriate for this context.'
+    }`
+  );
+  parts.push(
+    `TACIT PERSUASION BUDGET: ${tacit} — ${
+      tacit === 'moderate'
+        ? 'deploy 2-3 notable patterns per section, not more.'
+        : tacit === 'some'
+          ? 'occasional patterns at key turns.'
+          : tacit === 'almost none'
+            ? 'minimal rhetorical patterning.'
+            : 'dense patterning throughout.'
+    }`
+  );
+
+  return parts;
+}
+
+// ============================================================================
 
 /**
  * Build a gold-standard academic writing prompt.
@@ -404,6 +495,16 @@ export function buildGoldStandardPrompt(options: GoldStandardPromptOptions): str
     }
 
     sections.push(`## STYLE PROFILE\n\n${enrichedStyle}`);
+  }
+
+  // [2b] LANHAM PROSE STYLE CONTROL (prescriptive — only when target is present)
+  if (options.lanhamStyleTarget) {
+    sections.push(buildLanhamStyleBlock(options.lanhamStyleTarget).join('\n'));
+  }
+
+  // [2d] LANHAM REVISION GUIDANCE (inter-section correction from Prose Analyst Agent)
+  if (options.lanhamRevisionGuidance) {
+    sections.push(`## LANHAM REVISION GUIDANCE\n\n${options.lanhamRevisionGuidance}`);
   }
 
   // [3] WRITING TASK

@@ -52,6 +52,72 @@ export interface ToneMetrics {
 }
 
 /**
+ * Lanham Prose Analysis Metrics
+ * Non-evaluative descriptive dimensions from Richard A. Lanham's "Analyzing Prose" (2003)
+ */
+export interface LanhamProseMetrics {
+  // --- Continuous numeric values (internal scoring) ---
+  nounVerbRatio: number;                    // 0=pure noun, 1=pure verb
+  nominalizationDensity: number;            // per 100 words
+  prepositionalPhraseDensity: number;       // per sentence
+  beVerbRatio: number;                      // is/are/was/were as % of all verbs
+  parataxisHypotaxisRatio: number;          // 0=pure parataxis, 1=pure hypotaxis
+  coordinatingConjunctionDensity: number;
+  subordinatingConjunctionDensity: number;
+  periodicRunningRatio: number;             // 0=pure periodic, 1=pure running
+  preMainVerbClauseCount: number;
+  voiceScore: number;                       // 0=unvoiced, 1=strongly voiced
+  dynamicRange: number;                     // variance in rhythm
+  latinateGermanicRatio: number;            // primary lexical cue for register
+  registerMarkednessScore: number;          // 0=unmarked (middle), 1=strongly marked
+  opacityScore: number;                     // 0=transparent, 1=opaque
+  selfConsciousnessScore: number;
+  tacitPatterns: {
+    alliterationDensity: number;
+    polyptotonDensity: number;
+    chiasmusCount: number;
+    antithesisCount: number;
+    anaphoraCount: number;
+    isocolonCount: number;
+    climaxPatternCount: number;
+  };
+
+  // --- Categorical labels ---
+  labels: {
+    nounVerb: 'predominantly noun-style' | 'balanced' | 'predominantly verb-style';
+    parataxisHypotaxis: 'predominantly paratactic' | 'mixed' | 'predominantly hypotactic';
+    periodicRunning: 'predominantly periodic' | 'mixed' | 'predominantly running';
+    voice: 'unvoiced' | 'moderate voice' | 'strongly voiced';
+    primaryRegister: 'high' | 'middle' | 'low' | 'mixed';
+    registerMixed: boolean;
+    opacity: 'transparent' | 'mixed opacity' | 'opaque';
+  };
+
+  // --- Explanation strings ---
+  explanations: {
+    nounVerb: string;
+    parataxisHypotaxis: string;
+    periodicRunning: string;
+    voice: string;
+    register: string;
+    opacity: string;
+    tacitPatterns: string;
+  };
+
+  // --- Confidence markers ---
+  analysisDepth: 'heuristic' | 'deep' | 'hybrid';
+  confidenceByAxis: {
+    nounVerb: 'high' | 'medium' | 'low';
+    parataxisHypotaxis: 'high' | 'medium' | 'low';
+    periodicRunning: 'high' | 'medium' | 'low';
+    voice: 'high' | 'medium' | 'low';
+    register: 'high' | 'medium' | 'low';
+    opacity: 'high' | 'medium' | 'low';
+    tacitPatterns: 'high' | 'medium' | 'low';
+  };
+}
+
+/**
  * Regional language settings for style profiles
  * Implements [REQ-STYLE-001]: Language variant configuration
  */
@@ -107,6 +173,12 @@ export interface StyleCharacteristics {
    * Optional - only present when deep analysis is performed
    */
   transitionPatterns?: TransitionPatterns;
+
+  /**
+   * Lanham prose analysis metrics (7-axis framework)
+   * Optional - present when Lanham enrichment has been performed
+   */
+  lanhamMetrics?: LanhamProseMetrics;
 }
 
 // Academic/formal vocabulary indicators
@@ -640,7 +712,64 @@ export class StyleAnalyzer {
       }
     }
 
+    // Lanham prose dimensions (descriptive only — prescriptive block is in gold-standard-prompt-builder)
+    if (style.lanhamMetrics) {
+      const lm = style.lanhamMetrics;
+      parts.push('\n## PROSE STYLE DIMENSIONS (Lanham Framework)');
+      parts.push(`- Noun/Verb: ${lm.labels.nounVerb} — ${lm.explanations.nounVerb}`);
+      parts.push(`- Architecture: ${lm.labels.periodicRunning} — ${lm.explanations.periodicRunning}`);
+      parts.push(`- Connection: ${lm.labels.parataxisHypotaxis} — ${lm.explanations.parataxisHypotaxis}`);
+      parts.push(`- Voice: ${lm.labels.voice} — ${lm.explanations.voice}`);
+      parts.push(`- Register: ${lm.labels.primaryRegister}${lm.labels.registerMixed ? ' (mixed)' : ''} — ${lm.explanations.register}`);
+      parts.push(`- Opacity: ${lm.labels.opacity} — ${lm.explanations.opacity}`);
+      if (lm.explanations.tacitPatterns) parts.push(`- Tacit patterns: ${lm.explanations.tacitPatterns}`);
+    }
+
     return parts.join('\n');
+  }
+
+  /**
+   * Length-weighted merge of multiple LanhamProseMetrics samples.
+   * Used when building a composite profile from multiple text samples.
+   */
+  static mergeLanhamMetrics(samples: { metrics: LanhamProseMetrics; wordCount: number }[]): LanhamProseMetrics {
+    if (samples.length === 0) throw new Error('No samples to merge');
+    if (samples.length === 1) return samples[0].metrics;
+
+    const totalWords = samples.reduce((sum, s) => sum + s.wordCount, 0);
+    const w = (s: { wordCount: number }) => s.wordCount / totalWords;
+
+    const merged: LanhamProseMetrics = JSON.parse(JSON.stringify(samples[0].metrics));
+
+    // Weighted average of continuous fields
+    const numericFields: (keyof LanhamProseMetrics)[] = [
+      'nounVerbRatio', 'nominalizationDensity', 'prepositionalPhraseDensity', 'beVerbRatio',
+      'parataxisHypotaxisRatio', 'coordinatingConjunctionDensity', 'subordinatingConjunctionDensity',
+      'periodicRunningRatio', 'preMainVerbClauseCount', 'voiceScore', 'dynamicRange',
+      'latinateGermanicRatio', 'registerMarkednessScore', 'opacityScore', 'selfConsciousnessScore',
+    ];
+    for (const field of numericFields) {
+      let acc = 0;
+      for (const s of samples) acc += (s.metrics[field] as number) * w(s);
+      (merged as Record<string, unknown>)[field] = acc;
+    }
+
+    // Weighted average of tacit pattern counts
+    const tacitFields = Object.keys(merged.tacitPatterns) as (keyof LanhamProseMetrics['tacitPatterns'])[];
+    for (const tf of tacitFields) {
+      let acc = 0;
+      for (const s of samples) acc += s.metrics.tacitPatterns[tf] * w(s);
+      merged.tacitPatterns[tf] = acc;
+    }
+
+    // Labels and explanations from the heaviest sample (most representative)
+    const heaviest = samples.reduce((a, b) => a.wordCount > b.wordCount ? a : b);
+    merged.labels = heaviest.metrics.labels;
+    merged.explanations = heaviest.metrics.explanations;
+    merged.analysisDepth = 'heuristic';
+    merged.confidenceByAxis = heaviest.metrics.confidenceByAxis;
+
+    return merged;
   }
 
   // Private helper methods

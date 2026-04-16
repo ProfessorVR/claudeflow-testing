@@ -91,6 +91,32 @@ export function recordWarning(ctx: PipelineContext, stage: string, message: stri
 }
 
 // ============================================================
+// Lanham Style Target
+// ============================================================
+
+/**
+ * Lanham Style Target — explicit control knobs for prose style during generation.
+ * Required fields: atThroughMode, genre, voiceTarget
+ * Optional fields derived from GENRE_DEFAULTS when omitted.
+ */
+export interface LanhamStyleTarget {
+  atThroughMode:
+    | 'mostly transparent'
+    | 'transparent with AT moments'
+    | 'oscillating'
+    | 'mostly opaque';
+
+  genre: 'academic' | 'legal' | 'narrative' | 'journalistic' | 'technical' | 'general';
+
+  voiceTarget: 'voiced' | 'moderate' | 'unvoiced';
+
+  registerTarget?: 'high' | 'middle' | 'low' | 'mixed';
+  allowRegisterPlay?: boolean;
+  tacitPersuasionLevel?: 'almost none' | 'some' | 'moderate' | 'dense';
+  emphasisAxes?: string[];
+}
+
+// ============================================================
 // Stage I/O contracts
 // ============================================================
 
