@@ -125,7 +125,8 @@ const RELATIVE_PRONOUNS = new Set(['who', 'whom', 'whose', 'which', 'that']);
 
 /** Meta-linguistic markers from the heuristic tier */
 const META_LINGUISTIC_MARKERS = [
-  /\bthe (word|term|phrase|concept|notion|expression)\b/gi,
+  // Genuine meta-linguistic references: prose commenting on its own language
+  /\bthe (word|term|phrase|expression|name|label|designation)\b/gi,
   /\bso[- ]called\b/gi,
   /\bqua\b/gi,
   /\bin (the )?(sense|way) (that|in which)\b/gi,
@@ -135,11 +136,13 @@ const META_LINGUISTIC_MARKERS = [
   /\bthat is to say\b/gi,
 ];
 
-/** Self-referential markers: text discussing its own linguistic choices */
+/** Self-referential markers: text discussing its own linguistic form or medium.
+ *  "this argument" is NOT self-referential — it refers to logical content.
+ *  Only match patterns that explicitly foreground the text's own language/style. */
 const SELF_REFERENTIAL_MARKERS = [
   /\b(I|we|one) (use|employ|adopt|choose|invoke|deploy) (the|this|that|a) (term|word|phrase|language|rhetoric|register|metaphor|trope)\b/gi,
-  /\b(this|the) (passage|sentence|paragraph|section|text|prose|argument|phrasing)\b/gi,
-  /\bmy (use|choice|deployment|rhetoric|phrasing|formulation)\b/gi,
+  /\b(this|the) (passage|sentence|paragraph|section|text|prose|phrasing|diction|syntax)\b/gi,
+  /\bmy (use|choice|deployment|phrasing|formulation) of (the |this |that )?(word|term|phrase|language)\b/gi,
   /\bto put (it|this|the point)\b/gi,
   /\b(strictly|loosely|technically|figuratively|literally|metaphorically) speaking\b/gi,
   /\b(scare quotes|quotation marks|emphasis)\b/gi,
@@ -167,11 +170,12 @@ const FORMAL_MARKERS = new Set([
   'thus', 'hence', 'accordingly', 'indeed', 'nonetheless',
 ]);
 
-/** Informal markers (for genre-break detection) */
+/** Informal markers (for genre-break detection).
+ *  Excludes words common in academic prose (actually, really, just, like)
+ *  to prevent false genre-break triggers in philosophical writing. */
 const INFORMAL_MARKERS = new Set([
-  'okay', 'ok', 'yeah', 'nope', 'stuff', 'things', 'pretty',
-  'really', 'actually', 'basically', 'literally', 'totally',
-  'kind', 'sort', 'like', 'just', 'anyway', 'anyways',
+  'okay', 'ok', 'yeah', 'nope', 'stuff', 'pretty',
+  'totally', 'anyway', 'anyways',
   'gonna', 'wanna', 'gotta', 'kinda', 'sorta',
 ]);
 
@@ -310,18 +314,16 @@ export class AdvancedLanhamAnalyzer implements ILanhamAnalyzer {
     const baseline = await this.heuristic.fullAnalysis(text);
 
     // Step 2: Run deep analysis for low/medium-confidence axes in parallel.
-    // BUG FIX #3: Compute tacit patterns once and reuse in opacity analysis
-    // to avoid the double computation of detectTacitPatterns(text).
+    // Opacity is delegated to Tier 1 (baseline) — the deep 4-signal composite
+    // produces worse discrimination than Tier 1's simpler meta-linguistic heuristic.
     const [deepPeriodic, deepParaHypo, deepTacit] = await Promise.all([
       this.analyzePeriodicRunning(text),
       this.analyzeParataxisHypotaxis(text),
       this.detectTacitPatterns(text),
     ]);
 
-    // Run opacity analysis with the already-computed tacit patterns
-    const deepOpacity = await this.analyzeOpacityTransparency(text, deepTacit);
-
     // Step 3: Override the baseline with deep results
+    // Opacity and register are NOT overridden — delegated to Tier 1 heuristic.
     const merged: LanhamProseMetrics = {
       ...baseline,
       // Override periodic/running
@@ -331,9 +333,8 @@ export class AdvancedLanhamAnalyzer implements ILanhamAnalyzer {
       parataxisHypotaxisRatio: deepParaHypo.parataxisHypotaxisRatio ?? baseline.parataxisHypotaxisRatio,
       coordinatingConjunctionDensity: deepParaHypo.coordinatingConjunctionDensity ?? baseline.coordinatingConjunctionDensity,
       subordinatingConjunctionDensity: deepParaHypo.subordinatingConjunctionDensity ?? baseline.subordinatingConjunctionDensity,
-      // Override opacity
-      opacityScore: deepOpacity.opacityScore ?? baseline.opacityScore,
-      selfConsciousnessScore: deepOpacity.selfConsciousnessScore ?? baseline.selfConsciousnessScore,
+      // Opacity: keep baseline (Tier 1) — deep composite has negative monotonicity
+      // Register: keep baseline (Tier 1) — already high confidence
       // Override tacit patterns
       tacitPatterns: deepTacit.tacitPatterns ?? baseline.tacitPatterns,
     };
@@ -712,13 +713,15 @@ export class AdvancedLanhamAnalyzer implements ILanhamAnalyzer {
     const genreBreakScore = clamp(genreBreakCount / sentenceCount / 0.1);
 
     // --- Composite opacity score ---
-    // Weights: self-consciousness 0.35 + sound patterning 0.25 + tacit density 0.25 + genre-breaking 0.15
-    const opacityScore = clamp(
-      selfConsciousnessScore * 0.35 +
-      soundDensity * 0.25 +
-      tacitDensity * 0.25 +
-      genreBreakScore * 0.15,
-    );
+    // Gated approach: sound patterns and genre-breaking only amplify opacity
+    // when self-consciousness or tacit density already indicates the prose
+    // is drawing attention to its own medium. Without that gate, English's
+    // natural sound patterns produce a ~0.3-0.5 baseline that drowns the signal.
+    const baseOpacity = clamp(selfConsciousnessScore * 0.5 + tacitDensity * 0.3);
+    const amplifier = baseOpacity > 0.15
+      ? soundDensity * 0.15 + genreBreakScore * 0.05
+      : 0; // sound/genre-break only contribute when base signals are present
+    const opacityScore = clamp(baseOpacity + amplifier);
 
     return {
       opacityScore,
