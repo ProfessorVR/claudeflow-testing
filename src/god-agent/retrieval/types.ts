@@ -42,6 +42,7 @@ export const KNOWN_KU_DOMAINS: readonly string[] = [
   'heidegger_bt',
   'rickert',
   'lanham_prose',
+  'uexkull',
 ] as const;
 
 const KnowledgeUnitSchema = z.object({
