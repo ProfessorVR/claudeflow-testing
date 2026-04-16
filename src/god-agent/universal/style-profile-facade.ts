@@ -25,6 +25,8 @@ export class StyleProfileFacade {
       description?: string;
       tags?: string[];
       setAsActive?: boolean;
+      lanhamMode?: 'auto' | 'on' | 'off';
+      lanhamTier?: 'heuristic' | 'advanced';
     } = {}
   ): Promise<StoredStyleProfile | null> {
     await this.ensureInitialized();
@@ -39,6 +41,8 @@ export class StyleProfileFacade {
         description: options.description,
         sourceType: 'text',
         tags: options.tags,
+        lanhamMode: options.lanhamMode,
+        lanhamTier: options.lanhamTier,
       });
 
       if (options.setAsActive) {

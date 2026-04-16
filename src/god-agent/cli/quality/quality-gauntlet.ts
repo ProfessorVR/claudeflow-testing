@@ -30,6 +30,7 @@ import { CitationDensityChecker } from './stages/citation-density-checker.js';
 import { StyleConsistencyValidator } from './stages/style-consistency-validator.js';
 import { FactualAccuracyAuditor } from './stages/factual-accuracy-auditor.js';
 import { ClaimVerificationStage } from './stages/claim-verification-stage.js';
+import { ProseAnalysisValidator } from './stages/prose-analysis-validator.js';
 
 // ============================================================================
 // Gauntlet Result Types
@@ -558,18 +559,19 @@ export class QualityGauntlet {
   /**
    * Create default quality stages
    *
-   * Stages (9 total):
-   * 0. CitationVerifier (0.08) - Hallucination detection (author in corpus)
-   * 1. QuotationFidelityStage (0.10) - Quotation verbatim check
+   * Stages (10 total):
+   * 0. CitationVerifier (0.10) - Hallucination detection (author in corpus)
+   * 1. QuotationFidelityStage (0.15) - Quotation verbatim check
    * 2. ToulminEnforcer (0.08) - Argument structure validation (reduced for expository writing)
-   * 3. ArgumentCoherenceChecker (0.15) - Logical flow, claim-evidence structure
-   * 4. CitationCompletenessVerifier (0.15) - Missing citations, format issues
-   * 5. CitationDensityChecker (0.10) - PhD-level citation density (15+ per section)
-   * 6. StyleConsistencyValidator (0.12) - Tone, vocabulary, consistency
-   * 7. FactualAccuracyAuditor (0.10) - Internal consistency, accuracy
+   * 3. ArgumentCoherenceChecker (0.18) - Logical flow, claim-evidence structure
+   * 4. CitationCompletenessVerifier (0.17) - Missing citations, format issues
+   * 5. CitationDensityChecker (0.12) - PhD-level citation density (15+ per section)
+   * 6. StyleConsistencyValidator (0.15) - Tone, vocabulary, consistency
+   * 7. FactualAccuracyAuditor (0.13) - Internal consistency, accuracy
    * 8. ClaimVerificationStage (0.07) - CCV Phase C entailment verification
+   * 9. ProseAnalysisValidator (0.05) - Lanham-framework prose quality (Phase D)
    *
-   * Total weight: 1.00
+   * Total weight: ~1.20 (normalized in calculateOverallScore)
    */
   private createDefaultStages(): QualityStage[] {
     return [
@@ -582,6 +584,7 @@ export class QualityGauntlet {
       new StyleConsistencyValidator(), // Stage 6: Style consistency
       new FactualAccuracyAuditor(),    // Stage 7: Factual accuracy
       new ClaimVerificationStage(),    // Stage 8: CCV Phase C claim verification
+      new ProseAnalysisValidator(),    // Stage 9: Lanham prose analysis (Phase D)
     ];
   }
 
@@ -687,6 +690,10 @@ export class QualityGauntlet {
       actions.push(`${priority++}. **Review style consistency** - tone and formality variations detected`);
     }
 
+    if (byType.get('prose-analysis')?.critical || byType.get('prose-analysis')?.major) {
+      actions.push(`${priority++}. **Address prose quality issues** - Lanham-framework analysis flagged nominalization overload, register shifts, or monotonous rhythm`);
+    }
+
     if (byType.get('factual')?.critical || byType.get('factual')?.major) {
       actions.push(`${priority++}. **Check factual accuracy** - inconsistencies or errors identified`);
     }
@@ -727,6 +734,7 @@ export function createStrictGauntlet(): QualityGauntlet {
       'style-consistency': 0.80,
       'factual-accuracy': 0.95,
       'claim-verification': 0.70,
+      'prose-analysis': 0.80,
     },
   });
 }
@@ -747,6 +755,7 @@ export function createDraftGauntlet(): QualityGauntlet {
       'style-consistency': 0.55,
       'factual-accuracy': 0.70,
       'claim-verification': 0.40,
+      'prose-analysis': 0.55,
     },
   });
 }
@@ -785,6 +794,7 @@ export function createFocusedGauntlet(
     'style-consistency': 0.12,
     'factual-accuracy': 0.10,
     'claim-verification': 0.07,
+    'prose-analysis': 0.05,
   };
 
   // Increase weight of focused aspect
@@ -797,6 +807,7 @@ export function createFocusedGauntlet(
       weightOverrides['style-consistency'] = 0.08;
       weightOverrides['factual-accuracy'] = 0.08;
       weightOverrides['claim-verification'] = 0.05;
+      weightOverrides['prose-analysis'] = 0.02;
       break;
     case 'citation':
       weightOverrides['citation-verifier'] = 0.15;
@@ -807,16 +818,18 @@ export function createFocusedGauntlet(
       weightOverrides['style-consistency'] = 0.05;
       weightOverrides['factual-accuracy'] = 0.05;
       weightOverrides['claim-verification'] = 0.10;
+      weightOverrides['prose-analysis'] = 0.02;
       break;
     case 'style':
       weightOverrides['citation-verifier'] = 0.06;
-      weightOverrides['toulmin-enforcer'] = 0.08;
-      weightOverrides['argument-coherence'] = 0.10;
-      weightOverrides['citation-completeness'] = 0.08;
-      weightOverrides['citation-density'] = 0.06;
-      weightOverrides['style-consistency'] = 0.40;
-      weightOverrides['factual-accuracy'] = 0.08;
-      weightOverrides['claim-verification'] = 0.04;
+      weightOverrides['toulmin-enforcer'] = 0.06;
+      weightOverrides['argument-coherence'] = 0.08;
+      weightOverrides['citation-completeness'] = 0.06;
+      weightOverrides['citation-density'] = 0.05;
+      weightOverrides['style-consistency'] = 0.35;
+      weightOverrides['factual-accuracy'] = 0.06;
+      weightOverrides['claim-verification'] = 0.03;
+      weightOverrides['prose-analysis'] = 0.15;
       break;
     case 'factual':
       weightOverrides['citation-verifier'] = 0.10;
@@ -827,6 +840,7 @@ export function createFocusedGauntlet(
       weightOverrides['style-consistency'] = 0.06;
       weightOverrides['factual-accuracy'] = 0.30;
       weightOverrides['claim-verification'] = 0.12;
+      weightOverrides['prose-analysis'] = 0.03;
       break;
     case 'toulmin':
       weightOverrides['citation-verifier'] = 0.06;
@@ -837,6 +851,7 @@ export function createFocusedGauntlet(
       weightOverrides['style-consistency'] = 0.07;
       weightOverrides['factual-accuracy'] = 0.06;
       weightOverrides['claim-verification'] = 0.06;
+      weightOverrides['prose-analysis'] = 0.03;
       break;
   }
 

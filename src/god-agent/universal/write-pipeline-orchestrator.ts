@@ -2188,6 +2188,15 @@ ${sectionContent}`;
             goldLog(`Corpus constraint built: ${corpusConstraint.sources.length} verified sources`);
           }
 
+          // Resolve Lanham style target and metrics for drift analysis
+          const rollingLanhamTarget = options.lanhamStyleTarget;
+          let rollingTargetLanhamMetrics: LanhamProseMetrics | undefined = options.targetLanhamMetrics;
+          if (!rollingTargetLanhamMetrics && this.deps.styleProfileManager) {
+            // No explicit target — pull lanhamMetrics from active style profile if available
+            const activeProfile = this.deps.styleProfileManager.getActiveProfile();
+            rollingTargetLanhamMetrics = activeProfile?.characteristics?.lanhamMetrics;
+          }
+
           const rollingResult = await this.writeRollingContext(
             topic,
             subsections,
@@ -2201,8 +2210,8 @@ ${sectionContent}`;
             ontologyLines,
             hookLines,
             tensionLines,
-            options.lanhamStyleTarget,
-            options.targetLanhamMetrics,
+            rollingLanhamTarget,
+            rollingTargetLanhamMetrics,
           );
 
           // Set content for post-processing pipeline (hoisted variable — `content` isn't declared yet)
@@ -3304,6 +3313,16 @@ ${sectionContent}`;
       }
     }
 
+    // Auto-resolve Lanham target from active profile if not explicitly provided
+    let effectiveLanhamTarget = options.lanhamStyleTarget;
+    let effectiveLanhamMetrics = options.targetLanhamMetrics;
+    if (!effectiveLanhamMetrics && this.deps.styleProfileManager) {
+      const activeProfile = this.deps.styleProfileManager.getActiveProfile();
+      if (activeProfile?.characteristics?.lanhamMetrics) {
+        effectiveLanhamMetrics = activeProfile.characteristics.lanhamMetrics;
+      }
+    }
+
     // Trajectory
     let trajectoryId: string | undefined;
     if (this.deps.trajectoryBridge) {
@@ -3477,6 +3496,7 @@ ${sectionContent}`;
         crossPipelineHooks: hookLines, tensionEdges: tensionLines,
         stylePrompt: goldStylePrompt, wordTarget,
         preventionPlan, sectionConstraints, primaryUnderCoverage,
+        lanhamStyleTarget: effectiveLanhamTarget,
       });
 
       // Generate

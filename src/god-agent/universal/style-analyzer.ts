@@ -317,17 +317,22 @@ export class StyleAnalyzer {
    * @param preferredVariant - Preferred language variant or 'auto' for detection
    * @returns StyleCharacteristics with all deep patterns
    */
-  async analyzeDeep(text: string, preferredVariant: 'en-US' | 'en-GB' | 'auto' = 'auto'): Promise<StyleCharacteristics> {
+  async analyzeDeep(
+    text: string,
+    preferredVariant: 'en-US' | 'en-GB' | 'auto' = 'auto',
+    options?: { lanhamMode?: 'auto' | 'on' | 'off'; lanhamTier?: 'heuristic' | 'advanced' },
+  ): Promise<StyleCharacteristics> {
     // Start with regional analysis
     const baseAnalysis = this.analyzeWithRegional(text, preferredVariant);
 
     // Dynamically import deep style extractors to avoid circular dependencies
+    let result: StyleCharacteristics;
     try {
       const { DeepStyleAnalyzer } = await import('../cli/style/deep-style-analyzer.js');
       const deepAnalyzer = new DeepStyleAnalyzer();
       const deepCharacteristics = deepAnalyzer.analyzeText(text);
 
-      return {
+      result = {
         ...baseAnalysis,
         rhetoricalMoves: deepCharacteristics.rhetoricalMoves,
         citationIntegration: deepCharacteristics.citationIntegration,
@@ -337,8 +342,44 @@ export class StyleAnalyzer {
     } catch (error) {
       // If deep analysis fails, return base analysis
       logger.warn('Deep style analysis failed, using base analysis', { error: String(error) });
-      return baseAnalysis;
+      result = baseAnalysis;
     }
+
+    // Lanham prose analysis (conditionally based on mode)
+    const lanhamMode = options?.lanhamMode ?? 'auto';
+    const shouldRunLanham = lanhamMode === 'on' ||
+      (lanhamMode === 'auto' && this.shouldAutoLanham(text));
+
+    if (shouldRunLanham) {
+      try {
+        const tier = options?.lanhamTier ?? 'heuristic';
+        if (tier === 'advanced') {
+          const { AdvancedLanhamAnalyzer } = await import('../cli/style/advanced-lanham-analyzer.js');
+          const analyzer = new AdvancedLanhamAnalyzer();
+          result.lanhamMetrics = await analyzer.fullAnalysis(text);
+        } else {
+          const { LanhamProseAnalyzer } = await import('../cli/style/lanham-prose-analyzer.js');
+          const analyzer = new LanhamProseAnalyzer();
+          result.lanhamMetrics = await analyzer.fullAnalysis(text);
+        }
+      } catch (error) {
+        logger.warn('Lanham prose analysis failed', { error: String(error) });
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Determine whether to auto-enable Lanham analysis based on text characteristics.
+   * Criteria: sufficient length (>500 words) and sentence-driven prose (not note-like).
+   */
+  private shouldAutoLanham(text: string): boolean {
+    const words = text.split(/\s+/).filter(w => w.length > 0);
+    if (words.length < 500) return false;
+    const sentences = (text.match(/[.!?]+/g) || []).length;
+    const sentenceRatio = sentences / (words.length / 50);
+    return sentenceRatio >= 0.5;
   }
 
   /**
@@ -347,28 +388,35 @@ export class StyleAnalyzer {
    * @param preferredVariant - Preferred language variant
    * @returns Merged StyleCharacteristics with all deep patterns
    */
-  async analyzeDeepMultiple(texts: string[], preferredVariant: 'en-US' | 'en-GB' | 'auto' = 'auto'): Promise<StyleCharacteristics> {
+  async analyzeDeepMultiple(
+    texts: string[],
+    preferredVariant: 'en-US' | 'en-GB' | 'auto' = 'auto',
+    options?: { lanhamMode?: 'auto' | 'on' | 'off'; lanhamTier?: 'heuristic' | 'advanced' },
+  ): Promise<StyleCharacteristics> {
     if (texts.length === 0) {
       throw new Error('No text samples provided for analysis');
     }
 
     // Analyze each text
+    const validTexts = texts.filter(t => t && t.length > 100);
     const analyses = await Promise.all(
-      texts.filter(t => t && t.length > 100).map(t => this.analyzeDeep(t, preferredVariant))
+      validTexts.map(t => this.analyzeDeep(t, preferredVariant, options))
     );
 
     if (analyses.length === 0) {
       throw new Error('No valid text samples for analysis');
     }
 
+    const textLengths = validTexts.map(t => t.split(/\s+/).filter(w => w.length > 0).length);
+
     // Merge analyses
-    return this.mergeAnalysesDeep(analyses);
+    return this.mergeAnalysesDeep(analyses, textLengths);
   }
 
   /**
    * Merge analyses including deep patterns
    */
-  private mergeAnalysesDeep(analyses: StyleCharacteristics[]): StyleCharacteristics {
+  private mergeAnalysesDeep(analyses: StyleCharacteristics[], textLengths?: number[]): StyleCharacteristics {
     // Start with base merge
     const merged = this.mergeAnalyses(analyses);
 
@@ -381,13 +429,19 @@ export class StyleAnalyzer {
     if (rhetoricalMoves.length > 0 || citationIntegration.length > 0 ||
         argumentPatterns.length > 0 || transitionPatterns.length > 0) {
       // Dynamically merge deep patterns
-      return {
-        ...merged,
-        rhetoricalMoves: rhetoricalMoves.length > 0 ? this.mergeRhetoricalMoves(rhetoricalMoves) : undefined,
-        citationIntegration: citationIntegration.length > 0 ? this.mergeCitationIntegration(citationIntegration) : undefined,
-        argumentPatterns: argumentPatterns.length > 0 ? this.mergeArgumentPatterns(argumentPatterns) : undefined,
-        transitionPatterns: transitionPatterns.length > 0 ? this.mergeTransitionPatterns(transitionPatterns) : undefined,
-      };
+      merged.rhetoricalMoves = rhetoricalMoves.length > 0 ? this.mergeRhetoricalMoves(rhetoricalMoves) : undefined;
+      merged.citationIntegration = citationIntegration.length > 0 ? this.mergeCitationIntegration(citationIntegration) : undefined;
+      merged.argumentPatterns = argumentPatterns.length > 0 ? this.mergeArgumentPatterns(argumentPatterns) : undefined;
+      merged.transitionPatterns = transitionPatterns.length > 0 ? this.mergeTransitionPatterns(transitionPatterns) : undefined;
+    }
+
+    // Merge Lanham metrics if present (length-weighted)
+    const lanhamEntries = analyses
+      .map((a, i) => a.lanhamMetrics ? { metrics: a.lanhamMetrics, wordCount: textLengths?.[i] ?? 1 } : null)
+      .filter((e): e is { metrics: LanhamProseMetrics; wordCount: number } => e !== null);
+
+    if (lanhamEntries.length > 0) {
+      merged.lanhamMetrics = StyleAnalyzer.mergeLanhamMetrics(lanhamEntries);
     }
 
     return merged;
@@ -751,7 +805,7 @@ export class StyleAnalyzer {
     for (const field of numericFields) {
       let acc = 0;
       for (const s of samples) acc += (s.metrics[field] as number) * w(s);
-      (merged as Record<string, unknown>)[field] = acc;
+      (merged as unknown as Record<string, unknown>)[field] = acc;
     }
 
     // Weighted average of tacit pattern counts

@@ -19,6 +19,9 @@ import {
   type QualityEvaluationContext,
   countIssuesBySeverity,
 } from '../quality-stage.js';
+import { LanhamProseAnalyzer } from '../../style/lanham-prose-analyzer.js';
+import type { LanhamProseMetrics } from '../../../universal/style-analyzer.js';
+import { GENRE_THRESHOLDS, GENRE_DEFAULTS, type Genre } from '../../style/lanham-style-policy.js';
 
 // ============================================================================
 // Pattern Constants
@@ -237,6 +240,14 @@ export class StyleConsistencyValidator extends BaseQualityStage {
     );
     issues.push(...transitionIssues);
 
+    // Lanham prose consistency check (hard-constraint + firm-guidance axes only)
+    const lanhamIssues = await this.checkLanhamConsistency(
+      chapterText,
+      chapterId,
+      context
+    );
+    issues.push(...lanhamIssues);
+
     // Generate suggestions based on analysis
     this.generateSuggestions(styleMetrics, styleProfile, suggestions);
 
@@ -329,6 +340,120 @@ export class StyleConsistencyValidator extends BaseQualityStage {
     }
 
     return result;
+  }
+
+  // ============================================================================
+  // Lanham Consistency Check
+  // ============================================================================
+
+  /**
+   * Compare chapter text against the style profile's lanhamMetrics baseline.
+   * Only flags deviations on hard-constraint (noun/verb, register) and
+   * firm-guidance (voice) axes -- honoring Lanham's decorum principle.
+   * Soft-observation and informational axes are diagnostic-only.
+   */
+  private async checkLanhamConsistency(
+    chapterText: string,
+    chapterId: number,
+    context?: QualityEvaluationContext
+  ): Promise<QualityIssue[]> {
+    // Extract the profile's Lanham baseline (the norm)
+    const profileLanham = this.extractLanhamBaseline(context);
+    if (!profileLanham) {
+      // No Lanham baseline in profile -- skip check silently
+      return [];
+    }
+
+    const issues: QualityIssue[] = [];
+    let issueIndex = 0;
+
+    // Determine genre from context or default to 'academic'
+    const genre: Genre = (context?.genre as Genre) || 'academic';
+    const analyzer = new LanhamProseAnalyzer(genre);
+    const current = await analyzer.fullAnalysis(chapterText);
+    const thresholds = GENRE_THRESHOLDS[genre];
+    const genreDefaults = GENRE_DEFAULTS[genre];
+
+    // --- Hard constraint: Noun/Verb ratio drift ---
+    const nvDiff = Math.abs(current.nounVerbRatio - profileLanham.nounVerbRatio);
+    const nvBandWidth = thresholds.nounVerb.highBand - thresholds.nounVerb.lowBand;
+    if (nvDiff > nvBandWidth * 0.5) {
+      const direction = current.nounVerbRatio < profileLanham.nounVerbRatio
+        ? 'noun-heavy' : 'verb-heavy';
+      issues.push({
+        id: this.generateIssueId('style', issueIndex++),
+        type: 'style',
+        severity: nvDiff > nvBandWidth * 0.8 ? 'major' : 'minor',
+        location: { chapterId },
+        description: `Noun/verb axis drift: text is more ${direction} than the style profile baseline (${current.nounVerbRatio.toFixed(2)} vs ${profileLanham.nounVerbRatio.toFixed(2)}).`,
+        suggestion: direction === 'noun-heavy'
+          ? 'Reduce nominalizations and "be"-verb constructions. Convert noun phrases back to active verbs (e.g., "the implementation of" -> "implementing").'
+          : 'The prose leans too heavily on active verbs relative to the established style. Reintroduce some nominal constructions where appropriate for the register.',
+        autoFixable: false,
+        contextSnippet: current.explanations.nounVerb,
+      });
+    }
+
+    // --- Hard constraint: Register inconsistency ---
+    const profileRegister = profileLanham.labels?.primaryRegister || genreDefaults.registerTarget;
+    const currentRegister = current.labels.primaryRegister;
+    if (profileRegister !== 'mixed' && currentRegister !== profileRegister) {
+      issues.push({
+        id: this.generateIssueId('style', issueIndex++),
+        type: 'style',
+        severity: 'major',
+        location: { chapterId },
+        description: `Register drift: text reads as '${currentRegister}' register but the style profile targets '${profileRegister}' register.`,
+        suggestion: profileRegister === 'high'
+          ? 'Restore formal register: prefer Latinate vocabulary, avoid contractions, use longer sentence structures with subordination.'
+          : profileRegister === 'low'
+            ? 'Shift toward plain style: use shorter Germanic-root words, direct phrasing, and simpler sentence structures.'
+            : 'Return to middle register: balance formal and plain diction, moderate sentence length.',
+        autoFixable: false,
+        contextSnippet: current.explanations.register,
+      });
+    }
+
+    // --- Firm guidance: Voice drift ---
+    const voiceDiff = Math.abs(current.voiceScore - profileLanham.voiceScore);
+    const voiceBandWidth = thresholds.voice.highBand - thresholds.voice.lowBand;
+    // Only flag extreme voice deviations (>70% of the band width)
+    if (voiceDiff > voiceBandWidth * 0.7) {
+      const direction = current.voiceScore < profileLanham.voiceScore
+        ? 'less voiced (more effaced)' : 'more voiced (more present)';
+      issues.push({
+        id: this.generateIssueId('style', issueIndex++),
+        type: 'style',
+        severity: 'minor',
+        location: { chapterId },
+        description: `Voice axis drift: text is ${direction} than the style profile baseline (${current.voiceScore.toFixed(2)} vs ${profileLanham.voiceScore.toFixed(2)}).`,
+        suggestion: current.voiceScore < profileLanham.voiceScore
+          ? 'Increase rhythmic variety: vary sentence lengths more dramatically and reintroduce authorial presence markers where appropriate.'
+          : 'Moderate the authorial voice: reduce first-person assertions and even out sentence length variation for a more measured cadence.',
+        autoFixable: false,
+        contextSnippet: current.explanations.voice,
+      });
+    }
+
+    return issues;
+  }
+
+  /**
+   * Extract LanhamProseMetrics from the style profile in context
+   */
+  private extractLanhamBaseline(context?: QualityEvaluationContext): LanhamProseMetrics | undefined {
+    if (!context?.styleProfile) return undefined;
+    const profile = context.styleProfile as Record<string, unknown>;
+    // Check direct lanhamMetrics field
+    if (profile.lanhamMetrics) {
+      return profile.lanhamMetrics as LanhamProseMetrics;
+    }
+    // Check nested under characteristics (full StyleProfile shape)
+    const chars = profile.characteristics as Record<string, unknown> | undefined;
+    if (chars?.lanhamMetrics) {
+      return chars.lanhamMetrics as LanhamProseMetrics;
+    }
+    return undefined;
   }
 
   // ============================================================================

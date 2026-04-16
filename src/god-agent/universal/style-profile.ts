@@ -57,24 +57,28 @@ export class StyleProfileManager {
       description?: string;
       sourceType?: 'pdf' | 'text' | 'url' | 'mixed';
       tags?: string[];
+      lanhamMode?: 'auto' | 'on' | 'off';
+      lanhamTier?: 'heuristic' | 'advanced';
     } = {}
   ): Promise<StoredStyleProfile> {
     const id = this.generateId(name);
 
-    // Analyze each sample
-    const analyses = textSamples
-      .filter(text => text.length > 100) // Skip very short samples
-      .map(text => this.analyzer.analyze(text));
-
-    if (analyses.length === 0) {
-      throw new Error('No valid text samples provided for analysis');
-    }
-
-    // Merge into composite style
-    const characteristics = this.analyzer.mergeAnalyses(analyses);
+    // Use analyzeDeepMultiple for full deep + Lanham analysis with length-weighted merging
+    const characteristics = await this.analyzer.analyzeDeepMultiple(
+      textSamples,
+      'auto',
+      { lanhamMode: options.lanhamMode ?? 'auto', lanhamTier: options.lanhamTier ?? 'heuristic' },
+    );
 
     // Extract representative samples
     const sampleTexts = this.extractRepresentativeSamples(textSamples, 5);
+
+    // Store Lanham provenance if metrics were generated
+    const lanhamProvenance: Record<string, unknown> = {};
+    if (characteristics.lanhamMetrics) {
+      lanhamProvenance.lanhamAnalyzerTier = options.lanhamTier ?? 'heuristic';
+      lanhamProvenance.lanhamEnrichedAt = new Date().toISOString();
+    }
 
     const profile: StoredStyleProfile = {
       metadata: {
@@ -86,6 +90,7 @@ export class StyleProfileManager {
         createdAt: Date.now(),
         updatedAt: Date.now(),
         tags: options.tags || [],
+        ...lanhamProvenance,
       },
       characteristics,
       sampleTexts,

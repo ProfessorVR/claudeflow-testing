@@ -10,7 +10,30 @@ import * as path from 'path';
 import { createRequire } from 'module';
 
 const profileName = process.argv[2] || 'academic-papers';
-const directories = process.argv.slice(3);
+
+// Parse CLI flags from remaining args
+const rawArgs = process.argv.slice(3);
+const directories = [];
+let lanhamMode = 'auto';
+let analyzerTier = 'heuristic';
+
+for (let i = 0; i < rawArgs.length; i++) {
+  if (rawArgs[i] === '--lanham-mode' && i + 1 < rawArgs.length) {
+    lanhamMode = rawArgs[++i];
+    if (!['auto', 'on', 'off'].includes(lanhamMode)) {
+      console.error('Invalid --lanham-mode value:', lanhamMode, '(must be auto|on|off)');
+      process.exit(1);
+    }
+  } else if (rawArgs[i] === '--lanham-tier' && i + 1 < rawArgs.length) {
+    analyzerTier = rawArgs[++i];
+    if (!['heuristic', 'advanced'].includes(analyzerTier)) {
+      console.error('Invalid --lanham-tier value:', analyzerTier, '(must be heuristic|advanced)');
+      process.exit(1);
+    }
+  } else {
+    directories.push(rawArgs[i]);
+  }
+}
 
 if (directories.length === 0) {
   directories.push('style-training');
@@ -51,6 +74,8 @@ for p in tree.findall('.//w:p', ns):
 console.log('=== God Agent Style Learning ===');
 console.log('Profile name:', profileName);
 console.log('Directories:', directories.join(', '));
+console.log('Lanham mode:', lanhamMode);
+console.log('Analyzer tier:', analyzerTier);
 
 const agent = new UniversalAgent({ verbose: false });
 await agent.initialize();
@@ -124,6 +149,8 @@ const profile = await agent.learnStyle(profileName, allTexts, {
   description: 'Learned from ' + allTexts.length + ' documents in: ' + directories.join(', '),
   tags: ['pdf', ...directories.map(d => path.basename(d))],
   setAsActive: true,
+  lanhamMode,
+  lanhamTier: analyzerTier,
 });
 
 if (!profile) {
@@ -163,6 +190,22 @@ console.log('  Transition word density:', (chars.structure.transitionWordDensity
 
 console.log('\nCommon transitions:', chars.commonTransitions.slice(0, 8).join(', '));
 console.log('Citation style:', chars.citationStyle);
+
+if (chars.lanhamMetrics) {
+  const lm = chars.lanhamMetrics;
+  console.log('\nLanham Prose Dimensions:');
+  console.log('  Noun/Verb:      ', lm.labels.nounVerb, '—', lm.explanations.nounVerb);
+  console.log('  Architecture:   ', lm.labels.periodicRunning, '—', lm.explanations.periodicRunning);
+  console.log('  Connection:     ', lm.labels.parataxisHypotaxis, '—', lm.explanations.parataxisHypotaxis);
+  console.log('  Voice:          ', lm.labels.voice, '—', lm.explanations.voice);
+  console.log('  Register:       ', lm.labels.primaryRegister + (lm.labels.registerMixed ? ' (mixed)' : ''), '—', lm.explanations.register);
+  console.log('  Opacity:        ', lm.labels.opacity, '—', lm.explanations.opacity);
+  if (lm.explanations.tacitPatterns) console.log('  Tacit Patterns: ', lm.explanations.tacitPatterns);
+  console.log('  Analysis depth: ', lm.analysisDepth);
+  console.log('  Analyzer tier:  ', profile.metadata.lanhamAnalyzerTier || 'heuristic');
+} else {
+  console.log('\nLanham Prose Dimensions: not computed (use --lanham-mode on to enable)');
+}
 
 console.log('\n=== Usage ===');
 console.log('This profile is now ACTIVE. Future /god-write calls will use it.');

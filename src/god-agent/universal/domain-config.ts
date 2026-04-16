@@ -23,7 +23,7 @@ const DEFAULT_DOMAIN_CONFIG: DomainConfig = {
   secondaryAuthors: [
     'Frede', 'Caston', 'Papachristou', 'Nussbaum',
     "O'Gorman", 'Hawhee', 'Rickert', 'Burke',
-    'White', 'Gonzalez', 'Bowin',
+    'White', 'Gonzalez', 'Bowin', 'Lanham',
   ],
   keyConcepts: [
     'motion', 'kinesis', 'time', 'chronos',
@@ -34,6 +34,11 @@ const DEFAULT_DOMAIN_CONFIG: DomainConfig = {
     'energeia', 'dunamis', 'phronesis', 'eudaimonia',
     'entelecheia', 'soul', 'faculty', 'ontolog',
     'attunem', 'disclos', 'thrownness', 'mood', 'affect',
+    'noun style', 'verb style', 'parataxis', 'hypotaxis',
+    'periodic', 'running style', 'opaque', 'transparent',
+    'voiced', 'unvoiced', 'tacit persuasion', 'isocolon',
+    'chiasmus', 'anaphora', 'polysyndeton', 'asyndeton',
+    'nominalization', 'register', 'decorum',
   ],
   primaryTitles: ['De Anima', 'Being and Time', 'Rhetoric', 'Physics'],
   titleAliases: {
@@ -72,6 +77,9 @@ const DEFAULT_DOMAIN_CONFIG: DomainConfig = {
     'rhetoric of motives': 'A Rhetoric of Motives',
     // Gibson
     'ecological approach': 'The Ecological Approach to Visual Perception.',
+    // Lanham
+    'analyzing prose': 'Analyzing Prose',
+    'lanham': 'Analyzing Prose',
   },
 };
 

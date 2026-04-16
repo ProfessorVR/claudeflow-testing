@@ -22,7 +22,8 @@ export type QualityIssueType =
   | 'factual'         // Internal consistency, accuracy
   | 'structure'       // Organization, section flow
   | 'coherence'       // Cross-paragraph/section consistency
-  | 'missing-source'; // Source not in corpus (requires acquisition)
+  | 'missing-source'  // Source not in corpus (requires acquisition)
+  | 'prose-analysis'; // Lanham-framework prose quality (nominalization, register, rhythm)
 
 /**
  * Severity levels for quality issues

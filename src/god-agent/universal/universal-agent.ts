@@ -2845,7 +2845,13 @@ export class UniversalAgent {
   async learnStyle(
     name: string,
     textSamples: string[],
-    options: { description?: string; tags?: string[]; setAsActive?: boolean } = {}
+    options: {
+      description?: string;
+      tags?: string[];
+      setAsActive?: boolean;
+      lanhamMode?: 'auto' | 'on' | 'off';
+      lanhamTier?: 'heuristic' | 'advanced';
+    } = {}
   ): Promise<StoredStyleProfile | null> {
     return this.styleFacade.learnStyle(name, textSamples, options);
   }
