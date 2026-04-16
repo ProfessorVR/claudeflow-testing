@@ -79,3 +79,11 @@ export {
 
 // Advanced Lanham Analyzer (Tier 2 deep analysis)
 export { AdvancedLanhamAnalyzer } from './advanced-lanham-analyzer.js';
+
+// Lanham shared utilities (constants and helpers used by both analyzer tiers)
+export {
+  tokenize, splitSentences, clamp, isVerb, isNominalization, isLatinate, roughStem, getContentWords,
+  BE_VERBS, COMMON_VERBS, NOMINALIZATION_SUFFIXES, LATINATE_SUFFIXES, PREPOSITIONS,
+  COORDINATING_CONJ, SUBORDINATING_CONJ, FORMAL_MARKERS,
+  META_LINGUISTIC_MARKERS, OPACITY_CONTENT_MARKERS, PERSONALITY_MARKERS,
+} from './lanham-shared.js';

@@ -17,124 +17,16 @@ import type { LanhamProseMetrics } from '../../universal/style-analyzer.js';
 import type { ILanhamAnalyzer } from './lanham-analyzer-interface.js';
 import { LanhamProseAnalyzer } from './lanham-prose-analyzer.js';
 import { GENRE_THRESHOLDS, type Genre } from './lanham-style-policy.js';
+import {
+  tokenize, splitSentences, clamp, roughStem, getContentWords,
+  COMMON_VERBS, COORDINATING_CONJ, SUBORDINATING_CONJ, FORMAL_MARKERS,
+  META_LINGUISTIC_MARKERS, PREPOSITIONS,
+} from './lanham-shared.js';
 
-// ── Shared helpers (mirrored from heuristic tier for self-containment) ──────
-
-function tokenize(text: string): string[] {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s'-]/g, ' ')
-    .split(/\s+/)
-    .filter(w => w.length > 0);
-}
-
-function splitSentences(text: string): string[] {
-  return text
-    .replace(/([.!?])\s+/g, '$1|')
-    .split('|')
-    .map(s => s.trim())
-    .filter(s => s.length > 0 && s.split(/\s+/).length > 2);
-}
-
-function clamp(v: number, lo = 0, hi = 1): number {
-  return Math.max(lo, Math.min(hi, v));
-}
-
-function getContentWords(words: string[]): string[] {
-  const STOP = new Set([
-    'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
-    'of', 'with', 'by', 'from', 'is', 'are', 'was', 'were', 'be', 'been',
-    'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
-    'shall', 'should', 'may', 'might', 'can', 'could', 'not', 'no', 'nor',
-    'so', 'yet', 'this', 'that', 'these', 'those', 'it', 'its', 'he', 'she',
-    'they', 'we', 'i', 'you', 'me', 'him', 'her', 'us', 'them', 'my', 'your',
-    'his', 'our', 'their', 'which', 'who', 'whom', 'what', 'if', 'then',
-    'than', 'as', 'up', 'about', 'into', 'through', 'after', 'before',
-  ]);
-  return words.filter(w => !STOP.has(w.toLowerCase()) && w.length > 2);
-}
-
-function roughStem(word: string): string {
-  let w = word.toLowerCase();
-  const suffixes = ['tion', 'sion', 'ment', 'ness', 'ity', 'ence', 'ance', 'ing', 'ed', 'ly', 'er', 'est', 'ous', 'ive', 'al', 'es', 's'];
-  for (const s of suffixes) {
-    if (w.length > s.length + 3 && w.endsWith(s)) {
-      w = w.slice(0, -s.length);
-      break;
-    }
-  }
-  return w;
-}
-
-// ── Word lists for deep analysis ────────────────────────────────────────────
-
-const COMMON_VERBS = new Set([
-  'is', 'are', 'was', 'were', 'been', 'being', 'am',
-  'have', 'has', 'had', 'do', 'does', 'did',
-  'say', 'said', 'says', 'make', 'made', 'makes',
-  'go', 'goes', 'went', 'gone', 'take', 'took', 'taken',
-  'come', 'came', 'give', 'gave', 'given',
-  'find', 'found', 'think', 'thought', 'know', 'knew', 'known',
-  'get', 'got', 'gotten', 'see', 'saw', 'seen',
-  'want', 'wanted', 'use', 'used', 'tell', 'told',
-  'ask', 'asked', 'work', 'worked', 'seem', 'seemed',
-  'try', 'tried', 'leave', 'left', 'call', 'called',
-  'need', 'needed', 'become', 'became', 'keep', 'kept',
-  'let', 'begin', 'began', 'begun', 'show', 'showed', 'shown',
-  'hear', 'heard', 'play', 'played', 'run', 'ran',
-  'move', 'moved', 'live', 'lived', 'believe', 'believed',
-  'bring', 'brought', 'happen', 'happened', 'write', 'wrote', 'written',
-  'provide', 'provided', 'sit', 'sat', 'stand', 'stood',
-  'lose', 'lost', 'pay', 'paid', 'meet', 'met',
-  'include', 'included', 'continue', 'continued',
-  'set', 'learn', 'learned', 'change', 'changed',
-  'lead', 'led', 'understand', 'understood', 'watch', 'watched',
-  'follow', 'followed', 'stop', 'stopped', 'create', 'created',
-  'speak', 'spoke', 'spoken', 'read', 'allow', 'allowed',
-  'add', 'added', 'grow', 'grew', 'grown', 'open', 'opened',
-  'walk', 'walked', 'win', 'won', 'offer', 'offered',
-  'remember', 'remembered', 'consider', 'considered',
-  'appear', 'appeared', 'buy', 'bought', 'serve', 'served',
-  'die', 'died', 'send', 'sent', 'build', 'built',
-  'stay', 'stayed', 'fall', 'fell', 'fallen', 'cut',
-  'reach', 'reached', 'kill', 'killed', 'remain', 'remained',
-  'suggest', 'suggested', 'raise', 'raised', 'pass', 'passed',
-  'sell', 'sold', 'require', 'required', 'report', 'reported',
-  'decide', 'decided', 'pull', 'pulled', 'develop', 'developed',
-  'argues', 'argue', 'argued', 'contends', 'contend', 'contended',
-  'claims', 'claim', 'claimed', 'asserts', 'assert', 'asserted',
-  'maintains', 'maintain', 'maintained', 'observes', 'observe', 'observed',
-  'notes', 'note', 'noted', 'suggests', 'indicates', 'indicate', 'indicated',
-  'demonstrates', 'demonstrate', 'demonstrated',
-  'reveals', 'reveal', 'revealed', 'establishes', 'establish', 'established',
-  'examines', 'examine', 'examined', 'explores', 'explore', 'explored',
-  'analyzes', 'analyze', 'analyzed', 'investigates', 'investigate', 'investigated',
-]);
-
-const COORDINATING_CONJ = new Set(['and', 'but', 'or', 'nor', 'for', 'yet', 'so']);
-
-const SUBORDINATING_CONJ = new Set([
-  'although', 'because', 'since', 'unless', 'while', 'whereas',
-  'when', 'where', 'if', 'though', 'after', 'before', 'until',
-  'once', 'whenever', 'wherever', 'whether', 'provided', 'supposing',
-  'inasmuch', 'insofar', 'notwithstanding', 'albeit', 'lest',
-]);
+// ── Tier-2 only constants ───────────────────────────────────────────────────
 
 /** Words whose presence signals relative clauses */
 const RELATIVE_PRONOUNS = new Set(['who', 'whom', 'whose', 'which', 'that']);
-
-/** Meta-linguistic markers from the heuristic tier */
-const META_LINGUISTIC_MARKERS = [
-  // Genuine meta-linguistic references: prose commenting on its own language
-  /\bthe (word|term|phrase|expression|name|label|designation)\b/gi,
-  /\bso[- ]called\b/gi,
-  /\bqua\b/gi,
-  /\bin (the )?(sense|way) (that|in which)\b/gi,
-  /\bwhat (we|I) (mean|call|term)\b/gi,
-  /\bas (it were|such)\b/gi,
-  /\bin other words\b/gi,
-  /\bthat is to say\b/gi,
-];
 
 /** Self-referential markers: text discussing its own linguistic form or medium.
  *  "this argument" is NOT self-referential — it refers to logical content.
@@ -161,14 +53,6 @@ const SEMANTIC_OPPOSITIONS: [string, string][] = [
   ['freedom', 'constraint'], ['order', 'chaos'], ['truth', 'falsehood'],
   ['visible', 'invisible'], ['finite', 'infinite'], ['temporal', 'eternal'],
 ];
-
-/** Formal register markers (for genre-break detection) */
-const FORMAL_MARKERS = new Set([
-  'furthermore', 'moreover', 'nevertheless', 'notwithstanding',
-  'consequently', 'subsequently', 'henceforth', 'whereby', 'wherein',
-  'therein', 'thereof', 'herein', 'aforementioned', 'heretofore',
-  'thus', 'hence', 'accordingly', 'indeed', 'nonetheless',
-]);
 
 /** Informal markers (for genre-break detection).
  *  Excludes words common in academic prose (actually, really, just, like)
@@ -268,7 +152,6 @@ type POSTag = 'N' | 'V' | 'ADJ' | 'ADV' | 'DET' | 'PREP' | 'CONJ' | 'PRON' | 'OT
 
 const DETERMINERS = new Set(['the', 'a', 'an', 'this', 'that', 'these', 'those', 'my', 'your', 'his', 'her', 'its', 'our', 'their', 'some', 'any', 'no', 'every', 'each', 'all', 'both', 'few', 'many', 'much', 'several']);
 const PRONOUNS = new Set(['i', 'me', 'my', 'mine', 'we', 'us', 'our', 'ours', 'you', 'your', 'yours', 'he', 'him', 'his', 'she', 'her', 'hers', 'it', 'its', 'they', 'them', 'their', 'theirs', 'who', 'whom', 'whose', 'which', 'that', 'what', 'this', 'these', 'those', 'one', 'ones', 'self', 'myself', 'yourself', 'himself', 'herself', 'itself', 'ourselves', 'themselves']);
-const PREPOSITIONS = new Set(['of', 'in', 'to', 'for', 'with', 'on', 'at', 'from', 'by', 'about', 'as', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between', 'under', 'along', 'until', 'without', 'toward', 'towards', 'upon', 'across', 'against', 'among', 'behind', 'beyond', 'within', 'throughout', 'beside', 'besides', 'despite', 'concerning', 'regarding', 'per', 'via']);
 const ADJ_SUFFIXES = ['ful', 'less', 'ous', 'ive', 'able', 'ible', 'ical', 'ial', 'ent', 'ant'];
 const ADV_SUFFIXES = ['ly'];
 
