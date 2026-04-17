@@ -8,10 +8,14 @@ import type { ILanhamAnalyzer } from './lanham-analyzer-interface.js';
 import { GENRE_THRESHOLDS, type Genre, type LanhamThresholdConfig } from './lanham-style-policy.js';
 import {
   tokenize, splitSentences, clamp, isVerb, isNominalization, isLatinate, roughStem, getContentWords,
+  tagPOS, isVerbTag, isThatSubordinator, assessSubordinationEvidence, countSyllables,
   BE_VERBS, COMMON_VERBS, NOMINALIZATION_SUFFIXES, LATINATE_SUFFIXES, PREPOSITIONS,
   COORDINATING_CONJ, SUBORDINATING_CONJ, FORMAL_MARKERS,
   META_LINGUISTIC_MARKERS, OPACITY_CONTENT_MARKERS, PERSONALITY_MARKERS,
+  sentenceLengthEntropy, consecutiveLengthContrast, terminalShortness,
+  opacityDeviationFromNorm,
 } from './lanham-shared.js';
+import { AWL_WORDS } from './data/academic-word-list.js';
 
 // ── Main class ─────────────────────────────────────────────────────────────
 
@@ -110,12 +114,20 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
     const sentences = splitSentences(text);
     const wordCount = words.length || 1;
 
+    // B2: POS-enhanced verb identification
+    const rawWords = text.replace(/[^\w\s'-]/g, ' ').split(/\s+/).filter(w => w.length > 0);
+    const posTokens = tagPOS(rawWords);
+    const posVerbSet = new Set<string>();
+    for (const t of posTokens) {
+      if (isVerbTag(t.tag)) posVerbSet.add(t.word.toLowerCase());
+    }
+
     let verbCount = 0;
     let nounStyleCount = 0; // nominalizations + prepositional phrases signal noun-heavy style
     let beVerbCount = 0;
 
     for (const w of words) {
-      if (isVerb(w)) {
+      if (isVerb(w) || posVerbSet.has(w)) {
         verbCount++;
         if (BE_VERBS.has(w)) beVerbCount++;
       }
@@ -174,13 +186,34 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
       if (SUBORDINATING_CONJ.has(w)) subordCount++;
     }
 
-    // Implicit subordination signals (relative clauses, complement clauses)
-    // "that/which/who/whom" followed by a verb pattern = subordinate clause
-    const relativeClausePattern = /\b(that|which|who|whom|whose|where|whereby)\b\s+\w+/gi;
-    const relativeMatches = text.match(relativeClausePattern) || [];
-    // Filter out demonstrative "that" (followed by a noun, not a verb)
-    // Heuristic: "that the/a/an/this" is a complement clause; "that + verb-like" is a relative clause
-    const implicitSubordCount = relativeMatches.length;
+    // POS-aware relative clause detection: disambiguate "that" (aligned with Tier 2 B3)
+    // Uses tagPOS() + isThatSubordinator() so demonstrative "that" (DT) is not counted.
+    const RELATIVE_WORDS = new Set(['which', 'who', 'whom', 'whose', 'where', 'whereby']);
+    let implicitSubordCount = 0;
+    for (const sent of sentences) {
+      const sentRawWords = sent.split(/\s+/).filter(w => w.length > 0);
+      const sentPOS = tagPOS(sentRawWords);
+      const sentLower = sentRawWords.map(w => w.toLowerCase().replace(/[^a-z']/g, ''));
+
+      for (let i = 0; i < sentLower.length - 1; i++) {
+        const w = sentLower[i];
+        if (RELATIVE_WORDS.has(w)) {
+          // which/who/whom/whose/where/whereby always count — check for following verb
+          const lookahead = sentLower.slice(i + 1, i + 4);
+          const lookaheadPOS = sentPOS.slice(i + 1, i + 4);
+          const hasVerb = lookaheadPOS.some(t => isVerbTag(t.tag)) || lookahead.some(lw => isVerb(lw));
+          if (hasVerb) implicitSubordCount++;
+        } else if (w === 'that') {
+          // "that" requires POS disambiguation: WDT/IN = subordination, DT = skip
+          const posTag = sentPOS[i]?.tag || 'DT';
+          if (!isThatSubordinator(posTag)) continue;
+          const lookahead = sentLower.slice(i + 1, i + 4);
+          const lookaheadPOS = sentPOS.slice(i + 1, i + 4);
+          const hasVerb = lookaheadPOS.some(t => isVerbTag(t.tag)) || lookahead.some(lw => isVerb(lw));
+          if (hasVerb) implicitSubordCount++;
+        }
+      }
+    }
 
     // Prepositional phrase nesting depth as hypotaxis signal
     // Multiple consecutive "of X" / "in Y" / "within Z" chains = hierarchical structure
@@ -203,12 +236,16 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
     }
     const ppNestingDensity = sentences.length > 0 ? ppNestingSignal / sentences.length : 0;
 
-    // Combine explicit and implicit subordination
-    const effectiveSubord = subordCount + implicitSubordCount * 0.7; // weight implicit slightly less
-    const hypotaxisBoost = clamp(ppNestingDensity / 0.5) * 0.15; // nesting adds up to 0.15
+    // Canonical graded evidence ladder (same as Tier 2 A2/B3)
+    // Tier 1 has no participial phrase detection, so lowConfidenceCount = 0
+    const evidence = assessSubordinationEvidence(subordCount, implicitSubordCount, 0);
+    const effectiveSubord = evidence.weightedTotal;
+    const hypotaxisBoost = evidence.nestingBonusAllowed
+      ? clamp(ppNestingDensity / 0.5) * 0.08  // reduced from 0.15, conditional on >=1 high-confidence cue
+      : 0;
 
     const coordinatingConjunctionDensity = coordCount / wordCount;
-    const subordinatingConjunctionDensity = (subordCount + implicitSubordCount) / wordCount;
+    const subordinatingConjunctionDensity = evidence.weightedTotal / wordCount;
 
     // Sentence-initial conjunction signal: "And" or "But" starting a sentence = paratactic macro-structure
     let sentenceInitialConj = 0;
@@ -388,7 +425,20 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
       engagementSignal * 0.15
     );
 
-    // Final voice: strong unvoiced suppression, then positive voice boost
+    // D1-D3: Additional voice metrics
+    const entropy = sentenceLengthEntropy(sentences);
+    const contrast = consecutiveLengthContrast(sentences);
+    const terminal = terminalShortness(sentences);
+
+    // D1-D3: Voice score with entropy, contrast, and terminal shortness.
+    // Phase D 5-term formula (0.45/0.30/0.12/0.08/0.05) degraded monotonicity from
+    // 0.372 to 0.313 — base signal weights were reduced too aggressively.
+    // Reverted to original 2-term formula with D1-D3 metrics as minor supplements.
+    // The new metrics remain computed above for Phase F calibration.
+    // Voice score: base formula preserved from pre-Phase-D (monotonicity 0.372).
+    // D1-D3 metrics (entropy, contrast, terminal) are computed above and available
+    // for Phase F calibration, but not blended in until validated — initial weights
+    // degraded monotonicity from 0.372 to 0.313 even at minimal (0.10 total) weight.
     const voiceScore = clamp(
       (1 - unvoicedSignal) * 0.60 + positiveVoice * 0.40
     );
@@ -465,10 +515,48 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
     // Directional register score: 0=low, 0.5=middle, 1=high
     const registerMarkednessScore = clamp((highSignal - lowSignal + 1) / 2);
 
+    // B5: Blend Heylighen-Dewaele F-score into register markedness.
+    // Phase C composite (7-signal) was tested but degraded monotonicity from 0.673 to 0.567 —
+    // the initial weights diluted the F-score signal. Reverted to the simpler 70/30 blend
+    // which demonstrated +0.099 improvement. The AWL, syllable counter, and composite
+    // architecture remain available in lanham-shared.ts for Phase F calibration.
+    const fScore = this.computeFScore(text);
+    const fScoreNormalized = clamp(fScore / 100);
+    const blendedRegisterScore = clamp(registerMarkednessScore * 0.70 + fScoreNormalized * 0.30);
+
     return {
       latinateGermanicRatio,
-      registerMarkednessScore,
+      registerMarkednessScore: blendedRegisterScore,
     };
+  }
+
+  /**
+   * B5: Heylighen-Dewaele F-score for register/formality.
+   * F = 50 * ((noun + adj + prep + article - pronoun - verb - adverb - interjection) / N + 1)
+   * Range: 0 (informal) to 100 (formal).
+   */
+  private computeFScore(text: string): number {
+    const rawWords = text.replace(/[^\w\s'-]/g, ' ').split(/\s+/).filter(w => w.length > 0);
+    const posTokens = tagPOS(rawWords);
+    if (posTokens.length === 0) return 50; // neutral fallback if POS unavailable
+
+    let noun = 0, adj = 0, prep = 0, article = 0;
+    let pronoun = 0, verb = 0, adverb = 0, interjection = 0;
+
+    for (const { tag } of posTokens) {
+      if (tag.startsWith('NN')) noun++;
+      else if (tag.startsWith('JJ')) adj++;
+      else if (tag === 'IN') prep++;
+      else if (tag === 'DT') article++;
+      else if (tag.startsWith('PRP') || tag === 'WP' || tag === 'WP$') pronoun++;
+      else if (tag.startsWith('VB') || tag === 'MD') verb++;
+      else if (tag.startsWith('RB') || tag === 'WRB') adverb++;
+      else if (tag === 'UH') interjection++;
+    }
+
+    const N = posTokens.length;
+    const f = 50 * ((noun + adj + prep + article - pronoun - verb - adverb - interjection) / N + 1);
+    return Math.max(0, Math.min(100, f));
   }
 
   // ── Axis 6: Opacity / Transparency ────────────────────────────────────
@@ -527,21 +615,17 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
     const veryLong = sentLens.filter(l => l >= 40).length;
     const extremesDensity = clamp((veryShort + veryLong) / (sentences.length || 1) / 0.25);
 
-    // Opacity = weighted combination (Lanham's AT/THROUGH):
-    // Prose is "opaque" when it draws attention to its own surface through ANY means:
-    //   sound patterns (0.20): alliteration foregrounding
-    //   polysyndeton (0.15): deliberate connector chaining
-    //   repetition (0.20): repeated words/phrases create pattern awareness
-    //   extremes (0.15): fragments or very long sentences = deliberate display
-    //   meta-linguistic (0.15): "the word X", self-referential prose
-    //   content-level (0.15): prose discussing language/form/rhetoric
+    // D4: Blend deviation-from-norm into opacity
+    const deviation = opacityDeviationFromNorm(text, sentences, words);
+
     const opacityScore = clamp(
-      soundDensity * 0.20 +
-      polysyndetonDensity * 0.15 +
-      repetitionDensity * 0.20 +
-      extremesDensity * 0.15 +
+      soundDensity * 0.15 +
+      polysyndetonDensity * 0.10 +
+      repetitionDensity * 0.15 +
+      extremesDensity * 0.10 +
       metaLingDensity * 0.15 +
-      contentOpacityDensity * 0.15
+      contentOpacityDensity * 0.10 +
+      deviation * 0.25
     );
 
     return {

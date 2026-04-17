@@ -505,5 +505,168 @@ describe('Lanham Calibration Suite', () => {
       }
       expect(true).toBe(true);
     });
+
+    // ── A5: Score vs Label quality separation ──────────────────────────────
+
+    describe('Score vs Label quality separation', () => {
+      it('reports score monotonicity vs label agreement per axis and flags deriveLabels() miscalibration', () => {
+        const n = results.length;
+        const report: string[] = [
+          `\n${'='.repeat(72)}`,
+          `  A5: SCORE vs LABEL QUALITY SEPARATION — ${n} texts`,
+          `${'='.repeat(72)}`,
+          `  ${'Axis'.padEnd(22)} ${'Monotonicity'.padStart(12)}  ${'Label Agr'.padStart(10)}  ${'Diagnostic'.padStart(12)}`,
+          `  ${'-'.repeat(62)}`,
+        ];
+
+        for (const [axisName, cfg] of Object.entries(AXIS_CONFIG)) {
+          // Score quality: Spearman monotonicity (gold ordinals vs continuous pred scores)
+          const goldOrdinals: number[] = [];
+          const predScores: number[] = [];
+
+          // Label quality: exact categorical agreement
+          let labelMatchCount = 0;
+
+          for (const { entry, metrics } of results) {
+            const goldLabel = entry.labels[cfg.goldKey];
+            const predLabel = metrics.labels[cfg.predKey] as string;
+
+            if (goldLabel === predLabel) {
+              labelMatchCount++;
+            }
+
+            const goldOrd = cfg.ordMap[goldLabel];
+            if (goldOrd !== undefined) {
+              goldOrdinals.push(goldOrd);
+              const score = metrics[cfg.scoreField] as number;
+              predScores.push(score ?? 0);
+            }
+          }
+
+          const monotonicity = spearmanRho(goldOrdinals, predScores);
+          const labelAgreement = labelMatchCount / n;
+
+          // Diagnostic: scores are directionally good but labels diverge
+          let diagnostic = 'OK';
+          if (monotonicity > 0.5 && labelAgreement < 0.3) {
+            diagnostic = 'MISCALIB';
+            console.warn(
+              `  WARNING [A5]: ${axisName} — score monotonicity ${monotonicity.toFixed(3)} > 0.5 but label agreement ${(labelAgreement * 100).toFixed(1)}% < 30%. deriveLabels() may be miscalibrated for this axis.`,
+            );
+          }
+
+          report.push(
+            `  ${axisName.padEnd(22)} ${monotonicity.toFixed(3).padStart(12)}  ${((labelAgreement * 100).toFixed(1) + '%').padStart(10)}  ${diagnostic.padStart(12)}`,
+          );
+        }
+
+        report.push(`${'='.repeat(72)}`);
+        console.log(report.join('\n'));
+
+        // Informational: always passes — surfaces register-type bugs where scores track but labels diverge
+        expect(true).toBe(true);
+      });
+    });
+
+    // ── A6: Genre-stratified calibration ────────────────────────────────────
+
+    describe('Genre-stratified calibration', () => {
+      it('reports per-genre-group agreement and monotonicity with hard gate / watchlist labeling', () => {
+        const HARD_GATE_THRESHOLD = 3;
+
+        const report: string[] = [
+          `\n${'='.repeat(72)}`,
+          `  A6: GENRE-STRATIFIED CALIBRATION`,
+          `${'='.repeat(72)}`,
+        ];
+
+        // Collect summary rows for the final table
+        const summaryRows: {
+          group: string;
+          n: number;
+          status: string;
+          axisAgreements: Record<string, string>;
+        }[] = [];
+
+        for (const [groupName, genreTags] of Object.entries(GENRE_GROUPS)) {
+          const groupResults = results.filter(r =>
+            genreTags.includes(r.entry.genre),
+          );
+          const gn = groupResults.length;
+
+          if (gn === 0) continue;
+
+          const status = gn >= HARD_GATE_THRESHOLD ? 'HARD GATE' : 'WATCHLIST';
+          const prefix = `[${status}]`;
+
+          report.push(`\n  ${prefix} ${groupName} (n=${gn})`);
+
+          const axisAgreements: Record<string, string> = {};
+
+          for (const [axisName, cfg] of Object.entries(AXIS_CONFIG)) {
+            // Per-group categorical agreement
+            let matchCount = 0;
+            const goldOrdinals: number[] = [];
+            const predScores: number[] = [];
+
+            for (const { entry, metrics } of groupResults) {
+              const goldLabel = entry.labels[cfg.goldKey];
+              const predLabel = metrics.labels[cfg.predKey] as string;
+
+              if (goldLabel === predLabel) {
+                matchCount++;
+              }
+
+              const goldOrd = cfg.ordMap[goldLabel];
+              if (goldOrd !== undefined) {
+                goldOrdinals.push(goldOrd);
+                const score = metrics[cfg.scoreField] as number;
+                predScores.push(score ?? 0);
+              }
+            }
+
+            const agreement = matchCount / gn;
+            // Monotonicity requires at least 2 data points with variance
+            const monotonicity = goldOrdinals.length >= 2
+              ? spearmanRho(goldOrdinals, predScores)
+              : NaN;
+
+            const agrStr = (agreement * 100).toFixed(0) + '%';
+            const monoStr = Number.isNaN(monotonicity) ? '  n/a' : monotonicity.toFixed(3);
+
+            report.push(
+              `    ${axisName.padEnd(22)} agr=${agrStr.padStart(4)}  mono=${monoStr}`,
+            );
+
+            axisAgreements[axisName] = agrStr;
+          }
+
+          summaryRows.push({ group: groupName, n: gn, status, axisAgreements });
+        }
+
+        // Summary table
+        const axisNames = Object.keys(AXIS_CONFIG);
+        const axisHeaders = axisNames.map(a => a.slice(0, 6).padStart(6)).join('  ');
+
+        report.push(`\n  ${'─'.repeat(72)}`);
+        report.push(`  SUMMARY TABLE`);
+        report.push(`  ${'Group'.padEnd(24)} ${'n'.padStart(2)}  ${'Status'.padEnd(10)}  ${axisHeaders}`);
+        report.push(`  ${'─'.repeat(72)}`);
+
+        for (const row of summaryRows) {
+          const axisVals = axisNames.map(a => (row.axisAgreements[a] ?? '-').padStart(6)).join('  ');
+          report.push(
+            `  ${row.group.padEnd(24)} ${String(row.n).padStart(2)}  ${row.status.padEnd(10)}  ${axisVals}`,
+          );
+        }
+
+        report.push(`  ${'─'.repeat(72)}`);
+        report.push(`${'='.repeat(72)}`);
+        console.log(report.join('\n'));
+
+        // Informational: always passes — labels which groups are binding vs advisory
+        expect(true).toBe(true);
+      });
+    });
   });
 });

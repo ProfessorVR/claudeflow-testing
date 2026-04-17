@@ -12,6 +12,7 @@
  */
 
 import { LanhamProseAnalyzer, AdvancedLanhamAnalyzer, GENRE_DEFAULTS } from '../src/god-agent/cli/style/index.js';
+import { LanhamStyleController } from '../src/god-agent/universal/lanham-style-controller.js';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -74,15 +75,21 @@ for (const id of profileIds) {
     console.warn('    WARNING: Very short text (' + fullText.trim().length + ' chars), results may be unreliable');
   }
 
-  // Instantiate analyzer — read genre from profile metadata, default to 'academic'
+  // Instantiate both analyzers — run both tiers and merge via controller
+  // to apply the hybrid promotion (periodic scores from Tier 2, labels from Tier 1)
   const VALID_GENRES = ['academic', 'legal', 'narrative', 'journalistic', 'technical', 'general'];
   const genre = VALID_GENRES.includes(profile.metadata?.genre) ? profile.metadata.genre : 'academic';
-  const analyzer = analyzerTier === 'advanced'
-    ? new AdvancedLanhamAnalyzer(genre)
-    : new LanhamProseAnalyzer(genre);
+  const tier1 = new LanhamProseAnalyzer(genre);
+  const tier2 = new AdvancedLanhamAnalyzer(genre);
 
   try {
-    const metrics = await analyzer.fullAnalysis(fullText);
+    const [t1Metrics, t2Metrics] = await Promise.all([
+      tier1.fullAnalysis(fullText),
+      tier2.fullAnalysis(fullText),
+    ]);
+
+    // Apply two-layer merge: periodic scores from T2, everything else from T1
+    const { merged: metrics } = LanhamStyleController.mergeWithPolicy(t1Metrics, t2Metrics);
 
     // Store on profile characteristics
     profile.characteristics.lanhamMetrics = metrics;
@@ -90,6 +97,25 @@ for (const id of profileIds) {
     // Store provenance on metadata
     profile.metadata.lanhamAnalyzerTier = analyzerTier;
     profile.metadata.lanhamEnrichedAt = Date.now();
+
+    // Metrics provenance: tracks which tier provides each axis's score and label.
+    // Required for drift detection consistency — ensures baseline and generated
+    // metrics are comparable even after scoring-regime changes.
+    profile.metadata.metricsProvenance = {
+      analyzerVersion: 'lanham-v2-phaseF-clauseParser',
+      calibrationDate: new Date().toISOString().split('T')[0],
+      scoreSourceByAxis: {
+        nounVerb: 'tier1', parataxisHypotaxis: 'tier1',
+        periodicRunning: 'tier2',  // hybrid promotion: T2 ensemble scores
+        voice: 'tier1', primaryRegister: 'tier1', opacity: 'tier1',
+      },
+      labelSourceByAxis: {
+        nounVerb: 'tier1', parataxisHypotaxis: 'tier1',
+        periodicRunning: 'tier1',  // labels still from T1 even though scores from T2
+        voice: 'tier1', primaryRegister: 'tier1', opacity: 'tier1',
+      },
+      thresholdsApplied: 'general-phaseF-calibrated',
+    };
 
     // Derive suggested Lanham target from genre defaults
     const genreKey = genre;

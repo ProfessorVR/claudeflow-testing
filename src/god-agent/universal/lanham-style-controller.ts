@@ -14,6 +14,76 @@ import type { ILanhamAnalyzer } from '../cli/style/lanham-analyzer-interface.js'
 import type { Genre } from '../cli/style/lanham-style-policy.js';
 
 // ============================================================================
+// Layer 1: Promotion Gate (Plan v2 A4, retained)
+// Decides WHETHER Tier 2 is eligible for production on a given axis.
+// Unlock criteria: overall + per-genre mono advantage, failure-bucket stability.
+// ============================================================================
+
+export interface AxisOverridePolicy {
+  /** Whether Tier 2 has passed promotion criteria for this axis */
+  allowOverride: boolean;
+  /** Minimum monotonicity advantage required for promotion */
+  minMonotonicityAdvantage: number;
+  confidenceGate?: number;
+}
+
+export const AXIS_OVERRIDE_POLICY: Record<string, AxisOverridePolicy> = {
+  nounVerb:           { allowOverride: false, minMonotonicityAdvantage: 0 },
+  parataxisHypotaxis: { allowOverride: false, minMonotonicityAdvantage: 0.05 },
+  periodicRunning:    { allowOverride: true,  minMonotonicityAdvantage: 0 },  // PROMOTED: +0.130 mono validated
+  voice:              { allowOverride: false, minMonotonicityAdvantage: 0 },
+  primaryRegister:    { allowOverride: false, minMonotonicityAdvantage: 0 },
+  opacity:            { allowOverride: false, minMonotonicityAdvantage: 0 },
+};
+
+// ============================================================================
+// Layer 2: Merge Contract (hybrid promotion)
+// For promoted axes, specifies WHAT Tier 2 provides (score, label, etc.).
+// For blocked axes, all fields must be 'tier1'.
+// ============================================================================
+
+export type TierSource = 'tier1' | 'tier2';
+export type ExplanationSource = TierSource | 'label-aligned';
+
+export interface AxisOwnership {
+  scoreSource: TierSource;
+  labelSource: TierSource;
+  confidenceSource: TierSource;
+  /** 'label-aligned' = explanation comes from whichever tier provides the label,
+   *  using that tier's own score values. Prevents score/label/explanation inconsistency. */
+  explanationSource: ExplanationSource;
+}
+
+export const AXIS_OWNERSHIP: Record<string, AxisOwnership> = {
+  nounVerb:           { scoreSource: 'tier1', labelSource: 'tier1', confidenceSource: 'tier1', explanationSource: 'tier1' },
+  parataxisHypotaxis: { scoreSource: 'tier1', labelSource: 'tier1', confidenceSource: 'tier1', explanationSource: 'tier1' },
+  periodicRunning:    { scoreSource: 'tier2', labelSource: 'tier1', confidenceSource: 'tier1', explanationSource: 'label-aligned' },
+  voice:              { scoreSource: 'tier1', labelSource: 'tier1', confidenceSource: 'tier1', explanationSource: 'tier1' },
+  primaryRegister:    { scoreSource: 'tier1', labelSource: 'tier1', confidenceSource: 'tier1', explanationSource: 'tier1' },
+  opacity:            { scoreSource: 'tier1', labelSource: 'tier1', confidenceSource: 'tier1', explanationSource: 'tier1' },
+};
+
+/** Score field names for each axis */
+const SCORE_FIELDS: Record<string, string> = {
+  nounVerb: 'nounVerbRatio',
+  parataxisHypotaxis: 'parataxisHypotaxisRatio',
+  periodicRunning: 'periodicRunningRatio',
+  voice: 'voiceScore',
+  primaryRegister: 'registerMarkednessScore',
+  opacity: 'opacityScore',
+};
+
+// Validate invariant: blocked axes must have all-tier1 ownership
+for (const [axis, policy] of Object.entries(AXIS_OVERRIDE_POLICY)) {
+  if (!policy.allowOverride) {
+    const own = AXIS_OWNERSHIP[axis];
+    if (own && (own.scoreSource !== 'tier1' || own.labelSource !== 'tier1' || own.confidenceSource !== 'tier1')) {
+      throw new Error(`AXIS_OWNERSHIP invariant violated: ${axis} is blocked but has non-tier1 ownership`);
+    }
+  }
+}
+
+// ============================================================================
 // Config
 // ============================================================================
 
@@ -107,6 +177,115 @@ export class LanhamStyleController {
     this.targetMetrics = config.targetMetrics;
     this.lanhamStyleTarget = config.lanhamStyleTarget;
     this.regenConfig = config.regenerationConfig ?? DEFAULT_REGEN_CONFIG;
+  }
+
+  /**
+   * Two-layer merge: Layer 1 (AXIS_OVERRIDE_POLICY) gates promotion eligibility,
+   * Layer 2 (AXIS_OWNERSHIP) specifies what Tier 2 provides for promoted axes.
+   *
+   * For blocked axes: all values come from Tier 1 (via spread).
+   * For promoted axes: score, label, confidence, and explanation sourced per ownership config.
+   * 'label-aligned' explanation: keeps the label-source tier's explanation to prevent
+   * score/label/explanation inconsistency in hybrid setups.
+   */
+  static mergeWithPolicy(
+    tier1: LanhamProseMetrics,
+    tier2: LanhamProseMetrics,
+  ): {
+    merged: LanhamProseMetrics;
+    diagnosticLog: Record<string, {
+      tier1Score: number; tier2Score: number;
+      tier1Label: string; tier2Label: string;
+      scoreSource: TierSource; labelSource: TierSource;
+    }>;
+  } {
+    // Start with Tier 1 as base (scores, labels, explanations, confidence all from T1)
+    const merged: LanhamProseMetrics = {
+      ...tier1,
+      labels: { ...tier1.labels },
+      explanations: { ...tier1.explanations },
+      confidenceByAxis: { ...tier1.confidenceByAxis },
+    };
+    const diagnosticLog: Record<string, any> = {};
+
+    for (const [axis, policy] of Object.entries(AXIS_OVERRIDE_POLICY)) {
+      const ownership = AXIS_OWNERSHIP[axis];
+      if (!ownership) continue;
+
+      // Layer 1: check promotion gate
+      if (!policy.allowOverride) {
+        // Blocked: Tier 1 values only (already in merged via spread)
+        // Still log for diagnostics if tiers disagree
+        const t1Label = String(tier1.labels[axis as keyof typeof tier1.labels] ?? '');
+        const t2Label = String(tier2.labels[axis as keyof typeof tier2.labels] ?? '');
+        if (t1Label !== t2Label) {
+          diagnosticLog[axis] = {
+            tier1Score: (tier1 as any)[SCORE_FIELDS[axis]] ?? 0,
+            tier2Score: (tier2 as any)[SCORE_FIELDS[axis]] ?? 0,
+            tier1Label: t1Label, tier2Label: t2Label,
+            scoreSource: 'tier1', labelSource: 'tier1',
+          };
+        }
+        continue;
+      }
+
+      // Layer 2: apply ownership contract for promoted axes
+      const scoreField = SCORE_FIELDS[axis];
+
+      // Score source
+      if (ownership.scoreSource === 'tier2' && scoreField) {
+        switch (axis) {
+          case 'periodicRunning':
+            merged.periodicRunningRatio = tier2.periodicRunningRatio;
+            merged.preMainVerbClauseCount = tier2.preMainVerbClauseCount;
+            break;
+          case 'parataxisHypotaxis':
+            merged.parataxisHypotaxisRatio = tier2.parataxisHypotaxisRatio;
+            merged.coordinatingConjunctionDensity = tier2.coordinatingConjunctionDensity;
+            merged.subordinatingConjunctionDensity = tier2.subordinatingConjunctionDensity;
+            break;
+        }
+      }
+
+      // Label source
+      if (ownership.labelSource === 'tier2') {
+        const labelKey = axis as keyof typeof merged.labels;
+        (merged.labels as any)[labelKey] = tier2.labels[labelKey];
+      }
+      // If labelSource is 'tier1', labels are already correct from the spread
+
+      // Explanation source
+      const explKey = axis === 'primaryRegister' ? 'register' : axis;
+      if (ownership.explanationSource === 'tier2') {
+        (merged.explanations as any)[explKey] = (tier2.explanations as any)[explKey];
+      } else if (ownership.explanationSource === 'label-aligned') {
+        // Keep explanation from whichever tier provides the label.
+        // This is the label-source tier's explanation, generated using that tier's own scores.
+        // Already correct if labelSource === 'tier1' (T1 explanation is in merged from spread).
+        if (ownership.labelSource === 'tier2') {
+          (merged.explanations as any)[explKey] = (tier2.explanations as any)[explKey];
+        }
+        // If labelSource === 'tier1', T1 explanation is already in merged — no action needed.
+      }
+
+      // Confidence source
+      const confKey = axis as keyof typeof merged.confidenceByAxis;
+      if (ownership.confidenceSource === 'tier2') {
+        merged.confidenceByAxis[confKey] = tier2.confidenceByAxis[confKey];
+      }
+
+      // Always log promoted axes for diagnostics
+      diagnosticLog[axis] = {
+        tier1Score: (tier1 as any)[scoreField] ?? 0,
+        tier2Score: (tier2 as any)[scoreField] ?? 0,
+        tier1Label: String(tier1.labels[axis as keyof typeof tier1.labels] ?? ''),
+        tier2Label: String(tier2.labels[axis as keyof typeof tier2.labels] ?? ''),
+        scoreSource: ownership.scoreSource,
+        labelSource: ownership.labelSource,
+      };
+    }
+
+    return { merged, diagnosticLog };
   }
 
   /** Run full analysis on generated text, return metrics. */

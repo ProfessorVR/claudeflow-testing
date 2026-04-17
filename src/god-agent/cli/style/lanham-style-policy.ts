@@ -93,10 +93,13 @@ export const GENRE_THRESHOLDS: Record<Genre, LanhamThresholdConfig> = {
   },
   general: {
     genre: 'general',
-    nounVerb: { lowBand: 0.35, highBand: 0.65 },
+    // Phase F calibrated: nounVerb bands widened (0.58/0.85) to reduce false verb-style labels
+    nounVerb: { lowBand: 0.58, highBand: 0.85 },
     parataxisHypotaxis: { lowBand: 0.35, highBand: 0.65 },
     periodicRunning: { lowBand: 0.35, highBand: 0.65 },
-    voice: { lowBand: 0.30, highBand: 0.70 },
+    // Phase F calibrated: voice bands shifted down (0.10/0.31) — voice scores cluster low,
+    // old 0.70 threshold was nearly unreachable (15% agreement → 57.5% with new thresholds)
+    voice: { lowBand: 0.10, highBand: 0.31 },
     opacity: { lowBand: 0.20, highBand: 0.50 },
     register: { lowToMiddle: 0.25, middleToHigh: 0.45 },
     nounStyleOverride: { nominalizationDensity: 10, beVerbRatio: 0.30, prepositionalPhraseDensity: 4.0 },
