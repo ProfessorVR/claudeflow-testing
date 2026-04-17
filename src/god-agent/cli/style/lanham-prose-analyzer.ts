@@ -58,18 +58,27 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
 
     // Adjust opacity score to incorporate tacit pattern density
     // Dense tacit patterns = prose drawing attention to its own medium (Lanham's opacity)
+    // Also incorporate alliteration density from tacit patterns (stronger signal than base)
     if (merged.tacitPatterns) {
       const tp = merged.tacitPatterns;
       const sentCount = (text.match(/[.!?]+/g) || []).length || 1;
+      // Count ALL detected rhetorical figures
       const tacitTotal = (tp.anaphoraCount + tp.chiasmusCount + tp.antithesisCount +
         tp.isocolonCount + tp.climaxPatternCount) / sentCount;
-      const tacitDensity = Math.min(tacitTotal / 0.3, 1); // normalize: 0.3 patterns/sentence = max
-      // Revised formula: self-consciousness 0.4 + sound 0.3 + tacit patterns 0.3
+      const tacitDensity = clamp(tacitTotal / 0.2); // 0.2 patterns/sentence = saturated
+      // Alliteration from tacit detection is more reliable than base opacity's triple-check
+      const allit = clamp(tp.alliterationDensity / 0.15); // 0.15/sent = heavy alliteration
+      // Polyptoton (same root, different form) signals self-conscious wordplay
+      const polyp = clamp(tp.polyptotonDensity / 0.1);
+
+      // Blend: base opacity 0.50 + tacit rhetorical figures 0.25 + alliteration 0.15 + polyptoton 0.10
       const baseOpacity = merged.opacityScore ?? 0;
-      const selfConsc = merged.selfConsciousnessScore ?? 0;
-      const soundContrib = (baseOpacity - selfConsc * 0.6) / 0.4; // recover sound component
-      merged.opacityScore = Math.min(1, Math.max(0,
-        selfConsc * 0.4 + Math.max(0, soundContrib) * 0.3 + tacitDensity * 0.3));
+      merged.opacityScore = clamp(
+        baseOpacity * 0.50 +
+        tacitDensity * 0.25 +
+        allit * 0.15 +
+        polyp * 0.10
+      );
     }
 
     // Derive categorical labels
@@ -130,9 +139,16 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
       : 0;
 
     // nounVerbRatio: 0=pure noun-style, 1=pure verb-style
-    // High nominalization + high be-verb + high prep phrases = noun-heavy (low ratio)
-    const nounSignal = clamp(nominalizationDensity / 8, 0, 1); // 8% is very noun-heavy
-    const verbSignal = clamp(verbCount / wordCount / 0.18, 0, 1); // ~18% verbs is very verb-active
+    // Lanham's noun style = nominalization + be-verb + prepositional phrase chains
+    // The prep phrase density is a KEY signal (Burns: "noun + is + of-phrase")
+    const nounSignal = clamp(
+      (nominalizationDensity / 6) * 0.45 +       // nominalizations (6% = heavy)
+      beVerbRatio * 0.25 +                         // be-verb reliance
+      clamp(prepositionalPhraseDensity / 5) * 0.30 // prep phrase piling (5/sent = heavy)
+    , 0, 1);
+    // For verb signal, count only ACTION verbs (exclude be-verbs, which support noun-style)
+    const actionVerbCount = verbCount - beVerbCount;
+    const verbSignal = clamp(actionVerbCount / wordCount / 0.14, 0, 1); // ~14% action verbs = very verb-active
     const nounVerbRatio = clamp((verbSignal - nounSignal + 1) / 2);
 
     return {
@@ -194,11 +210,24 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
     const coordinatingConjunctionDensity = coordCount / wordCount;
     const subordinatingConjunctionDensity = (subordCount + implicitSubordCount) / wordCount;
 
+    // Sentence-initial conjunction signal: "And" or "But" starting a sentence = paratactic macro-structure
+    let sentenceInitialConj = 0;
+    for (const sent of sentences) {
+      if (/^(And|But|Or|So|Yet|Nor)\b/.test(sent.trim())) sentenceInitialConj++;
+    }
+    const sentInitConjDensity = sentenceInitialConj / (sentences.length || 1);
+
+    // Average sentence length: short sentences = paratactic tendency
+    const avgSentLen = sentences.reduce((s, sent) => s + sent.split(/\s+/).length, 0) / (sentences.length || 1);
+    const shortSentSignal = clamp((15 - avgSentLen) / 10); // sentences under 15 words = paratactic lean
+
     // Higher subordination = more hypotactic (1), more coordination = more paratactic (0)
     const totalConj = coordCount + effectiveSubord;
     let parataxisHypotaxisRatio = totalConj > 0
-      ? clamp(effectiveSubord / totalConj + hypotaxisBoost)
-      : clamp(0.5 + hypotaxisBoost); // neutral baseline + nesting boost
+      ? clamp(effectiveSubord / totalConj + hypotaxisBoost
+        - sentInitConjDensity * 0.15  // sentence-initial conjunctions push toward paratactic
+        - shortSentSignal * 0.10)     // short sentences push toward paratactic
+      : clamp(0.5 + hypotaxisBoost - shortSentSignal * 0.10);
 
     return {
       parataxisHypotaxisRatio,
@@ -221,6 +250,7 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
 
     for (const sent of sentences) {
       const words = sent.split(/\s+/);
+      if (words.length < 3) { runningSignals++; continue; }
 
       // Heuristic: a sentence that starts with a subordinate clause or participial
       // phrase before the main verb is more periodic
@@ -237,9 +267,19 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
       const earlyCommas = commaPositions.filter(p => p < midpoint).length;
       const lateCommas = commaPositions.filter(p => p >= midpoint).length;
 
+      // Very short sentences (< 10 words) with immediate main clause = running
+      const isShort = words.length < 10;
+      // Very long sentences (30+ words) tend periodic unless they're coordinate chains
+      const isLong = words.length >= 30;
+      const hasCoordChain = (sent.match(/\band\b/gi) || []).length >= 3;
+
       if (startsWithSubord || startsWithParticiple || earlyCommas > lateCommas) {
         periodicSignals++;
         if (startsWithSubord || startsWithParticiple) totalPreMainClauses++;
+      } else if (isShort) {
+        runningSignals += 1.2; // short sentences are strongly running
+      } else if (isLong && hasCoordChain) {
+        runningSignals++; // long coordinate chains are running (Malory, Hemingway)
       } else {
         runningSignals++;
       }
@@ -288,10 +328,69 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
     // Dynamic range = coefficient of variation of sentence lengths
     const dynamicRange = clamp(coeffOfVariation, 0, 1);
 
-    // Voice score: dynamic range is the primary signal (Lanham: prose that rewards reading aloud)
-    // Personality markers are secondary; many voiced passages use third-person or collective voice
+    // Deliberate rhythmic restriction signal: very short average sentence length
+    // (Hemingway, Bible, Mencken) is itself a voiced choice — flatness IS the voice
+    const avgLen = mean;
+    const restrictionSignal = avgLen < 12 ? clamp((12 - avgLen) / 8) : 0;
+
+    // Rhetorical repetition signal: repeated sentence openings within the passage
+    // (anaphora-like patterns that create voiced rhythm even in 3rd person)
+    let repeatedOpenings = 0;
+    const openings = sentences.map(s => s.split(/\s+/).slice(0, 2).join(' ').toLowerCase());
+    const openingCounts: Record<string, number> = {};
+    for (const o of openings) {
+      openingCounts[o] = (openingCounts[o] || 0) + 1;
+    }
+    for (const count of Object.values(openingCounts)) {
+      if (count >= 2) repeatedOpenings += count - 1;
+    }
+    const repetitionSignal = clamp(repeatedOpenings / (sentences.length || 1) / 0.25);
+
+    // Question/exclamation density: direct engagement signals voice
+    const questionMarks = (text.match(/\?/g) || []).length;
+    const exclamations = (text.match(/!/g) || []).length;
+    const engagementSignal = clamp((questionMarks + exclamations) / (sentences.length || 1) / 0.2);
+
+    // Unvoiced signal: bureaucratic/institutional markers that suppress voice
+    // Lanham's unvoiced: Federal Register, Eisenhower press conf, Darbyshire, Lichtenstein
+    // Common pattern: passive voice, no direct address, impersonal subjects, filler phrases,
+    // AND low sentence-length variance (monotonous rhythm unlike deliberate restriction)
+    const passiveCount = (text.match(/\b(is|are|was|were|been|be)\s+\w+ed\b/gi) || []).length;
+    const passiveDensity = passiveCount / (sentences.length || 1);
+    const fillerCount = (text.match(/\b(of course|as you know|it is|there is|there are|it was|it has been|in terms of|with respect to|in connection with|pursuant to|shall be|may be|provided that|in accordance)\b/gi) || []).length;
+    const fillerDensity = fillerCount / (sentences.length || 1);
+    // Impersonal subject starts: "The X", "It", "This", "These" — no human agent
+    let impersonalStarts = 0;
+    for (const s of sentences) {
+      if (/^(The |It |This |These |That |Those |Such |An? )/.test(s.trim())) impersonalStarts++;
+    }
+    const impersonalDensity = impersonalStarts / (sentences.length || 1);
+
+    // Unvoiced = high passive + high filler + impersonal + no personality + no engagement
+    const unvoicedSignal = clamp(
+      clamp(passiveDensity / 0.35) * 0.20 +
+      clamp(fillerDensity / 0.25) * 0.20 +
+      clamp(impersonalDensity / 0.7) * 0.20 +
+      (1 - clamp(personalityDensity / 0.1)) * 0.20 +
+      (1 - engagementSignal) * 0.20
+    );
+
+    // Positive voice: signals that prose was crafted for oral delivery
+    // Repetition only counts if combined with other voice signals (not just textbook repetition)
+    const hasRhetoricalContext = personalityDensity > 0.05 || engagementSignal > 0.1 || dynamicRange > 0.3;
+    const effectiveRepetition = hasRhetoricalContext ? repetitionSignal : repetitionSignal * 0.3;
+
+    const positiveVoice = clamp(
+      dynamicRange * 0.30 +
+      clamp(personalityDensity / 0.2) * 0.25 +
+      restrictionSignal * 0.15 +
+      effectiveRepetition * 0.15 +
+      engagementSignal * 0.15
+    );
+
+    // Final voice: strong unvoiced suppression, then positive voice boost
     const voiceScore = clamp(
-      dynamicRange * 0.65 + clamp(personalityDensity / 0.3) * 0.35,
+      (1 - unvoicedSignal) * 0.60 + positiveVoice * 0.40
     );
 
     return {
@@ -338,14 +437,33 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
     }
     const formalDensity = formalCount / wordCount;
 
-    // Register markedness: distance from middle register
-    // High register signals: latinate words, long sentences, formal markers, no contractions
-    // Low register signals: short words, contractions, short sentences
-    const highSignal = clamp(latinateGermanicRatio * 0.4 + formalDensity * 10 * 0.3 + clamp(mean / 30) * 0.3);
-    const lowSignal = clamp(contractionRate * 10 * 0.5 + clamp(1 - mean / 20) * 0.5);
+    // Register: directional score 0=low, 0.5=middle, 1=high
+    // Lanham's register table (p. 164): High = Latinate, periodic, hypotactic, ornamented, formal
+    // Low = Anglo-Saxon, loose, paratactic, plain, conversational, short words
+    //
+    // Key insight: register is not just vocabulary — it includes sentence complexity,
+    // formality markers, and average word length (polysyllabic = high)
+    const avgWordLen = words.reduce((s, w) => s + w.length, 0) / wordCount;
+    const polysyllabicRatio = words.filter(w => w.length >= 8).length / wordCount;
+    const semicolonDensity = (text.match(/;/g) || []).length / (sentences.length || 1);
 
-    // Markedness: how far from neutral center (either pole dominates)
-    const registerMarkednessScore = clamp(Math.abs(highSignal - lowSignal));
+    const highSignal = clamp(
+      latinateGermanicRatio * 0.25 +           // Latinate vocabulary
+      clamp(polysyllabicRatio / 0.12) * 0.20 + // polysyllabic words (12% = very high)
+      formalDensity * 10 * 0.15 +              // formal discourse markers
+      clamp(mean / 30) * 0.20 +                // long sentences
+      clamp(semicolonDensity / 0.15) * 0.10 +  // semicolons
+      clamp(avgWordLen / 6.5 - 0.3) * 0.10    // average word length (6.5+ = formal)
+    );
+    const lowSignal = clamp(
+      contractionRate * 10 * 0.25 +            // contractions
+      clamp(1 - mean / 12) * 0.25 +            // short sentences (under 12 words avg)
+      clamp(1 - avgWordLen / 5) * 0.25 +       // short words (under 5 chars avg)
+      clamp((1 - latinateGermanicRatio) * 1.5 - 0.5) * 0.25 // Anglo-Saxon dominance
+    );
+
+    // Directional register score: 0=low, 0.5=middle, 1=high
+    const registerMarkednessScore = clamp((highSignal - lowSignal + 1) / 2);
 
     return {
       latinateGermanicRatio,
@@ -390,15 +508,40 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
     // Combined self-consciousness score (meta-linguistic only, NOT content-about-language)
     const selfConsciousnessScore = metaLingDensity;
 
-    // Opacity = weighted combination:
-    //   meta-linguistic (0.35): "the word X", "so-called", "as it were"
-    //   content-level (0.40): prose discussing language/form/style/rhetoric
-    //   sound patterns (0.25): alliteration foregrounding the medium
-    // Opacity remains a SOFT OBSERVATION axis — it must NOT drive drift or regeneration.
+    // Signal 4: Polysyndeton density — deliberate "and...and...and" chaining (Hemingway, Malory)
+    const polysyndeton = (text.match(/\band\b/gi) || []).length;
+    const polysyndetonDensity = clamp(polysyndeton / (words.length || 1) / 0.06); // 6% = very polysyndetic
+
+    // Signal 5: Repetition density — repeated words/phrases foreground the surface
+    const wordFreqs: Record<string, number> = {};
+    for (const w of contentWords) {
+      wordFreqs[w] = (wordFreqs[w] || 0) + 1;
+    }
+    const repeatedContentWords = Object.values(wordFreqs).filter(c => c >= 3).length;
+    const repetitionDensity = clamp(repeatedContentWords / (contentWords.length || 1) / 0.04);
+
+    // Signal 6: Sentence length extremes — very short sentences (fragments) or very long
+    // sentences signal deliberate stylistic display (opacity)
+    const sentLens = sentences.map(s => s.split(/\s+/).length);
+    const veryShort = sentLens.filter(l => l <= 5).length;
+    const veryLong = sentLens.filter(l => l >= 40).length;
+    const extremesDensity = clamp((veryShort + veryLong) / (sentences.length || 1) / 0.25);
+
+    // Opacity = weighted combination (Lanham's AT/THROUGH):
+    // Prose is "opaque" when it draws attention to its own surface through ANY means:
+    //   sound patterns (0.20): alliteration foregrounding
+    //   polysyndeton (0.15): deliberate connector chaining
+    //   repetition (0.20): repeated words/phrases create pattern awareness
+    //   extremes (0.15): fragments or very long sentences = deliberate display
+    //   meta-linguistic (0.15): "the word X", self-referential prose
+    //   content-level (0.15): prose discussing language/form/rhetoric
     const opacityScore = clamp(
-      metaLingDensity * 0.35 +
-      contentOpacityDensity * 0.40 +
-      soundDensity * 0.25
+      soundDensity * 0.20 +
+      polysyndetonDensity * 0.15 +
+      repetitionDensity * 0.20 +
+      extremesDensity * 0.15 +
+      metaLingDensity * 0.15 +
+      contentOpacityDensity * 0.15
     );
 
     return {
@@ -542,37 +685,16 @@ export class LanhamProseAnalyzer implements ILanhamAnalyzer {
     const vs = m.voiceScore ?? 0.5;
     const os = m.opacityScore ?? 0.5;
 
-    // Register label: uses genre-specific bands from policy (lanham-style-policy.ts)
-    const lgr = m.latinateGermanicRatio ?? 0.5;
-    const rms = m.registerMarkednessScore ?? 0;
-    const regBands = t.register;
+    // Register label: registerMarkednessScore is now directional (0=low, 0.5=middle, 1=high)
+    const rms = m.registerMarkednessScore ?? 0.5;
     let primaryRegister: 'high' | 'middle' | 'low' | 'mixed';
     let registerMixed = false;
-    if (rms < 0.25) {
-      // Low markedness: route by Latinate ratio against genre-specific boundaries
-      if (lgr >= regBands.middleToHigh) {
-        primaryRegister = 'high';
-      } else if (lgr >= regBands.lowToMiddle) {
-        primaryRegister = 'middle';
-      } else {
-        primaryRegister = 'low';
-      }
+    if (rms >= 0.62) {
+      primaryRegister = 'high';
+    } else if (rms <= 0.38) {
+      primaryRegister = 'low';
     } else {
-      // Marked prose: use same genre-specific boundaries for primary register.
-      // "Mixed" only when markedness is very high (>0.5) AND ratio is in the middle band,
-      // indicating genuine register fluctuation within the text.
-      if (lgr >= regBands.middleToHigh) {
-        primaryRegister = 'high';
-      } else if (lgr < regBands.lowToMiddle) {
-        primaryRegister = 'low';
-      } else if (rms > 0.5) {
-        // High markedness + middle-band Latinate = genuine register mixing
-        primaryRegister = 'mixed';
-        registerMixed = true;
-      } else {
-        // Moderate markedness + middle-band Latinate = middle register
-        primaryRegister = 'middle';
-      }
+      primaryRegister = 'middle';
     }
 
     // Noun/verb label: standard band-based derivation

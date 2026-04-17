@@ -1,7 +1,7 @@
 /**
  * Lanham Prose Analyzer — Phase H Calibration Test Suite
  *
- * Loads 25 gold-set texts, runs LanhamProseAnalyzer.fullAnalysis() on each,
+ * Loads 40 authoritative gold-set texts (from Lanham's Analyzing Prose), runs LanhamProseAnalyzer.fullAnalysis() on each,
  * and reports per-axis agreement and monotonicity against gold labels.
  *
  * Tier structure (from plan):
@@ -123,7 +123,7 @@ const AXIS_CONFIG: Record<string, {
     ordMap: REGISTER_ORD,
     goldKey: 'primaryRegister',
     predKey: 'primaryRegister',
-    scoreField: 'latinateGermanicRatio',
+    scoreField: 'registerMarkednessScore',
     tier: 'hard',
     monotonicityTarget: 0.85,
   },
@@ -173,17 +173,20 @@ const GOLD_SET_PATH = resolve(__dirname, 'lanham-gold-set.jsonl');
 let goldEntries: GoldEntry[] = [];
 let results: AnalysisResult[] = [];
 
-// Genre group definitions
+// Genre group definitions (aligned with authoritative gold set from Lanham's Analyzing Prose)
 const GENRE_GROUPS: Record<string, string[]> = {
-  'Academic Humanities': ['academic-humanities'],
-  'Academic Social Science': ['academic-social-science'],
+  'Academic': ['academic-humanities', 'academic-social-science', 'academic-sciences'],
   'Legal': ['legal'],
+  'Political': ['political'],
+  'Literary Fiction': ['literary-fiction'],
+  'Narrative Nonfiction': ['narrative-nonfiction'],
+  'Literary Criticism': ['literary-criticism'],
   'Journalism': ['journalism'],
-  'Narrative/Memoir': ['narrative'],
-  'Technical': ['technical'],
-  'Marketing': ['marketing'],
   'Polemical': ['polemical'],
-  'Lanham Anchors': ['lanham-anchor'],
+  'Religious': ['religious'],
+  'Textbook': ['textbook'],
+  'Military': ['military'],
+  'Personal Correspondence': ['personal-correspondence'],
 };
 
 // ── Test suite ────────────────────────────────────────────────────────────────
