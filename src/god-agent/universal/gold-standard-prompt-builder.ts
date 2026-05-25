@@ -17,7 +17,7 @@
  */
 
 import type { ContextChunk } from '../retrieval/index.js';
-import { GOLD_STANDARD_CONFIG } from './gold-standard-config.js';
+import { GOLD_STANDARD_CONFIG, SUBSECTION_DEFAULTS } from './gold-standard-config.js';
 import { getActiveBridges, extractTopicWords } from '../shared/cross-author-utils.js';
 import type { LanhamStyleTarget } from './stages/stage-types.js';
 
@@ -815,6 +815,323 @@ Correct: Aristotle holds that the soul never thinks without an image (Aristotle,
 Incorrect: As Heidegger argues, Dasein is Being-in-the-world.
 Incorrect: Aristotle holds that the soul never thinks without an image.
 If you omit the parenthetical citation, the system will reject your output.
+</final_directive>`);
+
+  return sections.join('\n\n');
+}
+
+// ============================================================================
+// Subsection-Mode Prompt Builder (plans/subsection-mode-design.md)
+// ============================================================================
+
+/**
+ * Options accepted by buildSubsectionPrompt.
+ *
+ * Extends GoldStandardPromptOptions with subsection-specific fields. The
+ * `subsections` field is reused as the retrieval-query list (the
+ * orchestrator passes the same extractRetrievalQueries() output it would
+ * for gold-standard mode), but the prompt itself produces a SINGLE LaTeX
+ * subsection block — not a multi-section markdown document.
+ */
+export interface SubsectionPromptOptions extends GoldStandardPromptOptions {
+  /**
+   * Explicit \subsubsection*{...} heading text. If absent, the topic's
+   * first non-instruction line is used as the heading.
+   */
+  subsectionHeading?: string;
+  /**
+   * Verbatim quotation target. If absent, derived from
+   *   floor(wordTarget / SUBSECTION_DEFAULTS.quotationsPerWords).
+   */
+  subsectionQuotations?: number;
+}
+
+/**
+ * Build a subsection-mode prompt that produces a single-block LaTeX
+ * subsection at the specified word target (400-1500w), NOT a multi-section
+ * markdown document with a Validation Appendix.
+ *
+ * Key differences from buildGoldStandardPrompt:
+ *   - Output is LaTeX (\subsubsection*{...}, \textit{...}, \textbf{...})
+ *     instead of markdown (## N. Title, *X*, **X**).
+ *   - SINGLE block — no "Required Sections" enumeration, no conclusion
+ *     section, no Validation Appendix.
+ *   - Length directive scaled to options.wordTarget rather than
+ *     gold-standard's 3000+ word multi-section template.
+ *   - Quotation density scaled to options.subsectionQuotations rather
+ *     than gold-standard's "≥3 verbatim quotations" fixed mandate.
+ *   - No "Each section MUST be at least 350 words" floor (this is one
+ *     section, not many).
+ *
+ * Reuses (UNCHANGED) from buildGoldStandardPrompt:
+ *   - Style profile injection
+ *   - Lanham style target + revision guidance
+ *   - Grounding rules (corpus-only citations)
+ *   - Source diversity logic (computed from the same chunks)
+ *   - Mandatory parenthetical citation override
+ *   - Primary-text priority
+ *   - Corpus chunk block (via buildGoldStandardChunkBlock)
+ *   - Knowledge units, structural edges, ontology nodes,
+ *     mandatory theoretical synthesis bridge, cross-pipeline hooks,
+ *     conceptual tensions
+ *   - Final parenthetical-citation directive
+ *
+ * Callers: WritePipelineOrchestrator selects this builder when
+ * options.subsectionMode is true (see Phase 3b of plans/subsection-mode-design.md).
+ */
+export function buildSubsectionPrompt(options: SubsectionPromptOptions): string {
+  const sections: string[] = [];
+
+  // Derive quotation target if not provided.
+  const parsedTarget = parseInt(options.wordTarget.replace(/,/g, '').split('-')[0]) || 700;
+  const quotationTarget = options.subsectionQuotations !== undefined
+    ? options.subsectionQuotations
+    : Math.max(1, Math.floor(parsedTarget / SUBSECTION_DEFAULTS.quotationsPerWords));
+
+  // Derive a heading. Prefer explicit --subsection-heading; otherwise
+  // pick the first non-instruction topic line, same as gold-standard.
+  let resolvedHeading = (options.subsectionHeading || '').trim();
+  if (!resolvedHeading) {
+    const topicLines = options.topic.split('\n').map(l => l.trim()).filter(Boolean);
+    const instructionStarts = /^(you are|critical rules|use |every |do not |if a |present |this task |quoted |additionally|generate |ensure )/i;
+    for (const line of topicLines) {
+      const cleaned = line.replace(/^["']|["']$/g, '').replace(/^write\s+(a\s+)?/i, '');
+      if (!instructionStarts.test(cleaned) && cleaned.length > 10 && !/^\d+\.\s/.test(cleaned)) {
+        resolvedHeading = cleaned;
+        break;
+      }
+    }
+    if (!resolvedHeading && options.subsections.length > 0) {
+      resolvedHeading = options.subsections[0];
+    }
+    if (!resolvedHeading) {
+      resolvedHeading = 'Subsection';
+    }
+  }
+
+  // [1] ROLE FRAMING — subsection-specific
+  sections.push(
+    `You are an academic writing agent generating a SINGLE LaTeX subsection of approximately ${options.wordTarget} words. ` +
+    `Produce ONE \\subsubsection*{...} block of scholarly prose. ` +
+    `Do NOT produce multiple subsections, a conclusion section, a Validation Appendix, or any wrapper structure beyond the single subsection body.`
+  );
+
+  // [2] STYLE PROFILE — same as gold-standard but without the markdown-citation guidance
+  if (options.stylePrompt) {
+    let enrichedStyle = options.stylePrompt;
+    if (!enrichedStyle.includes('Paragraph') && !enrichedStyle.includes('paragraph')) {
+      enrichedStyle += `\n\nStructure:\n- Paragraph length: substantial, approximately 140+ words per paragraph`;
+      enrichedStyle += `\n- First-person "we" constructions are acceptable for guiding the reader`;
+    }
+    if (!enrichedStyle.includes('Characteristic') && !enrichedStyle.includes('characteristic')) {
+      enrichedStyle += `\n\nCharacteristic stylistic features:\n- Philosophical and declarative opening statements`;
+      enrichedStyle += `\n- Use of em-dashes for parenthetical asides`;
+      enrichedStyle += `\n- Close engagement with primary texts through direct quotation`;
+      enrichedStyle += `\n- Pattern of presenting a concept, then immediately grounding it in textual evidence`;
+      enrichedStyle += `\n- Tendency toward long, architectonic sentences followed by shorter declarative ones for emphasis`;
+    }
+    sections.push(`## STYLE PROFILE\n\n${enrichedStyle}`);
+  }
+
+  // [2b] LANHAM STYLE TARGET (prescriptive)
+  if (options.lanhamStyleTarget) {
+    sections.push(buildLanhamStyleBlock(options.lanhamStyleTarget).join('\n'));
+  }
+
+  // [2d] LANHAM REVISION GUIDANCE
+  if (options.lanhamRevisionGuidance) {
+    sections.push(`## LANHAM REVISION GUIDANCE\n\n${options.lanhamRevisionGuidance}`);
+  }
+
+  // [3] WRITING TASK — single block, no required-sections enumeration
+  const taskBody = options.topic.split('\n')
+    .filter(line => {
+      // Mirror gold-standard's strippedTopic filter for non-multi-section path
+      if (/\b\d{1,2},?\d{3}\s+words?\b/i.test(line)) return false;
+      if (/\bcitation_lookup\b/i.test(line)) return false;
+      if (/\bstress[- ]test\b/i.test(line)) return false;
+      if (/\bplaceholder\b/i.test(line)) return false;
+      return true;
+    }).join('\n');
+  sections.push(`## WRITING TASK\n\nWrite ONE \\subsubsection*{${resolvedHeading}} block of approximately ${options.wordTarget} words. ` +
+    `The subsection content is described by the task body below; produce exactly one LaTeX subsection block.\n\n${taskBody}`);
+
+  // [4] CRITICAL CONSTRAINTS — LaTeX output mandate + grounding rules + quotation density
+  const relevantChunks = options.chunks.filter(c => c.relevanceScore >= GOLD_STANDARD_CONFIG.relevanceFloor);
+  const uniqueAuthors = new Set(relevantChunks.map(c => c.metadata.author || 'Unknown'));
+  const minSourceDiversity = Math.min(Math.max(2, Math.floor(uniqueAuthors.size * 0.5)), 6);
+
+  const workBestScore = new Map<string, { source: string; score: number }>();
+  for (const c of relevantChunks) {
+    const key = `${c.metadata.author || 'Unknown'}|${c.metadata.title || 'Unknown'}`;
+    const source = `${c.metadata.author}, *${c.metadata.title}*`;
+    const existing = workBestScore.get(key);
+    if (!existing || c.relevanceScore > existing.score) {
+      workBestScore.set(key, { source, score: c.relevanceScore });
+    }
+  }
+  const sortedSources = Array.from(workBestScore.entries()).sort((a, b) => b[1].score - a[1].score);
+  const sourceListFormatted = sortedSources.map(([, { source }], i) => `  ${i + 1}. ${source}`).join('\n');
+
+  sections.push(`## CRITICAL CONSTRAINTS
+
+### Output Format (MANDATORY — LaTeX, NOT Markdown)
+- Produce LaTeX output. Start the body with \\subsubsection*{${resolvedHeading}}.
+- Use \\textit{...} for italics, NEVER *X* markdown italics.
+- Use \\textbf{...} for bold, NEVER **X** markdown bold.
+- Use \\footnote{...} or \\autocite[locus]{key} for citations, NOT [N] markdown footnote refs.
+- Block quotes use \\begin{adjustwidth}{0.5in}{0in}...\\end{adjustwidth} environments.
+- Do NOT include LaTeX preamble (no \\documentclass, no \\usepackage, no \\begin{document}, no \\end{document}). Produce ONLY the subsection body content.
+- Do NOT include a Validation Appendix, Claim Map, Quotation Ledger, Citation Ledger, or any post-prose audit tables.
+- Do NOT include section headings other than the single \\subsubsection*{${resolvedHeading}} at the top. No additional \\section, \\subsection, or \\subsubsection blocks.
+
+### Grounding Rules (TOP PRIORITY — READ FIRST)
+- ONLY quote and cite from the corpus chunks below. No exceptions.
+- NEVER introduce author names that do not appear in the corpus chunks below.
+- Every non-trivial claim must be backed by a citation from these chunks.
+- Any citation not matching a Source Index author is an error.
+${options.preventionPlan?.blacklistedAuthors?.length ? `\n**BLACKLISTED AUTHORS (DO NOT CITE):** ${options.preventionPlan.blacklistedAuthors.join(', ')}\n` : ''}${options.preventionPlan?.strengthenedConstraints?.length ? `\n**ADDITIONAL CONSTRAINTS FROM V1 INVESTIGATION:**\n${options.preventionPlan.strengthenedConstraints.map(c => `- ${c}`).join('\n')}\n` : ''}${options.sectionConstraints?.length ? `\n### Per-Section Citation Requirements\n${options.sectionConstraints.map(c => `- ${c}`).join('\n')}\n` : ''}${options.primaryUnderCoverage?.length ? `\n**PRIMARY AUTHOR UNDER-COVERAGE WARNING:** The corpus has limited material from ${options.primaryUnderCoverage.join(', ')}. Weaken claims about these authors — qualify as interpretive/speculative rather than stating definitively.\n` : ''}
+### Quotation Density (MANDATORY)
+You are REQUIRED to include approximately ${quotationTarget} verbatim quotation${quotationTarget === 1 ? '' : 's'} from the corpus chunks. Quotations must be VERBATIM — copy the exact words from the chunk text. Each quotation MUST have a citation immediately following it. If you cannot find a suitable verbatim passage in the chunks, paraphrase instead and cite normally.
+
+### Source Diversity
+You have chunks from ${uniqueAuthors.size} different authors. Cite from at least ${minSourceDiversity} different authors when natural. Do NOT let any single source account for more than 50% of citations in this single subsection (slightly looser than gold-standard's 40% since subsections are shorter).
+
+**Available sources (ranked by relevance to your topic):**
+${sourceListFormatted}
+
+### OVERRIDE STYLE PROFILE — Mandatory Inline Citations
+Every claim, paraphrase, or use of information from a source MUST include an inline citation, even when an author-prominent signal phrase is also present.
+- CORRECT: As Heidegger argues, Dasein is fundamentally Being-in-the-world (Heidegger, \\textit{Being and Time}, p. 78).
+- CORRECT: Aristotle holds that the soul never thinks without an image (Aristotle, \\textit{De Anima}, 431a16).
+- WRONG: Heidegger argues that Dasein is fundamentally Being-in-the-world.  ← missing citation
+- WRONG: As Aristotle shows, the soul never thinks without an image.  ← missing citation
+
+### Citation Requirements
+- Citation format follows the dissertation convention specified in the task body. Common forms: (Author, \\textit{Title}, p. X) MLA-influenced, or \\autocite[locus]{key} for biblatex authoryear style, or for classical texts (Aristotle, \\textit{De Anima}, 429a1) Bekker notation. Use whatever convention the task body prescribes; default to the dissertation's existing pattern.
+- NEVER use bare APA-style (Author Year) without a title.
+- Every parenthetical citation MUST include a page or locus number.
+
+### Primary-Text Priority (IMPORTANT)
+- Prioritize DIRECT ENGAGEMENT with primary texts (e.g. Aristotle, Heidegger) over secondary scholarship.
+- When a primary text chunk is available in the corpus, prefer quoting and analyzing it over paraphrasing a secondary scholar's summary.
+
+### Length (MANDATORY — READ CAREFULLY)
+- Target: ${options.wordTarget} words of LaTeX body text for this single subsection.
+- Acceptable range: approximately ±15% of target.
+- Do NOT extend to the gold-standard 3,000+ word range. This is intentionally a focused, scoped subsection.
+- This is a SINGLE BLOCK. Do NOT produce multiple subsections, multiple sections, or any structural headings beyond the one \\subsubsection*{${resolvedHeading}} at the top.`);
+
+  // [5] CORPUS CHUNKS — reuse gold-standard helper unchanged
+  if (options.chunks.length > 0) {
+    sections.push(buildGoldStandardChunkBlock(options.chunks));
+  }
+
+  // [6] KNOWLEDGE UNITS — same as gold-standard
+  if (options.knowledgeUnits.length > 0) {
+    sections.push(
+      `## KNOWLEDGE UNITS (additional scholarly context — thematic guidance only, not quotable)\n\n` +
+      options.knowledgeUnits.join('\n')
+    );
+  }
+
+  // [6b] STRUCTURAL RELATIONSHIPS — same as gold-standard
+  if (options.structuralEdges && options.structuralEdges.length > 0) {
+    sections.push(
+      `## STRUCTURAL RELATIONSHIPS (from reasoning graph)\n\n` +
+      `The following concept relationships are established in the corpus analysis. ` +
+      `Use these to STRUCTURE your argument — do NOT list or enumerate them. ` +
+      `Express each relationship through the flow of your prose, not as bullet points.\n\n` +
+      `BAD: "Phantasia presupposes aisthesis. Kinesis depends on chronos."\n` +
+      `GOOD: "Aristotle's account of phantasia is grounded in the prior operation of sense-perception, ` +
+      `such that the image-making faculty cannot function independently of aisthesis."\n\n` +
+      `Do not invent relationships not listed here.\n\n` +
+      options.structuralEdges.join('\n')
+    );
+  }
+
+  // [6c] CANONICAL CONCEPT NODES — same as gold-standard
+  if (options.ontologyNodes && options.ontologyNodes.length > 0) {
+    sections.push(
+      `## CANONICAL CONCEPT NODES (from corpus ontology)\n\n` +
+      `These are the established canonical names and definitions for key concepts ` +
+      `in the corpus. Use canonical forms and Greek/German terms consistently. ` +
+      `Prefer these definitions over paraphrase.\n\n` +
+      options.ontologyNodes.join('\n')
+    );
+  }
+
+  // [6d] MANDATORY THEORETICAL SYNTHESIS — same logic as gold-standard
+  let mandatoryBridgeId: string | null = null;
+  try {
+    const topicWords = extractTopicWords(options.topic);
+    const activeBridges = getActiveBridges(topicWords);
+    if (activeBridges.length > 0) {
+      const bridge = activeBridges[0];
+      mandatoryBridgeId = bridge.id;
+      sections.push(
+        `## MANDATORY THEORETICAL SYNTHESIS\n\n` +
+        `The following established cross-author bridge is directly relevant to this subsection. ` +
+        `Integrate this connection into your argument — it is a verified, ` +
+        `high-confidence interpretive link between primary sources in the corpus.\n\n` +
+        `**Bridge [${bridge.id}]:** ${bridge.sourceConcept || '?'} (${bridge.sourceAuthor}) ↔ ` +
+        `${bridge.targetConcept || '?'} (${bridge.targetAuthor})\n` +
+        `${bridge.bridge || ''}\n\n` +
+        `Both authors (${bridge.sourceAuthor} and ${bridge.targetAuthor}) MUST be cited ` +
+        `with direct textual evidence when integrating this bridge.`
+      );
+    }
+  } catch { /* non-fatal: bridge injection is an enhancement, not a requirement */ }
+
+  // [6e] CROSS-PIPELINE INTERPRETIVE HOOKS — same as gold-standard
+  if (options.crossPipelineHooks && options.crossPipelineHooks.length > 0) {
+    const filteredHooks = mandatoryBridgeId
+      ? options.crossPipelineHooks.filter(line => !line.includes(`[${mandatoryBridgeId}]`))
+      : options.crossPipelineHooks;
+    if (filteredHooks.length > 0) {
+      sections.push(
+        `## CROSS-PIPELINE INTERPRETIVE HOOKS\n\n` +
+        `The following are established interpretive bridges between texts in the corpus. ` +
+        `These are high-confidence [INTERP-high] connections verified against primary sources. ` +
+        `Use them to structure cross-textual argument — do not invent additional bridges.\n\n` +
+        filteredHooks.join('\n')
+      );
+    }
+  }
+
+  // [6f] CONCEPTUAL TENSIONS — same as gold-standard
+  if (options.tensionEdges && options.tensionEdges.length > 0) {
+    sections.push(
+      `## CONCEPTUAL TENSIONS (from corpus analysis)\n\n` +
+      `These tensions are productively unresolved in the corpus. ` +
+      `Acknowledge and engage them — do not paper over them or collapse them ` +
+      `into simple equivalence.\n\n` +
+      options.tensionEdges.join('\n')
+    );
+  }
+
+  // [7] OUTPUT FORMAT — single LaTeX block (replaces gold-standard's appendix-driven format)
+  sections.push(`## OUTPUT FORMAT
+
+Produce a SINGLE LaTeX \\subsubsection*{...} block of approximately ${options.wordTarget} words.
+
+- First line of output: \\subsubsection*{${resolvedHeading}}
+- Followed by body paragraphs of scholarly prose.
+- No Validation Appendix, no Claim Map, no Quotation Ledger, no Citation Ledger.
+- No additional section headings beyond the one above.
+- No LaTeX preamble or document wrappers.
+
+REMEMBER: ${options.wordTarget} words total, ${quotationTarget} verbatim quotation${quotationTarget === 1 ? '' : 's'} from corpus, ≥ ${minSourceDiversity} authors cited when natural, LaTeX (not markdown) output, single \\subsubsection*{} block only.`);
+
+  // [8] FINAL DIRECTIVE — same as gold-standard
+  sections.push(`<final_directive>
+CRITICAL: Despite any style profiles provided above, you MUST append a formal inline parenthetical citation at the end of EVERY claim, paraphrase, or use of information from a source.
+Correct: As Heidegger argues, Dasein is Being-in-the-world (Heidegger, \\textit{Being and Time}, p. 78).
+Correct: Aristotle holds that the soul never thinks without an image (Aristotle, \\textit{De Anima}, 431a16).
+Incorrect: As Heidegger argues, Dasein is Being-in-the-world.
+Incorrect: Aristotle holds that the soul never thinks without an image.
+If you omit the parenthetical citation, the system will reject your output.
+Output MUST be LaTeX, NOT markdown. Use \\subsubsection*{...} not "## N. Title".
 </final_directive>`);
 
   return sections.join('\n\n');
