@@ -2046,9 +2046,16 @@ ${sectionContent}`;
         // Step 4: Build gold standard 7-section prompt
         const subsections = this.extractRetrievalQueries(topic);
         goldLog(`Prompt subsections: ${subsections.length} (from extractRetrievalQueries)`);
-        const wordTarget = length === 'comprehensive' || (!length && options.whitelistMode) ? '3,000-3,500' :
-                      length === 'long' ? '2,000-2,500' :
-                      length === 'medium' ? '1,500-2,000' : '800-1,000';
+        // Subsection-mode (plans/subsection-mode-design.md Phase 3): honor options.wordTarget
+        // directly when --subsection-mode is on. Default branch unchanged for all other invocations.
+        const wordTarget = options.subsectionMode && options.wordTarget
+          ? options.wordTarget
+          : (length === 'comprehensive' || (!length && options.whitelistMode) ? '3,000-3,500' :
+             length === 'long' ? '2,000-2,500' :
+             length === 'medium' ? '1,500-2,000' : '800-1,000');
+        if (options.subsectionMode) {
+          goldLog(`[subsection-mode] active; wordTarget=${wordTarget} (from --word-target ${options.wordTarget})`);
+        }
 
         // Multi-step mode: v1 (no style) → investigate → v2 (styled + prevention plan)
         if (options.multiStep) {
@@ -2505,7 +2512,9 @@ ${sectionContent}`;
     // Fix 28: Fail-fast on insufficient corpus chunks in corpus-only mode.
     // Prevents "write 1500 words with 3 chunks → hallucinate citations" failure mode.
     // Skip this check in whitelist mode — whitelist doesn't need chunks.
-    if (dataSourceMode === 'corpus' && !options.whitelistMode) {
+    // Skip in subsection-mode — its scale is set by --word-target, not --length, so the
+    // length-keyed minRequired table doesn't apply; the chunk count is set explicitly via --corpus-chunk-count.
+    if (dataSourceMode === 'corpus' && !options.whitelistMode && !options.subsectionMode) {
       const minByLength: Record<string, number> = {
         short: 4,
         medium: 8,
