@@ -31,6 +31,7 @@ import {
   reorderChunksForAttention as reorderChunksForAttentionFn,
   enforceSourceDiversity as enforceSourceDiversityFn,
   validateRetrievalCoverage as validateRetrievalCoverageFn,
+  type InvestigateV1Config,
 } from '../core/composition/retrieval-utils.js';
 import {
   loadDomainConfig,
@@ -42,10 +43,11 @@ import {
   type DomainConfig,
 } from './domain-config.js';
 import { resolveAuthor } from '../shared/cross-author-utils.js';
-import { GOLD_STANDARD_CONFIG } from './gold-standard-config.js';
+import { GOLD_STANDARD_CONFIG, SUBSECTION_DEFAULTS } from './gold-standard-config.js';
 import {
   buildGoldStandardPrompt as buildGoldStandardPromptFn,
   buildGoldStandardChunkBlock as buildGoldStandardChunkBlockFn,
+  buildSubsectionPrompt as buildSubsectionPromptFn,
   assignSourcesToSections as assignSourcesToSectionsFn,
   buildRollingContextSectionPrompt,
   type GoldStandardPromptOptions,
@@ -788,6 +790,45 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
     return buildGoldStandardChunkBlockFn(chunks);
   }
 
+  /**
+   * Prompt-builder selector for subsection-mode (plans/subsection-mode-design.md Phase 3b).
+   * When writeOptions.subsectionMode is true, dispatches to buildSubsectionPrompt with
+   * the subsection-specific fields (subsectionHeading, subsectionQuotations) folded in.
+   * Otherwise dispatches to buildGoldStandardPrompt unchanged → byte-identical behavior
+   * for all non-subsection-mode invocations.
+   */
+  private buildPromptForOptions(
+    promptOpts: GoldStandardPromptOptions,
+    writeOptions: WriteOptions,
+  ): string {
+    if (writeOptions.subsectionMode) {
+      return buildSubsectionPromptFn({
+        ...promptOpts,
+        subsectionHeading: writeOptions.subsectionHeading,
+        subsectionQuotations: writeOptions.subsectionQuotations,
+      });
+    }
+    return buildGoldStandardPromptFn(promptOpts);
+  }
+
+  /**
+   * Compute subsection-mode diagnostic thresholds derived from --word-target
+   * (e.g., for wordTarget="700" → totalMin 595, minSectionWords 350, etc.).
+   * Used to parameterize investigateV1 so the v1 diagnostic doesn't flag
+   * subsection-scale output as "insufficient-word-count (target: 3,000-3,500)".
+   */
+  private buildSubsectionThresholds(
+    wordTarget: string,
+  ): NonNullable<InvestigateV1Config['subsectionThresholds']> {
+    const parsed = parseInt(wordTarget.replace(/,/g, '').split('-')[0]) || 700;
+    return {
+      totalMin: Math.floor(parsed * SUBSECTION_DEFAULTS.totalMinRatio),
+      totalTargetMsg: `~${wordTarget}`,
+      minSectionWords: Math.floor(parsed * SUBSECTION_DEFAULTS.minSectionRatio),
+      expansionMsg: `~${wordTarget} words for this subsection`,
+    };
+  }
+
   // ===== Rolling Context Generation =====
 
   /**
@@ -1493,8 +1534,13 @@ ${sectionContent}`;
    * Returns a structured investigation result with issues and a prevention plan.
    * Cost: ~0ms (no LLM calls). All checks are regex/string-based.
    */
-  investigateV1(v1Content: string, chunks: ContextChunk[], manifestAuthors: string[]) {
-    return investigateV1Fn(v1Content, chunks, manifestAuthors);
+  investigateV1(
+    v1Content: string,
+    chunks: ContextChunk[],
+    manifestAuthors: string[],
+    config?: InvestigateV1Config,
+  ) {
+    return investigateV1Fn(v1Content, chunks, manifestAuthors, config);
   }
 
   /**
@@ -2063,7 +2109,7 @@ ${sectionContent}`;
 
           // --- V1: Diagnostic generation (no style profile) ---
           goldLog('Step 4a: Building v1 prompt (no style, grounding focus)...');
-          const v1Prompt = this.buildGoldStandardPrompt({
+          const v1Prompt = this.buildPromptForOptions({
             topic,
             subsections,
             chunks: corpusChunks,
@@ -2074,7 +2120,7 @@ ${sectionContent}`;
             tensionEdges: tensionLines,
             stylePrompt: '', // No style for diagnostic v1
             wordTarget,
-          });
+          }, options);
 
           goldLog(`V1 prompt assembled (${v1Prompt.length} chars). Generating v1...`);
           let v1Content: string;
@@ -2087,7 +2133,7 @@ ${sectionContent}`;
           } catch (e) {
             goldLog(`V1 generation failed: ${e}. Falling back to single-shot.`);
             // Fallback to single-shot if v1 generation fails
-            const goldPrompt = this.buildGoldStandardPrompt({
+            const goldPrompt = this.buildPromptForOptions({
               topic, subsections, chunks: corpusChunks,
               knowledgeUnits: knowledgeUnitLines,
               structuralEdges: structuralEdgeLines,
@@ -2095,7 +2141,7 @@ ${sectionContent}`;
               crossPipelineHooks: hookLines,
               tensionEdges: tensionLines,
               stylePrompt: goldStylePrompt, wordTarget,
-            });
+            }, options);
             agentSelection.prompt = goldPrompt;
             goldLog(`Fallback: single-shot prompt assembled (${goldPrompt.length} chars)`);
             // Skip rest of multi-step
@@ -2143,7 +2189,12 @@ ${sectionContent}`;
             goldLog('Step 4b: Investigating v1 output (local analysis)...');
             const manifestAuthors = corpusConstraint?.sources?.map((s: any) => s.author).filter(Boolean) ??
               [...new Set(corpusChunks.map(c => c.metadata.author).filter(Boolean))];
-            const investigation = this.investigateV1(v1Content, corpusChunks, manifestAuthors);
+            // Subsection-mode: compute scale-appropriate thresholds so v1 diagnostic doesn't
+            // flag subsection-scale output as "insufficient-word-count (target: 3,000-3,500)".
+            const investigateConfig: InvestigateV1Config | undefined = options.subsectionMode
+              ? { subsectionThresholds: this.buildSubsectionThresholds(wordTarget) }
+              : undefined;
+            const investigation = this.investigateV1(v1Content, corpusChunks, manifestAuthors, investigateConfig);
 
             // Incorporate gauntlet results into investigation
             if (v1FailedStages.length > 0) {
@@ -2326,7 +2377,7 @@ ${sectionContent}`;
           }
         }
 
-        const goldPrompt = this.buildGoldStandardPrompt({
+        const goldPrompt = this.buildPromptForOptions({
           topic,
           subsections,
           chunks: corpusChunks,
@@ -2340,7 +2391,7 @@ ${sectionContent}`;
           preventionPlan,
           sectionConstraints,
           primaryUnderCoverage,
-        });
+        }, options);
 
         // Replace the agentSelection prompt with the gold standard prompt
         agentSelection.prompt = goldPrompt;
@@ -3486,12 +3537,12 @@ ${sectionContent}`;
     if (effectiveWhitelistMode) {
       // Multi-step: v1 → investigate → v2
       if (options.multiStep) {
-        const v1Prompt = this.buildGoldStandardPrompt({
+        const v1Prompt = this.buildPromptForOptions({
           topic, subsections, chunks: corpusChunks, knowledgeUnits: knowledgeUnitLines,
           structuralEdges: structuralEdgeLines, ontologyNodes: ontologyLines,
           crossPipelineHooks: hookLines, tensionEdges: tensionLines,
           stylePrompt: '', wordTarget,
-        });
+        }, options);
 
         let v1Content: string;
         try {
@@ -3526,7 +3577,11 @@ ${sectionContent}`;
           // Investigate v1
           const manifestAuthors = corpusConstraint?.sources?.map((s: any) => s.author).filter(Boolean) ??
             [...new Set(corpusChunks.map(c => c.metadata.author).filter(Boolean))];
-          const investigation = this.investigateV1(v1Content, corpusChunks, manifestAuthors);
+          // Subsection-mode: scale-appropriate diagnostic thresholds (mirrors writeV2's wiring at L2192).
+          const investigateConfig: InvestigateV1Config | undefined = options.subsectionMode
+            ? { subsectionThresholds: this.buildSubsectionThresholds(wordTarget) }
+            : undefined;
+          const investigation = this.investigateV1(v1Content, corpusChunks, manifestAuthors, investigateConfig);
 
           if (v1FailedStages.length > 0) {
             investigation.preventionPlan.strengthenedConstraints.push(
@@ -3618,14 +3673,14 @@ ${sectionContent}`;
       // rolling-context was requested but subsections couldn't be parsed (fallback).
       if (!options.rollingContext || !rollingContextDiagnostics) {
         // Build final prompt (v2 with prevention plan, or single-shot)
-        const goldPrompt = this.buildGoldStandardPrompt({
+        const goldPrompt = this.buildPromptForOptions({
           topic, subsections, chunks: corpusChunks, knowledgeUnits: knowledgeUnitLines,
           structuralEdges: structuralEdgeLines, ontologyNodes: ontologyLines,
           crossPipelineHooks: hookLines, tensionEdges: tensionLines,
           stylePrompt: goldStylePrompt, wordTarget,
           preventionPlan, sectionConstraints, primaryUnderCoverage,
           lanhamStyleTarget: effectiveLanhamTarget,
-        });
+        }, options);
 
         // Generate
         try {
