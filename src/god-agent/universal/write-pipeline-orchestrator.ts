@@ -240,6 +240,20 @@ export interface WriteOptions {
   targetLanhamMetrics?: LanhamProseMetrics;
   /** Exclude specific authors from retrieval (matched against author_raw via ChromaDB $nin). */
   excludeAuthors?: string[];
+  /**
+   * Subsection-mode: produce a single-block LaTeX subsection at the word target.
+   * Bypasses the gold-standard 3000-3500w multi-section markdown structure mandate.
+   * See plans/subsection-mode-design.md. Activated by --subsection-mode CLI flag.
+   * Phase 3 of the subsection-mode plan adds the orchestrator branching that uses this.
+   */
+  subsectionMode?: boolean;
+  /** Explicit \subsubsection*{...} heading content (subsection-mode only). */
+  subsectionHeading?: string;
+  /**
+   * Verbatim quotation target for subsection-mode (else derived from
+   * wordTarget / SUBSECTION_DEFAULTS.quotationsPerWords).
+   */
+  subsectionQuotations?: number;
 }
 
 export class WritePipelineOrchestrator {

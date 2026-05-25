@@ -1487,6 +1487,29 @@ async function main() {
         // Explicit word target override (e.g., --word-target 500-1000)
         const wordTarget = getFlag(flags, 'word-target') as string | undefined;
 
+        // Subsection-mode flags (plans/subsection-mode-design.md).
+        // Activates a parallel pipeline branch for single-block LaTeX subsections at 400-1500w,
+        // distinct from gold-standard's 3000-3500w multi-section markdown output.
+        const subsectionMode = getFlag(flags, 'subsection-mode') === true;
+        const subsectionHeading = getFlag(flags, 'subsection-heading') as string | undefined;
+        const subsectionQuotationsStr = getFlag(flags, 'subsection-quotations') as string | undefined;
+        const subsectionQuotations = subsectionQuotationsStr !== undefined
+          ? parseInt(subsectionQuotationsStr)
+          : undefined;
+
+        // Validation guards for subsection-mode
+        if (subsectionMode && wordTarget === undefined) {
+          console.error('Error: --subsection-mode requires --word-target N (e.g., --word-target 700)');
+          process.exit(1);
+        }
+        if (subsectionMode && (length === 'comprehensive' || length === 'long')) {
+          console.warn(`[cli] --length ${length} is ignored in --subsection-mode; using --word-target value (${wordTarget}) instead`);
+        }
+        if (subsectionMode && subsectionQuotationsStr !== undefined && (isNaN(subsectionQuotations as number) || (subsectionQuotations as number) < 0)) {
+          console.error(`Error: --subsection-quotations must be a non-negative integer (got: ${subsectionQuotationsStr})`);
+          process.exit(1);
+        }
+
         // Pipeline version flag (v2 staged pipeline)
         const pipelineVersionFlag = getFlag(flags, 'pipeline-version') as string | undefined;
         const pipelineVersion = pipelineVersionFlag === 'v2' ? 'v2' as const : undefined;
@@ -1534,6 +1557,9 @@ async function main() {
             maxGauntletRevisions,
             wordTarget,
             excludeAuthors,
+            subsectionMode,
+            subsectionHeading,
+            subsectionQuotations,
           });
 
           if (jsonMode) {

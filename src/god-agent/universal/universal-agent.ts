@@ -2715,6 +2715,12 @@ export class UniversalAgent {
     rollingContext?: boolean;
     pipelineVersion?: 'legacy' | 'v2';
     excludeAuthors?: string[];
+    /** Subsection-mode: produce single-block LaTeX subsection at the word target. See plans/subsection-mode-design.md. */
+    subsectionMode?: boolean;
+    /** Explicit \subsubsection*{...} heading content (subsection-mode only). */
+    subsectionHeading?: string;
+    /** Verbatim quotation target for subsection-mode (else derived from wordTarget / SUBSECTION_DEFAULTS.quotationsPerWords). */
+    subsectionQuotations?: number;
   } = {}): Promise<WriteResult> {
     return this.writePipeline.write(topic, options);
   }
