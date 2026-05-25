@@ -2714,6 +2714,7 @@ export class UniversalAgent {
     candidateSelection?: boolean;
     rollingContext?: boolean;
     pipelineVersion?: 'legacy' | 'v2';
+    excludeAuthors?: string[];
   } = {}): Promise<WriteResult> {
     return this.writePipeline.write(topic, options);
   }

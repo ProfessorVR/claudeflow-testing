@@ -78,6 +78,8 @@ export interface RetrievalStageOptions {
   lanhamStyleTarget?: import('./stage-types.js').LanhamStyleTarget;
   /** Whether the active profile has lanhamMetrics (with lanhamMode on/auto). */
   hasLanhamMetrics?: boolean;
+  /** Exclude specific authors from retrieval (matched against author_raw via ChromaDB $nin, case-insensitive). */
+  excludeAuthors?: string[];
 }
 
 /**
@@ -202,7 +204,20 @@ export async function runRetrievalStage(
       rerank: true,
       boostWithKG: true,
       maxHops: 2,
+      ...(options.excludeAuthors && options.excludeAuthors.length > 0
+        ? { whereFilter: { author_raw: { $nin: options.excludeAuthors } } }
+        : {}),
     };
+    // Build case-insensitive excluded-author matcher used across Phase 1b/1f
+    const excludedLower = (options.excludeAuthors ?? []).map(a => a.toLowerCase());
+    const isExcludedAuthor = (a: string): boolean => {
+      if (excludedLower.length === 0) return false;
+      const al = a.toLowerCase();
+      return excludedLower.some(e => al === e || al.includes(e.split(',')[0].trim()) || e.includes(al.split(',')[0].trim()));
+    };
+    if (excludedLower.length > 0) {
+      goldLog(`[v2] Exclude-authors filter active: ${(options.excludeAuthors ?? []).join(' | ')}`);
+    }
 
     if (deps.smartRetrieval) {
       const allChunks: ContextChunk[] = [];
@@ -229,7 +244,15 @@ export async function runRetrievalStage(
 
       // ===== Phase 1b: Primary-author supplementation =====
       primaryAuthors = deps.extractPrimaryAuthors(topic);
-      const keyAuthors = primaryAuthors.length > 0 ? primaryAuthors : deps.extractKeyAuthors(topic);
+      let keyAuthors = primaryAuthors.length > 0 ? primaryAuthors : deps.extractKeyAuthors(topic);
+      if (excludedLower.length > 0) {
+        const beforeK = keyAuthors.length;
+        keyAuthors = keyAuthors.filter(a => !isExcludedAuthor(a));
+        primaryAuthors = primaryAuthors.filter(a => !isExcludedAuthor(a));
+        if (keyAuthors.length < beforeK) {
+          goldLog(`[v2] Exclude-authors filter removed ${beforeK - keyAuthors.length} key author(s)`);
+        }
+      }
       if (keyAuthors.length > 0) {
         goldLog(`Phase 1b: Source-targeted supplementation for: ${keyAuthors.join(', ')}`);
         for (const author of keyAuthors.slice(0, 3)) {
@@ -302,7 +325,15 @@ export async function runRetrievalStage(
       // ===== Phase 1f: Coverage validation + supplementation =====
       const coverage = validateRetrievalCoverage(topic, corpusChunks, 2);
       if (coverage.missingAuthors.length > 0 || coverage.weakAuthors.length > 0) {
-        for (const author of [...coverage.missingAuthors, ...coverage.weakAuthors]) {
+        let authorsToFetch = [...coverage.missingAuthors, ...coverage.weakAuthors];
+        if (excludedLower.length > 0) {
+          const beforeF = authorsToFetch.length;
+          authorsToFetch = authorsToFetch.filter(a => !isExcludedAuthor(a));
+          if (authorsToFetch.length < beforeF) {
+            goldLog(`[v2] Exclude-authors filter removed ${beforeF - authorsToFetch.length} under-represented author(s) from coverage supplementation`);
+          }
+        }
+        for (const author of authorsToFetch) {
           try {
             const authorChunks = await deps.smartRetrieval.retrieveContext(
               `${author} ${topic.substring(0, 150)}`,

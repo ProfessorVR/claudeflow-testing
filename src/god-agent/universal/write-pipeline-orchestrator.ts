@@ -238,6 +238,8 @@ export interface WriteOptions {
   lanhamStyleTarget?: LanhamStyleTarget;
   /** Target Lanham metrics from style profile (for drift detection). */
   targetLanhamMetrics?: LanhamProseMetrics;
+  /** Exclude specific authors from retrieval (matched against author_raw via ChromaDB $nin). */
+  excludeAuthors?: string[];
 }
 
 export class WritePipelineOrchestrator {
@@ -1677,7 +1679,13 @@ ${sectionContent}`;
           minRelevance: options.corpusMinRelevance ?? 0.0, // Low threshold, rank later
           diversityBoost: true,
           rerank: true,
+          ...(options.excludeAuthors && options.excludeAuthors.length > 0
+            ? { whereFilter: { author_raw: { $nin: options.excludeAuthors } } }
+            : {}),
         };
+        if (options.excludeAuthors && options.excludeAuthors.length > 0) {
+          goldLog(`Exclude-authors filter active: ${options.excludeAuthors.join(', ')}`);
+        }
 
         if (this.deps.smartRetrieval) {
           const allChunks: ContextChunk[] = [];
@@ -1718,7 +1726,24 @@ ${sectionContent}`;
           // author-targeted queries. This ensures primary sources (Aristotle, Heidegger)
           // get adequate representation even when semantic search favors secondary literature.
           primaryAuthors = this.extractPrimaryAuthors(topic);
-          const keyAuthors = primaryAuthors.length > 0 ? primaryAuthors : this.extractKeyAuthors(topic);
+          let keyAuthors = primaryAuthors.length > 0 ? primaryAuthors : this.extractKeyAuthors(topic);
+          if (options.excludeAuthors && options.excludeAuthors.length > 0) {
+            // Case-insensitive + substring-tolerant match: handle canonicalization edge cases
+            // where extractPrimaryAuthors may produce "Heidegger, martin" (inconsistent casing)
+            // or "Heidegger" (last-name-only) while the exclude list has "Heidegger, Martin".
+            const excludedLower = options.excludeAuthors.map(a => a.toLowerCase());
+            const isExcluded = (a: string): boolean => {
+              const al = a.toLowerCase();
+              return excludedLower.some(e => al === e || al.includes(e.split(',')[0].trim()) || e.includes(al.split(',')[0].trim()));
+            };
+            const before = keyAuthors.length;
+            keyAuthors = keyAuthors.filter(a => !isExcluded(a));
+            primaryAuthors = primaryAuthors.filter(a => !isExcluded(a));
+            if (keyAuthors.length < before) {
+              goldLog(`Exclude-authors filter removed ${before - keyAuthors.length} author(s) from supplemental retrieval`);
+            }
+            goldLog(`Exclude-authors filter result: keyAuthors=[${keyAuthors.join(', ')}]`);
+          }
           if (keyAuthors.length > 0) {
             goldLog(`Phase 1b: Source-targeted supplementation for: ${keyAuthors.join(', ')}`);
             for (const author of keyAuthors.slice(0, 3)) {
@@ -1843,7 +1868,19 @@ ${sectionContent}`;
             goldLog(line);
           }
           if (coverage.missingAuthors.length > 0 || coverage.weakAuthors.length > 0) {
-            const authorsToFetch = [...coverage.missingAuthors, ...coverage.weakAuthors];
+            let authorsToFetch = [...coverage.missingAuthors, ...coverage.weakAuthors];
+            if (options.excludeAuthors && options.excludeAuthors.length > 0) {
+              const excludedLower = options.excludeAuthors.map(a => a.toLowerCase());
+              const isExcluded = (a: string): boolean => {
+                const al = a.toLowerCase();
+                return excludedLower.some(e => al === e || al.includes(e.split(',')[0].trim()) || e.includes(al.split(',')[0].trim()));
+              };
+              const before = authorsToFetch.length;
+              authorsToFetch = authorsToFetch.filter(a => !isExcluded(a));
+              if (authorsToFetch.length < before) {
+                goldLog(`Exclude-authors filter removed ${before - authorsToFetch.length} under-represented author(s) from coverage supplementation`);
+              }
+            }
             goldLog(`Phase 1f: Attempting targeted retrieval for ${authorsToFetch.length} under-represented author(s)`);
             for (const author of authorsToFetch) {
               try {
@@ -2109,6 +2146,21 @@ ${sectionContent}`;
             goldLog(`    Constraints: ${investigation.preventionPlan.strengthenedConstraints.length}`);
 
             preventionPlan = investigation.preventionPlan;
+            // Apply exclude-authors filter to the prevention plan so V2 doesn't chase
+            // supplemental retrieval for excluded authors.
+            if (options.excludeAuthors && options.excludeAuthors.length > 0) {
+              const excludedLower = options.excludeAuthors.map(a => a.toLowerCase());
+              const isExcluded = (a: string): boolean => {
+                const al = a.toLowerCase();
+                return excludedLower.some(e => al === e || al.includes(e.split(',')[0].trim()) || e.includes(al.split(',')[0].trim()));
+              };
+              const beforeUnder = preventionPlan.underCitedSources.length;
+              preventionPlan.underCitedSources = preventionPlan.underCitedSources.filter(a => !isExcluded(a));
+              preventionPlan.overCitedSources = preventionPlan.overCitedSources.filter(a => !isExcluded(a));
+              if (preventionPlan.underCitedSources.length < beforeUnder) {
+                goldLog(`Exclude-authors filter removed ${beforeUnder - preventionPlan.underCitedSources.length} source(s) from under-cited list`);
+              }
+            }
 
             // Store v1 diagnostics for output JSON
             multiStepV1Stats = {
@@ -3358,6 +3410,7 @@ ${sectionContent}`;
       corpusMinRelevance: options.corpusMinRelevance,
       length,
       wordTarget: options.wordTarget,
+      excludeAuthors: options.excludeAuthors,
     }, this.buildRetrievalStageDeps(goldLog), ctx);
 
     let corpusChunks = retrieval.chunks;
@@ -3398,7 +3451,14 @@ ${sectionContent}`;
     // ===== STAGE 2: DRAFTING =====
     ctx.logger.info('[v2] === STAGE 2: DRAFTING ===');
 
-    let content: string;
+    // Definite-assignment: control flow below guarantees `content` is assigned in
+    // every branch (rolling-context success, rolling-context fallback to single-shot,
+    // single-shot when --rolling-context not set, and non-whitelist else branch).
+    // The patched rolling-context path uses two separate `if` blocks that TS's
+    // narrowing can't trace, so `!:` is required to silence TS2454.
+    let content!: string;
+    // Rolling-context diagnostics — populated when options.rollingContext is true
+    let rollingContextDiagnostics: import('./universal-agent.js').WriteResult['rollingContext'] | undefined;
 
     if (effectiveWhitelistMode) {
       // Multi-step: v1 → investigate → v2
@@ -3452,6 +3512,17 @@ ${sectionContent}`;
           }
 
           preventionPlan = investigation.preventionPlan;
+          // Apply exclude-authors filter to the prevention plan (v2 path)
+          if (options.excludeAuthors && options.excludeAuthors.length > 0 && preventionPlan) {
+            const excludedLowerV2 = options.excludeAuthors.map(a => a.toLowerCase());
+            const isExcludedV2 = (a: string): boolean => {
+              const al = a.toLowerCase();
+              return excludedLowerV2.some(e => al === e || al.includes(e.split(',')[0].trim()) || e.includes(al.split(',')[0].trim()));
+            };
+            preventionPlan.underCitedSources = preventionPlan.underCitedSources.filter(a => !isExcludedV2(a));
+            preventionPlan.overCitedSources = preventionPlan.overCitedSources.filter(a => !isExcludedV2(a));
+            investigation.preventionPlan.underCitedSources = preventionPlan.underCitedSources;
+          }
           multiStepV1Stats = {
             wordCount: investigation.stats.wordCount,
             citationCount: investigation.stats.citationCount,
@@ -3489,22 +3560,57 @@ ${sectionContent}`;
         }
       }
 
-      // Build final prompt (v2 with prevention plan, or single-shot)
-      const goldPrompt = this.buildGoldStandardPrompt({
-        topic, subsections, chunks: corpusChunks, knowledgeUnits: knowledgeUnitLines,
-        structuralEdges: structuralEdgeLines, ontologyNodes: ontologyLines,
-        crossPipelineHooks: hookLines, tensionEdges: tensionLines,
-        stylePrompt: goldStylePrompt, wordTarget,
-        preventionPlan, sectionConstraints, primaryUnderCoverage,
-        lanhamStyleTarget: effectiveLanhamTarget,
-      });
+      // ---- Rolling Context Branch (v2 wiring of legacy writeRollingContext) ----
+      // When --rolling-context is set, draft subsection-by-subsection with a sliding
+      // window of prior-section context + per-author citation tracker. Bypasses the
+      // single-shot block below to prevent retrieval-bias from monopolizing one author.
+      if (options.rollingContext) {
+        ctx.logger.info('[v2] === ROLLING CONTEXT MODE ===');
+        if (subsections.length === 0) {
+          recordWarning(ctx, 'drafting', 'Rolling context requested but no subsections parsed from prompt; falling back to single-shot');
+        } else {
+          const rollingResult = await this.writeRollingContext(
+            topic,
+            subsections,
+            corpusChunks,
+            knowledgeUnitLines,
+            structuralEdgeLines,
+            goldStylePrompt,
+            wordTarget,
+            preventionPlan,
+            sectionConstraints,
+            ontologyLines,
+            hookLines,
+            tensionLines,
+            effectiveLanhamTarget,
+            effectiveLanhamMetrics,
+          );
+          content = rollingResult.content;
+          rollingContextDiagnostics = rollingResult.diagnostics;
+          ctx.logger.info(`[v2] Rolling context completed: ${rollingResult.diagnostics?.sectionStats?.length ?? 0} sections generated`);
+        }
+      }
 
-      // Generate
-      try {
-        content = await this.generateViaClaudeCode(goldPrompt, { model: 'claude-opus-4-6', maxTokens: GOLD_STANDARD_CONFIG.opusMaxTokens });
-      } catch (e) {
-        recordDegraded(ctx, 'drafting', `Claude Code failed: ${e}, trying Anthropic API`);
-        content = await this.generateViaAnthropicAPI(goldPrompt, { model: 'claude-opus-4-6', maxTokens: GOLD_STANDARD_CONFIG.opusMaxTokens });
+      // Single-shot generation path: runs when rolling-context is disabled, OR when
+      // rolling-context was requested but subsections couldn't be parsed (fallback).
+      if (!options.rollingContext || !rollingContextDiagnostics) {
+        // Build final prompt (v2 with prevention plan, or single-shot)
+        const goldPrompt = this.buildGoldStandardPrompt({
+          topic, subsections, chunks: corpusChunks, knowledgeUnits: knowledgeUnitLines,
+          structuralEdges: structuralEdgeLines, ontologyNodes: ontologyLines,
+          crossPipelineHooks: hookLines, tensionEdges: tensionLines,
+          stylePrompt: goldStylePrompt, wordTarget,
+          preventionPlan, sectionConstraints, primaryUnderCoverage,
+          lanhamStyleTarget: effectiveLanhamTarget,
+        });
+
+        // Generate
+        try {
+          content = await this.generateViaClaudeCode(goldPrompt, { model: 'claude-opus-4-6', maxTokens: GOLD_STANDARD_CONFIG.opusMaxTokens });
+        } catch (e) {
+          recordDegraded(ctx, 'drafting', `Claude Code failed: ${e}, trying Anthropic API`);
+          content = await this.generateViaAnthropicAPI(goldPrompt, { model: 'claude-opus-4-6', maxTokens: GOLD_STANDARD_CONFIG.opusMaxTokens });
+        }
       }
     } else {
       // Non-whitelist: build writing instructions + generate
@@ -3780,6 +3886,7 @@ ${sectionContent}`;
         report: citationEnforcementResult.report,
       } : undefined,
       multiStepDiagnostics: multiStepDiagnosticsResult,
+      rollingContext: rollingContextDiagnostics,
       endnotes: endnotesMetadataV2.generated ? endnotesMetadataV2 : undefined,
       pipelineHealth,
     };

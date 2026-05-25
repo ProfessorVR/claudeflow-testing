@@ -1409,6 +1409,29 @@ async function main() {
           ? parseInt(corpusChunkCountStr)
           : (whitelistMode ? 28 : 15);
         const corpusMinRelevance = parseFloat(getFlag(flags, 'corpus-min-relevance') as string || '0.35');
+        // Exclude specific authors from retrieval
+        // Preferred: --exclude-authors-file <path> — newline-separated list (one author per line).
+        //   Bypasses shell quoting issues entirely. Comments starting with # are ignored.
+        // Fallback: --exclude-authors "Author1;Author2" — semicolon-separated. Fragile under some shells.
+        const excludeAuthorsFile = getFlag(flags, 'exclude-authors-file') as string | undefined;
+        const excludeAuthorsStr = getFlag(flags, 'exclude-authors') as string | undefined;
+        let excludeAuthors: string[] | undefined;
+        if (excludeAuthorsFile) {
+          try {
+            const fileContent = readFileSync(excludeAuthorsFile, 'utf-8');
+            excludeAuthors = fileContent
+              .split('\n')
+              .map(s => s.trim())
+              .filter(s => s && !s.startsWith('#'));
+            if (excludeAuthors.length > 0) {
+              console.error(`[cli] Loaded ${excludeAuthors.length} author(s) to exclude from ${excludeAuthorsFile}: ${excludeAuthors.join(' | ')}`);
+            }
+          } catch (e) {
+            console.error(`[cli] Failed to read --exclude-authors-file ${excludeAuthorsFile}: ${e}`);
+          }
+        } else if (excludeAuthorsStr) {
+          excludeAuthors = excludeAuthorsStr.split(';').map(s => s.trim()).filter(Boolean);
+        }
 
         // Parse endnote options (requires --use-corpus)
         const enableEndnotes = getFlag(flags, 'enable-endnotes') === true;
@@ -1510,6 +1533,7 @@ async function main() {
             pipelineVersion,
             maxGauntletRevisions,
             wordTarget,
+            excludeAuthors,
           });
 
           if (jsonMode) {
