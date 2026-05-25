@@ -56,14 +56,42 @@ export interface InvestigationResult {
 // =============================================================================
 
 /**
+ * Optional subsection-mode thresholds passed by callers operating at
+ * subsection scale (400-1500w single-block LaTeX) rather than gold-standard
+ * scale (3000-3500w multi-section). See plans/subsection-mode-design.md Phase 5.
+ *
+ * When omitted, investigateV1 uses the original hardcoded values
+ * (2500 word floor, "3,000-3,500" target message, etc.), preserving
+ * byte-identical behavior for all existing callers.
+ */
+export interface InvestigateV1Config {
+  subsectionThresholds?: {
+    /** Floor below which the v1 output is flagged as insufficient-word-count. E.g., 595 for wordTarget 700 (0.85 × 700). */
+    totalMin: number;
+    /** Human-readable target string for the insufficient-word-count detail message. E.g., "~700". */
+    totalTargetMsg: string;
+    /** Floor below which a section is flagged as short-section. E.g., 350 for wordTarget 700 (0.5 × 700). */
+    minSectionWords: number;
+    /** Human-readable expansion message for the prevention plan. E.g., "~700 words for this subsection". */
+    expansionMsg: string;
+  };
+}
+
+/**
  * Investigate v1 output for faithfulness issues using local string analysis only.
  * Returns a structured investigation result with issues and a prevention plan.
  * Cost: ~0ms (no LLM calls). All checks are regex/string-based.
+ *
+ * `config.subsectionThresholds` lets subsection-mode callers (single-block
+ * 400-1500w LaTeX) override the gold-standard hardcoded thresholds
+ * (2500w floor, 3000-3500 target message, 350w section floor). Omitted →
+ * defaults preserve byte-identical behavior for gold-standard callers.
  */
 export function investigateV1(
   v1Content: string,
   chunks: ContextChunk[],
   manifestAuthors: string[],
+  config?: InvestigateV1Config,
 ): InvestigationResult {
   const issues: Array<{ type: string; severity: 'critical' | 'major' | 'minor'; detail: string }> = [];
   const mainText = v1Content.split(/^#+ *validation appendix/im)[0] || v1Content;
@@ -214,22 +242,27 @@ export function investigateV1(
   }
 
   // --- Check 5: Section word counts ---
+  // Subsection-mode overrides minSectionWords (typically 0.5 × wordTarget = e.g. 350 for 700w).
+  const minSectionWordsThreshold = config?.subsectionThresholds?.minSectionWords ?? GOLD_STANDARD_CONFIG.minSectionWords;
   for (const section of sectionWordCounts) {
-    if (section.words < GOLD_STANDARD_CONFIG.minSectionWords) {
+    if (section.words < minSectionWordsThreshold) {
       issues.push({
         type: 'short-section',
         severity: 'major',
-        detail: `Section "${section.heading}" has only ${section.words} words (minimum: ${GOLD_STANDARD_CONFIG.minSectionWords})`,
+        detail: `Section "${section.heading}" has only ${section.words} words (minimum: ${minSectionWordsThreshold})`,
       });
     }
   }
 
   // --- Check 6: Overall word count ---
-  if (wordCount < 2500) {
+  // Subsection-mode overrides totalMin (typically 0.85 × wordTarget = e.g. 595 for 700w).
+  const totalMinThreshold = config?.subsectionThresholds?.totalMin ?? 2500;
+  const totalTargetMsg = config?.subsectionThresholds?.totalTargetMsg ?? '3,000-3,500';
+  if (wordCount < totalMinThreshold) {
     issues.push({
       type: 'insufficient-word-count',
       severity: 'major',
-      detail: `Main text is only ${wordCount} words (target: 3,000-3,500)`,
+      detail: `Main text is only ${wordCount} words (target: ${totalTargetMsg})`,
     });
   }
 
@@ -243,11 +276,12 @@ export function investigateV1(
     strengthened.push('EVERY quotation in quotation marks MUST appear VERBATIM in a corpus chunk. If unsure, paraphrase instead.');
   }
   if (issues.some(i => i.type === 'insufficient-word-count')) {
-    strengthened.push(`Write AT LEAST 3,000 words of main text. Current v1 was only ${wordCount} words.`);
+    const expansionMsg = config?.subsectionThresholds?.expansionMsg ?? '3,000 words of main text';
+    strengthened.push(`Write AT LEAST ${expansionMsg}. Current v1 was only ${wordCount} words.`);
   }
   for (const section of sectionWordCounts) {
-    if (section.words < GOLD_STANDARD_CONFIG.minSectionWords) {
-      strengthened.push(`Section "${section.heading}" MUST be at least ${GOLD_STANDARD_CONFIG.minSectionWords} words (was ${section.words} in v1).`);
+    if (section.words < minSectionWordsThreshold) {
+      strengthened.push(`Section "${section.heading}" MUST be at least ${minSectionWordsThreshold} words (was ${section.words} in v1).`);
     }
   }
   if (underCited.length > 0) {
