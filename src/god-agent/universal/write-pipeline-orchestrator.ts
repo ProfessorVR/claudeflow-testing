@@ -42,7 +42,7 @@ import {
   extractWorkReferences,
   type DomainConfig,
 } from './domain-config.js';
-import { resolveAuthor } from '../shared/cross-author-utils.js';
+import { resolveAuthor, getActiveBridges, extractTopicWords } from '../shared/cross-author-utils.js';
 import { GOLD_STANDARD_CONFIG, SUBSECTION_DEFAULTS } from './gold-standard-config.js';
 import {
   buildGoldStandardPrompt as buildGoldStandardPromptFn,
@@ -826,6 +826,55 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
       totalTargetMsg: `~${wordTarget}`,
       minSectionWords: Math.floor(parsed * SUBSECTION_DEFAULTS.minSectionRatio),
       expansionMsg: `~${wordTarget} words for this subsection`,
+    };
+  }
+
+  /**
+   * Compute the WriteResult.injectedBridges + WriteResult.corpusIndexContributions
+   * logging fields (plans/subsection-mode-design.md Phase 6).
+   *
+   * Mirrors the bridge-selection logic embedded in buildGoldStandardPrompt /
+   * buildSubsectionPrompt: it independently calls getActiveBridges with the
+   * same topic-words extraction, and reports the same bridges that the
+   * prompt-builder would have injected. Logging path runs whether or not
+   * subsection-mode is active — every /god-write run surfaces these.
+   *
+   * The corpus-index-contributions lists are derived from the live retrieval
+   * variables (ontologyLines/hookLines/tensionLines) which the orchestrator
+   * already builds for the prompt; we simply expose their first-line summaries
+   * (per-entry IDs/headings) in the result JSON.
+   */
+  private buildLoggingHooks(
+    topic: string,
+    ontologyLines: string[],
+    hookLines: string[],
+    tensionLines: string[],
+  ): {
+    injectedBridges: NonNullable<WriteResult['injectedBridges']>;
+    corpusIndexContributions: NonNullable<WriteResult['corpusIndexContributions']>;
+  } {
+    let injectedBridges: NonNullable<WriteResult['injectedBridges']> = [];
+    try {
+      const topicWords = extractTopicWords(topic);
+      const activeBridges = getActiveBridges(topicWords);
+      injectedBridges = activeBridges.map(b => ({
+        id: b.id,
+        sourceAuthor: b.sourceAuthor || '',
+        sourceConcept: b.sourceConcept || '',
+        targetAuthor: b.targetAuthor || '',
+        targetConcept: b.targetConcept || '',
+        bridgeText: b.bridge || '',
+      }));
+    } catch { /* non-fatal — empty array */ }
+
+    return {
+      injectedBridges,
+      corpusIndexContributions: {
+        ontologyNodesUsed: ontologyLines.slice(0, 50),
+        hooksInjected: hookLines.slice(0, 50),
+        tensionEdgesUsed: tensionLines.slice(0, 50),
+        queryExpansions: [], // Placeholder — query-expansion logging deferred to a future enhancement
+      },
     };
   }
 
@@ -1720,6 +1769,10 @@ ${sectionContent}`;
     let primaryAuthors: string[] = [];
     let rollingContextDiagnostics: import('./universal-agent.js').WriteResult['rollingContext'] | undefined;
     let rollingContextContent: string | undefined;
+    // Subsection-mode Phase 6: capture corpus/index contributions + active bridges
+    // so they can be surfaced in the JSON result. Populated inside the
+    // whitelist/gold-standard branch where ontologyLines etc. are computed.
+    let loggingHooks: ReturnType<WritePipelineOrchestrator['buildLoggingHooks']> | undefined;
 
     if (options.whitelistMode) {
       // ===== GOLD STANDARD MODE =====
@@ -2076,6 +2129,10 @@ ${sectionContent}`;
         } catch (e) {
           goldLog(`Corpus index loading failed: ${e}`);
         }
+
+        // Subsection-mode Phase 6: capture logging hooks for the JSON result
+        loggingHooks = this.buildLoggingHooks(topic, ontologyLines, hookLines, tensionLines);
+        goldLog(`[logging-hooks] Captured ${loggingHooks.injectedBridges.length} active bridges + ${loggingHooks.corpusIndexContributions.ontologyNodesUsed.length} ontology nodes`);
 
         // Step 3: Load style profile
         // GOLD_V1=1 disables style injection (replicates v1 timeline: Feb 7 8:16 AM)
@@ -3370,6 +3427,9 @@ ${sectionContent}`;
       multiStepDiagnostics: multiStepDiagnosticsResult,
       // Rolling context diagnostics
       rollingContext: rollingContextDiagnostics,
+      // Subsection-mode Phase 6: corpus/index contributions + active bridges
+      injectedBridges: loggingHooks?.injectedBridges,
+      corpusIndexContributions: loggingHooks?.corpusIndexContributions,
     };
 
     } catch (err) {
@@ -3967,6 +4027,11 @@ ${sectionContent}`;
       rollingContext: rollingContextDiagnostics,
       endnotes: endnotesMetadataV2.generated ? endnotesMetadataV2 : undefined,
       pipelineHealth,
+      // Subsection-mode Phase 6: corpus/index contributions + active bridges (writeV2 path)
+      ...(() => {
+        const lh = this.buildLoggingHooks(topic, ontologyLines, hookLines, tensionLines);
+        return { injectedBridges: lh.injectedBridges, corpusIndexContributions: lh.corpusIndexContributions };
+      })(),
     };
   }
 

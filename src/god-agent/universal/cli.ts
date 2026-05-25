@@ -1612,6 +1612,14 @@ async function main() {
                 multiStepDiagnostics: writeResult.multiStepDiagnostics ?? null,
                 rollingContext: writeResult.rollingContext ?? null,
                 pipelineHealth: writeResult.pipelineHealth ?? null,
+                // Subsection-mode Phase 6 logging hooks (always populated)
+                injectedBridges: writeResult.injectedBridges ?? [],
+                corpusIndexContributions: writeResult.corpusIndexContributions ?? {
+                  ontologyNodesUsed: [],
+                  hooksInjected: [],
+                  tensionEdgesUsed: [],
+                  queryExpansions: [],
+                },
               },
               success: true,
               trajectoryId: writeResult.trajectoryId,

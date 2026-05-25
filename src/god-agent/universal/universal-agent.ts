@@ -518,6 +518,30 @@ export interface WriteResult {
     };
     sharedPoolEvictions: number;
   };
+  /**
+   * Cross-author bridges injected into the generation prompt
+   * (from corpus-index `getActiveBridges(extractTopicWords(topic))`).
+   * Phase 6 of plans/subsection-mode-design.md. Empty array when no bridges match.
+   */
+  injectedBridges?: Array<{
+    id: string;
+    sourceAuthor: string;
+    sourceConcept: string;
+    targetAuthor: string;
+    targetConcept: string;
+    bridgeText: string;
+  }>;
+  /**
+   * Corpus-index contributions to the prompt (ontology nodes used, hooks injected,
+   * tension edges referenced, query expansions applied).
+   * Phase 6 of plans/subsection-mode-design.md. Empty arrays when no contribution.
+   */
+  corpusIndexContributions?: {
+    ontologyNodesUsed: string[];
+    hooksInjected: string[];
+    tensionEdgesUsed: string[];
+    queryExpansions: string[];
+  };
 }
 
 /**
