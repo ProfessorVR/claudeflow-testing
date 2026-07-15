@@ -33,6 +33,17 @@ OUTPUT = CORPUS_INDEX / "compiled-index.json"
 
 # Text directories mapped to human-readable labels
 TEXT_DIRS: dict[str, dict] = {
+    # --- Empirical corpus (added 2026-07-06; Part III) ---
+    "Virtual Learning Environments (King–Salvo)": {
+        "label": "Virtual Learning Environments (King–Salvo)",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
+    },
+    "Boredom Secondary (Part III)": {
+        "label": "Boredom Secondary (Part III)",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
+    },
     "Aristotle - Complete Works": {
         "label": "Aristotle",
         "ontology_format": "table",
@@ -48,6 +59,11 @@ TEXT_DIRS: dict[str, dict] = {
         "ontology_format": "table",
         "analysis_subdir": "bcap-analysis",
     },
+    "Heidegger - The Fundamental Concepts of Metaphysics": {
+        "label": "Heidegger - The Fundamental Concepts of Metaphysics",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
+    },
     "Rickert - Ambient Rhetoric": {
         "label": "Rickert - Ambient Rhetoric",
         "ontology_format": "header",
@@ -57,6 +73,37 @@ TEXT_DIRS: dict[str, dict] = {
         "label": "Von Uexkull - A Foray into the Worlds of Animals and Humans",
         "ontology_format": "header",
         "analysis_subdir": "uex-analysis",
+    },
+    # --- Companion concept books (added 2026-06-23; nodes in _synthesis/book-level-ontology.md §3A) ---
+    "A Grammar of Motives (Burke 1945)": {
+        "label": "Burke - A Grammar of Motives",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
+    },
+    "A Rhetoric of Motives (Burke 1950)": {
+        "label": "Burke - A Rhetoric of Motives",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
+    },
+    "Heidegger and Rhetoric": {
+        "label": "Heidegger and Rhetoric",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
+    },
+    "In-Game (Calleja 2011)": {
+        "label": "Calleja - In-Game",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
+    },
+    "Uncomfortable Situations": {
+        "label": "Gross - Uncomfortable Situations",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
+    },
+    "Wendt - Design for Dasein": {
+        "label": "Wendt - Design for Dasein",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
     },
 }
 
@@ -1021,6 +1068,13 @@ def parse_tension_edges(path: Path, text_label: str) -> list[dict]:
         warn(f"Failed to parse {path}: {e}")
         return edges
 
+    # Unwrap dict-wrapped tension lists (e.g., {"tensions": [...]}) used by some entries
+    if isinstance(raw, dict):
+        for k in ("tensions", "tension_edges", "tensionEdges", "edges", "tension_pairs"):
+            if isinstance(raw.get(k), list):
+                raw = raw[k]
+                break
+
     if not isinstance(raw, list):
         warn(f"Unexpected format in {path}: expected array")
         return edges
@@ -1136,8 +1190,12 @@ def collect_ontology_nodes() -> list[dict]:
                     nodes.extend(file_nodes)
 
         elif cfg["ontology_format"] == "header":
-            # Single book-level ontology with header/bullet format
+            # Single book-level ontology with header/bullet format.
+            # Some clusters (e.g. Boredom Secondary, RDR2 Secondary, Phantasia Secondary) use
+            # cluster-ontology.md instead of the original book-level-ontology.md filename.
             onto_file = analysis_dir / "book-level-ontology.md"
+            if not onto_file.is_file():
+                onto_file = analysis_dir / "cluster-ontology.md"
             if onto_file.is_file():
                 text = read_text(onto_file)
                 file_nodes = parse_header_ontology(text, cfg["label"])

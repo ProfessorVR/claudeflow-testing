@@ -1,0 +1,93 @@
+{
+  "id": "bor-sec-29",
+  "slug": "miyauchi-kawasaki",
+  "citation": {
+    "author": "Miyauchi, Eri; Kawasaki, Masahiro",
+    "year": 2018,
+    "title": "Electroencephalogram Oscillations Support the Involvement of Task-Unrelated Thoughts in the Mechanism of Boredom: A Pilot Study",
+    "type": "empirical pilot study",
+    "journal": "Neuroscience Letters",
+    "volume": "677",
+    "pages": "72-77",
+    "doi": "10.1016/j.neulet.2018.04.034",
+    "note": "Received 13 March 2018; revised 17 April 2018; accepted 18 April 2018; available online 22 April 2018. Affiliation: Department of Intelligent Interaction Technology, Graduate School of Systems and Information Engineering, University of Tsukuba, Japan."
+  },
+  "discipline": "cognitive neuroscience / psychophysiology (EEG)",
+  "strand": "D",
+  "depth": "map",
+  "thesis": "Tests, via EEG time-frequency analysis, a two-stage cognitive-process model of boredom (task-unrelated thoughts followed by appraisal of them, credited to Raffaelli et al.) by capturing brain activity at the moment boredom occurs (self-paced key press) rather than during an already-established boring state, and contrasting a boredom condition against a dislike control that shares appraisal but not the task-unrelated-thought component. Finds tonic theta (6-8 Hz) increase in frontal/temporal electrodes as boredom-specific (differing from dislike), while transient alpha (10-12 Hz) increase is shared with dislike and interpreted as reflecting the appraisal process; theta amplitude and boredom response time both correlate with ADHD-linked attentional-deficit self-report (ASRS) scores.",
+  "sections": [
+    "Introduction (p.72 approx.) -- definitional variability; boredom-as-attentional-failure; Raffaelli et al.'s TUT-appraisal model; DMN literature; prior EEG-alpha/beta boredom findings (Oswald; Tabatabaie et al.); the during-vs-onset gap; study aim",
+    "Materials and methods (pp.73-74 approx.) -- 2.1 Participants; 2.2 Task protocol (melody-switching paradigm); 2.3 Assessments (ASRS); 2.4 EEG recording and analyses (electrodes, artifact correction, wavelet time-frequency method, statistics)",
+    "Results (pp.74-75 approx.) -- 3.1 Behaviour (response times); 3.2 Attention deficits (ASRS distribution); 3.3 EEG (alpha/theta/beta amplitude dynamics, condition contrasts, ASRS/RT correlations)",
+    "Discussion (pp.75-76 approx.) -- interpretation of theta-as-TUT vs. alpha-as-appraisal; the ASRS/boredom-proneness discrepancy; limitations; conclusion"
+  ],
+  "constructs": [
+    {"label": "mind-wandering / task-unrelated thought", "treatment": "organizing construct, named in the title and operationalized as the theorized first stage of boredom's cognitive process; adopts Raffaelli et al.'s TUT terminology over 'mind-wandering'", "loci": "p.72 approx. (Fig. 1); pp.74-75 approx. (tonic theta as its EEG signature)"},
+    {"label": "attentional disengagement / meta-awareness", "treatment": "frames the study's motivating claim that boredom is related to attentional failure; operationalized indirectly via the ASRS attentional-deficit self-report and its correlation with EEG/behavioral measures", "loci": "p.72 approx.; pp.74-76 approx."},
+    {"label": "boredom proneness", "treatment": "surfaces only in the Discussion, where the authors flag their own ASRS-response-time correlation as apparently discrepant with prior literature linking boredom proneness to attention-deficit symptoms; not independently operationalized by this study", "loci": "pp.75-76 approx."},
+    {"label": "situational vs. trait/state boredom", "treatment": "implicit but consequential framing -- the authors distinguish their design, which measures the actual real-time occurrence of boredom, from most prior studies, which use subjective trait-like boredom-proneness self-report", "loci": "p.76 approx."},
+    {"label": "flow / engagement (contrast pole)", "treatment": "absent -- not discussed", "loci": null},
+    {"label": "monotony / meaninglessness", "treatment": "absent -- not discussed", "loci": null},
+    {"label": "profound/deep boredom (FCM 3rd form)", "treatment": "absent -- not applicable for Strand D; no bridges-to-fcm asserted", "loci": null}
+  ],
+  "measures": [
+    {
+      "label": "EEG alpha/theta power",
+      "signal": "Time-frequency amplitude (Morlet wavelet decomposition, 2-15 Hz band; theta 6-8 Hz, alpha 10-12 Hz, beta 14-20 Hz), baseline-corrected against inter-melody intervals, analyzed over the 3.0 s window immediately preceding each key press",
+      "apparatus": "27 active scalp electrodes (actiCAP), BrainAmp DC amplifier (Brain Products, Germany), 1000 Hz sampling, mastoid reference electrodes, vertical/horizontal EOG for ICA-based ocular-artifact removal",
+      "sample_n": 15,
+      "key_result": "Transient alpha enhancement in right temporal electrodes (peak T8) and tonic theta enhancement in frontal/temporal electrodes (peak FC2, T8), both peaking approximately 2.4 s before key press. Only tonic theta increase differed significantly between boredom and dislike conditions (p<0.01, Mann-Whitney U); phasic alpha did not differ by condition. Frontal/temporal theta amplitude negatively correlated with ASRS scores and with boredom response time at multiple pre-press latencies; alpha showed no ASRS correlation but positive correlation with response time.",
+      "loci": "pp.73-75 approx. (Figs. 3-5)"
+    },
+    {
+      "label": "self-report / survey scale",
+      "signal": "Adult ADHD Self-Report Scale, version 1.1 (ASRS Symptom Checklist) -- 18 items (9 inattention, 9 hyperactivity/impulsivity)",
+      "apparatus": "Paper/verbal self-report questionnaire; coefficient alpha reported at 0.78 for the total score (citing prior validation literature)",
+      "sample_n": 15,
+      "key_result": "Mean ASRS total score 29.73 +/- 8.86, within the normal-population reference range (29.7 +/- 12.9) and below the ADHD-patient reference mean (42.2 +/- 10.9). ASRS scores correlated positively with boredom response time (r=.52, p<.05) but not dislike response time (r=.47, p=.07), and negatively with frontal/temporal theta amplitude.",
+      "loci": "p.73 approx. (assessment description); p.74 approx. (distribution, Fig. 2)"
+    },
+    {
+      "label": "behavioral (RT / errors / performance-monitoring)",
+      "signal": "Self-paced key-press response time (elapsed time from stimulus/melody onset to key press marking the subjective onset of boredom or dislike)",
+      "apparatus": "Behavioral key-press recording synchronized with EEG acquisition during the melody-switching task",
+      "sample_n": 15,
+      "key_result": "Mean response time 35.33 +/- 3.01 s for boredom vs. 8.81 +/- 1.62 s for dislike; the two were uncorrelated (r=.43, p=.11), suggesting independent processes. No significant sex (z=.44, p=.66) or age (r=-.12, p=.63) effects on boredom response time. Average trials reported as boredom: 14.20 +/- 1.38; as dislike: 2.53 +/- 0.65.",
+      "loci": "p.74 approx. (Results 3.1)"
+    }
+  ],
+  "readings": [],
+  "readings_note": "FCM bridge not applicable for Strand D per cluster convention; this is an empirical STEM pilot study with no engagement of Heidegger's Fundamental Concepts of Metaphysics. bridges.fcm is left empty.",
+  "concepts": [
+    "two-stage cognitive-process model of boredom: task-unrelated thoughts followed by appraisal of them (credited to Raffaelli et al.)",
+    "boredom-vs-dislike contrastive design isolating the task-unrelated-thought component from generic negative appraisal",
+    "tonic theta increase as a boredom-specific (TUT) oscillatory marker, distinct from phasic alpha shared with dislike (appraisal/internal-processing marker)",
+    "default mode network (DMN) as the presumed substrate of task-unrelated thought during boredom",
+    "onset-of-boredom (occurrence) measurement via self-paced key press, contrasted with prior studies' measurement of already-established boredom states or trait boredom-proneness self-report"
+  ],
+  "interlocutors": [
+    "Quentin Raffaelli, Caitlin Mills, Kalina Christoff (2017/2018) -- 'The Knowns and Unknowns of Boredom' (this cluster's bor-sec-21); supplies the TUT-appraisal cognitive-process model this study operationalizes and tests via EEG",
+    "Malcolm Mason et al. (2007) -- 'Wandering Minds'; default mode network / stimulus-independent thought framing for task-unrelated thoughts",
+    "Ian Oswald (1962) -- whole-brain alpha power in eyes-open conditions reflecting visual inattention and boredom",
+    "A.F. Tabatabaie et al. (2014) -- beta power in dorsolateral prefrontal cortex lower for self-reported boring vs. arousing music",
+    "Claire Braboszcz and Arnaud Delorme (2011) -- theta increases associated with mind-wandering during low alertness, corroborating this study's theta-as-TUT interpretation",
+    "Eugenia Malkovsky, Colleen Merrifield, Yeva Goldberg, James Danckert (2012) -- prior reported positive correlation between boredom proneness and attention-deficit symptoms, which this study's ASRS-response-time finding is presented as apparently contradicting",
+    "Sarah Koehler et al. (2009) -- increased EEG theta power density in adult ADHD patients, invoked to explain the negative theta-ASRS correlation",
+    "Masahiro Kawasaki et al. (2014) -- prior TMS work by one of the present authors, cited as the proposed future method for establishing causal (not merely correlational) links between oscillatory activity, attention, and boredom"
+  ],
+  "tensions": [
+    "This study's positive correlation between ASRS (attention-deficit) score and boredom response time (higher attention-deficit tendency associated with SLOWER onset of feeling bored) is presented by the authors as apparently contradicting prior literature (Malkovsky et al. 2012) reporting a positive correlation between boredom proneness and attention-deficit symptoms (i.e., higher ADHD-linked tendencies typically associated with feeling bored MORE readily). The authors reconcile the discrepancy via (a) the negative correlation they observe between theta amplitude and ASRS score, and (b) an explicit construct-operationalization argument: this study measures the real-time occurrence/latency of boredom onset, whereas most prior work measures trait-like boredom-proneness self-report -- a direct, small-scale instance of the operationalization inconsistency this cluster's Raffaelli et al. entry (bor-sec-21) diagnoses field-wide (pp.75-76 approx.).",
+    "Tonic theta (boredom-specific, differs from dislike) vs. phasic alpha (not boredom-specific, shared with dislike): the authors read this dissociation as evidence that theta indexes the task-unrelated-thought component of their two-stage model while alpha indexes the appraisal/internal-processing component common to both boredom and dislike (pp.75-76 approx.).",
+    "Self-report (ASRS) as attentional-deficit proxy vs. neural ground truth: the authors themselves flag ASRS as a self-reported measure that 'may not accurately reflect the neural characteristics of attentional deficiency' (paraphrase, p.76 approx.), a limitation the authors state explicitly rather than a claim we impose."
+  ],
+  "bridges": {
+    "fcm": [],
+    "dataset_channels": ["****** UNVERIFIED: Boredom Experiment (VR Attention Study) -- EEG alpha/theta power channel. Dataset entry not yet built as of 2026-07-14. This study's central finding -- tonic frontal/temporal theta (6-8 Hz) as a boredom-specific marker distinct from phasic alpha shared with a negative-appraisal control -- is the strongest available candidate hypothesis for that future dataset's EEG channel, but no grounding is confirmed until the entry exists. Pilot-scale sample (N=15) and single-paradigm (melody-switching, eyes-closed) design mean these specific electrode/frequency findings should be treated as hypothesis-generating, not a validated biomarker."]
+  },
+  "extraction": {
+    "tool": "pdftotext",
+    "date": "2026-07-14",
+    "ocr_confidence": "high"
+  }
+}

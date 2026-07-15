@@ -1,0 +1,105 @@
+{
+  "id": "bor-sec-41",
+  "slug": "gazemotive",
+  "citation": "Wang, Ruijie, Yuanchen Xu, and Liming Chen. \"GazeMotive: A Gaze-Based Motivation-Aware E-Learning Tool for Students with Learning Difficulties.\" In D. Lamas et al. (eds.), INTERACT 2019, LNCS 11749, pp. 544-548. Springer Nature Switzerland AG, 2019. https://doi.org/10.1007/978-3-030-29390-1_34.",
+  "discipline": "user modeling and personalisation for assistive learning technology (HCI, e-learning), demonstrating a gaze-based motivation-assessment tool",
+  "strand": "E",
+  "depth": "map",
+  "thesis": "GazeMotive is a working Windows-desktop demonstration of applying eye tracking to real-time motivation assessment in an e-learning environment for students with learning difficulties. It introduces no new motivation theory or validation study; it implements a motivation model and gaze-based prediction models the same author group already developed and validated in earlier work (refs [1], [2], [5]): a Tobii eye tracker records gaze during learning, gaze features (average pupil diameter, fixation number over Areas of Interest) plus self-reported data feed previously-built logistic regression models to infer motivational states (e.g., Self-Efficacy, Visual Attractiveness, Reading Experience, Confirmed Fit, Attitudes Toward School), and a pedagogical agent delivers personalised text/picture feedback intended to sustain or enhance motivation and engagement in real time. Boredom is never named in the extracted text; the paper's own vocabulary is uniformly motivation and engagement, with disengagement gestured at only indirectly via 'dropouts' and 'low levels of engagement' among students with learning difficulties.",
+  "sections": [
+    { "title": "Abstract/keywords", "page": "544", "summary": "States the system, its Tobii-tracker-plus-pedagogical-agent architecture, and its aim of motivation-enhanced learning; keywords: eye tracking, motivation assessment, personalised feedback." },
+    { "title": "1 Introduction -- 1.1 Background", "page": "544-545", "summary": "Motivates personalised learning for students with learning difficulties (dyslexia); argues prior assistive-learning personalisation research has targeted learners' emotion and cognition (inducing positive emotion, reattracting attention) but neglected motivation specifically." },
+    { "title": "1.2 Motivation Assessment", "page": "545", "summary": "Summarises the previously developed multi-factor motivation model (intrinsic motivation e.g. Self-Efficacy, extrinsic motivation e.g. Visual Attractiveness, mediators e.g. Reading Experience) and the prior gaze-based prediction study (ref [5]: average pupil diameter and fixation number, accuracy up to 81.3%)." },
+    { "title": "1.3 The Demonstration System", "page": "545-546", "summary": "Describes how gaze features (via AOIs) and self-report inputs feed the existing logistic-regression models to assess distinct motivational factors, some purely from gaze (Confirmed Fit, Reading Experience), others from self-report (Attitudes Toward School, Self-Efficacy)." },
+    { "title": "2 GazeMotive Walkthrough", "page": "546-547", "summary": "Expert interface: login, adding/deleting learning materials and quizzes, marking Areas of Interest (AOIs) by clicking polygon corners (Fig.1). Learner interface: pedagogical-agent feedback in text/picture form triggered by motivational-state detection during learning pages and quizzes (Fig.2)." },
+    { "title": "3 Conclusion", "page": "547", "summary": "Restates the demonstration's contribution (applying the motivation model and personalisation rules to a real-world scenario via gaze); names future work: continued model/algorithm validation, improved interface design, more motivational dimensions, more diverse feedback formats (speech, animation)." },
+    { "title": "References", "page": "547-548", "summary": "7 items: five are the authors' own prior/companion work (motivation model development, gaze-based prediction study); two are external (eye-tracking-in-HCI survey; eye-activity-as-emotion-indicator study), plus two non-scholarly sources (course materials, design-guidance blog)." }
+  ],
+  "constructs": [
+    { "label": "flow / engagement (contrast pole)", "treatment": "the paper's real organizing construct: the system exists to detect and remediate low motivation/engagement and sustain 'motivation-enhanced learning experience and better learning performance'; 'motivation and engagement' are named together as the target outcome", "locus": "p.544-546" },
+    { "label": "attentional disengagement / meta-awareness", "treatment": "treated only indirectly, via two gaze-detected proxies rather than the paper's own vocabulary: a 'negative reading experience' flagged during a learning page, and a user detected as 'having not put enough effort' during a quiz -- functional stand-ins for disengagement, not the paper's own theorized construct (P/anticipatory-application for the mapping)", "locus": "p.546-547" },
+    { "label": "situational vs. trait/state boredom", "treatment": "not treated as boredom, but the motivation model draws a parallel stability split: Self-Efficacy and Attitudes Toward School are trait-like ('usually remain stable in a short-term period'), assessed once via self-report; Confirmed Fit and Reading Experience vary dynamically, assessed continuously from gaze -- a motivation-domain analogue, not a boredom-domain claim", "locus": "p.546" },
+    { "label": "boredom proneness / mind-wandering-task-unrelated-thought / monotony-meaninglessness / temporality of boredom / boredom-as-regulatory-signal / profound-deep boredom / being-bored-by / being-bored-with", "treatment": "none treated; no phenomenological or boredom-specific vocabulary appears anywhere in the extracted text", "locus": "n/a" }
+  ],
+  "measures": [
+    {
+      "label": "gaze variance / fixation dispersion",
+      "signal": "AOI-based gaze features, including fixation number, computed per learning-material page over expert-marked Areas of Interest",
+      "apparatus": "Tobii Eye Tracker 4C",
+      "sampleN": "not reported in this demonstration paper; the underlying prediction accuracy and sample belong to the cited prior study (ref [5])",
+      "keyResult": "no new accuracy figure reported here; ref [5]'s prior experiment reported up to 81.3% prediction accuracy using fixation number and pupil diameter",
+      "locus": "p.545-546"
+    },
+    {
+      "label": "pupil dilation / pupillometry",
+      "signal": "average pupil diameter",
+      "apparatus": "Tobii Eye Tracker 4C",
+      "sampleN": "not reported in this paper; cited from ref [5]'s prior experiment with students with learning difficulties",
+      "keyResult": "cited as one of two gaze features (with fixation number) found to play a significant role in motivation assessment, contributing to ref [5]'s 81.3% accuracy",
+      "locus": "p.545-546"
+    },
+    {
+      "label": "self-report / survey scale",
+      "signal": "self-input data collected at session start (for stable intrinsic-motivation factors: Attitudes Toward School, Self-Efficacy) plus the multi-item questionnaire study underlying the original motivation model",
+      "apparatus": "in-application self-input form; prior multi-item questionnaire instrument (refs [1],[2])",
+      "sampleN": "not reported in this paper for the demo system; questionnaire-study N belongs to refs [1]/[2], not extracted",
+      "keyResult": "no accuracy/validity figure reported for self-report inputs in this paper; used to assess factors treated as short-term stable rather than dynamically varying",
+      "locus": "p.545-546"
+    },
+    {
+      "label": "ML classification",
+      "signal": "logistic regression models predicting motivational-factor states from gaze features",
+      "apparatus": "previously-built logistic regression models (ref [5]), reused and feature-pruned ('improved... by including only the gaze features that have significant prediction power')",
+      "sampleN": "not reported in this paper; belongs to ref [5]",
+      "keyResult": "no new accuracy reported in this demonstration; ref [5]'s original models achieved up to 81.3% prediction accuracy",
+      "locus": "p.545-546"
+    },
+    {
+      "label": "behavioral (RT / errors / performance-monitoring)",
+      "signal": "quiz-answer correctness (self-assessment quizzes)",
+      "apparatus": "in-application quiz module, combined with real-time gaze data",
+      "sampleN": "not reported; demonstration example only (Fig.2b)",
+      "keyResult": "an incorrect quiz answer co-occurring with gaze-detected low effort triggers a specific motivational-feedback message; no aggregate statistic reported",
+      "locus": "p.546-547"
+    }
+  ],
+  "readings": [
+    { "claim": "The system implements the prior motivation model and prediction models inside a working expert/learner-interface application, using Tobii 4c gaze plus self-report to assess motivational factors and trigger real-time personalised feedback.", "type": "READING/CLAIM", "stance": "asserts (architectural contribution)", "locus": "p.545-547", "tag": "FE" },
+    { "claim": "The 81.3% gaze-based motivation-prediction accuracy is a cited result from the authors' own prior study (ref [5]), not a finding newly generated in this demonstration paper.", "type": "READING/CLAIM", "stance": "reports (provenance caution)", "locus": "p.545-546", "tag": "FE" },
+    { "claim": "Two concrete feedback triggers are shown: detection of a 'negative reading experience' from gaze during a learning page, and detection of a user having 'not put enough effort' from gaze co-occurring with an incorrect quiz answer.", "type": "READING/CLAIM", "stance": "reports (demonstration example)", "locus": "p.546-547", "tag": "FE" },
+    { "claim": "Stated future work: continued validation of the models/algorithms to maximise assessment/feedback accuracy, improved interface design, more motivational dimensions, and more diverse feedback formats (speech, animation).", "type": "READING/CLAIM", "stance": "gestures (future work)", "locus": "p.547", "tag": "FE" },
+    { "claim": "No statistical results, effect sizes, or new sample are reported for GazeMotive itself; all quantitative claims trace to the cited companion study (ref [5]).", "type": "READING/CLAIM", "stance": "concedes (scope limit, our observation)", "locus": "p.544-548", "tag": "FE" }
+  ],
+  "concepts": [
+    { "term": "GazeMotive (demonstration system)", "type": "TERM", "locus": "p.544-547" },
+    { "term": "Areas of Interest (AOIs)", "type": "TERM", "locus": "p.546" },
+    { "term": "pedagogical agent (virtual tutor)", "type": "TERM", "locus": "p.546-547" },
+    { "term": "motivation model (Self-Efficacy, Visual Attractiveness, Reading Experience, Confirmed Fit, Attitudes Toward School)", "type": "THEORY-MODEL", "locus": "p.545-546" },
+    { "term": "Tobii Eye Tracker 4C", "type": "TERM", "locus": "p.545-546" }
+  ],
+  "interlocutors": [
+    { "name": "Wang, R., Chen, L., Solheim, I., Schulz, T., Ayesh, A. (2017) -- Conceptual motivation modeling for students with dyslexia for enhanced assistive learning, ACM SmartLearn 2017", "role": "source of the conceptual motivation model GazeMotive implements (intrinsic/extrinsic factors, mediators)", "locus": "p.544-545, ref [1]" },
+    { "name": "Wang, R., Chen, L., Solheim, I. -- Modeling dyslexic students' motivation for enhanced learning in E-learning systems (submitted, ACM TiiS)", "role": "companion modeling paper for the same motivation model", "locus": "p.545, ref [2]" },
+    { "name": "Poole, A., Ball, L. (2006) -- Eye tracking in human-computer interaction and usability research", "role": "background citation establishing eye gaze as an index of cognitive process (problem solving)", "locus": "p.545, ref [3]" },
+    { "name": "Alghowinem, S., Alshehri, M., Goecke, R. (2014) -- Exploring eye activity as an indication of emotional states using an eye-tracking sensor", "role": "background citation for pupil dilation as an indicator of emotional states", "locus": "p.545, ref [4]" },
+    { "name": "Wang, R., Chen, L., Ayesh, A., Shell, J., Solheim, I. -- Gaze-based assessment of dyslexic students' motivation within an E-learning environment (accepted, IEEE UIC 2019)", "role": "the key prior empirical study GazeMotive draws its gaze features, logistic regression models, and 81.3% accuracy figure from", "locus": "p.545-546, ref [5]" },
+    { "name": "Brandon, M. -- The Open University Course S175: The Frozen Planet", "role": "source of the free e-learning course materials adapted for the demonstration system", "locus": "p.546, ref [6]" },
+    { "name": "Dyslexic.com -- Dyslexia and visual stress: what assistive technology can help", "role": "source of the dyslexia-oriented interface design guidance (font, color, size choices)", "locus": "p.546, ref [7]" }
+  ],
+  "tensions": [
+    { "axis": "demonstration/system contribution vs. empirical validation", "note": "GazeMotive presents itself as a working application built on already-validated models, but reports no new accuracy figure, sample, or statistical result of its own; all quantitative motivation-prediction claims (81.3% accuracy) trace to the cited companion study (ref [5]), a distinction this entry treats as load-bearing for how the paper should be cited.", "locus": "p.545-547" },
+    { "axis": "trait-like (self-report-assessed) vs. dynamic (gaze-assessed) motivational factors", "note": "the motivation model itself splits factors by presumed short-term stability (Self-Efficacy, Attitudes Toward School assessed once via self-report) versus dynamic variability (Confirmed Fit, Reading Experience assessed continuously via gaze) -- a motivation-domain parallel to the boredom field's trait/state distinction, not itself a boredom claim.", "locus": "p.546" }
+  ],
+  "bridges": {
+    "fcm": [],
+    "dataset_channels": [
+      { "target": "Boredom Experiment (VR Attention Study) -- gaze-based motivation/engagement channel", "relation": "grounds-measure", "status": "****** UNVERIFIED", "note": "GazeMotive's AOI-plus-average-pupil-diameter-plus-fixation-number feature set, and its trait/state-like split between self-report- and gaze-assessed motivational factors, sketch a plausible template for a future VR attention study's engagement/motivation channel, but a VR headset's integrated eye tracking would differ substantially in geometry (3D gaze vectors, headset-relative AOIs) from this study's screen-based Tobii 4C setup; linkage requires the dataset entry's own instrumentation to be confirmed (P/anticipatory-application)." }
+    ]
+  },
+  "extraction": {
+    "tool": "pdftotext",
+    "date": "2026-07-14",
+    "ocr_confidence": "high",
+    "note": "haystack-extracted from 781pp INTERACT-2019 proceedings, pdftotext -f 564 -l 568"
+  }
+}

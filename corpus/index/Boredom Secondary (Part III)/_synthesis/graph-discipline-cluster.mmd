@@ -1,0 +1,51 @@
+%% Discipline cluster — Boredom Secondary (Part III)
+%% The cluster's shape: 7 strands, 55 units, and the wall between them.
+%% Edge labels are TEXTUAL citation counts (strand -> strand).
+%% The striking facts: Strands B and E are citationally ISOLATED (zero links, either direction);
+%% Strand D has exactly ONE outgoing link and none incoming; nothing anywhere cites D or E.
+graph TB
+  subgraph HUM["HUMANITIES — reads FCM, never measures"]
+    direction TB
+    SA["<b>Strand A</b> — phenomenology<br/>14 units · bor-sec-01–14<br/>Elpidorou×5, Slaby×2, Gibbs,<br/>Hughes, Mihacevic, Quaranta…"]
+    SB["<b>Strand B</b> — education<br/>5 units · bor-sec-15–19<br/><i>CITATIONALLY ISOLATED</i>"]
+    SG["<b>Strand G</b> — Heidegger on Affect<br/>11 chapters · bor-sec-45–55<br/>internal citations: 2"]
+  end
+
+  subgraph BRIDGEZONE[" "]
+    ELP{{"<b>ELPIDOROU</b><br/>the only node with edges<br/>into BOTH halves<br/>6 of the top-8 most-cited units"}}
+  end
+
+  subgraph STEM["STEM — measures, never reads FCM"]
+    direction TB
+    SC["<b>Strand C</b> — psychology<br/>7 units · bor-sec-20–26<br/>Elpidorou×2, Raffaelli, Tam,<br/>Darling, Murphy, Clark"]
+    SD["<b>Strand D</b> — EEG<br/>7 units · bor-sec-27–33<br/><i>1 outgoing link, 0 incoming</i>"]
+    SE["<b>Strand E</b> — eye-tracking<br/>8 units · bor-sec-34–41<br/><i>CITATIONALLY ISOLATED</i>"]
+    SF["<b>Strand F</b> — VR/immersion<br/>3 units · bor-sec-42–44"]
+  end
+
+  %% textual citation counts
+  SA -->|19| SA
+  SG -->|5| SA
+  SG -->|2| SG
+  SF -->|2| SA
+  SC -->|3| SC
+  SA ==>|"<b>8 — but 7 are<br/>Elpidorou citing<br/>Elpidorou</b>"| SC
+  SD -->|"1 (Miyauchi→Raffaelli)"| SC
+
+  SA -.->|"via"| ELP
+  ELP -.->|"via"| SC
+
+  WALL["<b>THE MEASUREMENT WALL</b><br/>———————————<br/>bridges-to-fcm × hard instrument = ∅<br/>profound boredom × EEG/eye = ∅<br/>Being-and-Time bloc ∩ measurement bloc = ∅<br/><br/><i>Three independent routes,<br/>same conclusion</i>"]
+  HUM -.- WALL
+  WALL -.- STEM
+
+  classDef hum fill:#d6eaf8,stroke:#2874a6
+  classDef stem fill:#d5f5e3,stroke:#1e8449
+  classDef iso fill:#d5dbdb,stroke:#7f8c8d,stroke-dasharray: 5 3
+  classDef wall fill:#fdedec,stroke:#c0392b,stroke-width:3px
+  classDef elp fill:#f9e79f,stroke:#b7950b,stroke-width:3px
+  class SA,SG hum
+  class SC,SF stem
+  class SB,SD,SE iso
+  class WALL wall
+  class ELP elp

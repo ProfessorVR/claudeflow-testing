@@ -1,0 +1,84 @@
+%% Intra-cluster citation network — Boredom Secondary (Part III)
+%% Textual citations only (40 of 65 links). Forward constructions
+%% (P/anticipatory-application) are omitted: they are this cluster's own links, not the sources'.
+%% Solid arrow = real textual citation. Dashed = contests-reading-of / extends-reading-of.
+graph LR
+  subgraph A["Strand A — phenomenology"]
+    E02["bor-sec-02<br/>E&F Affectivity I"]
+    E03["bor-sec-03<br/>E&F Affectivity II"]
+    E04["bor-sec-04<br/>E&F Is Profound<br/>Boredom Boredom?"]
+    E05["bor-sec-05<br/>E&F Fear/Anxiety"]
+    E06["bor-sec-06<br/>Elpidorou Concept"]
+    S12["bor-sec-12<br/>Slaby Living"]
+    S13["bor-sec-13<br/>Slaby Other Side"]
+    G07["bor-sec-07<br/>Gibbs"]
+    H08["bor-sec-08<br/>Hughes"]
+    M09["bor-sec-09<br/>Mihacevic"]
+    Q10["bor-sec-10<br/>Quaranta"]
+  end
+  subgraph C["Strand C — psychology"]
+    E25["bor-sec-25<br/>Elpidorou<br/>Regulatory Theory"]
+    E26["bor-sec-26<br/>Elpidorou<br/>Good of Boredom"]
+    R21["bor-sec-21<br/>Raffaelli review"]
+    T22["bor-sec-22<br/>Tam BFM"]
+    D20["bor-sec-20<br/>Darling PP"]
+    MU23["bor-sec-23<br/>Murphy"]
+  end
+  subgraph D["Strand D — EEG"]
+    MK29["bor-sec-29<br/>Miyauchi"]
+  end
+  subgraph G["Strand G — Heidegger on Affect"]
+    HA48["bor-sec-48<br/>Hadjioannou"]
+    DA49["bor-sec-49<br/>Dahlstrom"]
+    W51["bor-sec-51<br/>Withy"]
+  end
+  subgraph F["Strand F — VR"]
+    HB42["bor-sec-42<br/>Haj-Bolouri"]
+  end
+
+  %% the Elpidorou spine
+  E03 --> E02
+  E04 --> E02
+  E04 --> E03
+  E05 --> E02
+  E05 --> E03
+  E05 --> E04
+  E02 --> E25
+  E02 --> E26
+  E04 --> E25
+  E04 --> E26
+  E05 --> E25
+  E05 --> E26
+  E06 --> E25
+  E25 --> E26
+  E05 --> S13
+
+  %% the single non-Elpidorou bridge — and it is a critique
+  H08 -.->|"critique"| E25
+
+  %% Slaby
+  S12 --> S13
+  M09 --> S13
+  M09 --> G07
+  M09 --> E04
+  M09 -.->|"contests"| E04
+  Q10 --> E03
+  Q10 --> E04
+
+  %% Strand G into A
+  HA48 --> E02
+  DA49 -.->|"extends"| E02
+  W51 --> E02
+  W51 --> E04
+  HB42 --> E02
+  HB42 --> E03
+
+  %% the ONLY outgoing link from the EEG strand
+  MK29 -->|"adopts TUT term"| R21
+
+  classDef elp fill:#f9e79f,stroke:#b7950b,stroke-width:2px
+  classDef crit fill:#f5b7b1,stroke:#c0392b,stroke-width:2px
+  classDef iso fill:#d5dbdb,stroke:#7f8c8d
+  class E02,E03,E04,E05,E06,E25,E26 elp
+  class H08 crit
+  class MK29 iso

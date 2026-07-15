@@ -1,0 +1,64 @@
+# bor-sec-43 — Lin, Xiao Ping, Bin Bin Li, Zhen Ning Yao, Zhi Yang, and Minshu Zhang, "The Impact of Virtual Reality on Student Engagement in the Classroom: A Critical Review of the Literature" (2024)
+
+**Type:** mini review / critical literature review (*Frontiers in Psychology*, PRISMA-informed screening of a 33-article corpus) · **Discipline:** educational psychology / educational technology · **Depth:** map · **Corpus role:** Strand F — the cluster's first VR-in-education review, organized around Wang and Degol's (2014) cognitive/behavioral/affective tripartite engagement model. A direct text search of the full extraction returns zero occurrences of "bore-," "monoton-," "mind-wander-," or "meaningless-"; "flow" appears only as "PRISMA flow diagram" — the same terminological silence already documented for Sharma et al. (bor-sec-39) and Charoenpit and Ohkura (bor-sec-35) in Strand E. A citation cross-check against every other built unit in this cluster (Strand B's Feldges and Thomson; Strand E's Sharma, Charoenpit and Ohkura, Jaques et al., GazeMotive; Strand F's in-progress Haj-Bolouri and Nacke and Craig) found zero genuine reference overlap: none of the ~33 first authors Lin et al.'s Table 1 cites recur anywhere else in the built cluster. Any resemblance to those units is thematic parallel only, never a shared citation.
+
+## 1. Thesis/Aim
+
+Lin, Li, Yao, Yang, and Zhang (*Frontiers in Psychology* 15:1360574, 2024) determine VR's impact on student engagement, defined via Wang and Degol's (2014) tripartite model: cognitive (attention, comprehension, retention), behavioral (attendance, participation), and affective (motivation, passion, learning efficacy) engagement (FAITHFUL-Lin et al., ~p.1-2). Three questions guide the review: (1) VR's positive impacts on education; (2) VR's challenges; (3) interventions addressing those challenges (FAITHFUL-Lin et al., ~p.2). Framed as a "critical review" in Grant and Booth's (2009) sense — a method that "presents, analyses and synthesizes material from diverse sources" (direct quote, quoted in Lin et al., ~p.2) — the paper synthesizes 33 PRISMA-screened articles (2014-2023) rather than reporting new primary data. Boredom is never named; the operative vocabulary is exclusively "engagement," "motivation," and "digital literacy."
+
+## 2. Structure
+
+The article runs pp.1-8. Because the source PDF is two-column and `pdftotext` extraction reorders column content, page anchors below are proximity estimates keyed to the document's own footer page-numbers, given as ranges wherever a claim's precise page is ambiguous.
+
+1. **Title/Abstract/Keywords** (~p.1) — structured abstract; previews the tripartite model and headline findings.
+2. **Introduction** (~p.1-2) — VR's "three pillars" (presence, interactivity, immersion; Lee et al. 2017); frames engagement via Wang and Degol (2014); adoption-rate claims (up to 96% of UK universities; Harvard VR labs); states the three research questions.
+3. **Method — search strategy; inclusion/exclusion** (~p.2-3) — three-phase Google/Scopus/Elsevier keyword search, English-language, Jan.2014-Dec.2023, narrowing 97→63→20 articles plus 13 reference-mined, N=33 final; PRISMA screening (Moher et al. 2009; Figure 1).
+4. **Result — Table 1 and citation-count discussion** (~p.3-4) — lists all 33 articles with inclusion rationale; rising annual publication trend; Wang and Degol (2014) most-cited (450); states limitations (small base, three databases, recency bias, generalizability caveat).
+5. **Positive impact of VR on education** (~p.4-6) — cognitive, behavioral (with internal debate), and affective engagement subsections.
+6. **Challenge of VR in education** (~p.6-7) — system pace, digital-literacy demands, teacher-proficiency gaps, and a proposed training solution.
+7. **Conclusion** (~p.7-8) — restates findings; calls for policymaker-funded teacher training.
+8. **Author contributions; funding; conflict of interest; correction note; references** (~p.7-8) — Hunan Province self-funded grant (MZ, PI); notes a 2025 correction (details absent from the extracted text).
+
+## 3. Constructs
+
+- **flow / engagement (contrast pole)** — the review's own central construct, not an analogical extension: "engagement" (cognitive/behavioral/affective, Wang and Degol 2014) organizes the entire positive-impact section and structured abstract (FAITHFUL-Lin et al., ~p.1-2, and passim). The cross-walk from this cluster's boredom-contrast label to the review's own engagement vocabulary is still this entry's own mapping, since the source cites no flow theory and never opposes engagement to boredom or monotony (P/anticipatory-application for the mapping).
+- **attentional disengagement / meta-awareness** — thin, single-line treatment: Table 1 credits Misak (2018) only as an "introduction to VR improves students' meta-cognition" (FAITHFUL-Lin et al., ~p.3), never developed in body text.
+- **monotony / meaninglessness** — not treated; zero occurrences.
+- **situational vs. trait/state boredom** — not treated; no boredom-state or -trait instrument or discussion.
+- **boredom-as-regulatory-signal / mind-wandering / temporality of boredom / profound-boredom forms (being-bored-by, being-bored-with)** — not treated anywhere in this educational-technology review.
+
+## 4. Measures & methods
+
+As a critical review rather than a primary study, "measures" here means the range of approaches the review surveys across its 33 articles, not instruments the review authors themselves administered. Only two of the 33 carry an explicit sample and instrument: Alfalah (2018), who used a quantitative approach, "distributing a questionnaire online to 30 IT teachers" (direct quote, ~p.7), and Fransson et al. (2020), who "interviewed 28 teachers" about VR-implementation challenges (direct quote, ~p.7). Both are read as **self-report / survey scale** instances — the nearest available controlled-vocabulary label, though Fransson et al.'s method is a semi-structured interview rather than a scale (P/anticipatory-application for the fit). No eye-tracking, EEG, pupillometry, heart-rate/HRV, predictive-processing, or ML-classification approach appears anywhere in the review; the remaining 31 articles are cited only for conceptual/review-level claims, without sample or instrument detail. The review's own selection procedure is a meta-level method worth noting: a three-phase database search narrowed by keyword screening and reference-mining, plus a purely descriptive citation-count comparison across the final 33 articles (FAITHFUL-Lin et al., ~p.2-4).
+
+## 5. Findings/Claims
+
+- VR promotes cognitive engagement through immersive, self-directed learning: Papanastasiou et al. (2019) on comprehension of complex/abstract knowledge; Pellas (2016) on self-directed inquiry via scenario reenactment; Maples-Keller et al. (2017) on personalized/adaptive benefit for at-risk students, including learning difficulties and anxiety disorders (FAITHFUL-Lin et al., ~p.4).
+- VR's effect on behavioral engagement is contested within the review itself: Pirker and Dengel (2021), Sun and Peng (2020), Rzanova et al. (2023), and Freina and Ott (2015), together with Wong et al. (2010) and Allcoat and Von Mühlenen (2018), support a positive reading; but Cheng et al. (2015), Greenwald et al. (2018), and Makransky et al. (2019) are cited for a negative counter-finding (absorption into "the virtual world" at the expense of real-life tasks), and Makransky and Petersen (2021) for a further caveat — a persistent virtual/real-world transfer gap (FAITHFUL-Lin et al., ~p.4-5).
+- VR promotes affective engagement via emotional/interactive experience: Schutte and Stilinović (2017) on empathy for children with emotional impairments; Wu et al. (2013), Yuen et al. (2011), and Dhimolea et al. (2022) on affective interaction with virtual characters (including language-learning oral practice); Misak (2018) on role-play deepening engagement with literary material (FAITHFUL-Lin et al., ~p.5-6).
+- Three challenges recur: the education system's difficulty keeping pace with VR development (Islam et al. 2015; Zhong 2017; Sahlberg 2016); heightened student digital-literacy demands, glossed by Reddy et al. (2020) as skills needed "to use digital tools to support the achievement of goals" (direct quote, ~p.6); and teachers' insufficient VR proficiency (Abich et al. 2021; Jensen and Konradsen 2018, on instructors needing to produce/edit their own HMD content; Fransson et al. 2020, N=28 teacher interviews) (FAITHFUL-Lin et al., ~p.6-7).
+- Teacher training is proposed as the primary remedy: Alfalah (2018), surveying 30 IT teachers, reports that technology training "may be maximized for the integration of VR technology" (direct quote, ~p.7).
+- The review's own stated limitations qualify all of the above: small literature base, only three databases searched (flagged for future expansion to PubMed/Web of Science), recency bias against very recent articles (e.g., Rzanova et al. 2023), and a generalizability caveat from the inclusion/exclusion criteria (FAITHFUL-Lin et al., ~p.3-4).
+- Meta-level observation (not stated by the authors, but visible in Table 1): most of the 33 reviewed items are themselves reviews or conceptual introductions rather than primary empirical studies — only Alfalah (2018) and Fransson et al. (2020) carry an explicit sample size — meaning this "critical review" is substantially a review of reviews (P/anticipatory-application).
+
+## 6. Constructs-treated & Measures-operationalized
+
+| Item | Axis | Treatment | Locus |
+|---|---|---|---|
+| flow / engagement (contrast pole) | construct | core, source-native construct (cognitive/behavioral/affective, Wang and Degol 2014) organizing the positive-impact section; cross-walk to this cluster's label is this entry's own mapping | ~p.1-2, 4-6 |
+| attentional disengagement / meta-awareness | construct | thin: single Table 1 line crediting Misak (2018) with "VR improves students' meta-cognition," never developed | ~p.3 |
+| monotony / meaninglessness | construct | not treated; zero occurrences | n/a |
+| situational vs. trait/state boredom | construct | not treated; no boredom-state or -trait instrument | n/a |
+| self-report / survey scale | measure | Alfalah (2018) online questionnaire, N=30 IT teachers; Fransson et al. (2020) semi-structured interviews, N=28 teachers — the review's only two explicitly sampled sources | ~p.6-7 |
+
+Not treated at all: EEG frontal alpha asymmetry, EEG alpha/theta power, EEG functional connectivity, EEG eyes-open vs. eyes-closed, pupil dilation/pupillometry, gaze variance/fixation dispersion, blink/eye-closure, heart rate/HRV, behavioral (RT/errors/performance-monitoring), predictive-processing model, and ML classification — none of these instrumentation families appear anywhere in the 33-article corpus, at least as Lin et al. describe it.
+
+## 7. Analytical role
+
+*(anticipatory-application)* Wang and Degol's (2014) tripartite model, operationalized end-to-end here, is a plausible off-the-shelf coding frame for Part III's VR-deployment survey items: rather than treating "engagement" as a single scalar contrast to boredom, Part III could code its desktop-3D vs. video-only strata and lab vs. deployment poles separately along cognitive, behavioral, and affective dimensions — which might reveal, say, affective gains without behavioral ones, a distinction a single-item measure would collapse.
+
+*(anticipatory-application)* The review's own internal debate over behavioral engagement — positive-participation findings set directly against negative-absorption findings and a virtual/real transfer-gap caveat — models the mixed, stratum-dependent result Part III should expect and be prepared to report honestly, rather than a clean "VR increases engagement" finding; it is a citable precedent for framing contested results as a genuine debate rather than a null result to be explained away.
+
+*(anticipatory-application)* The review's teacher/facilitator-proficiency barrier is structurally analogous to a variable Part III's deployment stratum must track but the lab stratum can hold constant: who operates and troubleshoots the VR apparatus in the field. Where the lab pole benefits from a trained researcher-operator, the deployment pole may inherit exactly the instructor-proficiency gap this review documents — a plausible confound for any lab-vs-deployment engagement contrast Part III draws.
+
+*(anticipatory-application)* **Dataset bridge:** ****** UNVERIFIED — Wang and Degol's (2014) tripartite engagement construct, or a derivative short-form self-report instrument, offers a plausible engagement/self-report channel for the not-yet-built `Boredom Experiment (VR Attention Study)` dataset entry, complementing rather than duplicating that entry's likely physiological channels; unconfirmed until the dataset entry specifies its own instrumentation.

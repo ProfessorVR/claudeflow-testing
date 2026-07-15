@@ -1,0 +1,738 @@
+{
+ "cluster": "Boredom Secondary (Part III)",
+ "generatedAt": "2026-07-14",
+ "phase": "3E",
+ "scope": "intra-cluster only; external hubs are in boredom-secondary-literature-network.json",
+ "gate": {
+  "required": 10,
+  "deliveredTextual": 40,
+  "deliveredTotal": 65,
+  "satisfied": true
+ },
+ "linkKinds": {
+  "textual-citation": 40,
+  "forward-construction": 25,
+  "note": "forward-construction links are P/anticipatory-application -- drawn by this cluster where chronology or absence forbids a real citation. Only textual-citation links support the structural claims."
+ },
+ "strandMatrix": {
+  "A->A": 19,
+  "A->C": 8,
+  "C->C": 3,
+  "D->C": 1,
+  "F->A": 2,
+  "G->A": 5,
+  "G->G": 2
+ },
+ "structuralFindings": [
+  {
+   "id": "SF-1",
+   "claim": "Strand E (eye-tracking, 8 units) is completely isolated: zero textual citations in either direction."
+  },
+  {
+   "id": "SF-2",
+   "claim": "Strand D (EEG, 7 units) has exactly one outgoing textual citation (bor-sec-29 -> bor-sec-21, adopting Raffaelli's TUT terminology) and zero incoming."
+  },
+  {
+   "id": "SF-3",
+   "claim": "Strand B (education, 5 units) is completely isolated -- the units nearest Part III's own topic cite nobody here and are cited by nobody here."
+  },
+  {
+   "id": "SF-4",
+   "claim": "Nothing anywhere in the cluster cites Strand D or Strand E. The measurement literature is invisible to the rest of the cluster."
+  },
+  {
+   "id": "SF-5",
+   "claim": "The A->C link (8 textual) is the ONLY phenomenology<->psychology bridge, and 7 of the 8 are Elpidorou citing Elpidorou. The 8th (bor-sec-08 -> bor-sec-25, Hughes) is a critique. Remove Elpidorou and the two literatures have exactly one connection -- an objection.",
+   "provenance": "P/anticipatory-application"
+  }
+ ],
+ "convergesWith": {
+  "finding": "The concordance's central finding (the two literatures are disjoint at the instrument boundary), reached here by a third independent route.",
+  "routes": [
+   "1. construct-treatment x hard instrument -> intersection EMPTY",
+   "2. bridges-to-fcm x hard instrument -> intersection EMPTY",
+   "3. strand-to-strand citation matrix -> D/E cite and are cited by nobody outside psychology"
+  ]
+ },
+ "elpidorouCentrality": {
+  "claim": "Elpidorou is the cluster's structural centre -- the only node with edges into both halves. Six of the top eight most-cited units are his.",
+  "units": [
+   "bor-sec-02",
+   "bor-sec-03",
+   "bor-sec-04",
+   "bor-sec-05",
+   "bor-sec-06",
+   "bor-sec-25",
+   "bor-sec-26"
+  ],
+  "acLinksTotal": 8,
+  "acLinksBothElpidorou": 7,
+  "theOneException": {
+   "link": "bor-sec-08 -> bor-sec-25",
+   "who": "Hughes",
+   "nature": "critique -- footnote 9: Elpidorou's normative/psychological drift is a departure from Heidegger's project, not a development of it"
+  }
+ },
+ "mostCited": [
+  {
+   "unit": "bor-sec-25",
+   "inDegree": 9,
+   "strand": "C",
+   "who": "Elpidorou, Andreas"
+  },
+  {
+   "unit": "bor-sec-02",
+   "inDegree": 9,
+   "strand": "A",
+   "who": "Elpidorou, A., & Freeman, L. (2015). Affectivity in Heidegger I: Moods"
+  },
+  {
+   "unit": "bor-sec-26",
+   "inDegree": 7,
+   "strand": "C",
+   "who": "Elpidorou, Andreas"
+  },
+  {
+   "unit": "bor-sec-04",
+   "inDegree": 7,
+   "strand": "A",
+   "who": "Elpidorou, Andreas and Freeman, Lauren"
+  },
+  {
+   "unit": "bor-sec-13",
+   "inDegree": 6,
+   "strand": "A",
+   "who": "Slaby, Jan. \"The Other Side of Existence: Heidegger on Boredom.\" 2010,"
+  },
+  {
+   "unit": "bor-sec-03",
+   "inDegree": 5,
+   "strand": "A",
+   "who": "Elpidorou, Andreas and Freeman, Lauren"
+  },
+  {
+   "unit": "bor-sec-19",
+   "inDegree": 3,
+   "strand": "B",
+   "who": "Thomson, Iain (2001). Heidegger on Ontological Education, or: How We B"
+  },
+  {
+   "unit": "bor-sec-05",
+   "inDegree": 2,
+   "strand": "A",
+   "who": "Elpidorou, Andreas and Freeman, Lauren"
+  },
+  {
+   "unit": "bor-sec-06",
+   "inDegree": 2,
+   "strand": "A",
+   "who": "Elpidorou, Andreas"
+  },
+  {
+   "unit": "bor-sec-12",
+   "inDegree": 2,
+   "strand": "A",
+   "who": "Slaby, Jan. \"Living in the Moment: Boredom and the Meaning of Existenc"
+  }
+ ],
+ "mostCiting": [
+  {
+   "unit": "bor-sec-02",
+   "outDegree": 6,
+   "strand": "A",
+   "who": "Elpidorou, A., & Freeman, L. (2015). Affectivity in Heidegger I: Moods"
+  },
+  {
+   "unit": "bor-sec-03",
+   "outDegree": 6,
+   "strand": "A",
+   "who": "Elpidorou, Andreas and Freeman, Lauren"
+  },
+  {
+   "unit": "bor-sec-05",
+   "outDegree": 6,
+   "strand": "A",
+   "who": "Elpidorou, Andreas and Freeman, Lauren"
+  },
+  {
+   "unit": "bor-sec-04",
+   "outDegree": 4,
+   "strand": "A",
+   "who": "Elpidorou, Andreas and Freeman, Lauren"
+  },
+  {
+   "unit": "bor-sec-48",
+   "outDegree": 4,
+   "strand": "G",
+   "who": "Hadjioannou, C. (2019). Angst as Evidence: Shifting Phenomenology's Me"
+  },
+  {
+   "unit": "bor-sec-09",
+   "outDegree": 4,
+   "strand": "A",
+   "who": "Mihačević, Borislav. 2022. \"Boredom That Wishes Not To Be.\" Diametros "
+  },
+  {
+   "unit": "bor-sec-10",
+   "outDegree": 4,
+   "strand": "A",
+   "who": "Quaranta, C. (2024). In the mood for Heideggerian boredom? Film viewer"
+  },
+  {
+   "unit": "bor-sec-23",
+   "outDegree": 3,
+   "strand": "C",
+   "who": "Murphy, Stephen; Hill, Tim; McDonagh, Pierre; and Faherty, Amanda (202"
+  }
+ ],
+ "verifiedCompanionRelations": [
+  {
+   "pair": "bor-sec-02 <-> bor-sec-03",
+   "nature": "declared two-part study; I's footnote 13 defers boredom and BT's temporal structure to II"
+  },
+  {
+   "pair": "bor-sec-25 -> bor-sec-26",
+   "nature": "cites as 'forthcoming' (p.351); six in-text deferrals; divide labour mechanism vs. eudaimonic value-theory"
+  },
+  {
+   "pair": "bor-sec-28 -> bor-sec-31",
+   "nature": "Seo et al. REUSE Kim et al.'s boredom-inducing video stimulus (same co-authors) and claim improvement over it",
+   "partIIIWarning": "Must be treated as ONE evolving research programme, not two independent convergent findings (CR-11)."
+  },
+  {
+   "pair": "bor-sec-12 -> bor-sec-13",
+   "nature": "Slaby's footnote 2 self-citation; separately bor-sec-55 reproduces a whole section of bor-sec-12 verbatim with permission (its footnote 5)"
+  },
+  {
+   "pair": "bor-sec-49 -> bor-sec-02/03",
+   "nature": "Dahlstrom cites E&F (2015a n.1 p.120; 2015b n.16 p.123) and converges before turning the shared reconstruction into a critique (CR-05)"
+  }
+ ],
+ "hadjioannouVolumeSilence": {
+  "claim": "Strand G is 11 chapters of ONE book; its internal citation count is 2.",
+  "detail": "Chapters 6 (McManus: authenticity-and-affect, never raises boredom), 7 (Withy: boredom can occupy the Grundbefindlichkeit role), and 8 (Elpidorou & Freeman: profound boredom is authenticity-disclosing) do not engage one another. The volume contains the thesis, the counter-default, and the bridge, in adjacent chapters, unconnected. See DA-10."
+ },
+ "methodologicalCaveat": "cites-cluster-author edges were recorded when a unit's builder found a real citation, and builders were prompted to look for siblings. Absence is mostly verified rather than merely unrecorded -- several builders documented negative checks explicitly (bor-sec-43 checked ~33 first-authors against every other unit, zero overlap; bor-sec-39 checked for Charoenpit and Jaques, found neither; bor-sec-32 confirmed Yakobi cites a DIFFERENT Elpidorou paper, 'Is Boredom One or Many?' (2020), not the regulatory papers). Still, a citation nobody looked for would not appear. The strand-matrix zeros for B and E are strong but not exhaustive proof of absence; the POSITIVE findings are direct textual evidence and do not depend on this caveat.",
+ "links": [
+  {
+   "source": "bor-sec-20",
+   "target": "bor-sec-25",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.4",
+   "note": "Darling's citation of Elpidorou's regulatory theory of boredom (2018a) situates this source as closely related to but not identical with bor-sec-25; Darling's mechanism answers HOW boredom regulates, "
+  },
+  {
+   "source": "bor-sec-20",
+   "target": "bor-sec-26",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.4",
+   "note": "Per the same build-plan cross-reference, Darling's synthesis is read as complementary to bor-sec-26 (Elpidorou's regulatory-theory companion piece), pairing rather than substituting for it (FE -- not "
+  },
+  {
+   "source": "bor-sec-02",
+   "target": "bor-sec-03",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "n/a (companion essay; p.661 abstract; n.13 p.669-670)",
+   "note": "explicit companion piece naming; carries Befindlichkeit's temporal structure and boredom proper forward"
+  },
+  {
+   "source": "bor-sec-02",
+   "target": "bor-sec-04",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.665-667 (P/anticipatory-application)",
+   "note": "this essay's BT-level anxiety/thrownness-disclosure machinery is presupposed by the later authenticity question 'Is Profound Boredom Boredom?'"
+  },
+  {
+   "source": "bor-sec-02",
+   "target": "bor-sec-05",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.666-668 (P/anticipatory-application)",
+   "note": "this essay's central fear-vs-anxiety distinction (C6/C7) is the conceptual groundwork 'Fear, Anxiety, and Boredom' (2020) builds on"
+  },
+  {
+   "source": "bor-sec-02",
+   "target": "bor-sec-06",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.663-666 (P/anticipatory-application)",
+   "note": "this essay's Befindlichkeit/Stimmung architecture is the BT groundwork Elpidorou's solo 2023 phenomenology-of-boredom synthesis presupposes"
+  },
+  {
+   "source": "bor-sec-02",
+   "target": "bor-sec-25",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.665-666 (P/anticipatory-application)",
+   "note": "this essay's revelatory/disclosive, non-epiphenomenal account of mood is the philosophical precursor to Elpidorou's later naturalized regulatory-signal account of boredom specifically"
+  },
+  {
+   "source": "bor-sec-02",
+   "target": "bor-sec-26",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.665-666 (P/anticipatory-application)",
+   "note": "same disclosive-mood precursor relation, for the companion regulatory paper 'The Good of Boredom'"
+  },
+  {
+   "source": "bor-sec-03",
+   "target": "bor-sec-02",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.672 (abstract); n.10, pp.675-676",
+   "note": "explicit companion piece; this essay presupposes its BT Division-I account of Befindlichkeit and moods"
+  },
+  {
+   "source": "bor-sec-03",
+   "target": "bor-sec-04",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "P/anticipatory-application",
+   "note": "forward thematic link only (bor-sec-04 postdates this 2015 piece by four years, and in fact literally cites this essay -- see bor-sec-04's own edges) -- this essay's faithful, non-adjudicated expositi"
+  },
+  {
+   "source": "bor-sec-03",
+   "target": "bor-sec-05",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "P/anticipatory-application",
+   "note": "forward thematic link -- this essay's own fear/anxiety/boredom triangulation (§1.2.1 + §2) anticipates the dedicated 2020 treatment of exactly these three moods"
+  },
+  {
+   "source": "bor-sec-03",
+   "target": "bor-sec-06",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "P/anticipatory-application",
+   "note": "forward thematic link -- thematic continuity with Elpidorou's later solo overview of boredom within phenomenology"
+  },
+  {
+   "source": "bor-sec-03",
+   "target": "bor-sec-25",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "P/anticipatory-application",
+   "note": "forward thematic link -- profound boredom's freedom-disclosing 'call to action' here is the phenomenological seed of Elpidorou's later regulatory/functional account of boredom"
+  },
+  {
+   "source": "bor-sec-03",
+   "target": "bor-sec-26",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "P/anticipatory-application",
+   "note": "forward thematic link -- companion continuity with 'The Good of Boredom,' which redescribes this essay's disclosure-of-freedom claim in adaptive/functional terms"
+  },
+  {
+   "source": "bor-sec-05",
+   "target": "bor-sec-02",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.1 n.1",
+   "note": "'The following section is a development of some of our discussion from Elpidorou and Freeman (2015)' -- footnote 1 marks sec.1's Befindlichkeit/Stimmung exposition as derived from this companion piece"
+  },
+  {
+   "source": "bor-sec-05",
+   "target": "bor-sec-03",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.16 n.3 & n.6 & n.9",
+   "note": "Deferred citation for the temporality of the fundamental moods ('for our expanded discussion... see Freeman & Elpidorou 2015') and for the three features Befindlichkeit discloses (thrownness, being-in"
+  },
+  {
+   "source": "bor-sec-05",
+   "target": "bor-sec-04",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.7 & p.16 n.9",
+   "note": "Cited as further reading for 'a more robust consideration of profound boredom, in addition to the other two forms' -- points to the cluster's keystone debate-axis chapter without resolving the questio"
+  },
+  {
+   "source": "bor-sec-05",
+   "target": "bor-sec-13",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.7",
+   "note": "Cited alongside De Beistegui 2003 and the authors' own in-press piece as further reading on Heidegger and boredom. NOTE: cited here as Slaby (2014); cluster manifest dates bor-sec-13 to 2010 -- likely"
+  },
+  {
+   "source": "bor-sec-05",
+   "target": "bor-sec-25",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.11",
+   "note": "Cited (as Elpidorou 2018a) for the physiological changes accompanying boredom, alongside Eastwood et al. 2013, in the mind-wandering/attention sentence (FE)."
+  },
+  {
+   "source": "bor-sec-05",
+   "target": "bor-sec-26",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.11-12",
+   "note": "Cited (as Elpidorou 2018b) as the direct source for the claim that boredom can motivate the move 'into a better (i.e., more fulfilling) life' -- the entry's single strongest functional-account claim ("
+  },
+  {
+   "source": "bor-sec-04",
+   "target": "bor-sec-02",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "pp.9, 11",
+   "note": "cited for Befindlichkeit / moods-and-emotions framework underlying the Grundstimmung argument"
+  },
+  {
+   "source": "bor-sec-04",
+   "target": "bor-sec-03",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "note 5 / p.23",
+   "note": "cited as an earlier, fuller discussion of temporality and boredom that this chapter expands"
+  },
+  {
+   "source": "bor-sec-04",
+   "target": "bor-sec-25",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "pp.11, 21-22",
+   "note": "cited for the claim that state boredom is revealing, and for its regulatory-theory account of state boredom's motivational function"
+  },
+  {
+   "source": "bor-sec-04",
+   "target": "bor-sec-26",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "pp.21-22",
+   "note": "cited alongside 2018a and 2014 for state boredom's motivating, meaning-restorative character"
+  },
+  {
+   "source": "bor-sec-06",
+   "target": "bor-sec-25",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.3, p.8",
+   "note": "cited for the aversive/escape features of ordinary boredom (p.3) and as the source's own fuller regulatory-theory account underlying the Sartrean functional reading (p.8) (FE)"
+  },
+  {
+   "source": "bor-sec-25",
+   "target": "bor-sec-26",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "p.471",
+   "note": "cited as 'Elpidorou (in press). The good of boredom. Philosophical Psychology' for the claim that boredom facilitates goal-directed (not merely any) movement -- forward citation to the companion piece"
+  },
+  {
+   "source": "bor-sec-26",
+   "target": "bor-sec-25",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": " forthcoming/2018-19)",
+   "note": "pp.325, 328, 330, 338-339, 340, 341 n.2, 351 (reference list)"
+  },
+  {
+   "source": "bor-sec-07",
+   "target": "bor-sec-18",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "pp.602, 611",
+   "note": "Gibbs's citation 'Mansikka (2009), Can boredom educate us?..., Studies in Philosophy of Education 28, 255-268' is title-identical to this cluster's bor-sec-18 entry (manifest attributes it to 'Standis"
+  },
+  {
+   "source": "bor-sec-07",
+   "target": "bor-sec-19",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "p.612",
+   "note": "Same author (Iain Thomson) as this cluster's bor-sec-19 ('Heidegger on Ontological Education,' 2001) but a different text (Heidegger on Ontotheology, 2005); author-level cluster connection only, not a"
+  },
+  {
+   "source": "bor-sec-48",
+   "target": "bor-sec-02",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "pp.98-102",
+   "note": "sustained engagement with Elpidorou & Freeman's 'Affectivity in Heidegger I' survey of Befindlichkeit translations"
+  },
+  {
+   "source": "bor-sec-48",
+   "target": "bor-sec-02",
+   "relation": "contests-reading-of",
+   "kind": "textual-citation",
+   "locus": "pp.99-101",
+   "note": "contests Elpidorou & Freeman's reasons for leaving Befindlichkeit untranslated; argues 'disposition' is adequate given the διάθεσις homology"
+  },
+  {
+   "source": "bor-sec-48",
+   "target": "bor-sec-51",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.98",
+   "note": "cites Katherine Withy's 'The Methodological Role of Angst in Being and Time' (2012) approvingly for angst's specifically methodological significance"
+  },
+  {
+   "source": "bor-sec-48",
+   "target": "bor-sec-49",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.101",
+   "note": "counts Daniel Dahlstrom (2001) among scholars translating Befindlichkeit as 'disposition,' alongside Carman and Wrathall"
+  },
+  {
+   "source": "bor-sec-49",
+   "target": "bor-sec-02",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "n.1 p.120; n.16 p.123",
+   "note": "direct citation: Elpidorou and Freeman (2015a) for the Befindlichkeit/Stimmung translation survey, and (2015b) for the temporal dimensions of affectivity, both explicitly deferred-to rather than re-ar"
+  },
+  {
+   "source": "bor-sec-49",
+   "target": "bor-sec-02",
+   "relation": "extends-reading-of",
+   "kind": "forward-construction",
+   "locus": "p.106-108 vs. bor-sec-02 p.664-666",
+   "note": "(P/anticipatory-application) both essays reconstruct the same three-part disclosive structure of Befindlichkeit (thrownness / world-as-a-whole / mattering) from BT §29, but this chapter alone converts"
+  },
+  {
+   "source": "bor-sec-51",
+   "target": "bor-sec-02",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.160 (P/anticipatory-application)",
+   "note": "corroborates, from BT's conscience-analysis rather than FCM exegesis, bor-sec-02's flagged-but-unresolved debate axis on anxiety vs. profound boredom as candidate Grundstimmung"
+  },
+  {
+   "source": "bor-sec-51",
+   "target": "bor-sec-04",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "n/a (same volume, adjacent Chapter 8; P/anticipatory-applica",
+   "note": "shares this cluster's FCM third-form focus and the same edited volume; both independently treat profound boredom's status as a Grundstimmung-like phenomenon without citing one another"
+  },
+  {
+   "source": "bor-sec-54",
+   "target": "bor-sec-46",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "p.258 (cross-cluster)",
+   "note": "Thomas Sheehan is also the author of Ch.2 of this same volume/cluster (bor-sec-46, 'Heidegger: pathos as the Thing Itself'); Raffoul here cites a different 2018 Sheehan essay, not the Ch.2 chapter its"
+  },
+  {
+   "source": "bor-sec-55",
+   "target": "bor-sec-12",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "fn.5; Section 5, p.281-283",
+   "note": "Footnote 5: 'the text of this section is reproduced with permission from Slaby (2017b)'; References confirm Slaby 2017b = bor-sec-12's own paper. Content comparison (Hamacher critique, 1933 Rede an Ar"
+  },
+  {
+   "source": "bor-sec-55",
+   "target": "bor-sec-13",
+   "relation": "extends-reading-of",
+   "kind": "forward-construction",
+   "locus": "p.276-280 (this cluster's own cross-reference; not cited in ",
+   "note": "Both units read FCM's third-form telling-refusal/Augenblick sequence closely, but this chapter adds the Volk-attunement/collective-address dimension neither bor-sec-13 (2010) nor bor-sec-12 (2017) dev"
+  },
+  {
+   "source": "bor-sec-42",
+   "target": "bor-sec-02",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.784",
+   "note": "Cites Elpidorou & Freeman 'Affectivity in Heidegger I: Moods and emotions in Being and Time' (2015) for its general mood/meaning claims only -- not engaged for boredom content (FAITHFUL-Haj-Bolouri)."
+  },
+  {
+   "source": "bor-sec-42",
+   "target": "bor-sec-03",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "pp.784, 791, 803, 804",
+   "note": "Cites Freeman & Elpidorou 'Affectivity in Heidegger II: Temporality, boredom, and beyond' (2015) four times for general mood/care/meaningfulness claims; never once for its boredom argument despite the"
+  },
+  {
+   "source": "bor-sec-11",
+   "target": "bor-sec-10",
+   "relation": "extends-reading-of",
+   "kind": "forward-construction",
+   "locus": "n/a",
+   "note": "(P/anticipatory-application) Quaranta's 'In the Mood for Heideggerian Boredom: Film Viewership as Being-in-the-World' (2024) shares this source's cinema-Heidegger method but treats spectatorship itsel"
+  },
+  {
+   "source": "bor-sec-36",
+   "target": "bor-sec-28",
+   "relation": "extends-reading-of",
+   "kind": "forward-construction",
+   "locus": "n/a",
+   "note": "P/anticipatory-application -- non-citational, cluster-internal parallel: Kim et al.'s (2018) eye-gaze apparatus description (Eye Tribe, 30fps binocular gaze, AOI/hitbox fixation counting) is exactly t"
+  },
+  {
+   "source": "bor-sec-36",
+   "target": "bor-sec-38",
+   "relation": "extends-reading-of",
+   "kind": "forward-construction",
+   "locus": "n/a",
+   "note": "P/anticipatory-application -- non-citational, cluster-internal parallel: this source's pupil-size-artefact and foreshortening-artefact cautions are directly applicable background any pupil-dilation st"
+  },
+  {
+   "source": "bor-sec-08",
+   "target": "bor-sec-25",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.6 n.9",
+   "note": "Cluster-internal link: Hughes's footnote critique of Elpidorou's normative/moral/psychological drift targets exactly the regulatory-theory move bor-sec-25 develops at length (FAITHFUL-Hughes, p.6 n.9)"
+  },
+  {
+   "source": "bor-sec-18",
+   "target": "bor-sec-19",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "p.265",
+   "note": "Mansikka's 'essence of paideia' quotation is cited 'in Thomson 2003, p.133' -- almost certainly a reprint/republication of this cluster's bor-sec-19 (Thomson, Inquiry 2001; identical title, same autho"
+  },
+  {
+   "source": "bor-sec-18",
+   "target": "bor-sec-07",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "p.602, 611 (in Gibbs's own pagination)",
+   "note": "Direction note: bor-sec-07 (Gibbs 2011, Strand A) cites this unit twice as a prior education-sphere treatment of Heideggerian boredom; this is a normal, chronologically sound citation (Gibbs postdates"
+  },
+  {
+   "source": "bor-sec-17",
+   "target": "bor-sec-19",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "468, 474",
+   "note": "Cites Thomson but a DIFFERENT 2019 piece ('Technology, Ontotheology, Education', in Heidegger on Technology) than bor-sec-19's 'Heidegger on Ontological Education' (2001) — same interlocutor, not the "
+  },
+  {
+   "source": "bor-sec-09",
+   "target": "bor-sec-04",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "Mihacevic pp.28, 34, 39-40 (n.18, n.58, n.91-92)",
+   "note": "Engages Elpidorou & Freeman's claim that profound boredom = lack of meaning + disengagement + altered time-perception (FAITHFUL-Mihacevic, p.39-40)"
+  },
+  {
+   "source": "bor-sec-09",
+   "target": "bor-sec-04",
+   "relation": "contests-reading-of",
+   "kind": "textual-citation",
+   "locus": "p.40-41",
+   "note": "Disputes the uniform loss-of-meaning claim across all three forms; only the 2nd form is genuine loss of personal meaning (FE)"
+  },
+  {
+   "source": "bor-sec-09",
+   "target": "bor-sec-07",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.28 (n.19)",
+   "note": "Cites Gibbs on boredom's difficulty of recognition as an internally or externally caused mood (FAITHFUL-Mihacevic, p.28)"
+  },
+  {
+   "source": "bor-sec-09",
+   "target": "bor-sec-13",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "pp.28, 34 (n.14, n.68)",
+   "note": "Cites Slaby on moods as existential orientations and on the Mitsein-structure of 2nd-form boredom (FAITHFUL-Mihacevic, p.28)"
+  },
+  {
+   "source": "bor-sec-29",
+   "target": "bor-sec-21",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.72 approx.",
+   "note": "Supplies the two-stage TUT-appraisal cognitive-process model of boredom that this study operationalizes and tests via EEG time-frequency analysis (FAITHFUL-Miyauchi & Kawasaki, p.72 approx.); this clu"
+  },
+  {
+   "source": "bor-sec-23",
+   "target": "bor-sec-08",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "n/a",
+   "note": "(P/anticipatory-application) Thematic parallel only, not an actual citation -- Murphy et al.'s reference list does not cite Hughes (2023), and the two papers share a publication year. Both independent"
+  },
+  {
+   "source": "bor-sec-23",
+   "target": "bor-sec-25",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "p.278-279, 288",
+   "note": "(P/anticipatory-application) Thematic parallel only -- Murphy et al.'s reference list does not cite Elpidorou's regulatory-theory work. The paper's 'utopian'/generative reading of profound boredom run"
+  },
+  {
+   "source": "bor-sec-23",
+   "target": "bor-sec-26",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "p.288-289",
+   "note": "(P/anticipatory-application) Thematic parallel only -- not an actual citation. Murphy et al.'s explicit contestation of the 'boredom is purely negative/opposite of flow' framing converges with Elpidor"
+  },
+  {
+   "source": "bor-sec-10",
+   "target": "bor-sec-03",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.35 n.2",
+   "note": "Footnote pointer ('for a thorough account...') to Elpidorou & Freeman 'Affectivity in Heidegger II' -- not engaged in depth."
+  },
+  {
+   "source": "bor-sec-10",
+   "target": "bor-sec-04",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.35 n.2",
+   "note": "Same footnote pointer, to Elpidorou & Freeman 'Is Profound Boredom Boredom?' -- E&F's skeptical thesis is not engaged."
+  },
+  {
+   "source": "bor-sec-10",
+   "target": "bor-sec-13",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "p.35 n.2",
+   "note": "Same footnote pointer, to Slaby 'The Other Side of Existence' -- not engaged in depth."
+  },
+  {
+   "source": "bor-sec-10",
+   "target": "bor-sec-11",
+   "relation": "cites-cluster-author",
+   "kind": "forward-construction",
+   "locus": "n/a (index-level)",
+   "note": "P/anticipatory-application: index-linking edge, NOT a citation in Quaranta's own reference list -- both units read cinema through Heideggerian boredom; overlap/divergence unverified pending bor-sec-11"
+  },
+  {
+   "source": "bor-sec-12",
+   "target": "bor-sec-13",
+   "relation": "cites-cluster-author",
+   "kind": "textual-citation",
+   "locus": "Slaby p.237 n.2",
+   "note": "Explicit self-citation: revisits and refocuses the 2010 paper's philosophy-of-emotion reading of the same FCM lecture toward this paper's ideology-critique (FE)"
+  },
+  {
+   "source": "bor-sec-12",
+   "target": "bor-sec-13",
+   "relation": "extends-reading-of",
+   "kind": "textual-citation",
+   "locus": "Slaby p.237 n.2",
+   "note": "Own account of the shift in focus from philosophy of emotion (2010) to existential-political critique (2017), stated by Slaby himself, not this cluster's inference (FE)"
+  },
+  {
+   "source": "bor-sec-13",
+   "target": "bor-sec-12",
+   "relation": "extends-reading-of",
+   "kind": "forward-construction",
+   "locus": "n/a — forward cluster-internal link",
+   "note": "(P/anticipatory-application) This unit predates bor-sec-12 by seven years, so no citation runs from here to there in the source text. This edge flags, as this cluster's own construction (not Slaby's),"
+  },
+  {
+   "source": "bor-sec-33",
+   "target": "bor-sec-16",
+   "relation": "extends-reading-of",
+   "kind": "forward-construction",
+   "locus": "n/a",
+   "note": "P/anticipatory-application -- thematic, non-citational parallel (Yuvaraj et al. 2025 postdates Feldges & Pieczenko 2020 but does not cite it): both sources independently read DMN/ECN-adjacent neural e"
+  }
+ ]
+}

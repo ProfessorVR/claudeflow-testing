@@ -1,0 +1,117 @@
+{
+  "id": "bor-sec-40",
+  "slug": "jaques-predicting-affect",
+  "citation": "Jaques, Natasha, Cristina Conati, Jason M. Harley, and Roger Azevedo. \"Predicting Affect from Gaze Data during Interaction with an Intelligent Tutoring System.\" In S. Trausan-Matu et al. (Eds.), Intelligent Tutoring Systems (ITS 2014), LNCS 8474, pp. 29-38. Cham: Springer International Publishing, 2014.",
+  "discipline": "intelligent tutoring systems / affective computing (HCI), designing and testing a gaze-only machine-learning method for predicting boredom and curiosity",
+  "strand": "E",
+  "depth": "map",
+  "thesis": "Jaques, Conati, Harley, and Azevedo ask whether eye-tracking data alone -- without pupil dilation or other physiological/facial/dialog features -- can predict boredom and curiosity during interaction with MetaTutor, an intelligent tutoring system that teaches the human circulatory system while scaffolding self-regulated learning. Their gap is twofold: prior gaze-affect work used hand-engineered heuristic rules rather than learned classifiers (Wang, Chignell, and Ishizuka's real-time empathic tutor; D'Mello, Olney, Williams, and Hays's GazeTutor), or treated pupil dilation rather than fixation/saccade features as the informative gaze signal (Muldner, Christopherson, Atkinson, and Burleson); curiosity is a second named contribution, an emotion the authors describe as rarely studied in affective computing. Using EMDAT-derived gaze features (166 total, across application-independent measures and seven Areas of Interest) from N=51 of 67 recruited undergraduates wearing a Tobii T60 eye tracker, and Weka classifiers (Random Forest, Naive Bayes, Logistic Regression, SVM) selected via Wrapper Feature Selection, the study finds that longer prediction windows (up to the full 14-minute inter-report interval) outperform the field's common short-window convention, that per-report-time classification outperforms pooling all self-reports together, and that specific gaze-transition patterns across seven interface regions distinguish engaged from disengaged students. Best results: ~69% accuracy/kappa=.33 for boredom, ~73% accuracy/kappa=.42 for curiosity.",
+  "sections": [
+    { "title": "Abstract", "page": "29", "summary": "States the aim (predicting boredom/curiosity from gaze alone), previews the ML/feature-selection approach, and previews the window-length and feature-importance findings." },
+    { "title": "1 Introduction", "page": "29-30", "summary": "Motivates affect-adaptive interfaces generally; states the two gaps (heuristic-only prior gaze work; pupil-dilation-centric prior work) and the curiosity contribution, via Pekrun's academic-emotions research." },
+    { "title": "2 Related Work", "page": "30-31", "summary": "Reviews DBN-based (Conati and Maclaren) and acoustic/dialog-based (Forbes-Riley et al.) affect modeling; multi-sensor physiological detection (Sabourin, Mott, and Lester: 75%/85% accuracy; D'Mello and colleagues: 60-70% single-sensor accuracy); gaze-specific prior work (Smilek, Carriere, and Cheyne on blinking/fixation and boredom; Muldner et al. and Wang et al. on pupil dilation; GazeTutor's fixed-rule intervention); and the companion MetaTutor study by Harley, Bouchet, and Azevedo correlating self-reports with FaceReader software output." },
+    { "title": "3 MetaTutor User Study", "page": "31-32", "summary": "Describes the MetaTutor interface (Fig.1: overall learning goal/subgoal bar, four pedagogical agents, learning strategies palette, text/image content, table of contents), the N=67 undergraduate sample, the Tobii T60 recording setup, and the Emotions-Value Questionnaire (EVQ) protocol." },
+    { "title": "4 Eye Tracking Data Analysis", "page": "32", "summary": "Describes EMDAT feature extraction (application-independent gaze features plus seven-AOI features), the explicit exclusion of pupil dilation due to a luminance confound, and the 166-feature total." },
+    { "title": "5 Machine Learning Experiments", "page": "32-33", "summary": "Frames boredom and curiosity as two separate binary classification problems (EP/EA labeling); describes the four Weka algorithms, 10-fold cross-validation, and the PCA-versus-Wrapper-Feature-Selection comparison (WFS preferred)." },
+    { "title": "6 Results", "page": "34-36", "summary": "6.1 window-length experiment (Fig.2, GLM); 6.2 important features selected by WFS (Fig.3, gaze-trend diagram); 6.3 time-dependent, per-report-time prediction (Figs.4-5)." },
+    { "title": "7 Conclusions and Future Work", "page": "36-37", "summary": "Restates the gaze-alone finding, the window-length challenge to convention, and the report-timing effect; proposes adding Electrodermal Activity (EDA) sensing in future work." },
+    { "title": "Acknowledgments and References", "page": "37-38", "summary": "Funding (NSERC, SSHRC, NSF, Microsoft Research); thanks Daria Bondareva for data processing/validation; 32 references." }
+  ],
+  "constructs": [
+    { "label": "attentional disengagement / meta-awareness", "treatment": "organizing construct in all but name; the abstract's stated payoff is detecting 'when students disengage from MetaTutor,' and the entire Results feature-importance analysis (Section 6.2) characterizes engaged versus disengaged gaze behavior across seven Areas of Interest", "locus": "p.29, 34-35" },
+    { "label": "flow / engagement (contrast pole)", "treatment": "used throughout as the antonym of boredom/low-curiosity ('engagement is associated with user satisfaction,' citing Forbes-Riley et al.), but never tied to Csikszentmihalyi or a flow theory -- a looser usage than the cluster's Kim et al. (bor-sec-28)", "locus": "p.30" },
+    { "label": "situational vs. trait/state boredom", "treatment": "implicitly state-oriented: EVQ items ask about feelings 'right now,' repeated five times across the session; never theorized as a trait/state distinction, and no Boredom Proneness Scale or trait measure appears", "locus": "p.32" },
+    { "label": "mind-wandering / task-unrelated thought", "treatment": "never named; the closest behavioral analogue is the finding that disengaged students show 'frequent, scattered gaze transitions, without remaining focused on a single AOI,' offered here only as an analogy, not the authors' own framing", "locus": "p.35" },
+    { "label": "temporality of boredom (time-drag)", "treatment": "not treated in the phenomenological sense (subjective slowing of time is never discussed); the paper's own extensive treatment of 'time' is procedural -- window length and self-report timing as predictors of classifier accuracy, a methodological rather than experiential temporality", "locus": "p.33-36" },
+    { "label": "boredom-as-regulatory-signal (functional account)", "treatment": "not treated; boredom is framed purely as a state to detect and eventually mitigate via intervention, not as adaptive or functional", "locus": null },
+    { "label": "boredom proneness", "treatment": "not treated; no trait measure administered", "locus": null },
+    { "label": "monotony / meaninglessness", "treatment": "not treated; MetaTutor is a content-rich adaptive multi-agent interface, not a monotony-induction paradigm", "locus": null },
+    { "label": "profound/deep boredom (FCM 3rd form); being-bored-by (1st form); being-bored-with (2nd form)", "treatment": "not applicable -- purely empirical ML/HCI paper, no phenomenological or Heideggerian vocabulary present", "locus": null }
+  ],
+  "measures": [
+    {
+      "label": "gaze variance / fixation dispersion",
+      "signal": "fixations, saccades, relative/absolute path angle, and seven-AOI-specific features (longest fixation duration, proportion of fixations/time, AOI-pair gaze-transition counts and proportions, time to first/last fixation, total fixation time)",
+      "apparatus": "Tobii T60 screen-based eye tracker; features extracted via EMDAT (open-source gaze-data-analysis package); seven Areas of Interest defined on the MetaTutor interface: Text Content, Image Content, Overall Learning Goal (OLG), Subgoals, Learning Strategies Palette (LSP), Agent, Table of Contents (TOC)",
+      "sampleN": "67 recruited, 51 analyzed (following the data-validation procedure of Bondareva et al. 2013)",
+      "keyResult": "166 total features; engaged (curious/not-bored) students show more TOC-TOC transitions, longer TOC fixations, and more image/OLG attention; disengaged students show scattered AOI transitions without sustained focus, except frequent subgoal fixations; curious students fixate shorter on the Agent AOI",
+      "locus": "p.31-32, 34-35 (Fig.3)"
+    },
+    {
+      "label": "pupil dilation / pupillometry",
+      "signal": "apparatus-capable but explicitly excluded",
+      "apparatus": "Tobii T60 (pupil-size-capable), but not analyzed",
+      "sampleN": "n/a",
+      "keyResult": "excluded because testing occurred in a room with a window; the authors cite evidence (footnote) that pupil response is more sensitive to luminance than to affect",
+      "locus": "p.32 (footnote 2)"
+    },
+    {
+      "label": "self-report / survey scale",
+      "signal": "19-item Emotions-Value Questionnaire (EVQ), a modified subscale of Pekrun's Academic Emotions Questionnaire, 5-point Likert (1='strongly disagree' to 5='strongly agree'), items such as 'Right now I feel bored'",
+      "apparatus": "on-screen/paper questionnaire developed at McGill University; administered at baseline and every 14 minutes thereafter, 5 administrations per student total",
+      "sampleN": "51 analyzed (67 recruited)",
+      "keyResult": "boredom M=2.60/SD=0.69, curiosity M=2.93/SD=0.71 (statistics cited to the companion Harley, Bouchet, and Azevedo 2013 study on the same dataset); ratings dichotomized as Emotion Present (>=3) / Emotion Absent (<3) for classification labels",
+      "locus": "p.32"
+    },
+    {
+      "label": "ML classification",
+      "signal": "binary classification of boredom and curiosity (modeled as two separate problems, not mutually exclusive, given r=-.333 negative correlation but 18%/13% co-occurrence rates)",
+      "apparatus": "Weka toolkit: Random Forest, Naive Bayes, Logistic Regression, SVM; 10-fold cross-validation for both classification and parameter tuning; feature selection via PCA vs. Wrapper Feature Selection (WFS, nested 10-fold CV, features retained if selected in >10% of sub-folds); evaluated via accuracy and Cohen's kappa against a majority-class baseline; General Linear Model (GLM) analyses with Bonferroni correction across two designs (4 classifier x 6 window-length; 4 classifier x 4 report-time)",
+      "sampleN": "51",
+      "keyResult": "WFS outperformed PCA on both accuracy and interpretability; best results 68.83% accuracy/kappa=.330 for boredom (Logistic Regression, report 1), 73.17% accuracy/kappa=.416 for curiosity (Random Forest, report 3); longer windows (100%/14min, or 75%/10.5min for boredom) significantly outperformed short windows, contradicting the field's common ~20-second-window convention",
+      "locus": "p.32-34, 36 (Figs.2, 4, 5)"
+    },
+    {
+      "label": "behavioral (RT / errors / performance-monitoring)",
+      "signal": "not treated -- no task-performance, response-time, or interaction-log features used",
+      "apparatus": "n/a (MetaTutor's own learning-strategy interaction logs exist but were not incorporated into this study's feature set)",
+      "sampleN": "n/a",
+      "keyResult": "absent; contrast with Sabourin et al.'s multimodal approach, which does combine interaction logs with physiological sensors",
+      "locus": "not treated"
+    }
+  ],
+  "readings": [],
+  "readings_note": "FCM bridge not applicable for Strand E per cluster convention; this is an empirical HCI/machine-learning paper with no engagement of Heidegger's Fundamental Concepts of Metaphysics. bridges.fcm is left empty.",
+  "concepts": [
+    { "term": "MetaTutor (intelligent tutoring system)", "type": "TERM", "locus": "p.29, 31-32" },
+    { "term": "Emotions-Value Questionnaire (EVQ)", "type": "TERM", "locus": "p.32" },
+    { "term": "EMDAT (open-source gaze-data-analysis package)", "type": "TERM", "locus": "p.32" },
+    { "term": "Area of Interest (AOI) -- seven-region MetaTutor schema", "type": "TERM", "locus": "p.32" },
+    { "term": "Wrapper Feature Selection (WFS) vs. Principal Component Analysis (PCA)", "type": "TERM", "locus": "p.32-33" },
+    { "term": "Emotion Present (EP) / Emotion Absent (EA) labeling convention", "type": "TERM", "locus": "p.32-33" },
+    { "term": "relative path angle / absolute path angle (gaze features)", "type": "TERM", "locus": "p.32" },
+    { "term": "self-regulated learning (SRL)", "type": "TERM", "locus": "p.29, 31" }
+  ],
+  "interlocutors": [
+    { "name": "Pekrun, Reinhard (2002, 2011)", "role": "Academic Emotions Questionnaire; source theory for curiosity as an academic emotion; the EVQ used in this study is a modified subscale of Pekrun's instrument", "locus": "p.29-30, 32" },
+    { "name": "Forbes-Riley, Kate, Diane Litman, Heather Friedberg, and Joel Drummond (2012)", "role": "predicted disengagement from acoustic/dialog features; source of the 'engagement is associated with user satisfaction' claim and a human-judge kappa benchmark", "locus": "p.30" },
+    { "name": "Conati, Cristina, and Heather Maclaren (2009)", "role": "Dynamic Bayesian Network modeling of learner emotion from personality and interaction logs", "locus": "p.30" },
+    { "name": "Sabourin, Jennifer, Bradford Mott, and James C. Lester (2011, 2012)", "role": "multi-sensor (heart rate, skin conductance, posture, questionnaires, interaction logs) affect detection achieving 75%/85% accuracy for boredom/curiosity; key benchmark for the higher accuracy multimodal fusion typically requires", "locus": "p.30, 36-37" },
+    { "name": "D'Mello, Sidney, and Arthur Graesser, and colleagues (2005, 2007, 2012)", "role": "single-sensor affect detection (facial expression, dialog, posture) achieving 60-70% boredom accuracy; also GazeTutor, a heuristic gaze-reactive ITS intervention", "locus": "p.30" },
+    { "name": "Wang, Hua, Mark Chignell, and Mitsuru Ishizuka (2006)", "role": "real-time empathic tutoring agent responding to heuristic gaze/pupil signs of boredom; the 'hand-engineered heuristics' precedent this paper positions its learned-classifier approach against", "locus": "p.29-30" },
+    { "name": "Muldner, Kasia, Rachel Christopherson, Robert Atkinson, and Winslow Burleson (2009)", "role": "investigated pupil dilation and gaze for affect/reasoning in user modeling; the pupil-dilation-centric precedent this paper positions its gaze-feature approach against", "locus": "p.29" },
+    { "name": "Smilek, Daniel, Jonathan S. Carriere, and J. Allan Cheyne (2010)", "role": "blinking frequency and lack of text fixations as indicators of mind-wandering/boredom, cited as psychological grounding for the gaze-boredom link", "locus": "p.30" },
+    { "name": "Harley, Jason M., Fanny Bouchet, and Roger Azevedo (2013)", "role": "companion study on the same MetaTutor dataset correlating self-reported emotions with FaceReader software output (75.6% agreement); source of the EP/EA labeling convention and the boredom/curiosity descriptive statistics used in this paper", "locus": "p.30-31, 32" },
+    { "name": "Bondareva, Daria, Cristina Conati, Reza Feyzi-Behnagh, Jason M. Harley, Roger Azevedo, and Francois Bouchet (2013)", "role": "EMDAT tool, seven-AOI schema, and gaze/learning-gains study on the same MetaTutor dataset; source of the data-validation procedure used to reach N=51; found the Agent AOI was not predictive of learning gains, a contrast point for this paper's Agent-fixation finding", "locus": "p.31-32, 35" },
+    { "name": "Silvia, Paul J. (2008)", "role": "curiosity as an interest-related emotion, theoretical grounding for studying curiosity alongside boredom", "locus": "p.29-30" },
+    { "name": "Gutica, Mirela, and Cristina Conati (2013)", "role": "student emotions in an edu-game; source of the ~20-second affect-labeling window convention this paper's window-length finding contradicts", "locus": "p.35" }
+  ],
+  "tensions": [
+    { "axis": "gaze-only (this paper's single-modality approach) vs. multimodal physiological fusion (Sabourin et al.; Arroyo et al.)", "note": "Jaques et al. explicitly position gaze-only classification as a deliberate methodological contribution while acknowledging multimodal approaches achieve higher accuracy (75%/85% vs. this paper's ~69%/73%), framing the trade-off rather than resolving it.", "locus": "p.36-37" },
+    { "axis": "hand-engineered heuristic gaze rules (Wang et al.'s real-time system; GazeTutor's fixed ten-second rule) vs. machine-learned classification from gaze features (this paper's contribution)", "note": "explicit contrast framing in the Introduction motivating the entire study design.", "locus": "p.29-30" },
+    { "axis": "short, fixed-window affect labeling (~20 seconds, common practice per Gutica and Conati) vs. this paper's empirical finding that substantially longer windows (up to the full 14-minute inter-report interval) yield better accuracy", "note": "a genuine challenge to a field convention, not merely a design choice; the authors present it as a specific empirical contribution.", "locus": "p.35" },
+    { "axis": "boredom and curiosity as theoretically mutually exclusive (e.g., quadrant/valence-arousal models) vs. empirical co-occurrence in this dataset", "note": "the paper explicitly notes the data does not support strict mutual exclusivity (18% of reports rated both present, 13% both absent, despite a significant negative correlation), and models the two emotions as separate binary problems rather than one joint category as a result.", "locus": "p.32-33" }
+  ],
+  "bridges": {
+    "fcm": [],
+    "dataset_channels": [
+      { "target": "Boredom Experiment (VR Attention Study) -- eye-tracking/gaze channel", "relation": "grounds-measure", "status": "****** UNVERIFIED", "note": "Jaques et al.'s Tobii T60 apparatus, EMDAT/seven-AOI feature schema (166 features), and WFS-plus-classifier ML pipeline (Random Forest/Naive Bayes/Logistic Regression/SVM) offer a concrete gaze-only affect-classification template for a future VR attention study's eye-tracking channel, but VR headset-integrated eye tracking would likely differ substantially in geometry (3D gaze vectors, headset-relative AOIs) from this study's fixed, seven-region, 2D screen-based paradigm; linkage requires the dataset entry's own instrumentation to be confirmed (P/anticipatory-application)." }
+    ]
+  },
+  "extraction": {
+    "tool": "pdftotext",
+    "date": "2026-07-14",
+    "ocr_confidence": "high",
+    "note": "haystack-extracted from 727pp ITS-2014 proceedings, pdftotext -f 55 -l 64"
+  }
+}

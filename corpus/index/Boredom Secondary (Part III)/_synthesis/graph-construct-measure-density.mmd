@@ -1,0 +1,94 @@
+%% Construct × measure density — Boredom Secondary (Part III)
+%% The concordance's central finding, drawn: the three FCM-form constructs are reachable
+%% by SELF-REPORT AND NOTHING ELSE. Every hard instrument is empty for all three.
+%% Numbers on edges = units populating that cell (see boredom-construct-measure-concordance.md).
+graph LR
+  subgraph FCMROW["FCM FORMS — the phenomenological constructs"]
+    PB["profound / deep boredom<br/>(3rd form) · 22 units"]
+    B1["being-bored-by<br/>(1st form) · 17 units"]
+    B2["being-bored-with<br/>(2nd form) · 15 units"]
+  end
+
+  subgraph PSYROW["PSYCHOLOGICAL CONSTRUCTS"]
+    AD["attentional disengagement<br/>28 units"]
+    FL["flow / engagement<br/>33 units"]
+    ST["situational vs. trait<br/>26 units"]
+    MM["monotony / meaninglessness<br/>34 units"]
+    TD["temporality / time-drag<br/>28 units"]
+    BP["boredom proneness · 16"]
+    MW["mind-wandering / TUT · 18"]
+    RS["regulatory signal · 23"]
+  end
+
+  SR["<b>self-report /<br/>survey scale</b><br/>25 units"]
+
+  subgraph HARD["HARD INSTRUMENTS — empty for every FCM form"]
+    FEA["EEG frontal<br/>alpha asymmetry"]
+    AT["EEG alpha/theta"]
+    CN["EEG connectivity"]
+    EOEC["EEG eyes-open/closed"]
+    PU["pupillometry"]
+    GZ["gaze / fixation"]
+    BL["blink"]
+    ML["ML classification"]
+    HR["heart rate / HRV"]
+    BH["behavioural RT/errors"]
+  end
+
+  %% the FCM forms reach ONLY self-report
+  PB ==>|"5"| SR
+  B1 ==>|"4"| SR
+  B2 ==>|"3"| SR
+  PB -->|"1 (lit. survey)"| HR
+  PB -->|"1 (cited)"| BH
+
+  %% and the one cell that exists is a NEGATIVE result
+  NEG["<b>bor-sec-04 populates<br/>profound-boredom × self-report<br/>by arguing BPS/ZBS<br/>CANNOT measure it</b>"]
+  SR -.-> NEG
+  NEG -.-> PB
+
+  %% the psychological constructs reach everything
+  AD --> FEA
+  AD --> AT
+  AD --> CN
+  AD --> EOEC
+  AD --> PU
+  AD --> GZ
+  AD --> BL
+  AD --> ML
+  AD --> HR
+  AD --> BH
+  AD ==>|"19"| SR
+  FL --> PU
+  FL --> GZ
+  FL --> ML
+  FL ==>|"18"| SR
+  ST --> FEA
+  ST --> AT
+  ST --> ML
+  ST ==>|"18"| SR
+  MM --> AT
+  MM ==>|"16"| SR
+  TD --> AT
+  TD ==>|"12"| SR
+  BP --> FEA
+  MW --> AT
+  RS --> CN
+
+  %% the wall
+  WALL["<b>∅</b><br/>NO unit in 55 both reads FCM<br/>and measures with EEG or eye-tracking.<br/>Verified by 3 independent routes."]
+  FCMROW -.- WALL
+  WALL -.- HARD
+
+  classDef fcm fill:#d6eaf8,stroke:#2874a6,stroke-width:2px
+  classDef psy fill:#d5f5e3,stroke:#1e8449
+  classDef hard fill:#fadbd8,stroke:#943126
+  classDef sr fill:#f9e79f,stroke:#b7950b,stroke-width:3px
+  classDef wall fill:#fdedec,stroke:#c0392b,stroke-width:3px
+  classDef neg fill:#f5b7b1,stroke:#c0392b,stroke-dasharray: 5 3
+  class PB,B1,B2 fcm
+  class AD,FL,ST,MM,TD,BP,MW,RS psy
+  class FEA,AT,CN,EOEC,PU,GZ,BL,ML,HR,BH hard
+  class SR sr
+  class WALL wall
+  class NEG neg

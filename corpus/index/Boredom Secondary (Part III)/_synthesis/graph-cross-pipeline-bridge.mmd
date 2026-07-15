@@ -1,0 +1,78 @@
+%% Cross-pipeline bridge — Boredom Secondary (Part III)
+%% Links this cluster to (1) the FCM entry [read-only], (2) the Boredom Experiment dataset
+%% entry [NOT YET BUILT — every link flagged UNVERIFIED], and (3) Part III.
+%% HARD CAP: <=25 edges (plan §4). Actual: 24. Counted in the footer.
+%% ALL bridge edges are P/anticipatory-application — our links, never the sources' claims.
+graph LR
+  subgraph FCM["FCM entry — corpus/index/Heidegger - FCM/ (READ-ONLY)"]
+    F03["fcm-03<br/>awakening ≠ ascertaining"]
+    F04["fcm-04<br/>first form"]
+    F05["fcm-05<br/>second form"]
+    F06["fcm-06<br/>third form"]
+    F07["fcm-07<br/>particular profound"]
+  end
+
+  subgraph CL["Boredom Secondary (Part III) — 55 units"]
+    CA["Strand A/B/G<br/>phenomenology + education<br/>21 units bridge to FCM"]
+    CC["Strand C<br/>psychology"]
+    CD["Strand D/E<br/>EEG + eye-tracking<br/>19 units instrumented"]
+    WALL{{"THE WALL<br/>FCM-bridged ∩ instrumented = ∅"}}
+  end
+
+  subgraph DS["Boredom Experiment (VR Attention Study)<br/>****** UNVERIFIED — ENTRY NOT BUILT"]
+    DEEG["EEG channel"]
+    DEYE["eye-tracking channel"]
+    DSR["self-report channel"]
+  end
+
+  subgraph P3["Dissertation Part III"]
+    P3M["measurement design"]
+    P3I["interpretive frame"]
+    P3C["cohort-level analysis"]
+  end
+
+  %% 1-5: cluster -> FCM (bridges-to-fcm, 68 edges collapse to 5 targets)
+  CA -->|"bridges-to-fcm ×68"| F06
+  CA --> F04
+  CA --> F05
+  CA --> F07
+  CA -->|"the measurement wall's<br/>principled basis"| F03
+
+  %% 6-8: cluster -> dataset (grounds-measure, 37 edges; ALL UNVERIFIED)
+  CD -.->|"grounds-measure ×37<br/>UNVERIFIED"| DEEG
+  CD -.->|"UNVERIFIED"| DEYE
+  CC -.->|"UNVERIFIED"| DSR
+
+  %% 9-11: the wall
+  CA --- WALL
+  WALL --- CD
+  WALL ==>|"Part III's design has<br/>NO precedent in 55 sources"| P3M
+
+  %% 12-17: cluster -> Part III (the actionable findings)
+  CD -->|"DA-05: FEA needs<br/>an arousal control"| P3M
+  CC -->|"DA-04: do NOT validate<br/>physiology against self-report"| P3M
+  CA -->|"DA-02/03: what<br/>profound boredom is"| P3I
+  CC -->|"DA-01: state=functional,<br/>trait=dysfunction"| P3I
+  CA -->|"DA-08: the account is<br/>individualist by construction"| P3C
+  CA -->|"DA-11: take the collective account<br/>from Hughes, NOT from<br/>Heidegger's Volk"| P3C
+
+  %% 18-21: FCM -> Part III interpretive spine
+  F06 -.->|"the third form is<br/>UN-INSTRUMENTED"| P3I
+  F03 -.->|"why self-report is not<br/>a neutral instrument"| P3M
+  F05 -.->|"outward engagement can<br/>MASK boredom (dinner party)"| P3M
+  F04 -.-> P3I
+
+  %% 22-24: dataset -> Part III (all pending)
+  DEEG -.->|"UNVERIFIED"| P3M
+  DEYE -.->|"UNVERIFIED"| P3M
+  DSR -.->|"UNVERIFIED"| P3M
+
+  %% EDGE COUNT: 5 + 3 + 3 + 6 + 4 + 3 = 24  (cap 25) ✔
+  classDef fcm fill:#d6eaf8,stroke:#2874a6
+  classDef unv fill:#fdebd0,stroke:#ca6f1e,stroke-dasharray: 5 3
+  classDef wall fill:#fdedec,stroke:#c0392b,stroke-width:3px
+  classDef p3 fill:#e8daef,stroke:#6c3483
+  class F03,F04,F05,F06,F07 fcm
+  class DEEG,DEYE,DSR unv
+  class WALL wall
+  class P3M,P3I,P3C p3

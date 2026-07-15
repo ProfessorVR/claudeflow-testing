@@ -1,0 +1,93 @@
+%% Concept–debate map — Boredom Secondary (Part III)
+%% 11 debate axes (DA-01..DA-11) with their poles and home units.
+%% Dashed border = axis CONSTRUCTED by this cluster (P/anticipatory-application),
+%% i.e. assembled from units that do not cite one another on the point.
+graph TB
+  subgraph DA01["DA-01 · deficit ↔ functional"]
+    A1L["deficit / aversive<br/>bor-sec-32, 21"]
+    A1R["functional / adaptive<br/>bor-sec-25, 26"]
+    A1X{{"RESOLVED BY PARTITION<br/>state = functional<br/>trait = dysfunction of<br/>the same mechanism"}}
+    A1L --- A1X --- A1R
+    A1C["critique: the turn is a<br/>DEPARTURE from Heidegger<br/>bor-sec-08, 07"]
+    A1C -.-> A1R
+  end
+
+  subgraph DA02["DA-02 · profound boredom IS boredom?"]
+    A2L["sui generis<br/>bor-sec-10, 11, 12, 13<br/>(unargued default)"]
+    A2R["continuous, qualified<br/>bor-sec-04"]
+    A2M["middle: shares structural pair<br/>bor-sec-09"]
+    A2L --- A2M --- A2R
+  end
+
+  subgraph DA03["DA-03 · which Grundstimmung?"]
+    A3L["angst<br/>bor-sec-45, 50, 48"]
+    A3R["profound boredom<br/>bor-sec-51"]
+    A3L --- A3R
+  end
+
+  subgraph DA04["DA-04 · what is ground truth?"]
+    A4L["self-report<br/>bor-sec-22, 30, 31, 33"]
+    A4R["physiology<br/>bor-sec-24, 28"]
+    A4X{{"FRAMING REFUSED<br/>awakened ≠ ascertained<br/>dissociation is PREDICTED"}}
+    A4L --- A4X --- A4R
+  end
+
+  subgraph DA05["DA-05 · FEA ↔ arousal confound"]
+    A5L["FEA indexes boredom<br/>bor-sec-30"]
+    A5R["alpha = global arousal<br/>bor-sec-27"]
+    A5B["asymmetry underperforms<br/>bor-sec-31"]
+    A5L --- A5R
+    A5B --- A5L
+  end
+
+  subgraph DA06["DA-06 · unified ↔ heterogeneous"]
+    A6L["unified"]
+    A6R["heterogeneous family"]
+    A6X{{"home source declines<br/>to resolve — bor-sec-21"}}
+    A6L --- A6X --- A6R
+    A6D["dissolves it<br/>bor-sec-20"]
+    A6D -.-> A6X
+  end
+
+  subgraph DA07["DA-07 · monotony ↔ meaning"]
+    A7L["environment-caused<br/>(1st form)"]
+    A7R["agent-caused<br/>(2nd/3rd forms)"]
+    A7X{{"BOTH internal to FCM<br/>bor-sec-03 · hybrid: bor-sec-08"}}
+    A7L --- A7X --- A7R
+  end
+
+  subgraph DA08["DA-08 · individual ↔ collective"]
+    A8L["individualist by construction<br/>— no place for collective<br/>bor-sec-08"]
+    A8R["Heidegger's own Volk-level<br/>reframing — politically<br/>compromised · bor-sec-55"]
+    A8L --- A8R
+    A8S["socioeconomically produced<br/>bor-sec-14"]
+    A8S -.-> A8R
+  end
+
+  subgraph DA09["DA-09 · mood ↔ emotion"]
+    A9L["mood (non-intentional)<br/>phenomenology"]
+    A9R["emotion (object-directed)<br/>— the regulatory theory's<br/>PREMISE · bor-sec-25/26"]
+    A9L --- A9R
+    A9T["8 renderings of<br/>Befindlichkeit · bor-sec-02"]
+    A9T -.->|"pre-decides the axis"| A9L
+  end
+
+  subgraph DA10["DA-10 · is boredom even a candidate?"]
+    A10L["angst is THE paradigm —<br/>boredom never raised<br/>bor-sec-50 (Ch.6)"]
+    A10R["profound boredom is<br/>authenticity-disclosing<br/>bor-sec-04 (Ch.8)"]
+    A10B["the bridge<br/>bor-sec-51 (Ch.7)"]
+    A10L -.->|"SAME BOOK<br/>never engage"| A10R
+    A10B -.-> A10R
+  end
+
+  subgraph DA11["DA-11 · philosophy ↔ politics"]
+    A11L["bracket it<br/>bor-sec-18"]
+    A11R["refuse to bracket<br/>bor-sec-12, 55, 52"]
+    A11L --- A11R
+  end
+
+  DA08 ==>|"forces"| DA11
+  DA04 ==>|"grounded by"| DA03
+
+  classDef constructed stroke-dasharray: 6 4,stroke-width:3px,stroke:#c0392b
+  class DA05,DA08,DA10 constructed
