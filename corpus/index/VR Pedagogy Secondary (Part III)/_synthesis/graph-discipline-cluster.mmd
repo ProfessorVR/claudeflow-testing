@@ -1,0 +1,66 @@
+graph TD
+    subgraph StrandA["Strand A — Presence Foundations"]
+        A1["ped-sec-01<br/>Lombard & Ditton"]
+        A2["ped-sec-02<br/>Witmer & Singer"]
+        A3["ped-sec-03<br/>Chow"]
+    end
+
+    subgraph StrandB["Strand B — VR-Learning Frameworks"]
+        B1["ped-sec-04<br/>Dalgarno & Lee"]
+        B2["ped-sec-05<br/>Fowler"]
+        B3["ped-sec-06<br/>Makransky & Petersen (CAMIL)"]
+        B4["ped-sec-07<br/>Mayer et al."]
+        B5["ped-sec-24<br/>Dalgarno & Lee 2012"]
+    end
+
+    subgraph StrandC["Strand C — Media-Comparison Experiments"]
+        C1["ped-sec-08<br/>Parong & Mayer 2018"]
+        C2["ped-sec-09<br/>Makransky & Lilleholt"]
+        C3["ped-sec-10<br/>Makransky et al."]
+        C4["ped-sec-11<br/>Makransky & Petersen SEM"]
+        C5["ped-sec-12<br/>Makransky et al. equivalence"]
+        C6["ped-sec-13<br/>Parong & Mayer 2020"]
+        C7["ped-sec-14<br/>Colin et al."]
+    end
+
+    subgraph StrandD["Strand D — Simulation Professional Education"]
+        D1["ped-sec-15<br/>Cook et al."]
+        D2["ped-sec-16<br/>Merchant et al."]
+        D3["ped-sec-17<br/>Makransky et al. genetics"]
+        D4["ped-sec-18<br/>Dubovi et al."]
+        D5["ped-sec-19<br/>Kononowicz et al."]
+        D6["ped-sec-20<br/>Roe et al."]
+    end
+
+    subgraph StrandE["Strand E — Reviews & Agendas"]
+        E1["ped-sec-21<br/>Potkonjak et al."]
+        E2["ped-sec-22<br/>Radianti et al."]
+        E3["ped-sec-23<br/>Cossio et al."]
+    end
+
+    subgraph StrandF["Strand F — Social Presence Theory (added 2026-07-15)"]
+        F1["ped-sec-25<br/>Gunawardena & Zittle"]
+        F2["ped-sec-26<br/>Garrison Anderson & Archer (CoI)"]
+        F3["ped-sec-27<br/>Tu"]
+        F4["ped-sec-28<br/>Richardson & Swan"]
+        F5["ped-sec-29<br/>Biocca Burgoon & Harms"]
+        F6["ped-sec-30<br/>Kreijns et al."]
+        F7["ped-sec-31<br/>Terry & Doolittle"]
+        F8["ped-sec-32<br/>Richardson et al. meta-analysis"]
+        F9["ped-sec-33<br/>De Back et al."]
+        F10["ped-sec-34<br/>VanderMeer et al."]
+    end
+
+    B1 -.extends.-> B5
+    StrandB -->|CAMIL synthesizes| StrandC
+    StrandC -->|feeds| StrandD
+    StrandE -->|reviews| StrandB
+    StrandE -->|reviews| StrandC
+    F9 -.->|cites, not Strand F| B1
+    F9 -.->|cites, not Strand F| B2
+    F10 -.->|cites, not Strand F| B1
+    F10 -.->|cites, not Strand F| F9
+
+    style StrandF fill:#fce8e6,stroke:#c0392b
+    style F9 fill:#fdebd0
+    style F10 fill:#fdebd0

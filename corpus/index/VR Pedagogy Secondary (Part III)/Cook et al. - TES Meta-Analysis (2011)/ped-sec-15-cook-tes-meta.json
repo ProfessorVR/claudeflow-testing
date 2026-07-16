@@ -1,0 +1,76 @@
+{
+  "id": "ped-sec-15",
+  "slug": "cook-tes-meta",
+  "citation": "Cook, D. A., Hatala, R., Brydges, R., Zendejas, B., Szostek, J. H., Wang, A. T., Erwin, P. J., & Hamstra, S. J. (2011). Technology-enhanced simulation for health professions education: A systematic review and meta-analysis. JAMA, 306(9), 978-988.",
+  "discipline": "medical / health professions education (systematic review and meta-analysis)",
+  "strand": "D",
+  "depth": "deep",
+  "thesis": "A PRISMA-compliant systematic review and meta-analysis of 609 studies (35,226 trainees) asking whether technology-enhanced simulation training (VR simulators, mannequins, models, animals/products, cadavers) improves outcomes compared with no intervention, and whether five instructional-design features moderate that effect; concludes pooled effects are large for knowledge/skills/behaviors and moderate for direct patient effects, that subgroup analyses of design features are almost uniformly inconclusive, and that the field should pivot from simulation-vs-no-intervention studies toward theory-based simulation-vs-simulation comparisons (FE, p.978, 987-988).",
+  "sections": [
+    { "title": "Abstract / structured summary", "page": "978", "summary": "States the objective (summarize technology-enhanced simulation training outcomes vs. no intervention), the search (MEDLINE, EMBASE, CINAHL, ERIC, PsycINFO, Scopus through May 2011), and the top-line pooled effect sizes: 1.20 knowledge, 1.14 time skills, 1.09 process skills, 1.18 product skills, 0.79 time behaviors, 0.81 process behaviors, and 0.50 direct patient effects, with large heterogeneity (I2 mostly >=50%) in all main analyses." },
+    { "title": "Introduction", "page": "978-979", "summary": "Frames technology-enhanced simulation broadly (computer-based VR simulators, high- and low-fidelity mannequins, plastic models, live animals, animal products, cadavers) as widely believed effective but empirically under-synthesized; prior reviews and 2 meta-analyses are described as limited by narrow inclusion criteria or absent quantitative pooling, motivating a comprehensive synthesis." },
+    { "title": "Methods: eligibility, search, and data extraction", "page": "979-980", "summary": "Broad eligibility for any-language studies of technology-enhanced simulation vs. no intervention for health professions learners at any stage, using Kirkpatrick-classified outcomes; explicitly excludes studies of computer-based virtual patients requiring only standard computer equipment (citing a separate prior systematic review, Cook/Erwin/Triola 2010) and standardized-patient/non-education uses. Duplicate independent screening (ICC=0.69) and abstraction; quality graded via MERSQI and a modified Newcastle-Ottawa Scale." },
+    { "title": "Methods: data synthesis and statistics", "page": "980-981", "summary": "Effect sizes standardized as Hedges g; random-effects pooling used because of high inconsistency (I2); planned subgroup analyses on study design, quality, and five instructional-design features (curricular integration, distributed practice, feedback, mastery learning, range of difficulty); Cohen's benchmarks applied for effect-size interpretation (>=0.8 large, 0.5-0.8 moderate); funnel plots/Egger test and trim-and-fill used to probe publication bias." },
+    { "title": "Results: trial flow, study characteristics, and quality", "page": "981-983", "summary": "From 10,903 records, 609 studies (35,226 trainees) were included: 137 randomized, 67 nonrandomized 2-group, 405 single-group pretest-posttest. Learners spanned physicians, nurses, dentists, and other health professions. Methodological quality was generally low (mean NOS 2.1/6; mean MERSQI 11.6/18), with most studies single-group and small-sample (median 24 participants providing outcomes)." },
+    { "title": "Results: pooled effect sizes by outcome", "page": "983-987", "summary": "Reports pooled effect sizes (with 95% CI) for each outcome category versus no intervention: knowledge 1.20 (n=118), time skills 1.14 (n=210), process skills 1.09 (n=426), product skills 1.18 (n=54), time behaviors 0.79 (n=20), process behaviors 0.81 (n=50), and direct patient effects 0.50 (n=32). Heterogeneity was consistently high; randomized-only subsets showed smaller but still positive pooled effects. Subgroup analyses of instructional-design features found only sporadic, inconsistent significant interactions (distributed practice >1 day and mastery learning trended toward larger effects; high feedback counterintuitively sometimes smaller effects)." },
+    { "title": "Comment: limitations, comparison with prior reviews, and implications", "page": "986-988", "summary": "Attributes high inconsistency to genuine variation across simulation modes, topics, and designs; notes lower-quality/single-group studies show inflated effects relative to randomized 2-group studies. Situates the finding alongside earlier narrower meta-analyses (laparoscopic surgery, deliberate practice) as consistent. Concludes that, given consistently large-to-moderate favorable effects and only ~4% of outcomes failing to show benefit, further simulation-vs-no-intervention studies are of low value; future research should instead compare simulation designs against each other (theory-based, within-study comparisons)." }
+  ],
+  "constructs": [
+    { "label": "learning outcomes: retention & transfer", "treatment": "operationalized as 'knowledge' outcomes (usually multiple-choice test scores); pooled ES 1.20 (95% CI 1.04-1.35), k=118 studies, n=8,595, vs. no intervention", "locus": "p.983" },
+    { "label": "learning outcomes: procedural / skills", "treatment": "subdivided into time skills (speed), process skills (global ratings/errors), product skills (quality of completed artifact); pooled ES 1.14/1.09/1.18 across k=210/426/54 studies, vs. no intervention", "locus": "p.983-985" },
+    { "label": "learning outcomes: procedural / skills (behavior/patient extension)", "treatment": "adjacent constructs beyond the frozen vocabulary: time/process behaviors with real patients (ES 0.79/0.81, k=20/50) and direct patient-care effects (ES 0.50, k=32), the study's own headline clinical-translation outcome", "locus": "p.985-986" }
+  ],
+  "conditions": [
+    { "design": "systematic review and meta-analysis (PRISMA-compliant)", "k": 609, "n_trainees": 35226, "comparator": "no intervention (control group or pre/post design)", "instrument": "Hedges g standardized mean difference; random-effects pooling", "effect_direction": "favors simulation across all 7 outcome categories", "locus": "p.978, 981-982" },
+    { "design": "study-design breakdown within the k=609 aggregate", "k": "137 randomized; 67 nonrandomized 2-group; 405 single-group pretest-posttest", "n_trainees": 35226, "comparator": "no intervention", "instrument": "MERSQI (mean 11.6/18) and modified Newcastle-Ottawa Scale (mean 2.1/6) for study-quality grading", "effect_direction": "randomized-only subsets show smaller but still positive pooled effects (e.g., knowledge 0.63)", "locus": "p.981-983, 986-987" },
+    { "design": "planned instructional-design subgroup analyses (not a media-condition contrast)", "k": "5 features tested: curricular integration, distributed practice (>1 day), feedback, mastery learning, range of task difficulty", "n_trainees": "varies by outcome", "comparator": "feature-present vs. feature-absent subsets, within the simulation-vs-no-intervention frame", "instrument": "z test for interaction significance", "effect_direction": "no consistent statistically significant interactions; weak trends for distributed practice and mastery learning; high feedback sometimes smaller effects", "locus": "p.986" },
+    { "design": "explicit scope exclusion", "k": "n/a", "n_trainees": "n/a", "comparator": "computer-based virtual-patient simulations requiring only standard computer equipment", "instrument": "n/a — excluded by eligibility criteria, citing a separate 2010 systematic review (Cook, Erwin & Triola)", "effect_direction": "not reported here; see ped-sec-19 (Kononowicz et al., Virtual Patient Simulations)", "locus": "p.980" }
+  ],
+  "readings": [
+    { "claim": "Technology-enhanced simulation training, compared with no intervention, is consistently associated with large effects on knowledge, skills, and behavior outcomes and moderate effects on direct patient-care outcomes.", "type": "READING/CLAIM", "stance": "defines", "locus": "p.978, 986", "tag": "FE" },
+    { "claim": "Heterogeneity (I2) was large across every main analysis, reflecting genuine variation in simulation modes, clinical topics, learner groups, instructional designs, research methods, and outcome measures rather than a single moderating factor.", "type": "READING/CLAIM", "stance": "qualifies", "locus": "p.986", "tag": "FE" },
+    { "claim": "Subgroup analyses of five instructional-design features found no consistent statistically significant interactions; results should be interpreted with caution given the number of comparisons, absence of a priori hypotheses, and between-study (rather than within-study) design.", "type": "READING/CLAIM", "stance": "qualifies", "locus": "p.986", "tag": "FAITHFUL-Cook" },
+    { "claim": "Two-group and higher-quality studies were consistently associated with smaller effect sizes than single-group pretest-posttest studies, plausibly because comparison groups control for maturation and non-intervention learning.", "type": "READING/CLAIM", "stance": "qualifies", "locus": "p.986-987", "tag": "FAITHFUL-Cook" },
+    { "claim": "Given consistently large-to-moderate favorable effects and only ~4% of outcomes failing to show benefit, further studies comparing simulation with no intervention are of low scientific value; the field's open questions require theory-based, within-study comparisons between simulation designs.", "type": "READING/CLAIM", "stance": "concludes", "locus": "p.987-988", "tag": "FAITHFUL-Cook" },
+    { "claim": "Computer-based virtual-patient simulations requiring only standard computer equipment are outside this review's scope, having already been the subject of a separate systematic review by an overlapping author team.", "type": "READING/CLAIM", "stance": "scopes", "locus": "p.980", "tag": "FE" }
+  ],
+  "concepts": [
+    { "term": "Hedges g (standardized mean difference)", "type": "TERM", "locus": "p.980" },
+    { "term": "I2 (heterogeneity/inconsistency statistic)", "type": "TERM", "locus": "p.980-981" },
+    { "term": "MERSQI (Medical Education Research Study Quality Instrument)", "type": "TERM", "locus": "p.980" },
+    { "term": "modified Newcastle-Ottawa Scale (NOS)", "type": "TERM", "locus": "p.980" },
+    { "term": "PRISMA (reporting standard)", "type": "TERM", "locus": "p.979" },
+    { "term": "Kirkpatrick classification (knowledge/skills, behaviors, results)", "type": "TERM", "locus": "p.980" },
+    { "term": "mastery learning", "type": "TERM", "locus": "p.980, 986" },
+    { "term": "distributed practice (>1 day)", "type": "TERM", "locus": "p.980, 986" },
+    { "term": "trim-and-fill (publication-bias adjustment)", "type": "TERM", "locus": "p.980-981" }
+  ],
+  "interlocutors": [
+    { "name": "Kirkpatrick, Donald", "role": "source of the four-level knowledge/skills-behaviors-results outcome classification used to code all outcomes", "locus": "p.980" },
+    { "name": "Issenberg, S. Barry et al.", "role": "prior 2005 BEME systematic review (109 studies) of high-fidelity simulation that this meta-analysis extends by adding and synthesizing 500 additional studies", "locus": "p.987" },
+    { "name": "McGaghie, William C. et al.", "role": "co-authors of prior narrower meta-analyses (deliberate practice, 14 studies) situated as consistent with this review's findings", "locus": "p.987" },
+    { "name": "Gurusamy, K. et al.", "role": "prior meta-analysis (23 studies) of VR training for laparoscopic surgery, cited as a consistent narrower precedent", "locus": "p.987" },
+    { "name": "Sturm, L. P. et al. / Sutherland, L. M. et al.", "role": "prior systematic reviews of surgical simulation in general, cited as concluding simulation is beneficial", "locus": "p.987" },
+    { "name": "Cohen, Jacob", "role": "source of the effect-size classification benchmarks (>=0.8 large; 0.5-0.8 moderate) used to interpret pooled results", "locus": "p.980" },
+    { "name": "Egger, M. et al.", "role": "source of the funnel-plot asymmetry test used to probe publication bias", "locus": "p.980" },
+    { "name": "Moher, D. et al. (PRISMA Group)", "role": "source of the PRISMA reporting standard this review adheres to", "locus": "p.979" },
+    { "name": "Oxman, A. & Guyatt, G.", "role": "cited for the methodological caution that subgroup analyses should be interpreted skeptically absent a priori hypotheses", "locus": "p.987" },
+    { "name": "Cook, David A., Erwin, Patricia J. & Triola, Marc M. (self-citation)", "role": "authors' own separate 2010 systematic review of computer-based virtual patients, cited as the basis for excluding that literature from this review's scope", "locus": "p.980" }
+  ],
+  "tensions": [
+    { "axis": "large, consistent pooled effect sizes vs. large, unexplained heterogeneity (I2)", "note": "Every main analysis combines a statistically robust, favorable pooled estimate with high inconsistency across individual studies; the authors read this as support for simulation's effectiveness across a broad range of learners and topics rather than as undermining the pooled estimate.", "locus": "p.986" },
+    { "axis": "aggregate strength of evidence vs. low quality of individual studies", "note": "Mean study-quality scores were low (NOS 2.1/6; MERSQI 11.6/18), and two-thirds of studies were uncontrolled single-group designs, yet the pooled effect across 609 studies is judged robust to sensitivity analyses excluding lower-quality and imputed-data studies.", "locus": "p.983, 986-987" },
+    { "axis": "simulation-vs-no-intervention as an exhausted research question vs. simulation-vs-simulation as the open one", "note": "The article's own conclusion pivots from documenting benefit (largely settled, per this review) to calling for theory-based, within-study comparisons between simulation designs — a research agenda this cluster's own Part III design instantiates rather than repeats (P/anticipatory-application).", "locus": "p.987-988" }
+  ],
+  "bridges": {
+    "vle": [],
+    "boredomExperimentDataset": [
+      "****** UNVERIFIED: anchor entry not yet built"
+    ]
+  },
+  "extraction": {
+    "tool": "pdftotext",
+    "date": "2026-07-15",
+    "ocr_confidence": "high"
+  }
+}

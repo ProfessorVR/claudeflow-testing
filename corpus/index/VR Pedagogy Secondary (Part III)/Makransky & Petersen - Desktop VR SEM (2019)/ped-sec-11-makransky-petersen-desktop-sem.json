@@ -1,0 +1,120 @@
+{
+  "id": "ped-sec-11",
+  "slug": "makransky-petersen-desktop-sem",
+  "citation": "Makransky, G., & Petersen, G. B. (2019). Investigating the process of learning with desktop virtual reality: A structural equation modeling approach. Computers & Education, 134, 15–30. https://doi.org/10.1016/j.compedu.2019.02.002",
+  "discipline": "educational psychology / instructional technology",
+  "strand": "C",
+  "depth": "deep",
+  "thesis": "Re-testing Lee et al.'s (2010) and Makransky & Lilleholt's (2018) desktop-VR process models with pre-to-post-test change scores (rather than post-test-only subjective outcomes, to avoid common-method-variance inflation) reveals two surviving causal paths from VR features to learning in a single-arm desktop-VR genetics simulation: an affective path (VR features -> presence -> change in intrinsic motivation -> change in self-efficacy -> learning) and a cognitive path (VR features -> usability -> cognitive benefits -> change in self-efficacy -> learning), both converging on self-efficacy as the sole direct predictor of learning.",
+  "sections": [
+    {
+      "title": "1. Background / 1.1-1.3 Theoretical framework, variables, hypotheses",
+      "page": "15-20",
+      "summary": "Motivates studying VR learning as a process rather than an outcome, building on Lee et al. (2010) and Makransky & Lilleholt (2018) but replacing subjective post-test-only measures with pre-to-post-test change scores to avoid common-method-variance inflation. Frames the model on the Control-Value Theory of Achievement Emotions (Pekrun) and Lee et al.'s desktop-VR SEM framework. Defines VR features (representational fidelity, immediacy of control), usability (perceived usefulness/ease of use), affective mediators (presence, perceived enjoyment, control and active learning), cognitive mediators (cognitive benefits, reflective thinking), and outcome variables (change in intrinsic motivation, self-efficacy, knowledge). States 10 hypotheses (paths 1-29 in the a priori model)."
+    },
+    {
+      "title": "2. Materials and methods",
+      "page": "20-22",
+      "summary": "199 first-year medicine undergraduates (120 female) completed a 3-hour mandatory session: pre-test, ~2h desktop-VR genetics lab simulation (Labster), post-test. Pre/post measured intrinsic motivation, self-efficacy, and a 20-item knowledge test; post-test only added self-report scales (Cronbach's alpha 0.76-0.93) for the mediating constructs. SEM run in Mplus with CFI/TLI/RMSEA fit indices."
+    },
+    {
+      "title": "3. Results",
+      "page": "22-24",
+      "summary": "Confirmatory model trimmed to a final model with acceptable fit (RMSEA=0.057, CFI=0.964, TLI=0.960). VR features predicted usability, presence, and perceived enjoyment (not control/active learning). Usability predicted control/active learning, cognitive benefits, and reflective thinking (not presence/enjoyment). Of the mediators, only presence predicted change in motivation; only cognitive benefits predicted change in self-efficacy. Change in motivation predicted change in self-efficacy, and self-efficacy (not motivation directly) predicted learning."
+    },
+    {
+      "title": "4. Discussion (affective path, cognitive path, practical implications, limitations)",
+      "page": "24-25",
+      "summary": "Names the two confirmed routes to learning: an affective path (VR features -> presence -> intrinsic motivation -> self-efficacy -> learning) and a cognitive path (VR features -> usability -> cognitive benefits -> self-efficacy -> learning). Notes usability was unrelated to presence, unlike some prior models. Cites related work finding higher-fidelity VR raises presence without raising learning (extraneous-processing concern). Practical implications: design for high-fidelity VR features and high usability; suggests blended-learning integration. Limitations: single-session design, no collaborative-learning measure, unmeasured individual differences (e.g., prior knowledge), self-report process measures."
+    },
+    {
+      "title": "5. Conclusions",
+      "page": "26",
+      "summary": "Restates the two-path model (affective path keyed on presence; cognitive path keyed on cognitive benefits) as the study's main empirical contribution, using objectively-measured (change-score) outcomes rather than subjective post-test-only measures, and recommends emphasizing VR-feature fidelity and usability in instructional design."
+    }
+  ],
+  "constructs": [
+    { "label": "VR features (representational fidelity + immediacy of control)", "treatment": "latent technological-antecedent construct; coined by Whitelock, Brna & Holland (1996), adopted from Lee et al. (2010)", "locus": "p.17" },
+    { "label": "representational fidelity", "treatment": "VR-features indicator; resemblance between VE and real world; 3 items, alpha=0.86; beta=0.874 to VR features", "locus": "p.17, 22" },
+    { "label": "agency / interactivity (immediacy of control)", "treatment": "VR-features indicator; view/manipulation control; 3 items, alpha=0.76; beta=0.823 to VR features", "locus": "p.17, 22" },
+    { "label": "usability (perceived usefulness + ease of use)", "treatment": "antecedent to affective/cognitive mediators via Davis's TAM; beta=0.894 from VR features", "locus": "p.17-18, 22" },
+    { "label": "presence (spatial/physical)", "treatment": "affective mediator, 4 items alpha=0.78; predicted by VR features (beta=0.871) not usability; only affective-family mediator with any downstream path (to change in motivation, beta=0.429)", "locus": "p.18, 22-24" },
+    { "label": "affect: enjoyment & intrinsic motivation", "treatment": "perceived enjoyment (mediator, non-predictive of outcomes) + change in intrinsic motivation (outcome, predicted by presence, predicts change in self-efficacy beta=0.278)", "locus": "p.18-19, 22-24" },
+    { "label": "self-efficacy", "treatment": "terminal mediator; sole direct predictor of learning (beta=0.579); convergence point of both paths", "locus": "p.19, 21, 23-24" },
+    { "label": "learning outcomes: retention & transfer", "treatment": "20-item knowledge test (facts/concepts/procedures), pre-to-post change score, alpha=0.68; the model's terminal outcome", "locus": "p.19, 21, 23-24" },
+    { "label": "cognitive load (extraneous vs germane)", "treatment": "not operationalized in this study's own instruments; invoked interpretively in Discussion to explain other studies' presence-without-learning findings under high-fidelity immersive VR", "locus": "p.24" },
+    { "label": "engagement / flow", "treatment": "analogical only — control/active learning (autonomy/pacing) and a presence item on losing track of time gesture toward engagement without the construct being named or measured as such", "locus": "p.18 (item), 22" },
+    { "label": "cognitive benefits", "treatment": "cognitive-path key mediator; predicted by usability (beta=0.968) not VR features directly; predicts change in self-efficacy (beta=0.329)", "locus": "p.18, 23-24" },
+    { "label": "reflective thinking (Dewey)", "treatment": "cognitive mediator, predicted by usability (beta=0.952); non-predictive of any outcome variable in the final model", "locus": "p.19, 22, 24" }
+  ],
+  "conditions": [
+    {
+      "label": "desktop-3D / non-immersive VR",
+      "treatment": "single-arm design: all N=199 participants used the same desktop-VR genetics simulation (Labster; monitor + keyboard/mouse); no HMD/immersive or 2D control condition run; construct/measure results (see constructs[]) are this condition's own findings",
+      "design": "single-group pre-post; mandatory 3-hour supervised computer-lab session; ~25 students/session, 3 teachers on hand",
+      "N": 199,
+      "sample": "first-year medicine undergraduates, 120 female / 79 male, drawn from a first-year class of 300 (consent-contingent inclusion)",
+      "instruments": "pre/post: 5-item Intrinsic Motivation Inventory subscale (alpha=0.88/0.90); 5-item MSLQ-adapted self-efficacy scale (alpha=0.82/0.88); 20-item MC knowledge test (alpha=0.68 both); post-test only: representational fidelity (3 items, alpha=0.86), immediacy of control (3 items, alpha=0.76), perceived usefulness (4 items, alpha=0.84), perceived ease of use (4 items, alpha=0.82), presence (4 items adapted from Sutcliffe, Gault & Shin, alpha=0.78), perceived enjoyment (3 items, alpha=0.93), control and active learning (5 items, alpha=0.88), cognitive benefits (4 items, alpha=0.88), reflective thinking (4 items, alpha=0.81)",
+      "locus": "p.20-22"
+    },
+    {
+      "label": "SEM / process model (no media contrast)",
+      "treatment": "confirmatory SEM in Mplus 7.4, ordinal estimation; a priori 29-path model (10 hypotheses) iteratively trimmed to a final model retaining only significant (p<0.01) paths; fit criteria CFI/TLI>=0.90, RMSEA<=0.06 (Hu & Bentler 1999)",
+      "fit": "final model RMSEA=0.057, CFI=0.964, TLI=0.960 (a priori model: RMSEA=0.063, CFI=0.957, TLI=0.952)",
+      "pathStructure": "affective path: VR features -> presence (b=0.871) -> change in motivation (b=0.429) -> change in self-efficacy (b=0.278) -> learning (via self-efficacy, b=0.579). cognitive path: VR features -> usability (b=0.894) -> cognitive benefits (b=0.968) -> change in self-efficacy (b=0.329) -> learning. Non-supported paths: VR features -> control/active learning; usability -> presence; usability -> enjoyment; VR features -> cognitive benefits/reflective thinking directly; enjoyment/control-active-learning/reflective-thinking -> any outcome; change in motivation -> learning directly (routed through self-efficacy instead).",
+      "effectDirection": "all reported paths positive; two non-findings (usability-presence, usability-enjoyment) explicitly discussed as unexpected, attributed to low usability-breakdown variance and/or subjective (vs. objective/log-file) usability measurement",
+      "locus": "p.21-24"
+    }
+  ],
+  "readings": [
+    { "claim": "Studying VR learning as a process (which mediating variables produce learning) rather than merely as an outcome addresses a gap in prior VR-education research.", "type": "READING/CLAIM", "stance": "motivates", "locus": "p.15-16", "tag": "FE" },
+    { "claim": "Prior desktop-VR process models (Lee et al. 2010; Makransky & Lilleholt 2018) risk common-method-variance inflation because mediators and subjective outcomes are measured in the same post-test-only administration.", "type": "READING/CLAIM", "stance": "critiques-prior-work", "locus": "p.15-16", "tag": "FE" },
+    { "claim": "Two paths lead from desktop-VR features to learning: an affective path through presence, intrinsic motivation, and self-efficacy; and a cognitive path through usability, cognitive benefits, and self-efficacy.", "type": "READING/CLAIM", "stance": "concludes", "locus": "p.24, 26", "tag": "FE" },
+    { "claim": "Presence's effect on learning is fully mediated through motivation and then self-efficacy, not direct; presence alone does not guarantee learning gains.", "type": "READING/CLAIM", "stance": "concludes", "locus": "p.23-24", "tag": "FE" },
+    { "claim": "Usability was not significantly related to presence in this sample, attributable to low usability-breakdown variance in a curated, teacher-supported session and/or reliance on subjective usability measures.", "type": "READING/CLAIM", "stance": "explains-non-finding", "locus": "p.24", "tag": "FE" },
+    { "claim": "Higher-fidelity/more-immersive VR has repeatedly been found (in other authors' work) to raise presence without raising learning, attributed to extraneous processing from irrelevant sensory information.", "type": "READING/CLAIM", "stance": "cites-external-debate", "locus": "p.24", "tag": "FE" },
+    { "claim": "Instructional designers should emphasize VR-feature fidelity (realistic display, smooth motion, 3-D audio, view/navigation control) and usability (navigation support, clear entry/exit points, cues) when building desktop-VR learning environments.", "type": "READING/CLAIM", "stance": "recommends", "locus": "p.25", "tag": "FE" },
+    { "claim": "Desktop-VR simulations fit well into blended-learning 'replacement models,' substituting for lab activities that are difficult or costly to run in person.", "type": "READING/CLAIM", "stance": "recommends", "locus": "p.25", "tag": "FE" }
+  ],
+  "concepts": [
+    { "term": "VR features", "type": "CONSTRUCT", "locus": "p.17" },
+    { "term": "usability (TAM: perceived usefulness / ease of use)", "type": "CONSTRUCT", "locus": "p.17-18" },
+    { "term": "presence", "type": "CONSTRUCT", "locus": "p.18" },
+    { "term": "cognitive benefits", "type": "CONSTRUCT", "locus": "p.18" },
+    { "term": "reflective thinking", "type": "CONSTRUCT", "locus": "p.19" },
+    { "term": "affective path", "type": "READING/CLAIM", "locus": "p.24" },
+    { "term": "cognitive path", "type": "READING/CLAIM", "locus": "p.24-25" },
+    { "term": "Control-Value Theory of Achievement Emotions (CVTAE)", "type": "THEORY-MODEL", "locus": "p.16-17" },
+    { "term": "Lee et al. (2010) desktop-VR SEM framework", "type": "THEORY-MODEL", "locus": "p.16-17" },
+    { "term": "common-method variance (CMV)", "type": "TERM", "locus": "p.15-16, 19" },
+    { "term": "change-score (pre-to-post) outcome measurement", "type": "TERM", "locus": "p.19, 26" }
+  ],
+  "interlocutors": [
+    { "name": "Lee, Wong & Fung (2010)", "role": "source of the desktop-VR SEM framework this study re-tests with change-score outcomes", "locus": "p.16-17" },
+    { "name": "Makransky & Lilleholt (2018)", "role": "immediate predecessor study (immersive vs. desktop VR, CVTAE-based); this study's methodological correction target on CMV grounds; cluster unit ped-sec-09", "locus": "p.15-16, 24-25" },
+    { "name": "Pekrun (Control-Value Theory of Achievement Emotions)", "role": "theoretical scaffold for the affective side of the a priori model", "locus": "p.16-17" },
+    { "name": "Witmer & Singer", "role": "cited for the definition of presence and for presence arising from technological + psychological factors jointly; cluster unit ped-sec-02", "locus": "p.18, 24" },
+    { "name": "Lombard & Ditton", "role": "cited for the 'forgetting the medium' conceptualization of presence, used to interpret the missing usability-presence link; cluster unit ped-sec-01", "locus": "p.24" },
+    { "name": "Dalgarno & Lee", "role": "cited for VR-features/interaction design guidance and for future-research variables (identity construction, co-presence, flow); cluster unit ped-sec-04", "locus": "p.17, 25" },
+    { "name": "Bandura (self-efficacy theory)", "role": "theoretical source for self-efficacy as the model's terminal mediator", "locus": "p.19" },
+    { "name": "Deci & Ryan (self-determination theory / Intrinsic Motivation Inventory)", "role": "source of the intrinsic-motivation construct and its measurement scale", "locus": "p.19, 21" },
+    { "name": "Davis (Technology Acceptance Model)", "role": "source of usability's two indicators (perceived usefulness, perceived ease of use)", "locus": "p.17-18, 21" },
+    { "name": "Dewey (reflective thinking)", "role": "source of the reflective-thinking construct, ultimately non-predictive in the final model", "locus": "p.19" },
+    { "name": "Parong & Mayer (2018)", "role": "cited among studies finding higher-fidelity VR raises presence without raising learning; cluster unit ped-sec-08", "locus": "p.24" },
+    { "name": "Makransky, Terkildsen & Mayer (2017b/2019)", "role": "cited for the finding that immersive VR causes more presence but less learning; substantively continuous with cluster unit ped-sec-10's published 2019 study (P/anticipatory-application: this paper's own citation is to a 2017 working/conference version, not independently verified against ped-sec-10's exact bibliographic record)", "locus": "p.24-25" }
+  ],
+  "tensions": [
+    { "axis": "presence as sufficient driver of learning vs. presence as merely one node in a longer, motivation/self-efficacy-mediated chain", "note": "This study's own affective path shows presence's effect on learning is fully mediated, not direct — a more conservative reading than a bare presence-causes-learning claim.", "locus": "p.23-24" },
+    { "axis": "media-comparison/immersion research (more fidelity -> more presence -> ambiguous learning effect) vs. this paper's single-arm process account", "note": "The paper explicitly cites, but does not itself test, the debate over whether more-immersive VR's presence gains translate to learning; its own data speak only to the within-desktop-VR causal chain (cluster debate axis 1).", "locus": "p.24" },
+    { "axis": "subjective (self-report) usability vs. objective usability (breakdowns, log-file efficiency measures)", "note": "The authors explicitly float objective usability measurement as the likely fix for the null usability-presence finding, without testing it themselves.", "locus": "p.24" }
+  ],
+  "bridges": {
+    "vle": ["vle-01-deployment-survey"],
+    "boredomExperimentDataset": ["****** UNVERIFIED: anchor not yet built"]
+  },
+  "extraction": {
+    "tool": "pdftotext",
+    "date": "2026-07-15",
+    "ocr_confidence": "high"
+  }
+}

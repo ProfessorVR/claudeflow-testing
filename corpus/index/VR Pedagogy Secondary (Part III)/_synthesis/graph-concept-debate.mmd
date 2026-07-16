@@ -1,0 +1,51 @@
+graph LR
+    DA01["DA-01: More immersion→more learning<br/>↔ presence-not-learning"]
+    DA02["DA-02: Media-comparison informative<br/>↔ methods-not-media/value-added"]
+    DA03["DA-03: Presence technology-determined<br/>↔ psychologically-determined"]
+    DA04["DA-04: Affective route<br/>↔ cognitive-load route"]
+    DA05["DA-05: Desktop-3D sufficient<br/>↔ IVR unique"]
+    DA06["DA-06: Sim beats no-intervention<br/>↔ sim-vs-sim negligible"]
+    DA07["DA-07: Cybersickness substantive<br/>↔ ignorable"]
+    DA08["DA-08: Deployment context matters<br/>↔ context-equivalence"]
+    DA09["DA-09: Social presence reliable predictor<br/>↔ inconsistent/assumed"]
+    DA10["DA-10: Social presence medium-general<br/>↔ VR qualitatively different"]
+
+    CAMIL["ped-sec-06 CAMIL"]
+    Mayer22["ped-sec-07 Mayer et al."]
+    Mak19["ped-sec-10 Makransky<br/>presence-less-learning"]
+    Mak18["ped-sec-09 Makransky<br/>& Lilleholt"]
+    Parong20["ped-sec-13 Parong<br/>& Mayer"]
+    MakEquiv["ped-sec-12 Makransky<br/>equivalence"]
+    Cook["ped-sec-15 Cook et al."]
+    Kono["ped-sec-19 Kononowicz"]
+    Cossio["ped-sec-23 Cossio et al."]
+    Gunawardena["ped-sec-25 Gunawardena<br/>& Zittle"]
+    Kreijns["ped-sec-30 Kreijns et al."]
+    DeBack["ped-sec-33 De Back et al."]
+    VanderMeer["ped-sec-34 VanderMeer et al."]
+    Chow["ped-sec-03 Chow"]
+    Garrison["ped-sec-26 Garrison<br/>Anderson & Archer"]
+
+    Mak19 -->|primary source| DA01
+    Mayer22 -->|meta-analytic weight| DA01
+    Mak18 -->|nuances| DA01
+    CAMIL -->|resolves| DA02
+    Mayer22 -->|primary source| DA02
+    Chow -->|Pole B| DA03
+    Garrison -->|explicit rejection| DA03
+    Mak18 -->|Pole A| DA04
+    Parong20 -->|Pole B primary anchor| DA04
+    CAMIL -->|dual-path synthesis| DA04
+    Cook -->|Pole A| DA06
+    Kono -->|Pole B, follow-up| DA06
+    Cossio -->|both poles, measured| DA07
+    MakEquiv -->|primary empirical anchor| DA08
+    Gunawardena -->|Pole A| DA09
+    Kreijns -->|Pole B, clearest skeptic| DA09
+    Kreijns -->|Pole A: medium-general| DA10
+    DeBack -->|Pole B: no CMC engagement| DA10
+    VanderMeer -->|Pole B: stronger bridge, still no CMC canon| DA10
+
+    style DA10 fill:#fce8e6,stroke:#c0392b
+    style DA03 fill:#fdebd0
+    style DA01 fill:#fdebd0

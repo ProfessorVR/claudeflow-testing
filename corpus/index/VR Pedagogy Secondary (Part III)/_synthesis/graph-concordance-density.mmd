@@ -1,0 +1,44 @@
+graph LR
+    subgraph Constructs["Constructs (rows)"]
+        c_pres["Presence"]
+        c_ret["Learning: retention"]
+        c_proc["Learning: procedural"]
+        c_aff["Affect/enjoyment"]
+        c_fid["Representational fidelity"]
+        c_imm["Immersion"]
+        c_agy["Agency/interactivity"]
+        c_cog["Cognitive load"]
+        c_soc["Social presence"]
+        c_emb["Embodiment"]
+        c_eng["Engagement/flow"]
+    end
+
+    subgraph Conditions["Media-conditions (columns)"]
+        d_desk["Desktop-3D"]
+        d_ivr["IVR (HMD)"]
+        d_sem["SEM/process model"]
+        d_2d["2D video/text"]
+    end
+
+    c_pres ==12 units==> d_desk
+    c_ret ==12 units==> d_desk
+    c_pres ==10 units==> d_ivr
+    c_aff ==10 units==> d_desk
+    c_proc ==10 units==> d_desk
+    c_fid ==10 units==> d_desk
+    c_imm ==9 units==> d_ivr
+    c_imm ==9 units==> d_desk
+    c_ret ==9 units==> d_ivr
+    c_agy ==8 units==> d_desk
+    c_cog ==8 units==> d_ivr
+    c_cog ==8 units==> d_desk
+    c_soc -.7 units.-> d_desk
+    c_emb -.7 units.-> d_desk
+    c_aff -.7 units.-> d_ivr
+    c_eng -.7 units.-> d_ivr
+    c_pres -.5 units.-> d_sem
+    c_cog -.5 units.-> d_2d
+
+    style d_desk fill:#d4edda
+    style d_ivr fill:#d4edda
+    note1["Densest cells: Presence x Desktop-3D (12),<br/>Learning-retention x Desktop-3D (12) —<br/>this cluster's best-evidenced construct/condition pairing.<br/>94 total populated cells / 112 possible."]

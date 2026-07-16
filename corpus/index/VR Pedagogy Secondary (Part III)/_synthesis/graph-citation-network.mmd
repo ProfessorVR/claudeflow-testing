@@ -1,0 +1,88 @@
+graph LR
+    subgraph MakranskyProgram["Makransky Research Program"]
+        p02["ped-sec-02"]
+        p04["ped-sec-04"]
+        p06["ped-sec-06 CAMIL"]
+        p08["ped-sec-08"]
+        p09["ped-sec-09"]
+        p10["ped-sec-10"]
+        p11["ped-sec-11"]
+        p12["ped-sec-12"]
+        p13["ped-sec-13"]
+        p17["ped-sec-17"]
+        p22["ped-sec-22"]
+    end
+
+    p06 --> p02
+    p06 --> p04
+    p06 --> p08
+    p06 --> p09
+    p06 --> p10
+    p06 --> p11
+    p06 --> p13
+    p06 --> p22
+    p09 --> p02
+    p09 --> p04
+    p09 --> p06
+    p09 --> p10
+    p11 --> p01["ped-sec-01"]
+    p11 --> p02
+    p11 --> p04
+    p11 --> p08
+    p11 --> p09
+    p11 --> p10
+    p12 --> p09
+    p12 --> p10
+    p12 --> p11
+    p12 --> p17
+
+    subgraph MayerProgram["Mayer Research Program"]
+        p07["ped-sec-07"]
+    end
+    p07 --> p02
+    p07 --> p08
+    p07 --> p10
+    p07 --> p12
+    p07 --> p13
+    p13 --> p08
+    p13 --> p09
+
+    subgraph StrandFNetwork["Strand F Internal Network"]
+        p25["ped-sec-25"]
+        p26["ped-sec-26"]
+        p27["ped-sec-27"]
+        p28["ped-sec-28"]
+        p30["ped-sec-30"]
+        p31["ped-sec-31"]
+        p32["ped-sec-32"]
+    end
+    p32 --> p25
+    p32 --> p26
+    p32 --> p27
+    p32 --> p28
+    p30 --> p25
+    p30 --> p26
+    p30 --> p27
+    p27 --> p25
+    p27 --> p26
+    p31 --> p26
+    p31 --> p01
+    p31 --> p02
+
+    subgraph BridgeGap["VR-bridge units (cite OUT of Strand F only)"]
+        p33["ped-sec-33"]
+        p34["ped-sec-34"]
+    end
+    p33 --> p04
+    p33 --> p05["ped-sec-05"]
+    p33 --> p08
+    p33 --> p16["ped-sec-16"]
+    p34 --> p33
+    p34 --> p04
+    p34 --> p09
+    p34 --> p10
+    p34 --> p13
+    p34 --> p22
+
+    style StrandFNetwork fill:#e8f4fc
+    style BridgeGap fill:#fce8e6,stroke:#c0392b

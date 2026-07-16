@@ -1,0 +1,72 @@
+{
+  "id": "ped-sec-21",
+  "slug": "potkonjak-virtual-labs",
+  "citation": "Potkonjak, V., Gardner, M., Callaghan, V., Mattila, P., Guetl, C., Petrović, V. M., & Jovanović, K. (2016). Virtual laboratories for education in science, technology, and engineering: A review. Computers & Education, 95, 309–327. https://doi.org/10.1016/j.compedu.2016.02.002",
+  "discipline": "engineering / educational technology",
+  "strand": "E",
+  "depth": "deep",
+  "thesis": "STE education lags other fields in remote/e-learning uptake because laboratory exercises resist remote delivery; of the two available fixes (remote-access physical lab vs. fully software-based virtual lab), the virtual-lab route is preferable on cost, scalability, flexibility, and safety grounds. The paper derives four evaluation criteria (interface fidelity, dynamic-behavior equivalence, visualization, collaborative 3D space) from the requirement that a virtual lab must feel authentic, scores roughly nineteen existing virtual-lab systems and six virtual-world platforms against them, and explicitly reserves pedagogy/learning-theory questions for a separate publication.",
+  "sections": [
+    { "title": "1. Introduction", "locus": "p.310-311", "summary": "Situates virtual labs within distance/e-learning trends in STE; states the technology-focused, non-pedagogy scope; previews section structure." },
+    { "title": "2. Advantages and drawbacks of virtual laboratories", "locus": "p.311-312", "summary": "Advantages: cost savings, flexibility, multiple simultaneous access, reconfigurable parameters, damage resistance/learning-from-mistakes, making the unseen seen. Drawbacks: computational/modeling burden; weakened seriousness/responsibility ('nothing really bad can happen'); eventual need for real equipment." },
+    { "title": "3. Requirements/criteria", "locus": "p.312-313", "summary": "Derives C1 (interface fidelity), C2 (dynamic-behavior equivalence), C3 (visualization), C4 (3D collaborative space) from a single authenticity requirement; excludes haptic feedback as a candidate 5th criterion (unsupported by any reviewed system)." },
+    { "title": "4. State of the art in virtual laboratories", "locus": "p.313-320", "summary": "Surveys ~19 systems across five groups (general initiatives, science-physics, process technology, engineering-non-robotic, engineering-robotics), scored against C1-C4 in a summary table; heaviest emphasis on robotics (9 systems)." },
+    { "title": "5. State of the art in virtual worlds", "locus": "p.321-325", "summary": "Reviews six virtual-world platforms (Second Life, RealXtend, OpenSimulator, Open Wonderland, Open Cobalt, Unity 3D) as C4 substrates; supplies VR/VE/MUVE/VLE definitions (citing Pan et al. 2006)." },
+    { "title": "6. Trends and future advances", "locus": "p.324-325", "summary": "C2 and C4 rarely jointly satisfied; proposes a two-level object-library-plus-shared-space architecture; gestures toward a 'mixed' physically+virtually co-present lab; flags consumer HMDs (Oculus Rift) as an emerging development." },
+    { "title": "7. Conclusion", "locus": "p.325", "summary": "Recaps the five-group, twenty-system classification; reaffirms virtual labs as an initial-step complement to (not replacement for) hands-on training under current technology; re-brackets pedagogy as future work." }
+  ],
+  "constructs": [
+    { "label": "representational fidelity", "treatment": "central organizing construct, operationalized as C1 (interface fidelity) and C3 (visualization)", "locus": "p.312" },
+    { "label": "agency / interactivity", "treatment": "operationalized as C2 (dynamic-behavior equivalence), split into operator-training ('lower') and theory-understanding ('higher') levels", "locus": "p.312-313, 320-321" },
+    { "label": "social presence / co-presence", "treatment": "operationalized as C4 (3D collaborative space); elaborated via avatars/chat across six virtual-world platforms", "locus": "p.312, 321-324" },
+    { "label": "embodiment / self-representation", "treatment": "avatar concept threaded through the §5 platform survey and the Stevens Institute system", "locus": "p.316, 321-324" },
+    { "label": "immersion (technological)", "treatment": "definitional only, via Pan et al. (2006)'s VR definition; HMDs flagged only as a future-trends note, not a reviewed system", "locus": "p.321, 325" },
+    { "label": "learning outcomes: procedural / skills", "treatment": "implicit target throughout §4 (robot programming, kinematics/dynamics skill acquisition); no outcome measurement reported", "locus": "p.311, 315, 320-321" }
+  ],
+  "conditions": [
+    { "label": "review / meta-analytic aggregate", "design": "structured technology survey against a 4-criterion rubric (C1-C4); no primary data, no participants, no measures", "N": "n/a — 20 virtual-lab systems + 6 virtual-world platforms surveyed", "instruments": "author-derived C1-C4 scoring table (Table 1)", "effectDirection": "n/a (descriptive/comparative, not effect-testing)", "locus": "p.312-320" },
+    { "label": "desktop-3D / non-immersive VR", "design": "the technology class nearly all 20 surveyed systems instantiate (screen-rendered 3D, non-HMD)", "N": "n/a", "instruments": "n/a", "effectDirection": "n/a", "locus": "p.313-320" },
+    { "label": "IVR (HMD)", "design": "not a reviewed system; mentioned only as an emerging future development (Oculus Rift) alongside a proposed future 'mixed' co-presence lab", "N": "n/a", "instruments": "n/a", "effectDirection": "n/a", "locus": "p.324-325" }
+  ],
+  "readings": [
+    { "claim": "No system in the twenty-system survey satisfies C2 (dynamics) and C4 (collaborative space) simultaneously and well; VCIMLAB is the sole full-marks exception.", "type": "READING/CLAIM", "stance": "finding", "locus": "p.324", "tag": "FE" },
+    { "claim": "Virtual-world platforms remain rarely integrated into virtual laboratories despite offering the richest C4 affordances.", "type": "READING/CLAIM", "stance": "finding", "locus": "p.321, 324", "tag": "FAITHFUL-Potkonjak" },
+    { "claim": "Criterion relevance is application-dependent: operator training privileges C1/kinematics; theory instruction privileges C2/dynamics.", "type": "READING/CLAIM", "stance": "methodological caveat", "locus": "p.314", "tag": "FAITHFUL-Potkonjak" },
+    { "claim": "Robotics is the STE sub-field of choice for demonstrating virtual-lab affordances because its multidisciplinary character makes it representative of engineering education broadly.", "type": "READING/CLAIM", "stance": "scope justification", "locus": "p.309, 315", "tag": "FE" },
+    { "claim": "The proposed future direction is architectural (two-level object-library-plus-shared-space system) and social (a 'mixed' physically/virtually co-present lab), not pedagogical.", "type": "READING/CLAIM", "stance": "recommendation", "locus": "p.324-325", "tag": "FAITHFUL-Potkonjak" },
+    { "claim": "Virtual labs are currently best understood as an initial-step complement to, not full replacement for, hands-on training with real equipment, given the current state of the art.", "type": "READING/CLAIM", "stance": "hedged normative conclusion", "locus": "p.325", "tag": "FAITHFUL-Potkonjak" }
+  ],
+  "concepts": [
+    { "term": "C1 interface fidelity", "type": "TERM", "locus": "p.312" },
+    { "term": "C2 dynamic-behavior equivalence", "type": "TERM", "locus": "p.312-313" },
+    { "term": "C3 visualization", "type": "TERM", "locus": "p.312" },
+    { "term": "C4 collaborative 3D space", "type": "TERM", "locus": "p.312" },
+    { "term": "virtual reality (VR) — Pan et al. definition", "type": "TERM", "locus": "p.321" },
+    { "term": "virtual environment (VE)", "type": "TERM", "locus": "p.321" },
+    { "term": "multi-user virtual environment (MUVE)", "type": "TERM", "locus": "p.321-322" },
+    { "term": "virtual learning environment (VLE)", "type": "TERM", "locus": "p.321-322" },
+    { "term": "avatar", "type": "TERM", "locus": "p.316, 321-324" },
+    { "term": "physics engine (dynamic model)", "type": "TERM", "locus": "p.311-312" }
+  ],
+  "interlocutors": [
+    { "name": "Pan, Cheok, Yang, Zhu & Shi (2006)", "role": "source of the paper's adopted VR/immersion definition", "locus": "p.321" },
+    { "name": "Huang, Rauch & Liaw (2010)", "role": "cited for constructivist-approach findings on learner attitudes toward VR environments; supports the C4 3D-ambience-as-key-enabler claim", "locus": "p.313" },
+    { "name": "Ketelhut (2007)", "role": "cited pointer for self-efficacy in MUVEs (River City); not analyzed in-text", "locus": "p.321" },
+    { "name": "Warburton (2009)", "role": "source for Second Life's maturity/popularity and barriers to deployment in higher education", "locus": "p.321" },
+    { "name": "Dieterle & Clarke (2009)", "role": "cited pointer for multi-user virtual environments for teaching and learning", "locus": "p.321" }
+  ],
+  "tensions": [
+    { "axis": "technology-adequacy review vs. pedagogy/learning-outcome literature", "note": "The paper explicitly brackets pedagogy as out of scope twice (introduction and conclusion), positioning itself as a technology-only companion to (not a substitute for) Strand B's affordance literature.", "locus": "p.310-311, 325" },
+    { "axis": "C2 dynamics vs. C4 collaborative space (rarely co-satisfied)", "note": "The paper's own central trends-section finding: across the twenty-system sample, systems that achieve rich dynamics modeling tend not to achieve rich collaborative 3D space, and vice versa.", "locus": "p.324" },
+    { "axis": "virtual lab as complement vs. eventual replacement for hands-on training", "note": "The authors hedge: 'we may agree with this viewpoint (based on the current state of the art)' while anticipating continued technological progress could narrow or eliminate the gap.", "locus": "p.325" }
+  ],
+  "bridges": {
+    "vle": ["vle-01-deployment-survey"],
+    "boredomExperimentDataset": ["****** UNVERIFIED: anchor not yet built"]
+  },
+  "extraction": {
+    "tool": "pdftotext",
+    "date": "2026-07-15",
+    "ocr_confidence": "high"
+  }
+}

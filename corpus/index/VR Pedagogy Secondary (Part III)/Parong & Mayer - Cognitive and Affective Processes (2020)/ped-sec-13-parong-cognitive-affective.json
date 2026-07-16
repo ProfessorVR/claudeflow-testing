@@ -1,0 +1,124 @@
+{
+  "id": "ped-sec-13",
+  "slug": "parong-cognitive-affective",
+  "citation": "Parong, J., & Mayer, R. E. (2020). Cognitive and affective processes for learning science in immersive virtual reality. Journal of Computer Assisted Learning, 37(1), 226–241. https://doi.org/10.1111/jcal.12482 [note: header block gives 'J Comput Assist Learn. 2021;37:226–241' — print issue is dated 2021; manuscript received 30 Mar 2020 / accepted 12 Jul 2020; cluster manifest.json fixes year=2020 for this unit, followed here]",
+  "discipline": "educational psychology / cognitive science (media-comparison, multimedia learning)",
+  "strand": "C",
+  "depth": "deep",
+  "thesis": "A fully instrumented 2 (IVR vs. PPT) x 2 (practice testing vs. none) media-comparison experiment testing whether immersive VR's affective/presence payoff helps or hurts science learning: IVR elicited significantly higher presence and enjoyment but also significantly higher self-reported extraneous cognitive load and lower EEG-based engagement than a PowerPoint slideshow; mediation analysis showed self-reported extraneous load and self-reported positive/high-arousal emotion each significantly mediated IVR's lower retention scores, supporting a CTML/coherence-principle 'distraction hypothesis' in which IVR's perceptual richness and induced arousal function as seductive details that consume limited cognitive capacity (pp. 226-227, 236-238).",
+  "sections": [
+    {
+      "title": "Introduction — the case for and against IVR",
+      "summary": "Frames a two-sided debate: proponents hold IVR boosts learning via increased presence and positive affect/motivation (citing Kozhevnikov et al. 2013; Markowitz et al. 2018); opponents, drawing on CTML and cognitive load theory (Sweller et al. 2011), hold IVR's perceptual richness adds extraneous cognitive/affective load that displaces essential and generative processing (p. 227)."
+    },
+    {
+      "title": "Immersion vs. presence distinction and prior findings",
+      "summary": "Distinguishes immersion (objective technology property) from presence (subjective 'being there', citing Nilsson, Nordhal, & Serafin 2016) and reviews prior evidence, including the authors' own Parong & Mayer (2018, ped-sec-08) finding that an IVR cell-biology lesson produced worse learning than an equivalent PowerPoint lesson (pp. 227-228)."
+    },
+    {
+      "title": "Current study, hypotheses, and design",
+      "summary": "States three research questions (whether IVR ≈ PPT on learning; what cognitive/affective processes shape outcomes; whether added practice testing helps) and five directional predictions from a 'distraction hypothesis,' operationalized in a 2 (IVR vs. PPT) x 2 (practice testing vs. none) between-subjects design with N = 61 (p. 229)."
+    },
+    {
+      "title": "Method — materials, apparatus, measures",
+      "summary": "The Body VR: Journey into a Cell (HTC Vive) vs. a 24-slide PowerPoint on the same content; self-report scales for presence (adapted from Witmer & Singer 1998), affective state (Russell's 2003 core-affect model), and cognitive load (extraneous/essential/generative, per CTML); biometric channels (EEG cognitive workload/engagement via B-Alert X10, EDA, ECG/HRV); a 16-item retention and 4-item transfer post-test (pp. 230-233)."
+    },
+    {
+      "title": "Results — instructional media effects",
+      "summary": "PPT groups scored significantly higher on transfer (and marginally on retention) than IVR groups; IVR groups reported significantly higher presence, enjoyment, and positive/high-arousal emotion but also significantly higher self-reported extraneous cognitive load and a significantly lower probability of high EEG engagement / higher probability of EEG-classified boredom; physiological arousal measures (EDA, HR, HRV) showed no significant media differences (pp. 233-236)."
+    },
+    {
+      "title": "Results — mediation and practice testing",
+      "summary": "Parallel mediation (PROCESS macro) showed self-reported extraneous cognitive load and self-reported positive/high-arousal emotion each significantly mediated the media→retention relationship (IVR → higher load/arousal → lower retention); for transfer scores none of the proposed mediators reached significance. The practice-testing manipulation produced no significant effects on retention or transfer, though it interacted with media on positive/low-arousal emotion (pp. 236-237)."
+    },
+    {
+      "title": "Discussion — theoretical and practical implications",
+      "summary": "Interprets results as support for the CTML/coherence-principle 'distraction hypothesis': IVR's perceptual richness and induced emotional arousal function as seductive details that consume limited cognitive capacity, reducing essential/generative processing despite—indeed partly because of—elevated presence and enjoyment. Cautions against replacing conventional media with IVR for declarative-knowledge lessons of this type; suggests IVR may suit spatial-content domains or pre-training use; flags novelty effects, single-domain scope, and the media-vs-method confound as limitations (pp. 237-239)."
+    }
+  ],
+  "constructs": [
+    { "label": "presence (spatial/physical)", "treatment": "7-item scale adapted from Witmer & Singer (1998); IVR significantly higher than PPT (d=1.74)", "locus": "p.235-236" },
+    { "label": "immersion (technological)", "treatment": "definitional distinction from presence, not itself a self-report scale; IVR/PPT instantiate the high/low-immersion contrast", "locus": "p.227-228" },
+    { "label": "cognitive load (extraneous vs germane)", "treatment": "CTML three-way self-report split; extraneous load significantly higher for IVR (d=0.80); essential/generative unaffected", "locus": "p.234-235" },
+    { "label": "affect: enjoyment & intrinsic motivation", "treatment": "enjoyment significantly higher for IVR (d=1.20); motivation/interest/effort/understanding/difficulty unaffected; affect also measured via Russell's core-affect grid", "locus": "p.235-236" },
+    { "label": "engagement / flow", "treatment": "EEG-derived engagement-state probabilities and workload-classification (incl. instrument's own 'boredom' band); PPT higher high-engagement probability and ideal-workload proportion, IVR higher bored-classification proportion", "locus": "p.234-236" },
+    { "label": "learning outcomes: retention & transfer", "treatment": "16-item MC retention + 4-item open transfer post-test; PPT significantly higher transfer, marginally higher retention", "locus": "p.233" },
+    { "label": "cybersickness & physical discomfort", "treatment": "not directly measured; novelty effect (HMD/controller unfamiliarity) raised as an unmeasured candidate confound", "locus": "p.239" },
+    { "label": "representational fidelity", "treatment": "not operationalized as a variable; content/script/graphics held constant across media as an imperfect control, per Clark & Feldon (2014) media-comparison critique", "locus": "p.238-239" }
+  ],
+  "conditions": [
+    {
+      "label": "IVR (HMD)",
+      "design": "HTC Vive running The Body VR: Journey into a Cell; ~12-min narrated interactive tour with limited object interaction; continuous (IVRn) or 6-segment oral-practice-question (IVRp) delivery",
+      "n": "15 (IVRp), 15 (IVRn)",
+      "instruments": "Witmer & Singer presence scale (adapted); Russell core-affect grid; CTML extraneous/essential/generative load scales; B-Alert X10 EEG (workload, engagement/distraction/sleep-onset states); EDA (SCL, SCR/sec, PTP); ECG (HR, HRV); 16-item retention + 4-item transfer post-test",
+      "effectDirection": "IVR > PPT on presence, enjoyment, positive/high-arousal emotion, self-reported extraneous load, EEG-classified boredom proportion; IVR < PPT on transfer (sig.), retention (marginal), EEG high-engagement probability, ideal-workload proportion; no significant IVR/PPT difference on EDA, HR, HRV, essential/generative load, or difficulty/understanding/effort/interest/motivation"
+    },
+    {
+      "label": "2D video / slideshow / text (desktop PowerPoint)",
+      "design": "24-slide self-paced PowerPoint built from IVR screenshots plus printed transcription of the IVR narration; no return-to-previous-slide; continuous (PPTn) or 6-segment oral-practice-question (PPTp) delivery",
+      "n": "15 (PPTp), 16 (PPTn)",
+      "instruments": "same instrument battery as the IVR condition (within-study comparator)",
+      "effectDirection": "see IVR row — PPT is the comparator pole on every listed contrast"
+    },
+    {
+      "label": "SEM / process model (no media contrast)",
+      "design": "not used in this study; mediation instead run as parallel mediation (Hayes PROCESS macro, 5,000 bootstrap samples) on discrete self-report/biometric variables rather than a latent-variable SEM",
+      "n": "N=61 (whole sample for mediation models)",
+      "instruments": "self-reported extraneous load, self-reported positive/high-arousal emotion, EEG high-engagement probability, HRV as candidate mediators of media→retention/transfer",
+      "effectDirection": "extraneous load and positive/high-arousal emotion significantly mediate media→retention (both indirect paths sig.); no mediator reaches significance for media→transfer"
+    }
+  ],
+  "readings": [
+    { "claim": "IVR causes learners to use limited cognitive resources on extraneous cognitive/affective processing that does not support deep learning, as compared to more conventional media (the 'distraction hypothesis').", "type": "READING/CLAIM", "stance": "defines/tests", "locus": "p.229, 237-238", "tag": "FE" },
+    { "claim": "Self-reported extraneous cognitive load significantly mediates the relationship between instructional medium and retention scores, in the direction IVR → higher load → lower retention.", "type": "READING/CLAIM", "stance": "supports", "locus": "p.236-237", "tag": "FAITHFUL-Parong&Mayer" },
+    { "claim": "Self-reported positive/high-arousal emotion also significantly mediates the medium→retention relationship in the same direction, i.e., functions as a distractor rather than facilitator despite being a positive emotional state.", "type": "READING/CLAIM", "stance": "supports", "locus": "p.236-237", "tag": "FAITHFUL-Parong&Mayer" },
+    { "claim": "None of the candidate cognitive or affective mediators significantly explain the medium→transfer relationship; the direct effect of medium on transfer remains significant after including mediators.", "type": "READING/CLAIM", "stance": "qualifies", "locus": "p.236-237", "tag": "FAITHFUL-Parong&Mayer" },
+    { "claim": "Adding oral practice-testing questions during the lesson does not significantly improve retention or transfer in either medium, contrary to generative-learning-theory predictions.", "type": "READING/CLAIM", "stance": "contests (null result vs. hypothesis)", "locus": "p.236", "tag": "FE" },
+    { "claim": "IVR's perceptual richness and induced emotional arousal function as 'seductive details' under CTML's coherence principle, consuming cognitive capacity even as they elevate presence and enjoyment.", "type": "READING/CLAIM", "stance": "interprets", "locus": "p.237-238", "tag": "FE" },
+    { "claim": "Replacing conventional declarative-knowledge instruction with IVR of this type is not yet warranted; IVR may better suit spatial/3D-transformation content or pre-training use.", "type": "READING/CLAIM", "stance": "practical implication", "locus": "p.238-239", "tag": "FE" },
+    { "claim": "Media-comparison designs like this one confound instructional medium with instructional method (e.g., continuous animation/narration vs. static text), limiting causal attribution to 'medium' per se.", "type": "READING/CLAIM", "stance": "self-critique", "locus": "p.238-239, citing Clark & Feldon 2014", "tag": "FE" }
+  ],
+  "concepts": [
+    { "term": "distraction hypothesis", "type": "TERM", "locus": "p.229, 237-238" },
+    { "term": "coherence principle (CTML)", "type": "TERM", "locus": "p.227, 237-238" },
+    { "term": "seductive details", "type": "TERM", "locus": "p.237-238" },
+    { "term": "extraneous / essential / generative load", "type": "TERM", "locus": "p.227, 234-235" },
+    { "term": "core affect (valence x arousal)", "type": "TERM", "locus": "p.229, 233-234" },
+    { "term": "cognitive-affective distraction model of IVR learning", "type": "THEORY-MODEL", "locus": "p.229 (Figure 2)" },
+    { "term": "novelty effect", "type": "TERM", "locus": "p.239" }
+  ],
+  "interlocutors": [
+    { "name": "Mayer, Richard E. (CTML)", "role": "co-author and source of the cognitive theory of multimedia learning / coherence principle that frames the distraction hypothesis", "locus": "p.227, 237-238" },
+    { "name": "Sweller, John (cognitive load theory)", "role": "source of the extraneous/essential/germane load framework CTML's three-way split is derived from", "locus": "p.227" },
+    { "name": "Witmer, Bob G. & Singer, Michael J. (presence questionnaire)", "role": "source of the presence scale items adapted for this study's self-report instrument", "locus": "p.231" },
+    { "name": "Parong, Jocelyn & Mayer, Richard E. (2018, self-citation; ped-sec-08)", "role": "prior study this unit replicates (prediction 1) and extends into cognitive/affective mediating processes", "locus": "p.227-229, 236" },
+    { "name": "Makransky, Guy (et al. 2017, 2019)", "role": "cited comparator findings that IVR science lessons underperform other media; also cited for EEG-workload-classification precedent", "locus": "p.227, 235, 238" },
+    { "name": "Fiorella, Logan & Mayer, Richard E. (generative learning theory)", "role": "theoretical source for the practice-testing manipulation as a generative learning strategy", "locus": "p.228-229" },
+    { "name": "Moreno, Roxana & Mayer, Richard E.", "role": "cited prior media-comparison work finding IVR/immersive media underperform traditional media", "locus": "p.229, 238" },
+    { "name": "Kozhevnikov, Maria et al.", "role": "cited pro-IVR media-comparison finding (relative-motion concepts, IVR > desktop VR on transfer)", "locus": "p.227" },
+    { "name": "Bailenson, Jeremy", "role": "cited proponent-side source on IVR's experiential affordances and popularity", "locus": "p.226-227" },
+    { "name": "Plass, Jan L. & Kalyuga, Slava (seductive details / emotion-in-CLT)", "role": "source of the 'seductive details' construct applied to IVR's extraneous stimuli, and of a four-ways-emotion-in-cognitive-load-theory framework", "locus": "p.228, 237-238" },
+    { "name": "Russell, James A. (core affect)", "role": "source of the two-dimensional valence/arousal affect model used for the self-report emotional-state measure", "locus": "p.228-229, 233" },
+    { "name": "Clark, Richard E. & Feldon, Daniel F.", "role": "cited critique of media-comparison research design (medium/method confound), applied self-critically to this study's own limitations", "locus": "p.238-239" }
+  ],
+  "tensions": [
+    { "axis": "positive/high-arousal affect as facilitative (proponent view, e.g. Bailenson, Kozhevnikov) vs. positive/high-arousal affect as a significant negative mediator of retention (this study's own finding)", "note": "The study's own mediation result complicates a simple 'positive emotion helps learning' story: the same self-reported positive/high-arousal state that IVR reliably elevates is shown to significantly mediate IVR's lower retention scores, i.e., functions as a distractor despite its positive valence.", "locus": "p.236-237" },
+    { "axis": "retention mediated by cognitive/affective distraction vs. transfer not significantly mediated by any measured process", "note": "The distraction-hypothesis mediators work for retention but not transfer, even though the total effect of medium on transfer is larger and more robust than on retention — an unresolved asymmetry the authors do not fully explain.", "locus": "p.236-237" },
+    { "axis": "media-comparison research as informative about 'medium' vs. media-comparison research as confounding medium with instructional method", "note": "The authors' own limitations section concedes the study cannot cleanly separate IVR's continuous-animation/narration format from the IVR label itself, a live methodological debate in this cluster (cf. Mayer et al. 2022 / ped-sec-07's methods-not-media position).", "locus": "p.238-239" }
+  ],
+  "bridges": {
+    "vle": [
+      "vle-02-boredom-raw-dataset",
+      "vle-04-mark-attention-span"
+    ],
+    "boredomExperimentDataset": [
+      "****** UNVERIFIED: anchor entry not yet built"
+    ]
+  },
+  "extraction": {
+    "tool": "pdftotext",
+    "date": "2026-07-15",
+    "ocr_confidence": "high"
+  }
+}

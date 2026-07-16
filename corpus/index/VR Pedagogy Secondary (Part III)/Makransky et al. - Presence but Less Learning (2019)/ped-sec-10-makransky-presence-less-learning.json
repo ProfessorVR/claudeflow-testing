@@ -1,0 +1,97 @@
+{
+  "id": "ped-sec-10",
+  "slug": "makransky-presence-less-learning",
+  "citation": "Makransky, Guido, Thomas S. Terkildsen, and Richard E. Mayer. \"Adding immersive virtual reality to a science lab simulation causes more presence but less learning.\" Learning and Instruction 60 (2019): 225–236. https://doi.org/10.1016/j.learninstruc.2017.12.007.",
+  "discipline": "Educational Psychology / Learning Sciences",
+  "strand": "C",
+  "depth": "deep",
+  "thesis": "Porting an identical science-lab simulation from a desktop-PC (low-immersion) to a head-mounted-display (high-immersion VR) medium raises self-reported presence but lowers knowledge-test learning gains and raises EEG-measured cognitive workload/overload, indicating that immersion's motivational pull can distract and overload rather than aid learning ('liking is not learning'); the redundancy principle of multimedia learning does not clearly generalize across the two media.",
+  "sections": [
+    {
+      "title": "1. Introduction (1.1 objective/rationale, 1.2 virtual learning simulations, 1.3 theoretical background, 1.4 redundancy-principle question, 1.5 research questions)",
+      "page": "225-227",
+      "summary": "Motivates the study against technology-centered (vs. learner-centered) VR adoption despite scant controlled evidence; states three objectives (media effect on learning, generalizability of CTML's redundancy principle to immersive VR, EEG as a direct cognitive-load measure); reviews the optimistic (immersion->presence->generative processing, Slater & Wilbur 1997, Dewey 1913, Salzman et al. 1999, Lee et al. 2010) and pessimistic (immersion->extraneous load/seductive details, Moreno & Mayer 2002, Van Der Heijden 2004) theoretical routes; states two research questions on immersion level and redundancy-principle transfer."
+    },
+    {
+      "title": "2. Method (2.1 participants and design, 2.2 materials/tests/survey/apparatus, 2.2.6 EEG workload measure, 2.3 procedure)",
+      "page": "227-231",
+      "summary": "52 university students in a 2x2 mixed design (between: text vs. text+narration; within: VR-HMD vs. PC media, counterbalanced cross-panel). Labster mammalian-transient-protein-expression simulation ported identically across PC (mouse, external monitor) and immersive VR (Samsung GearVR HMD, touchpad). Instruments: 10-item presence scale (Schubert, Friedmann & Regenbrecht 2001), 8-item learning beliefs and 7-item satisfaction scales (Lee et al. 2010), 10-item knowledge test and 10-item transfer test (Rasch-trimmed), continuous EEG workload metric (Advanced Brain Monitoring X10, 9-channel, 256Hz, Berka et al. classifier; boredom <=0.4 / optimal 0.4-0.7 / overload >0.7 bands)."
+    },
+    {
+      "title": "3. Results (3.1 instrument validity, 3.2 media effects, 3.3 method effects)",
+      "page": "231-233",
+      "summary": "Rasch fit and Cronbach's alpha (0.72-0.91 self-report; 0.68 knowledge; 0.32-0.55 transfer) confirm usable instruments after trimming misfitting items. Media effects: VR > PC on presence (d=1.30/2.20); PC > VR on knowledge gain (d=0.48/0.80); transfer gain ns; learning beliefs/satisfaction ns; VR > PC on EEG workload (ns/d=0.59) and overload time (ns/d=0.62), both only at the second intervention. Method effects: largely null on learning/affect; one workload effect contrary to the redundancy prediction (T > T+N, d=0.61, 1st intervention only), attributed to a modality-principle confound (some VR participants listened rather than read)."
+    },
+    {
+      "title": "4. Discussion (4.1 empirical, 4.2 theoretical, 4.3 practical, 4.4 methodological implications, 4.5 limitations)",
+      "page": "233-235",
+      "summary": "States 'presence but less learning' as the major empirical contribution, consistent with Moreno & Mayer (2002) and Richards & Taylor (2015), contrasting with newer high-immersion-favorable studies (Alhalabi 2016; Passig et al. 2016; Webster 2016). Interprets results via the pessimistic CTML/CLT route: immersion as a seductive detail/'bells and whistles' producing extraneous load, reinforced by Van Der Heijden's hedonic-vs-utilitarian systems framing. Cautions against technology-centered VR adoption; flags EEG as a promising methodological contribution; notes limitations (small N, unintuitive GearVR touchpad control, single-session lab administration, self-report-only affect measures, content difficulty/overload for novices, VR content not optimized for its own affordances)."
+    },
+    {
+      "title": "5. Conclusion",
+      "page": "235",
+      "summary": "Frames the study as evidence that instructional media which increase enjoyment/presence do not thereby guarantee learning ('liking is not learning'); recommends developing content specifically for VR's affordances rather than porting desktop content, and identifies settings (advanced science process skills, realistic performance training for experienced learners) where higher immersion may plausibly still pay off."
+    }
+  ],
+  "constructs": [
+    { "label": "presence (spatial/physical)", "treatment": "10-item scale adapted from Schubert, Friedmann & Regenbrecht (2001); VR significantly exceeds PC in both interventions", "locus": "p.228-229, 231-232" },
+    { "label": "cognitive load (extraneous vs germane)", "treatment": "theoretical (CTML/CLT extraneous-essential-generative distinction) and instrumental (EEG workload metric, boredom/optimal/overload bands); VR exceeds PC on workload and overload-time at 2nd intervention", "locus": "p.226-227, 229-230, 232-233" },
+    { "label": "learning outcomes: retention & transfer", "treatment": "10-item knowledge test and 10-item transfer test (Rasch-trimmed); PC exceeds VR on knowledge gain, transfer gain non-significant", "locus": "p.228-229, 231-232" },
+    { "label": "affect: enjoyment & intrinsic motivation", "treatment": "8-item learning-beliefs and 7-item satisfaction scales (Lee et al. 2010); no significant media effect either direction", "locus": "p.229, 231-232" },
+    { "label": "situational interest", "treatment": "theoretical only (Renninger & Hidi 2016 cited) — immersion framed as a candidate interest-trigger that may not deepen into durable learning; not separately instrumented", "locus": "p.227" }
+  ],
+  "conditions": [
+    { "label": "IVR (HMD)", "design": "Samsung GearVR head-mounted display, touchpad-controlled, stereoscopic 360-degree field of view; within-subjects arm", "n": "52 (all participants experience both media, counterbalanced order)", "instruments": "presence/learning-beliefs/satisfaction surveys, knowledge/transfer tests, continuous EEG workload", "effectDirection": "higher presence (d=1.30/2.20), lower knowledge gain (d=0.48/0.80 favoring PC), higher EEG workload/overload-time at 2nd intervention (d=0.59/0.62)", "locus": "p.227-228, 230-233" },
+    { "label": "desktop-3D / non-immersive VR", "design": "conventional PC, external 23-inch monitor, wireless mouse control; within-subjects arm, identical simulation content to VR arm", "n": "52", "instruments": "same battery as VR arm", "effectDirection": "lower presence, higher knowledge gain relative to VR, lower EEG workload/overload-time at 2nd intervention", "locus": "p.227-228, 230-233" },
+    { "label": "SEM / process model (no media contrast)", "design": "not applicable — this study is a factorial experiment, not a structural equation model; recorded to make explicit that ped-sec-10 does NOT operationalize this column (contrast with ped-sec-09/ped-sec-11)", "n": "n/a", "instruments": "n/a", "effectDirection": "n/a", "locus": "n/a — ****** UNVERIFIED: negative case, not a positive claim; recorded for concordance completeness only" }
+  ],
+  "readings": [
+    { "claim": "Immersive VR produces significantly higher self-reported presence but significantly lower knowledge-test learning gains than an identical simulation on desktop PC.", "type": "READING/CLAIM", "stance": "defines/headline-finding", "locus": "p.225, 233", "tag": "FE" },
+    { "claim": "'Liking is not learning': instructional media that increase enjoyment or a sense of presence do not thereby guarantee better learning outcomes.", "type": "READING/CLAIM", "stance": "concludes", "locus": "p.235", "tag": "FAITHFUL-Makransky" },
+    { "claim": "EEG data supply preliminary brain-based evidence that the VR condition produces greater cognitive workload and more overload-band time than the PC condition, particularly by the second intervention.", "type": "READING/CLAIM", "stance": "FE", "locus": "p.232-233", "tag": "FE" },
+    { "claim": "Added immersion functions like a seductive detail / 'bells and whistles' that increases extraneous rather than generative processing, consistent with a hedonic (Van Der Heijden 2004) rather than utilitarian reading of the VR system by students.", "type": "READING/CLAIM", "stance": "interprets", "locus": "p.233-234", "tag": "FE" },
+    { "claim": "This study's pattern agrees with Moreno & Mayer (2002) and Richards & Taylor (2015) (lower learning with more immersive technology) and diverges from newer high-immersion-favorable studies (Alhalabi 2016; Passig et al. 2016; Webster 2016).", "type": "READING/CLAIM", "stance": "cites-cluster-author / contests-reading-of", "locus": "p.233", "tag": "FE" },
+    { "claim": "The redundancy principle of multimedia learning does not clearly generalize across immersion levels; one observed cognitive-load method effect ran opposite to the redundancy prediction, plausibly confounded with the modality principle (some VR participants listened rather than read on-screen text).", "type": "READING/CLAIM", "stance": "qualifies", "locus": "p.233", "tag": "FE" },
+    { "claim": "Instructional designers should not take a technology-centered approach and assume that porting desktop content to VR automatically improves learning; content should instead be designed for VR's specific affordances and learning goals.", "type": "READING/CLAIM", "stance": "recommends", "locus": "p.234", "tag": "FE" }
+  ],
+  "concepts": [
+    { "term": "presence", "type": "CONSTRUCT", "locus": "p.226, 228-229" },
+    { "term": "cognitive theory of multimedia learning (CTML)", "type": "THEORY-MODEL", "locus": "p.226-227" },
+    { "term": "cognitive load theory (CLT)", "type": "THEORY-MODEL", "locus": "p.226-227" },
+    { "term": "extraneous / essential / generative processing", "type": "TERM", "locus": "p.226-227" },
+    { "term": "redundancy principle", "type": "TERM", "locus": "p.227, 233" },
+    { "term": "modality principle", "type": "TERM", "locus": "p.233" },
+    { "term": "seductive details / 'bells and whistles'", "type": "TERM", "locus": "p.233-234" },
+    { "term": "hedonic vs. utilitarian information systems", "type": "TERM", "locus": "p.233-234" },
+    { "term": "EEG workload metric (boredom/optimal/overload bands)", "type": "MEASURE", "locus": "p.229-230" },
+    { "term": "situational interest", "type": "TERM", "locus": "p.227" },
+    { "term": "liking is not learning", "type": "TERM", "locus": "p.235" }
+  ],
+  "interlocutors": [
+    { "name": "Mayer, Richard E.", "role": "co-author; source of CTML and the redundancy principle this study tests", "locus": "p.226-227, 233" },
+    { "name": "Sweller, John", "role": "source of cognitive load theory, the study's other primary theoretical lens", "locus": "p.226-227" },
+    { "name": "Moreno, Roxana", "role": "source of the 'bells and whistles' framing and prior redundancy-principle findings this study's results are read against", "locus": "p.226, 233-234" },
+    { "name": "Slater, Mel & Wilbur, Sylvia", "role": "source of the immersion-drives-presence (FIVE) framework motivating the 'optimistic' predicted route", "locus": "p.226" },
+    { "name": "Dewey, John", "role": "source of interest-through-practical-experience theory supporting the optimistic route, and of the warning against extraneous embellishments supporting the redundancy principle", "locus": "p.226-227" },
+    { "name": "Van Der Heijden, H.", "role": "source of the hedonic-vs-utilitarian information-systems distinction used to interpret the overload finding", "locus": "p.233-234" },
+    { "name": "Renninger, K.A. & Hidi, S.", "role": "source of situational-interest theory invoked to explain immersion's motivational-but-not-necessarily-learning-producing pull", "locus": "p.227, 234" },
+    { "name": "Kalyuga, Slava", "role": "cited for redundancy-effect mechanics (split attention, concurrent verbal streams)", "locus": "p.227" },
+    { "name": "Berka, Chris et al.", "role": "source of the EEG workload classifier and its validated boredom/optimal/overload bands", "locus": "p.229-230" },
+    { "name": "Pekrun, Reinhard", "role": "cited for the broader claim that learners' emotional reactions substantially affect academic achievement", "locus": "p.234" },
+    { "name": "Blascovich, Jim & Bailenson, Jeremy", "role": "cited for the general VR-paradigm-shift framing in the introduction", "locus": "p.225" }
+  ],
+  "tensions": [
+    { "axis": "optimistic route (immersion -> presence -> generative processing -> more learning) vs. pessimistic route (immersion -> extraneous processing/seductive details -> less learning)", "note": "The paper's own theoretical background sets up both routes as live predictions from CTML/CLT before data collection; the reported results favor the pessimistic route for this content and sample, without the authors claiming to have closed off the optimistic route for other content types or goals.", "locus": "p.226-227, 233-234" },
+    { "axis": "self-report presence/affect measures vs. objective EEG/behavioral learning measures", "note": "Presence, learning beliefs, and satisfaction (self-report) dissociate from knowledge-test gains and EEG workload (objective): VR wins on the former, loses/matches on the latter — the paper treats this dissociation itself as the headline finding rather than a methodological artifact.", "locus": "p.231-233" },
+    { "axis": "redundancy principle (predicts text+narration should aid learning less than narration alone, or hurt when redundant with graphics) vs. modality principle (predicts narration eases load relative to reading)", "note": "The study's specific text-vs-text+narration manipulation departs from the classic redundancy-effect comparison (narration vs. narration+text), and its one significant method-level workload effect runs opposite to the redundancy prediction; the authors attribute this to modality-principle interference from VR participants' listening-not-reading behavior, but treat the two principles as unresolved co-occurring explanations rather than adjudicating between them.", "locus": "p.233" }
+  ],
+  "bridges": {
+    "vle": ["vle-04-mark-attention-span"],
+    "boredomExperimentDataset": ["****** UNVERIFIED: anchor not yet built"]
+  },
+  "extraction": {
+    "tool": "pdftotext",
+    "date": "2026-07-15",
+    "ocr_confidence": "high"
+  }
+}
