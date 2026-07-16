@@ -39,6 +39,11 @@ TEXT_DIRS: dict[str, dict] = {
         "ontology_format": "header",
         "analysis_subdir": "_synthesis",
     },
+    "Boredom Experiment (VR Attention Study)": {
+        "label": "Boredom Experiment (VR Attention Study)",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
+    },
     "Boredom Secondary (Part III)": {
         "label": "Boredom Secondary (Part III)",
         "ontology_format": "header",

@@ -1,0 +1,58 @@
+{
+  "entry": "Boredom Experiment (VR Attention Study)",
+  "prefix": "bex",
+  "kind": "empirical-primary-object (raw-dataset channel anchor; lab/VR pole)",
+  "built": "2026-07-16",
+  "status": "Phase-2 anchor build (rescoped plan). Compact channel-schema anchor; findings live at vle-02; O-9 channels declared-but-unprocessed.",
+  "relationship_to_vle_02": "This entry is the RAW dataset (lab pole). 'vle-02-boredom-raw-dataset' under the King-Salvo VLE anchor is its anonymized DERIVATIVE view; the study's findings are registered as vle nodes 10-14 there and are NOT duplicated here. This entry holds the dataset's channel structure only.",
+  "sources": {
+    "publications": [
+      "King et al., WIP: Physiological Assessment of Learning in a VR Clinical Immersion Environment, ASEE 2023 #37129 (P1, N=3 EEG)",
+      "King et al., Assessment of Student Engagement in VR Clinical Immersion Environments through Eye Tracking, ASEE 2024 #44685 (P2, N=12 gaze)",
+      "King & Salvo, Phenomenological Evaluation..., Biomed Eng Educ 4 (2024): 381-397, DOI 10.1007/s43683-024-00139-5 (P3; indirect boredom relevance)"
+    ],
+    "raw_dataset": "Boredom Experiment (~92GB, D: drive); anonymized S01-S08; FE-U register pending O-10. Raw tree NOT read for this build (PII gate); all metadata taken from vle-02 + the untracked reanalysis brief.",
+    "reanalysis_brief": "tmp/Dissertation/Part_III/reanalysis/boredom-experiment-brief.md (untracked; holds the full per-subject matrix — referenced by pointer, NOT copied here)"
+  },
+  "cohort_n": {
+    "p1_eeg_published": 3,
+    "p1_clean": 1,
+    "p2_gaze_published": 12,
+    "raw_selfreport": 8,
+    "note": "Three distinct N's; a published-channel derivation (P1/P2) is not the same cohort as the raw N=8 per-subject record."
+  },
+  "channels": [
+    {"id": "ch-selfreport", "modality": "per-video questionnaire", "register": "FE-U", "n": 8, "unit": "bex-01", "status": "available (aggregates + 4 cases only; no per-subject matrix)", "o10": true},
+    {"id": "ch-eeg", "modality": "4-channel EEG (F3,F4,P3,P4) DMN alpha/theta", "register": "FE (P1) / raw", "n": "3 / 8", "unit": "bex-02", "status": "raw O-9 deferred", "o9": true},
+    {"id": "ch-gaze", "modality": "eye-tracking gaze-variance @120Hz + pupil", "register": "FE (P2)", "n": 12, "unit": "bex-03", "status": "published derivation only (N=12 != raw N=8)"},
+    {"id": "ch-hmd", "modality": "HP Reverb G2 Omnicept telemetry / exposure protocol", "register": "raw", "n": 8, "unit": "bex-04", "status": "raw O-9 deferred", "o9": true},
+    {"id": "ch-obs", "modality": "OBS session video (posture/fidget/watch-glance)", "register": "raw", "n": 8, "unit": "bex-04", "status": "raw O-9 deferred", "o9": true},
+    {"id": "ch-fig", "modality": "per-subject MATLAB .fig", "register": "derived", "n": 8, "unit": "bex-04", "status": "metadata only", "o9": true},
+    {"id": "ch-stimulus", "modality": "10x 4K60 state-contrast video compilations", "register": "FE", "n": null, "unit": "bex-04", "status": "metadata only (naming key CLC/INT/Boring x LA/HA/IE/E/ME/AS/EC; 17-min)"}
+  ],
+  "outbound_bridges": [
+    {"relation": "bridges-to", "target": "Heidegger - The Fundamental Concepts of Metaphysics/_synthesis/fcm-king-salvo-bridge.md", "note": "the second-form two-channel KEYSTONE (surface/depth divergence: EEG boring-like vs gaze engaging-like p=0.0004, self-report engaged, felt-time dilated) [FH/P]"},
+    {"relation": "bridges-to-part-iii", "target": "Part III M2/M3 boredom analysis", "note": "the felt-duration / Hingehaltenheit record + two-channel divergence datum feed M2/M3 [P]"},
+    {"relation": "derives-to", "target": "Virtual Learning Environments (King-Salvo)/units/vle-02-boredom-raw-dataset", "note": "vle-02 is the anonymized derivative of this raw dataset; findings live there as vle nodes 10-14"}
+  ],
+  "inbound_anticipatory_bridges": [
+    {"source": "ped-sec-14 (VR Pedagogy Secondary)", "relation": "bridges-to", "target": "#ch-stimulus", "note": "IVR/desktop-3D/2D ladder x this dataset's media-condition channels (repointed 2026-07-16 Phase 2)"},
+    {"source": "ped-sec-12, ped-sec-01 (VR Pedagogy Secondary)", "relation": "bridges-to-part-iii", "note": "deployment/presence placeholders repointed to the built anchor (2026-07-16 Phase 2)"}
+  ],
+  "gates": {
+    "PII": "Subjects are S01-S08 ONLY; name->Sxx mapping unrecorded; raw Subjects/ never enumerated for this build.",
+    "O-10": "FE-U kept at the vle-02 derivative level (aggregates + four cases); no per-subject 24-row matrix committed.",
+    "O-9": "ch-eeg/.mat, ch-hmd telemetry, ch-obs video, ch-fig = declared-but-unprocessed metadata; no parsing."
+  },
+  "future_work_deferred_processing": {
+    "note": "Four channels are catalogued but UNPROCESSED in this build; processing them is a natural next pass (deferred under O-9).",
+    "channels": ["ch-eeg (raw .mat per-subject reprocessing, all 8 subjects/bands)", "ch-hmd (Omnicept telemetry decoding)", "ch-obs (GPU comportment scoring vs the §D signature grid)", "ch-fig (extraction from MATLAB .fig outputs)"],
+    "currently_usable": ["ch-selfreport (aggregates + 4 cases)", "ch-gaze (P2 published, N=12)", "ch-eeg (P1 published, N=3)"]
+  },
+  "ontology_nodes": 7,
+  "provenance_discipline": "FE / FE-U / FAITHFUL-HEIDEGGER / PROJECTED (anticipatory-application); category caution; two-channel rule; no PII in any file",
+  "registration": {
+    "compiled_index": "TEXT_DIRS entry added 2026-07-16 (ontology_format=header, analysis_subdir=_synthesis)",
+    "note": "re-run python3 scripts/compile-corpus-index.py to refresh"
+  }
+}

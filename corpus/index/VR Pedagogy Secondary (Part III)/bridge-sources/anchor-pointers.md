@@ -79,8 +79,9 @@ For each cluster unit: the VLE anchor unit(s) its `bridges-to-vle` edges target;
 Totals: 31/34 units carry ≥1 `bridges-to-vle` edge; the other 3 (ped-sec-15, ped-sec-20, ped-sec-23)
 bridge to Part III directly with no single VLE-unit target. All 34 units carry ≥1 bridge edge of some
 kind (quality-gate invariant). **0/34 now carry a `grounds-measure` pointer** — all 24 retired 2026-07-16;
-3 anticipatory bridges to the dataset survive (ped-sec-14 `bridges-to`; ped-sec-12 and ped-sec-01
-`bridges-to-part-iii`), pending repoint at anchor build. `vle-01` is the
+3 anticipatory bridges to the dataset survive and were **repointed 2026-07-16 to the now-built anchor**
+(ped-sec-14 `bridges-to` → `Boredom Experiment (VR Attention Study)#ch-stimulus`; ped-sec-12 and ped-sec-01
+`bridges-to-part-iii`). `vle-01` is the
 dominant target (28 edges) — the deployment survey is where most of this literature's constructs and
 cautions land; `vle-02` (raw boredom dataset) is touched only by ped-sec-13, the one unit with an
 EEG-workload measure to align against it.
@@ -97,8 +98,9 @@ each source's real relationships are already carried by its `bridges-to-part-iii
 edges (verified: all 24 retain ≥1 `bridges-to-part-iii`). When the dataset anchor is built (Phase 2), the
 lab↔literature construct links — where genuinely used (e.g. EEG-workload, boredom-rating) — will be
 authored as the anchor's *outbound* edges, correctly typed, not as inbound groundings from this cluster.
-**Three anticipatory bridges to the dataset survive** and will be repointed at the built anchor:
-ped-sec-14 (`bridges-to`), ped-sec-12 and ped-sec-01 (`bridges-to-part-iii`).
+**Three anticipatory bridges to the dataset survive** and were **repointed 2026-07-16 to the built anchor**
+`corpus/index/Boredom Experiment (VR Attention Study)/`: ped-sec-14 (`bridges-to` → `#ch-stimulus`),
+ped-sec-12 and ped-sec-01 (`bridges-to-part-iii`).
 
 ## Anchor discipline note
 
