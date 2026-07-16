@@ -54,7 +54,7 @@ For each cluster unit: the VLE anchor unit(s) its `bridges-to-vle` edges target;
 | ped-sec-11 | Makransky & Petersen 2019 | C | vle-01 | 2 | retired |
 | ped-sec-12 | Makransky et al. 2019 (home/classroom) | C | vle-01 | 4 | retired |
 | ped-sec-13 | Parong & Mayer 2021 | C | vle-02, vle-04 | 3 | retired |
-| ped-sec-14 | Colin et al. 2022 | C | vle-01, vle-04 | 3 | — |
+| ped-sec-14 | Barrett et al. 2022 | C | vle-01, vle-04 | 3 | — |
 | ped-sec-15 | Cook et al. 2011 | D | — *(bridges to Part III directly)* | 3 | — |
 | ped-sec-16 | Merchant et al. 2012 | D | vle-01 | 3 | retired |
 | ped-sec-17 | Makransky et al. 2016 | D | vle-01 | 2 | — |

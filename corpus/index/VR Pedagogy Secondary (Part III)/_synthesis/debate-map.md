@@ -120,7 +120,7 @@ comparison condition; recorded as a `contests-reading-of` edge against the plan'
 fabricating a Pole-B stance the study doesn't support).
 
 **Resolution status:** Effectively undecided within this cluster — the empirical units that could speak to it
-(Colin et al./ped-sec-14, Makransky-equivalence/ped-sec-12) test IVR-vs-desktop-3D-vs-2D directly but their
+(Barrett et al./ped-sec-14, Makransky-equivalence/ped-sec-12) test IVR-vs-desktop-3D-vs-2D directly but their
 findings feed DA-01 and DA-08 more than a clean sufficiency verdict. This is a genuine gap: this cluster's
 sufficiency claims are mostly assertions of scope (studies that simply don't test IVR), not comparative findings.
 
