@@ -50,8 +50,12 @@ rather than working from a `.txt` extraction; no OCR reprocessing detour (plan �
   these units — never re-describe the VLE's own survey/dataset/study apparatus.
 - **Boredom Experiment (VR Attention Study)**: confirmed **not yet built** on disk as of this Phase 0 pass
   (`corpus/index/Boredom Experiment (VR Attention Study)/` absent). Per plan §9 decision 4, `grounds-measure`
-  bridges to this anchor are left as flagged `****** UNVERIFIED:` pointers rather than blocking cluster
-  construction.
+  bridges to this anchor were left as flagged `****** UNVERIFIED:` pointers rather than blocking cluster
+  construction. **[UPDATE 2026-07-16: those 24 `grounds-measure` edges were RETIRED (rescope) — the pedagogy
+  cluster informs Part III's VLE evaluation, not the boredom *lab* dataset; each source's real relationships
+  are already carried by its `bridges-to-part-iii`/`bridges-to-vle` edges. Three anticipatory bridges to the
+  dataset survive (ped-sec-14, ped-sec-12, ped-sec-01). See `bridge-sources/anchor-pointers.md` and
+  `plans/boredom-experiment-channel-schema-anchor-plan-2026-07-16.md`.]**
 - **Boredom Secondary (Part III)** (cross-cluster kinship, not a formal anchor): Strand F (Haj-Bolouri, Lin, Nacke
   — VR/immersion/engagement) overlaps thematically; add an optional `cites-cluster` edge to the relevant
   `bor-sec-NN` id only where a unit here genuinely engages one of those sources — no floor requirement.

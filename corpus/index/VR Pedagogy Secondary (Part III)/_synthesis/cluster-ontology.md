@@ -158,12 +158,16 @@ unresolved CMC-VR seam (2019–2025, Strands D/E + Strand F's capstone and bridg
 ## 7. Node / edge summary
 
 - **34 units** across 6 strands (A:3, B:4 — +ped-sec-24 companion, C:7, D:6, E:3, F:9).
-- **1,153 deduplicated edges** in `global-edges.csv` (raw 1,155 before dedup).
+- **1,129 deduplicated edges** in `global-edges.csv` (raw 1,131 before dedup; the 24 speculative
+  `grounds-measure` edges to the Boredom Experiment dataset were **retired 2026-07-16** — see rescoped plan
+  `plans/boredom-experiment-channel-schema-anchor-plan-2026-07-16.md`).
 - **10 documented debate axes** (8 original + 2 added with Strand F); **65 intra-cluster `cites-cluster-author`
   edges** (corrected 2026-07-16: the prior count double-counted; and ped-sec-09→ped-sec-16 was retagged
-  external per `citation-corrections-2026-07-16.md`); **18 `contests-reading-of`/`contests` edges**; **19 `extends-reading-of`/`extends` edges**;
-  **50 `bridges-to-vle`**, **68 `bridges-to-part-iii`**, **24 `grounds-measure`** (all UNVERIFIED pending the
-  Boredom Experiment dataset entry).
+  external per `citation-corrections-2026-07-16.md`); **17 `contests-reading-of`/`contests` edges** (+1
+  `contests-measurement-practice`); **19 `extends-reading-of`/`extends` edges**;
+  **49 `bridges-to-vle`**, **68 `bridges-to-part-iii`**, **0 `grounds-measure`** (retired 2026-07-16 — the
+  pedagogy cluster does not ground measures in the Boredom lab dataset; those relationships belong to the
+  anchor entry's outbound edges. One anticipatory `bridges-to` edge to the dataset survives, ped-sec-14).
 - Construct coverage: **34/34 units** appear in ≥1 concordance cell.
 - **60 canonical nodes** below: 14 CONSTRUCT, 8 MEDIA-CONDITION, 12 THEORY-MODEL, 16 TERM, 10 DEBATE-AXIS.
 

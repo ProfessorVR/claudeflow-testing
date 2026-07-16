@@ -4,8 +4,10 @@
 %% claim the source literature makes. Aggregated at STRAND level (edge labels = #
 %% of unit-level bridge edges) to stay within the <=25-edge Phase-4 cap; the
 %% unit-level pointers live in bridge-sources/anchor-pointers.md.
-%% Solid = bridges-to-vle (active anchor). Dotted = grounds-measure to the
-%% UNVERIFIED Boredom-dataset anchor (entry not yet built, plan s9 decision 4).
+%% Solid = bridges-to-vle (active anchor). Dotted = the ONE surviving anticipatory
+%% bridges-to edge to the Boredom-dataset anchor (ped-sec-14; entry not yet built).
+%% The 24 grounds-measure edges to that dataset were RETIRED 2026-07-16 (rescope):
+%% the pedagogy cluster does not ground measures in the Boredom lab dataset.
 graph LR
     subgraph Cluster["VR Pedagogy Secondary — strands"]
         SA["A · Presence theory (01-03)"]
@@ -23,7 +25,7 @@ graph LR
         V4["vle-04 Mark attention-span"]
     end
 
-    DS["Boredom Experiment RAW dataset<br/>UNVERIFIED — entry not yet built"]
+    DS["Boredom Experiment RAW dataset<br/>UNVERIFIED — entry not yet built<br/>(24 grounds-measure edges retired 2026-07-16; 1 bridge pending)"]
 
     SA ==4==> V1
     SA ==1==> V4
@@ -40,13 +42,8 @@ graph LR
     SF ==6==> V3
     SF ==1==> V4
 
-    SA -.2.-> DS
-    SB -.3.-> DS
-    SC -.6.-> DS
-    SD -.3.-> DS
-    SE -.2.-> DS
-    SF -.8.-> DS
+    SC -.1 (ped-sec-14 bridges-to).-> DS
 
     style DS fill:#fce8e6,stroke:#c0392b,stroke-dasharray: 5 5
     style Anchors fill:#d4edda
-    note1["All 20 edges = anticipatory-application (P).<br/>Solid → active VLE anchor (49 unit-edges, aggregated).<br/>Dotted → UNVERIFIED raw-dataset anchor (24 unit-edges).<br/>vle-01 is the dominant target; vle-02 touched only by Strand C (ped-sec-13)."]
+    note1["Solid → active VLE anchor (49 unit-edges, aggregated).<br/>Dotted → the single surviving anticipatory bridges-to edge (ped-sec-14) to the not-yet-built raw-dataset anchor.<br/>The 24 grounds-measure edges to that dataset were retired 2026-07-16 (rescope).<br/>vle-01 is the dominant target; vle-02 touched only by Strand C (ped-sec-13)."]
