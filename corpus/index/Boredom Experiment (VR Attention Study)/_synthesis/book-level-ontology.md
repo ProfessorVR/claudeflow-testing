@@ -18,9 +18,12 @@ per-subject matrix** committed); O-9 (`.mat` EEG / HMD telemetry / OBS video are
 
 **Future work (deferred processing).** Four channels are catalogued but **not yet processed** — `ch-eeg` (raw
 `.mat`), `ch-hmd` (telemetry), `ch-obs` (session video), `ch-fig` (`.fig` outputs). They are recorded here so the
-index knows what the lab pole *contains*; their processing (per-subject EEG reprocessing, telemetry decoding, GPU
-comportment scoring of the OBS surface) is deferred under O-9 and should be taken up in a later pass. Only
-`ch-selfreport` (aggregates) and `ch-gaze`/`ch-eeg` at the published-derivation level are currently usable.
+index knows what the lab pole *contains*; their processing (per-subject EEG
+reprocessing, HMD-CSV parsing, `.fig` extraction, and — as its own final phase — GPU processing of the OBS in-VR
+feed for stimulus-segmentation + head-restlessness + off-task, which **corroborate** `ch-gaze`/`ch-hmd` rather
+than adding an independent surface) is deferred under O-9. A file-verified scoping plan exists:
+`plans/boredom-experiment-o9-processing-scope-2026-07-16.md`. Only `ch-selfreport` (aggregates) and
+`ch-gaze`/`ch-eeg` at the published-derivation level are currently usable.
 
 ## Map of the entry
 - **units/** `bex-00-corpus-overview` · `bex-01-selfreport-record` · `bex-02-eeg-workload` · `bex-03-gaze-arousal` · `bex-04-stimulus-corpus`.
@@ -70,12 +73,12 @@ comportment scoring of the OBS surface) is deferred under O-9 and should be take
 - **centrality**: supporting
 - **aliases**: HMD channel, exposure protocol, Omnicept telemetry
 
-#### 6. ch-obs — session-video comportment channel
-- **definition**: OBS session recordings (posture / fidget / watch-glance comportment) — the visible-*Zeitvertreib* surface channel that would supply a third behavioral surface against the self-report and gaze channels. **Session video is UNPROCESSED (O-9 deferred); GPU comportment reads are future work — the visible-*Zeitvertreib* surface is not yet scored.**
+#### 6. ch-obs — session-video channel (first-person in-VR headset feed)
+- **definition**: OBS screen-capture of the subject's first-person in-VR view (Windows Mixed Reality feed) — 4K/HEVC/60 fps, ~85.6 GB across 8 subjects. **NOT a body/comportment camera: no participant body footage was ever recorded (confirmed 2026-07-16), so posture/fidget/watch-glance are not recoverable and there is no independent third behavioral surface.** What the feed yields: stimulus-state **segmentation** (a precise cross-channel alignment anchor for `ch-eeg`/`ch-hmd`/`ch-fig`), head-restlessness (global optical flow), and on/off-task — signals that **corroborate `ch-gaze`/`ch-hmd`, not a new axis.** UNPROCESSED (O-9); processing is its own deferred phase — see `plans/boredom-experiment-o9-processing-scope-2026-07-16.md`.
 - **type**: DATASET-CHANNEL
 - **units**: bex-04
 - **centrality**: supporting
-- **aliases**: OBS channel, comportment video, behavioral-surface channel
+- **aliases**: OBS channel, in-VR headset feed, stimulus-segmentation / alignment source
 
 #### 7. ch-fig — analysis-figure channel
 - **definition**: Per-subject MATLAB `.fig` analysis outputs derived from the EEG/gaze channels. **UNPROCESSED here — metadata only; regenerating/extracting from the `.fig` outputs is future work (O-9).**

@@ -23,7 +23,7 @@ re-present the study's findings.
    four cases. The **full per-subject 24-row matrix is NOT committed** here; it stays in the untracked brief, referenced
    by pointer (`bridge-sources/paper-digest-pointers.md`).
 3. **O-9 (processing).** `.mat` EEG, HMD telemetry, OBS video, and MATLAB `.fig` outputs are **declared-but-unprocessed**
-   metadata. No parsing / reprocessing / GPU comportment reads.
+   metadata. No parsing / reprocessing / GPU video processing.
 
 ## Channel taxonomy (the deliverable; full node specs in `_synthesis/book-level-ontology.md` §3A)
 
@@ -33,7 +33,7 @@ re-present the study's findings.
 | `ch-eeg` | 4-ch EEG F3/F4/P3/P4, DMN alpha/theta | FE (P1) / raw | 3 / 8 | raw **O-9 deferred** | bex-02 |
 | `ch-gaze` | gaze-variance @120 Hz + pupil | FE (P2) | 12 | published only (N=12 ≠ raw N=8) | bex-03 |
 | `ch-hmd` | Omnicept telemetry / exposure protocol | raw | 8 | raw **O-9 deferred** | bex-04 |
-| `ch-obs` | session video (posture/fidget/watch-glance) | raw | 8 | raw **O-9 deferred** | bex-04 |
+| `ch-obs` | first-person in-VR headset feed (NOT a body cam) | raw | 8 | raw **O-9 deferred** | bex-04 |
 | `ch-fig` | per-subject MATLAB `.fig` | derived | 8 | metadata only | bex-04 |
 | `ch-stimulus` | 10× 4K60 state-contrast compilations | FE | — | metadata only | bex-04 |
 
@@ -56,12 +56,16 @@ anticipatory bridges (ped-sec-14 → `ch-stimulus`; ped-sec-12, ped-sec-01) poin
 
 ## Deferred processing — future work (O-9)
 Four of the seven channels are **catalogued but not yet processed**: `ch-eeg` (raw `.mat` per-subject streams),
-`ch-hmd` (Omnicept telemetry), `ch-obs` (session video), and `ch-fig` (MATLAB `.fig` outputs). They are named and
-located here so the index records what the lab pole contains, but no signal has been extracted from them in this
-build. Processing them — per-subject EEG reprocessing across all 8 subjects/bands, HMD telemetry decoding, and GPU
-comportment scoring of the OBS surface against the §D signature grid — is deferred under the O-9 gate and is a
-natural next pass. Currently usable: `ch-selfreport` (aggregates + four cases) and the published `ch-gaze` (P2, N=12)
-/ `ch-eeg` (P1, N=3) derivations.
+`ch-hmd` (Omnicept telemetry — already exported to CSV), `ch-obs` (first-person in-VR headset feed), and `ch-fig`
+(MATLAB `.fig` outputs). They are named and located here so the index records what the lab pole contains, but no
+signal has been extracted from them in this build. A **file-verified scoping plan**,
+`plans/boredom-experiment-o9-processing-scope-2026-07-16.md`, decodes every format and sequences the work: three
+channels are light CPU work (`ch-fig`/`ch-hmd` extract already-computed HR/HRV/pupil/cognitive-load; `ch-eeg` is a
+seconds-long band-power reprocess to a full-N=8 workload surface). **`ch-obs` is a separate final phase and yields
+corroboration only** — confirmed 2026-07-16 that no body camera was ever recorded, so it gives stimulus-segmentation
+(a cross-channel alignment anchor) + head-restlessness + off-task, which corroborate `ch-gaze`/`ch-hmd` rather than an
+independent third surface. Currently usable now: `ch-selfreport` (aggregates + four cases) and the published `ch-gaze`
+(P2, N=12) / `ch-eeg` (P1, N=3) derivations.
 
 ## Analysis home
 Full apparatus: `tmp/Dissertation/Part_III/reanalysis/boredom-experiment-brief.md` (untracked). This entry carries the

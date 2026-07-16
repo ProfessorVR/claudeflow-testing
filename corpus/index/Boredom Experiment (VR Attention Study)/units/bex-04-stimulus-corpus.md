@@ -18,11 +18,15 @@ HP Reverb G2 **Omnicept** telemetry; exposure-duration / session-time protocol. 
 exposure-time and cybersickness questions (e.g. ped-sec-23's exposure-time findings would align against this exposure
 protocol). Telemetry decoding **deferred (O-9)**.
 
-## `ch-obs` — session-video comportment channel (raw; O-9)
-OBS session recordings capturing posture / fidget / watch-glance comportment — the **visible-*Zeitvertreib* surface**
-that would supply a third behavioral channel against `ch-selfreport` and `ch-gaze`, letting the team's own LA/HA/IE/AS
-labels be scored against the §D signature grid. GPU comportment reads **deferred (O-9)**; this is the separate
-downstream work the reanalysis brief §7 describes.
+## `ch-obs` — session-video channel: first-person in-VR headset feed (raw; O-9)
+OBS screen-capture of the subject's first-person in-VR view (Windows Mixed Reality feed) — 4K/HEVC/60 fps, ~85.6 GB
+across the 8 subjects. **This is NOT a body/comportment camera:** it was confirmed 2026-07-16 that no participant body
+footage was ever recorded, so posture / fidget / watch-glance cannot be recovered and there is **no independent third
+behavioral surface** (the keystone remains a two-surface reading — self-report/EEG depth × gaze surface — with `ch-obs`
+as a corroborating read). What the feed *can* yield under processing: **stimulus-state segmentation** (a precise
+cross-channel alignment anchor for the other channels), head-restlessness (global optical flow, since the camera is the
+head), and on/off-task — all of which corroborate `ch-gaze`/`ch-hmd` rather than adding a new axis. GPU processing
+**deferred (O-9)** and scoped as its own final phase in `plans/boredom-experiment-o9-processing-scope-2026-07-16.md`.
 
 ## `ch-fig` — analysis-figure channel (derived; O-9)
 Per-subject MATLAB `.fig` analysis outputs derived from the EEG/gaze channels. Metadata only; no reprocessing.

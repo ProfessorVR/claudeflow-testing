@@ -26,7 +26,7 @@
     {"id": "ch-eeg", "modality": "4-channel EEG (F3,F4,P3,P4) DMN alpha/theta", "register": "FE (P1) / raw", "n": "3 / 8", "unit": "bex-02", "status": "raw O-9 deferred", "o9": true},
     {"id": "ch-gaze", "modality": "eye-tracking gaze-variance @120Hz + pupil", "register": "FE (P2)", "n": 12, "unit": "bex-03", "status": "published derivation only (N=12 != raw N=8)"},
     {"id": "ch-hmd", "modality": "HP Reverb G2 Omnicept telemetry / exposure protocol", "register": "raw", "n": 8, "unit": "bex-04", "status": "raw O-9 deferred", "o9": true},
-    {"id": "ch-obs", "modality": "OBS session video (posture/fidget/watch-glance)", "register": "raw", "n": 8, "unit": "bex-04", "status": "raw O-9 deferred", "o9": true},
+    {"id": "ch-obs", "modality": "OBS screen-capture of first-person in-VR headset feed (NOT a body cam); 4K/HEVC/60fps ~85.6GB", "register": "raw", "n": 8, "unit": "bex-04", "status": "raw O-9 deferred; corroboration-only (no body cam)", "o9": true},
     {"id": "ch-fig", "modality": "per-subject MATLAB .fig", "register": "derived", "n": 8, "unit": "bex-04", "status": "metadata only", "o9": true},
     {"id": "ch-stimulus", "modality": "10x 4K60 state-contrast video compilations", "register": "FE", "n": null, "unit": "bex-04", "status": "metadata only (naming key CLC/INT/Boring x LA/HA/IE/E/ME/AS/EC; 17-min)"}
   ],
@@ -46,7 +46,8 @@
   },
   "future_work_deferred_processing": {
     "note": "Four channels are catalogued but UNPROCESSED in this build; processing them is a natural next pass (deferred under O-9).",
-    "channels": ["ch-eeg (raw .mat per-subject reprocessing, all 8 subjects/bands)", "ch-hmd (Omnicept telemetry decoding)", "ch-obs (GPU comportment scoring vs the §D signature grid)", "ch-fig (extraction from MATLAB .fig outputs)"],
+    "scoping_plan": "plans/boredom-experiment-o9-processing-scope-2026-07-16.md (file-verified; formats decoded, work sequenced)",
+    "channels": ["ch-eeg (raw .mat -> full-N=8 workload surface; light CPU)", "ch-hmd (parse already-exported CSV -> arousal features; light CPU)", "ch-fig (extract already-computed HR/HRV/pupil/gaze series; light CPU)", "ch-obs (SEPARATE FINAL PHASE: GPU stimulus-segmentation + head-restlessness + off-task; corroborates ch-gaze/ch-hmd; no body cam so NO independent surface)"],
     "currently_usable": ["ch-selfreport (aggregates + 4 cases)", "ch-gaze (P2 published, N=12)", "ch-eeg (P1 published, N=3)"]
   },
   "ontology_nodes": 7,
