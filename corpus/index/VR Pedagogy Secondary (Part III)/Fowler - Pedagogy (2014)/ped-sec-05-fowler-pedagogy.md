@@ -1,4 +1,4 @@
-# ped-sec-05 — Fowler, "Virtual reality and learning: Where is the pedagogy?" (2014/2015)
+# ped-sec-05 — Fowler, "Virtual reality and learning: Where is the pedagogy?" (2015; online-first 2014)
 
 **Type:** journal-article-length secondary reading (educational technology / instructional design) · **Discipline:** educational technology (VR pedagogy) · **Depth:** deep · **Corpus role:** Strand B's pedagogy-first counterweight — a conceptual, non-empirical paper that names and tries to repair the very deficit this cluster's Purpose statement targets: VR-learning literature that runs technology-first and only afterward asks what pedagogy the technology serves.
 

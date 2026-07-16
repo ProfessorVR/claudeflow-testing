@@ -1,4 +1,4 @@
-# ped-sec-13 — Parong & Mayer, "Cognitive and Affective Processes for Learning Science in Immersive Virtual Reality" (2020)
+# ped-sec-13 — Parong & Mayer, "Cognitive and Affective Processes for Learning Science in Immersive Virtual Reality" (2021; online-first 2020)
 
 **Type:** empirical media-comparison experiment (educational psychology / cognitive science) · **Discipline:** multimedia learning, cognitive load theory · **Depth:** deep · **Corpus role:** Strand C's primary source for the debate axis 4 "cognitive-load route" pole — the cluster's most instrumented single test of whether immersion's affective payoff (presence, enjoyment, arousal) helps or hurts learning, mediationally decomposed into self-report, EEG, EDA and ECG channels.
 

@@ -39,8 +39,8 @@ built programmatically from `_synthesis/global-edges.csv` (authoritative), not h
 | ped-sec-01 | Lombard & Ditton 1997 | A | vle-01 | 4 | — |
 | ped-sec-02 | Witmer & Singer 1998 | A | vle-01, vle-04 | 1 | UNVERIFIED |
 | ped-sec-03 | Chow 2016 | A | vle-01 | 2 | UNVERIFIED |
-| ped-sec-04 | Dalgarno & Lee 2009 | B | vle-03, vle-04 | 1 | UNVERIFIED |
-| ped-sec-05 | Fowler 2014 | B | vle-03 | 2 | — |
+| ped-sec-04 | Dalgarno & Lee 2010 | B | vle-03, vle-04 | 1 | UNVERIFIED |
+| ped-sec-05 | Fowler 2015 | B | vle-03 | 2 | — |
 | ped-sec-06 | Makransky & Petersen 2021 (CAMIL) | B | vle-01, vle-04 | 1 | UNVERIFIED |
 | ped-sec-07 | Mayer et al. 2022 | B | vle-01, vle-04 | 2 | UNVERIFIED |
 | ped-sec-08 | Parong & Mayer 2018 | C | vle-04 | 2 | UNVERIFIED |
@@ -48,7 +48,7 @@ built programmatically from `_synthesis/global-edges.csv` (authoritative), not h
 | ped-sec-10 | Makransky et al. 2019 | C | vle-04 | 2 | UNVERIFIED |
 | ped-sec-11 | Makransky & Petersen 2019 | C | vle-01 | 2 | UNVERIFIED |
 | ped-sec-12 | Makransky et al. 2019 (home/classroom) | C | vle-01 | 4 | UNVERIFIED |
-| ped-sec-13 | Parong & Mayer 2020 | C | vle-02, vle-04 | 3 | UNVERIFIED |
+| ped-sec-13 | Parong & Mayer 2021 | C | vle-02, vle-04 | 3 | UNVERIFIED |
 | ped-sec-14 | Colin et al. 2022 | C | vle-01, vle-04 | 3 | — |
 | ped-sec-15 | Cook et al. 2011 | D | — *(bridges to Part III directly)* | 3 | — |
 | ped-sec-16 | Merchant et al. 2012 | D | vle-01 | 3 | UNVERIFIED |

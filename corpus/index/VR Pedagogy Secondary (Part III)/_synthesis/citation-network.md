@@ -6,12 +6,16 @@ theories cited by multiple in-cluster units but not themselves an in-cluster sou
 
 ## Intra-cluster citation network
 
-67 `cites-cluster-author` edges (well above the `max(10, N/4)=8.5` floor). Densest hub structure:
+65 `cites-cluster-author` edges (well above the `max(10, N/4)=8.5` floor; corrected 2026-07-16 — one prior
+edge, ped-sec-09→ped-sec-16, was a mis-linkage: ped-sec-09's "Merchant et al. 2014" is the external 2014
+meta-analysis, not ped-sec-16 [Merchant 2012], so it is now an external `cites` edge, per
+citation-corrections-2026-07-16.md). Densest hub structure:
 
 **Makransky research program (the cluster's single densest citation cluster).** CAMIL (ped-sec-06) cites eight
 other in-cluster units as its own empirical grounding: ped-sec-02, ped-sec-04, ped-sec-08, ped-sec-09, ped-sec-10,
 ped-sec-11, ped-sec-13, ped-sec-22. In turn, ped-sec-09 (Makransky & Lilleholt) cites ped-sec-02, ped-sec-04,
-ped-sec-06, ped-sec-10, ped-sec-16; ped-sec-11 (Makransky & Petersen SEM) cites ped-sec-01, ped-sec-02, ped-sec-04,
+ped-sec-06, ped-sec-10 (its "Merchant 2014" cite is the external meta-analysis, not the in-cluster
+ped-sec-16); ped-sec-11 (Makransky & Petersen SEM) cites ped-sec-01, ped-sec-02, ped-sec-04,
 ped-sec-08, ped-sec-09, ped-sec-10; ped-sec-12 (equivalence study) cites ped-sec-09, ped-sec-10, ped-sec-11,
 ped-sec-17. This single research program accounts for roughly a third of all intra-cluster citation traffic.
 

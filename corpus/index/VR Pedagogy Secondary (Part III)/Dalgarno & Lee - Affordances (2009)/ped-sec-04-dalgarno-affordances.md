@@ -1,4 +1,4 @@
-# ped-sec-04 — Dalgarno & Lee, "What are the learning affordances of 3-D virtual environments?" (2009)
+# ped-sec-04 — Dalgarno & Lee, "What are the learning affordances of 3-D virtual environments?" (2010; online-first 2009)
 
 **Type:** journal-article-length secondary reading (educational technology / instructional design) · **Discipline:** educational technology, instructional design · **Depth:** deep · **Corpus role:** Strand B's founding theory-model source — the affordances-of-3D-VLEs model itself, the single most-cited hub of the cluster's Strand-B/C literature, and the frame against which the media-comparison reckoning (Strand C) and the reviews (Strand E) implicitly argue.
 

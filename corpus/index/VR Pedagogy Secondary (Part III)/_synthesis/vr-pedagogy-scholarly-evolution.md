@@ -17,13 +17,13 @@ determinist account. Both programs, that is, begin by *rejecting* a purely mediu
 supplies the field's foundational taxonomy spanning both readings at once, and is the single earliest source in
 the whole cluster.
 
-## II. Framework-building and affordance optimism (1999–2014)
+## II. Framework-building and affordance optimism (1999–2015)
 
 The CMC program consolidates around **Garrison, Anderson & Archer's Community of Inquiry (1999, ped-sec-26)** —
 still this strand's most-cited internal hub two decades later — which makes the technology-determinist rejection
 explicit and named, relocating social presence in communication context rather than channel bandwidth. The
 VR-pedagogy program spends this period building its own theoretical apparatus: **Dalgarno & Lee's affordances
-model (2009, ped-sec-04)** and **Fowler's pedagogy-first critique of it (2014, ped-sec-05)** establish the
+model (2010, ped-sec-04)** and **Fowler's pedagogy-first critique of it (2015, ped-sec-05)** establish the
 period's central tension — is VR-learning theory technology-led or pedagogy-led? — that debate axis 1 and 2 will
 later test empirically. Both programs are, in this period, optimistic: CoI about text-based community-building,
 Dalgarno & Lee about 3D-environment affordances. Neither has yet been tested against a large body of controlled
@@ -34,7 +34,7 @@ comparative data.
 This is the cluster's most empirically dense period, almost entirely within the VR-pedagogy program. **Makransky
 et al.'s "more presence but less learning" (2019, ped-sec-10)** is the period's landmark negative result, and it
 is not isolated: **Parong & Mayer (2018, ped-sec-08)**, **Merchant et al. (2012, ped-sec-16, structural parallel
-within desktop-3D alone)**, and **Parong & Mayer's cognitive-affective mediation study (2020, ped-sec-13)**
+within desktop-3D alone)**, and **Parong & Mayer's cognitive-affective mediation study (2021, ped-sec-13)**
 converge on the same dissociation from different angles. **Makransky & Petersen's CAMIL (2021, ped-sec-06)**
 arrives at the end of this period as the synthesis this convergence demanded — a dual-path model that contains
 both the affective route (**Makransky & Lilleholt, 2018, ped-sec-09**) and the cognitive-load route as
@@ -80,7 +80,7 @@ not one the field has already validated.
 | Period | CMC social-presence program | VR-pedagogy program |
 |---|---|---|
 | 1976–1998 | Origin theory (1976) → Gunawardena's scale (1997) | Lombard & Ditton taxonomy (1997) → Witmer & Singer PQ (1998) |
-| 1999–2014 | Community of Inquiry (1999) | Dalgarno & Lee affordances (2009) ↔ Fowler critique (2014) |
+| 1999–2015 | Community of Inquiry (1999) | Dalgarno & Lee affordances (2010) ↔ Fowler critique (2015) |
 | 2016–2021 | *(quiet — see below)* | Media-comparison reckoning → CAMIL synthesis (2021) |
 | 2002–2019 | Measurement double-take (2002–03) → Richardson & Swan (2003) → Terry & Doolittle re-examination (2019) | *(parallel to above)* |
 | 2011–2025 | Richardson et al. meta-analysis (2017) | Simulation-efficacy reckoning (2011–19) → equivalence study (2019) → cybersickness review (2025) |

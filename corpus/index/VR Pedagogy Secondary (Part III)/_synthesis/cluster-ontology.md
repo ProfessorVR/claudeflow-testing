@@ -159,8 +159,9 @@ unresolved CMC-VR seam (2019–2025, Strands D/E + Strand F's capstone and bridg
 
 - **34 units** across 6 strands (A:3, B:4 — +ped-sec-24 companion, C:7, D:6, E:3, F:9).
 - **1,153 deduplicated edges** in `global-edges.csv` (raw 1,155 before dedup).
-- **10 documented debate axes** (8 original + 2 added with Strand F); **67 intra-cluster `cites-cluster-author`
-  edges**; **18 `contests-reading-of`/`contests` edges**; **19 `extends-reading-of`/`extends` edges**;
+- **10 documented debate axes** (8 original + 2 added with Strand F); **65 intra-cluster `cites-cluster-author`
+  edges** (corrected 2026-07-16: the prior count double-counted; and ped-sec-09→ped-sec-16 was retagged
+  external per `citation-corrections-2026-07-16.md`); **18 `contests-reading-of`/`contests` edges**; **19 `extends-reading-of`/`extends` edges**;
   **50 `bridges-to-vle`**, **68 `bridges-to-part-iii`**, **24 `grounds-measure`** (all UNVERIFIED pending the
   Boredom Experiment dataset entry).
 - Construct coverage: **34/34 units** appear in ≥1 concordance cell.
