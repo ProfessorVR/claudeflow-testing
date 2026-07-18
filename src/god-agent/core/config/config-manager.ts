@@ -131,6 +131,17 @@ export interface ServicesConfig {
     /** API endpoint for external embedding */
     endpoint?: string;
   };
+  /** Cross-encoder rerank service (wraith-infer on WRAITH :8100) */
+  rerank?: {
+    /** Rerank endpoint (POST {query, documents} -> {results:[{index,relevance_score}]}) */
+    endpoint?: string;
+    /** Master enable switch; when false, retrieval never calls the reranker */
+    enabled?: boolean;
+    /** Per-request timeout in ms */
+    timeoutMs?: number;
+    /** Candidate pool multiplier = min(maxChunks * this, 50) */
+    candidateMultiplier?: number;
+  };
   /** Observability dashboard configuration */
   observe: ServiceConfig;
   /** Core daemon configuration */
@@ -270,6 +281,12 @@ export const DEFAULT_CONFIG: GodAgentConfig = {
       model: 'gte-Qwen2-1.5B-instruct',
       endpoint: 'http://127.0.0.1:8000/embed',
     },
+    rerank: {
+      endpoint: 'http://192.168.50.22:8100/v1/rerank',
+      enabled: true,
+      timeoutMs: 8000,
+      candidateMultiplier: 3,
+    },
     observe: {
       port: 3847,
       host: '::',
@@ -345,6 +362,8 @@ const ENV_MAPPINGS: Record<string, string> = {
   'GOD_EMBEDDING_HOST': 'services.embedding.host',
   'GOD_EMBEDDING_MODEL': 'services.embedding.model',
   'GOD_EMBEDDING_ENDPOINT': 'services.embedding.endpoint',
+  'GOD_RERANK_ENDPOINT': 'services.rerank.endpoint',
+  'GOD_RERANK_ENABLED': 'services.rerank.enabled',
   'GOD_OBSERVE_PORT': 'services.observe.port',
   'GOD_OBSERVE_HOST': 'services.observe.host',
   'GOD_DAEMON_SOCKET': 'services.daemon.socketPath',

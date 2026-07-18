@@ -170,8 +170,11 @@ export interface ContextChunk {
     [key: string]: any;
   };
 
-  /** Relevance score (0-1) */
+  /** Relevance score (0-1). After cross-encoder rerank this holds the rerank score. */
   relevanceScore: number;
+
+  /** Pre-rerank retrieval score (cosine), preserved when a cross-encoder overwrites relevanceScore */
+  retrievalScore?: number;
 
   /** Optional embedding vector */
   embedding?: number[];
@@ -287,6 +290,16 @@ export interface SmartRetrievalConfig {
   embeddingApi?: {
     host?: string;
     port?: number;
+  };
+
+  /** Cross-encoder rerank settings (wraith-infer /v1/rerank). Falls back to env
+   *  GOD_RERANK_ENDPOINT / GOD_RERANK_ENABLED, then a hardcoded WRAITH default. */
+  rerank?: {
+    endpoint?: string;
+    enabled?: boolean;
+    timeoutMs?: number;
+    /** Candidate pool = min(maxChunks * candidateMultiplier, 50) when rerank is active */
+    candidateMultiplier?: number;
   };
 
   /** Cache configuration */

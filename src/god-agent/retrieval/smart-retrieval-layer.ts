@@ -66,6 +66,9 @@ export class SmartRetrievalLayer {
   // Dynamic whitelist: canonical ontology terms exempt from stopword filtering (C-03)
   private protectedTerms: Set<string> | null = null;
 
+  // Rerank degradation: warn at most once per process when the reranker is unreachable.
+  private static rerankWarned = false;
+
   constructor(config: SmartRetrievalConfig = {}) {
     this.logger = config.logger || stderrLogger;
 
@@ -256,7 +259,10 @@ export class SmartRetrievalLayer {
         const index = getCompiledIndex();
         if (index && (index as any).canonicalTerms?.length > 0) {
           const canonicalTerms: string[] = (index as any).canonicalTerms;
-          const queryLower = enrichedQuery.toLowerCase();
+          // Fix: `enrichedQuery` is scoped to semanticSearch(), not retrieveContext() — the
+          // prior reference threw ReferenceError (swallowed by the catch below), so this
+          // +0.10 boost never applied. Use the raw query, which IS in scope here.
+          const queryLower = query.toLowerCase();
 
           // Find which canonical terms appear in the query
           const queryTerms = canonicalTerms.filter(t =>
@@ -886,10 +892,13 @@ export class SmartRetrievalLayer {
       } catch { /* non-fatal: expansion is an enhancement */ }
 
       // Step 1: Get embedding from embedding API
+      // Phase 2 (asymmetry fix): this is a QUERY embedding. gte-Qwen2 is an asymmetric
+      // instruct model — queries need the query instruction prompt. `kind: 'query'` also
+      // guarantees the server does NOT persist this vector into the corpus collection.
       const embeddingResponse = await fetch(`${this.EMBEDDING_API_URL}/embed`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ texts: [enrichedQuery] }),
+        body: JSON.stringify({ texts: [enrichedQuery], kind: 'query' }),
       });
 
       if (!embeddingResponse.ok) {
@@ -910,9 +919,16 @@ export class SmartRetrievalLayer {
       // Step 2: Query ChromaDB knowledge_chunks collection
       const chromaQueryUrl = `${this.CHROMADB_URL}/api/v2/tenants/default_tenant/databases/default_database/collections/${this.COLLECTION_ID}/query`;
 
+      // Widen the candidate pool when rerank is active so the cross-encoder has more to
+      // reorder; otherwise keep the historical 2x headroom for relevance filtering.
+      const rerankActive = options.rerank === true && this.isRerankEnabled();
+      const poolSize = rerankActive
+        ? Math.min(maxChunks * this.rerankCandidateMultiplier(), 50)
+        : maxChunks * 2;
+
       const queryBody: Record<string, unknown> = {
         query_embeddings: [queryEmbedding],
-        n_results: maxChunks * 2, // Get extra for filtering
+        n_results: poolSize, // widened to candidateMultiplier×maxChunks (≤50) when reranking
         include: ['documents', 'metadatas', 'distances'],
       };
       // Add where filter if provided (e.g., author-targeted queries)
@@ -1165,15 +1181,108 @@ export class SmartRetrievalLayer {
   }
 
   /**
-   * Re-rank results with cross-encoder
+   * Resolve rerank enablement: explicit config > env GOD_RERANK_ENABLED > default true.
+   */
+  private isRerankEnabled(): boolean {
+    if (this.config.rerank?.enabled !== undefined) return this.config.rerank.enabled;
+    const env = process.env.GOD_RERANK_ENABLED;
+    if (env !== undefined) return env === 'true' || env === '1';
+    return true;
+  }
+
+  private rerankEndpoint(): string {
+    return (
+      this.config.rerank?.endpoint ||
+      process.env.GOD_RERANK_ENDPOINT ||
+      'http://192.168.50.22:8100/v1/rerank'
+    );
+  }
+
+  private rerankTimeoutMs(): number {
+    return this.config.rerank?.timeoutMs ?? 8000;
+  }
+
+  private rerankCandidateMultiplier(): number {
+    return this.config.rerank?.candidateMultiplier ?? 3;
+  }
+
+  /**
+   * Re-rank results with a cross-encoder (wraith-infer POST /v1/rerank).
+   *
+   * Replaces relevanceScore with the cross-encoder score (preserving the retrieval cosine
+   * in retrievalScore) and reorders descending. Runs BEFORE the canonical-term / KG boosts
+   * so those domain boosts stack on top of cross-encoder ordering.
+   *
+   * Degrades safely: a reranker that is disabled, unreachable, timing out, or returning a
+   * bad payload leaves the input ordering untouched (reranker down ≠ retrieval down),
+   * warning at most once per process.
    */
   private async rerankResults(
     query: string,
     chunks: ContextChunk[]
   ): Promise<ContextChunk[]> {
-    // TODO: Implement cross-encoder re-ranking
-    // For now, return as-is
-    return chunks;
+    if (!this.isRerankEnabled() || chunks.length === 0) {
+      return chunks;
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.rerankTimeoutMs());
+    try {
+      const response = await fetch(this.rerankEndpoint(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'bge-reranker-v2-m3',
+          query,
+          documents: chunks.map((c) => c.content),
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`rerank HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      const results: Array<{ index: number; relevance_score: number }> = data?.results;
+      if (!Array.isArray(results) || results.length === 0) {
+        throw new Error('rerank returned no results');
+      }
+
+      // Reorder by cross-encoder score. Overwrite relevanceScore with the rerank score;
+      // preserve the original retrieval cosine in retrievalScore for observability.
+      const reranked = results
+        .filter((r) => Number.isInteger(r.index) && r.index >= 0 && r.index < chunks.length)
+        .map((r) => {
+          const chunk = chunks[r.index];
+          return {
+            ...chunk,
+            retrievalScore: chunk.retrievalScore ?? chunk.relevanceScore,
+            relevanceScore: r.relevance_score,
+          };
+        });
+
+      if (reranked.length === 0) {
+        throw new Error('rerank indices did not map to any chunk');
+      }
+
+      this.logger.info(
+        `[SmartRetrievalLayer] Rerank applied: ${reranked.length} chunks reordered by cross-encoder`
+      );
+      return reranked;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (!SmartRetrievalLayer.rerankWarned) {
+        SmartRetrievalLayer.rerankWarned = true;
+        this.logger.warn(
+          `[SmartRetrievalLayer] Rerank unavailable (${
+            error instanceof Error ? error.message : String(error)
+          }); keeping retrieval ordering. (Warned once per process.)`
+        );
+      }
+      return chunks;
+    }
   }
 
   /**

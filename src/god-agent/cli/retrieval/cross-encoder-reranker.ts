@@ -127,11 +127,11 @@ export interface CrossEncoderRerankerConfig {
   /** Enable statistics tracking (default: true) */
   enableStats?: boolean;
 
-  /** vLLM HTTP API configuration (real mode only) */
+  /** Rerank HTTP API configuration (real mode only) */
   vllmConfig?: {
-    /** vLLM API endpoint (default: http://localhost:8000) */
+    /** Rerank endpoint (default: http://192.168.50.22:8100/v1/rerank on WRAITH) */
     endpoint?: string;
-    /** Model name for cross-encoding */
+    /** Reranker model name (default: bge-reranker-v2-m3) */
     modelName?: string;
     /** Request timeout in milliseconds (default: 5000) */
     timeout?: number;
@@ -525,33 +525,44 @@ export class CrossEncoderReranker {
   }
 
   /**
-   * Compute real cross-encoder score via vLLM API
+   * Compute real cross-encoder score via the wraith-infer rerank API.
    *
-   * Makes HTTP request to vLLM endpoint for cross-encoder inference.
+   * POSTs the query + single document to /v1/rerank and returns the sigmoid relevance
+   * score in [0, 1]. On any failure it falls back to the deterministic mock score, so
+   * a reranker outage never breaks re-ranking (reranker down ≠ retrieval down).
    */
   private async computeRealScore(query: string, document: string): Promise<number> {
     this.apiCallCount++;
 
-    const endpoint = this.config.vllmConfig?.endpoint ?? 'http://localhost:8000';
-    const modelName = this.config.vllmConfig?.modelName ?? 'cross-encoder/ms-marco-MiniLM-L-6-v2';
+    const endpoint = this.config.vllmConfig?.endpoint ?? 'http://192.168.50.22:8100/v1/rerank';
+    const modelName = this.config.vllmConfig?.modelName ?? 'bge-reranker-v2-m3';
     const timeout = this.config.vllmConfig?.timeout ?? 5000;
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
     try {
-      // TODO: Implement vLLM HTTP API integration
-      // This is a stub implementation that should be replaced with actual API calls
-
-      this.log('warn', 'Real mode vLLM integration not yet implemented', {
-        endpoint,
-        modelName,
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: modelName, query, documents: [document] }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
-      // For now, fall back to mock scoring
-      // In production, this would make an HTTP POST request to the vLLM endpoint
-      // with the query-document pair and return the model's relevance score
+      if (!response.ok) {
+        throw new Error(`rerank HTTP ${response.status}`);
+      }
 
-      return this.computeMockScore(query, document);
+      const data = await response.json();
+      const score = data?.results?.[0]?.relevance_score;
+      if (typeof score !== 'number') {
+        throw new Error('rerank response missing relevance_score');
+      }
+      return score;
     } catch (error) {
-      this.log('error', 'vLLM API call failed, falling back to mock', {
+      clearTimeout(timeoutId);
+      this.log('warn', 'Rerank API call failed, falling back to mock score', {
+        endpoint,
         error: String(error),
       });
       return this.computeMockScore(query, document);

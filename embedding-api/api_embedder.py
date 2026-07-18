@@ -18,6 +18,10 @@ COLLECTION_NAME = "god_agent_vectors_1536"
 class EmbedRequest(BaseModel):
     texts: List[str]
     metadata: Optional[List[dict]] = None
+    # "document" (default, backward-compatible) embeds+stores in document mode.
+    # "query" applies gte-Qwen2's query instruction prompt AND skips the vector-store
+    # write (query vectors must never be persisted into the corpus collection).
+    kind: str = "document"
 
 class SearchRequest(BaseModel):
     query: str
@@ -281,13 +285,28 @@ def read_root():
 
 @app.post("/embed")
 def embed_and_store(request: EmbedRequest):
-    if not vector_store:
+    is_query = (request.kind or "document").lower() == "query"
+    # Query vectors are pure inference — never stored — so they don't require the vector DB.
+    if not is_query and not vector_store:
         raise HTTPException(status_code=500, detail=f"Vector DB ({VECTOR_DB}) not connected.")
     if not is_backend_ready():
         raise HTTPException(status_code=500, detail=f"{EMBEDDING_BACKEND.upper()} backend not ready.")
 
     try:
-        embeddings = generate_embeddings(request.texts, is_query=False)
+        embeddings = generate_embeddings(request.texts, is_query=is_query)
+
+        if is_query:
+            # Query mode: gte-Qwen2 query instruction prompt applied; NO storage side effect.
+            return {
+                "message": f"Embedded {len(request.texts)} query text(s) (not stored)",
+                "ids": [],
+                "dims": len(embeddings[0]),
+                "backend": EMBEDDING_BACKEND,
+                "vector_db": VECTOR_DB,
+                "kind": "query",
+                "embeddings": embeddings,
+            }
+
         ids = [str(uuid.uuid4()) for _ in request.texts]
         vector_store.store(ids, request.texts, embeddings, request.metadata)
 
@@ -297,10 +316,17 @@ def embed_and_store(request: EmbedRequest):
             "dims": len(embeddings[0]),
             "backend": EMBEDDING_BACKEND,
             "vector_db": VECTOR_DB,
+            "kind": "document",
             "embeddings": embeddings,
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/health")
+def health():
+    """Alias of GET / — embedding-on-demand.sh probes /health."""
+    return read_root()
 
 
 @app.post("/search")
