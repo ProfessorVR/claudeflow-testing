@@ -23,10 +23,17 @@ embedder/Chroma/vLLM on the primary box. Do not reuse those numbers here.
 from __future__ import annotations
 
 import os
+import threading
 import time
 from typing import List, Literal, Optional
 
 import numpy as np
+
+# Reduce CUDA allocator fragmentation before torch initializes. Long-running embed loads
+# with variable sequence lengths otherwise let the caching allocator creep toward full VRAM,
+# and once memory is exhausted the model silently emits NaN instead of erroring.
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
+
 import torch
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -37,7 +44,10 @@ RERANKER_MODEL = os.getenv("WRAITH_RERANKER_MODEL", "BAAI/bge-reranker-v2-m3")
 EMBEDDING_DIM = int(os.getenv("WRAITH_EMBEDDING_DIM", "1536"))
 MAX_SEQ_LENGTH = int(os.getenv("WRAITH_MAX_SEQ_LENGTH", "8192"))
 RERANK_MAX_LENGTH = int(os.getenv("WRAITH_RERANK_MAX_LENGTH", "1024"))
-EMBED_BATCH = int(os.getenv("WRAITH_EMBED_BATCH", "32"))
+# 8, not 32: gte-Qwen2 at max_seq_length=8192 pads each internal batch to the longest
+# sequence in it, so a batch of long corpus chunks OOMs a 24GB 3090 alongside the reranker.
+# Batch size does NOT change the per-text vector (padding is masked), so parity is preserved.
+EMBED_BATCH = int(os.getenv("WRAITH_EMBED_BATCH", "8"))
 RERANK_BATCH = int(os.getenv("WRAITH_RERANK_BATCH", "64"))
 PORT = int(os.getenv("WRAITH_INFER_PORT", "8100"))
 DEVICE = os.getenv("WRAITH_DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
@@ -57,6 +67,19 @@ print(f"[wraith-infer] embedding model loaded (max_seq_length={embedder.max_seq_
 print(f"[wraith-infer] loading reranker {RERANKER_MODEL} on {DEVICE} ...", flush=True)
 reranker = CrossEncoder(RERANKER_MODEL, max_length=RERANK_MAX_LENGTH, device=DEVICE)
 print("[wraith-infer] reranker loaded.", flush=True)
+
+# FastAPI runs sync endpoints in a threadpool, so concurrent clients (archon uses up to 32
+# workers) would call encode()/predict() on the shared model from multiple threads at once.
+# SentenceTransformer/CrossEncoder are NOT thread-safe for concurrent GPU inference — the calls
+# race and silently return zero/garbage vectors. Serialize all GPU inference behind one lock.
+# The GPU processes one batch at a time regardless, so throughput is essentially unchanged.
+_infer_lock = threading.Lock()
+
+# NOTE: torch.cuda.empty_cache() is deliberately NOT used. Stress testing showed that calling
+# it (even serialized inside _infer_lock) corrupts the *following* encodes into all-zero
+# vectors — ~40 zeros per empty_cache call. It is also unnecessary: PYTORCH_CUDA_ALLOC_CONF=
+# expandable_segments plus the serialized inference lock keep VRAM bounded (~9GB steady) on
+# long index runs. VRAM is reclaimed naturally by the allocator between requests.
 
 
 def _sigmoid(x: np.ndarray) -> np.ndarray:
@@ -112,9 +135,19 @@ def embeddings(req: EmbeddingsRequest) -> dict:
         }
         if req.kind == "query":
             encode_kwargs["prompt_name"] = "query"
-        vectors = embedder.encode(req.input, **encode_kwargs)
+        with _infer_lock:
+            vectors = embedder.encode(req.input, **encode_kwargs)
     except Exception as exc:  # noqa: BLE001 — surface any inference failure to the caller
         raise HTTPException(status_code=500, detail=f"embedding failed: {exc}") from exc
+
+    # Hard-fail on non-finite output rather than serve NaN. gte-Qwen2 emits NaN when the GPU
+    # is memory-starved; without this guard those NaNs serialize to JSON null and callers
+    # silently store zero vectors (corrupting the index). A 500 makes the caller retry.
+    if not np.isfinite(vectors).all():
+        raise HTTPException(
+            status_code=500,
+            detail="embedding produced non-finite values (NaN/Inf) — GPU state degraded",
+        )
 
     data = [
         {"object": "embedding", "index": i, "embedding": vec.tolist()}
@@ -136,7 +169,8 @@ def rerank(req: RerankRequest) -> dict:
         return {"model": req.model or RERANKER_MODEL, "results": []}
     try:
         pairs = [[req.query, doc] for doc in req.documents]
-        logits = reranker.predict(pairs, batch_size=RERANK_BATCH, convert_to_numpy=True)
+        with _infer_lock:
+            logits = reranker.predict(pairs, batch_size=RERANK_BATCH, convert_to_numpy=True)
         scores = _sigmoid(np.asarray(logits, dtype=np.float64))
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=500, detail=f"rerank failed: {exc}") from exc
