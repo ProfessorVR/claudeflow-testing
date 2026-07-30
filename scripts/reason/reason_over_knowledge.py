@@ -452,6 +452,31 @@ def write_outputs(out_dir: Path, rows: List[dict], stats: dict, query: str | Non
     reasoning_path = out_dir / "reasoning.jsonl"
     index_path = out_dir / "index.json"
 
+    # Truncation guard (index-overhaul step A10; audit B-55): a routine Phase-7 run
+    # truncates reasoning.jsonl, destroying whatever merge-reasoning-edges.py anchored
+    # there (manual + LLM-derived edges). Back up any non-empty target, and refuse
+    # unless explicitly forced (--force argv or GOD_REASON_FORCE=1), so the loss is
+    # a decision rather than a side effect of `god-learn update`.
+    if reasoning_path.exists() and reasoning_path.stat().st_size > 0:
+        import datetime
+        import os
+        import shutil
+        import sys
+
+        ts = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        bak = reasoning_path.with_name(reasoning_path.name + f".bak-{ts}")
+        shutil.copy2(reasoning_path, bak)
+        print(f"[phase7-guard] backed up non-empty {reasoning_path} -> {bak}")
+        forced = "--force" in sys.argv or os.environ.get("GOD_REASON_FORCE", "") in ("1", "true", "yes")
+        if not forced:
+            print(
+                f"[phase7-guard] REFUSING to overwrite non-empty {reasoning_path} without "
+                f"--force or GOD_REASON_FORCE=1. It may contain merged manual/LLM edges. "
+                f"A timestamped backup was written; re-run forced to proceed.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
+
     with reasoning_path.open("w", encoding="utf-8") as f:
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")

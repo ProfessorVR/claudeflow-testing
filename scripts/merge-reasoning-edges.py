@@ -23,6 +23,35 @@ OUTPUT = REPO / "god-reason" / "reasoning.jsonl"
 UNANCHORED_OUTPUT = REPO / "god-reason" / "unanchored-edges.jsonl"
 
 
+def guard_overwrite(path: Path) -> None:
+    """Truncation guard (index-overhaul step A10; audit B-57, B-49).
+
+    PHASE7_SOURCE and OUTPUT are the same file, so this script truncates its own
+    input; a second run also truncates unanchored-edges.jsonl (1,141 -> 0 measured).
+    Before any open(path, 'w') on a non-empty target: write a timestamped .bak,
+    and refuse to proceed unless --force is passed (or GOD_MERGE_FORCE=1).
+    """
+    import datetime
+    import os
+    import shutil
+    import sys
+
+    if not path.exists() or path.stat().st_size == 0:
+        return
+    ts = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    bak = path.with_name(path.name + f".bak-{ts}")
+    shutil.copy2(path, bak)
+    print(f"  [guard] backed up non-empty {path.name} -> {bak.name}")
+    forced = "--force" in sys.argv or os.environ.get("GOD_MERGE_FORCE", "") in ("1", "true", "yes")
+    if not forced:
+        print(
+            f"  [guard] REFUSING to overwrite non-empty {path} without --force "
+            f"(or GOD_MERGE_FORCE=1). A backup was written; re-run with --force to proceed.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
+
+
 # ---------------------------------------------------------------------------
 # Ontology lookup
 # ---------------------------------------------------------------------------
@@ -203,11 +232,13 @@ def main():
         print(f"  Removed {dupes_removed} duplicate triples (kept highest corroboration_score)")
 
     # 8c. Write deduplicated active edges
+    guard_overwrite(OUTPUT)
     with open(OUTPUT, "w", encoding="utf-8") as f:
         for e in active_edges:
             f.write(json.dumps(e, ensure_ascii=False) + "\n")
 
     # 9. Write unanchored Phase 7 edges (preserve full evidence[])
+    guard_overwrite(UNANCHORED_OUTPUT)
     with open(UNANCHORED_OUTPUT, "w", encoding="utf-8") as f:
         for e in unanchored_phase7:
             f.write(json.dumps(e, ensure_ascii=False) + "\n")
