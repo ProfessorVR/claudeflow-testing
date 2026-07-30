@@ -77,6 +77,55 @@ Sizes: corpus/index 47M · gold 1.3M · claims corpus 49M · archive 41M.
 **Phase 0 complete. Nothing pushed to any git remote. Next: Phase A (A1–A13), no
 decision blocks it.**
 
+# Phase B — executed 2026-07-29 (same session, "proceed")
+
+All in archon-cli. Commits: `ad07a059` (B1+B2), `144c3021` (B3), `34babbc3` (B4).
+
+**B1 — verify gate at the engine boundary.** DESIGN DEVIATION (documented in-code and
+here): the plan/audit said "add archon-docs + archon-evidence to archon-draft's
+Cargo.toml" — that is a **dependency cycle** (archon-evidence depends on archon-draft
+for the Pack types; the D workflow missed this). The gate therefore lives in
+`handle_draft_command` in the top crate — the ONLY CLI path to `orchestrator::run`, so
+CLI `archon draft`, the TUI `/draft` shell-out, and the wizard are all gated by
+construction. The `archon-fcdp` bin gates via a subprocess call to
+`archon evidence verify-bank` (ARCHON_BIN override / sibling discovery); binary-not-
+found REFUSES rather than passes. Store unavailable/EMPTY/verify-error all BLOCK
+(never a silent pass); `ARCHON_DRAFT_ALLOW_UNVERIFIED=1` bypasses with a loud warning;
+test-fixture packs skip. The TUI preflight's swallowed-Err chain (former :1050-1053
+`.ok()` → None → clean pass) is now a visible blocking failure.
+
+**B2 — exit-code honesty + match_kind keying.** `evidence verify-bank` exits non-zero
+on failure (it printed FAIL-FAST while exiting 0). The bank path was already keyed on
+exact-only statuses (verify.rs blocking()); `docs.rs` "found" remains display-only.
+
+**B3 — byte offsets exposed.** `QuoteFragment.byte_start/byte_end` (named for what
+they HOLD — chunk-local UTF-8 BYTE indices, per the C2 rule) populated from the
+already-present `local_range` and emitted in both JSON emitters.
+
+**B4 — StoreCorruptionSuspected.** New blocking-but-diagnosed status: an in-scope
+failure that matches EXACTLY after simulating the pypdfium2 fi/ff/fl dropout on the
+quote accuses the STORE (remedy: re-extract), never the quotation.
+
+## Gate G-B — PASSED
+1. Rejection matrix (fabricated ped-sec-29 quote planted in a real curated pack):
+   `archon draft` exit 1 (DRIFT 63%, blocked BEFORE model init) · `archon-fcdp` exit 3
+   · `verify-bank` exit 1 · TUI/wizard covered by construction (single engine call
+   site, gate above it in the same function). Real pack: `verify-bank` exit 0
+   (exact-1.00 + bbox). Forced store failure (empty-store cwd): visible refusal,
+   exit 1. Bypass hatch prints its loud warning.
+2. B3 round-trip: English exact (bytes 2916–2956, width 40 B = span byte-length);
+   Greek exact span 17 chars / 30 bytes emits width exactly 30 — byte semantics
+   proven on multibyte content.
+3. B4 three-way demonstration: TRUE quote vs ligature-damaged store (King & Salvo
+   'benefcial') → STORE-CORRUPTION SUSPECTED (located, p.8, bbox, exit 1); the
+   fabrication → DRIFT (not misdiagnosed); exact + not-found unchanged.
+4. Test suites: archon-evidence + archon-draft green (85 tests).
+
+**Incidental finding (for Phase E's measurement pass):** the ligature dropout is
+widespread — probe tokens (`signifcant`, `benefcial`, `difcult`, `specifcally`,
+`confdence`) each hit ≥2 chunks across at least 4 different documents, including the
+user's own King & Salvo paper.
+
 # Phase A — executed 2026-07-29 (same session, user instruction "proceed with phase a")
 
 | Step | Commit(s) | Gate result |
