@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "description": "Canonical 6-prompt suite for Phase 5 E-step A/B harness. SHA256 of this file is recorded in ARTIFACT-MANIFEST.json and checked at every run-ab.sh invocation.",
+  "prompts": [
+    {
+      "id": "phantasia-action",
+      "label": "Phantasia / action",
+      "topic": "Discuss Aristotle's account of phantasia and its role in practical reasoning, drawing on De Anima III.3 and the relevant commentators.",
+      "expected_primary_authors": ["Aristotle"],
+      "expected_secondary_presence": ["Nussbaum", "Caston", "Frede"],
+      "tests": ["active-claims block firing", "use-mention discipline on secondary-lit", "cross-pipeline bridge injection"]
+    },
+    {
+      "id": "perception-sense",
+      "label": "Perception / sense",
+      "topic": "Analyze Aristotle's theory of perception and the common sense (koinē aisthēsis) in De Anima III, with attention to how phantasia mediates between perception and thought.",
+      "expected_primary_authors": ["Aristotle"],
+      "expected_secondary_presence": ["Caston", "Frede", "Papachristou"],
+      "tests": ["ontology-node ranking", "Greek-term expansion"]
+    },
+    {
+      "id": "methodology",
+      "label": "Methodology",
+      "topic": "Describe the dialectical method Aristotle uses in De Anima, specifically how he engages predecessor views while developing his own account of the soul.",
+      "expected_primary_authors": ["Aristotle"],
+      "expected_secondary_presence": ["Bowin", "Caston"],
+      "tests": ["predecessor_report vs dialectical_objection discipline", "refutation structure"]
+    },
+    {
+      "id": "virtual-digital",
+      "label": "Virtual / digital (E4 modern-node probe)",
+      "topic": "Draw on the metaphysics-of-emergence and virtual-reality literature to theorize how Aristotelian phantasia might illuminate the phenomenology of virtual perception.",
+      "expected_primary_authors": ["Aristotle"],
+      "expected_secondary_presence": ["Chalmers", "Metzinger", "Nussbaum"],
+      "tests": ["E4 modern-philosophy ontology nodes", "cross-epoch bridging"],
+      "notes": "Before E4, this prompt is expected to surface a retrieval gap. After E4 it should produce coherent modern-node bridges."
+    },
+    {
+      "id": "tension-acknowledgement",
+      "label": "Tension acknowledgement",
+      "topic": "Discuss the tension between Aristotle's claim that phantasia always involves truth-apt representation and the possibility of deceptive or erroneous imagination.",
+      "expected_primary_authors": ["Aristotle"],
+      "expected_secondary_presence": ["Caston", "Nussbaum", "Frede"],
+      "tests": ["tension-edge retrieval (H1 cap=5)", "productive non-resolution of tension", "quality-gate tension-acknowledgement rate"]
+    },
+    {
+      "id": "adversarial-dialectical",
+      "label": "Adversarial / dialectical voicing",
+      "topic": "Consider the view that all thinking is a bodily process like perceiving, as the ancients held, and evaluate whether Aristotle's critique of this view depends on his theory of phantasia.",
+      "expected_primary_authors": ["Aristotle"],
+      "expected_secondary_presence": ["Nussbaum", "Caston"],
+      "tests": ["use-mention integrity under adversarial framing (ancient voicing must NOT be re-attributed to Aristotle)", "dialectical refutation attribution"],
+      "notes": "This prompt is designed to exercise use-mention discipline at the hardest case: a voiced predecessor view that Aristotle is setting up to refute."
+    }
+  ]
+}
