@@ -715,10 +715,10 @@ def _parse_header_section(section: str, text_label: str) -> dict | None:
             if len(parts) == 2:
                 current_key = parts[0].strip().lower()
                 current_val = parts[1].strip()
-        elif current_key and stripped:
-            current_val += " " + stripped
         elif stripped.startswith("###") or stripped.startswith("---"):
             break
+        elif current_key and stripped:
+            current_val += " " + stripped
 
     if current_key:
         fields[current_key] = current_val.strip()
