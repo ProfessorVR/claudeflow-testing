@@ -77,6 +77,44 @@ Sizes: corpus/index 47M · gold 1.3M · claims corpus 49M · archive 41M.
 **Phase 0 complete. Nothing pushed to any git remote. Next: Phase A (A1–A13), no
 decision blocks it.**
 
+# N2 + Phase C — executed 2026-07-29 (same session, "Push. then execute C")
+
+## N2 — the push
+`origin` (ste-bah/archon-cli) and BOTH ProfessorVR forks are **public** — pushing the
+branch (which carries the 1,892-file dissertation index) there would have published
+the research. Created **ProfessorVR/archon-cli-private** (verified `isPrivate: true`),
+pushed `feat/wraith-retrieval` via SSH (the OAuth token lacked workflow scope);
+remote ref == local HEAD verified. All ~194 previously machine-only commits now have
+an off-machine home.
+
+## Phase C — commits `6cbc0a6a` (C1+C2), `396a1a8f` (C3), `c5b1d3f5` (C4), `4325d962`+fix (C5), `e140fce0` (C6–C8)
+
+Store backed up first: `.archon/.backups/archon-data.db.pre-corpus-schema-20260730T025516Z` (942M).
+
+| Step | Result |
+|---|---|
+| C1 schema | 8 `corpus_*` relations live in the 987 MB store (sources/clauses/claims/edges/tensions/terms/groups + imports audit trail). Decision-1 columns (`rights_tier`, `redact_on_render`; exact span ALWAYS stored); GROUP layer = corpus_groups (Decision 3). Batched guarded writers; idempotent creation; importer QUARANTINES rejects with reasons. Query-plan hygiene noted in module docs. 8 unit tests |
+| C2 offsets | `corpus::offsets` = the single byte↔char conversion point; columns named `span_start/span_end` + explicit `offset_semantics`; Greek/German conformance tests green |
+| C3 sandbox | 4,960 claims written + 1 quarantined (claim-kim-1990-226 is EMPTY in the source — logged); 4,615 clauses (= the audited 93.0% exactly); 24 sources; 15,363 edges (14,811 mentions + 552 bridges). Sample 20/20 sha + span-width self-consistency. CAVEAT: sandbox chunk TEXT LAYERS were never preserved — stored verbatim quotes are the durable anchor; C8 supplies archon-store spans |
+| C4 claim-shaped entries | Dissertation 982 (both dialects) + VdS 157 (tier crosswalk 1→T1/2→T3, dispositions + RODA anchors + volatility kept) + Wendt 139 (ids minted; collisions 0) + 235 insertion-anchor verbatims as clauses. All counts exact |
+| C5 relational apparatus | **119/119 tensions across all 8 dialects — the audit's exact 119 that the compiler cut to 64** — incl. the four zero-yield files at full count (In-Game 12, Grammar 16, Wendt 12, BT 9). 49 debate axes → corpus_groups. Zero-silent-drop report per file. One contract fix mid-import: node_b_label not required (single-labeled dialects are legitimate). LOUDLY NOT in this pass: 240 edge CSVs (~20,610 rows) + concordance/contested-readings prose → Phase F |
+| C6 doc ids | 23/24 sources stamped with archon document_ids (96% ≥ 95% target); exception = the synthetic smoketest source, named |
+| C7 reasoning | All 5,437 runtime-dead reasoning rows → corpus_edges (ku endpoints), sum-check exact; incumbent deliberately unpatched |
+| C8 re-anchor | Resumable detached batch over all 4,850 clause quotes → verify-quote ledger (class/doc/page/byte-span/locator). Running at ~3.3 s/quote (~4.5 h); survives session end. Check: `wc -l archon-cli/.archon/corpus-import/reanchor-ledger.jsonl` (of 4,850). Early rows: sandbox De Anima clauses re-anchor EXACT with `Bekker:427a1` locators. Prose-only quotation inventories (BCAP 488 / Boredom 1,725 / BT 1,230 / FCM 2,090 / 49 bbox✓) recorded as Phase-F extractor work |
+
+**Store totals: 6,238 claims · 4,850 clauses · 20,800 edges · 119 tensions · 49 groups · 24 sources = 32,080 rows, 10 imports recorded.**
+
+## Gate G-C — PASSED (with two carried items)
+1. ≥6,200 claims queryable ✓ (6,238). 2. Import counts == source counts everywhere,
+   quarantines named ✓. 3. C5 zero-silent-drop table published ✓ (119/119; four
+   zero-yield files at full count; FCM synthesis-superset edges live in its 452-row
+   CSV layer → carried to Phase F with the CSV adapters). 4. C6 ≥95% ✓.
+5. End-to-end query ✓: `corpus-index show claims DISS-00-C001` returns the claim with
+   tier/flag/provenance; `show sources sandbox:nussbaum-1985` resolves to
+   `doc-8028ec80-…`. Intermediates durable at `.archon/corpus-import/`.
+**Carried:** (i) C8 ledger completes in background — classify + F2-checklist the
+not-founds when done; (ii) the edge-CSV/concordance/prose-quotation adapters (Phase F).
+
 # Decisions — ruled 2026-07-29 (user, verbatim "1) A. 2) A 3) A")
 
 | # | Ruling | Effect |
