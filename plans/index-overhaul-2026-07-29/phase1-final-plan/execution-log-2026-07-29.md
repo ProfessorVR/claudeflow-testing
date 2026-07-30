@@ -76,3 +76,18 @@ Sizes: corpus/index 47M · gold 1.3M · claims corpus 49M · archive 41M.
 
 **Phase 0 complete. Nothing pushed to any git remote. Next: Phase A (A1–A13), no
 decision blocks it.**
+
+## P0.5 addendum — deep completeness verification on the Mac (user-requested)
+
+Ran a full per-file verification ON the Mac (script preserved at
+`~/claudeflow-preserve/mac_verify.sh` alongside three manifests for future re-checks):
+
+1. Files present with expected sizes; digests re-matched (70e1304e… / 1747f239…).
+2. `gzip -t` OK; `git bundle list-heads` → `d1cc588c1 refs/heads/feat/wraith-retrieval`.
+3. Tarball extracted on the Mac: 2,118 files + 2 symlinks.
+4. **Per-file SHA-256 against locally generated manifests: corpus/index 1,891/1,891 OK ·
+   sandbox data 105/105 OK · archive 121/121 OK (execution log excluded — it was
+   finalized after the tarball was cut) · 0 failures.**
+5. Spot checks: 24 claims.jsonl; CONVENTIONS.md exactly 1,124 lines; 01-FINAL-OVERHAUL-PLAN.md present.
+6. VERDICT: **COMPLETE-AND-VERIFIED**. Extraction scratch removed; final Mac footprint
+   53 MB (2 archives + checksums + manifests + verify script).
