@@ -77,6 +77,29 @@ Sizes: corpus/index 47M · gold 1.3M · claims corpus 49M · archive 41M.
 **Phase 0 complete. Nothing pushed to any git remote. Next: Phase A (A1–A13), no
 decision blocks it.**
 
+# S1–S5 + A/B comparison — executed 2026-07-30 (user: "work on S1-5… then test… then A/B"); commits `c8205258` + A/B fixes (ar, pushed)
+
+**S1** engine de-hyphenation in quote_verify normalization (4 tests). **S2/S3**
+`doc_chunk_sentences` + deterministic segmenter + `docs sentence-index [--doc]
+[--verify N]` (7 tests incl. Greek + in-store roundtrip); sentence page via
+page_breaks, tight bbox via block-layer intersection. **S4** `check_loci.py`
+implements locator-resolution + span-coverage (roster now 9/15 implemented). **S5**
+`doc_image_ocr_status` — ok/no-text/failed durably recorded per image. Hardening
+found by running: sentence `:rm` now goes through the cozo retry guard; `docs delete`
+purges the sentence layer.
+
+**A/B (06-AB-INGESTION-COMPARISON.md):** born-digital King & Salvo — ligature hits
+49→0, TRUE quote not-found→**exact 1.000 p.8 + bbox + byte offsets**, 766 sentences
+(74% bbox, 100% page, 50/50 verified). Scanned Kassel Ars Rhetorica — 2,006 junk
+chunks→120 coherent, spatial **5.9%→100%**, 5,633 sentences (100% bbox+page, 100/100
+verified), Bekker locators preserved (352), Greek opening not-found→**fuzzy 0.962
+p.21 + bbox** (residual = surya rho→eta confusion → the S8 OCR-quality-arbiter case).
+Key metric finding: sentence-bbox coverage (from the BLOCK layer) is the binding
+addressability metric, not chunk super-box coverage. Guardrail: scan-vs-figure
+classification must precede `-y` batch ingests (policy toggled + restored for the
+scan). Background: full-corpus sentence build (~2–3 h) + C8 (fixed normalization)
+relaunched after the contention window.
+
 # Phase E — executed 2026-07-29 (same session, "proceed"); commits `2c16fa8b` + probes-v2 (ar, pushed). **Gate G-E: PARTIAL.**
 
 | Step | Result |
