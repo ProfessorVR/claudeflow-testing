@@ -39,6 +39,15 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 
+# Load project .env so MARKER_* (and other) settings reach this process regardless of
+# CWD. Without this, the os.environ.get() calls below never see .env — the script is
+# launched directly, not via a shell that sources .env. python-dotenv is installed.
+try:
+    from dotenv import load_dotenv as _load_dotenv
+    _load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+except Exception:
+    pass  # dotenv optional; explicit environment / --marker-url still work
+
 import chromadb
 from chromadb.config import Settings
 
@@ -113,30 +122,63 @@ logger = logging.getLogger(__name__)
 EMBED_URL = "http://127.0.0.1:8000/embed"
 EMBED_DIM = 1536
 
-# Remote Marker-pdf OCR server (Machine 2, 2x RTX 3090)
-MARKER_URL = os.environ.get("MARKER_URL", "http://10.0.0.2:8001")
+# Marker-pdf OCR servers. Resolution order (prefer WRAITH when up):
+#   explicit MARKER_URL override  ->  WRAITH (both GPU ports :8001/:8002)  ->  local :8003
+MARKER_REMOTE_URL = os.environ.get("MARKER_URL_REMOTE", "http://192.168.50.22:8001")  # WRAITH (2x GPU)
+MARKER_LOCAL_URL = os.environ.get("MARKER_URL_LOCAL", "http://127.0.0.1:8003")         # local fallback Marker
+# Manual override: if MARKER_URL is set (env or --marker-url) use EXACTLY that one server.
+# Empty ("") means "let resolve_marker_pool() decide". (Dead default http://10.0.0.2:8001 removed.)
+MARKER_URL = os.environ.get("MARKER_URL", "").strip()
 MARKER_ENABLED = os.environ.get("MARKER_ENABLED", "false").lower() in ("true", "1", "yes")
 MARKER_TIMEOUT_S = int(os.environ.get("MARKER_TIMEOUT_S", "1200"))
 
-# Dual-GPU round-robin pool
+# Resolved round-robin pool (populated by resolve_marker_pool() via _init_marker_pool())
 MARKER_URLS: List[str] = []
 _marker_url_cycle = None
 
+def _probe(url: str, session=None, timeout: int = 4) -> bool:
+    """Return True iff GET {url}/ responds HTTP 200."""
+    try:
+        r = (session or requests).get(f"{url}/", timeout=timeout)
+        return r.status_code == 200
+    except Exception:
+        return False
+
+def resolve_marker_pool() -> List[str]:
+    """Resolve ALL reachable Marker servers (max throughput + resilience).
+
+    Order: explicit MARKER_URL override -> every responding WRAITH GPU port
+    (:8001/:8002) -> local :8003. Returning *all* reachable servers means a dead
+    WRAITH port can't poison the round-robin pool (the old "prefer WRAITH" behavior
+    stalled the whole batch on a half-down WRAITH), and a free local GPU adds capacity.
+    Returns [] when nothing is reachable (=> DEGRADED / pdftotext, NO bboxes).
+    """
+    if MARKER_URL:
+        return [MARKER_URL] if _probe(MARKER_URL) else []
+    pool: List[str] = []
+    base = MARKER_REMOTE_URL.rsplit(":", 1)[0]  # e.g. "http://192.168.50.22"
+    pool += [u for u in (f"{base}:8001", f"{base}:8002") if _probe(u)]  # live WRAITH GPUs
+    if _probe(MARKER_LOCAL_URL):
+        pool.append(MARKER_LOCAL_URL)  # local GPU as an additional worker
+    return pool
+
 def _init_marker_pool():
-    """Initialize the Marker URL pool for round-robin across GPUs."""
+    """Populate MARKER_URLS from resolve_marker_pool() and (re)build the round-robin cycle."""
     global MARKER_URLS, _marker_url_cycle
     import itertools
     if not MARKER_URLS:
-        # Default: try both GPU ports
-        base = MARKER_URL.rsplit(":", 1)[0]  # e.g., "http://192.168.50.22"
-        MARKER_URLS = [f"{base}:8001", f"{base}:8002"]
-    _marker_url_cycle = itertools.cycle(MARKER_URLS)
+        MARKER_URLS = resolve_marker_pool()
+    _marker_url_cycle = itertools.cycle(MARKER_URLS) if MARKER_URLS else None
 
 def get_next_marker_url() -> str:
-    """Get next Marker URL from round-robin pool."""
+    """Get next Marker URL from the round-robin pool (resolves lazily)."""
     global _marker_url_cycle
     if _marker_url_cycle is None:
         _init_marker_pool()
+    if _marker_url_cycle is None:
+        # Nothing reachable; return a best-effort URL so the caller's own
+        # error/fallback path (pdftotext) handles the failure cleanly.
+        return MARKER_URL or MARKER_REMOTE_URL
     return next(_marker_url_cycle)
 
 def _update_marker_config(args):
@@ -160,7 +202,7 @@ TARGET_MAX_TOKENS = 1200
 HARD_MAX_TOKENS = 1400
 
 # Embedding batching
-EMBED_BATCH_SIZE = 64
+EMBED_BATCH_SIZE = int(os.environ.get("EMBED_BATCH_SIZE", "64"))
 EMBED_TIMEOUT_S = 600
 
 
@@ -267,17 +309,25 @@ def load_latest_manifest_by_path(manifest_path: Path) -> Dict[str, Dict[str, Any
     return latest
 
 
-def should_skip_phase2(path_abs: Path, sha256_hex: str, latest_manifest: Dict[str, Dict[str, Any]]) -> bool:
+def should_skip_phase2(path_abs: Path, sha256_hex: str, latest_manifest: Dict[str, Dict[str, Any]],
+                       marker_available: bool = False) -> bool:
     """
-    Phase-aware skip:
-    Skip only if the latest record for this path_abs indicates Phase 2 succeeded.
+    Phase-aware + fidelity-aware skip:
+    Skip only if the latest record indicates Phase 2 succeeded AND we would not be
+    upgrading it. A DEGRADED record (text-only, no bboxes) is re-ingested — not skipped —
+    when a Marker server is reachable this run, so degraded docs auto-upgrade to FULL.
     """
     rec = latest_manifest.get(str(path_abs))
     if not rec:
         return False
     same = (rec.get("sha256") == sha256_hex) and (rec.get("status") == "ok")
     phase_ok = int(rec.get("phase") or 0) >= 2
-    return same and phase_ok
+    if not (same and phase_ok):
+        return False
+    # Fidelity-aware upgrade: re-ingest a non-FULL doc when Marker is available now.
+    if marker_available and rec.get("fidelity_mode") != "full":
+        return False
+    return True
 
 
 
@@ -295,16 +345,8 @@ def append_manifest(record: Dict[str, Any]) -> None:
 # PDF extraction (locked: pdftotext -layout, keep \f)
 # -----------------------------
 
-def check_marker_health(session: requests.Session) -> bool:
-    """Pre-flight check for Marker server. Returns True if reachable."""
-    if not MARKER_ENABLED:
-        return False
-    try:
-        r = session.get(f"{MARKER_URL}/", timeout=5)
-        return r.status_code == 200
-    except Exception:
-        return False
-
+# check_marker_health() removed — it was dead code (zero callers) and used the global
+# MARKER_URL. resolve_marker_pool() now owns all Marker reachability probing.
 
 def extract_text_from_marker_json(marker_json: dict) -> str:
     """Reconstruct full text from Marker JSON block tree for the Fidelity Gate.
@@ -362,19 +404,22 @@ def run_marker_extract_json(path_abs: Path, session: requests.Session,
         return None, None
 
 
-def run_marker_extract(path_abs: Path, session: requests.Session) -> str:
-    """Send PDF to remote Marker server, return extracted markdown text.
+def run_marker_extract(path_abs: Path, session: requests.Session, marker_url: str = "") -> str:
+    """Send PDF to a Marker server, return extracted markdown text.
 
-    The markdown may contain <!-- Page N --> markers for page-aware chunking.
-    Falls back to pdftotext if Marker fails.
+    Honors the round-robin pool via marker_url (falls back to the resolved pool /
+    remote default if not given). The markdown may contain <!-- Page N --> markers
+    for page-aware chunking. Falls back to pdftotext if Marker fails.
     """
+    url = marker_url or (MARKER_URLS[0] if MARKER_URLS else (MARKER_URL or MARKER_REMOTE_URL))
     try:
         pdf_bytes = path_abs.read_bytes()
         files = {"file": (path_abs.name, pdf_bytes, "application/pdf")}
-        data = {"paginate": "true"}
+        # Stock marker-pdf server fields: paginate_output + output_format; result in "output".
+        data = {"paginate_output": "true", "output_format": "markdown"}
 
         # Use /marker/upload for file uploads (multipart)
-        r = session.post(f"{MARKER_URL}/marker/upload", files=files, data=data,
+        r = session.post(f"{url}/marker/upload", files=files, data=data,
                          timeout=MARKER_TIMEOUT_S)
 
         if r.status_code != 200:
@@ -384,7 +429,7 @@ def run_marker_extract(path_abs: Path, session: requests.Session) -> str:
             return run_pdftotext_layout(path_abs)
 
         result = r.json()
-        markdown = result.get("markdown", result.get("output", ""))
+        markdown = result.get("output", result.get("markdown", ""))
 
         if not markdown.strip():
             logging.getLogger(__name__).warning(
@@ -799,6 +844,10 @@ def main() -> int:
     ap.add_argument("--disable-ocr", action="store_true", help="Disable OCR processing (text-only mode)")
     ap.add_argument("--marker", action="store_true", help="Enable Marker-pdf remote OCR (Machine 2)")
     ap.add_argument("--marker-url", type=str, help=f"Marker server URL (default: {MARKER_URL})")
+    ap.add_argument("--require-full", action="store_true",
+                    help="Abort (exit 3) if no Marker server is reachable (FULL/bbox mode required).")
+    ap.add_argument("--pdf-only", action="store_true",
+                    help="Only ingest .pdf files (skip .md/.txt). Use for the PDF-corpus FULL re-ingest.")
 
     # Phase 5: Optimization control arguments
     ap.add_argument("--enable-cache", action="store_true", help="Enable caching (overrides config)")
@@ -926,11 +975,12 @@ def main() -> int:
     latest_manifest = load_latest_manifest_by_path(MANIFEST_PATH)
     coll = get_chroma_collection()
 
-    SKIP_DIRS = {".extracted_media", "__pycache__", "node_modules", ".git", ".ingest_cache"}
+    SKIP_DIRS = {".extracted_media", "__pycache__", "node_modules", ".git", ".ingest_cache", "index"}
 
     files: List[Path] = []
+    _exts = {".pdf"} if getattr(args, "pdf_only", False) else ALLOWED_EXTS
     for p in root.rglob("*"):
-        if p.is_file() and p.suffix.lower() in ALLOWED_EXTS:
+        if p.is_file() and p.suffix.lower() in _exts:
             if not any(d in p.parts for d in SKIP_DIRS):
                 files.append(p)
     files.sort()
@@ -955,27 +1005,24 @@ def main() -> int:
     images_extracted = 0
 
     with requests.Session() as session:
-        # Check Marker availability (Machine 2) — both GPUs
+        # Resolve the Marker pool (prefer WRAITH when up -> local :8003). resolve_marker_pool()
+        # already probes reachability, so the pool contains only live servers.
         marker_available = False
         if MARKER_ENABLED:
-            _init_marker_pool()
-            available_urls = []
-            for url in MARKER_URLS:
-                try:
-                    r_health = session.get(f"{url}/", timeout=5)
-                    if r_health.status_code == 200:
-                        available_urls.append(url)
-                except Exception:
-                    pass
-            if available_urls:
+            MARKER_URLS.clear()
+            _init_marker_pool()  # resolves pool + builds round-robin cycle
+            if MARKER_URLS:
                 marker_available = True
-                MARKER_URLS[:] = available_urls  # Only keep reachable URLs
-                _init_marker_pool()  # Reinit cycle with valid URLs
-                print(f"[Phase5+Optimization] marker_pool={available_urls} [{len(available_urls)} GPUs CONNECTED]")
+                kind = "local" if MARKER_URLS[0].startswith(("http://127.", "http://localhost")) else "WRAITH"
+                print(f"[Marker] FULL mode — {kind} pool={MARKER_URLS} ({len(MARKER_URLS)} server(s))")
             else:
-                print(f"[Phase5+Optimization] marker_pool={MARKER_URLS} [ALL UNREACHABLE — using pdftotext fallback]")
+                print("WARNING [Marker] no server reachable (WRAITH / local :8003) "
+                      "— DEGRADED mode: pdftotext text only, NO bboxes/provenance")
+                if getattr(args, "require_full", False):
+                    print("[Marker] --require-full set but no Marker reachable — aborting (exit 3)")
+                    raise SystemExit(3)
         else:
-            print(f"[Phase5+Optimization] marker_server=disabled (set MARKER_ENABLED=true to enable)")
+            print("[Marker] disabled (set MARKER_ENABLED=true to enable Marker + bbox extraction)")
 
         # ── Parallel Marker pre-fetch ──────────────────────────────────
         # Pre-fetch Marker JSON for all PDFs concurrently across both GPUs.
@@ -992,11 +1039,15 @@ def main() -> int:
             # Filter to only PDFs that need processing (not skipped)
             pdfs_to_fetch = []
             for p in pdf_files:
-                sha = hashlib.sha256(p.read_bytes()[:65536]).hexdigest()[:12]
-                path_rel_check = safe_relpath(p, root)
                 prev = latest_manifest.get(str(p))
-                if prev and prev.get("status") == "ok" and prev.get("sha256", "")[:12] == sha and not args.force:
-                    continue  # Will be skipped in main loop
+                # Skip the expensive Marker pre-fetch for docs already FULL with unchanged
+                # content. Compare the FULL-file sha (the manifest stores the full sha; the
+                # old first-64KB sha never matched for files >64KB, so every done doc was
+                # wastefully re-fetched).
+                if (prev and prev.get("status") == "ok"
+                        and prev.get("sha256") == sha256_file(p)
+                        and prev.get("fidelity_mode") == "full" and not args.force):
+                    continue  # Already FULL — main loop will skip it
                 pdfs_to_fetch.append(p)
 
             if pdfs_to_fetch:
@@ -1066,7 +1117,20 @@ def main() -> int:
                 "total_equations": 0,
                 "total_captions": 0,
                 "has_headers_footers": False,
+                # Fidelity mode: FULL = Marker bboxes/tables/locators; DEGRADED = text only.
+                "fidelity_mode": "degraded",
+                "marker_used": False,
+                "has_bboxes": False,
+                "marker_pool": [],
+                "degrade_reason": None,
             }
+            if MARKER_ENABLED and not marker_available:
+                base_record["degrade_reason"] = "marker_unreachable"
+
+            # Per-document visual-provenance state, reset every iteration so .md/.txt and
+            # degraded docs never inherit a previous PDF's bboxes (latent cross-doc bug).
+            bbox_chunks = None
+            doc_locators: List[Dict[str, Any]] = []  # Phase 9: Bekker/Stephanus locators w/ bbox
 
             try:
                 sha = sha256_file(path_abs)
@@ -1074,7 +1138,7 @@ def main() -> int:
                 base_record["sha256"] = sha
                 base_record["doc_id"] = doc_id
 
-                if (not args.force) and should_skip_phase2(path_abs, sha, latest_manifest):
+                if (not args.force) and should_skip_phase2(path_abs, sha, latest_manifest, marker_available=marker_available):
                     skipped += 1
                     print(f"\n[SKIP] {path_rel} doc_id={doc_id} sha256={sha[:12]}…")
                     continue
@@ -1146,19 +1210,26 @@ def main() -> int:
                             marker_json, md_text = run_marker_extract_json(path_abs, session, marker_url=marker_url)
 
                         if marker_json is None:
-                            # Fallback to markdown-only mode
-                            md_text = run_marker_extract(path_abs, session)
+                            # Marker JSON failed for this doc — no bboxes (DEGRADED); keep text via markdown/pdftotext.
+                            base_record["degrade_reason"] = "marker_json_failed"
+                            md_text = run_marker_extract(path_abs, session, marker_url=get_next_marker_url())
 
                         if not md_text:
-                            md_text = run_marker_extract(path_abs, session)
+                            md_text = run_marker_extract(path_abs, session, marker_url=get_next_marker_url())
 
                         # ALWAYS extract bboxes from Marker JSON when available
                         # Tables and bboxes are decoupled from the text routing decision
                         if marker_json is not None:
                             try:
-                                from markdown_chunker import chunk_marker_json
+                                from markdown_chunker import chunk_marker_json, extract_locators_with_bbox
                                 bbox_chunks = chunk_marker_json(marker_json)
+                                doc_locators = extract_locators_with_bbox(marker_json)
                                 marker_json_available = True
+                                base_record["fidelity_mode"] = "full"
+                                base_record["marker_used"] = True
+                                base_record["marker_pool"] = list(MARKER_URLS)
+                                base_record["total_locators"] = len(doc_locators)
+                                base_record["degrade_reason"] = None
                             except Exception as e:
                                 logger.warning(f"Failed to extract bbox chunks: {e}")
 
@@ -1245,7 +1316,7 @@ def main() -> int:
                                 # Use Marker (remote GPU) if available, else pdftotext
                                 if marker_available:
                                     logger.info(f"Using Marker for text-based PDF: {path_rel}")
-                                    md_text = run_marker_extract(path_abs, session)
+                                    md_text = run_marker_extract(path_abs, session, marker_url=get_next_marker_url())
                                     pages = split_marker_pages(md_text)
                                     for page_no, page_text in pages:
                                         paragraphs.extend(page_paragraphs(page_no, page_text))
@@ -1319,7 +1390,7 @@ def main() -> int:
                         # Fallback: Marker if available, else pdftotext
                         if marker_available:
                             logger.info(f"Using Marker (OCR extractor not available): {path_rel}")
-                            md_text = run_marker_extract(path_abs, session)
+                            md_text = run_marker_extract(path_abs, session, marker_url=get_next_marker_url())
                             pages = split_marker_pages(md_text)
                             for page_no, page_text in pages:
                                 paragraphs.extend(page_paragraphs(page_no, page_text))
@@ -1607,6 +1678,37 @@ def main() -> int:
                     )
                     ids, documents, metadatas, embeddings = [], [], [], []
 
+                # SAFE re-ingest (upsert-then-delete): capture this file's prior chunk ids now,
+                # but DON'T delete yet. The new chunks are upserted first; only the stale
+                # leftovers are deleted AFTER a successful write (see below). So a mid-doc
+                # failure (e.g. an embedding CUDA-OOM) can never lose data — the old chunks
+                # survive until the new ones are committed.
+                try:
+                    _old = coll.get(where={"path_rel": path_rel}, include=[])
+                    _prior_ids = set(_old.get("ids") or [])
+                except Exception as e:
+                    logger.warning(f"Could not read prior chunks for {path_rel}: {e}")
+                    _prior_ids = set()
+                _new_ids: List[str] = []
+
+                # Phase 7a: index Marker bboxes by page (page_num -> [bbox,...]). Each final
+                # chunk is then given the bboxes for the page(s) it spans — robust to text-vs-
+                # Marker segmentation mismatch, replacing the positional bbox_chunks[chunk_index]
+                # lookup that mismapped/dropped chunks when pdftotext won the fidelity gate.
+                _bbox_by_page: Dict[int, List[Any]] = {}
+                if bbox_chunks:
+                    for _bc in bbox_chunks:
+                        for _bb in (_bc.get("bboxes") or []):
+                            _pg = _bb.get("page_num")
+                            if isinstance(_pg, int):
+                                _bbox_by_page.setdefault(_pg, []).append(_bb)
+
+                # Phase 9: index citation locators by page for precise per-chunk attachment.
+                _loc_by_page: Dict[int, List[Any]] = {}
+                for _loc in (doc_locators or []):
+                    if isinstance(_loc.get("page"), int):
+                        _loc_by_page.setdefault(_loc["page"], []).append(_loc)
+
                 for i in range(0, len(chunks), EMBED_BATCH_SIZE):
                     batch = chunks[i : i + EMBED_BATCH_SIZE]
                     texts = [c.text for c in batch]
@@ -1620,6 +1722,7 @@ def main() -> int:
 
                     for c, v in zip(batch, vecs):
                         ids.append(c.chunk_id)
+                        _new_ids.append(c.chunk_id)
                         documents.append(c.text)
 
                         # Compute SHA-256 hashes for clean and raw text
@@ -1660,18 +1763,42 @@ def main() -> int:
                         elif hasattr(c, '_image_metadata'):
                             chunk_metadata.update(c._image_metadata)
 
-                        # Inject bounding box data from bbox_chunks (visual grounding)
-                        if bbox_chunks is not None and c.chunk_index < len(bbox_chunks):
-                            bc = bbox_chunks[c.chunk_index]
-                            bboxes = bc.get("bboxes", [])
-                            if bboxes:
-                                # Store as JSON string (Chroma only accepts scalar metadata)
-                                chunk_metadata["bboxes"] = json.dumps(bboxes)
-                                chunk_metadata["has_bboxes"] = True
-                            else:
-                                chunk_metadata["has_bboxes"] = False
+                        # Inject bounding boxes for the page(s) THIS chunk spans (page-accurate
+                        # visual provenance). Never mismaps to a wrong page and never drops a
+                        # chunk; coarser than paragraph-exact when a chunk spans multiple pages
+                        # (precise 1:1 requires Marker to win the fidelity gate — see notes).
+                        chunk_bboxes: List[Any] = []
+                        if _bbox_by_page and c.page_start is not None:
+                            _p1 = c.page_end if c.page_end is not None else c.page_start
+                            for _pg in range(c.page_start, _p1 + 1):
+                                chunk_bboxes.extend(_bbox_by_page.get(_pg, []))
+                        if chunk_bboxes:
+                            # Store as JSON string (Chroma only accepts scalar metadata)
+                            chunk_metadata["bboxes"] = json.dumps(chunk_bboxes)
+                            chunk_metadata["has_bboxes"] = True
                         else:
                             chunk_metadata["has_bboxes"] = False
+                        # Note 3: surface extraction method + fidelity mode at the chunk level
+                        chunk_metadata["extraction_method"] = base_record.get("extraction_method")
+                        chunk_metadata["fidelity_mode"] = base_record.get("fidelity_mode")
+
+                        # Phase 9: attach citation locators (Bekker/Stephanus) referenced in this
+                        # chunk's text, each with the precise Marker block bbox + page where it
+                        # appears (only locators on the chunk's own page(s), de-duplicated).
+                        chunk_locs = []
+                        if _loc_by_page and c.page_start is not None:
+                            _lp1 = c.page_end if c.page_end is not None else c.page_start
+                            _seen_lv = set()
+                            for _lpg in range(c.page_start, _lp1 + 1):
+                                for _loc in _loc_by_page.get(_lpg, []):
+                                    if _loc["value"] in c.text and _loc["value"] not in _seen_lv:
+                                        _seen_lv.add(_loc["value"])
+                                        chunk_locs.append(_loc)
+                        if chunk_locs:
+                            chunk_metadata["locators"] = json.dumps(chunk_locs)
+                            chunk_metadata["has_locators"] = True
+                        else:
+                            chunk_metadata["has_locators"] = False
 
                         # Sanitize metadata for Chroma (only str/int/float/bool/None)
                         for mk, mv in list(chunk_metadata.items()):
@@ -1694,6 +1821,16 @@ def main() -> int:
 
                     flush_batch()
                     print(f"  embedded_upserted {min(i+EMBED_BATCH_SIZE, len(chunks))}/{len(chunks)}")
+
+                # Write succeeded — NOW delete only the stale prior chunks (old ids not reused
+                # by this write). New chunks are already committed, so this cannot lose data.
+                _stale = list(_prior_ids - set(_new_ids))
+                if _stale:
+                    try:
+                        coll.delete(ids=_stale)
+                        logger.info(f"Deleted {len(_stale)} stale prior chunks for {path_rel} (post-upsert)")
+                    except Exception as e:
+                        logger.warning(f"Post-upsert stale cleanup failed for {path_rel}: {e}")
 
                 base_record["status"] = "ok"
                 base_record["error"] = None

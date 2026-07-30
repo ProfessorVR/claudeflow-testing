@@ -362,7 +362,7 @@ def main() -> int:
     latest_manifest = load_latest_manifest_by_path(manifest_path)
 
     # Walk
-    SKIP_DIRS = {".extracted_media", "__pycache__", "node_modules", ".git", ".ingest_cache"}
+    SKIP_DIRS = {".extracted_media", "__pycache__", "node_modules", ".git", ".ingest_cache", "index"}
 
     files: List[Path] = []
     for p in root.rglob("*"):
