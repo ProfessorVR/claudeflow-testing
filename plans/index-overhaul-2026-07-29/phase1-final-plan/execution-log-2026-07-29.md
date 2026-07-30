@@ -77,6 +77,32 @@ Sizes: corpus/index 47M · gold 1.3M · claims corpus 49M · archive 41M.
 **Phase 0 complete. Nothing pushed to any git remote. Next: Phase A (A1–A13), no
 decision blocks it.**
 
+# Phase D (D1–D4) — executed 2026-07-29 (same session, "proceed"); commit `e5b2e1cb` (ar, pushed to private)
+
+| Piece | Result |
+|---|---|
+| D1 checkers | 7 implemented executables + 15-gate roster where a MISSING checker FAILS (waiver requires reason + future checker). Thresholds are config data (`gates-config.json`), never frozen constants. New `corpus-index dump` subcommand feeds them |
+| D2 separation | `gates.json` written ONLY by `emit_gates.py` from checker exit codes; seeded-RNG judge sample (seed recorded) replaces author-chosen trios |
+| D3 superseded | Config-seeded pattern list (the O-10 case). Artifact + store sweep PASSES today — the user's staleness session repaired the runtime artifact since archive §12; the pattern list stands as the permanent regression seed |
+| D4 reverse-refs + sweep | 1,285 ids × 1,696 files mapped; `check_sweep.py` replay found exactly the **3 currently-stale FCM files** (`fcm-king-salvo-bridge.md`, `king-salvo-physiological-digest.md`, `fcm-bibliography.md`) — parity with manual grep; the other 7 of §12's 10 were repaired upstream. These 3 await the user's FCM keystone ruling (13-BOOT Wave B/C) |
+
+**Acceptance highlights:** the reachability checker measures legacy Boredom Secondary
+at **2.33% — the audit's flagship figure exactly** (inverted checker-bites assertion);
+density validates Decision 2 LIVE (dissertation **17.2**, VdS **16.9** — both in the
+15–35 band); the suite immediately caught a real source defect (`DISS-03-C001`
+supported_by cites a prose pointer, not a claim id → F2 item).
+
+**gates.json overall = FAIL, honestly:** C8 quote ledger still running (fails until
+complete), Wendt + sandbox word counts NEEDS-DATA (measurement lands in E0 — no
+estimated numbers in gates), 8 roster checkers not yet implemented (fail by rule),
+1 real dangling reference.
+
+**Gate G-D: PARTIAL.** D1–D4 complete and validated; **D5 (pilot entry end-to-end)
+requires the N4 choice + a dedicated authoring run** — G-D closes with D5.
+
+**C8 progress at log time:** 249/4,850 — classes so far: exact 162, not-found 87,
+near-verbatim 17, drift 4. Triage when complete.
+
 # N2 + Phase C — executed 2026-07-29 (same session, "Push. then execute C")
 
 ## N2 — the push
