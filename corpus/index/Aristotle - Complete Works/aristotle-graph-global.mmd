@@ -1,0 +1,189 @@
+%% Phase 4I: Global Corpus Concept Graph — Aristotle Complete Works
+%% 50 canonical nodes, edges colored by domain
+%% Generated: 2026-03-09
+
+graph TD
+
+%% === SUBGRAPH: FIRST PHILOSOPHY (Metaphysics) ===
+subgraph META["First Philosophy (Metaphysics)"]
+    ousia["οὐσία\nsubstance"]
+    eidos_meta["εἶδος\nform"]
+    hyle["ὕλη\nmatter"]
+    to_ti_en_einai["τὸ τί ἦν εἶναι\nessence"]
+    energeia_meta["ἐνέργεια\nactuality"]
+    dynamis_meta["δύναμις\npotentiality"]
+    entelecheia_meta["ἐντελέχεια\nfulfillment"]
+    to_on_hei_on["τὸ ὂν ᾗ ὄν\nbeing qua being"]
+    pros_hen["πρὸς ἕν\nfocal meaning"]
+    unmoved_mover["τὸ κινοῦν ἀκίνητον\nunmoved mover"]
+    nous_meta["νοῦς\nthought"]
+    aletheia["ἀλήθεια\ntruth"]
+    PNC["PNC\nnon-contradiction"]
+    tode_ti["τόδε τι\nthis-ness"]
+    steresis["στέρησις\nprivation"]
+end
+
+%% === SUBGRAPH: NATURAL PHILOSOPHY (Physics) ===
+subgraph PHYS["Natural Philosophy (Physics)"]
+    phusis["φύσις\nnature"]
+    kinesis["κίνησις\nmotion"]
+    topos["τόπος\nplace"]
+    chronos["χρόνος\ntime"]
+    to_nun["τὸ νῦν\nthe now"]
+    to_apeiron["τὸ ἄπειρον\nthe infinite"]
+    aition["αἴτιον\ncause"]
+    telos_phys["τέλος\nend/purpose"]
+    techne_phys["τέχνη\nart/craft"]
+    to_suneches["τὸ συνεχές\nthe continuous"]
+end
+
+%% === SUBGRAPH: PSYCHOLOGY (De Anima + Parva Naturalia) ===
+subgraph PSYCH["Psychology (DA + Parva Naturalia)"]
+    psuche["ψυχή\nsoul"]
+    aisthesis["αἴσθησις\nperception"]
+    phantasia["φαντασία\nimagination"]
+    nous_da["νοῦς\nmind"]
+    phantasma["φάντασμα\nimage"]
+    orexis["ὄρεξις\ndesire"]
+    koine_aisthesis["κοινὴ αἴσθησις\ncommon sense"]
+    mneme["μνήμη\nmemory"]
+    anamnesis["ἀνάμνησις\nrecollection"]
+    to_diaphanes["τὸ διαφανές\nthe transparent"]
+    chroma["χρῶμα\ncolour"]
+end
+
+%% === SUBGRAPH: RHETORIC ===
+subgraph RHET["Rhetoric"]
+    rhetorike["ῥητορική\nrhetoric"]
+    pistis["πίστις\npersuasion"]
+    enthymema["ἐνθύμημα\nenthymeme"]
+    pathos_rhet["πάθος\nemotion"]
+    ethos["ἦθος\ncharacter"]
+    lexis["λέξις\nstyle"]
+    metaphora["μεταφορά\nmetaphor"]
+    pro_ommaton["πρὸ ὀμμάτων\nsetting before eyes"]
+    logos_rhet["λόγος\nargument"]
+    phronesis["φρόνησις\ngood sense"]
+end
+
+%% === CROSS-DOMAIN EDGES ===
+
+%% Ontological (blue)
+ousia -->|"primary sense of"| to_on_hei_on
+ousia -->|"specified by"| to_ti_en_einai
+eidos_meta -->|"is substance"| ousia
+hyle -->|"receives"| eidos_meta
+energeia_meta -->|"prior to"| dynamis_meta
+entelecheia_meta -.->|"extended to"| energeia_meta
+unmoved_mover -->|"pure"| energeia_meta
+pros_hen -->|"refers to"| ousia
+PNC -->|"firmest principle of"| to_on_hei_on
+tode_ti -->|"criterion of"| ousia
+steresis -->|"contrary of"| eidos_meta
+
+%% Natural Philosophy (green)
+phusis -->|"principle of"| kinesis
+kinesis -->|"defined by"| energeia_meta
+kinesis -->|"defined by"| dynamis_meta
+chronos -->|"number of"| kinesis
+chronos -->|"boundary"| to_nun
+to_apeiron -->|"exists as"| dynamis_meta
+topos -->|"enables"| kinesis
+aition -->|"four senses"| phusis
+telos_phys -->|"species of"| aition
+techne_phys -->|"contrasts with"| phusis
+to_suneches -->|"property of"| kinesis
+
+%% Psychology (purple)
+psuche -->|"first actuality"| entelecheia_meta
+psuche -->|"substance as"| eidos_meta
+aisthesis -->|"receives form"| eidos_meta
+phantasia -->|"movement from"| aisthesis
+phantasia -->|"defined as"| kinesis
+nous_da -->|"requires"| phantasma
+phantasma -->|"product of"| phantasia
+orexis -->|"moves via"| phantasia
+orexis -->|"causes"| kinesis
+koine_aisthesis -->|"unifies"| aisthesis
+mneme -->|"depends on"| phantasma
+mneme -->|"requires"| chronos
+anamnesis -->|"reactivates"| kinesis
+to_diaphanes -->|"medium for"| aisthesis
+chroma -->|"limit of"| to_diaphanes
+
+%% Rhetoric (red)
+rhetorike -->|"faculty of"| pistis
+pistis -->|"component"| ethos
+pistis -->|"component"| pathos_rhet
+pistis -->|"component"| logos_rhet
+enthymema -->|"body of"| pistis
+lexis -->|"depends on"| metaphora
+metaphora -->|"achieves"| pro_ommaton
+pro_ommaton -->|"activates"| phantasia
+pathos_rhet -->|"changes"| logos_rhet
+ethos -->|"requires"| phronesis
+
+%% Cross-domain bridges
+chronos -.->|"soul as counter"| psuche
+unmoved_mover -.->|"moves as beloved"| orexis
+nous_meta -.->|"thought thinking itself"| aletheia
+energeia_meta -.->|"rhetorical vividness"| pro_ommaton
+pathos_rhet -.->|"rhetorical affect"| aisthesis
+metaphora -.->|"grounded in"| aisthesis
+
+%% === STYLES ===
+style META fill:#e8f0fe,stroke:#1a73e8,stroke-width:2px
+style PHYS fill:#e6f4ea,stroke:#1e8e3e,stroke-width:2px
+style PSYCH fill:#f3e8fd,stroke:#8430ce,stroke-width:2px
+style RHET fill:#fce8e6,stroke:#d93025,stroke-width:2px
+
+%% Node styles by domain
+style ousia fill:#bbdefb,stroke:#1565c0
+style eidos_meta fill:#bbdefb,stroke:#1565c0
+style hyle fill:#bbdefb,stroke:#1565c0
+style to_ti_en_einai fill:#bbdefb,stroke:#1565c0
+style energeia_meta fill:#bbdefb,stroke:#1565c0
+style dynamis_meta fill:#bbdefb,stroke:#1565c0
+style entelecheia_meta fill:#bbdefb,stroke:#1565c0
+style to_on_hei_on fill:#bbdefb,stroke:#1565c0
+style pros_hen fill:#bbdefb,stroke:#1565c0
+style unmoved_mover fill:#bbdefb,stroke:#1565c0
+style nous_meta fill:#bbdefb,stroke:#1565c0
+style aletheia fill:#bbdefb,stroke:#1565c0
+style PNC fill:#bbdefb,stroke:#1565c0
+style tode_ti fill:#bbdefb,stroke:#1565c0
+style steresis fill:#bbdefb,stroke:#1565c0
+
+style phusis fill:#c8e6c9,stroke:#2e7d32
+style kinesis fill:#c8e6c9,stroke:#2e7d32
+style topos fill:#c8e6c9,stroke:#2e7d32
+style chronos fill:#c8e6c9,stroke:#2e7d32
+style to_nun fill:#c8e6c9,stroke:#2e7d32
+style to_apeiron fill:#c8e6c9,stroke:#2e7d32
+style aition fill:#c8e6c9,stroke:#2e7d32
+style telos_phys fill:#c8e6c9,stroke:#2e7d32
+style techne_phys fill:#c8e6c9,stroke:#2e7d32
+style to_suneches fill:#c8e6c9,stroke:#2e7d32
+
+style psuche fill:#e1bee7,stroke:#6a1b9a
+style aisthesis fill:#e1bee7,stroke:#6a1b9a
+style phantasia fill:#e1bee7,stroke:#6a1b9a
+style nous_da fill:#e1bee7,stroke:#6a1b9a
+style phantasma fill:#e1bee7,stroke:#6a1b9a
+style orexis fill:#e1bee7,stroke:#6a1b9a
+style koine_aisthesis fill:#e1bee7,stroke:#6a1b9a
+style mneme fill:#e1bee7,stroke:#6a1b9a
+style anamnesis fill:#e1bee7,stroke:#6a1b9a
+style to_diaphanes fill:#e1bee7,stroke:#6a1b9a
+style chroma fill:#e1bee7,stroke:#6a1b9a
+
+style rhetorike fill:#ffcdd2,stroke:#c62828
+style pistis fill:#ffcdd2,stroke:#c62828
+style enthymema fill:#ffcdd2,stroke:#c62828
+style pathos_rhet fill:#ffcdd2,stroke:#c62828
+style ethos fill:#ffcdd2,stroke:#c62828
+style lexis fill:#ffcdd2,stroke:#c62828
+style metaphora fill:#ffcdd2,stroke:#c62828
+style pro_ommaton fill:#ffcdd2,stroke:#c62828
+style logos_rhet fill:#ffcdd2,stroke:#c62828
+style phronesis fill:#ffcdd2,stroke:#c62828

@@ -1,0 +1,45 @@
+{
+  "section_id": "DISS-DIAG-V7",
+  "title": "Actualization of Desire (perception-to-movement) — Interactive Diagram",
+  "file_path": "tmp/Dissertation/Actualization of Desire (perception-to-movement) Diagram/actualization-chain-v7.html",
+  "file_sha256": "35d0703bccb36d298547b9d8b5b67d68d9a1537fffbe30bb742d882bc03c2ece",
+  "format": "html-svg-interactive",
+  "chain_region_covered": ["A0", "A1", "A2", "A3-NOESIS", "A3-MEMORY", "A3-DISCURSIVE", "A3-SPECULATIVE", "A3-DELIBERATIVE", "A3-doxa-band", "M01", "M12", "M23", "M34", "settled-doxai (TECHNE+PRAXIS bisection)", "A4", "recursive-loop"],
+  "status_per_user": "POST-STEP-7 COMPLETE — Diagram hexeis/settled-doxai region bisected into TECHNE/PRAXIS sub-nodes with 3 arrows + Type 3 two-level modulation rendering. Motion-label convention reconciled to source-indexed Option B form (M_n→A_{n+1}); 36 hardcoded subscript labels migrated; 4 naming-principle tooltips rewritten to lead with philosophical noun. Convention now matches prose across §§1.0-1.5.",
+  "two_pass": true,
+  "gold_standard": false,
+  "diagram_nodes_canonical": ["A0", "A1", "A2", "A3-NOESIS", "A3-MEMORY", "A3-DISCURSIVE", "A3-SPECULATIVE", "A3-DELIBERATIVE", "A4"],
+  "diagram_motions_canonical": ["M01", "M12", "M23", "M34"],
+  "diagram_label_convention": "M01 displays as M₀→A₁ (source-indexed Option B)",
+  "static_export_format": "TikZ-LaTeX-in-markdown (.md file containing complete \\documentclass[border=30pt,tikz]{standalone} block); matches reference at 'Actualization of Desire Diagram in Latex Format.md'",
+  "static_exports_needed": [
+    {"id": "diag-A0", "for_section": "DISS-01-A0", "scope": "A0 standalone", "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-A0-for-section-1.1.md"},
+    {"id": "diag-A1-A2", "for_section": "DISS-02-A1A2", "scope": "A1 → M01 → A2 with dual-trace resonant_kinēsis (resonant_aisthēma + resonant_epithymia)", "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-A1-A2-for-section-1.2.md"},
+    {"id": "diag-M2-A3-doxa", "for_section": "DISS-03-A3", "scope": "M2→A3 + three orientational modes (NOESIS, MEMORY, DISCURSIVE+SPECULATIVE+DELIBERATIVE) + doxa band as orthogonal layer", "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-M2-A3-doxa-for-section-1.3.md"},
+    {"id": "diag-A3-M3-A4-feedback", "for_section": "DISS-04-EMOTION", "scope": "A3-doxa-band → M34 three input paths + A4 + diachronic feedback indicator", "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-A3-M3-A4-for-section-1.4.md"},
+    {"id": "diag-hexeis", "for_section": "DISS-04-EMOTION", "scope": "hexeis/settled-doxai with TECHNE/PRAXIS bisection + Type 3 two-level modulation + M23 connector (Step 7 development)", "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-hexeis-for-section-1.4.md"},
+    {"id": "diag-A4-recursive", "for_section": "DISS-05-A4", "scope": "A4 + recursive loop back to A0' (completed action reconstitutes perceptual field)", "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-A4-recursive-for-section-1.5.md"},
+    {"id": "diag-full", "for_section": "DISS-00-INTRO and front-matter", "scope": "Full A0→A4 chain at single-page scale", "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-full-chain.md"}
+  ],
+  "underdeveloped_subsections": [],
+  "step_7_resolution_state": {
+    "hexeis_bisection_technē_praxis": "INTEGRATED — TECHNE + PRAXIS sub-nodes added",
+    "3_arrows_added": "INTEGRATED",
+    "type_3_two_level_modulation": "INTEGRATED",
+    "m23_connector_to_settled_doxai": "INTEGRATED",
+    "motion_label_convention": "RECONCILED to source-indexed Option B (M_n→A_{n+1})",
+    "36_subscript_labels_migrated": "COMPLETE",
+    "4_tooltip_rewrites": "COMPLETE (lead with philosophical noun)"
+  },
+  "preflight_flags": {
+    "hl_markers": 0,
+    "qqq_markers": 1,
+    "qqq_disposition": "1 '???' glyph in a hex shape — NOT a flag, unrelated to citation marathon"
+  },
+  "special_instructions": [
+    "(a) Compare diagram canonical IDs against all 6 sections' prose references; 0 mismatches expected (verified Phase 0).",
+    "(b) Static exports may be deferred to user execution; pipeline does not auto-generate TikZ from HTML.",
+    "(c) Step 7 hexeis-bisection is the major delta from prior run; verify diagram tooltips and labels reflect the bisection."
+  ],
+  "agent_notes": "Diagram is post-Step-7. Motion-label convention now Option B (source-indexed). HTML size grew 213KB. No citation-marathon scope work here; diagram audit is structural-consistency only."
+}

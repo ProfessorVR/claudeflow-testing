@@ -1,0 +1,76 @@
+%% Graph 5 — Cross-pipeline bridges between PHX cluster and other corpus pipelines
+%% HARD CAP 25 edges. Uses single cluster-summary node for clarity.
+graph TD
+    classDef cluster fill:#ffd54f,stroke:#b8860b,stroke-width:3px,color:#000
+    classDef ari fill:#fff3e0,stroke:#e65100,color:#000
+    classDef heid fill:#e8f5e9,stroke:#2e7d32,color:#000
+    classDef hr fill:#f3e5f5,stroke:#6a1b9a,color:#000
+    classDef us fill:#fce4ec,stroke:#ad1457,color:#000
+    classDef dalton fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000
+    classDef amt fill:#eceff1,stroke:#546e7a,color:#000
+
+    PHX["Phantasia Cluster<br/>(PHX-01..08)"]:::cluster
+
+    subgraph ARI ["Aristotle Pipeline"]
+        A1["Rhet. II<br/>(pathē)"]:::ari
+        A2["DA III.3<br/>(428a phantasia)"]:::ari
+        A3["NE VI<br/>(phronesis)"]:::ari
+        A4["De Mem. 450a<br/>(phantasma)"]:::ari
+        A5["DMA 700b<br/>(orexis)"]:::ari
+    end
+
+    subgraph BCAP ["Heidegger BCAP (GA 18)"]
+        H1["GA 18 §§14-22<br/>(Marburg 1924 phantasia)"]:::heid
+        H2["GA 18 p.110<br/>(Auslegung-des-Daseins)"]:::heid
+    end
+
+    subgraph BT ["Heidegger Being & Time"]
+        B1["SZ §29 Befindlichkeit /<br/>§32 Verstehen"]:::heid
+    end
+
+    subgraph HR ["Heidegger and Rhetoric 2005"]
+        HR1["HR-01 Gross<br/>(rhet. ontology)"]:::hr
+        HR4["HR-04 Hyde<br/>(epideictic / conscience)"]:::hr
+    end
+
+    subgraph US ["Uncomfortable Situations (Gross 2017)"]
+        UC["US Cluster"]:::us
+    end
+
+    subgraph DAL ["Dalton Dissertation"]
+        DD["rhetorical-phantasia-chapter<br/>(T0-T6 schema)"]:::dalton
+    end
+
+    subgraph AMT ["Motion-and-Time Pipeline"]
+        BW["AMT-01 Bowin"]:::amt
+    end
+
+    %% Cluster → Aristotle (≤8)
+    PHX -->|shares-locus| A1
+    PHX -->|shares-locus| A2
+    PHX -->|shares-locus| A3
+    PHX -->|shares-locus| A4
+    PHX -->|shares-locus| A5
+
+    %% Cluster → Heidegger BCAP (≤5)
+    PHX -->|bridges-via-concept: phantasia| H1
+    PHX -->|bridges-via-concept: Auslegung| H2
+
+    %% Cluster → Heidegger BT (≤1)
+    PHX -->|bridges-via-concept: pathos| B1
+
+    %% Cluster → HR-2005 (≤4)
+    PHX -->|extends-reading-from| HR1
+    PHX -->|extends-reading-from: epideictic| HR4
+
+    %% Cluster → Uncomfortable Situations (≤2, Hawhee bridge)
+    PHX -->|bridges-via Hawhee 2011| UC
+
+    %% Cluster → Dalton dissertation (≤3)
+    PHX -->|grounds T0-T2| DD
+    PHX -->|grounds T3-T4| DD
+    PHX -->|grounds T5-T6| DD
+
+    %% Cluster → Bowin AMT (≤3, via De Mem 450a phantasma)
+    PHX -->|shares-locus: De Mem 450a| BW
+    PHX -->|bridges-via-concept: phantasma-kinesis| BW

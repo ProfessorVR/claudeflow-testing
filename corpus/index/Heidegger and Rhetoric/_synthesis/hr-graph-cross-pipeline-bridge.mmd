@@ -1,0 +1,75 @@
+%% Heidegger and Rhetoric (Gross & Kemmann eds., SUNY 2005) — Cross-Pipeline Bridge (Phase 3I-5)
+%% HR canonical concepts ↔ BCAP / BT / Aristotle pipeline canonical nodes (cross_pipeline_links from book-level-ontology.json).
+%% 25-edge HARD CONSTRAINT — distributed for structural diversity across 4 volume-pillar Heidegger loci + 5 Aristotle pillars.
+graph LR
+  subgraph HR["HR Volume Concepts (10 cross-pipeline-rich)"]
+    h_pat[Pathos]
+    h_kin[Kinēsis]
+    h_mit[Mitsein]
+    h_bef[Befindlichkeit]
+    h_phr[Phronēsis]
+    h_rh[Rhetoric]
+    h_pol[Polis / Politics]
+    h_kar[Kairos / Augenblick]
+    h_log[Logos]
+    h_dyn[Dynamis]
+  end
+  subgraph PILLARS["Volume-Pillar Heidegger Loci"]
+    h_ga18_110[GA 18 110<br/><i>Auslegung des Daseins</i>]
+    h_ga18_169[GA 18 169f<br/><i>pathē in krinein</i>]
+    h_bt_28_31[BT §§28-31<br/><i>Befindlichkeit / Furcht</i>]
+    h_bt_22_27[BT §§22-27<br/><i>Mitsein / das Man</i>]
+  end
+  subgraph ARP["Volume-Pillar Aristotle Loci"]
+    ar_rh12[Rhet. I.2 1355b25<br/><i>dynamis-definition</i>]
+    ar_rh2_pisteis[Rhet. II 1356a-b<br/><i>ethos-pathos-logos</i>]
+    ar_rh13[Rhet. I.3 1358b1<br/><i>genera</i>]
+    ar_rh2_pathe[Rhet. II 1378a-1383b<br/><i>pathē catalog</i>]
+    ar_rh25[Rhet. II.5 1382a20<br/><i>phobos</i>]
+  end
+  subgraph PIPE["Pipelines (canonical)"]
+    bcap[<b>BCAP</b><br/>GA 18 SS 1924]
+    bt[<b>BT</b><br/>Sein und Zeit 1927]
+    aristr[<b>ARISTOTLE</b><br/>Rhet+NE+Phys+Pol]
+  end
+
+  %% Volume-pillar HR concepts → volume-pillar Heidegger loci (4)
+  h_pat ==>|GA 18 169 grounds| h_ga18_169
+  h_rh ==>|GA 18 110 defines| h_ga18_110
+  h_bef ==>|BT §29 institutionalizes| h_bt_28_31
+  h_mit ==>|BT §26 grounds| h_bt_22_27
+  %% HR concepts → BCAP pipeline (5)
+  h_pat -->|GA 18 122-262| bcap
+  h_kin -->|GA 18 286-323 / Phys. III| bcap
+  h_dyn -->|GA 18 114 / Rhet. 1355b| bcap
+  h_phr -->|GA 18 183-199 / NE VI| bcap
+  h_rh -->|GA 18 entire| bcap
+  %% HR concepts → BT pipeline (4)
+  h_bef -->|BT §29| bt
+  h_mit -->|BT §26| bt
+  h_kar -->|BT §65 Augenblick| bt
+  h_log -->|BT §34 Rede| bt
+  %% HR concepts → Aristotle pipeline (4)
+  h_pol -->|Politics I.2| aristr
+  h_phr -->|NE VI 1141b| aristr
+  h_dyn -->|Rhet. I.2 + Met. IX| aristr
+  h_log -->|Rhet. I + NE VI| aristr
+  %% Heidegger pillar loci → Aristotle pillar loci (4)
+  h_ga18_110 ==>|interprets| ar_rh2_pathe
+  h_ga18_169 ==>|operationalizes| ar_rh2_pisteis
+  h_bt_28_31 ==>|presupposes| ar_rh25
+  h_bt_22_27 ==>|presupposes| ar_rh13
+  %% Pipeline-level cross-bridges (4)
+  bcap -->|operationalizes| ar_rh12
+  bcap -->|interprets| aristr
+  bcap -->|generates| bt
+  ar_rh12 -->|primary source for| bcap
+
+  classDef hr fill:#fde2e4,stroke:#a83232,stroke-width:2px,color:#000
+  classDef ph fill:#fff4d6,stroke:#c19310,stroke-width:1px,color:#000
+  classDef ar fill:#dde7f0,stroke:#274472,stroke-width:1px,color:#000
+  classDef pipe fill:#e6dff5,stroke:#5d3a8e,stroke-width:2px,color:#000
+  class h_pat,h_kin,h_mit,h_bef,h_phr,h_rh,h_pol,h_kar,h_log,h_dyn hr
+  class h_ga18_110,h_ga18_169,h_bt_28_31,h_bt_22_27 ph
+  class ar_rh12,ar_rh2_pisteis,ar_rh13,ar_rh2_pathe,ar_rh25 ar
+  class bcap,bt,aristr pipe

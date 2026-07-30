@@ -1,0 +1,74 @@
+graph TD
+    %% CORE NODES
+    Dasein["Dasein"]
+    Being["Being<br/><i>Sein</i>"]
+    BITW["Being-in-the-world"]
+    Care["Care<br/><i>Sorge</i>"]
+    Temporality["Temporality<br/><i>Zeitlichkeit</i>"]
+    Verstehen["Understanding"]
+    Befindlichkeit["State-of-mind"]
+    Rede["Discourse"]
+    Falling["Fallenness"]
+    Thrownness["Thrownness"]
+    Projection["Projection"]
+    Resoluteness["Resoluteness"]
+
+    %% IMPORTANT NODES
+    Worldhood["Worldhood"]
+    RTH["Readiness-to-hand"]
+    PAH["Presence-at-hand"]
+    DasMan["das Man"]
+    Angst["Anxiety"]
+    Death["Being-towards-death"]
+    Conscience["Conscience"]
+    Guilt["Guilt"]
+    Historicality["Historicality"]
+    WithinTime["Within-time-ness"]
+    Authenticity["Authenticity"]
+    Everydayness["Everydayness"]
+    Disclosedness["Disclosedness"]
+    Equipment["Equipment"]
+
+    %% INTRODUCTION → DASEIN
+    Being ---|"presupposes"| Dasein
+    BITW -->|"depends_on"| Dasein
+
+    %% DIVISION ONE: WORLDHOOD
+    Worldhood -->|"depends_on"| BITW
+    Equipment -->|"depends_on"| RTH
+    RTH -->|"contrasts_with"| PAH
+    DasMan -->|"depends_on"| BITW
+
+    %% DIVISION ONE: BEING-IN
+    Disclosedness -->|"depends_on"| Dasein
+    Befindlichkeit -->|"depends_on"| Disclosedness
+    Verstehen -->|"depends_on"| Disclosedness
+    Rede -->|"depends_on"| Disclosedness
+    Falling -->|"depends_on"| Disclosedness
+    Thrownness -->|"depends_on"| Befindlichkeit
+    Projection -->|"depends_on"| Verstehen
+    Everydayness -->|"operationalizes"| DasMan
+
+    %% DIVISION ONE: CARE
+    Angst -->|"operationalizes"| Befindlichkeit
+    Care -->|"presupposes"| Thrownness
+    Care -->|"presupposes"| Projection
+    Care -->|"presupposes"| Falling
+
+    %% DIVISION TWO: DEATH → RESOLUTENESS
+    Death -->|"presupposes"| Care
+    Conscience -->|"depends_on"| Care
+    Guilt -->|"depends_on"| Conscience
+    Resoluteness -->|"presupposes"| Guilt
+
+    %% DIVISION TWO: TEMPORALITY
+    Temporality -->|"is_meaning_of"| Care
+    Historicality -->|"depends_on"| Temporality
+    WithinTime -->|"depends_on"| Temporality
+    Authenticity -->|"depends_on"| Resoluteness
+
+    %% CONTRASTS / TENSIONS
+    Authenticity -->|"contrasts_with"| DasMan
+    Disclosedness -->|"contrasts_with"| Falling
+    RTH -->|"contrasts_with"| PAH
+    Angst -->|"contrasts_with"| Falling

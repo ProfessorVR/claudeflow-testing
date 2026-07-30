@@ -1,0 +1,84 @@
+%% Phase 4I: Metaphysics Internal Structure
+%% Substance, causation, actuality/potentiality
+%% Generated: 2026-03-09
+
+graph TD
+
+    ousia["οὐσία\nsubstance"]
+    eidos["εἶδος\nform"]
+    hyle["ὕλη\nmatter"]
+    to_ti_en_einai["τὸ τί ἦν εἶναι\nessence"]
+    energeia["ἐνέργεια\nactuality"]
+    dynamis["δύναμις\npotentiality"]
+    entelecheia["ἐντελέχεια\nfulfillment"]
+    aition["αἴτιον\ncause (4 senses)"]
+    telos["τέλος\nend/purpose"]
+    kinesis["κίνησις\nmotion"]
+    to_on_hei_on["τὸ ὂν ᾗ ὄν\nbeing qua being"]
+    pros_hen["πρὸς ἕν\nfocal meaning"]
+    PNC["PNC\nnon-contradiction"]
+    unmoved_mover["τὸ κινοῦν ἀκίνητον\nunmoved mover"]
+    nous["νοῦς / νόησις\nthought"]
+    synolon["σύνολον\ncomposite"]
+    tode_ti["τόδε τι\nthis-ness"]
+    steresis["στέρησις\nprivation"]
+    logos["λόγος\nformula"]
+    aletheia["ἀλήθεια\ntruth"]
+
+    %% Core substance structure
+    ousia -->|"primary sense of"| to_on_hei_on
+    to_on_hei_on -->|"studied via"| pros_hen
+    pros_hen -->|"refers all to"| ousia
+    PNC -->|"firmest principle of"| to_on_hei_on
+
+    %% Substance analysis (Z)
+    ousia -->|"specified by"| to_ti_en_einai
+    to_ti_en_einai -->|"identical with"| eidos
+    eidos -->|"substance in primary sense"| ousia
+    hyle -->|"substratum for"| eidos
+    synolon -->|"composed of"| eidos
+    synolon -->|"composed of"| hyle
+    tode_ti -->|"criterion of"| ousia
+    logos -->|"parts of"| eidos
+    steresis -->|"contrary of"| eidos
+
+    %% Causation
+    aition -->|"formal = "| eidos
+    aition -->|"material = "| hyle
+    aition -->|"final = "| telos
+
+    %% Actuality/potentiality (Theta)
+    energeia -->|"prior to"| dynamis
+    energeia -->|"telos of"| telos
+    entelecheia -.->|"extended from"| energeia
+    hyle -->|"is"| dynamis
+    kinesis -->|"incomplete"| energeia
+
+    %% Lambda theology
+    unmoved_mover -->|"pure"| energeia
+    unmoved_mover -->|"moves as beloved"| telos
+    unmoved_mover -->|"without"| hyle
+    nous -->|"self-thinking"| unmoved_mover
+    energeia -->|"strictest sense"| aletheia
+
+    %% Styles
+    style ousia fill:#1565c0,stroke:#0d47a1,color:#fff,stroke-width:3px
+    style eidos fill:#1976d2,stroke:#0d47a1,color:#fff
+    style hyle fill:#42a5f5,stroke:#1565c0
+    style to_ti_en_einai fill:#1976d2,stroke:#0d47a1,color:#fff
+    style energeia fill:#e65100,stroke:#bf360c,color:#fff
+    style dynamis fill:#ff9800,stroke:#e65100
+    style entelecheia fill:#ef6c00,stroke:#bf360c,color:#fff
+    style unmoved_mover fill:#6a1b9a,stroke:#4a148c,color:#fff
+    style nous fill:#7b1fa2,stroke:#4a148c,color:#fff
+    style kinesis fill:#2e7d32,stroke:#1b5e20,color:#fff
+    style to_on_hei_on fill:#283593,stroke:#1a237e,color:#fff
+    style PNC fill:#283593,stroke:#1a237e,color:#fff
+    style pros_hen fill:#3949ab,stroke:#1a237e,color:#fff
+    style telos fill:#c62828,stroke:#b71c1c,color:#fff
+    style aition fill:#ad1457,stroke:#880e4f,color:#fff
+    style synolon fill:#64b5f6,stroke:#1976d2
+    style tode_ti fill:#90caf9,stroke:#1976d2
+    style steresis fill:#78909c,stroke:#546e7a
+    style logos fill:#5c6bc0,stroke:#3949ab,color:#fff
+    style aletheia fill:#4527a0,stroke:#311b92,color:#fff

@@ -1,0 +1,67 @@
+%% Uexkuell Umwelt Architecture — Core structural relationships
+%% Focus: Subjekt, Umwelt, Merkwelt, Wirkwelt, Funktionskreis, Merkmal, Wirkmal,
+%%         Gegengefüge, Merkorgan, Wirkorgan + spatial/temporal substrates
+%% ~14 nodes
+
+graph TD
+
+    %% === PRIMARY STRUCTURE ===
+    Subjekt["<b>Subjekt</b><br/><i>Subject</i><br/>(organism as perceiver + agent)"]
+    Umwelt["<b>Umwelt</b><br/><i>Environment</i><br/>(closed perceptual world)"]
+    Umgebung["<b>Umgebung</b><br/><i>Surroundings</i><br/>(objective surroundings)"]
+
+    Subjekt -->|"presupposes<br/>[ontological]"| Umwelt
+    Umwelt ---|"contrasts_with<br/>[ontological]"| Umgebung
+
+    %% === UMWELT DECOMPOSITION ===
+    Merkwelt["<b>Merkwelt</b><br/><i>Perception World</i>"]
+    Wirkwelt["<b>Wirkwelt</b><br/><i>Effect World</i>"]
+
+    Umwelt -->|"depends_on<br/>[biosemiotic]"| Merkwelt
+    Umwelt -->|"depends_on<br/>[biosemiotic]"| Wirkwelt
+
+    %% === FUNCTIONAL CYCLE ===
+    Funktionskreis["<b>Funktionskreis</b><br/><i>Functional Cycle</i><br/>(closed subject-object loop)"]
+    Merkmal["<b>Merkmal</b><br/><i>Perception Mark</i><br/>(quality of object as perceived)"]
+    Wirkmal["<b>Wirkmal</b><br/><i>Effect Mark</i><br/>(mark imprinted by effector)"]
+    Gegengefuege["<b>Gegengefüge</b><br/><i>Counterstructure</i><br/>(links mark-carriers in object)"]
+
+    Funktionskreis -->|"depends_on<br/>[biosemiotic]"| Merkmal
+    Funktionskreis -->|"depends_on<br/>[biosemiotic]"| Wirkmal
+    Funktionskreis -->|"depends_on<br/>[biosemiotic]"| Gegengefuege
+    Wirkmal -->|"operationalizes<br/>[biosemiotic]<br/>effect mark extinguishes<br/>perception mark"| Merkmal
+
+    %% === INTERNAL SIGN SYSTEM ===
+    Merkorgan["<b>Merkorgan</b><br/><i>Perception Organ</i>"]
+    Wirkorgan["<b>Wirkorgan</b><br/><i>Effect Organ</i>"]
+    Merkzeichen["<b>Merkzeichen</b><br/><i>Perception Sign</i><br/>(internal, cell-generated)"]
+
+    Merkorgan -->|"operationalizes<br/>[biosemiotic]"| Merkzeichen
+    Merkzeichen -->|"explains<br/>[perceptual]<br/>transposed outward"| Merkmal
+
+    %% === PERCEPTION HIERARCHY ===
+    Merkbild["<b>Merkbild</b><br/><i>Perception Image</i><br/>(composite template)"]
+    Merkbild -->|"refines<br/>[perceptual]"| Merkmal
+
+    %% === OBJECT SIDE ===
+    Merkmaltraeger["<b>Merkmalträger</b><br/><i>Perception-Mark Carrier</i>"]
+    Wirkmaltraeger["<b>Wirkmalträger</b><br/><i>Effect-Mark Carrier</i>"]
+
+    Merkmaltraeger -->|"depends_on<br/>[biosemiotic]"| Funktionskreis
+    Wirkmaltraeger -->|"depends_on<br/>[biosemiotic]"| Funktionskreis
+    Gegengefuege -->|"links"| Merkmaltraeger
+    Gegengefuege -->|"links"| Wirkmaltraeger
+
+    %% === STYLING ===
+    style Umwelt fill:#e6f3ff,stroke:#2196F3,stroke-width:3px
+    style Subjekt fill:#e6f3ff,stroke:#2196F3,stroke-width:3px
+    style Funktionskreis fill:#fff3e6,stroke:#FF9800,stroke-width:3px
+    style Merkmal fill:#fff3e6,stroke:#FF9800,stroke-width:2px
+    style Wirkmal fill:#fff3e6,stroke:#FF9800,stroke-width:2px
+    style Gegengefuege fill:#fff3e6,stroke:#FF9800,stroke-width:2px
+    style Merkwelt fill:#e6ffe6,stroke:#4CAF50
+    style Wirkwelt fill:#e6ffe6,stroke:#4CAF50
+    style Umgebung fill:#f0f0f0,stroke:#999
+    style Merkorgan fill:#ffe6f3,stroke:#E91E63
+    style Wirkorgan fill:#ffe6f3,stroke:#E91E63
+    style Merkzeichen fill:#ffe6f3,stroke:#E91E63

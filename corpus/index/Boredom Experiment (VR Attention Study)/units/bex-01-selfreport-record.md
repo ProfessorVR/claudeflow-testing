@@ -1,10 +1,12 @@
 # bex-01 — `ch-selfreport`: The Per-Video Self-Report Channel (FE-U)
 
-**Register:** FE-U (unpublished raw record; dissertation use pending **O-10**). **Cohort:** N=8 (S01–S08) × 3 stimuli =
-**24 episodes**. **O-10 ceiling:** this unit carries the `vle-02` derivative level only — the instrument spec, the N=8
-aggregates, and the four load-bearing cases. **The full per-subject 24-row matrix is NOT reproduced here**; it lives in
-the untracked reanalysis brief (`tmp/Dissertation/Part_III/reanalysis/boredom-experiment-brief.md` §1) and is referenced
-by pointer.
+**Register:** FE-U (unpublished raw record). **O-10 RESOLVED 2026-07-29** — under the governing IRB protocol all findings are reportable except the subject's name. **Cohort:** N=8 (S01–S08) × 3 stimuli =
+**24 episodes**. **Former O-10 ceiling (superseded):** this unit carries the `vle-02` derivative level — the instrument spec, the N=8
+aggregates, and the four load-bearing cases. The full per-subject 24-row matrix lives in the untracked reanalysis brief
+(`tmp/Dissertation/Part_III/reanalysis/boredom-experiment-brief.md` §1) and is referenced by pointer. **That is now an
+index-scope choice, not a consent restriction** — the index holds channel structure while findings live at `vle-02`;
+the matrix itself may be reported Sxx-keyed in dissertation-facing output. The `(Med)` marker carried by three subjects
+is confirmed to denote a **medical student**, the stratum P2's own published recruitment paragraph names.
 
 ## The instrument (7 items, per video; stimuli 17 min actual)
 1. fatigue-prior (1–9) · 2. **boredom** (1–9) · 3. **engagement** (1–9) · 4. minutes-until-bored · 5. sleep-fight (1–9) ·

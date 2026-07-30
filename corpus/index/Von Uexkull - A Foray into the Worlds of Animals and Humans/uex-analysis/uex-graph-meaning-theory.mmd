@@ -1,0 +1,82 @@
+%% Uexkuell Theory of Meaning — Concept Graph
+%% Focus: Bedeutung, Bedeutungsträger, Bauplan, Kompositionslehre, Urpartitur,
+%%         Naturtechnik, Gegengefüge, Wohnhülle, Bedeutungskeim
+%% ~14 nodes
+
+graph TD
+
+    %% === MEANING CORE ===
+    Bedeutung["<b>Bedeutung</b><br/><i>Meaning / Significance</i>"]
+    Bedeutungstraeger["<b>Bedeutungsträger</b><br/><i>Carrier of Meaning</i><br/>(object in subject-relation)"]
+    Bedeutungsverbraucher["<b>Bedeutungsverbraucher</b><br/><i>Consumer of Meaning</i><br/>(body-side complement)"]
+    Subjekt["<b>Subjekt</b><br/><i>Subject</i>"]
+
+    Bedeutung -->|"presupposes<br/>[biosemiotic]"| Umwelt["<b>Umwelt</b><br/><i>Environment</i>"]
+    Bedeutungstraeger -->|"depends_on<br/>[biosemiotic]<br/>exists only through<br/>subject-relation"| Subjekt
+    Bedeutungsverbraucher -->|"depends_on<br/>[biosemiotic]"| Bedeutungstraeger
+
+    %% === MEANING RULE + CONSTRUCTION PLAN ===
+    Bedeutungsregel["<b>Bedeutungsregel</b><br/><i>Meaning Rule</i><br/>(bridges carrier to utilizer)"]
+    Bauplan["<b>Bauplan</b><br/><i>Construction Plan</i>"]
+    Bauplanmelodie["<b>Bauplanmelodie</b><br/><i>Form Development Order</i><br/>(species-specific melody)"]
+
+    Bedeutungsregel -->|"explains<br/>[biosemiotic]<br/>bridges carrier +<br/>utilizer into unity"| Bedeutungstraeger
+    Bedeutungsregel -->|"contrasts_with<br/>[biosemiotic]<br/>general vs. species-specific"| Bauplanmelodie
+    Bauplanmelodie -->|"operationalizes<br/>[biosemiotic]"| Bauplan
+
+    %% === PRIMAL IMAGE + MEANING PLAN ===
+    Urbild["<b>Urbild / Urpartitur</b><br/><i>Primal Image / Score</i><br/>(species archetype)"]
+    Bedeutungsplan["<b>Bedeutungsplan</b><br/><i>Meaning Plan</i><br/>(connects primal images)"]
+
+    Bedeutungsplan -->|"presupposes<br/>[teleological]<br/>behind curtain of<br/>appearances"| Urbild
+
+    %% === COMPOSITION THEORY ===
+    Kompositionslehre["<b>Kompositionslehre</b><br/><i>Composition Theory</i><br/>(Nature composes contrapuntally)"]
+    Kontrapunkt["<b>Kontrapunkt</b><br/><i>Counterpoint</i><br/>(point-for-point correspondence)"]
+    Gegengefuege["<b>Gegengefüge</b><br/><i>Counterstructure</i><br/>(object-level counterpoint)"]
+
+    Kompositionslehre -->|"depends_on<br/>[methodological]"| Kontrapunkt
+    Kontrapunkt -->|"depends_on<br/>[biosemiotic]"| Bedeutungstraeger
+    Kontrapunkt -->|"presupposes<br/>[biosemiotic]"| Urbild
+    Gegengefuege -->|"refines into<br/>[biosemiotic]"| Kontrapunkt
+
+    %% === NATURTECHNIK + FORMATIVE MELODY ===
+    Naturtechnik["<b>Naturtechnik</b><br/><i>Natural Technology</i><br/>(compositional techniques)"]
+    Bildungsmelodie["<b>Bildungsmelodie</b><br/><i>Formative Melody</i><br/>(inscrutable morphogenetic principle)"]
+    Eigenton["<b>Eigenton / Ich-Ton</b><br/><i>Self-Tone</i><br/>(cell's specific vital response)"]
+
+    Naturtechnik -->|"explains<br/>[methodological]"| Bildungsmelodie
+    Bildungsmelodie -->|"depends_on<br/>[biosemiotic]"| Eigenton
+    Bildungsmelodie -->|"produces"| Urbild
+
+    %% === DWELLING-SHELL ===
+    Wohnhuelle["<b>Wohnhülle</b><br/><i>Dwelling-Shell</i><br/>(plant's equivalent of Umwelt)"]
+    Bedeutungsfaktor["Bedeutungsfaktor<br/><i>Meaning Factor</i><br/>(wind, rain, sun)"]
+
+    Wohnhuelle ---|"contrasts_with<br/>[biosemiotic]<br/>plants vs. animals"| Umwelt
+    Wohnhuelle -->|"depends_on<br/>[biosemiotic]"| Bedeutungsfaktor
+
+    %% === MEANING-GERM ===
+    Bedeutungskeim["<b>Bedeutungskeim</b><br/><i>Meaning-Germ</i><br/>(originary meaning-nucleus)"]
+    Bedeutungskeim -->|"presupposes<br/>[biosemiotic]<br/>crystallization origin"| Bildungsmelodie
+    Bedeutungskeim -->|"explains<br/>[biosemiotic]"| Kompositionslehre
+
+    %% === WORLD-SCORE ===
+    Partitur["<b>Partitur</b><br/><i>World-Score</i><br/>(all Umwelten composed)"]
+    Partitur -->|"refines<br/>[ontological]"| Kompositionslehre
+    Partitur -->|"depends_on<br/>[ontological]"| Umwelt
+
+    %% === STYLING ===
+    style Bedeutung fill:#ffe6cc,stroke:#FF9800,stroke-width:3px
+    style Bedeutungstraeger fill:#ffe6cc,stroke:#FF9800,stroke-width:3px
+    style Bedeutungsregel fill:#ffe6cc,stroke:#FF9800,stroke-width:3px
+    style Bedeutungskeim fill:#ffe6cc,stroke:#FF9800,stroke-width:2px
+    style Kompositionslehre fill:#d4edda,stroke:#4CAF50,stroke-width:3px
+    style Kontrapunkt fill:#d4edda,stroke:#4CAF50,stroke-width:3px
+    style Partitur fill:#d4edda,stroke:#4CAF50,stroke-width:3px
+    style Urbild fill:#d4edda,stroke:#4CAF50,stroke-width:3px
+    style Bauplan fill:#e6e6ff,stroke:#3F51B5,stroke-width:2px
+    style Wohnhuelle fill:#f0e6ff,stroke:#9C27B0,stroke-width:2px
+    style Naturtechnik fill:#e6f3ff,stroke:#2196F3,stroke-width:2px
+    style Bildungsmelodie fill:#e6f3ff,stroke:#2196F3,stroke-width:2px
+    style Eigenton fill:#e6f3ff,stroke:#2196F3,stroke-width:2px

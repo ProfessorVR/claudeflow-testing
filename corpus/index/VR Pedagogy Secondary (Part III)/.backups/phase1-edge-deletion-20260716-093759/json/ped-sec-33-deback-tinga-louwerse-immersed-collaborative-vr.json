@@ -1,0 +1,100 @@
+{
+  "id": "ped-sec-33",
+  "slug": "deback-tinga-louwerse-immersed-collaborative-vr",
+  "citation": "De Back, Tycho T., Angelica M. Tinga & Max M. Louwerse. (2021, published online 12 Dec; print issue 2023). Learning in immersed collaborative virtual environments: design and implementation. Interactive Learning Environments, 31(8), 5364–5382. https://doi.org/10.1080/10494820.2021.2006238",
+  "citationNote": "Online-first 2021 / print-issue 2023 discrepancy (masthead reads '2023 ... 31:8, 5364-5382' but 'Published online: 12 Dec 2021' and the DOI registration are 2021). Kept id/slug/folder/year as manifest assigned them (2021, matching the plan's dating and filename); not blocking.",
+  "discipline": "cognitive science / educational technology (VR learning-environment design; collaborative learning)",
+  "strand": "F",
+  "depth": "deep",
+  "thesis": "Existing VR-pedagogy frameworks (Dalgarno & Lee; Fowler; Mayer's cognitive theory of multimedia learning) are general and offer few concrete recommendations for immersive, especially collaborative, settings; this paper extends them into specific design recommendations across cognitive load, collaborative learning, platform affordances/limitations, and additional strategies, demonstrates them via a CAVE-based collaborative neuroanatomy environment shown to yield learning gains in two prior studies (n=40, n=158), and introduces a novel automated behavioral-performance-logging method for immersive settings.",
+  "sections": [
+    { "title": "Introduction: the immersive-VLE design gap", "locus": "p.5364-5366", "summary": "Distinguishes non-immersive desktop VR from immersive VR (HMD/CAVE); notes existing frameworks (Dalgarno & Lee 2010; Fowler 2015; Mayer 2009/2014) offer general guidance but few concrete recommendations for immersive, collaborative settings; states the paper's aim." },
+    { "title": "Theoretical framework: cognitive load", "locus": "p.5366-5368", "summary": "Reviews the three-load model (intrinsic/extraneous/germane) and Mayer's coherence, segmenting, and generative-processing principles as applied to IVR by Parong & Mayer (2018); adds pre-training as a further germane-load strategy; surveys supporting studies (Meyer et al. 2019; Lee & Wong 2014; Lin et al. 2019)." },
+    { "title": "Theoretical framework: collaborative learning & gamification", "locus": "p.5367-5369", "summary": "Positions IVR embodiment, avatar realism, and (non-)verbal communication as amplifiers of collaborative learning within Dalgarno & Lee's framework; reviews gamification as a further design lever with mixed empirical support." },
+    { "title": "Recommendations for designing immersive VLEs", "locus": "p.5368-5371", "summary": "Translates the framework into five categories: optimizing cognitive load; fostering collaborative learning; leveraging platform-specific affordances; mitigating platform-specific limitations; additional strategies (gamification, modular design, automated performance analysis). Condensed in Table 1." },
+    { "title": "Implementation: a collaborative CAVE-based neuroanatomy VLE", "locus": "p.5371-5375", "summary": "Details a two-year-developed CAVE environment (up to six learners) teaching neuroanatomy via exploration, reconstruction, and review phases; implements pre-training, segmenting, coherence (with one deliberate redundancy-principle violation), turn-based participation, and tracked-glasses perspective switching. Table 2, Figures 1-2." },
+    { "title": "Empirical support and automated performance analysis", "locus": "p.5375-5378", "summary": "Reports learning gains over textbook instruction (Study 1, n=40, esp. low-spatial-ability learners) and replication at scale (Study 2, n=158, varying group size and timing of application). Introduces a dynamic automated-logging model tracking leader time, leaders observed, distance walked, head rotations, and face time, with a visual-replay feature, extending Chodos et al. (2014) and Fardinpour & Reiners (2014). Figures 3-4." },
+    { "title": "Discussion and conclusion", "locus": "p.5378-5382", "summary": "Frames the recommendations as immersion-specific extensions of Dalgarno & Lee and Fowler; cautions IVR is 'no universal panacea'; flags the redundancy-principle violation as a context-dependent trade-off; gestures toward physiological/eye-tracking measures of cognitive load and AR extensions." }
+  ],
+  "constructs": [
+    { "label": "cognitive load (extraneous vs germane)", "canonical": true, "treatment": "Three-load model plus coherence/segmenting/generative-processing/pre-training principles applied to the CAVE design; one deliberate redundancy-principle violation (simultaneous audio+text) justified post hoc by informal piloting, not a controlled test", "locus": "p.5366-5368, 5373, 5378", "tag": "FAITHFUL-De Back" },
+    { "label": "presence (spatial/physical)", "canonical": true, "treatment": "Invoked exactly once, generically, via Heeter (1992) and Steuer (1992) — 'the feeling of existing inside a virtual environment' — to justify pairing pre-training with a practice period; not social presence", "locus": "p.5369", "tag": "FAITHFUL-De Back" },
+    { "label": "embodiment / self-representation", "canonical": true, "treatment": "Embodied 3D-mouse interaction, natural motions, tracked-glasses perspective switching; framed as amplifying collaborative learning within Dalgarno & Lee's learner-interaction feature group", "locus": "p.5367-5368, 5371-5372", "tag": "FAITHFUL-De Back" },
+    { "label": "engagement / flow", "canonical": true, "treatment": "Approximated only via unlabeled behavioral proxies (leader time, distance walked, head rotations, face time) framed as correlates of 'behavioral engagement' (citing Lei et al. 2018); not a named or measured construct with an instrument", "locus": "p.5376-5377", "tag": "FE" },
+    { "label": "learning outcomes: retention & transfer", "canonical": true, "treatment": "Study 1 (n=40) CAVE-vs-textbook gains, esp. low spatial ability; Study 2 (n=158) replication across group sizes and application timing", "locus": "p.5375-5376", "tag": "FE" },
+    { "label": "collaborative learning (source's own term; non-canonical, not equivalent to social presence/co-presence)", "canonical": false, "treatment": "Operationalized procedurally — equal access, active/interdependent participation, visible interactions, turn-taking to limit social loafing — not measured via any scale or instrument", "locus": "p.5367-5369", "tag": "FE" },
+    { "label": "social presence / co-presence", "canonical": true, "treatment": "NOT TREATED. Full-text check confirms the term never appears and none of the CMC-tradition Strand-F sources are cited. Retained as a row only to record this explicit negative finding, not because the source populates it.", "locus": "n/a", "tag": "FE — negative finding" }
+  ],
+  "constructNote": "Confirms and extends the Phase-1 finding: 'social presence' is absent as a technical term throughout the full text; the paper's real construct content is cognitive load, embodiment, a bespoke 'collaborative learning' theme, and unlabeled behavioral-engagement proxies from its own logging model. Do not code any passage as treats-construct: social presence / co-presence.",
+  "conditions": [
+    {
+      "label": "IVR (HMD)",
+      "normalizedFrom": "CAVE (Cave Automatic Virtual Environment) — the plan's §3 axis has no dedicated CAVE column; normalized here per the Phase-1 conditionsNote, with the mismatch flagged (CAVE differs from HMD in single- vs multi-user visibility and facial-expression transmission)",
+      "design": "Study 1: CAVE-based collaborative neuroanatomy environment, 2-4 person groups, n=40 (participant pool, unfamiliar with subject). Study 2: same environment, undergraduate course, n=158; within-IVR manipulation of group size (1 / 2-4 / 5-6 persons) and timing of application (before/during/after course).",
+      "effectDirection": "Study 1: CAVE > textbook, esp. low spatial ability. Study 2: gains present at all group sizes, inverse group-size gradient (smaller groups = larger gains); timing had no effect.",
+      "locus": "p.5375-5376",
+      "tag": "FE"
+    },
+    {
+      "label": "conventional instruction (control)",
+      "design": "Textbook learning on neuroanatomy, Study 1 only (n=40, one arm of the two-arm comparison)",
+      "locus": "p.5375",
+      "tag": "FE"
+    }
+  ],
+  "readings": [
+    { "claim": "Existing VLE-design frameworks (Dalgarno & Lee 2010; Fowler 2015) are informative but not specific to immersive settings and contain few practical design recommendations for them.", "type": "READING/CLAIM", "stance": "defines-gap", "locus": "p.5364-5366", "tag": "FE" },
+    { "claim": "Cognitive load in IVR should be managed via coherence, segmenting, pre-training, and generative processing; overload in one collaborator can affect interdependent others.", "type": "READING/CLAIM", "stance": "extends", "locus": "p.5366-5368, 5212", "tag": "FAITHFUL-De Back" },
+    { "claim": "IVR amplifies collaborative learning via higher embodiment, richer (non-)verbal communication, and avatar realism relative to non-immersive VR.", "type": "READING/CLAIM", "stance": "extends", "locus": "p.5367-5368", "tag": "FAITHFUL-De Back" },
+    { "claim": "A CAVE-based collaborative neuroanatomy environment built per these recommendations produced learning gains over textbook instruction (n=40), replicated at scale (n=158) across group sizes and application timings.", "type": "READING/CLAIM", "stance": "reports-empirical-result", "locus": "p.5375-5376", "tag": "FE" },
+    { "claim": "Deliberately violating Mayer's redundancy principle (simultaneous audio+text instruction) was net-beneficial in this specific CAVE context because of visibility occlusion, per informal piloting rather than a controlled test.", "type": "READING/CLAIM", "stance": "qualifies", "locus": "p.5373, 5378", "tag": "FAITHFUL-De Back" },
+    { "claim": "An automated performance-logging model dynamically adapting to different immersive technologies can extend prior fixed-category (Chodos et al. 2014) and unimplemented (Fardinpour & Reiners 2014) approaches, yielding both engagement metrics and a visual replay feature.", "type": "READING/CLAIM", "stance": "extends", "locus": "p.5375-5378", "tag": "FAITHFUL-De Back" },
+    { "claim": "Immersive technologies are 'no universal panacea' for learning; they should be adopted only where a genuine match exists between intended learning outcomes and IVR-specific affordances.", "type": "READING/CLAIM", "stance": "qualifies", "locus": "p.5378", "tag": "FAITHFUL-De Back" }
+  ],
+  "concepts": [
+    { "term": "cognitive load theory (three-load model: intrinsic/extraneous/germane)", "type": "THEORY-MODEL", "locus": "p.5366" },
+    { "term": "coherence principle", "type": "TERM", "locus": "p.5366-5367" },
+    { "term": "segmenting principle", "type": "TERM", "locus": "p.5367" },
+    { "term": "generative processing", "type": "TERM", "locus": "p.5367" },
+    { "term": "pre-training", "type": "TERM", "locus": "p.5367" },
+    { "term": "redundancy principle (Mayer)", "type": "TERM", "locus": "p.5373, 5378" },
+    { "term": "design for learning approach (Fowler)", "type": "THEORY-MODEL", "locus": "p.5365-5366" },
+    { "term": "learning stages: conceptualization, construction, dialogue (Mayes & Fowler 1999)", "type": "THEORY-MODEL", "locus": "p.5365-5366, 5372" },
+    { "term": "automated dynamic performance-logging model", "type": "THEORY-MODEL", "locus": "p.5375-5378" },
+    { "term": "CAVE (Cave Automatic Virtual Environment)", "type": "MEDIA-CONDITION", "locus": "p.5364, 5371" },
+    { "term": "social loafing", "type": "TERM", "locus": "p.5374" },
+    { "term": "gamification", "type": "TERM", "locus": "p.5368-5369" }
+  ],
+  "interlocutors": [
+    { "name": "Dalgarno, Barney & Mark Lee", "role": "already ped-sec-04 — primary theoretical-framework source throughout; cited here as '(2010)', a year discrepancy against ped-sec-04's manifest year of 2009", "locus": "p.5365-5366, 5369, 5378-5379", "clusterUnit": "ped-sec-04" },
+    { "name": "Fowler, Chris", "role": "already ped-sec-05 — second primary framework source; cited here as '(2015)' against ped-sec-05's manifest year of 2014, an online-first/print discrepancy", "locus": "p.5365-5366, 5378-5379", "clusterUnit": "ped-sec-05" },
+    { "name": "Parong, Jocelyn & Richard Mayer", "role": "already ped-sec-08 (2018 paper) — directly and repeatedly engaged for coherence/segmenting/generative-processing principles. NOTE: this is the 2018 'Learning science in immersive virtual reality' paper (ped-sec-08), NOT the 2020 'Cognitive and affective processes' paper (ped-sec-13), which is not cited anywhere in this source — a correction to this task's own suggested cluster-author list.", "locus": "p.5366-5367", "clusterUnit": "ped-sec-08" },
+    { "name": "Merchant, Zahira et al.", "role": "already ped-sec-16 — cited for the usability-self-efficacy-learning link", "locus": "p.5369", "clusterUnit": "ped-sec-16" },
+    { "name": "Mayer, Richard E. (cognitive theory of multimedia learning, 2009/2014)", "role": "extensively cited external (non-cluster) interlocutor for cognitive-load and redundancy-principle content; distinct from ped-sec-07 ('Promise and Pitfalls', Mayer et al. 2022), which is NOT cited anywhere in this source", "locus": "p.5366-5367, 5373, 5378-5379", "clusterUnit": null },
+    { "name": "Heeter, Carrie (1992) and Steuer, Jonathan (1992)", "role": "cited once each for a general/technological definition of presence ('the feeling of existing inside a virtual environment'); NOT social presence. Slater is not cited anywhere in this paper.", "locus": "p.5369", "clusterUnit": null },
+    { "name": "Mayes, J.T. & Fowler, C.J. (1999)", "role": "source of the three learning stages (conceptualization, construction, dialogue) structuring the CAVE task design", "locus": "p.5365-5366, 5372", "clusterUnit": null },
+    { "name": "Chodos, D. et al. (2014); Fardinpour, A. & Reiners, T. (2014)", "role": "prior logging/monitoring work explicitly extended by the automated performance-analysis model", "locus": "p.5375-5378", "clusterUnit": null },
+    { "name": "Notably absent: CMC-tradition social-presence canon", "role": "None of Short/Williams/Christie, Gunawardena & Zittle (ped-sec-25), Garrison/Anderson/Archer (ped-sec-26), Tu (ped-sec-27), Richardson & Swan (ped-sec-28), Biocca/Burgoon/Harms (ped-sec-29), Kreijns/Kirschner/Jochems (ped-sec-30), Terry & Doolittle (ped-sec-31), or Richardson et al. meta-analysis (ped-sec-32) appear anywhere in this paper's reference list.", "locus": "n/a", "clusterUnit": null }
+  ],
+  "tensions": [
+    { "axis": "Strand-F placement as a 'CMC-to-VR social presence bridge' (cluster design assumption) vs. this paper's actual non-engagement with social presence theory", "note": "The strand was built to ground the cluster's previously-ungrounded 'social presence / co-presence' construct row; this paper looked, pre-full-text-check, like the natural VR-side bridge. Full-text verification shows it never uses the term and cites none of the CMC-tradition sources. The bridge is the cluster's own construction (P/anticipatory-application), not a claim this source makes. See manifest.json planCorrections entry for ped-sec-33.", "locus": "n/a" },
+    { "axis": "redundancy principle (Mayer) as a general design rule vs. this paper's own deliberate, context-justified violation of it", "note": "The CAVE case study presents instructions in both audio and text — a redundancy-principle violation — justified by informal piloting and CAVE-specific visibility occlusion, not by a controlled comparison; the paper frames this as a case-specific trade-off, not a general counter-recommendation.", "locus": "p.5373, 5378" },
+    { "axis": "media-comparison design (Study 1: CAVE vs. textbook) vs. value-added/within-condition design (Study 2: group size and timing varied only within IVR)", "note": "Resonates with the cluster's debate axis 2 (media-comparison vs. methods-not-media/value-added paradigm, Mayer et al. 2022/ped-sec-07); this source uses both designs across its two studies without resolving the methodological debate.", "locus": "p.5375-5376" }
+  ],
+  "bridges": {
+    "vle": [
+      "vle-01-deployment-survey",
+      "vle-03-exemplar-bank",
+      "vle-04-mark-attention-span"
+    ],
+    "boredomExperimentDataset": [
+      "****** UNVERIFIED: anchor entry (Boredom Experiment / VR Attention Study) not yet built as of this unit's authoring; grounds-measure bridge left as a flagged pointer, not blocking per plan §9 decision 4."
+    ]
+  },
+  "bridgeNote": "This paper does NOT itself bridge the CMC-tradition social-presence literature to VR — none of Short et al., Gunawardena & Zittle, Garrison/Anderson/Archer, Tu, Biocca/Burgoon/Harms, Kreijns/Kirschner/Jochems, Terry & Doolittle, or Richardson et al. are cited, and 'social presence' is never used. Its own bridging move runs from the general VR-pedagogy-framework literature (Dalgarno & Lee/ped-sec-04, Fowler/ped-sec-05, Parong & Mayer 2018/ped-sec-08, Merchant/ped-sec-16) into concrete collaborative/embodied design guidance. The CMC-to-VR bridge Strand F needs is this cluster's own construction, not something ped-sec-33 performs itself (see manifest.json planCorrections). On the VLE bridge: the CAVE environment's mandatory small-group collaboration and automated engagement metrics (face time, leader time, distance walked, head rotations) resonate with the VLE's own mandatory group-assignment design (per the VLE-proximity-voice correction bearing on vle-01's F7 finding) and exemplar co-watching quotes (vle-03); its behavioral-engagement logging also parallels vle-04's attention-span analysis approach, though no direct empirical overlap exists. Confirmed at Phase 2.",
+  "extraction": {
+    "tool": "pdftotext",
+    "date": "2026-07-15",
+    "ocr_confidence": "high"
+  }
+}

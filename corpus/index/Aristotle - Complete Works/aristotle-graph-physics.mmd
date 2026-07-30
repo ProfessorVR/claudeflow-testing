@@ -1,0 +1,88 @@
+%% Phase 4I: Physics Internal Structure
+%% Motion, time, place, causation
+%% Generated: 2026-03-09
+
+graph TD
+
+    phusis["φύσις\nnature"]
+    kinesis["κίνησις\nmotion"]
+    eidos["εἶδος\nform"]
+    hyle["ὕλη\nmatter"]
+    steresis["στέρησις\nprivation"]
+    energeia["ἐνέργεια / ἐντελέχεια\nactuality"]
+    dynamis["δύναμις\npotentiality"]
+    aition["αἴτιον\nfour causes"]
+    telos["τέλος / τὸ οὗ ἕνεκα\nfinal cause"]
+    techne["τέχνη\nart"]
+    tuche["τύχη / αὐτόματον\nchance"]
+    anagke["ἀνάγκη ἐξ ὑποθέσεως\nhypothetical necessity"]
+    topos["τόπος\nplace"]
+    chronos["χρόνος\ntime"]
+    to_nun["τὸ νῦν\nthe now"]
+    to_apeiron["τὸ ἄπειρον\nthe infinite"]
+    to_suneches["τὸ συνεχές\nthe continuous"]
+    phora["φορά\nlocomotion"]
+    kyklo_phora["κύκλῳ φορά\ncircular motion"]
+    prime_mover["τὸ πρῶτον κινοῦν\nprime mover"]
+
+    %% Three principles (Book I)
+    phusis -->|"principle 1"| eidos
+    phusis -->|"principle 2"| hyle
+    phusis -->|"principle 3"| steresis
+    eidos -->|"prior to"| hyle
+    steresis -->|"contrary of"| eidos
+
+    %% Nature and causes (Book II)
+    phusis -->|"internal principle of"| kinesis
+    aition -->|"explains"| phusis
+    telos -->|"species of"| aition
+    phusis -->|"acts for"| telos
+    techne -->|"contrasts with"| phusis
+    tuche -->|"parasitic on"| telos
+    anagke -->|"necessity in"| hyle
+    anagke -->|"directed by"| telos
+
+    %% Motion defined (Book III)
+    kinesis -->|"fulfilment of potential"| energeia
+    kinesis -->|"actuality of"| dynamis
+    to_apeiron -->|"exists only as"| dynamis
+    to_apeiron -->|"essence is"| steresis
+
+    %% Place and Time (Book IV)
+    topos -->|"boundary enabling"| kinesis
+    chronos -->|"number of"| kinesis
+    chronos -->|"made continuous by"| to_nun
+
+    %% Continuity and infinity (Books V-VI)
+    to_suneches -->|"unifies"| kinesis
+    to_suneches -->|"unifies"| chronos
+
+    %% Motion hierarchy (Books VII-VIII)
+    phora -->|"primary species of"| kinesis
+    kyklo_phora -->|"only continuous"| phora
+    kyklo_phora -->|"exemplifies"| to_suneches
+    prime_mover -->|"causes eternal"| kyklo_phora
+    prime_mover -->|"without"| hyle
+    prime_mover -->|"pure"| energeia
+
+    %% Styles
+    style phusis fill:#2e7d32,stroke:#1b5e20,color:#fff,stroke-width:3px
+    style kinesis fill:#388e3c,stroke:#1b5e20,color:#fff,stroke-width:3px
+    style eidos fill:#66bb6a,stroke:#2e7d32
+    style hyle fill:#a5d6a7,stroke:#388e3c
+    style steresis fill:#78909c,stroke:#546e7a,color:#fff
+    style energeia fill:#e65100,stroke:#bf360c,color:#fff
+    style dynamis fill:#ff9800,stroke:#e65100
+    style aition fill:#ad1457,stroke:#880e4f,color:#fff
+    style telos fill:#c62828,stroke:#b71c1c,color:#fff
+    style techne fill:#5d4037,stroke:#3e2723,color:#fff
+    style tuche fill:#90a4ae,stroke:#607d8b
+    style anagke fill:#78909c,stroke:#546e7a,color:#fff
+    style topos fill:#00695c,stroke:#004d40,color:#fff
+    style chronos fill:#00838f,stroke:#006064,color:#fff
+    style to_nun fill:#0097a7,stroke:#00838f,color:#fff
+    style to_apeiron fill:#455a64,stroke:#263238,color:#fff
+    style to_suneches fill:#0277bd,stroke:#01579b,color:#fff
+    style phora fill:#1b5e20,stroke:#0d3010,color:#fff
+    style kyklo_phora fill:#004d40,stroke:#002820,color:#fff
+    style prime_mover fill:#6a1b9a,stroke:#4a148c,color:#fff

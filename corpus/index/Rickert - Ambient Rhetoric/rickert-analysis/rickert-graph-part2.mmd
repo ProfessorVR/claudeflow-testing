@@ -1,0 +1,79 @@
+graph TD
+    classDef constructive fill:#4a90d9,stroke:#2c5f8a,color:#fff
+    classDef ontological fill:#7fb069,stroke:#4a7a3a,color:#fff
+    classDef practical fill:#d4a574,stroke:#a07a50,color:#fff
+    classDef synthesis fill:#9b72aa,stroke:#6e4f7a,color:#fff
+
+    subgraph "Ch 5: Burke and Heidegger on Language"
+        BK["Burke:<br/>Symbolic Action"]:::constructive
+        HG["Heidegger:<br/>Language as<br/>House of Being"]:::constructive
+        AFF["Affectability<br/>(prior to rhetoric)"]:::ontological
+        DIS["Disclosure /<br/>Aletheia"]:::ontological
+    end
+
+    subgraph "Ch 6: The Rhetorical Thing"
+        RT["Rhetorical<br/>Thing"]:::constructive
+        WD["Withdrawal<br/>(objects exceed<br/>relations)"]:::ontological
+        NHA["Nonhuman<br/>Agency"]:::constructive
+        MP["Material<br/>Persuasion"]:::practical
+        ER{{"Earthrise<br/>(paradigmatic case)"}}:::practical
+    end
+
+    subgraph "Ch 7: Ambient Dwelling and Fourfold"
+        DW["Dwelling"]:::constructive
+        FF["Fourfold<br/>(earth, sky,<br/>divinities, mortals)"]:::ontological
+        TG["Thing as<br/>Gathering"]:::ontological
+        DP["Dingpolitik<br/>(Latour)"]:::constructive
+        ETH["Ethos as<br/>Dwelling"]:::constructive
+        WDS["Withdrawal<br/>as Supporting"]:::ontological
+    end
+
+    subgraph "Ch 8: Sufficiency and Preparatory Rhetoric"
+        SUF["Sufficiency"]:::practical
+        EFF["Efficiency<br/>(critique)"]:::practical
+        TI{{"Toronto Island<br/>(case study)"}}:::practical
+        EV{{"EV1<br/>(case study)"}}:::practical
+        PR["Preparatory<br/>Rhetoric"]:::synthesis
+    end
+
+    subgraph "Conclusion: Disclosure and Hope"
+        TER["Terroir"]:::synthesis
+        MOV["Movement /<br/>Place"]:::synthesis
+        UNG["Ungrounding<br/>(Abgrund)"]:::ontological
+        PFM["Performativity<br/>(Barad)"]:::synthesis
+        SUS["Sustainability"]:::practical
+        PRC["Periechon<br/>(recovered)"]:::synthesis
+    end
+
+    %% Constructive arc: building the positive account
+    BK -->|"approximates but<br/>retains humanism"| HG
+    HG -->|"language emerges<br/>from world"| DIS
+    AFF -->|"prior to rhetoric;<br/>grounds"| DIS
+
+    DIS -->|"things participate in"| RT
+    RT -->|"requires attention to"| WD
+    NHA -->|"instantiated by"| MP
+    ER -->|"transforms"| DW
+    ER -->|"evokes"| PRC
+
+    HG -->|"grounds concept of"| DW
+    DW -->|"cultivates attunement to"| FF
+    FF -->|"gathered by"| TG
+    DP -->|"necessary but<br/>insufficient for"| DW
+    ETH -->|"reconceived as"| DW
+    WD -->|"becomes"| WDS
+    WDS -->|"constitutes"| DW
+
+    DW -->|"gives rise to"| SUF
+    SUF -->|"opposes"| EFF
+    TI -->|"instantiates"| SUF
+    EV -->|"reveals car as"| RT
+    PR -->|"mode of ambient<br/>rhetoric"| DW
+
+    %% Conclusion synthesis
+    DW -->|"exemplified by"| TER
+    TER -->|"requires"| MOV
+    UNG -->|"opens onto play<br/>and disclosure"| DIS
+    PFM -->|"resonates with<br/>Heidegger on"| DIS
+    PR -->|"culminates in"| SUS
+    SUS -->|"practical horizon<br/>of ambient rhetoric"| PRC

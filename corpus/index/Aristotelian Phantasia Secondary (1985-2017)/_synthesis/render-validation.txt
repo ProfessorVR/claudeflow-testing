@@ -1,0 +1,50 @@
+Phase 3 Wave 2 — Mermaid render validation
+Cluster: Aristotelian Phantasia Secondary (1985-2017)
+Tool: @mermaid-js/mermaid-cli v11.14.0 (mmdc)
+Validation date: 2026-05-11
+
+Each file was rendered via `mmdc -i <file>.mmd -o /tmp/<name>.png`. All five
+PNGs generated successfully with no syntax errors. Test PNGs were deleted
+after validation (no PNGs committed).
+
+  Graph                                       Nodes  Edges  Cap            Status
+  ------------------------------------------- ------ ------ -------------- ------
+  phx-graph-citation-network.mmd              8      35     ≤8 / ≤35       PASS
+  phx-graph-concept-debate.mmd                16     22     ~30 / ~32      PASS (within "~" tolerance; 4 axis subgraphs × 2 poles = 8 pole nodes + 8 units; edges encode unit-pole placement only, not redundant axis-to-axis links)
+  phx-graph-discipline-cluster.mmd            9      22     ≤14 / ≤25      PASS
+  phx-graph-aristotle-locus-density.mmd       20     38     ~20 / ≤45      PASS (10 works + 8 units + 2 mandatory loci; only edges where unit cites ≥3 loci from work)
+  phx-graph-cross-pipeline-bridge.mmd         14     16     hard cap 25    PASS
+
+Per-graph breakdown:
+
+Graph 1 (citation-network): 30 solid intra-cluster citation edges + 5 dashed
+citation-gap edges from `citation-network.json`. Hub styling applied to
+PHX-01 (hub_score=7, gold highlight) and PHX-03 (hub_score=4, lighter
+highlight).
+
+Graph 2 (concept-debate): Four debate-axis subgraphs (D1 interpretive vs
+presentational; D4 central vs peripheral rhet-home; D2 cognitive faculty vs
+supervenient; D3 unitary vs tripartite). Units linked to their pole(s) per
+debate-map.md. Pole nodes use undirected (`---`) edges to indicate
+placement rather than directional argument.
+
+Graph 3 (discipline-cluster): Three subgraphs (Philosophy of Mind / Rhetoric /
+Time-Perception Hinge). Within-subgraph edges follow intra-cluster citations;
+across-subgraph edges are the Rhetoric→Philosophy bridges (O'Gorman→{Nussbaum,
+White, Frede, Caston}; Gonzalez→{Nussbaum, Frede}; Hawhee→{all four}).
+Dotted edges to AMT-01 Bowin (adjacent pipeline) via De Mem 450a.
+
+Graph 4 (aristotle-locus-density): Bipartite-style edges weighted by per-unit
+locus count (from `phx-aristotle-loci-concordance.json::loci_by_work`).
+Edge label = number of canonical Bekker loci that unit cites from that work
+(threshold ≥3). Two mandatory anchors (DA III.3 428a, De Mem. 450a)
+highlighted as gold nodes attached to their parent work.
+
+Graph 5 (cross-pipeline-bridge): 16 edges total, comfortably under the 25
+hard cap. Single cluster-summary node (PHX-01..08) chosen for clarity.
+Subgraphs: Aristotle / BCAP / B&T / HR-2005 / Uncomfortable Situations /
+Dalton Dissertation / AMT Motion-and-Time. Edge labels distinguish four
+relation types: `shares-locus`, `bridges-via-concept`, `extends-reading-from`,
+and the dissertation T0-T6 grounding relation.
+
+All five files render cleanly via mmdc and are ready for downstream use.

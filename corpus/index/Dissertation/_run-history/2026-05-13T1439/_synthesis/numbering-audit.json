@@ -1,0 +1,501 @@
+{
+  "audit_run_id": "2026-05-13T1439",
+  "audit_agent": "Phase 3 Wave 1 Agent 3B (Numbering)",
+  "pipeline_plan_section": "9.1.2",
+  "migration_target": {
+    "old_form": "$M_n \\rightarrow M_{n+1}$ (motions named by initial state)",
+    "new_form": "$M_n \\rightarrow A_n$ (motions named by their terminus)",
+    "warrant": "Physics V.1, 224b7-8 — motions take their name from the actuality they produce",
+    "diagram_implementation": "motionDisplayId() at HTML line 1522 of actualization-chain-v7.html (M01 -> M1->A1, M12 -> M2->A2, M23 -> M3->A3, M34 -> M4->A4)"
+  },
+  "summary": {
+    "old_prose_occurrences_total": 17,
+    "old_tikz_occurrences_total": 4,
+    "old_diagram_dev_comment_occurrences_total": 9,
+    "old_grand_total": 30,
+    "new_form_occurrences_total": 11,
+    "mechanical_patches_count": 28,
+    "user_review_required_patches_count": 2,
+    "annotation_cleanup_patches_count": 1,
+    "total_patches": 31,
+    "files_affected": 6
+  },
+  "per_section_status": {
+    "DISS-00-INTRO": {
+      "file": "tmp/Dissertation/1.0 - Introduction/1.0 - Introduction.md",
+      "old_prose": 0,
+      "old_tikz": 4,
+      "new_prose": 4,
+      "status": "PROSE-CLEAN; TIKZ-BLOCK-MIXED",
+      "patches_count": 4
+    },
+    "DISS-01-A0": {
+      "file": "tmp/Dissertation/1.1 - A0 - Motion and Time/1.1_A0_Motion_and_Time_OUTPUT_v2.tex",
+      "old": 2,
+      "new": 0,
+      "status": "OLD-ONLY (plus chapter-notation declaration in OLD)",
+      "patches_count": 3,
+      "note": "Includes 1 notation-declaration revision at line 5"
+    },
+    "DISS-02-A1A2": {
+      "file": "tmp/Dissertation/1.2 - A1-A2 - Aisthesis/1.2_A1-A2_Aisthesis_OUTPUT_v1.tex",
+      "old": 2,
+      "new": 3,
+      "status": "MIXED — substantively-distinct user review required",
+      "patches_count_pending_review": 2,
+      "flag": "user-review-required"
+    },
+    "DISS-03-A3": {
+      "file": "tmp/Dissertation/1.3 - A3 - Orentational Modes/1.3 A3 - Orientational Modes.md",
+      "old": 5,
+      "new": 2,
+      "status": "MIXED with self-acknowledged numbering issue at line 67",
+      "patches_count": 5,
+      "additional_cleanup": "remove \\hl{(double check numbering)} annotation at line 67"
+    },
+    "DISS-04-EMOTION": {
+      "file": "tmp/Dissertation/1.4 - Emotion is Motion/1.4 - Emotion is Motion.md",
+      "old": 4,
+      "new": 2,
+      "status": "MIXED (gold standard section is itself mid-migration)",
+      "patches_count": 4,
+      "note": "Includes 1 notation-declaration revision within line 118"
+    },
+    "DISS-05-A4": {
+      "file": "tmp/Dissertation/1.5 - A4 - Completed Action/1.5 - A4 - Completed Action.md",
+      "old": 4,
+      "new": 0,
+      "status": "OLD-ONLY",
+      "patches_count": 4
+    },
+    "DISS-DIAG-V7": {
+      "file": "tmp/Dissertation/Actualization of Desire (perception-to-movement) Diagram/actualization-chain-v7.html",
+      "old_dev_comments": 9,
+      "user_facing_inconsistency": 1,
+      "status": "RUNTIME-CORRECT; developer-comment-OLD",
+      "patches_count": 9,
+      "note": "Line 1193 user-visible tooltip uses NEW form correctly; line 1185 dev-comment uses OLD and is patched in entry 3"
+    }
+  },
+  "patches": [
+    {
+      "section_id": "DISS-00-INTRO",
+      "file": "tmp/Dissertation/1.0 - Introduction/1.0 - Introduction.md",
+      "patches": [
+        {
+          "patch_id": "DISS-00-P1",
+          "line": 186,
+          "old": "$M_0 \\!\\to\\! M_1$: Perceptual Motion",
+          "new": "$M_1 \\!\\to\\! A_1$: Perceptual Motion",
+          "context_before": "\\node[motionnode] (M01) at (0, -\\motionoff) {\n  ",
+          "context_after": "\\\\[-1pt]\n  {\\tiny\\normalfont aisth\\=esis --- form received without matter",
+          "category": "tikz-block",
+          "user_facing": true
+        },
+        {
+          "patch_id": "DISS-00-P2",
+          "line": 190,
+          "old": "$M_1 \\!\\to\\! M_2$: Phantastic Motion",
+          "new": "$M_2 \\!\\to\\! A_2$: Phantastic Motion",
+          "context_before": "\\node[motionnode] (M12) at (0, -\\nodesep - \\motionoff) {\n  ",
+          "context_after": "\\\\[-1pt]\n  {\\tiny\\normalfont Residual trace settles into determinate \\textit{phantasma}",
+          "category": "tikz-block",
+          "user_facing": true
+        },
+        {
+          "patch_id": "DISS-00-P3",
+          "line": 194,
+          "old": "$M_2 \\!\\to\\! M_3$: Cognitive Engagement",
+          "new": "$M_3 \\!\\to\\! A_3$: Cognitive Engagement",
+          "context_before": "\\node[motionnode] (M23) at (0, -2*\\nodesep - \\motionoff) {\n  ",
+          "context_after": "\\\\[-1pt]\n  {\\tiny\\normalfont 3 orientational modes + 1 committal dimension",
+          "category": "tikz-block",
+          "user_facing": true
+        },
+        {
+          "patch_id": "DISS-00-P4",
+          "line": 198,
+          "old": "$M_3 \\!\\to\\! M_4$: \\textit{Orektikon} Motion",
+          "new": "$M_4 \\!\\to\\! A_4$: \\textit{Orektikon} Motion",
+          "context_before": "\\node[motionnode] (M34) at (0, -3*\\nodesep - \\motionoff) {\n  ",
+          "context_after": "\\\\[-1pt]\n  {\\tiny\\normalfont Desire converging in action",
+          "category": "tikz-block",
+          "user_facing": true
+        }
+      ],
+      "total_patches": 4,
+      "estimated_remediation_effort": "small (5 min mechanical)"
+    },
+    {
+      "section_id": "DISS-01-A0",
+      "file": "tmp/Dissertation/1.1 - A0 - Motion and Time/1.1_A0_Motion_and_Time_OUTPUT_v2.tex",
+      "patches": [
+        {
+          "patch_id": "DISS-01-P1",
+          "line": 5,
+          "old": "$M_n \\rightarrow M_{n+1}$ names the transitions between them",
+          "new": "$M_n \\rightarrow A_n$ names the transitions terminating in them (per \\textit{Physics} V.1, 224b7--8)",
+          "context_before": "The chapter's notation is settled: $A_n$ names actualization stages (nodes), and ",
+          "context_after": ". The chain $A_0 \\rightarrow A_1 \\rightarrow A_2 \\rightarrow A_3 \\rightarrow A_4$ runs from this",
+          "category": "notation-declaration",
+          "user_facing": true,
+          "flag": "user-review-recommended-phrasing"
+        },
+        {
+          "patch_id": "DISS-01-P2",
+          "line": 51,
+          "old": "$M_3 \\rightarrow M_4$",
+          "new": "$M_4 \\rightarrow A_4$",
+          "context_before": "The same schema iterates at the cognitive-motor stages of the chain: what the realizable good moves at ",
+          "context_after": " is \\textit{orexis}, the moved mover that is at once agent (of the animal's locomotion)",
+          "category": "narrative-motion",
+          "user_facing": true
+        },
+        {
+          "patch_id": "DISS-01-P3",
+          "line": 89,
+          "old": "$M_2 \\rightarrow M_3$",
+          "new": "$M_3 \\rightarrow A_3$",
+          "context_before": "the systematic treatment of \\textit{phantasia} as the temporal-narrative-synthesizing capacity is the chapter's structural pivot and belongs to the sections on \\textit{aisthēsis}, \\textit{phantasia}, and the orientational modes at ",
+          "context_after": ". Third, the entelechial structure displayed by the chain",
+          "category": "narrative-motion",
+          "user_facing": true
+        }
+      ],
+      "total_patches": 3,
+      "estimated_remediation_effort": "small (5 min mechanical + user-review for declaration phrasing)"
+    },
+    {
+      "section_id": "DISS-02-A1A2",
+      "file": "tmp/Dissertation/1.2 - A1-A2 - Aisthesis/1.2_A1-A2_Aisthesis_OUTPUT_v1.tex",
+      "patches": [
+        {
+          "patch_id": "DISS-02-P1",
+          "line": 83,
+          "old": "$M_2 \\rightarrow M_3$",
+          "recommended_new": "$M_2 \\rightarrow A_3$",
+          "context_before": "The higher-order \\textit{pathē} arise only downstream of \\textit{doxa}'s ratification at ",
+          "context_after": ", where the cognitive apparatus articulates the perceptual basic valence into the determinate evaluative concretions",
+          "category": "narrative-motion",
+          "user_facing": true,
+          "flag": "user-review-required",
+          "user_review_question": "Is the motion at \"downstream of doxa's ratification\" the same as the phantastic motion M_2->A_3 (Option a/c), or a substantively distinct doxastic-ratification motion that needs its own designation (Option b)?"
+        },
+        {
+          "patch_id": "DISS-02-P2",
+          "line": 99,
+          "old": "$M_2 \\rightarrow M_3$",
+          "recommended_new": "$M_2 \\rightarrow A_3$",
+          "context_before": "the higher-order \\textit{pathē} arise only downstream of \\textit{doxa}'s ratification at ",
+          "context_after": ", requiring the rational cognitive apparatus and the committal dimension of opinion",
+          "category": "narrative-motion",
+          "user_facing": true,
+          "flag": "user-review-required",
+          "user_review_question": "Same as DISS-02-P1 — twin sentence in the Deferrals section"
+        }
+      ],
+      "total_patches_pending_review": 2,
+      "estimated_remediation_effort": "10 min user review + 2 min mechanical"
+    },
+    {
+      "section_id": "DISS-03-A3",
+      "file": "tmp/Dissertation/1.3 - A3 - Orentational Modes/1.3 A3 - Orientational Modes.md",
+      "patches": [
+        {
+          "patch_id": "DISS-03-P1",
+          "line": 59,
+          "old": "$M_3 \\to M_4$",
+          "new": "$M_4 \\to A_4$",
+          "context_before": "the chain, then, terminates at $A_3$ for the speculative case: the contemplated truth moves nothing, and no \\textit{orektikon} motion is initiated at ",
+          "context_after": " on its basis. Practical deliberation, by contrast, does initiate such motion",
+          "category": "narrative-motion",
+          "user_facing": true
+        },
+        {
+          "patch_id": "DISS-03-P2",
+          "line": 65,
+          "old": "$M_2 \\rightarrow M_3$",
+          "new": "$M_3 \\rightarrow A_3$",
+          "context_before": "They share a common structural role within ",
+          "context_after": ": in each mode, the unmoved originator is $A_2$ (the \\textit{phantasma}",
+          "category": "narrative-motion",
+          "user_facing": true
+        },
+        {
+          "patch_id": "DISS-03-P3",
+          "line": 67,
+          "old": "$M_2 \\to M_3$ \\hl{(double check numbering)}",
+          "new": "$M_3 \\to A_3$",
+          "context_before": "These are the completed cognitive actualities that ",
+          "context_after": " produces when the rational cognitive apparatus engages the \\textit{phantasma}",
+          "category": "narrative-motion + annotation-cleanup",
+          "user_facing": true,
+          "note": "User has self-flagged with \\hl{(double check numbering)}; this patch resolves the underlying numbering AND removes the highlight annotation"
+        },
+        {
+          "patch_id": "DISS-03-P4",
+          "line": 114,
+          "old": "$M_2 \\rightarrow M_3$",
+          "new": "$M_3 \\rightarrow A_3$",
+          "context_before": "This four-dimensional architecture is organized, throughout, by the two-level structure of taking-as that governs ",
+          "context_after": " as a whole. \\textit{Phantasia}'s \\textit{taking-as}",
+          "category": "narrative-motion",
+          "user_facing": true
+        },
+        {
+          "patch_id": "DISS-03-P5",
+          "line": 117,
+          "old": "$M_3 \\rightarrow M_4$",
+          "new": "$M_4 \\rightarrow A_4$",
+          "context_before": "$A_3$ serves, conditionally, as the unmoved originator of the subsequent motion at ",
+          "context_after": ", and the condition is that $A_3$'s content disclose a realizable good",
+          "category": "narrative-motion",
+          "user_facing": true
+        }
+      ],
+      "total_patches": 5,
+      "estimated_remediation_effort": "10 min mechanical (including \\hl{} cleanup at line 67)"
+    },
+    {
+      "section_id": "DISS-04-EMOTION",
+      "file": "tmp/Dissertation/1.4 - Emotion is Motion/1.4 - Emotion is Motion.md",
+      "patches": [
+        {
+          "patch_id": "DISS-04-P1",
+          "line": 118,
+          "occurrence_within_line": 1,
+          "old": "$M_n \\rightarrow M_{n+1}$",
+          "new": "$M_n \\rightarrow A_n$",
+          "context_before": "The chapter has settled on a coordinated notation for the actualization chain: nodes $A_0$ through $A_4$ for the major actualization stages, with $A_3$ as the emotion node (cf. \\S 1.7); and transitions ",
+          "context_after": " for the moments between nodes, with $M_3 \\rightarrow M_4$ designating the conversion that emotion",
+          "category": "notation-declaration",
+          "user_facing": true,
+          "flag": "user-review-recommended-phrasing"
+        },
+        {
+          "patch_id": "DISS-04-P2",
+          "line": 118,
+          "occurrence_within_line": 2,
+          "old": "$M_3 \\rightarrow M_4$",
+          "new": "$M_4 \\rightarrow A_4$",
+          "context_before": "for the moments between nodes, with ",
+          "context_after": " designating the conversion that emotion \\textit{is}. What the chain requires at",
+          "category": "narrative-motion",
+          "user_facing": true
+        },
+        {
+          "patch_id": "DISS-04-P3",
+          "line": 118,
+          "occurrence_within_line": 3,
+          "old": "$M_3 \\rightarrow M_4$",
+          "new": "$M_4 \\rightarrow A_4$",
+          "context_before": "designating the conversion that emotion \\textit{is}. What the chain requires at ",
+          "context_after": ", under evaluatively complex conditions, is the concretization of \\textit{orexis}",
+          "category": "narrative-motion",
+          "user_facing": true
+        },
+        {
+          "patch_id": "DISS-04-P4",
+          "line": 144,
+          "old": "$M_3 \\rightarrow M_4$",
+          "new": "$M_4 \\rightarrow A_4$",
+          "context_before": "\\S1.8's analysis of the chain at ",
+          "context_after": " specified the mechanism: emotion converts \\textit{orexis} into a determinate form of desire",
+          "category": "narrative-motion",
+          "user_facing": true
+        }
+      ],
+      "total_patches": 4,
+      "estimated_remediation_effort": "small (5 min mechanical)"
+    },
+    {
+      "section_id": "DISS-05-A4",
+      "file": "tmp/Dissertation/1.5 - A4 - Completed Action/1.5 - A4 - Completed Action.md",
+      "patches": [
+        {
+          "patch_id": "DISS-05-P1",
+          "line": 1,
+          "old": "$M_3 \\rightarrow M_4$",
+          "new": "$M_4 \\rightarrow A_4$",
+          "context_before": "\\subsection{",
+          "context_after": " and $A_4$: The Three Types of Action}",
+          "category": "subsection-title",
+          "user_facing": true
+        },
+        {
+          "patch_id": "DISS-05-P2",
+          "line": 3,
+          "old": "$M_3 \\rightarrow M_4$",
+          "new": "$M_4 \\rightarrow A_4$",
+          "context_before": "the completed action (\\gk{πρᾶξις} \\textit{praxis}), reached through the \\textit{orektikon} transition ",
+          "context_after": " in which desire (\\textit{orexis}",
+          "category": "narrative-motion",
+          "user_facing": true
+        },
+        {
+          "patch_id": "DISS-05-P3",
+          "line": 5,
+          "old": "$M_3 \\rightarrow M_4$",
+          "new": "$M_4 \\rightarrow A_4$",
+          "context_before": "The heating, cooling, trembling, and muscular tension that configure the body for the specific locomotor act are functionally distinguishable moments within ",
+          "context_after": ", not separate macro-nodes requiring architectural insertion",
+          "category": "narrative-motion",
+          "user_facing": true
+        },
+        {
+          "patch_id": "DISS-05-P4",
+          "line": 23,
+          "old": "$M_3 \\rightarrow M_4$",
+          "new": "$M_4 \\rightarrow A_4$",
+          "context_before": "with the somatic preparation internal to ",
+          "context_after": " taking the specific form the emotion calls for: heated blood for anger",
+          "category": "narrative-motion",
+          "user_facing": true
+        }
+      ],
+      "total_patches": 4,
+      "estimated_remediation_effort": "small (5 min mechanical)"
+    },
+    {
+      "section_id": "DISS-DIAG-V7",
+      "file": "tmp/Dissertation/Actualization of Desire (perception-to-movement) Diagram/actualization-chain-v7.html",
+      "patches": [
+        {
+          "patch_id": "DIAG-P1",
+          "line": 734,
+          "old": "M3→M4 INPUT PATHS (three styles)",
+          "new": "M4→A4 INPUT PATHS (three styles)",
+          "context": "SVG group comment for the three M34 input paths",
+          "user_facing": false,
+          "html_context_string": "<!-- ============== M3→M4 INPUT PATHS (three styles) ============== -->"
+        },
+        {
+          "patch_id": "DIAG-P2",
+          "line": 825,
+          "old": "Connector arcs up to M2→M3.",
+          "new": "Connector arcs up to M3→A3.",
+          "context": "Code comment describing SETTLED_DOXAI position",
+          "user_facing": false
+        },
+        {
+          "patch_id": "DIAG-P3",
+          "line": 1185,
+          "old": "Settled doxai as hexeis — additional unmoved originator at M2→M3",
+          "new": "Settled doxai as hexeis — additional unmoved originator at M3→A3",
+          "context": "Code comment above SETTLED_DOXAI declaration; SHARED PARAGRAPH WITH LINE 1193",
+          "user_facing": false,
+          "co_located_correct_tooltip": {
+            "line": 1193,
+            "string": "Settled doxai function alongside A₂ as additional unmoved originators of M₃→A₃.",
+            "form": "NEW (correct, no patch needed)"
+          }
+        },
+        {
+          "patch_id": "DIAG-P4",
+          "line": 1997,
+          "old": "(M23 → a3Nodes) and via the three M3→M4 input paths.",
+          "new": "(M23 → a3Nodes) and via the three M4→A4 input paths.",
+          "context": "Code comment in connector-drawing logic",
+          "user_facing": false
+        },
+        {
+          "patch_id": "DIAG-P5",
+          "line": 2114,
+          "old": "Width is sized to fit before the leftmost M2→M3",
+          "new": "Width is sized to fit before the leftmost M3→A3",
+          "context": "Code comment for A3-frame width sizing",
+          "user_facing": false
+        },
+        {
+          "patch_id": "DIAG-P6",
+          "line": 2425,
+          "old": "SETTLED DOXAI — sits below kinetic-M23 box, feeds into M2→M3",
+          "new": "SETTLED DOXAI — sits below kinetic-M23 box, feeds into M3→A3",
+          "context": "Section-header code comment",
+          "user_facing": false
+        },
+        {
+          "patch_id": "DIAG-P7",
+          "line": 2498,
+          "old": "THREE PATHS INTO M3→M4 (distinct visual styles)",
+          "new": "THREE PATHS INTO M4→A4 (distinct visual styles)",
+          "context": "Section-header code comment",
+          "user_facing": false
+        },
+        {
+          "patch_id": "DIAG-P8",
+          "line": 2577,
+          "old": "PURE-APPETITIVE BYPASS (A2 east → right column → over the top of T-box → M3→M4 north face)",
+          "new": "PURE-APPETITIVE BYPASS (A2 east → right column → over the top of T-box → M4→A4 north face)",
+          "context": "Section-header code comment",
+          "user_facing": false
+        },
+        {
+          "patch_id": "DIAG-P9",
+          "line": 2584,
+          "old": "well above M34/T-box AND above all three M3→M4 path labels",
+          "new": "well above M34/T-box AND above all three M4→A4 path labels",
+          "context": "Code comment about route geometry",
+          "user_facing": false
+        }
+      ],
+      "total_patches": 9,
+      "user_visible_inconsistency_at_diagram_level": {
+        "location": "lines 1185 (dev-comment OLD) vs 1193 (user-tooltip NEW)",
+        "resolution": "Patch DIAG-P3 fixes the dev-comment side; line 1193 is already correct.",
+        "post_patch_state": "consistent NEW throughout diagram dev-comments AND user-visible tooltips"
+      },
+      "estimated_remediation_effort": "small (5 min mechanical regex pass on HTML file)"
+    }
+  ],
+  "substantively_distinct_user_review_required": {
+    "issue": "DISS-02-A1A2 lines 83 and 99 use OLD-form $M_2 \\rightarrow M_3$ in the context of \"doxa's ratification\", potentially distinct from the phantastic-motion $M_2 \\rightarrow A_3$ used at lines 61/87/95.",
+    "options": {
+      "(a)": "Same motion under different name — patch both with $M_2 \\rightarrow A_3$",
+      "(b)": "Two distinct motions (phantastic vs doxastic-ratification) — leave §1.2 lines 83/99 unchanged pending chapter-wide redesign that names the doxastic actuality",
+      "(c)": "Shorthand for the doxastic aspect of $M_2 \\rightarrow A_3$ — patch both with $M_2 \\rightarrow A_3$ (observationally same as Option a)"
+    },
+    "pipeline_recommendation": "Option (c), consistent with §1.3's later orthogonal-committal-dimension framing of doxa",
+    "action": "Tag patches DISS-02-P1 and DISS-02-P2 as user-review-required; do not mechanically apply until user confirms"
+  },
+  "orphan_references": {
+    "orphan_prose_references_to_diagram": [
+      "§1.3 offset-numbering misalignment ($A_3$ in prose = $A_2$ in diagram) — requires chapter-wide architectural decision, not a per-occurrence patch",
+      "§1.3 lines 65/67 off-by-one motion-form — patched mechanically in DISS-03-P2/P3 under the assumption that the diagram convention is canonical",
+      "§1.5 line 1 subsection title — patched mechanically in DISS-05-P1",
+      "§1.1 line 5 chapter-notation declaration mandating OLD form — patched in DISS-01-P1"
+    ],
+    "orphan_diagram_elements_never_referenced_by_id_in_prose": [
+      "A3-NOESIS (HTML line 946)",
+      "A3-MEMORY (HTML line 985)",
+      "A3-DISCURSIVE (HTML line 1026)",
+      "A3-SPECULATIVE (HTML line 1057)",
+      "A3-DELIBERATIVE (HTML line 1094)",
+      "DOXA orthogonal-band (HTML line 1138)",
+      "SETTLED-DOXAI (HTML line 1186; flagged user-under-developed)",
+      "EMO satellite (HTML line 1452)"
+    ],
+    "orphan_diagram_elements_matched_in_prose": [
+      {
+        "element": "recursive-loop (HTML group line 746)",
+        "prose_match": "§1.5 line 29 — 'A_4 produces A_0, and the cycle resumes'"
+      }
+    ]
+  },
+  "self_acknowledged_numbering_issues": [
+    {
+      "section": "DISS-03-A3",
+      "line": 67,
+      "marker": "\\hl{(double check numbering)}",
+      "resolution_patch_id": "DISS-03-P3 (includes annotation cleanup)"
+    }
+  ],
+  "global_remediation_effort_estimate_minutes": {
+    "mechanical_regex_pass": 15,
+    "user_review_for_substantively_distinct_§1_2": 10,
+    "user_review_for_declaration_phrasing_§1_1_and_§1_4": 5,
+    "total_minimum": 30,
+    "total_if_substantive_re_reading_needed": 60
+  },
+  "agent_notes": "Audit confirms (a) prose-and-TikZ-aware migration is ready to execute mechanically except for the 2 §1.2 user-review-required entries; (b) the §1.4 OLD count was undercounted by 1 in Phase 0 (correct count is 4, including line 118's chapter-notation declaration); (c) the §1.5 line-5 'twice' claim in the task brief was incorrect by direct grep — §1.5 has 4 OLD occurrences, not 5; (d) the diagram patches are purely dev-comment cleanup since motionDisplayId() at line 1522 ensures runtime SVG arrow labels are already correct under the NEW convention; (e) the user-visible inconsistency between lines 1185 (OLD comment) and 1193 (NEW tooltip) is resolved by patch DIAG-P3 alone."
+}

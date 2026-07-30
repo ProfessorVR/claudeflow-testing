@@ -1,0 +1,29 @@
+graph TD
+    Care["Care<br/><i>Sorge</i>"]
+    Death["Being-towards-death<br/><i>Sein-zum-Tode</i>"]
+    Vorlaufen["Anticipation<br/><i>Vorlaufen</i>"]
+    Conscience["Conscience<br/><i>Gewissen</i>"]
+    Guilt["Guilt / Being-guilty<br/><i>Schuld</i>"]
+    Resoluteness["Resoluteness<br/><i>Entschlossenheit</i>"]
+    AntRes["Anticipatory Resoluteness<br/><i>vorlaufende Entschlossenheit</i>"]
+    Temporality["Temporality<br/><i>Zeitlichkeit</i>"]
+    Historicality["Historicality<br/><i>Geschichtlichkeit</i>"]
+    Fate["Fate<br/><i>Schicksal</i>"]
+    Repetition["Repetition<br/><i>Wiederholung</i>"]
+    Authenticity["Authenticity<br/><i>Eigentlichkeit</i>"]
+
+    Death -->|"presupposes"| Care
+    Vorlaufen -->|"operationalizes"| Death
+    Conscience -->|"depends_on"| Care
+    Guilt -->|"depends_on"| Conscience
+    Resoluteness -->|"presupposes"| Guilt
+    Resoluteness -->|"presupposes"| Vorlaufen
+    AntRes -->|"refines"| Resoluteness
+    AntRes -->|"refines"| Vorlaufen
+    Temporality -->|"is_meaning_of"| Care
+    Temporality -->|"presupposes"| AntRes
+    Historicality -->|"depends_on"| Temporality
+    Fate -->|"operationalizes"| Historicality
+    Repetition -->|"operationalizes"| Fate
+    Authenticity -->|"depends_on"| Resoluteness
+    Authenticity -->|"contrasts_with"| Fate

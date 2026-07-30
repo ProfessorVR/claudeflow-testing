@@ -1,0 +1,112 @@
+{
+  "id": "ped-sec-14",
+  "slug": "colin-vr-desktop-2d",
+  "citation": "Barrett, R. C. A., Poe, R., O'Camb, J. W., Woodruff, C., Harrison, S. M., Dolguikh, K., Chuong, C., Klassen, A. D., Zhang, R., Joseph, R. B., & Blair, M. R. (2022). Comparing virtual reality, desktop-based 3D, and 2D versions of a category learning experiment. PLoS ONE, 17(10), e0275119. https://doi.org/10.1371/journal.pone.0275119",
+  "citationNote": "****** UNVERIFIED (resolved, non-blocking): manifest.json's §1C table lists the author as 'Colin et al.' and the folder/slug follow that convention, but the article's own citation line (p.1: 'Citation: Barrett RCA, Poe R, O'Camb JW, ... et al. (2022)') names the surname as Barrett — 'Colin' is first author Robin Colin Alexander Barrett's middle name, not a surname. Per manifest.json planCorrections, folder/id/slug are retained as Phase 0 assigned them; the citation field above uses the article's own author-surname line.",
+  "discipline": "cognitive psychology (category learning / attention)",
+  "strand": "C",
+  "depth": "deep",
+  "thesis": "Whether cognitive processes and learning-related behaviors established in laboratory category-learning research transfer to immersive VR is tested by comparing IVR (HTC Vive), desktop-3D, and 2D eye-tracked versions of an identical four-category classification task, framed through an information-access-cost lens (predicted ordering 2D < desktop-3D < VR); the central finding is that learning accuracy is statistically equivalent across all three media despite real differences in response time, fixation behavior, and attentional-optimization trajectory, which the authors read as license to presume desktop-based findings and design principles transfer to VR contexts without medium-specific re-validation, subject to individual-differences and VR-attrition caveats.",
+  "sections": [
+    { "title": "Introduction", "page": "1", "summary": "Frames VR as both a methodological opportunity (controlled presentation of novel stimuli) and an open empirical question for cognitive science; argues category learning is well suited to cross-medium comparison because it taps information access, attention, and learning simultaneously." },
+    { "title": "Same tasks, different experiences", "page": "2-4", "summary": "Surveys VR-specific physical/perceptual differences (near-eye fixed screen distance, decoupled accommodation/convergence, restricted field of view, motion-tracked controllers) and the presence/engagement literature; cites Makransky's findings that immersive VR raises cognitive load and often reduces learning outcomes unless paired with generative-learning, enactment, or pre-training techniques; introduces the desirable-difficulty vs added-cognitive-load debate over VR's motor interaction costs." },
+    { "title": "New interface, same cognitive processes", "page": "4-5", "summary": "Reviews VR-desktop equivalence evidence: Hamilton et al.'s review (10/29 studies show no VR-vs-desktop difference), Angel-Urdinola et al.'s meta-analysis (more than half neutral-positive), Parong & Mayer's 2D-slides-initially-outperform-VR finding with reflection-prompt catch-up; VR-based cognitive-test validity work (Stroop, Posner, memory)." },
+    { "title": "Category learning", "page": "5-7", "summary": "Introduces the category-learning paradigm and information-access-cost literature (Meier & Blair; Rajsic et al.; Morgan et al.), motivating the prediction that higher access cost (VR > desktop-3D > 2D) should accelerate attentional optimization." },
+    { "title": "Methods", "page": "7-12", "summary": "179 SFU undergraduates randomized to VR (HTC Vive HMD + hand controllers, n=58), desktop-3D (22-inch screen + gamepad, n=56), or 2D eye-tracked (Tobii X120 + gamepad, n=65); 4-category, 3-feature (2 relevant, 1 irrelevant) classification task run to a 24-consecutive-correct criterion or 240 trials/30 minutes." },
+    { "title": "Exclusions", "page": "12", "summary": "32 VR non-learners excluded (6 of whom withdrew citing physical discomfort), 30 3D non-learners excluded; 2D group lost most participants to dropout/equipment failure, leaving only 8 of 65 with complete criterion-meeting datasets; missingness checked against a prior study and treated as at-random." },
+    { "title": "Results", "page": "12-14", "summary": "No condition differences in accuracy; 2D significantly faster response times, shorter fixation durations; VR highest fixation counts throughout; attentional optimization shows a bin-by-condition interaction with 2D exceeding VR/3D optimization by experiment's end; feedback-viewing duration shows no condition effect." },
+    { "title": "Discussion and Conclusion", "page": "15-18", "summary": "Argues strong cross-medium equivalence in learning-accuracy trajectories supports transferring desktop-based cognitive/pedagogical findings to VR contexts; the predicted monotonic access-cost ordering held for only one measure (fixation count, wrong direction), attributed to novelty/enjoyment rather than cost; flags VR-specific attrition (motion sickness, fatigue, dizziness) as a practical cost against any VR benefit; notes individual differences (spatial ability) as an unmeasured likely moderator." }
+  ],
+  "constructs": [
+    { "label": "immersion (technological)", "treatment": "operationalized architecturally as the condition ladder itself (VR high / desktop-3D medium / 2D low access-cost), not measured via a separate presence instrument; presence definition cited from the lit review but not administered", "locus": "pp.2, 7-8" },
+    { "label": "cognitive load (extraneous vs germane)", "treatment": "invoked in the lit review via Makransky's finding that immersive VR often raises cognitive load; treated as a candidate explanatory mechanism, not measured directly in this study", "locus": "pp.2-4" },
+    { "label": "agency / interactivity", "treatment": "VR/desktop-3D require active motor manipulation (hand-controller collision / gamepad D-pad) to reveal features one at a time; 2D presents all features simultaneously to a passive, eye-tracked viewer", "locus": "pp.7-9" },
+    { "label": "learning outcomes: procedural / skills", "treatment": "central DV: accuracy (criterion-restricted) and response time jointly index category-learning skill acquisition; equivalent trajectories found across all three media", "locus": "pp.10, 12-13" },
+    { "label": "cybersickness & physical discomfort", "treatment": "VR-specific attrition: 6/32 VR non-learner exclusions withdrew citing physical discomfort (motion sickness, dizziness, fatigue, headache); one 2D dropout citing dizziness", "locus": "pp.12, 16" },
+    { "label": "affect: enjoyment & intrinsic motivation", "treatment": "post-hoc, unmeasured explanation for VR's elevated fixation count: novelty of arm-controller manipulation framed as intrinsically pleasing", "locus": "p.16" },
+    { "label": "engagement / flow", "treatment": "not operationalized; gestured toward via citations (Jensen & Konradsen; Farra, Smith & Ulrich) suggesting VR enthusiasm may be a single-session novelty effect", "locus": "p.16" },
+    { "label": "representational fidelity", "treatment": "held constant as a design control: cube geometry, category structure, and feature location/relevance combinations matched across VR/desktop-3D; 2D uses a flat triangular analogue of the same structure", "locus": "pp.8-9" }
+  ],
+  "conditions": [
+    {
+      "label": "IVR (HMD)",
+      "apparatus": "HTC Vive headset + HTC Vive hand controllers; open testing area, standing; features revealed by physically colliding a hand controller with the stimulus cube to rotate it; category selected by reaching to an on-screen button and pulling the trigger",
+      "task": "4-category, 3-feature (2 relevant, 1 irrelevant) classification task, 240 trials or 30 minutes, 24-consecutive-correct criterion",
+      "n_recruited": 58,
+      "n_analytic": 26,
+      "exclusions": "32 non-learners excluded; 6 of these withdrew citing physical discomfort",
+      "framing": "high access-cost condition",
+      "effectDirection": "No accuracy difference vs 3D/2D; response time and fixation duration similar to 3D (both slower/longer than 2D); highest fixation count of all conditions, not converging to 3D/2D's lower asymptote",
+      "locus": "pp.7-8, 12-14"
+    },
+    {
+      "label": "desktop-3D / non-immersive VR",
+      "apparatus": "standard Windows 10 desktop, 22-inch color monitor, Logitech F310 gamepad; identical stimulus cube rotated via gamepad D-pad; category selected via bumpers/triggers",
+      "task": "identical to VR condition",
+      "n_recruited": 56,
+      "n_analytic": 26,
+      "exclusions": "30 non-learners excluded",
+      "framing": "medium access-cost condition",
+      "effectDirection": "No accuracy difference vs VR/2D; response time and fixation duration statistically indistinguishable from VR; fixation count starts higher than 2D but converges to 2D's lower asymptote by experiment's end",
+      "locus": "pp.7-8, 12-14"
+    },
+    {
+      "label": "2D video / slideshow / text",
+      "apparatus": "same 22-inch monitor + gamepad (category response only); flat triangular stimulus with all three features simultaneously visible; Tobii X120 eye tracker, 60Hz sampling, 0.5° spatial resolution, 60cm viewing distance, 75ms temporal / 1.9° spatial fixation thresholds, per-participant calibration",
+      "task": "identical category structure to VR/3D, presented as a flat triangular analogue",
+      "n_recruited": 65,
+      "n_analytic": 8,
+      "exclusions": "1 dropout citing dizziness; equipment failure left only 8 of the remaining participants with complete criterion-meeting gaze datasets; missingness checked against a prior study with the same structure and treated as at-random",
+      "framing": "low access-cost condition",
+      "effectDirection": "No accuracy difference vs VR/3D; significantly faster response times and shorter, flatter fixation durations than VR/3D; lower initial attentional optimization but exceeds VR/3D optimization by experiment's end",
+      "locus": "pp.7-8, 12-14"
+    }
+  ],
+  "readings": [
+    { "claim": "Learning accuracy trajectories are statistically equivalent across IVR, desktop-3D, and 2D conditions of an identical category-learning task.", "type": "READING/CLAIM", "stance": "defines/central-finding", "locus": "p.12-13", "tag": "FE" },
+    { "claim": "Only the 2D condition differs on response time; VR and desktop-3D response times do not differ from each other.", "type": "READING/CLAIM", "stance": "restates-results", "locus": "p.12-13", "tag": "FAITHFUL-Barrett et al." },
+    { "claim": "The predicted access-cost ordering (2D < 3D < VR) held for only one of six measures — fixation count — and in the opposite of the predicted direction; the manipulation is judged largely ineffective.", "type": "READING/CLAIM", "stance": "qualifies own hypothesis", "locus": "p.16", "tag": "FE" },
+    { "claim": "VR's elevated, non-converging fixation count is more plausibly explained by novelty/enjoyment of the arm-controller interaction than by access cost per se.", "type": "READING/CLAIM", "stance": "speculative-explanation", "locus": "p.16", "tag": "FE" },
+    { "claim": "Because general learning-outcome and information-access patterns replicate across VR, desktop-3D, and 2D, desktop-based cognitive/pedagogical findings and design principles should be presumed to transfer to VR without medium-specific re-validation.", "type": "READING/CLAIM", "stance": "concludes", "locus": "p.17", "tag": "FE" },
+    { "claim": "Individual differences such as spatial ability likely moderate any VR-specific learning benefit or cost that a between-subjects average would mask.", "type": "READING/CLAIM", "stance": "qualifies", "locus": "p.16", "tag": "FAITHFUL-Barrett et al." },
+    { "claim": "VR-specific attrition from physical discomfort (motion sickness, dizziness, fatigue, headache) is a real practical cost to be weighed against any VR learning benefit.", "type": "READING/CLAIM", "stance": "concludes", "locus": "p.12, 16", "tag": "FE" }
+  ],
+  "concepts": [
+    { "term": "information-access cost", "type": "TERM", "locus": "pp.5-6" },
+    { "term": "attentional optimization (-1 to 1 index)", "type": "TERM", "locus": "p.10" },
+    { "term": "category-learning cube stimulus (4 categories, 3 binary features)", "type": "THEME", "locus": "pp.8-9" },
+    { "term": "24-consecutive-correct learning criterion", "type": "TERM", "locus": "p.10" },
+    { "term": "desirable difficulty (VR motor cost)", "type": "TERM", "locus": "pp.2-3" }
+  ],
+  "interlocutors": [
+    { "name": "Makransky, Guido", "role": "cited for the recurring finding that immersive VR groups show higher cognitive load than other instruction, sometimes offset by generative-learning/enactment/pre-training pairings", "locus": "pp.2-4" },
+    { "name": "Parong, Jocelyn & Mayer, Richard", "role": "cited for 2D slide-based learning initially outperforming a 12-minute VR biology lesson, with VR catching up once reflection prompts were added", "locus": "pp.4-5" },
+    { "name": "Hamilton, D. et al. (VR-education review)", "role": "29-study review: 10 showed no VR-vs-desktop learning-outcome difference, 2 showed worse VR outcomes", "locus": "p.4" },
+    { "name": "Angel-Urdinola, D. et al. (VR meta-analysis)", "role": "meta-analysis reporting an overall positive but more-than-half neutral-positive effect of VR on learning outcomes", "locus": "pp.4-5" },
+    { "name": "Zhao, J. et al. (VR spatial memory)", "role": "found no VR advantage over desktop simulation for landmark memory; some advantages favored desktop", "locus": "pp.3-4" },
+    { "name": "Meier, M. & Blair, M. (information-access cost)", "role": "prior lab manipulation of information-access cost (3-second reveal delay) motivating this study's cost framing", "locus": "pp.5-6" },
+    { "name": "Rajsic, J. et al. (information-access cost)", "role": "four-experiment demonstration that increasing access costs, including added motor cost, accelerates adoption of optimal information-access patterns", "locus": "p.6" },
+    { "name": "Wood, S. et al. (information-access cost)", "role": "contrasted in Discussion: used fixed, obtrusive delays vs this study's self-paced motor delays, offered as an explanation for the largely-ineffective cost manipulation here", "locus": "p.16" },
+    { "name": "McColeman, C. et al. (information-access behaviors)", "role": "cited for medium-agnostic information-access patterns (eye-movements vs mouse/keyboard; category learning vs StarCraft 2)", "locus": "pp.5, 15-16" },
+    { "name": "Sun, R., Wu, Y. J. & Cai, Q. (spatial ability x VR)", "role": "individual-differences moderation: low-spatial-ability learners benefit most from VR, high-spatial-ability learners no better than paper-based learning", "locus": "p.16" }
+  ],
+  "tensions": [
+    { "axis": "media-comparison equivalence (this paper's accuracy null) vs immersion-optimism (Strand B affordance literature)", "note": "This paper's central null accuracy result sits on the equivalence pole of debate axis 5 (desktop-3D as sufficient proxy for IVR) named in the cluster plan; it directly qualifies affordance-optimist readings elsewhere in Strand B by showing no learning-accuracy advantage for either 3D or IVR over 2D.", "locus": "p.12-13, 17" },
+    { "axis": "access-cost-as-desirable-difficulty vs access-cost-as-mere-cognitive-load", "note": "The study's own predicted cost ordering mostly failed to materialize, leaving the desirable-difficulty vs cognitive-load framing from the Introduction largely untested rather than resolved by the Results.", "locus": "pp.2-3, 16" },
+    { "axis": "VR engagement as durable benefit vs VR engagement as single-session novelty artifact", "note": "The paper's own speculative reading of elevated VR fixation counts leaves open whether repeated exposure would erode the effect; not tested within this design.", "locus": "p.16" }
+  ],
+  "bridges": {
+    "vle": [
+      "vle-01-deployment-survey",
+      "vle-04-mark-attention-span"
+    ],
+    "boredomExperimentDataset": [
+      "****** UNVERIFIED: anchor entry not yet built"
+    ]
+  },
+  "extraction": {
+    "tool": "pdftotext",
+    "date": "2026-07-15",
+    "ocr_confidence": "high"
+  }
+}

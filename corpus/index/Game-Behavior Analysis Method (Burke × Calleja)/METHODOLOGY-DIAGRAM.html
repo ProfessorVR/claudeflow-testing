@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Actualization-of-Desire Method (ADA) — Methodology Diagram (v4)</title>
+<style>
+  :root{
+    --bg:#0e1116; --panel:#161b22; --panel2:#1c2330; --ink:#e6edf3; --muted:#9aa7b4;
+    --spine:#e0a458; --calleja:#3fb8af; --burke:#d2664f; --keystone:#a07cc5;
+    --cause:#7bbf6a; --line:#2c3340; --warn:#e0606a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding:28px}
+  i,em{color:#f0d9b5;font-style:italic}
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-size:23px;margin:0 0 4px} h1 small{color:var(--muted);font-weight:400}
+  .formula{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--spine);
+    border-radius:8px;padding:11px 14px;color:#cdd7e1;font-size:13.5px;margin:12px 0 18px}
+  /* v4 ontological frame */
+  .frame{background:linear-gradient(180deg,#15181f,#161b22);border:1px solid #3a4357;border-radius:9px;padding:11px 13px;margin:14px 0 6px}
+  .frame .fh{text-align:center;font-weight:700;font-size:13px;color:#aeb8cc;margin-bottom:9px}
+  .frame .fh small{color:var(--muted);font-weight:400}
+  .framerow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+  .fcause{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:7px 9px;text-align:center;font-size:12px}
+  .fcause b{color:#aeb8cc} .fcause small{display:block;color:var(--muted);font-size:10.5px;margin-top:2px}
+  .fcause.hot{border-color:#46506a;background:#1b2230} .fcause.hot b{color:#cdd7e1}
+  .framenote{font-size:11.5px;color:#9aa7b4;border-top:1px solid var(--line);padding-top:7px}
+  .framenote b{color:#cdd7e1}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 16px;font-size:13px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+  /* engine */
+  .engine{text-align:center;background:linear-gradient(180deg,#23201a,#161b22);border:1px dashed var(--spine);
+    border-radius:8px;padding:9px;margin-bottom:6px;font-size:13.5px}
+  .engine b{color:var(--spine)}
+  .down{text-align:center;color:var(--muted);font-size:20px;line-height:1;margin:2px 0}
+  /* grid */
+  .colhead{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:12px;margin-bottom:8px}
+  .colhead div{text-align:center;font-weight:700;font-size:13px;padding:6px;border-radius:6px}
+  .ch-cal{color:var(--calleja);border:1px solid var(--calleja)}
+  .ch-sp{color:var(--spine);border:1px solid var(--spine)}
+  .ch-bu{color:var(--burke);border:1px solid var(--burke)}
+  .colhead small{display:block;color:var(--muted);font-weight:400;font-size:11px}
+  .node{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:12px;align-items:stretch}
+  .cell{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:12.5px}
+  .cell.cal{border-top:2px solid var(--calleja)}
+  .cell.bu{border-top:2px solid var(--burke)}
+  .cell.sp{background:var(--panel2);border:1px solid #3a3320;border-top:2px solid var(--spine);text-align:center}
+  .cell.sp .tag{font-weight:800;color:var(--spine);font-size:15px}
+  .cell.sp .gk{color:#f0d9b5;font-style:italic;font-size:11.5px}
+  .cell.sp .ds{color:var(--muted);font-size:11px;margin-top:3px}
+  .cell .lbl{font-weight:700} .cell .sub{color:var(--muted);font-size:11px}
+  .motion{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:12px;margin:5px 0}
+  .motion .mid{grid-column:2;text-align:center;color:var(--muted);font-size:11px;border:1px dashed #34506a;border-radius:20px;padding:2px 8px}
+  .motion .mid b{color:#7fb2d6;font-weight:600}
+  /* keystone band */
+  .keystone{border:1.5px solid var(--keystone);border-radius:9px;padding:8px;margin:7px 0;
+    background:rgba(160,124,197,.08)}
+  .keystone .kh{text-align:center;color:var(--keystone);font-weight:700;font-size:12.5px;margin-bottom:7px}
+  .keystone .kh small{color:#c9b6df;font-weight:400}
+  /* causal */
+  .causal{margin:18px 0;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--cause);border-radius:8px;padding:12px 14px}
+  .causal h3{margin:0 0 8px;font-size:14px;color:var(--cause)}
+  .branchwrap{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .branch{background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:12.5px}
+  .branch h4{margin:0 0 6px;font-size:12.5px}
+  .agent h4{color:var(--cause)} .nonagent h4{color:var(--warn)}
+  .types{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .types span{background:#1a2a18;border:1px solid #2f4a2c;border-radius:5px;padding:2px 7px;font-size:11.5px}
+  .nonagent .types span{background:#2a1a1c;border-color:#4a2c2f}
+  .bia{color:var(--warn);font-weight:700}
+  /* loop */
+  .loop{display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#1a1622,#161b22);
+    border:1px solid #3a2f4a;border-radius:8px;padding:11px 14px;margin:10px 0 18px;font-size:13px}
+  .loop .badge{font-size:24px;color:var(--keystone)}
+  .loop b{color:var(--keystone)}
+  /* footer */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+  .foot{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px 13px;font-size:12.5px}
+  .foot h3{margin:0 0 7px;font-size:13px}
+  .foot.prov{border-left:3px solid var(--burke)} .foot.scale{border-left:3px solid var(--calleja)}
+  .foot ul{margin:5px 0 0;padding-left:18px} .foot li{margin:3px 0}
+  .hint{color:var(--muted);font-size:11px;text-align:center;margin-top:18px}
+  .cell[title]{cursor:help}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Actualization-of-Desire Analysis <small>(ADA — provisional · v5 · Aristotelian-seated + dwelling-integrated) · how designed worlds actualize desire into <i>rhetorical incorporation</i></small></h1>
+  <div class="formula">
+    An episode is a pass of the <b style="color:var(--spine)">actualization of desire</b> (A₀→A₄), driven by an <i>orekton</i>,
+    that a designed world drives toward <b style="color:var(--keystone)">rhetorical incorporation</b> — the two-faced substantial union
+    (<b style="color:var(--calleja)">incorporation</b> = world-face · <b style="color:var(--burke)">consubstantiation</b> = other-face) —
+    diagnosed by <b style="color:var(--keystone)">whether the union <i>sources</i> the act</b>, by <b style="color:var(--cause)">cause → type → hexis</b>,
+    and by <b>what it sediments / carries over</b>. <span style="color:var(--muted)">Calleja and Burke are <i>absorbed</i> (channels + motive-rhetoric), not applied as co-equal lenses.</span>
+  </div>
+
+  <div class="legend">
+    <span><i class="dot" style="background:var(--spine)"></i><b>SPINE</b> — actualization of desire (the engine that generates)</span>
+    <span><i class="dot" style="background:var(--calleja)"></i><b>Calleja</b> — absorbed → <i>designed channels</i></span>
+    <span><i class="dot" style="background:var(--burke)"></i><b>Burke</b> — absorbed → <i>rhetoric of motive</i> + identification</span>
+    <span><i class="dot" style="background:var(--keystone)"></i>keystone / diachronic loop</span>
+    <span><i class="dot" style="background:var(--cause)"></i>causal diagnosis</span>
+  </div>
+
+  <!-- v4 ONTOLOGICAL FRAME (the seat) -->
+  <div class="frame">
+    <div class="fh">⬚ THE ONTOLOGICAL FRAME — every episode is a <b>motion of a substance</b>, indexed to a time <small>(§2 · Aristotle's own ground, inherited from Part I §§3–4)</small></div>
+    <div class="framerow">
+      <div class="fcause"><b>Material</b><small>the given world (designer-made)</small></div>
+      <div class="fcause"><b>Formal</b><small>rules + avatar-form (designer-made; player completes)</small></div>
+      <div class="fcause hot"><b>Efficient</b><small>the <i>player's</i> own desire ("which way")</small></div>
+      <div class="fcause hot"><b>Final</b><small>the <i>player's</i> own orekton</small></div>
+    </div>
+    <div class="framenote"><b>Four causes of the player's act</b> (<i>Met.</i> I.3 · <i>Phys.</i> II.3): <b>material + formal</b> furnished by the designer's <i>making</i>; <b>efficient + final</b> the player's own. Designing &amp; playing are <b>two analyses, hinged</b> at the producing-art/using-art relation (<i>Phys.</i> II.2) — the designer's product <i>is</i> the player's material; the player's playing is the end the design serves. <b>Motion-form:</b> <i>kinēsis</i> vs <i>energeia</i> (<i>Met.</i> IX.6). <b>Kind of change:</b> substance / quality (<i>alloiōsis</i>) / quantity / place. The chain below <b>magnifies the efficient–final cause</b> of voluntary action.</div>
+  </div>
+  <div class="down">▼ <span style="color:var(--muted);font-size:11px">the efficient–final cause, magnified ↓</span></div>
+
+  <div class="engine"><b>DRIVING FORCE — <i>orekton</i> (the object of desire)</b> = the unmoved originator: "itself remaining unmoved, it originates the movement by being apprehended in thought or imagination" (DA III.10)</div>
+  <div class="down">▼</div>
+
+  <div class="colhead">
+    <div class="ch-cal">CHANNELS<small>Calleja, absorbed · designed pressure on the chain</small></div>
+    <div class="ch-sp">ACTUALIZATION OF DESIRE<small>the spine that GENERATES · read top → bottom</small></div>
+    <div class="ch-bu">RHETORIC OF MOTIVE<small>Burke, absorbed · how the act is rendered</small></div>
+  </div>
+
+  <!-- A0 -->
+  <div class="node">
+    <div class="cell cal" title="Spatial: environment internalized as habitable place — the 'inhabitation criterion'. Macro: which world/server. Micro: orientation in the space."><span class="lbl">Spatial</span> <span class="sub">→ inhabitation</span></div>
+    <div class="cell sp" title="The dyadic first actuality of sensible object + sense-faculty, within motion and time. The chain's relative unmoved originator."><span class="tag">A₀</span> · horizon<div class="gk">aisthēton + aisthētikon · kinēsis kai chronos</div><div class="ds">the gameworld as designed Umwelt — the <b>dwelling-horizon</b> (player always-already enworlded · <i>bethinged</i>; Rickert)</div></div>
+    <div class="cell bu" title="Scene: the container of the act. Strongest validated binding to Spatial."><span class="lbl">Scene</span> <span class="sub">the container of the act</span></div>
+  </div>
+  <div class="motion"><div class="mid">M₀→A₁ <b>perceptual motion</b> · orekton → sense-faculty → perceiver · <i>tone enters</i></div></div>
+
+  <!-- A1 -->
+  <div class="node">
+    <div class="cell cal" title="Kinesthetic: control-as-motor-mediation (symbolic→mimetic→symbiotic). Affective: basic hedonic valence/Stimmung."><span class="lbl">Kinesthetic</span> · <span class="lbl">Affective</span><span class="sub"> (valence/tone)</span></div>
+    <div class="cell sp" title="Completed perception + the DUAL residue it deposits: resonant aisthēma (formal) + resonant epithymia (hedonic tone). Being-affected (paschein), preservative sense."><span class="tag">A₁</span> · perception<div class="gk">resonant aisthēma + resonant epithymia</div><div class="ds">paschein — being-affected (sōtēria)</div></div>
+    <div class="cell bu" title="Agency: control-as-means. Attitude (transverse): the disposition-with-which, foregrounding Affective."><span class="lbl">Agency</span> · <span class="lbl">Attitude</span><span class="sub"> (transverse)</span></div>
+  </div>
+  <div class="motion"><div class="mid">M₁→A₂ <b>phantastic motion</b> · trace settles into determinate image · <i>the figure forms (pathetic-loop re-entry)</i></div></div>
+
+  <!-- A2 -->
+  <div class="node">
+    <div class="cell cal" title="Shared: the phantasma of role/avatar/other. Kinesthetic: avatar-as-motor-extension."><span class="lbl">Shared</span><span class="sub"> (role/avatar)</span></div>
+    <div class="cell sp" title="The phantasma proper — determinate, available, representational charged image. THE PIVOT: everything prior converges here; everything after operates on it. Identification's seed (Hazlitt)."><span class="tag">A₂</span> · <i>phantasma</i> <span style="color:var(--spine);font-size:11px">(pivot)</span><div class="gk">making-present-as · eidos + hedonic tone</div><div class="ds">withheld image → phantasia-conscription (§6d)</div></div>
+    <div class="cell bu" title="Agent: who acts (player ↔ avatar ↔ collective). Act: the plan toward execution. Identification is phantasma-borne here."><span class="lbl">Agent</span> · <span class="lbl">Act</span><span class="sub"> · identification seed</span></div>
+  </div>
+  <div class="motion"><div class="mid">M₂→A₃ <b>cognitive motion</b> · A₂ + settled-doxai-as-<i>hexeis</i> → cognitive apparatus · <i>doxa gatekeeping</i></div></div>
+
+  <!-- A3 / A4 inside KEYSTONE -->
+  <div class="keystone">
+    <div class="kh">◆ THE CENTRAL EVENT — <b>RHETORICAL INCORPORATION</b> (the substantial union · two faces) <small>· world-face = incorporation (R1–R7) · other-face = consubstantiation · <b>DECISIVE: does the union SOURCE the act?</b> ·"one substrate, two in being" (DA III.7 431a13–14) → social substance at A₃→A₄ · R6 temporal-apex + R7 intrusion-integration added (R7 = porosity → real-world carry-over)</small></div>
+    <div class="node">
+      <div class="cell cal" title="Shared (doxa-ratified collective 'WE'), Narrative (alterbiography), Ludic rule-system (grasped as universal). R5 blending happens here."><span class="lbl">Shared</span> · <span class="lbl">Narrative</span> · <span class="lbl">Ludic</span><span class="sub"> (rules)</span></div>
+      <div class="cell sp" title="Completed cognitive actuality: three orientational modes (intellection/memory/discursive) + the ORTHOGONAL committal dimension DOXA (involuntary taking-as-true). The pivotal location for motive.">
+        <span class="tag">A₃</span> · cognition + <b style="color:var(--keystone)">DOXA</b><div class="gk">intellection · memory · discursive | doxa = taking-as-true</div><div class="ds">doxa ratifies the phantasma-of-acting-together ("WE")</div></div>
+      <div class="cell bu" title="Agent (doxa-ratified collective), Purpose (the wished end / god-term), Agency (rule-system as universal)."><span class="lbl">Agent</span> · <span class="lbl">Purpose</span> · <span class="lbl">Agency</span></div>
+    </div>
+    <div class="motion"><div class="mid">M₃→A₄ <b>orektikon motion</b> · realizable good @A₃ → <i>orexis</i> → animal via the joint · <i>which desire fires</i></div></div>
+    <div class="node">
+      <div class="cell cal" title="Ludic (choosing-under-repercussion), Narrative (the act as story). R2 embodiment + R3 simultaneity consummate here."><span class="lbl">Ludic</span><span class="sub"> (choosing)</span> · <span class="lbl">Narrative</span></div>
+      <div class="cell sp" title="Completed action (praxis). All four causes converge. Individuates into the four types (below). Recursive: feeds back into hexis."><span class="tag">A₄</span> · action <span class="gk">(praxis)</span><div class="gk">orexis → orektikon → praxis</div><div class="ds">→ individuates into the four types ▼</div></div>
+      <div class="cell bu" title="Act (the executed doing) + Purpose (the end realized). Consubstantiation consummated: substantially one, yet a distinct locus."><span class="lbl">Act</span> · <span class="lbl">Purpose</span><span class="sub"> · consubstantiation</span></div>
+    </div>
+  </div>
+
+  <!-- causal layer -->
+  <div class="causal">
+    <h3>CAUSAL DIAGNOSIS at A₄ — Aristotle's 7 causes of action (Rhetoric I.10) bifurcate</h3>
+    <div class="branchwrap">
+      <div class="branch agent">
+        <h4>AGENT-CAUSED (= voluntary, desire-sourced) — the player freely actualizing desire</h4>
+        <span class="sub">habit (<i>hexis</i>) is the cross-cutting dispositional <b>ground</b> (not a type) · three orectic species from <i>Rhet.</i> I.10 + <i>prohairesis</i> (<i>NE</i> III.2–3) individuate the act:</span>
+        <div class="types">
+          <span title="epithymia — pursue pleasant/avoid painful; only type that can fire pre-doxastically">1 · Epithymetic</span>
+          <span title="thymos — answers a slight, asserts the self; irreducibly social">2 · Thymotic</span>
+          <span title="boulēsis — rational wish for the end-as-good">3 · Bouletic</span>
+          <span title="prohairesis — deliberate choice of means to a wished end">4 · Prohairetic</span>
+        </div>
+      </div>
+      <div class="branch nonagent">
+        <h4>NON-AGENT-CAUSED — where the game acts <i>on</i> the player</h4>
+        <div class="types">
+          <span title="tychē — designed RNG, loot tables, emergent events">chance</span>
+          <span title="physis — given capacities; the hardwired reflex / pre-doxastic kritikon startle-recoil">nature</span>
+          <span class="bia" title="bia — FORCE: external principle, agent contributes nothing, is acted-upon. The unskippable-cutscene / agency-stripping mechanism (rape scene §6a, §6e).">⚠ bia / FORCE</span>
+        </div>
+        <span class="sub" style="display:block;margin-top:6px">Voluntariness (NE III.1): voluntary · involuntary-force(<i>bia</i>) · involuntary-ignorance · <b>mixed</b> (felt-vs-structural-freedom gap)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- diachronic loop -->
+  <div class="loop">
+    <span class="badge">↺</span>
+    <div><b>DIACHRONIC LOOP</b> — A₄ <b>sediments into <i>hexis</i></b> (<i>technē</i>-hexis = skill, deliberation-reducing · ethical-hexis = wisdom, holding-oneself-open) → reconditions the next pass's A₀ (Stimmung) and A₃ (doxa). <span style="color:var(--muted)">Synchronic = one pass; diachronic = across passes. The chain spirals, it does not merely repeat.</span></div>
+  </div>
+
+  <div class="loop" style="border-color:#3a3320;background:linear-gradient(90deg,#23201a,#161b22)">
+    <span class="badge" style="color:var(--spine)">★</span>
+    <div><b style="color:var(--spine)">THE METHOD'S OWN INSTRUMENTS</b> (belong to no source) — the union <b>as a source</b> of action · <b>phantasia-conscription</b> (withheld image authored by <i>hexis</i>/<i>doxa</i>) · the <b>agent→patient</b> (<i>praxis→paschein</i>) inversion · <b><i>technē</i>/ethical-hexis engineering</b> (skill vs wisdom by design) · the two compulsions (<i>bia</i> vs capture) · the <b>virtual→actual carry-over</b> · <b>recalcitrance</b> (<i>thing</i> vs <i>object</i> — does the world afford dwelling? Rickert). <span style="color:var(--muted)">The 6×6 Burke×Calleja grid is demoted to a coverage checklist (appendix), not the method.</span></div>
+  </div>
+
+  <div class="grid2">
+    <div class="foot scale">
+      <h3>Three scales, one apparatus</h3>
+      <ul>
+        <li><b>Discrete event</b> (a boss fight / one beat): one synchronic pass.</li>
+        <li><b>Protracted sequence</b> (RDR2 tutorial): many passes; track the engineered <i>hexis</i>-bundle (heavy diachronic).</li>
+        <li><b>Ontological change</b> (the rape scene): a <b>rupture</b> pass — <i>bia</i> + incorporation-rupture + phantasia-conscription + agent→patient (<i>paschein</i>) inversion → supplants the dispositional ground.</li>
+      </ul>
+    </div>
+    <div class="foot prov">
+      <h3>Provenance discipline</h3>
+      <ul>
+        <li>The <b style="color:var(--spine)">chain</b> = the dissertation's own ontology.</li>
+        <li><b style="color:var(--calleja)">Calleja</b> + <b style="color:var(--burke)">Burke</b> = the baseline the method <b>sublates</b> (incorporation/consubstantiation re-grounded); their own claims = source material.</li>
+        <li>Every <b>binding between</b> the three + every game-behavioral application = <i>anticipatory projection</i> (the dissertation's construction — neither author makes it).</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="hint">Hover any cell for its analytic cue. This shows the method (ADA · v5) — the chain <i>generates</i> inside the four-cause frame; Calleja, Burke + Rickert (dwelling) are <i>absorbed</i>. The companion v11 diagram shows the ontology being analyzed-with (the actualization chain itself).</p>
+</div>
+</body>
+</html>

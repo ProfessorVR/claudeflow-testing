@@ -1,0 +1,101 @@
+{
+  "id": "ped-sec-02",
+  "slug": "witmer-presence-questionnaire",
+  "citation": "Witmer, B. G., & Singer, M. J. (1998). Measuring presence in virtual environments: A presence questionnaire. Presence: Teleoperators and Virtual Environments, 7(3), 225–240.",
+  "discipline": "Human factors psychology (virtual-environment presence measurement)",
+  "strand": "A",
+  "depth": "deep",
+  "thesis": "Presence is a graded awareness phenomenon requiring both involvement (focused attention on coherent, meaningful stimuli) and immersion (perceived envelopment in a continuous sensory stream) jointly; the paper constructs and psychometrically validates two self-report instruments, the Presence Questionnaire (PQ) and Immersive Tendencies Questionnaire (ITQ), across four combined HMD-based VE experiments (N=152), finding both scales reliable, a weak-but-consistent positive presence-performance link, ITQ predicting PQ scores, and reduced presence under simulator sickness, while explicitly disclaiming a demonstrated presence-learning link and full theoretical completeness.",
+  "sections": [
+    { "title": "Introduction", "page": "225-226", "summary": "Defines presence as the subjective experience of a mediated environment despite one's actual physical location, via the teleoperator analogy. Poses four guiding questions: which VE factors drive presence, whether individual differences matter, immersion's role, and whether presence requires total attentional displacement from the physical world." },
+    { "title": "Degrees of Presence (§2)", "page": "226-229", "summary": "Argues presence is graded, contrasting Fontaine's broad-focus account with a selective-attention account (citing Triesman). Defines involvement (focused attention on coherent, meaningful stimuli) and immersion (perceived envelopment in continuous stimulus flow) as jointly necessary; explicitly rejects Slater's view that immersion is objective VE-technology description." },
+    { "title": "Contributing Factors (§3)", "page": "229-231", "summary": "Reviews sparse empirical work (update rate, field-of-view, meaningful stimulus arrangement) then, following Sheridan and Held & Durlach, groups largely-untested conceptual factors into Control, Sensory, Distraction, and Realism categories, hypothesizing differential effects on immersion vs. involvement." },
+    { "title": "Measuring Presence (§4)", "page": "236", "summary": "Following Sheridan's view that presence resists objective physiological measurement, argues a valid presence measure must assess both individual-difference traits and VE characteristics via subjective report." },
+    { "title": "Presence Questionnaires (§5)", "page": "230-238", "summary": "Constructs the seven-point semantic-differential PQ and ITQ and validates them across four VE experiments (N=152; psychomotor and route-learning tasks; Flight Helmet and BOOM 2C HMDs). Reports item analyses, reliability (PQ 32→19 items α=.88; ITQ 29→18 items α=.81), cluster-derived subscales (PQ: Involved/Control, Natural, Interface Quality; ITQ: Involvement, Focus, Games), and construct-validity evidence (PQ-SSQ r=-.426; PQ-ITQ r=.24; weak positive PQ-performance link; null spatial-ability/collision correlations)." },
+    { "title": "The Role of Presence in Learning and Performance (§6)", "page": "238-239", "summary": "Notes many presence-raising factors are independently known to aid learning, so a presence-performance link is expected though unproven; speculates immersive VE may outperform standard computer-based training because the user becomes part of the stimulus flow, explicitly flagged as unproven." },
+    { "title": "Conceptualizing Presence (§7)", "page": "239", "summary": "Closing synthesis: presence is multifaceted, requiring involvement and immersion together with control, selective attention, sensory fidelity, and interaction naturalness; explicitly disclaims full understanding of the presence construct." }
+  ],
+  "constructs": [
+    { "label": "presence (spatial/physical)", "treatment": "namesake construct; graded, involvement+immersion-dependent subjective experience of a mediated environment despite physical location elsewhere", "locus": "p.225-226" },
+    { "label": "immersion (technological)", "treatment": "perceived envelopment/inclusion in a continuous stimulus stream; explicit rejection of Slater's objective-technology account in favor of an individual-experience account", "locus": "p.227-228" },
+    { "label": "agency / interactivity", "treatment": "operationalized as Control Factors (degree/immediacy/mode of control, anticipation, physical-environment modifiability); hypothesized to affect immersion; 11/12 items PQ-total-correlated", "locus": "p.229, 231" },
+    { "label": "representational fidelity", "treatment": "operationalized as Realism Factors (scene realism, consistency with objective world, meaningfulness); hypothesized to affect involvement; 5/7 items PQ-total-correlated", "locus": "p.230-231" },
+    { "label": "cybersickness & physical discomfort", "treatment": "measured via the independently validated Simulator Sickness Questionnaire (Kennedy et al. 1993); PQ-SSQ r=-.426, p<.001", "locus": "p.237" },
+    { "label": "learning outcomes: procedural / skills", "treatment": "speculative extension only; presence-performance link expected but explicitly stated as not directly evidenced", "locus": "p.238-239" }
+  ],
+  "conditions": [
+    {
+      "label": "IVR (HMD) — PQ/ITQ validation study",
+      "design": "Combined data from four VE experiments, none originally designed to study presence per se (two psychomotor-task studies, two route-learning studies); PQ administered post-task in all four; item, reliability, and construct-validity analyses run on the combined dataset",
+      "n": 152,
+      "sample": "152 college students (91 men, 61 women), colleges in the Orlando, FL area",
+      "instruments": [
+        "Presence Questionnaire (PQ) v2.0, 32 items reduced to 19, seven-point semantic-differential scale, α=.88",
+        "Immersive Tendencies Questionnaire (ITQ) v2.0, 29 items reduced to 18, seven-point semantic-differential scale, α=.81",
+        "Simulator Sickness Questionnaire (SSQ; Kennedy, Lane, Berbaum, & Lilienthal, 1993)",
+        "spatial-ability tests (used only as a null-correlation check)"
+      ],
+      "apparatus": "Virtual Research Flight Helmet (two psychomotor-task experiments); FAKESPACE BOOM 2C and Flight Helmet (two route-learning experiments, VEs up to 40,000 polygons)",
+      "effectDirection": "PQ-SSQ negative (r=-.426, p<.001); PQ-ITQ positive (r=.24, p<.01, combined); PQ-task-performance weak positive but inconsistent within single experiments; PQ vs. spatial-ability/collisions null as expected",
+      "locus": "p.230-238"
+    }
+  ],
+  "readings": [
+    { "claim": "Presence is a graded awareness phenomenon, not all-or-nothing, dependent on the allocation of attentional resources across a physical/mediated divide.", "type": "READING/CLAIM", "stance": "defines", "locus": "p.225-226", "tag": "FE" },
+    { "claim": "Presence requires both involvement and immersion jointly; neither is sufficient alone (an arcade game can be involving without being immersive; a technically immersive display can fail to involve an inattentive user).", "type": "READING/CLAIM", "stance": "defines", "locus": "p.227", "tag": "FE" },
+    { "claim": "Immersion, like involvement and presence, is something the individual experiences — not an objective description of VE technology, contra Slater, Linakis, Usoh, & Cooper (1996).", "type": "READING/CLAIM", "stance": "contests", "locus": "p.227", "tag": "FAITHFUL-Witmer&Singer" },
+    { "claim": "The PQ (α=.88) and ITQ (α=.81) are internally consistent, reliable self-report measures.", "type": "READING/CLAIM", "stance": "reports", "locus": "p.235", "tag": "FE" },
+    { "claim": "There is a weak but consistent positive relation between PQ scores and VE task performance across experiments.", "type": "READING/CLAIM", "stance": "reports", "locus": "p.237-238", "tag": "FE" },
+    { "claim": "ITQ scores predict PQ scores when combined across experiments, supporting a role for individual differences in reported presence.", "type": "READING/CLAIM", "stance": "reports", "locus": "p.238", "tag": "FE" },
+    { "claim": "Individuals reporting more simulator-sickness symptoms report less presence, consistent with simulator sickness acting as an attention-diverting distraction.", "type": "READING/CLAIM", "stance": "reports", "locus": "p.237", "tag": "FE" },
+    { "claim": "The a-priori Control/Sensory/Distraction/Realism factor taxonomy is only partially recovered by the statistically derived PQ/ITQ subscales.", "type": "READING/CLAIM", "stance": "qualifies", "locus": "p.237, 239", "tag": "FE" },
+    { "claim": "The presence-learning/performance link is speculative: 'we have no direct evidence to support our contention.'", "type": "READING/CLAIM", "stance": "concedes", "locus": "p.239", "tag": "FAITHFUL-Witmer&Singer" },
+    { "claim": "The authors explicitly disclaim having identified all factors affecting presence or fully understanding the presence construct.", "type": "READING/CLAIM", "stance": "concedes", "locus": "p.239", "tag": "FAITHFUL-Witmer&Singer" }
+  ],
+  "concepts": [
+    { "term": "presence", "type": "TERM", "locus": "p.225-226" },
+    { "term": "Presence Questionnaire (PQ)", "type": "TERM", "locus": "p.230-232" },
+    { "term": "Immersive Tendencies Questionnaire (ITQ)", "type": "TERM", "locus": "p.233-235" },
+    { "term": "involvement", "type": "TERM", "locus": "p.227" },
+    { "term": "immersion", "type": "TERM", "locus": "p.227-228" },
+    { "term": "Control Factors", "type": "TERM", "locus": "p.229" },
+    { "term": "Sensory Factors", "type": "TERM", "locus": "p.229-230" },
+    { "term": "Distraction Factors", "type": "TERM", "locus": "p.229-230" },
+    { "term": "Realism Factors", "type": "TERM", "locus": "p.230-231" },
+    { "term": "Involved/Control subscale (PQ)", "type": "TERM", "locus": "p.236" },
+    { "term": "Simulator Sickness Questionnaire (SSQ)", "type": "TERM", "locus": "p.237" }
+  ],
+  "interlocutors": [
+    { "name": "Sheridan, Thomas B.", "role": "conceptual source for Control/Sensory factor groupings and for the subjective-report measurement strategy", "locus": "p.229, 236" },
+    { "name": "Held, Richard & Nathaniel Durlach", "role": "conceptual source (Telepresence, 1992) for Control/Sensory/Distraction factor items", "locus": "p.229-231" },
+    { "name": "Fontaine, Ghislaine", "role": "source of the broad-focus account of presence, contrasted with the paper's selective-attention account", "locus": "p.226" },
+    { "name": "Slater, Mel (with Linakis, Usoh, & Cooper)", "role": "source of the objective-technology view of immersion, explicitly rejected", "locus": "p.227" },
+    { "name": "McGreevy, Michael W.", "role": "source of the continuities/connectedness/coherence account of presence, cited approvingly", "locus": "p.226-227" },
+    { "name": "Triesman, Anne", "role": "source of the selective-attention research underlying the paper's attention account of presence", "locus": "p.226" },
+    { "name": "Barfield, Woodrow & Craig Hendrix; Barfield & Suzanne Weghorst", "role": "cited empirical presence-measurement precedents (update rate; flythrough surveys)", "locus": "p.229-230" },
+    { "name": "Prothero, Jerrold & Hunter Hoffman", "role": "cited empirical finding that limiting field of view reduces reported presence", "locus": "p.229" },
+    { "name": "Bandura, Albert", "role": "cited for selective attention's role in social learning theory, in the §6 learning discussion", "locus": "p.238" },
+    { "name": "Gibson, Eleanor J.", "role": "cited for selective attention as evidence of perceptual learning, in the §6 learning discussion", "locus": "p.238" },
+    { "name": "Thorndike, Robert M.", "role": "source of the cluster-analysis methodology used over factor analysis for subscale derivation", "locus": "p.236" },
+    { "name": "Kennedy, Robert S., Norman Lane, Kevin Berbaum, & Michael Lilienthal", "role": "source of the Simulator Sickness Questionnaire used in the SSQ-PQ construct-validity correlation", "locus": "p.237" }
+  ],
+  "tensions": [
+    { "axis": "immersion as subjective individual experience (Witmer & Singer) vs. immersion as objective VE-technology description (Slater et al.)", "note": "An explicit, named theoretical disagreement stated directly in the text, not this unit's extrapolation.", "locus": "p.227" },
+    { "axis": "a-priori conceptual factor taxonomy (Control/Sensory/Distraction/Realism) vs. statistically derived subscales (Involved/Control, Natural, Interface Quality; Involvement, Focus, Games)", "note": "The authors report the two structures only partially align — no subscale corresponds to Realism Factors, and Control-Factor items split across two different subscales.", "locus": "p.237, 239" },
+    { "axis": "presence-performance link expected on theoretical grounds vs. only weak/inconsistent empirical support across the four combined experiments", "note": "The paper's own §6 explicitly concedes it has no direct evidence for the presence→learning link it speculates about.", "locus": "p.238-239" }
+  ],
+  "bridges": {
+    "vle": [
+      "vle-01-deployment-survey",
+      "vle-04-mark-attention-span"
+    ],
+    "boredomExperimentDataset": [
+      "****** UNVERIFIED: anchor entry not yet built"
+    ]
+  },
+  "extraction": {
+    "tool": "pdftotext",
+    "date": "2026-07-15",
+    "ocr_confidence": "high"
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "section_id": "DISS-04-EMOTION",
+  "section_title": "Emotion: The Form of Desire Under Evaluative Disclosure (E-motion is Motion)",
+  "run_id": "2026-05-13T1439",
+  "genre": "academic",
+  "analyzer_tier": "analyst-computed-Tier-1-heuristic",
+  "computation_basis": "whole-section (13,969 source words → 13,190 prose tokens after LaTeX/footnote/Greek strip; 403 sentences)",
+  "is_gold_standard_baseline": true,
+  "computation_method": "Regex-heuristic computation modeled on src/god-agent/cli/style/lanham-prose-analyzer.ts (Tier 1). The user has flagged that current Tier 1 calibration has hit a regex ceiling (MEMORY.md 2026-04-16); this profile is therefore analyst-computed with explicit assumptions documented per axis. The §1.4 baseline established here defines the reference numerics; the other five sections' profiles will be relative deltas.",
+  "calibration_priors_from_MEMORY": {
+    "note": "The Lanham authoritative gold set calibration (2026-04-16) against Lanham's Analyzing Prose yielded: nv=0.590, reg=0.574, voice=0.372, para=0.372, opacity=0.193, periodic=0.349. These are population-level baselines, not §1.4-specific. §1.4 as gold standard is expected to score HIGHER than gold-set means on register/opacity (academic prose) and CLOSE TO gold-set means on the remaining axes.",
+    "gold_set_means": {"nv": 0.590, "reg": 0.574, "voice": 0.372, "para": 0.372, "opacity": 0.193, "periodic": 0.349}
+  },
+
+  "axes": {
+    "nounVerb": {
+      "score": 0.62,
+      "label": "noun-style",
+      "confidence": 0.75,
+      "sub_metrics": {
+        "nominalizations_per_1000_words": 78.01,
+        "be_verb_rate_per_sentence": 1.82,
+        "prep_phrases_per_sentence": 4.09,
+        "be_verb_ratio_of_finite_verbs": 0.39,
+        "raw_counts": {"nominalizations": 1029, "be_verbs": 732, "preps": 1647}
+      },
+      "rationale_short": "Heavy nominalization (78/1000 vs. ~40-50/1000 typical academic), high be-verb density (1.82/sentence — and a substantial fraction of these are the user's signature 'X is Y' philosophical-definitional construction), high preposition rate (4.09/sentence indicating prepositional-phrase chaining). Confidence 0.75: nominalization counts are inflated by the user's Greek/German nominal philosophical vocabulary (kinēsis, energeia, Befindlichkeit, Geworfenheit, articulational concretion, doxa, paschein) — much of the nominalization is intrinsic to the philosophical-vocabulary register, not stylistic excess. Tier-2 deep analysis would discount these. The score 0.62 places §1.4 on the noun-style side of neutral (0.5), consistent with the user's active style profile (dalton-academic-mkn82c3v: 51.6% long sentences, 0.64 formality).",
+      "comparison_to_gold_set_mean": "+0.03 above gold-set mean (0.590)"
+    },
+
+    "parataxisHypotaxis": {
+      "score": 0.61,
+      "label": "hypotactic",
+      "confidence": 0.78,
+      "sub_metrics": {
+        "subordinator_count_per_sentence": 1.19,
+        "coordinator_count_per_sentence": 1.42,
+        "subord_to_coord_ratio": 0.839,
+        "relative_pronouns_per_sentence": "high (which/that/who/whom dominate the 1.19 subord count)",
+        "raw_counts": {"subord": 479, "coord": 571}
+      },
+      "rationale_short": "Subordinator-to-coordinator ratio of 0.839 is high for academic prose, but the absolute coordinator count is also high (571 coord vs. 479 subord), reflecting the user's pattern of long sentences that braid coordination AND subordination together. The 0.61 hypotactic score is on the hypotactic side of neutral because of (a) heavy relative-clause embedding (which/that/who), (b) frequent 'X is Y, in which Z, where W' three-stage sentences, and (c) participial-phrase modifiers ('articulated by the four senses...', 'mediated by doxa...'). Confidence 0.78. §1.4's hypotaxis is decidedly more pronounced than the gold-set mean.",
+      "comparison_to_gold_set_mean": "+0.24 above gold-set mean (0.372). MAJOR drift toward hypotaxis — diagnostic of philosophical-architectural register; expected for gold-standard chapter."
+    },
+
+    "periodicRunning": {
+      "score": 0.41,
+      "label": "periodic-with-running-cohabitation",
+      "confidence": 0.65,
+      "sub_metrics": {
+        "periodic_candidate_rate": 0.414,
+        "avg_sentence_length_words": 32.72,
+        "median_sentence_length_words": 29,
+        "pct_sentences_25_plus": 62.3,
+        "pct_sentences_35_plus": 37.5,
+        "raw_counts": {"sentences": 403, "periodic_candidates": 167}
+      },
+      "rationale_short": "Periodic candidate rate 0.414 — i.e., 41.4% of sentences open with subordinate/participial/infinitive front-loading (these are sentences whose grammatical head waits till the end), placing §1.4 at the periodic side of neutral but not strongly so. The high sentence length (avg 32.72, median 29, 37.5% ≥35 words) means many sentences are long enough that BOTH a periodic opening AND a running middle/end co-exist; the user writes complex compound-periodic sentences. Confidence 0.65 reflects that the Tier-1 heuristic is brittle on this axis (per MEMORY.md, periodic is the axis Tier 2 is currently promoted on). Score 0.41 means slightly running-leaning on the periodic-vs-running spectrum on the surface, but the within-sentence structure is more periodic than the heuristic captures.",
+      "comparison_to_gold_set_mean": "+0.06 above gold-set mean (0.349). Slight drift toward periodic for an academic gold-standard chapter — within expectation."
+    },
+
+    "voice": {
+      "score": 0.32,
+      "label": "predominantly-active",
+      "confidence": 0.70,
+      "sub_metrics": {
+        "passive_constructions_count": 96,
+        "passive_per_sentence": 0.238,
+        "passive_ratio_estimate": 0.20,
+        "active_marker": "user has 99.2% author-prominent citations per style profile dalton-academic-mkn82c3v",
+        "raw_counts": {"passive_hits": 96, "be_verbs_total": 732, "sentences": 403}
+      },
+      "rationale_short": "Passive constructions ~24% of sentences contain at least one passive form; this corresponds to ~20% passive-of-total-clauses estimate, consistent with the user's active style profile (20.1% passive). The 0.32 score = on the active side of neutral. The user's preferred construction is author-prominent (Aristotle observes, Heidegger argues, Aristotle insists) rather than agentless passive — a deliberate stylistic choice flagged by the style profile (99.2% author-prominent citations). The remaining passives are mostly philosophical-process passives ('is brought into actuality', 'is taken-as-true', 'is structured by') where the agent is grammatically irrelevant. Confidence 0.70.",
+      "comparison_to_gold_set_mean": "-0.05 below gold-set mean (0.372). Slightly more active than gold-set — expected for author-prominent academic prose."
+    },
+
+    "register": {
+      "score": 0.72,
+      "label": "high-Latinate-formal",
+      "confidence": 0.82,
+      "sub_metrics": {
+        "latinate_proxy_ratio": 0.220,
+        "formality_marker_density": "high (per dalton-academic-mkn82c3v: 0.64 formality)",
+        "user_signature_transitions_present_in_section": {
+          "thus": 12, "specifically": 4, "indeed": 10, "accordingly": 18, "hence": 1
+        },
+        "Greek_term_density": "high (pathos x87, pathē x56 surface occurrences; constant Greek-with-translation pattern)",
+        "German_term_density": "moderate (Befindlichkeit x18 in alternation, Stimmung, Geworfenheit, Sorge, Mitsein, Dasein, Bewegtheit)",
+        "raw_counts": {"latinate_proxy_words": 2899, "total_words": 13190}
+      },
+      "rationale_short": "Latinate-proxy ratio 0.220 is high; formality is decidedly academic; the user's signature transitions (thus, specifically, indeed, accordingly, hence) are present (45 occurrences total). The score 0.72 reflects: (a) sustained use of Greek-with-gloss; (b) frequent neologistic Latinate compounds (articulational concretion, pre-propositional, pre-positional); (c) German-philosophical vocabulary integrated; (d) Aristotelian-Bekker citation conventions present throughout; (e) author-prominent citation style. Confidence 0.82 is high because register is the easiest axis to measure heuristically. §1.4 sits noticeably above the gold-set mean.",
+      "comparison_to_gold_set_mean": "+0.15 above gold-set mean (0.574). MAJOR drift toward high-formal-register — expected and DESIRED for gold-standard."
+    },
+
+    "opacity": {
+      "score": 0.34,
+      "label": "moderately-transparent",
+      "confidence": 0.55,
+      "sub_metrics": {
+        "meta_linguistic_transition_density": 0.208,
+        "alliteration_adjacent_count_per_sentence": 1.422,
+        "user_signature_transitions_count": 45,
+        "explicit_interpretive_flags_count": "high (per Phase 2 claims: 156 of 306 claims have explicit interpretive flags = 51%)",
+        "raw_counts": {"meta_transitions": 84, "alliteration_adj": 573, "sentences": 403}
+      },
+      "rationale_short": "Opacity is the axis where Tier 1 heuristic is weakest (MEMORY.md notes calibration at 0.193 — well below the noun-verb / register / hypotaxis axes). Score 0.34 reflects: (a) heavy use of meta-linguistic transitions (0.208/sentence — thus, therefore, accordingly, indeed); (b) explicit interpretive flagging is the dominant rhetorical mode of §1.4 (51% of claims are T3-interpretive-but-flagged); (c) the section's transparency to itself — the user repeatedly signals 'On the present reading,' 'I will refer to,' 'the chapter takes,' 'I am arguing.' These ARE marks of opacity-transparency (Lanham's sense: visibility of the meta-frame). §1.4 is more transparent than gold-set mean because the user has been disciplined about meta-flagging. Confidence 0.55 — the heuristic is noisy.",
+      "comparison_to_gold_set_mean": "+0.15 above gold-set mean (0.193). Drift toward transparency — DESIRED for academic-rigorous gold-standard."
+    }
+  },
+
+  "tacit_patterns": {
+    "anaphora_rate": "moderate (sentence-initial 'The X' / 'Each pathos is...' pattern in S9 conclusion is anaphoric)",
+    "antithesis_rate": "high (the section is structured around antithetical pairs: minimal/maximal articulation, basic/concrete, synchronic/diachronic, destruction/preservation, pre-propositional/propositional, somatic/doxastic)",
+    "isocolon_rate": "moderate (the five-fold structure uses parallel grammatical forms: 'each pathos is X', 'each pathos has Y', 'each pathos is structured by Z')",
+    "chiasmus_rate": "low",
+    "climax_rate": "moderate (the section builds from terminological reckoning → architectural thesis → mechanism → conclusion's canonical five-fold)",
+    "polyptoton_rate": "moderate-to-high (the pathos/pathē/paschein/sōtēria cluster involves repeated cognate variation; pathos itself appears in 4 senses)",
+    "alliteration_density_per_sentence": 1.422,
+    "rationale_short": "The section's most distinctive tacit pattern is ANTITHETICAL ARCHITECTURE — the entire section is organized around the user's articulational-concretion distinction (basic/maximal, pre-propositional/propositional, somatic/doxastic, synchronic/diachronic). The conclusion's five-fold elements use ISOCOLON (parallel structure in 'each pathos is X / has Y / is structured by Z'). POLYPTOTON is high because the philosophical vocabulary is etymologically clustered (pathos/pathē/pathein/paschein; kinēsis/energeia/entelecheia; doxa/doxazein). These are intentional rhetorical choices that should be preserved in the other sections that strive for §1.4-grade rigor."
+  },
+
+  "summary_six_axis_profile": {
+    "nounVerb": 0.62,
+    "parataxisHypotaxis": 0.61,
+    "periodicRunning": 0.41,
+    "voice": 0.32,
+    "register": 0.72,
+    "opacity": 0.34
+  },
+
+  "target_metrics_for_other_sections": {
+    "principle": "Per Plan §9.3.1: each axis-delta in §§1.0/1.1/1.2/1.3/1.5 is tagged as ALIGNED (within ±0.10 of §1.4 baseline), DRIFT-TOWARD (between ±0.10 and ±0.20 toward neutral 0.5), DRIFT-AWAY (between ±0.10 and ±0.20 away from neutral, beyond §1.4), or INVERSE (across the labels' threshold).",
+    "thresholds_per_axis": {
+      "nounVerb": {
+        "baseline": 0.62,
+        "ALIGNED_range": "[0.52, 0.72]",
+        "DRIFT_TOWARD_range_below_baseline": "[0.42, 0.52]",
+        "DRIFT_AWAY_range_above_baseline": "[0.72, 0.82]",
+        "INVERSE_below": "[0, 0.42] (verb-style)",
+        "INVERSE_above": "[0.82, 1] (extreme noun-style)"
+      },
+      "parataxisHypotaxis": {
+        "baseline": 0.61,
+        "ALIGNED_range": "[0.51, 0.71]",
+        "DRIFT_TOWARD_range_below_baseline": "[0.41, 0.51]",
+        "DRIFT_AWAY_range_above_baseline": "[0.71, 0.81]",
+        "INVERSE_below": "[0, 0.41] (paratactic)",
+        "INVERSE_above": "[0.81, 1] (extreme hypotactic)"
+      },
+      "periodicRunning": {
+        "baseline": 0.41,
+        "ALIGNED_range": "[0.31, 0.51]",
+        "DRIFT_TOWARD_range_above_baseline": "[0.51, 0.61]",
+        "DRIFT_AWAY_range_below_baseline": "[0.21, 0.31]",
+        "INVERSE_below": "[0, 0.21] (extreme running)",
+        "INVERSE_above": "[0.61, 1] (highly periodic)"
+      },
+      "voice": {
+        "baseline": 0.32,
+        "ALIGNED_range": "[0.22, 0.42]",
+        "DRIFT_TOWARD_range_above_baseline": "[0.42, 0.52]",
+        "DRIFT_AWAY_range_below_baseline": "[0.12, 0.22]",
+        "INVERSE_above": "[0.52, 1] (passive-leaning)",
+        "INVERSE_below": "[0, 0.12] (extreme active)"
+      },
+      "register": {
+        "baseline": 0.72,
+        "ALIGNED_range": "[0.62, 0.82]",
+        "DRIFT_TOWARD_range_below_baseline": "[0.52, 0.62]",
+        "DRIFT_AWAY_range_above_baseline": "[0.82, 0.92]",
+        "INVERSE_below": "[0, 0.52] (Anglo-Saxon-leaning) — flag if other sections drift below 0.52 since this signals under-academic register",
+        "INVERSE_above": "[0.92, 1] (extreme Latinate) — flag if any section drifts above 0.82 since this signals over-formality"
+      },
+      "opacity": {
+        "baseline": 0.34,
+        "ALIGNED_range": "[0.24, 0.44]",
+        "DRIFT_TOWARD_range_below_baseline": "[0.14, 0.24]",
+        "DRIFT_AWAY_range_above_baseline": "[0.44, 0.54]",
+        "INVERSE_below": "[0, 0.14] (opaque/jargon-heavy)",
+        "INVERSE_above": "[0.54, 1] (extreme meta-transparent)"
+      }
+    },
+    "expected_per_section_drift_predictions": {
+      "DISS-00-INTRO": "Likely DRIFT-TOWARD on nounVerb and register (introduction is more accessible by design); ALIGNED on hypotaxis; check periodic (introductions often run rather than periodic).",
+      "DISS-01-A0": "Likely ALIGNED on all axes since §1.1 is also high-philosophical-architecture; possible DRIFT-AWAY on register due to dense Bekker/SZ citation. Note Phase 1 metadata: §1.1 needs more direct quotations — until added, register may dip.",
+      "DISS-02-A1A2": "Likely DRIFT-TOWARD on register and opacity since §1.2 is under-developed per Phase 1 metadata; the user has explicitly flagged §1.2 for relocation-receipt and direct-quotation augmentation. Watch for drift on these axes; once relocations land, axes should re-converge toward §1.4 baseline.",
+      "DISS-03-A3": "Likely ALIGNED-to-DRIFT-AWAY on register and hypotaxis since §1.3 introduces three-orientational-modes + doxa-as-orthogonal-layer — architecturally dense. Check periodic carefully (architectural density tends to lengthen sentences).",
+      "DISS-05-A4": "Likely DRIFT-TOWARD on nounVerb (conclusions often less noun-heavy) and DRIFT-AWAY on opacity (conclusions tend to recap and become MORE transparent). Numbering-convention drift to OLD M→M is documented in §1.5 per Phase 1 metadata — affects formatting more than Lanham metrics. Note: the user has flagged §1.5 as needing rework after upstream revision; baseline drift expected to resolve once §§1.0-1.4 finalize."
+    }
+  },
+
+  "interpretive_notes": {
+    "axis_with_highest_diagnostic_value": "REGISTER and HYPOTAXIS together. §1.4's gold-standard signature is its high-Latinate-formal hypotactic register. Any §§1.0/1.1/1.2/1.3/1.5 that drifts substantially BELOW §1.4 on these two axes is under-developed; any that drifts ABOVE may be over-formalizing.",
+    "axis_with_lowest_diagnostic_value": "OPACITY. The Tier-1 heuristic is brittle on this axis (calibration 0.193) and the score is sensitive to surface-level features that may not track depth-level meta-cognitive transparency. Recommend Tier-2 promotion for cross-section comparison if available.",
+    "voice_caveat": "The user's voice axis (~0.32) is decidedly active, which is the desired style. Other sections that drift toward 0.50+ (passive-leaning) should be revised toward active.",
+    "noun_style_caveat": "The 0.62 noun-style score is INFLATED by the user's Greek/German philosophical-vocabulary requirements. Cross-section comparisons should use the GLOSSED-VOCABULARY-EXCLUDED variant if available. Otherwise, treat 0.62 as the realistic ceiling and any §ξ at or below 0.62 as ALIGNED.",
+    "compound_recommendation": "For cross-section synthesis: the most diagnostic single metric is the AGGREGATE of (register × hypotaxis). §1.4's product is 0.72 × 0.61 = 0.44. Sections falling below 0.35 on this composite are under-developed; above 0.55 are over-formal."
+  },
+
+  "quality_gates": {
+    "axes_computed": 6,
+    "tacit_patterns_computed": "yes (7 patterns)",
+    "baseline_thresholds_specified": "yes (all 6 axes with 4 zones each)",
+    "per_other_section_predictions_specified": "yes (5 sections)",
+    "calibration_priors_referenced": "yes (MEMORY.md 2026-04-16 calibration)",
+    "confidence_per_axis_specified": "yes (range 0.55-0.82)"
+  }
+}

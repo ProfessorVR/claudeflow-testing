@@ -1,0 +1,84 @@
+%% Graph 1 — Tier-1 concept network of Uncomfortable Situations (Gross 2017)
+%% Volume-level ontology: 11 Tier-1 nodes + 12 strongest Tier-2 supports
+%% Edges filtered to defines / extends / contests / qualifies / bridges-to-pipeline
+graph TD
+    %% Tier-1 core concepts
+    C001["uncomfortable<br/>situation"]:::tier1
+    C002["rhetorical ontology<br/>of emotion"]:::tier1
+    C003["situated<br/>conceptualization"]:::tier1
+    C004["negative / rhetorical<br/>affordance"]:::tier1
+    C005["hostile<br/>environment"]:::tier1
+    C007["7-mode rhet-of-<br/>emotion typology"]:::tier1
+    C008["bearing up<br/>(Equiano)"]:::tier1
+    C009["mixed feelings<br/>(anti-Galenic)"]:::tier1
+    C010["two cultures<br/>(Snow)"]:::tier1
+    C011["comfort<br/>(bourgeois keyword)"]:::tier1
+    C012["negation as<br/>rhetorical engine"]:::tier1
+
+    subgraph EMO["EMOTION THEORY"]
+        C006["prosthetic<br/>emotion"]:::tier2
+        C014["basic emotions<br/>(Ekman)"]:::tier2
+        C015["complex states<br/>of mind (Darwin)"]:::tier2
+        C025["Kahneman reference-<br/>value framework"]:::tier2
+        C018["creditable emotion<br/>(Williams)"]:::tier2
+    end
+
+    subgraph RHE["RHETORIC"]
+        C013["rhetorical situation<br/>(Bitzer)"]:::tier2
+        C023["paradiastole<br/>(redescription)"]:::tier2
+    end
+
+    subgraph AFF["AFFORDANCE"]
+        C022["Lewinian Gestalt<br/>apparatus"]:::tier2
+        C024["Gothic sentimental<br/>subgenre"]:::tier2
+    end
+
+    subgraph SCI["SCI-HUM BRIDGE"]
+        C027["Phelps amygdala<br/>study"]:::tier2
+        C028["empathy/apathy/<br/>reticence"]:::tier2
+        C036["Aristotle Rhet II<br/>pathe"]:::tier2
+    end
+
+    %% Edges (defines)
+    C002 -- defines --> C001
+    C002 -- defines --> C007
+    C004 -- defines --> C005
+    C007 -- defines --> C006
+    C001 -- defines --> C011
+
+    %% Edges (extends)
+    C003 -- extends --> C002
+    C004 -- extends --> C022
+    C013 -- extends --> C004
+    C025 -- extends --> C009
+    C022 -- extends --> C004
+
+    %% Edges (contests)
+    C002 -- contests --> C014
+    C009 -- contests --> C014
+    C003 -- contests --> C014
+    C010 -- contests --> C014
+    C012 -- contests --> C014
+    C015 -- contests --> C014
+
+    %% Edges (qualifies)
+    C018 -- qualifies --> C002
+    C023 -- qualifies --> C012
+    C024 -- qualifies --> C005
+
+    %% Edges (bridges-to-pipeline)
+    C036 -- bridges-to-pipeline --> C013
+    C036 -- bridges-to-pipeline --> C002
+    C027 -- bridges-to-pipeline --> C003
+    C028 -- bridges-to-pipeline --> C003
+
+    %% Within-subgraph supports
+    C001 --> C008
+    C001 --> C009
+    C011 --> C001
+    C010 --> C003
+    C008 --> C006
+    C015 --> C002
+
+    classDef tier1 fill:#f96,stroke:#a33,stroke-width:2px,color:#000
+    classDef tier2 fill:#fcd,stroke:#a66,stroke-width:1px,color:#000

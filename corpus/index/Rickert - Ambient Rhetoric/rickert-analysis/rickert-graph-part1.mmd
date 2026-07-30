@@ -1,0 +1,72 @@
+graph TD
+    classDef classical fill:#c47d3e,stroke:#8a5629,color:#fff
+    classDef ambient fill:#4a90d9,stroke:#2c5f8a,color:#fff
+    classDef critique fill:#d94a4a,stroke:#8a2c2c,color:#fff
+    classDef example fill:#9b72aa,stroke:#6e4f7a,color:#fff
+
+    subgraph "Introduction: Circumnavigation"
+        AR["Ambient Rhetoric<br/>(central thesis)"]:::ambient
+        PER["Periechon<br/>(Greek 'surrounding')"]:::classical
+        ATT["Attunement"]:::ambient
+        SOD["Subject-Object<br/>Dissolution"]:::critique
+    end
+
+    subgraph "Ch 1: Chora and Emplaced Invention"
+        CH["Chora<br/>(generative matrix)"]:::classical
+        INV["Invention<br/>(emplaced/choric)"]:::ambient
+        WD1["Spacing /<br/>Withdrawal"]:::ambient
+        EMP["Emplacement"]:::ambient
+        MAT["Materiality /<br/>Infomateriality"]:::ambient
+    end
+
+    subgraph "Ch 2: Kairos and the Ambient"
+        KAI["Kairos<br/>(spatial-material)"]:::classical
+        AI["Ambient<br/>Invention"]:::ambient
+        DC["Distributed<br/>Cognition"]:::example
+        SUB["Subjectivity<br/>Reconceived"]:::critique
+    end
+
+    subgraph "Ch 3: Networks and Everyday Life"
+        NET["Networks<br/>(ontological)"]:::ambient
+        AMB["Ambience<br/>(immersion > connection)"]:::ambient
+        EMR["Emergence"]:::ambient
+        ISI["I-situation<br/>(Heidegger)"]:::ambient
+    end
+
+    subgraph "Ch 4: Ambient Music / Worlding Sound"
+        STM["Stimmung / Mood<br/>(ontological)"]:::ambient
+        MW["Musical Worlding"]:::example
+        SM["Soundmarks"]:::example
+        COMP["Composition<br/>(redefined)"]:::ambient
+    end
+
+    %% Cross-chapter edges: deconstructive arc
+    PER -->|"Greek ancestor of"| AR
+    AR -->|"requires"| SOD
+    SOD -->|"motivates recovery of"| CH
+    CH -->|"grounds"| INV
+    CH -->|"operates through"| WD1
+    INV -->|"requires"| EMP
+    EMP -->|"material ground of"| MAT
+
+    CH -->|"paralleled by"| KAI
+    KAI -->|"discloses"| AI
+    AI -->|"supported by"| DC
+    KAI -->|"dissolves"| SUB
+
+    AMB -->|"supplements and exceeds"| NET
+    NET -->|"theorized through"| EMR
+    AMB -->|"resonates with"| CH
+    AMB -->|"discloses"| KAI
+    ISI -->|"concretized by Eno"| AMB
+
+    STM -->|"grounds"| AR
+    MW -->|"reveals material-ecological"| COMP
+    SM -->|"organize communities via"| ATT
+    ATT -->|"mode of"| AR
+
+    %% Key deconstructive logic
+    SOD -.->|"loosens humanist<br/>encrustation"| CH
+    SOD -.->|"loosens humanist<br/>encrustation"| KAI
+    SOD -.->|"loosens humanist<br/>encrustation"| NET
+    SOD -.->|"loosens humanist<br/>encrustation"| STM

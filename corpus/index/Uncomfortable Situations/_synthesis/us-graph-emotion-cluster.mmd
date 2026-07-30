@@ -1,0 +1,65 @@
+%% Graph 3 — Situated-emotion / affect-theory cluster
+%% Twin hubs: Situated Conceptualization (Barsalou-Barrett) + Rhetorical Ontology of Emotion (Gross)
+graph TD
+    %% Twin hubs
+    HUB1["Situated Conceptualization<br/>(Barsalou-Barrett)"]:::hub
+    HUB2["Rhetorical Ontology<br/>of Emotion (Gross)"]:::hub
+
+    %% Aligned / supporting
+    WM["Wilson-Mendenhall<br/>2011"]:::ally
+    BARR["Barrett<br/>How Emotions Are Made"]:::ally
+    BARS["Barsalou<br/>situated cognition"]:::ally
+    BERL["Berlant<br/>Cruel Optimism"]:::ally
+    AHMED["Ahmed<br/>queer phenomenology"]:::ally
+    REDDY["Reddy<br/>navigation of feeling"]:::ally
+    GIBSON["J.J. Gibson<br/>affordance"]:::ally
+    HEID["Heidegger GA 18<br/>(Intro n.37)"]:::ally
+    WITT["Wittgenstein/Vygotsky<br/>(Epilogue)"]:::ally
+    GALEN["Galen<br/>disequilibrium"]:::contested
+    ARIS["Aristotle<br/>pathē"]:::ally
+    STERNE["Sterne<br/>Sentimental Journey"]:::ally
+    GOLD["Goldsmith<br/>Blake / sentiment"]:::ally
+    CHAND["Chandler<br/>Archaeology of Sympathy"]:::ally
+    FESTA["Festa<br/>Sentimental Figures"]:::ally
+    MASSUMI["Massumi<br/>affect"]:::contested
+
+    %% Contested / antagonists
+    EKMAN["Ekman<br/>basic emotions"]:::contested
+    DAMASIO["Damasio<br/>somatic markers"]:::contested
+    PHELPS["Phelps<br/>amygdala fMRI"]:::contested
+    PRESTON["Preston<br/>empathy lab"]:::ally
+    KT["Kahneman-Tversky<br/>utility"]:::ally
+
+    %% Edges
+    HUB2 -- aligns-with --> HUB1
+    HUB1 -- grounded-in --> WM
+    HUB1 -- grounded-in --> BARR
+    HUB1 -- grounded-in --> BARS
+    HUB2 -- aligns-with --> BERL
+    HUB2 -- aligns-with --> AHMED
+    HUB2 -- aligns-with --> REDDY
+    HUB2 -- extends --> GIBSON
+    HUB2 -- glosses --> HEID
+    HUB2 -- glosses --> WITT
+    HUB2 -- contests --> EKMAN
+    HUB1 -- contests --> EKMAN
+    HUB2 -- contests --> DAMASIO
+    HUB2 -- contests --> GALEN
+    HUB2 -- contests --> MASSUMI
+    HUB2 -- extends --> ARIS
+    HUB2 -- aligns-with --> STERNE
+    STERNE -- aligns-with --> GOLD
+    HUB2 -- qualifies --> CHAND
+    HUB2 -- aligns-with --> FESTA
+    HUB2 -- reframes --> PHELPS
+    HUB1 -- reframes --> PHELPS
+    PRESTON -- breaks-circle-of --> EKMAN
+    HUB1 -- aligns-with --> PRESTON
+    HUB2 -- aligns-with --> KT
+    KT -- contests --> GALEN
+    BARR -- contests --> EKMAN
+    AHMED -- aligns-with --> WITT
+
+    classDef hub fill:#f96,stroke:#a33,stroke-width:3px,color:#000
+    classDef ally fill:#cfc,stroke:#383,stroke-width:1px,color:#000
+    classDef contested fill:#fcc,stroke:#a33,stroke-width:1px,color:#000

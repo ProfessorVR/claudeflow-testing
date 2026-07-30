@@ -1,0 +1,82 @@
+%% gm-graph-pentad-and-ratios.mmd
+%% Burke 1945 — pentad + 10 dyadic ratios + paradigm literary examples + 4 higher-order combinations
+%% Generated: Phase 3 Wave 2 Agent (graph 2 of 5)
+%% Plan ref: plans/grammar-of-motives-burke-1945-analysis.md §5 Phase 3 Wave 2 graph 2
+%% Source: gm-ratio-catalog.json + book-level-ontology.json + gm-applied-dramatism-walkthroughs.json
+%% Edge styles: solid = burke-direct positional/temporal ratio; dashed (-.->) = higher-order / paradigm instances
+%% Caps: <=25 nodes / <=35 edges. Actual: 23 nodes / 35 edges.
+flowchart LR
+
+    %% ===== 5 PENTAD TERMS =====
+    subgraph PENTAD["Pentad (Burke 1945)"]
+        direction TB
+        ACT["Act"]
+        SCENE["Scene"]
+        AGENT["Agent"]
+        AGENCY["Agency"]
+        PURPOSE["Purpose"]
+    end
+
+    %% ===== 4 PARADIGM LITERARY EXAMPLES =====
+    EX_IBSEN["Ibsen<br/>Enemy of the People<br/>(scene-act)"]
+    EX_ONEILL["O'Neill<br/>Mourning Becomes Electra<br/>(scene-act reversal)"]
+    EX_KEATS["Keats<br/>Ode on a Grecian Urn<br/>(scene-act prediction)"]
+    EX_MOORE["Marianne Moore<br/>oeuvre<br/>(scene-agent appropriate-scene)"]
+
+    %% ===== 4 HIGHER-ORDER COMBINATIONS =====
+    subgraph HOC["Higher-Order Combinations (super-nodes)"]
+        direction TB
+        HOC_RUSSIAN["Russian Resistance<br/>scene-act vs act-agent triadic"]
+        HOC_EDEN["Edenic Paradigm<br/>scene-act + act-agent + scene-agent"]
+        HOC_AESCH["Aeschylus<br/>Erinyes-to-Eumenides<br/>act-purpose-agent triadic"]
+        HOC_BIDDLE["Biddle 4-term cascade<br/>scene-agency-act-agent"]
+    end
+
+    %% ===== 10 DYADIC RATIOS as directional edges among pentad terms =====
+    %% Positional-strong (reversible, Burke notes scene-first as primary direction)
+    SCENE -- scene-act --> ACT
+    SCENE -- scene-agent --> AGENT
+    %% Instrumental-methodological
+    SCENE -- scene-agency --> AGENCY
+    ACT -- act-agency --> AGENCY
+    AGENT -- agent-agency --> AGENCY
+    %% Teleological
+    SCENE -- scene-purpose --> PURPOSE
+    ACT -- act-purpose --> PURPOSE
+    AGENT -- agent-purpose --> PURPOSE
+    AGENCY -- agency-purpose --> PURPOSE
+    %% Temporal-sequential (Burke notes 'tugs at edges' of containment)
+    ACT -- act-agent --> AGENT
+
+    %% Reverse-direction emphases Burke flags
+    ACT -. act-constructs-scene .-> SCENE
+    AGENT -. acts-remake-agent .-> ACT
+
+    %% ===== Paradigm-example -> ratio attachments (which ratio each instantiates) =====
+    EX_IBSEN -. instances .-> SCENE
+    EX_IBSEN -. scene-act .-> ACT
+    EX_ONEILL -. Lavinia-reversal .-> ACT
+    EX_ONEILL -. constructs-scene .-> SCENE
+    EX_KEATS -. scene-act-prediction .-> SCENE
+    EX_KEATS -. act-purpose .-> PURPOSE
+    EX_MOORE -. scene-agent .-> SCENE
+    EX_MOORE -. appropriate-to-agent .-> AGENT
+
+    %% ===== Higher-order combos attach to constituent ratios (dashed super-node edges) =====
+    HOC_RUSSIAN -. competing-ratios .-> SCENE
+    HOC_RUSSIAN -. act-agent-deflection .-> AGENT
+    HOC_EDEN -. mutual-ratification .-> ACT
+    HOC_EDEN -. total-act .-> SCENE
+    HOC_AESCH -. peripety .-> PURPOSE
+    HOC_AESCH -. transforms-agent .-> AGENT
+    HOC_BIDDLE -. agencies-become-scenic .-> AGENCY
+    HOC_BIDDLE -. scenic-agencies-motivate .-> SCENE
+    HOC_BIDDLE -. needs-return-to-agent .-> AGENT
+
+    %% ===== Styling =====
+    classDef pentad fill:#c8e6c9,stroke:#1b5e20,stroke-width:3px;
+    classDef paradigm fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef hoc fill:#e1bee7,stroke:#4a148c,stroke-width:2px,stroke-dasharray: 5 5;
+    class ACT,SCENE,AGENT,AGENCY,PURPOSE pentad;
+    class EX_IBSEN,EX_ONEILL,EX_KEATS,EX_MOORE paradigm;
+    class HOC_RUSSIAN,HOC_EDEN,HOC_AESCH,HOC_BIDDLE hoc;

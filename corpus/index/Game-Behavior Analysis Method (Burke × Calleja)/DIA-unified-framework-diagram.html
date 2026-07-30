@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIA — The Unified Framework (Burke × Calleja × A₀–A₄)</title>
+<style>
+  :root{
+    --bg:#f4f1ea; --ink:#1d1d1f; --muted:#6b6258; --line:#d8d0c2;
+    --onto:#2d3b55;          /* ontological spine — slate indigo */
+    --onto-soft:#e7eaf1;
+    --burke:#a8472a;         /* motive — terracotta (warm) */
+    --burke-soft:#f6e6df;
+    --calleja:#1c7273;       /* involvement — teal (cool) */
+    --calleja-soft:#dcecec;
+    --key:#8a2c4d;           /* keystone — garnet */
+    --key-soft:#f3e0e7;
+    --recur:#6a4c93;         /* recursion — violet */
+    --recur-soft:#e9e2f2;
+    --hexis:#b8902f;         /* hexis band — gold */
+    --hexis-soft:#f6edd4;
+    --paper:#fffdf8;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:28px 22px 60px;
+  }
+  h1,h2,h3{font-family:"Iowan Old Style",Palatino,Georgia,serif; font-weight:600; letter-spacing:.1px}
+  header.top{max-width:1480px;margin:0 auto 18px}
+  header.top h1{font-size:25px;margin:0 0 4px}
+  header.top .sub{color:var(--muted);font-size:14px;margin:0 0 2px}
+  header.top .prov{color:var(--muted);font-size:12.5px;font-style:italic;margin-top:6px}
+  .frame{max-width:1480px;margin:0 auto;background:var(--paper);border:1px solid var(--line);
+    border-radius:14px;padding:20px 20px 26px;box-shadow:0 1px 0 #fff inset, 0 6px 22px rgba(40,30,10,.06)}
+
+  /* controls */
+  .controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:16px;font-size:13px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{border:0;background:#fff;padding:6px 12px;cursor:pointer;font:inherit;color:var(--muted)}
+  .seg button.active{background:var(--onto);color:#fff}
+  .controls label{display:inline-flex;gap:6px;align-items:center;cursor:pointer;color:var(--muted)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto;font-size:12.5px;color:var(--muted)}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+  /* directional rails */
+  .rail{position:relative;height:34px;margin:6px 0;border-radius:6px;display:flex;align-items:center;
+    justify-content:center;font-size:12.5px;font-weight:600;letter-spacing:.2px;color:#fff;transition:opacity .25s,filter .25s}
+  .rail .ratiotag{position:absolute;font-weight:500;opacity:.92;font-size:11px}
+  .rail.analyze{background:linear-gradient(90deg,var(--burke),#c9714f)}
+  .rail.analyze::before{content:"◀";position:absolute;left:10px;font-size:18px}
+  .rail.live{background:linear-gradient(90deg,#2a9d9e,var(--calleja));}
+  .rail.live::after{content:"▶";position:absolute;right:10px;font-size:18px}
+  .rail .note{opacity:.95;font-weight:500;padding:0 34px;text-align:center}
+  body.mode-live .rail.analyze{opacity:.28;filter:grayscale(.5)}
+  body.mode-analyze .rail.live{opacity:.28;filter:grayscale(.5)}
+
+  /* the spine */
+  .spine{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative}
+  .node{position:relative;background:var(--paper);border:1.5px solid var(--onto);border-radius:12px;
+    margin:0 7px;padding:12px 12px 14px;cursor:pointer;transition:transform .12s,box-shadow .12s;min-height:232px}
+  .node:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(45,59,85,.16)}
+  .node.sel{box-shadow:0 0 0 3px var(--onto-soft),0 8px 22px rgba(45,59,85,.22)}
+  .node .nid{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:30px;font-weight:600;color:var(--onto);line-height:1}
+  .node .ntitle{font-size:12.5px;font-weight:600;color:var(--onto);margin:2px 0 8px;min-height:30px}
+  .node .onto{font-size:11.6px;color:#41454d;margin-bottom:10px}
+  .chip{display:block;border-radius:7px;padding:5px 8px;font-size:11.6px;margin-bottom:6px;border:1px solid transparent}
+  .chip .k{font-weight:700;letter-spacing:.2px}
+  .chip.b{background:var(--burke-soft);border-color:#eccdbf;color:#7a3320}
+  .chip.c{background:var(--calleja-soft);color:#0f5152}
+  .chip.g{background:#efece4;color:#5a5346;font-style:italic}
+  .entry{position:absolute;top:-11px;right:10px;background:var(--onto);color:#fff;font-size:10px;
+    padding:2px 7px;border-radius:10px;font-weight:600;letter-spacing:.3px}
+  .stepno{position:absolute;top:-12px;left:10px;width:22px;height:22px;border-radius:50%;
+    display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+  body.mode-live .stepno.live, body.mode-analyze .stepno.analyze{display:inline-flex}
+  .stepno.live{background:var(--calleja)} .stepno.analyze{background:var(--burke)}
+
+  /* motion connectors */
+  .motion{position:absolute;top:104px;transform:translateX(-50%);z-index:5;width:118px;text-align:center;
+    pointer-events:none}
+  .motion .arr{font-size:17px;color:var(--onto);line-height:1}
+  .motion .ml{font-size:10px;color:var(--muted);font-weight:600}
+  .motion .ratio{font-size:10px;color:var(--burke);font-weight:700}
+
+  /* kinetic schema toggle */
+  .kin{display:none;font-size:10.3px;color:var(--recur);border-top:1px dashed var(--line);margin-top:8px;padding-top:6px}
+  body.show-kin .kin{display:block}
+
+  /* hexis band */
+  .hexis-band{display:none;margin:14px 7px 0;background:var(--hexis-soft);border:1px solid #e6d29a;
+    border-left:5px solid var(--hexis);border-radius:8px;padding:9px 13px;font-size:12px}
+  body.show-hexis .hexis-band{display:block}
+  .hexis-band b{color:#7d610f}
+
+  /* lower zone: keystone + four types */
+  .lower{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:20px}
+  .panelbox{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fffdf9}
+  .panelbox h3{margin:0 0 8px;font-size:15px}
+  .keystone h3{color:var(--key)} .fourtypes h3{color:var(--onto)}
+  .hexwrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .hexnote{flex:1;min-width:210px;font-size:12.3px;color:#41454d}
+  .hexnote .r{margin:4px 0;padding-left:14px;text-indent:-14px}
+  .hexnote .r b{color:var(--key)}
+  .types li{margin-bottom:7px;font-size:12.6px}
+  .types .tt{font-weight:700}
+  .types .t1{color:#9a6b00}.types .t2{color:#a8472a}.types .t3{color:#1c7273}.types .t4{color:#6a4c93}
+  .pre{color:var(--muted);font-size:11.5px;font-style:italic}
+
+  /* recursion ribbon */
+  .recur{margin-top:18px;background:var(--recur-soft);border:1px solid #d3c6e6;border-left:5px solid var(--recur);
+    border-radius:10px;padding:11px 15px;font-size:12.4px}
+  .recur b{color:var(--recur)}
+  .recur .pp{display:inline-block;background:#fff;border:1px solid #d3c6e6;border-radius:20px;padding:1px 9px;margin:2px 3px;font-size:11.3px}
+
+  /* detail panel */
+  .detail{margin-top:18px;border:1px solid var(--line);border-radius:12px;background:#fffdf9;padding:0;overflow:hidden}
+  .detail .dh{padding:11px 16px;color:#fff;font-weight:600;font-family:"Iowan Old Style",Palatino,Georgia,serif}
+  .detail .db{padding:14px 16px;font-size:13px;display:grid;grid-template-columns:1fr 1fr;gap:6px 22px}
+  .detail .db .full{grid-column:1/3}
+  .detail .row{margin-bottom:7px}
+  .detail .row .lab{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:700;display:block}
+  .cite{font-size:11.4px;color:var(--muted);font-style:italic}
+  .hint{font-size:12px;color:var(--muted);text-align:center;padding:18px}
+  .footkey{max-width:1480px;margin:14px auto 0;font-size:11.5px;color:var(--muted)}
+  .footkey code{background:#efece4;padding:1px 5px;border-radius:4px;font-size:11px}
+  @media(max-width:1100px){.spine{grid-template-columns:repeat(5,minmax(150px,1fr));overflow-x:auto}.lower{grid-template-columns:1fr}}
+</style>
+</head>
+<body class="mode-both show-hexis">
+<header class="top">
+  <h1>Dramatistic‑Involvement Analysis — the unified framework</h1>
+  <p class="sub">Burke's hexad (motive) × Calleja's PIM (involvement) projected onto the Aristotelian–Heideggerian A₀–A₄ actualization‑of‑desire chain.</p>
+  <p class="sub">One spine, read two ways: the player <b style="color:var(--calleja)">lives it forward</b>; the analyst <b style="color:var(--burke)">reconstructs it backward</b>. Each pass <b style="color:var(--recur)">recurs</b>.</p>
+  <p class="prov">Chain loci per <code>ontological‑wiring‑A0‑A4.md</code> §1–2; bindings per <code>validated‑crosswalk.json</code>; PIM cross‑section after Calleja, <i>In‑Game</i> fig. 3.1 (p. 38). Cross‑framework bindings are anticipatory‑projection (neither author makes the cross‑claim).</p>
+</header>
+
+<div class="frame">
+  <div class="controls">
+    <span style="font-weight:600;color:var(--muted)">Reading:</span>
+    <span class="seg" id="modeSeg">
+      <button data-mode="live">▶ Live (forward)</button>
+      <button data-mode="analyze">◀ Analyze (backward)</button>
+      <button data-mode="both" class="active">Both</button>
+    </span>
+    <label><input type="checkbox" id="kinTog"> kinetic schema (3‑factor)</label>
+    <label><input type="checkbox" id="hexTog" checked> hexis‑band</label>
+    <span class="legend">
+      <span><i style="background:var(--burke)"></i>Burke · motive (Axis M)</span>
+      <span><i style="background:var(--calleja)"></i>Calleja · involvement (Axis I)</span>
+      <span><i style="background:var(--onto)"></i>ontology (A‑chain)</span>
+      <span><i style="background:var(--key)"></i>keystone</span>
+      <span><i style="background:var(--recur)"></i>recursion</span>
+    </span>
+  </div>
+
+  <!-- ANALYZE rail (backward) -->
+  <div class="rail analyze" title="The order of understanding">
+    <span class="note">ANALYZE ◂ order of <b>understanding</b> · Burke's motive‑regress · A₄→A₀ · &ldquo;from what is more knowable <i>to us</i> → more knowable <i>by nature</i>&rdquo; (Phys. I.1 184a16–21) · &ldquo;last in analysis, first in becoming&rdquo; (NE III.3 1112b23–24)</span>
+  </div>
+
+  <!-- SPINE -->
+  <div class="spine" id="spine">
+    <!-- nodes injected -->
+    <!-- motion connectors injected -->
+  </div>
+
+  <!-- hexis band (transverse) -->
+  <div class="hexis-band">
+    <b>Hexis‑band (transverse — the ethics‑of‑design axis).</b> Two cultivated dispositions act as <i>additional unmoved originators</i> at M₂→A₃:
+    <b>technē‑hexis</b> (poiēsis — means→end, transparent, &ldquo;reduces deliberation,&rdquo; BCAP 127; ready‑to‑hand, BT §15) vs.
+    <b>ethical‑hexis</b> (praxis — end immanent in the doing, &ldquo;holding‑oneself‑open,&rdquo; BCAP 128) with a unique <i>two‑level reach</i> to A₁ valence + the A₃ ratification.
+    The five attitude registers (competitive · completionist · explorer · devotional · ironic‑meta) are <i>hexeis</i>. <b>Compulsion = Type‑4 → Type‑1 regression via technē‑hexis runaway.</b>
+  </div>
+
+  <!-- LIVE rail (forward) -->
+  <div class="rail live" title="The order of actualization">
+    <span class="note">LIVE ▸ order of <b>actualization</b> (genesis) · Calleja's involvement‑build toward incorporation · A₀→A₄ · macro ▸ micro</span>
+  </div>
+
+  <!-- LOWER: keystone hexagon + four types -->
+  <div class="lower">
+    <div class="panelbox keystone">
+      <h3>Keystone cross‑section — Consubstantiation ≙ Incorporation (A₃→A₄)</h3>
+      <div class="hexwrap">
+        <svg id="hex" width="320" height="300" viewBox="0 0 320 300" role="img" aria-label="PIM hexagon"></svg>
+        <div class="hexnote">
+          Calleja's six dimensions (fig. 3.1) are the involvement‑texture threading the whole chain; they <b>converge at the keystone</b> exactly as his wedges converge on incorporation. Macro = outer (diachronic); micro = inner (synchronic). The center is Aristotle's <i>&ldquo;one substrate, two in being&rdquo;</i> (DA III.7 431a13–14) extended to social substance:
+          <div class="r"><b>R1</b> assimilation — world → consciousness</div>
+          <div class="r"><b>R2</b> embodiment — player → world via avatar</div>
+          <div class="r"><b>R3</b> simultaneity — joined <i>and</i> separate at once</div>
+          <div class="r"><b>R4</b> spatial+kinesthetic cornerstone (acting‑together)</div>
+          <div class="r"><b>R5</b> blending</div>
+          <span class="cite">Burke RM‑01 p.21 · Calleja IG‑10 p.169 · homology, not equation (five divergences preserved).</span>
+        </div>
+      </div>
+    </div>
+    <div class="panelbox fourtypes">
+      <h3>Four Types of Action at A₄ <span class="pre">— individuated by the species of <i>orexis</i> that sources them</span></h3>
+      <ol class="types">
+        <li class="t1"><span class="tt">Type 1 · Epithymetic</span> (<i>epithymia</i>) — the pleasant/painful. <span class="pre">The only type that can fire <b>pre‑doxastically</b> — the perceptual <i>kritikon</i> alone (DA III.7 431a8–12).</span></li>
+        <li class="t2"><span class="tt">Type 2 · Thymotic</span> (<i>thymos</i>) — honor, slight, self‑assertion. <span class="pre">Always doxastic; irreducibly social (a <i>toward‑whom</i>, Mitsein).</span></li>
+        <li class="t3"><span class="tt">Type 3 · Bouletic</span> (<i>boulēsis</i>) — rational wish for the <i>end</i>. <span class="pre">Always doxastic; may reach impossibles / what depends on others.</span></li>
+        <li class="t4"><span class="tt">Type 4 · Prohairetic</span> (<i>prohairesis</i>) — deliberate choice of <i>means</i>. <span class="pre">Always doxastic; bounded by &ldquo;in our power&rdquo; (NE III.3 1112a31).</span></li>
+      </ol>
+      <p class="pre">Civic passions (anger, fear, pity, shame, indignation, envy, emulation, kindness, friendship) form <b>no type of their own</b>: they are the species of being‑affected through which one of the four desires gets sourced (§1.4).</p>
+    </div>
+  </div>
+
+  <!-- RECURSION ribbon -->
+  <div class="recur">
+    <b>⟲ Recursion — the diachronic register (macro phase).</b> A₄ is the terminus, not the conclusion: each completed <i>praxis</i> sediments
+    <span class="pp">hexis</span><span class="pp">deposits Stimmung</span><span class="pp">settles doxai</span> → re‑enters as a transformed <b>A₀′</b> — a <i>spiral, not a circle</i>.
+    Two mechanisms bias the next pass: <b>Stimmung‑saturation</b> at A₁ (De Insomn. 460b3–11) + <b>corrective‑faculty impairment</b> at M₂→A₃ (459a24–28).
+    Career‑level reads: <b>mastery</b> (Type‑4 → technē‑hexis) · <b>wisdom</b> (Type‑4 → ethical‑hexis, two‑level reach) · <b>compulsion</b> (Type‑1 without higher‑hexis accrual) · <b>alterbiography</b> = Narrative‑macro accretion (<i>push‑narrative</i>) · <b>burnout/accidie</b> (god‑term consumed, Agency–Purpose lapsed).
+  </div>
+
+  <!-- DETAIL panel -->
+  <div class="detail" id="detail">
+    <div class="dh" id="dh" style="background:var(--onto)">Hover or click any node, motion, or the hexagon for its full ontological wiring</div>
+    <div class="db" id="db"><div class="full hint">Each card shows, top‑to‑bottom: what actualizes (ontology) · Burke term (Axis M) · Calleja dimension (Axis I) · structural game element. Connectors are the four motions = Burke's ratios.</div></div>
+  </div>
+</div>
+
+<div class="footkey">
+  <b>Citation key:</b> <code>DA</code> De Anima · <code>MA</code> De Motu Animalium · <code>Phys.</code> Physics · <code>Met.</code> Metaphysics · <code>NE</code> Nic. Ethics · <code>De Insomn.</code> De Insomniis · <code>BCAP</code> Heidegger, <i>Basic Concepts of Aristotelian Philosophy</i> · <code>BT</code> Being &amp; Time · <code>RM</code> Burke, <i>Rhetoric of Motives</i> · <code>IG</code> Calleja, <i>In‑Game</i> · <code>§N.M</code> dissertation §§1.0–1.5 v3.
+</div>
+
+<script>
+/* ---------- node data (grounded in ontological-wiring-A0-A4.md §1–2 + Part F + crosswalk) ---------- */
+const NODES = [
+ { id:"A₀", title:"Sensible Object &amp; Aisthētikon — the ontological horizon",
+   onto:"Dyadic <i>first</i> actuality: the object's active potency + the <i>aisthētikon</i>'s receptive potency, within the horizon of motion + time; the gameworld as designed <i>Umwelt</i> / <i>Bewandtnisganzheit</i>.",
+   b:"Scene", bd:"container of the act; place‑as‑inhabited",
+   c:"Spatial", cd:"the strongest binding (Scene↔Spatial)",
+   g:"setting · world‑design · level geometry · art direction",
+   entry:"", step:0,
+   kin:"M₀→A₁ — unmoved originator: A₀ horizon + object's active potency · moved mover: sense faculty · moved: the perceiver.",
+   cites:"Phys. III.1 201a10–14 · Met. XII.6 1071b6–11 · §1.1",
+   extra:"Not the keystone — the horizon/precondition, not the union event."},
+
+ { id:"A₁", title:"Completed Perception + dual resonance",
+   onto:"Object's active + organ's receptive potency jointly actualize as <i>aisthēma</i>, co‑given with basic affective valence (<i>resonant epithymia</i>) — &ldquo;one substrate, two in being.&rdquo; Deposits the dual residual trace at the rational soul.",
+   b:"Agency &middot; Attitude‑seed", bd:"kinesthetic fluency‑residue (the means felt); Stimmung‑saturation begins here",
+   c:"Kinesthetic &middot; Affective", cd:"control (learning→fluency); basic valence / atmosphere",
+   g:"the feel of the controls · first mood/atmosphere contact",
+   entry:"SENSE ENTRY", step:1,
+   kin:"M₁→A₂ — unmoved originator: A₁ (completed perception + dual resonance) · moved mover: phantasia · moved: psycho‑somatic state.",
+   cites:"DA III.2 425b26 · III.7 431a13–14 · §1.2",
+   extra:"Holds the seed of incorporation R1 (assimilation)."},
+
+ { id:"A₂", title:"The Phantasma Proper",
+   onto:"Stabilized residual motion crystallized by <i>phantasia</i> at the central organ — determinacy · availability · representationality — bearing the dual‑aspect inheritance (formal‑eidetic imprint + affective‑orectic charge).",
+   b:"Agent &middot; Act", bd:"phantasma‑of‑avatar/role (the Hazlitt–Burke identification foothold); the <i>choosing</i>‑phantasma (act as imagined option)",
+   c:"(Narrative image)", cd:"the scenario/role as imagined",
+   g:"avatar · character · role‑image · &ldquo;what I could do&rdquo;",
+   entry:"IMAGINATION ENTRY", step:2,
+   kin:"Forms the phantasma that M₂→A₃ takes up. Burke's explicit foothold sits here (identification via imaginative projection, §1.3).",
+   cites:"DA III.3 428b10–16; 429a1–2 · §1.3",
+   extra:"Imagination entry: a re‑engaged phantasma (memory, anticipation, prior‑gameplay residue) can open the chain here."},
+
+ { id:"A₃", title:"Completed Cognitive Actuality + doxastic ratification",
+   onto:"The phantasma engaged by three non‑committal <b>orientational modes</b> — intellection (atemporal universal) · memory (retrospective) · discursive (deliberative‑prospective + speculative) — plus the orthogonal committal layer <b>doxa</b> (involuntary taking‑as‑true). The evaluative hinge.",
+   b:"Agent · Agency · Purpose", bd:"agent doxastically‑ratified (the &ldquo;WE,&rdquo; Mitsein); rule‑system grasped as atemporal universal; the wished‑<i>end</i> held in view",
+   c:"Shared · Ludic · Narrative · Affective", cd:"the WE; rule‑system; goal; civic‑passion concretization",
+   g:"goal/quest understood · allegiance/guild · rules‑as‑principle · the &ldquo;what this means&rdquo; verdict",
+   entry:"THOUGHT ENTRY", step:3,
+   kin:"M₂→A₃ — unmoved originator: A₂ phantasma + held doxai + cultivated hexeis · moved mover: rational cognitive apparatus · moved: the rational animal. (Burke's ratios + the Ludic split originate on this motion.)",
+   cites:"DA III.7 431a8–12 · §§1.3, 1.5",
+   extra:"Keystone first ratified here (doxa ratifies the phantasma‑of‑acting‑together). Speculative mode <i>moves nothing</i> — there the chain terminates at A₃."},
+
+ { id:"A₄", title:"Completed Action (praxis) + recursion",
+   onto:"<i>Orexis</i> has passed through the <i>orektikon</i> and issued in enacted bodily comportment toward the world. &ldquo;Recursive, not linear.&rdquo; Individuated into the <b>Four Types of Action</b>.",
+   b:"Act · Attitude", bd:"the enacted praxis; Attitude now an <i>incipient act</i> (the hinge to identification)",
+   c:"Ludic → INCORPORATION", cd:"choosing‑under‑repercussion; incorporation consummated",
+   g:"the deed · the choice‑under‑repercussion · the outcome",
+   entry:"", step:4,
+   kin:"M₃→A₄ — unmoved originator: the realizable good disclosed at A₃ · moved mover: orexis · moved: the animal via the joint (433b21–25). Somatic preparation internal to the motion (MA 7 702a17–19).",
+   cites:"§§1.5, 1.4",
+   extra:"The keystone (consubstantiation↔incorporation) is consummated across A₃→A₄; the Agency–Purpose ratio — the compulsion diagnostic — operates on this motion."}
+];
+
+const MOTIONS = [
+ {at:1, m:"M₀→A₁", label:"Perceptual", ratio:"Scene–Act"},
+ {at:2, m:"M₁→A₂", label:"Phantastic", ratio:"image‑forming"},
+ {at:3, m:"M₂→A₃", label:"Cognitive", ratio:"ratios + Ludic split"},
+ {at:4, m:"M₃→A₄", label:"Orektikon", ratio:"Agency–Purpose ✦keystone"}
+];
+
+const COLORS={onto:getComputedStyle(document.documentElement).getPropertyValue('--onto'),
+  burke:getComputedStyle(document.documentElement).getPropertyValue('--burke'),
+  key:getComputedStyle(document.documentElement).getPropertyValue('--key')};
+
+/* ---------- render spine ---------- */
+const spine=document.getElementById('spine');
+NODES.forEach((n,i)=>{
+  const el=document.createElement('div');
+  el.className='node'; el.dataset.i=i;
+  el.innerHTML=`
+    <span class="stepno live">${n.step+1}</span>
+    <span class="stepno analyze">${5-n.step}</span>
+    ${n.entry?`<span class="entry">${n.entry}</span>`:''}
+    <div class="nid">${n.id}</div>
+    <div class="ntitle">${n.title}</div>
+    <div class="onto">${n.onto.length>150?n.onto.slice(0,148)+'…':n.onto}</div>
+    <div class="chip b"><span class="k">M · ${n.b}</span><br>${n.bd}</div>
+    <div class="chip c"><span class="k">I · ${n.c}</span><br>${n.cd}</div>
+    <div class="chip g">▸ ${n.g}</div>
+    <div class="kin">⚙ ${n.kin}</div>`;
+  el.addEventListener('mouseenter',()=>showDetail(i));
+  el.addEventListener('click',()=>{selNode(i);showDetail(i);});
+  spine.appendChild(el);
+});
+/* motion connectors positioned at the gaps */
+MOTIONS.forEach(mo=>{
+  const c=document.createElement('div');
+  c.className='motion'; c.style.left=(mo.at*20)+'%';
+  c.innerHTML=`<div class="ml">${mo.m}</div><div class="arr">▶</div><div class="ratio">${mo.ratio}</div>`;
+  spine.appendChild(c);
+});
+
+/* ---------- detail panel ---------- */
+function showDetail(i){
+  const n=NODES[i];
+  document.getElementById('dh').style.background=COLORS.onto;
+  document.getElementById('dh').innerHTML=`${n.id} &nbsp;·&nbsp; ${n.title}`;
+  document.getElementById('db').innerHTML=`
+    <div class="row full"><span class="lab">What actualizes (ontology)</span>${n.onto}</div>
+    <div class="row"><span class="lab" style="color:var(--burke)">Burke · Axis M (motive)</span><b>${n.b}</b> — ${n.bd}</div>
+    <div class="row"><span class="lab" style="color:var(--calleja)">Calleja · Axis I (involvement)</span><b>${n.c}</b> — ${n.cd}</div>
+    <div class="row"><span class="lab">Structural game element</span>${n.g}</div>
+    <div class="row"><span class="lab" style="color:var(--recur)">Kinetic schema (3‑factor)</span>${n.kin}</div>
+    <div class="row full"><span class="lab">Note</span>${n.extra} <span class="cite">— ${n.cites}</span></div>`;
+}
+function selNode(i){document.querySelectorAll('.node').forEach(e=>e.classList.remove('sel'));
+  document.querySelectorAll('.node')[i].classList.add('sel');}
+
+/* ---------- controls ---------- */
+document.getElementById('modeSeg').addEventListener('click',e=>{
+  if(e.target.dataset.mode){
+    document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.remove('active'));
+    e.target.classList.add('active');
+    document.body.className=document.body.className.replace(/mode-\w+/,'mode-'+e.target.dataset.mode);
+  }
+});
+document.getElementById('kinTog').addEventListener('change',e=>document.body.classList.toggle('show-kin',e.target.checked));
+document.getElementById('hexTog').addEventListener('change',e=>document.body.classList.toggle('show-hexis',e.target.checked));
+
+/* ---------- PIM hexagon (Calleja fig 3.1, redrawn as keystone cross-section) ---------- */
+(function(){
+  const svg=document.getElementById('hex'), cx=160, cy=150, R=120, ri=34;
+  const dims=[
+    {name:"Spatial",  burke:"Scene",   col:"#3b6ea5"},
+    {name:"Kinesthetic",burke:"Agency", col:"#1c7273"},
+    {name:"Shared",   burke:"Agent",   col:"#6a4c93"},
+    {name:"Narrative",burke:"Act/Purp",col:"#a8472a"},
+    {name:"Affective",burke:"Attitude",col:"#b8902f"},
+    {name:"Ludic",    burke:"Act+Purp",col:"#8a2c4d"}
+  ];
+  const ang=k=>(-90+60*k)*Math.PI/180;
+  const pt=(r,a)=>[cx+r*Math.cos(a), cy+r*Math.sin(a)];
+  let html='';
+  // outer macro ring hint
+  html+=`<circle cx="${cx}" cy="${cy}" r="${R+2}" fill="none" stroke="#e7dfce" stroke-width="14" opacity=".5"/>`;
+  for(let k=0;k<6;k++){
+    const a0=ang(k)-Math.PI/6, a1=ang(k)+Math.PI/6;
+    const [x0,y0]=pt(R,a0), [x1,y1]=pt(R,a1), [xi0,yi0]=pt(ri,a0), [xi1,yi1]=pt(ri,a1);
+    html+=`<path d="M${xi0.toFixed(1)},${yi0.toFixed(1)} L${x0.toFixed(1)},${y0.toFixed(1)} L${x1.toFixed(1)},${y1.toFixed(1)} L${xi1.toFixed(1)},${yi1.toFixed(1)} Z"
+      fill="${dims[k].col}" fill-opacity=".16" stroke="${dims[k].col}" stroke-width="1.4">
+      <title>${dims[k].name} ↔ ${dims[k].burke}</title></path>`;
+    const [lx,ly]=pt(R*0.74,ang(k));
+    html+=`<text x="${lx.toFixed(1)}" y="${(ly-2).toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${dims[k].col}">${dims[k].name}</text>`;
+    html+=`<text x="${lx.toFixed(1)}" y="${(ly+10).toFixed(1)}" text-anchor="middle" font-size="9" fill="#6b6258">↔ ${dims[k].burke}</text>`;
+  }
+  // center = incorporation/consubstantiation
+  html+=`<circle cx="${cx}" cy="${cy}" r="${ri}" fill="#8a2c4d"/>`;
+  html+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">INCORP.</text>`;
+  html+=`<text x="${cx}" y="${cy+7}" text-anchor="middle" font-size="8" fill="#f3d9e2">≙ consub.</text>`;
+  html+=`<text x="${cx}" y="${cy+17}" text-anchor="middle" font-size="7.5" fill="#f3d9e2">A₃→A₄</text>`;
+  // macro/micro radial labels
+  html+=`<text x="${cx}" y="20" text-anchor="middle" font-size="8.5" fill="#9a8f7a">outer = macro / diachronic</text>`;
+  html+=`<text x="${cx}" y="${cy+ri+18}" text-anchor="middle" font-size="8.5" fill="#9a8f7a">inner = micro / synchronic</text>`;
+  svg.innerHTML=html;
+  // hex hover → detail
+  svg.addEventListener('mouseenter',()=>{
+    document.getElementById('dh').style.background=COLORS.key;
+    document.getElementById('dh').innerHTML='Keystone · Consubstantiation ≙ Incorporation (A₃→A₄ substantial union)';
+    document.getElementById('db').innerHTML=`
+      <div class="row full">Calleja's six PIM dimensions (fig. 3.1) are the involvement‑texture threading the whole chain. They converge here exactly as his wedges converge on incorporation — the cross‑section of the chain at the A₃→A₄ union.</div>
+      <div class="row"><span class="lab" style="color:var(--burke)">Burke</span>consubstantiation: &ldquo;substantially one … yet a distinct locus of motives — both joined and separate&rdquo; (RM‑01 p.21), grounded in acting‑together.</div>
+      <div class="row"><span class="lab" style="color:var(--calleja)">Calleja</span>incorporation: assimilation (world→consciousness) + embodiment (player→world via avatar) + simultaneity (IG‑10 p.169).</div>
+      <div class="row full"><span class="lab" style="color:var(--key)">Structural anchor</span>Aristotle's &ldquo;one substrate, two in being&rdquo; (DA III.7 431a13–14) extended to social substance. Homology R1–R5, not equation (five divergences: medium · ontological status · grounding theory · directionality · scope).</div>`;
+  });
+})();
+
+/* default detail */
+showDetail(3);
+</script>
+</body>
+</html>

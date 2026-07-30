@@ -1,0 +1,69 @@
+%% Graph 2 — Concept-axis: 4 debate axes × 2 poles, with 8 units placed
+%% D1 interpretive vs presentational  (image-residue/pictorial)
+%% D4 central (rhetoric/cognition core) vs peripheral (Book-III-lexis only)
+%% (mapped as cognitive-vs-rhetorical home)
+%% D2 cognitive-faculty vs supervenient-capacity  (renamed cognitive-vs-rhetorical role of phantasia)
+%% D3 unitary-vs-tripartite
+flowchart TB
+    classDef pole fill:#ffe0b2,stroke:#e65100,stroke-width:2px,color:#000
+    classDef unit fill:#e1f5fe,stroke:#0277bd,stroke-width:1px,color:#000
+    classDef rhet fill:#f3e5f5,stroke:#6a1b9a,color:#000
+
+    subgraph AX1 ["D1: Interpretive vs Presentational"]
+        P1A["Interpretive<br/>(seeing-as)"]:::pole
+        P1B["Presentational<br/>(image-residue)"]:::pole
+    end
+
+    subgraph AX2 ["D4: Central vs Peripheral (Rhet. home)"]
+        P2A["Central<br/>(epideictic / Rhet II emotions)"]:::pole
+        P2B["Peripheral<br/>(Book-III lexis only)"]:::pole
+    end
+
+    subgraph AX3 ["D2: Cognitive-faculty vs Rhetorical/Supervenient"]
+        P3A["Cognitive faculty<br/>(own-capacity)"]:::pole
+        P3B["Supervenient<br/>(no separate faculty)"]:::pole
+    end
+
+    subgraph AX4 ["D3: Unitary vs Tripartite"]
+        P4A["Unitary / binary<br/>(logistike+aisthetike)"]:::pole
+        P4B["Tripartite<br/>(third indefinite tier)"]:::pole
+    end
+
+    U1["PHX-01 Nussbaum"]:::unit
+    U2["PHX-02 White"]:::unit
+    U3["PHX-03 Frede"]:::unit
+    U4["PHX-04 Caston"]:::unit
+    U5["PHX-05 O'Gorman"]:::rhet
+    U6["PHX-06 Gonzalez"]:::rhet
+    U7["PHX-07 Hawhee"]:::rhet
+    U8["PHX-08 Papachristou"]:::unit
+
+    %% D1 placements
+    P1A --- U1
+    P1A --- U5
+    P1A --- U6
+    P1A --- U7
+    P1B --- U2
+    P1B --- U3
+    P1B --- U8
+    P1B --- U4
+
+    %% D4 placements (rhetorical home)
+    P2A --- U5
+    P2A --- U6
+    P2A --- U7
+    P2B --- U3
+    P2B --- U4
+
+    %% D2 placements
+    P3A --- U1
+    P3A --- U4
+    P3A --- U8
+    P3B --- U3
+
+    %% D3 placements
+    P4A --- U1
+    P4A --- U3
+    P4A --- U4
+    P4A --- U2
+    P4B --- U8

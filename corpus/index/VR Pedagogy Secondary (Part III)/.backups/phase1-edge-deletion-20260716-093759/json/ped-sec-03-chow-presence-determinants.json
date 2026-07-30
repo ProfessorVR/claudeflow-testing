@@ -1,0 +1,90 @@
+{
+  "id": "ped-sec-03",
+  "slug": "chow-presence-determinants",
+  "citation": "Chow, M. (2016). Determinants of presence in 3D virtual worlds: A structural equation modelling analysis. Australasian Journal of Educational Technology, 32(1), 1-18.",
+  "discipline": "nursing education / educational technology (technology-acceptance & presence research)",
+  "strand": "A",
+  "depth": "deep",
+  "thesis": "Presence research disproportionately studies technology-side determinants (immersion, interactivity, perceptual realism) while user-characteristic determinants remain understudied, despite presence being a psychological state of the user; Chow tests a structural-equation model in which subjective norm, perceived ease of use, and computer self-efficacy predict perceived usefulness, and perceived usefulness together with computer self-efficacy directly predict self presence, among 185 nursing students in a Second Life PPE-training simulation, framing the result as an initial, empirically validated model of individually-determined presence antecedents (FE, p.1, p.4, p.6-7, p.16).",
+  "sections": [
+    { "title": "Introduction", "page": "1", "summary": "Frames 3D virtual worlds as an educational platform and states the study's user-characteristics gap: most presence research emphasizes technology/immersive determinants over user-side determinants." },
+    { "title": "The concept of presence", "page": "2", "summary": "Surveys Lombard & Ditton's (1997) six explications and 'perceptual illusion of non-mediation' definition, then Lee's (2004) physical/social/self presence typology; narrows focus to self presence; situates presence as a human reaction to immersion (Slater)." },
+    { "title": "Presence and learning in virtual 3D environments", "page": "3", "summary": "Reviews prior presence-learning findings (Mikropoulos & Natsis; Selverian & Hwang; Mikropoulos 2006); motivates the PPE-in-SL design via clinical-placement constraints in nursing education." },
+    { "title": "Determinants of presence", "page": "3-4", "summary": "Introduces the study's own two-category framework — media characteristics (form/content) vs. user characteristics (cognitive/emotional/motivational) — arguing the latter is understudied." },
+    { "title": "Methodology — virtual world environment", "page": "5-6", "summary": "Describes the custom Second Life PPE simulation: virtual dressing room, ten-room ward, sequenced donning/doffing tasks, automated performance log." },
+    { "title": "Methodology — research model and hypotheses", "page": "6-7", "summary": "Derives the model from Dunnington's (2012) NDPM and Davis's (1989) TAM; states five hypotheses (H1-H5) linking SN, PEOU, CSE to PU, and PU/CSE to presence." },
+    { "title": "Methodology — instrument, sample and data collection", "page": "7-8", "summary": "14-item, 7-point-Likert instrument across five constructs adapted from validated scales; N=185 undergraduate nursing students." },
+    { "title": "Data analysis and results", "page": "9-13", "summary": "Two-step SEM (AMOS 19.0): measurement model then structural model, both good fit; all five hypotheses supported at p<.001." },
+    { "title": "Discussion and Conclusions", "page": "12-14, 16", "summary": "Interprets CSE's dominant effect via Sweller's cognitive load theory; discusses PU/SN roles; states limitations (single-institution, cross-sectional, self-selected sample); frames the model as a first step." }
+  ],
+  "constructs": [
+    { "label": "embodiment / self-representation", "treatment": "sole dependent construct; Lee's (2004) self presence, operationalized via three avatar-motor-correspondence items; PU and CSE jointly explain 52% of its variance", "locus": "p.2, p.7-8, p.11-12" },
+    { "label": "self-efficacy", "treatment": "computer self-efficacy (CSE); direct antecedent of PU and of presence; strongest total predictor of presence (0.53)", "locus": "p.7, p.11, p.13" },
+    { "label": "cognitive load (extraneous vs germane)", "treatment": "not an SEM variable; post-hoc Sweller-derived explanation for CSE's dominant effect via extraneous-load-on-interface-navigation", "locus": "p.12" },
+    { "label": "presence (spatial/physical)", "treatment": "typological backdrop only (Lee's tripartite division); not modeled or measured", "locus": "p.2" },
+    { "label": "social presence / co-presence", "treatment": "typological backdrop only; explicitly excluded from the study's self-presence focus", "locus": "p.2-3" },
+    { "label": "affect: enjoyment & intrinsic motivation", "treatment": "mentioned only via a cited prior finding (deByl 2009) in the lit review; no affect/motivation construct in Chow's own SEM", "locus": "p.3" },
+    { "label": "representational fidelity", "treatment": "named as part of the 'media characteristics' determinant category, then set aside as already well-studied so the paper can focus on user characteristics", "locus": "p.3-4" },
+    { "label": "learning outcomes: procedural / skills", "treatment": "design intent only — PPE simulation built as a skills trainer with a performance log — but no skills/performance data collected; presence is the sole DV", "locus": "p.4-6, p.7" }
+  ],
+  "conditions": [
+    {
+      "label": "desktop-3D / non-immersive VR",
+      "design": "single-group, cross-sectional; custom Second Life PPE-training simulation (virtual dressing room + 10-room ward), desktop-accessed, no HMD; no comparison condition",
+      "N": 185,
+      "sample": "undergraduate nursing students, ages 20-24, 67.6% female; 12% first-year, 65% second-year, 23% final-year; 65% with no prior 3D-game/animation experience; single institution, voluntary/self-selected",
+      "instruments": "14-item, 7-point Likert survey: SN (2 items, Taylor & Todd 1995), PEOU (3 items, Venkatesh & Davis 2000), CSE (2 items, Vijayasarathy 2004), PU (4 items, Venkatesh & Davis 2000), self presence (3 items, Jin & Park 2009)",
+      "analysis": "two-step SEM (AMOS 19.0): CFA measurement model then structural model",
+      "modelFit": "measurement model chi2/df=1.78, RMSEA=.06, NFI=.96, NNFI=.97, CFI=.98; structural model chi2/df=1.74, RMSEA=.06, NFI=.96, NNFI=.97, CFI=.98; reliability alpha .81-.94; AVE>.50 throughout",
+      "effectDirection": "all 5 hypotheses supported p<.001; SN(.32)+PEOU(.44)+CSE(.21) -> 65% variance in PU; PU(.36)+CSE(.45 direct/.53 total) -> 52% variance in self presence; CSE strongest total predictor",
+      "locus": "p.5-13"
+    },
+    {
+      "label": "SEM / process model (no media contrast)",
+      "design": "no between-media or between-group comparison arm; single desktop-3D condition modeled as a nomological network of antecedent-to-outcome paths, not a media-comparison design",
+      "locus": "p.9-12"
+    }
+  ],
+  "readings": [
+    { "claim": "Computer self-efficacy has the strongest direct and total effect on self presence of any variable in the model, exceeding perceived usefulness.", "type": "READING/CLAIM", "stance": "reports-result", "locus": "p.11, p.13", "tag": "FAITHFUL-Chow" },
+    { "claim": "Perceived ease of use is the strongest predictor of perceived usefulness, followed by subjective norm, then computer self-efficacy.", "type": "READING/CLAIM", "stance": "reports-result", "locus": "p.13", "tag": "FAITHFUL-Chow" },
+    { "claim": "All five hypothesized paths (SN->PU, PEOU->PU, CSE->PU, CSE->presence, PU->presence) are statistically supported.", "type": "READING/CLAIM", "stance": "reports-result", "locus": "p.11", "tag": "FAITHFUL-Chow" },
+    { "claim": "Cognitive load theory (Sweller) explains CSE's dominant effect: low computer self-efficacy consumes cognitive resources on interface navigation, leaving fewer resources for immersion.", "type": "READING/CLAIM", "stance": "interprets", "locus": "p.12", "tag": "FAITHFUL-Chow" },
+    { "claim": "Because presence depends heavily on user confidence and perceived value, designers/educators should invest in orientation sessions and support to build computer self-efficacy rather than relying solely on technological fidelity.", "type": "READING/CLAIM", "stance": "recommends", "locus": "p.12-13", "tag": "FAITHFUL-Chow" },
+    { "claim": "The model is a first test only, limited by single-institution, cross-sectional, and voluntary/self-selected sampling, needing experimental follow-up.", "type": "READING/CLAIM", "stance": "qualifies", "locus": "p.13", "tag": "FE" }
+  ],
+  "concepts": [
+    { "term": "subjective norm (SN)", "type": "TERM", "locus": "p.7" },
+    { "term": "perceived ease of use (PEOU)", "type": "TERM", "locus": "p.7" },
+    { "term": "computer self-efficacy (CSE)", "type": "TERM", "locus": "p.7" },
+    { "term": "perceived usefulness (PU)", "type": "TERM", "locus": "p.7" },
+    { "term": "self presence", "type": "TERM", "locus": "p.2" },
+    { "term": "Nature and Determinants of Presence Model (NDPM)", "type": "TERM", "locus": "p.6-7" },
+    { "term": "centricity (endocentricity/exocentricity)", "type": "TERM", "locus": "p.6" },
+    { "term": "Technology Acceptance Model (TAM)", "type": "TERM", "locus": "p.6-7" }
+  ],
+  "interlocutors": [
+    { "name": "Lombard, Matthew & Theresa Ditton (= ped-sec-01)", "role": "source of the six explications of presence and the 'perceptual illusion of non-mediation' definition opening the lit review", "locus": "p.2" },
+    { "name": "Lee, Kwan Min", "role": "source of the physical/social/self presence typology; Chow adopts self presence as the study's focus construct", "locus": "p.2" },
+    { "name": "Slater, Mel", "role": "cited for 'presence is a human reaction to immersion,' distinguishing immersion (objective) from presence (subjective)", "locus": "p.2" },
+    { "name": "Sweller, John", "role": "cognitive load theory supplies the Discussion's explanation for CSE's dominant effect", "locus": "p.12" },
+    { "name": "Davis, Fred D.", "role": "originator of TAM; source of the PU/PEOU belief pair Chow imports as the study's core mechanism", "locus": "p.6-7" },
+    { "name": "Dunnington, Regina M.", "role": "author of the NDPM, the grounded-theory framework Chow's research model is explicitly derived from", "locus": "p.6" },
+    { "name": "Witmer, Jerome & Singer (2005 factor-structure paper)", "role": "cited only as one of several 'key authors of presence'; NOT the 1998 Presence Questionnaire paper built in this cluster as ped-sec-02 — Chow never cites the 1998 paper directly", "locus": "p.6" }
+  ],
+  "tensions": [
+    { "axis": "technology-determined presence (Witmer & Singer's Control/Sensory/Distraction/Realism, ped-sec-02) vs. psychologically/individually-determined presence (Chow's SN/PEOU/CSE/PU)", "note": "(P/anticipatory-application) This cluster's own debate-axis-3 construction; Chow does not cite Witmer & Singer's 1998 paper directly, only their 2005 follow-up.", "locus": "p.3-4" },
+    { "axis": "self presence (Chow's own focus) vs. social presence / co-presence (Lee's other type, and Strand F's primary construct)", "note": "Chow explicitly narrows to self presence and sets social presence aside; the two literatures should not be silently merged.", "locus": "p.2-3" },
+    { "axis": "presence as a variable predicted from user-side antecedents (Chow's NDPM/TAM-derived approach) vs. presence as a function of media/immersion level (Strand C's later media-comparison designs)", "note": "(P/anticipatory-application) Methodologically distinct traditions within the same construct space; useful for different claims, not interchangeable.", "locus": "p.3-4, p.6-7" },
+    { "axis": "Dunnington's broader NDPM (pedagogical + individual + group factors, plus a centricity mediator and learning-outcome endpoint) vs. Chow's own narrower, TAM-derived four-variable model (no pedagogical factors, no centricity measure, no learning-outcome data)", "note": "Chow presents the study's model as a simplified, testable instantiation of NDPM's individual/group categories, not a full test of NDPM itself.", "locus": "p.6-7" }
+  ],
+  "bridges": {
+    "vle": ["vle-01-deployment-survey"],
+    "boredomExperimentDataset": ["****** UNVERIFIED: anchor not yet built"]
+  },
+  "extraction": {
+    "tool": "pdftotext",
+    "date": "2026-07-15",
+    "ocr_confidence": "high"
+  }
+}

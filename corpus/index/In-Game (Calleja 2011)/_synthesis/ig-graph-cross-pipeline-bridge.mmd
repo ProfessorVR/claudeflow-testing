@@ -1,0 +1,130 @@
+---
+title: IG Cross-Pipeline Bridge Graph (graph 5 of 5)
+---
+%% Calleja 2011 In-Game cross-pipeline bridge. HARD CAP 25 edges (this file = exactly 25).
+%% Edge priority per plan §5: dissertation > Uexkull/Burke > Phantasia > US > BCAP/AMT.
+%% Provenance: solid = calleja-exegetical; dashed = anticipatory-projection;
+%% thick + magenta linkStyle = mediated-exegetical (Sartre/Iser -> Phantasia Cluster, Calleja pp.127-130).
+%% FALSIFIED: Gibson-as-implicit-Uexkull-bridge hypothesis falsified Phase 0
+%% (zero Gibson by-name citations; 11 generic 'affordances' uses). Uexkull bridge therefore
+%% singly-anchored anticipatory-projection. Gibson included only as pending-future-pipeline node.
+flowchart LR
+    %% ===== IG canonical-concept nodes (left cluster) =====
+    subgraph IG["Calleja In-Game canonical concepts"]
+        direction TB
+        IG_PIM["C-001 PIM"]
+        IG_INC["C-003 Incorporation"]
+        IG_HAB["C-008 Habitation"]
+        IG_ALT["C-009 Alterbiography"]
+        IG_ERG["C-010 Ergodic Disposition"]
+        IG_KIN["D-001 KINESTHETIC"]
+        IG_SPA["D-002 SPATIAL"]
+        IG_SHA["D-003 SHARED"]
+        IG_NAR["D-004 NARRATIVE"]
+        IG_AFF["D-005 AFFECTIVE"]
+        IG_LUD["D-006 LUDIC"]
+        IG_MAC["T-001 Macro Phase"]
+    end
+
+    %% ===== External pipeline nodes (right side, by priority) =====
+    subgraph DISS["Dalton Dissertation (highest priority)"]
+        DISS_FRAME["Dissertation 3-layer<br/>operational framework"]
+    end
+
+    subgraph UEX["Uexkull Foray"]
+        UX_FK["Funktionskreis<br/>(functional circle)"]
+        UX_UM["Umwelt<br/>(species-bounded env)"]
+        UX_MT["Merktone / Wirktone<br/>(perception/effect tones)"]
+    end
+
+    subgraph BURKE["Burke (pentad + consubstantiation)"]
+        BU_GOM["Grammar of Motives 1945<br/>(pentad source)"]
+        BU_ROM["Rhetoric of Motives<br/>(consubstantiation)"]
+        BU_HAW["Hawhee 2009<br/>Moving Bodies (corpus anchor)"]
+    end
+
+    subgraph PHANT["Phantasia Cluster"]
+        PH_CL["Phantasia Cluster<br/>(Hawhee + Papachristou + ...)"]
+    end
+
+    subgraph US["Uncomfortable Situations"]
+        US_GR["Gross 2017<br/>situated emotion"]
+    end
+
+    subgraph BCAP_AMT["Heidegger BCAP + Bowin AMT"]
+        BC["Heidegger BCAP<br/>(In-der-Welt-sein / kairos)"]
+        AM["Bowin AMT<br/>(motion-toward-end)"]
+    end
+
+    subgraph PENDING["Pending Future Pipeline"]
+        GIBSON["J.J. Gibson<br/>Ecological Approach<br/>(pending-future-pipeline)<br/>NOTE: implicit-bridge hypothesis FALSIFIED"]
+    end
+
+    %% ===== EDGES (25 total) =====
+
+    %% --- Tier 1: DISSERTATION (4 edges) ---
+    DISS_FRAME -.-> IG_PIM
+    DISS_FRAME -.-> IG_INC
+    DISS_FRAME -.-> IG_ALT
+    DISS_FRAME -.-> IG_MAC
+
+    %% --- Tier 2: UEXKULL + BURKE (11 edges) ---
+    IG_SPA -.-> UX_UM
+    IG_KIN -.-> UX_FK
+    IG_AFF -.-> UX_MT
+    IG_HAB -.-> UX_UM
+
+    IG_INC -.-> BU_ROM
+    IG_KIN -.-> BU_GOM
+    IG_SPA -.-> BU_GOM
+    IG_SHA -.-> BU_GOM
+    IG_NAR -.-> BU_GOM
+    IG_AFF -.-> BU_GOM
+    IG_LUD -.-> BU_GOM
+
+    %% Hawhee Moving Bodies = existing corpus Burke anchor (corpus-internal solid)
+    BU_HAW --> BU_GOM
+
+    %% --- Tier 3: PHANTASIA (mediated-exegetical, thick) — 4 edges ---
+    IG_NAR ==> PH_CL
+    IG_ALT ==> PH_CL
+    IG_SPA ==> PH_CL
+    IG_MAC ==> PH_CL
+
+    %% --- Tier 4: UNCOMFORTABLE SITUATIONS (1 edge) ---
+    IG_AFF -.-> US_GR
+
+    %% --- Tier 5: BCAP + AMT (3 edges) ---
+    IG_HAB -.-> BC
+    IG_ERG -.-> BC
+    IG_LUD -.-> AM
+
+    %% --- Pending Gibson: 1 edge (annotation of falsified hypothesis) ---
+    UX_FK -.-> GIBSON
+
+    %% ===== Styling — mediated-exegetical edges visually distinct =====
+    %% Thick edges are the 4 mediated-exegetical Sartre/Iser -> Phantasia bridges.
+    %% linkStyle indices for ==> edges (zero-indexed in order of appearance):
+    %% 0-3 = DISS (dashed); 4-7 = UEX (dashed); 8-14 = BURKE dashed; 15 = BU_HAW->GOM (solid);
+    %% 16-19 = PHANT mediated (thick); 20 = US (dashed); 21-22 = BCAP (dashed); 23 = AMT (dashed); 24 = GIBSON (dashed)
+    linkStyle 16 stroke:#d81b60,stroke-width:4px,stroke-dasharray: 8 4;
+    linkStyle 17 stroke:#d81b60,stroke-width:4px,stroke-dasharray: 8 4;
+    linkStyle 18 stroke:#d81b60,stroke-width:4px,stroke-dasharray: 8 4;
+    linkStyle 19 stroke:#d81b60,stroke-width:4px,stroke-dasharray: 8 4;
+
+    classDef igNode fill:#c8e6c9,stroke:#1b5e20,stroke-width:2px;
+    classDef diss fill:#ffccbc,stroke:#bf360c,stroke-width:3px;
+    classDef uex fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef burke fill:#fce4ec,stroke:#880e4f,stroke-width:2px;
+    classDef phant fill:#f8bbd0,stroke:#ad1457,stroke-width:3px;
+    classDef us fill:#e1bee7,stroke:#4a148c,stroke-width:2px;
+    classDef bcap fill:#bbdefb,stroke:#0d47a1,stroke-width:2px;
+    classDef pending fill:#eeeeee,stroke:#616161,stroke-width:1px,stroke-dasharray: 3 3,font-style:italic;
+    class IG_PIM,IG_INC,IG_HAB,IG_ALT,IG_ERG,IG_KIN,IG_SPA,IG_SHA,IG_NAR,IG_AFF,IG_LUD,IG_MAC igNode;
+    class DISS_FRAME diss;
+    class UX_FK,UX_UM,UX_MT uex;
+    class BU_GOM,BU_ROM,BU_HAW burke;
+    class PH_CL phant;
+    class US_GR us;
+    class BC,AM bcap;
+    class GIBSON pending;

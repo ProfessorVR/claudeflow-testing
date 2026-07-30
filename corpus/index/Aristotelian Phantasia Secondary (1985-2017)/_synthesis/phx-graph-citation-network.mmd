@@ -1,0 +1,56 @@
+%% Graph 1 — Intra-cluster directed citation network
+%% Nodes: 8 (PHX-01..08). Edges: solid = citations; dashed = documented citation gaps
+%% Hub: PHX-01 Nussbaum (hub_score=7); secondary hub: PHX-03 Frede (4)
+flowchart TD
+    classDef hub fill:#ffd54f,stroke:#b8860b,stroke-width:3px,color:#000
+    classDef hub2 fill:#fff59d,stroke:#c0a000,stroke-width:2px,color:#000
+    classDef std fill:#e3f2fd,stroke:#1565c0,stroke-width:1px,color:#000
+    classDef rhet fill:#f3e5f5,stroke:#6a1b9a,stroke-width:1px,color:#000
+
+    N1["PHX-01<br/>Nussbaum 1985<br/>(hub=7)"]:::hub
+    N2["PHX-02<br/>White 1985"]:::std
+    N3["PHX-03<br/>Frede 1992<br/>(hub=4)"]:::hub2
+    N4["PHX-04<br/>Caston 1996"]:::std
+    N5["PHX-05<br/>O'Gorman 2005"]:::rhet
+    N6["PHX-06<br/>Gonzalez 2006"]:::rhet
+    N7["PHX-07<br/>Hawhee 2011"]:::rhet
+    N8["PHX-08<br/>Papachristou 2013"]:::std
+
+    %% Solid directed citations
+    N2 -->|cites-contemp| N1
+    N3 -->|contests| N1
+    N3 -->|contests-image| N1
+    N3 -->|contests-broad| N1
+    N4 -->|background| N1
+    N5 -->|endorses-modifies| N1
+    N5 -->|secondary| N1
+    N5 -->|among-visual| N2
+    N5 -->|endorses-deploys| N3
+    N5 -->|deploys-after-image| N3
+    N5 -->|among-visual| N4
+    N6 -->|primary-foil| N1
+    N6 -->|contests-1996| N1
+    N6 -->|adopts-trans| N1
+    N6 -->|secondary-ally| N3
+    N7 -->|extends| N1
+    N7 -->|uses-cite| N1
+    N7 -->|uses-cite| N1
+    N7 -->|alignment| N1
+    N7 -->|engages| N2
+    N7 -->|adopts| N3
+    N7 -->|philosopher-ally| N4
+    N7 -->|second-edge| N4
+    N7 -->|centerpiece| N5
+    N7 -->|sister-essay| N5
+    N7 -->|exception| N6
+    N8 -->|background| N1
+    N8 -->|background| N2
+    N8 -->|background| N3
+    N8 -->|background| N4
+
+    %% Dashed citation gaps
+    N3 -.->|gap| N2
+    N4 -.->|gap| N2
+    N6 -.->|gap| N2
+    N6 -.->|gap| N4
+    N6 -.->|gap| N5

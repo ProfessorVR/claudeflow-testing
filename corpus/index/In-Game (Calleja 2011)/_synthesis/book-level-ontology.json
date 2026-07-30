@@ -1,0 +1,738 @@
+{
+  "version": "1.0",
+  "generated": "2026-05-11",
+  "agent": "Phase 3 Wave 1 Agent 3A (book-level ontology synthesis)",
+  "plan_reference": "plans/in-game-calleja-2011-analysis.md (v3) §5 Phase 3A",
+  "input_units": ["IG-00", "IG-01", "IG-02", "IG-03", "IG-04", "IG-05", "IG-06", "IG-07", "IG-08", "IG-09", "IG-10", "IG-11", "IG-APX"],
+  "methodology": "Aggressive dedup across 12 unit deep JSONs (~330 unit-level concept entries collapsed to 38 canonical CONCEPTs + 18 POSITIONs + 6 INVOLVEMENT-DIMENSIONs + 2 TEMPORAL-PHASEs). Tier-1 reserved for volume-pillar load-bearing concepts pervasive across ≥4 units. Tier-2 reserved for chapter-central concepts that are load-bearing within their home chapter and ramify into ≥2 others. Tier-3 reserved for supporting concepts that are load-bearing in only one chapter but rise to volume-relevance.",
+
+  "concepts": [
+    {
+      "canonical_id": "C-001",
+      "label": "Player Involvement Model (PIM)",
+      "definition_paraphrastic": "Calleja's volume-level frame: a 6-dimensional grid of involvement axes (kinesthetic, spatial, shared, narrative, affective, ludic) cross-cut by a macro/micro temporal-phase distinction, organized as layered and transparent rather than discrete.",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-03-MODEL",
+      "appears_in_units": ["IG-00", "IG-03", "IG-04", "IG-05", "IG-06", "IG-07", "IG-08", "IG-09", "IG-10", "IG-11"],
+      "synonyms_merged": ["PIM", "involvement model", "the player involvement model", "C-PIM (IG-03)", "IG-00:pim-preview"],
+      "page_anchors": [{"unit": "IG-00", "book_page": 2}, {"unit": "IG-03", "book_page": 37}, {"unit": "IG-11", "book_page": 182}]
+    },
+    {
+      "canonical_id": "C-002",
+      "label": "Involvement (umbrella analytic)",
+      "definition_paraphrastic": "The pre-immersive category of player engagement Calleja uses as the spine term — genus of which incorporation is the intensified species; analytic prerequisite to presence/immersion and itself resting on attention.",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-03-MODEL",
+      "appears_in_units": ["IG-00", "IG-02", "IG-03", "IG-04", "IG-05", "IG-06", "IG-07", "IG-08", "IG-09", "IG-10", "IG-11"],
+      "synonyms_merged": ["involvement", "player engagement", "engagement", "involvement-as-umbrella", "C-INV (IG-03)", "IG-00:involvement-as-umbrella", "C-IG02-INVOLVEMENT-PREREQUISITE"],
+      "page_anchors": [{"unit": "IG-00", "book_page": 2}, {"unit": "IG-02", "book_page": 33}, {"unit": "IG-03", "book_page": 35}]
+    },
+    {
+      "canonical_id": "C-003",
+      "label": "Incorporation",
+      "definition_paraphrastic": "Calleja's titular replacement frame: the most intensified and internalized blending of PIM dimensions, gated by a spatial+kinesthetic cornerstone and a simultaneity condition; structurally bidirectional (player absorbs the environment AND is absorbed into it); preserves both 'absorption' and 'transportation' senses of immersion in an expanded double-axis.",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-10-INCORPORATION",
+      "appears_in_units": ["IG-00", "IG-10", "IG-11"],
+      "synonyms_merged": ["incorporation", "the incorporation thesis", "IG-00:incorporation-preview", "C01 (IG-10)", "incorporation-vs-merely-involved (C33)", "incorporation-as-immersion-as-transportation-expanded"],
+      "page_anchors": [{"unit": "IG-00", "book_page": 3}, {"unit": "IG-10", "book_page": 169}]
+    },
+    {
+      "canonical_id": "C-004",
+      "label": "Macro temporal phase",
+      "definition_paraphrastic": "Off-line involvement with the game: pre-session and post-session thinking, planning, anticipation, community participation, motivation to return; the longer-term contextualization of the moment of gameplay.",
+      "tier": 1,
+      "type": "TEMPORAL-PHASE",
+      "primary_unit_id": "IG-03-MODEL",
+      "appears_in_units": ["IG-00", "IG-03", "IG-04", "IG-05", "IG-06", "IG-07", "IG-08", "IG-09"],
+      "synonyms_merged": ["macro phase", "macro-involvement", "off-line involvement", "C-MACRO (IG-03)", "postgame experiences (corroborative)"],
+      "page_anchors": [{"unit": "IG-03", "book_page": 38}]
+    },
+    {
+      "canonical_id": "C-005",
+      "label": "Micro temporal phase (in ludo res)",
+      "definition_paraphrastic": "In-session, moment-to-moment engagement during the act of play; ergodically active in the dispositional sense; attentionally structured by the same six dimensions on a finer temporal grain.",
+      "tier": 1,
+      "type": "TEMPORAL-PHASE",
+      "primary_unit_id": "IG-03-MODEL",
+      "appears_in_units": ["IG-00", "IG-03", "IG-04", "IG-05", "IG-06", "IG-07", "IG-08", "IG-09"],
+      "synonyms_merged": ["micro phase", "micro-involvement", "in ludo res", "in-session involvement", "C-MICRO (IG-03)"],
+      "page_anchors": [{"unit": "IG-03", "book_page": 40}]
+    },
+    {
+      "canonical_id": "C-006",
+      "label": "Three-tier attentional hierarchy (attention → involvement → presence/immersion)",
+      "definition_paraphrastic": "Calleja's stratification of player-experiential categories: attention is the precondition of involvement; involvement is the precondition of presence/immersion. The lower stratum must be modeled before the higher can be analyzed.",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-03-MODEL",
+      "appears_in_units": ["IG-02", "IG-03"],
+      "synonyms_merged": ["attentional hierarchy", "C-HIER (IG-03)", "involvement-as-prerequisite (IG-02)", "C-IG02-INVOLVEMENT-PREREQUISITE"],
+      "page_anchors": [{"unit": "IG-02", "book_page": 33}, {"unit": "IG-03", "book_page": 35}]
+    },
+    {
+      "canonical_id": "C-007",
+      "label": "Family-resemblance methodology (Wittgensteinian)",
+      "definition_paraphrastic": "Calleja's volume-level methodological signature, iteratively applied at three levels: at IG-01 to game-definition (vs. essentialism); at IG-03 to PIM dimensions as overlapping/non-essential axes; at IG-10 to incorporation as family-resemblance of experiential modes.",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-01-GAMES",
+      "appears_in_units": ["IG-01", "IG-03", "IG-10"],
+      "synonyms_merged": ["family resemblance", "Wittgensteinian family-resemblance", "C03-FAMILY-RESEMBLANCE (IG-01)", "C-WITT (IG-03)", "refusal of essentialism", "C17-REFUSAL-OF-ESSENTIALISM"],
+      "page_anchors": [{"unit": "IG-01", "book_page": 8}, {"unit": "IG-03", "book_page": 44}, {"unit": "IG-10", "book_page": 174}]
+    },
+    {
+      "canonical_id": "C-008",
+      "label": "Virtual environment habitation",
+      "definition_paraphrastic": "The surviving spatial-phenomenological metaphor after the demolition of presence/immersion: the player's sense of inhabiting an on-screen place rather than perceiving a representation of space; the master metaphor of the spatial dimension and the load-bearing trope of the incorporation thesis.",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-10-INCORPORATION",
+      "appears_in_units": ["IG-00", "IG-02", "IG-05", "IG-10", "IG-11"],
+      "synonyms_merged": ["habitation", "virtual-environment habitation", "metaphorically habitable environment", "inhabited space", "place (Tuan)", "IG-00:virtual-environment-habitation", "C-IG02-METAPHORICALLY-HABITABLE-ENVIRONMENT", "C01 (IG-05)", "C05 (IG-10)", "metaphor of habitation grounded in everyday-life"],
+      "page_anchors": [{"unit": "IG-00", "book_page": 5}, {"unit": "IG-05", "book_page": 74}, {"unit": "IG-10", "book_page": 172}]
+    },
+    {
+      "canonical_id": "C-009",
+      "label": "Alterbiography (emergent player-narrative)",
+      "definition_paraphrastic": "Calleja's term for the ongoing emergent autobiographical story of a player-character (or focalized entity / miniature) constituted through the player's interaction with the game world's embedded objects, inhabitants, and events; complement to (not opponent of) scripted narrative.",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-07-NARRATIVE",
+      "appears_in_units": ["IG-07", "IG-09", "IG-10", "IG-11"],
+      "synonyms_merged": ["alterbiography", "alterbiography of self", "alterbiography of entity", "alterbiography of miniatures", "emergent narrative (Calleja's reformulation)", "C02 (IG-07)"],
+      "page_anchors": [{"unit": "IG-07", "book_page": 115}, {"unit": "IG-10", "book_page": 178}]
+    },
+    {
+      "canonical_id": "C-010",
+      "label": "Ergodicity as dispositional readiness to act",
+      "definition_paraphrastic": "Calleja's reformulation of Aarseth's ergodic input: ergodic effort is first and foremost a dispositional readiness to act, not merely the physical pressing of buttons; cognitive effort and patient alertness count as ergodic.",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-03-MODEL",
+      "appears_in_units": ["IG-01", "IG-02", "IG-03", "IG-04", "IG-09"],
+      "synonyms_merged": ["ergodicity", "ergodic effort", "ergodic disposition", "disposition to act", "anticipatory readiness", "C-ERG (IG-03)", "C12-ERGODIC-NONTRIVIAL (IG-01)", "C-IG02-ERGODIC-NON-ERGODIC", "disposition_to_act (IG-04)"],
+      "page_anchors": [{"unit": "IG-03", "book_page": 41}]
+    },
+    {
+      "canonical_id": "C-011",
+      "label": "Internalization (of attentional load / controls / space / shared involvement)",
+      "definition_paraphrastic": "Process by which a learned task becomes automatic and ceases to consume the limited attentional resource, freeing capacity for other dimensions; paradigmatic at kinesthetic control-learning but operative for spatial place-internalization and shared involvement too.",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-03-MODEL",
+      "appears_in_units": ["IG-03", "IG-04", "IG-05", "IG-06"],
+      "synonyms_merged": ["internalization", "control internalization", "'Quan' / thinking with fingers", "internalization of shared involvement", "attentional-resource freeing through internalization", "C-INTERN (IG-03)", "internalization_quan (IG-04)", "C26 (IG-05)", "C25 (IG-06)"],
+      "page_anchors": [{"unit": "IG-03", "book_page": 45}]
+    },
+    {
+      "canonical_id": "C-012",
+      "label": "Cybernetic circuit / cybernetic feedback loop",
+      "definition_paraphrastic": "Dovey + Kennedy 2006 figure for the player-machine loop: hardware + representational layer + rules + environment constitute a feedback circuit within which ergodic input takes effect; in IG-08 expanded to a cognitive + emotional + kinesthetic feedback loop.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-03-MODEL",
+      "appears_in_units": ["IG-00", "IG-03", "IG-08", "IG-10", "IG-11"],
+      "synonyms_merged": ["cybernetic circuit", "cybernetic feedback loop", "symbiotic machine relationship", "C-CYB (IG-03)", "cybernetic-feedback-loop (IG-08)", "C32 (IG-10)", "C-IG11-06"],
+      "page_anchors": [{"unit": "IG-03", "book_page": 42}, {"unit": "IG-08", "book_page": 138}]
+    },
+    {
+      "canonical_id": "C-013",
+      "label": "Spatial+kinesthetic cornerstone of incorporation",
+      "definition_paraphrastic": "Calleja's gating condition for incorporation: spatial and kinesthetic involvement together are the necessary minimum substrate; without inhabited place and embodied control there is no incorporation. The kinesthetic→spatial dependency is the structural ground (you must move to inhabit).",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-10-INCORPORATION",
+      "appears_in_units": ["IG-10"],
+      "synonyms_merged": ["spatial+kinesthetic cornerstone", "kinesthetic→spatial dependency", "C13 (IG-10)", "C14 (IG-10)"],
+      "page_anchors": [{"unit": "IG-10", "book_page": 173}]
+    },
+    {
+      "canonical_id": "C-014",
+      "label": "Double-axis structure / bidirectional metaphor of incorporation",
+      "definition_paraphrastic": "Incorporation operates along two simultaneous axes: the player absorbs the virtual environment into consciousness AND the player's avatar is absorbed into the virtual environment. Replaces immersion's unidirectional plunge with a reversible bidirectional figure.",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-10-INCORPORATION",
+      "appears_in_units": ["IG-10", "IG-11"],
+      "synonyms_merged": ["double-axis", "bidirectional metaphor", "unidirectional-plunge critique", "C02 (IG-10)", "C09 (IG-10)", "C10 (IG-10)"],
+      "page_anchors": [{"unit": "IG-10", "book_page": 169}]
+    },
+    {
+      "canonical_id": "C-015",
+      "label": "Simultaneity condition for incorporation",
+      "definition_paraphrastic": "The temporal-axis gate on incorporation: dimensions must operate at sustained intensity simultaneously (not serially); incorporation is sustainable-but-fleeting and its intensity is proportional to duration.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-10-INCORPORATION",
+      "appears_in_units": ["IG-10"],
+      "synonyms_merged": ["simultaneity condition", "sustainment-but-fleeting", "intensity-proportional-to-duration", "temporal-axis culmination", "C03 (IG-10)", "C15 (IG-10)", "C16 (IG-10)", "C29 (IG-10)"],
+      "page_anchors": [{"unit": "IG-10", "book_page": 174}]
+    },
+    {
+      "canonical_id": "C-016",
+      "label": "Experiential gestalts (Lakoff+Johnson via Calleja)",
+      "definition_paraphrastic": "Lakoff+Johnson 2003 experientialist construct imported in IG-10 as the philosophical anchor for incorporation: metaphor is constitutive of cognition, not a deviation; experience is structured by holistic gestalts grounded in bodily lived-experience.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-10-INCORPORATION",
+      "appears_in_units": ["IG-10"],
+      "synonyms_merged": ["experiential gestalts", "metaphor as constitutive (not deviation)", "experientialism", "C06 (IG-10)", "C07 (IG-10)"],
+      "page_anchors": [{"unit": "IG-10", "book_page": 170}]
+    },
+    {
+      "canonical_id": "C-017",
+      "label": "Subjective distance (player ↔ game environment)",
+      "definition_paraphrastic": "The experiential variable the book theorizes: its shortening yields the sensation of inhabiting on-screen space. Proto-formulation of the bidirectional incorporation later articulated in IG-10.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-00-INTRO",
+      "appears_in_units": ["IG-00", "IG-02", "IG-10"],
+      "synonyms_merged": ["subjective distance", "shortening of distance", "IG-00:subjective-distance"],
+      "page_anchors": [{"unit": "IG-00", "book_page": 2}]
+    },
+    {
+      "canonical_id": "C-018",
+      "label": "Four conceptual challenges of presence/immersion",
+      "definition_paraphrastic": "Calleja's canonical enumeration in IG-02: (1) absorption-vs-transportation conflation; (2) ergodic-vs-non-ergodic media difference; (3) technological/fidelity determinism; (4) monolithic-perspective (immersion treated as single binary phenomenon). The destination Calleja's PIM and incorporation must answer.",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-02-IMMERSION",
+      "appears_in_units": ["IG-00", "IG-02", "IG-10"],
+      "synonyms_merged": ["four conceptual challenges", "four challenges", "C-IG02-FOUR-CHALLENGES", "C19 (IG-10) resolution of the four challenges", "IG-00:four-conceptual-challenges-preview"],
+      "page_anchors": [{"unit": "IG-02", "book_page": 32}]
+    },
+    {
+      "canonical_id": "C-019",
+      "label": "Avatar anchoring + system reactivity (structural differentia)",
+      "definition_paraphrastic": "Calleja's structural specification of what makes game-environment presence different from non-game-media presence: the player is anchored via an avatar and the system reacts to player input in nontrivial, ergodic ways. The differentia that motivates a game-specific PIM.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-02-IMMERSION",
+      "appears_in_units": ["IG-02", "IG-04", "IG-05"],
+      "synonyms_merged": ["avatar anchoring", "system reactivity", "C-IG02-AVATAR-ANCHORING", "avatar_control (IG-04)", "embodied avatar presence (C21 IG-05)"],
+      "page_anchors": [{"unit": "IG-02", "book_page": 28}]
+    },
+    {
+      "canonical_id": "C-020",
+      "label": "Symbolic / mimetic / symbiotic control continuum",
+      "definition_paraphrastic": "IG-04's primary typology of kinesthetic control mapping (Figure 4.3): symbolic (button-to-meaning, abstract); mimetic (gesture-replicates-action); symbiotic (player and game co-extended through internalized control). The chapter's load-bearing innovation in kinesthetic operationalization.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-04-KINESTHETIC",
+      "appears_in_units": ["IG-04"],
+      "synonyms_merged": ["symbolic control", "mimetic control", "symbiotic control", "control continuum", "hybrid control", "Figure 4.3 typology"],
+      "page_anchors": [{"unit": "IG-04", "book_page": 63}]
+    },
+    {
+      "canonical_id": "C-021",
+      "label": "Agency (Murray/Schott vs. Giddens/capability)",
+      "definition_paraphrastic": "Calleja's contested concept-bundle: Murray (1998) + Schott (2006) frame agency as satisfaction in seeing the result of one's decision; Calleja partially displaces this in favor of Giddens's agency-as-capability and Mateas+Stern's local/global agency. The chapter is the book's primary agency theorization.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-04-KINESTHETIC",
+      "appears_in_units": ["IG-04", "IG-09"],
+      "synonyms_merged": ["agency", "agency_murray", "agency_local", "agency_global", "agency_capability (Giddens)", "C25 (IG-09)"],
+      "page_anchors": [{"unit": "IG-04", "book_page": 56}]
+    },
+    {
+      "canonical_id": "C-022",
+      "label": "Contingency (Malaby — performative + social)",
+      "definition_paraphrastic": "Malaby 2007's claim that contingency is constitutive of games (not incidental); Calleja deploys it across IG-04 (contrivance of contingency / performance / risk-of-failure) and IG-06 (social contingency codependent on performative contingency).",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-04-KINESTHETIC",
+      "appears_in_units": ["IG-04", "IG-06", "IG-09"],
+      "synonyms_merged": ["contingency", "contrivance of contingency", "performative contingency", "social contingency", "C26 (IG-09)"],
+      "page_anchors": [{"unit": "IG-04", "book_page": 58}]
+    },
+    {
+      "canonical_id": "C-023",
+      "label": "Five-structure spatial taxonomy (Calleja)",
+      "definition_paraphrastic": "Calleja's substitute for Nitsche's labyrinth/tracks-and-rails distinction: five spatial structures — unicursal corridor / labyrinth, multicursal corridor / maze, rhizomatic zone, open landscape, arena. Augmented by miniature and tactical spaces. The chapter's load-bearing typology.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-05-SPATIAL",
+      "appears_in_units": ["IG-05"],
+      "synonyms_merged": ["5 spatial structures", "spatial taxonomy", "C13-C20 (IG-05)"],
+      "page_anchors": [{"unit": "IG-05", "book_page": 82}]
+    },
+    {
+      "canonical_id": "C-024",
+      "label": "Cognitive mapping / mental cartography",
+      "definition_paraphrastic": "Tolman 1948 via Golledge+Garling 2004: the player's construction of internal spatial models across nested scales (landmark + wayfinding + body-relative orientation + imageability). The cognitive substrate of spatial involvement.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-05-SPATIAL",
+      "appears_in_units": ["IG-05"],
+      "synonyms_merged": ["cognitive mapping", "mental cartography", "imageability (Lynch)", "legibility", "landmark + wayfinding", "C04-C08 (IG-05)"],
+      "page_anchors": [{"unit": "IG-05", "book_page": 77}]
+    },
+    {
+      "canonical_id": "C-025",
+      "label": "Space → place transition (Tuan)",
+      "definition_paraphrastic": "Tuan 1977's familiarization-yields-place schema, adopted by Calleja as the experiential mechanism by which navigable space becomes inhabited place — the spatial-internalization analog of kinesthetic-control-internalization.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-05-SPATIAL",
+      "appears_in_units": ["IG-05", "IG-08", "IG-10"],
+      "synonyms_merged": ["place (Tuan)", "space-to-place", "cognitive-conceptual to inhabited shift", "C10 (IG-05)", "C25 (IG-05)", "local-pattern-or-order (Tuan 1998, IG-08)"],
+      "page_anchors": [{"unit": "IG-05", "book_page": 79}]
+    },
+    {
+      "canonical_id": "C-026",
+      "label": "MMOGs as third places / on-line societies",
+      "definition_paraphrastic": "IG-06's central social-theoretic frame, importing Oldenburg's third-place concept via Steinkuehler + Williams: MMOGs are full-fledged on-line societies better at bridging than bonding social capital; governance, reputation, and persistent social bonds operate at MMOG scale.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-06-SHARED",
+      "appears_in_units": ["IG-06"],
+      "synonyms_merged": ["MMOGs as third places", "Oldenburg third places", "MMOGs as on-line societies", "bridging vs bonding social capital", "C01-C09 (IG-06)"],
+      "page_anchors": [{"unit": "IG-06", "book_page": 94}]
+    },
+    {
+      "canonical_id": "C-027",
+      "label": "Cohabitation / cooperation / competition (three-not-four shared subtypes)",
+      "definition_paraphrastic": "Calleja's three modalities of shared involvement, including ambient awareness of social context. The 'three-not-four enumeration slip' surfaced in IG-06 as a notable internal-text inconsistency.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-06-SHARED",
+      "appears_in_units": ["IG-03", "IG-06"],
+      "synonyms_merged": ["cohabitation/cooperation/competition", "C10 (IG-06)", "three-not-four (C29 IG-06)", "shared modalities"],
+      "page_anchors": [{"unit": "IG-06", "book_page": 105}]
+    },
+    {
+      "canonical_id": "C-028",
+      "label": "Human-vs-AI co-agent distinction",
+      "definition_paraphrastic": "IG-06's position that player disposition is fundamentally restructured by perceived human-vs-AI status of co-agents — even rudimentary AI grounds cohabitation, but only persistent human-controlled agents support the reputation-and-betrayal layer (EVE Online Guiding Hand exemplar).",
+      "tier": 3,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-06-SHARED",
+      "appears_in_units": ["IG-06"],
+      "synonyms_merged": ["human vs AI", "media equation / computers as social actors", "C11 (IG-06)", "C13 (IG-06)", "C14 (IG-06)"],
+      "page_anchors": [{"unit": "IG-06", "book_page": 100}]
+    },
+    {
+      "canonical_id": "C-029",
+      "label": "Scripted narrative vs. alterbiography (co-constitutive)",
+      "definition_paraphrastic": "Calleja's narrative-theoretic move that dissolves the narratology-vs-ludology binary: scripted narrative (designer-installed story-elements) and alterbiography (emergent player-narrative) are co-constitutive of narrative involvement, not mutually exclusive.",
+      "tier": 1,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-07-NARRATIVE",
+      "appears_in_units": ["IG-07", "IG-09"],
+      "synonyms_merged": ["scripted narrative", "C01 (IG-07)", "embedded vs emergent (Salen+Zimmerman reformulated)", "narratology-vs-ludology dissolution", "C23 (IG-07)"],
+      "page_anchors": [{"unit": "IG-07", "book_page": 115}]
+    },
+    {
+      "canonical_id": "C-030",
+      "label": "Push narrative vs. pull narrative",
+      "definition_paraphrastic": "Calleja's analytic distinction between designer-pushed scripted progression and player-pulled emergent-narrative pursuit — the dispositional reorientation that determines focalization and story-time/discourse-time interplay.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-07-NARRATIVE",
+      "appears_in_units": ["IG-07"],
+      "synonyms_merged": ["push narrative", "pull narrative", "C07 (IG-07)", "C08 (IG-07)"],
+      "page_anchors": [{"unit": "IG-07", "book_page": 128}]
+    },
+    {
+      "canonical_id": "C-031",
+      "label": "Excitatory homeostasis + rhetorical strategies of affect",
+      "definition_paraphrastic": "Bryant+Davies 2006 media-psychology frame, central to IG-08: affect is the emotional-tonal modulation of involvement generated via the cognitive+emotional+kinesthetic feedback loop, ranging across calming/adrenaline/uncanny. Designed and player-precipitated affect both count.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-08-AFFECTIVE",
+      "appears_in_units": ["IG-08"],
+      "synonyms_merged": ["excitatory homeostasis", "rhetorical strategies of affect", "designed-vs-precipitated-affect", "mood-affecting qualities", "atmospherics"],
+      "page_anchors": [{"unit": "IG-08", "book_page": 138}]
+    },
+    {
+      "canonical_id": "C-032",
+      "label": "Escapism vs. escape (round-trip vs. one-way)",
+      "definition_paraphrastic": "Calleja's defense of escapism via Tolkien (Escape of the Prisoner vs. Flight of the Deserter): escapism is a legitimate round-trip imaginative activity that returns to the everyday, distinct from one-way escape. Imagination is the human faculty enabling escapism; secondary worlds (Tolkien 1983) are its habitable form.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-08-AFFECTIVE",
+      "appears_in_units": ["IG-08"],
+      "synonyms_merged": ["escapism vs escape", "imagination-as-escapism-faculty", "secondary worlds (Tolkien)", "Escape of the Prisoner vs Flight of the Deserter", "habitable secondary-world"],
+      "page_anchors": [{"unit": "IG-08", "book_page": 136}]
+    },
+    {
+      "canonical_id": "C-033",
+      "label": "Strategy / tactics / microtactics three-tier hierarchy",
+      "definition_paraphrastic": "Calleja's IG-09 analytic innovation: strategies = plans in pursuit of primary goals; tactics = plans in pursuit of subgoals; microtactics = plans during moment of action. The three-tier hierarchy tracks goal-tier and temporal-distance and is the ludic dimension's load-bearing typology.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-09-LUDIC",
+      "appears_in_units": ["IG-09"],
+      "synonyms_merged": ["strategy/tactics/microtactics", "three-tier hierarchy", "iterative planning loop", "C16-C20 (IG-09)"],
+      "page_anchors": [{"unit": "IG-09", "book_page": 154}]
+    },
+    {
+      "canonical_id": "C-034",
+      "label": "Goal-source taxonomy (system / self / community)",
+      "definition_paraphrastic": "Calleja's three-way classification of goal-origin: game-stipulated, player-stipulated, community-stipulated. Refuses both Suits's lusory-attitude single-source goal-genesis and McIntosh's claim of universal primary-goal concreteness in games.",
+      "tier": 2,
+      "type": "CONCEPT",
+      "primary_unit_id": "IG-09-LUDIC",
+      "appears_in_units": ["IG-09"],
+      "synonyms_merged": ["goal-source taxonomy", "C07 (IG-09)", "C08-C13 (IG-09)", "alternative-personal-primary-goal"],
+      "page_anchors": [{"unit": "IG-09", "book_page": 151}]
+    },
+    {
+      "canonical_id": "C-035",
+      "label": "Magic-circle excision",
+      "definition_paraphrastic": "Calleja's deliberate exclusion of the Huizinga/Salen+Zimmerman/Juul magic-circle concept on two grounds: spatial redundancy (in digital games only navigable virtual space can be acted in) and empirical absence (no game-specific experiential bracketing in his interview data). One of three excisions structuring IG-03.",
+      "tier": 1,
+      "type": "POSITION-AS-CONCEPT",
+      "primary_unit_id": "IG-03-MODEL",
+      "appears_in_units": ["IG-03", "IG-06", "IG-10"],
+      "synonyms_merged": ["magic circle excision", "C-MC-EXC (IG-03)", "magic-circle critique applied to MMOG governance (C06 IG-06)", "retirement of magic-circle (C18 IG-10)"],
+      "page_anchors": [{"unit": "IG-03", "book_page": 46}]
+    },
+    {
+      "canonical_id": "C-036",
+      "label": "Lusory-attitude excision",
+      "definition_paraphrastic": "Calleja's refusal of Suits's lusory-attitude criterion (voluntary adoption of inefficient rule-restricted means) on two grounds: digital games enforce rules mechanically (no voluntary adoption needed) and Suits's argument is circular.",
+      "tier": 2,
+      "type": "POSITION-AS-CONCEPT",
+      "primary_unit_id": "IG-03-MODEL",
+      "appears_in_units": ["IG-03"],
+      "synonyms_merged": ["lusory-attitude excision", "C-LA-EXC (IG-03)"],
+      "page_anchors": [{"unit": "IG-03", "book_page": 49}]
+    },
+    {
+      "canonical_id": "C-037",
+      "label": "Fun-essentialism excision",
+      "definition_paraphrastic": "Calleja's rejection of the fun=games equation on two grounds: fun imposes a normative status that ignores variation across players' experiential states (including MMOG labor/tedium per Steinkuehler, Yee, Dibbell) and is analytically empty as a category.",
+      "tier": 2,
+      "type": "POSITION-AS-CONCEPT",
+      "primary_unit_id": "IG-03-MODEL",
+      "appears_in_units": ["IG-03"],
+      "synonyms_merged": ["fun-essentialism excision", "C-FUN-EXC (IG-03)"],
+      "page_anchors": [{"unit": "IG-03", "book_page": 51}]
+    },
+    {
+      "canonical_id": "C-038",
+      "label": "Grounded-theoretic qualitative methodology (WoW + Planetside)",
+      "definition_paraphrastic": "Calleja's three-year qualitative research design: extended personal participation in WoW (Blizzard 2004) and Planetside (SOE 2003), 25 in-game semi-structured interviews (two 2-hour sessions, in-game), focus groups, forum monitoring, blog tracking, machinima review; iterative coding generates the six dimensions as clusters of emphasis. The dissertation's empirical-adaptation seed.",
+      "tier": 1,
+      "type": "METHODOLOGICAL-ANCHOR",
+      "primary_unit_id": "IG-03-MODEL",
+      "appears_in_units": ["IG-03", "IG-11", "IG-APX"],
+      "synonyms_merged": ["grounded-theoretic methodology", "C-METH-GT (IG-03)", "qualitative-research methodology", "WoW + Planetside case-sites", "binary comparative scaffold (IG-APX)"],
+      "page_anchors": [{"unit": "IG-03", "book_page": 36}, {"unit": "IG-APX", "book_page": 187}]
+    }
+  ],
+
+  "dimensions": [
+    {
+      "canonical_id": "D-001",
+      "label": "KINESTHETIC involvement",
+      "type": "INVOLVEMENT-DIMENSION",
+      "definition_paraphrastic": "Engagement with avatar / game-piece control, spanning from conscious learning of the controls to fluent internalized movement; foregrounded when controls 'make themselves present' through unmastery or complex-sequence demand. The ergodic-dispositional substrate of the other dimensions.",
+      "tier": 1,
+      "primary_unit_id": "IG-04-KINESTHETIC",
+      "appears_in_units": ["IG-00", "IG-03", "IG-04", "IG-10"],
+      "macro_signature": "Recalling impressive feats of avatar control",
+      "micro_signature": "Control-internalization sequence; Red Orchestra readiness-to-act",
+      "primary_typology": "C-020 (symbolic/mimetic/symbiotic continuum)",
+      "page_anchors": [{"unit": "IG-03", "book_page": 43}, {"unit": "IG-04", "book_page": 55}]
+    },
+    {
+      "canonical_id": "D-002",
+      "label": "SPATIAL involvement",
+      "type": "INVOLVEMENT-DIMENSION",
+      "definition_paraphrastic": "Engagement with spatial qualities of a virtual environment via spatial control, navigation, and exploration; the internalizing of game-space such that the player senses inhabiting a place rather than perceiving a representation of space.",
+      "tier": 1,
+      "primary_unit_id": "IG-05-SPATIAL",
+      "appears_in_units": ["IG-00", "IG-03", "IG-05", "IG-10"],
+      "macro_signature": "Spatial mental models maintained off-line (WoW Ratchet-to-Feathermoon route-planning)",
+      "micro_signature": "In-session navigation + exploration + place-internalization",
+      "primary_typology": "C-023 (five-structure spatial taxonomy)",
+      "page_anchors": [{"unit": "IG-03", "book_page": 43}, {"unit": "IG-05", "book_page": 73}]
+    },
+    {
+      "canonical_id": "D-003",
+      "label": "SHARED involvement",
+      "type": "INVOLVEMENT-DIMENSION",
+      "definition_paraphrastic": "Engagement with awareness of and interaction with other agents (human- or computer-controlled) under modalities of cohabitation, cooperation, and competition; encompasses guild-political deliberation, ambient social-context awareness, and the human-vs-AI distinction.",
+      "tier": 1,
+      "primary_unit_id": "IG-06-SHARED",
+      "appears_in_units": ["IG-00", "IG-03", "IG-06"],
+      "macro_signature": "Clan-website work, guild-political deliberation, persisting social bonds",
+      "micro_signature": "In-session cohabitation/cooperation/competition + ambient social-context awareness",
+      "primary_typology": "C-027 (three-not-four modalities)",
+      "page_anchors": [{"unit": "IG-03", "book_page": 43}, {"unit": "IG-06", "book_page": 93}]
+    },
+    {
+      "canonical_id": "D-004",
+      "label": "NARRATIVE involvement",
+      "type": "INVOLVEMENT-DIMENSION",
+      "definition_paraphrastic": "Engagement with both story-elements scripted into the game and emergent stories generated by ongoing interaction with the game world, its embedded objects, inhabitants, and events. Dissolves the narratology-vs-ludology binary via the scripted/alterbiography co-constitution.",
+      "tier": 1,
+      "primary_unit_id": "IG-07-NARRATIVE",
+      "appears_in_units": ["IG-00", "IG-03", "IG-07", "IG-10"],
+      "macro_signature": "Speculation about designed-narrative development; story-construction featuring one's character",
+      "micro_signature": "In-session engagement with scripted + emergent story-elements; alterbiography-occurrence-locus",
+      "primary_typology": "C-009 (alterbiography) + C-029 (scripted/alterbiography co-constitution) + C-030 (push/pull)",
+      "page_anchors": [{"unit": "IG-03", "book_page": 43}, {"unit": "IG-07", "book_page": 113}]
+    },
+    {
+      "canonical_id": "D-005",
+      "label": "AFFECTIVE involvement",
+      "type": "INVOLVEMENT-DIMENSION",
+      "definition_paraphrastic": "Engagement with emotional states elicited by play — from calming aesthetic response through adrenaline-rush arousal to action-horror uncanny — including both designer-installed rhetorical strategies of affect and player-precipitated affective interpretations.",
+      "tier": 1,
+      "primary_unit_id": "IG-08-AFFECTIVE",
+      "appears_in_units": ["IG-00", "IG-03", "IG-08"],
+      "macro_signature": "Sense of inner peace after aesthetic travels; anticipatory excitement/anxiety about next session",
+      "micro_signature": "In-session calming/adrenaline/uncanny responses to designed + precipitated triggers",
+      "primary_typology": "C-031 (excitatory homeostasis + rhetorical strategies) + C-032 (escapism vs escape)",
+      "page_anchors": [{"unit": "IG-03", "book_page": 44}, {"unit": "IG-08", "book_page": 135}],
+      "note": "Calleja flags this as substantively under-developed in IG-08 (shortest dimension chapter at 12 pp.)"
+    },
+    {
+      "canonical_id": "D-006",
+      "label": "LUDIC involvement",
+      "type": "INVOLVEMENT-DIMENSION",
+      "definition_paraphrastic": "Engagement with choices and their repercussions across game-stipulated, player-stipulated, and community-stipulated goals; opportunity cost is constitutive of well-balanced ludic systems — without repercussions, actions lose meaning.",
+      "tier": 1,
+      "primary_unit_id": "IG-09-LUDIC",
+      "appears_in_units": ["IG-00", "IG-03", "IG-09"],
+      "macro_signature": "Winning-strategy formation; character-development planning; opportunity-cost rehearsal between sessions",
+      "micro_signature": "In-session choice + repercussion + opportunity-cost weighting",
+      "primary_typology": "C-033 (strategy/tactics/microtactics) + C-034 (goal-source taxonomy)",
+      "page_anchors": [{"unit": "IG-03", "book_page": 44}, {"unit": "IG-09", "book_page": 147}]
+    }
+  ],
+
+  "temporal_phases": [
+    {"canonical_id": "T-001", "label": "macro phase", "type": "TEMPORAL-PHASE", "tier": 1, "concept_ref": "C-004"},
+    {"canonical_id": "T-002", "label": "micro phase (in ludo res)", "type": "TEMPORAL-PHASE", "tier": 1, "concept_ref": "C-005"}
+  ],
+
+  "positions": [
+    {
+      "canonical_id": "P-001",
+      "claim": "Incorporation displaces immersion + presence as primary theoretical frame.",
+      "tier": 1,
+      "primary_unit_id": "IG-10-INCORPORATION",
+      "supporting_units": ["IG-00", "IG-02", "IG-10", "IG-11"],
+      "synonyms_merged": ["P01 (IG-10)", "IG-00.P1", "P-IG11-03"]
+    },
+    {
+      "canonical_id": "P-002",
+      "claim": "The shortening of subjective distance is not a stand-alone phenomenon but a blending of experiential phenomena; in its most intensified + internalized form it culminates in incorporation.",
+      "tier": 1,
+      "primary_unit_id": "IG-00-INTRO",
+      "supporting_units": ["IG-00", "IG-03", "IG-10"],
+      "synonyms_merged": ["IG-00.P2"]
+    },
+    {
+      "canonical_id": "P-003",
+      "claim": "Digital-game involvement requires a dedicated theoretical apparatus — other-media perspectives are not irrelevant but require expansion and at times rethinking before they apply.",
+      "tier": 1,
+      "primary_unit_id": "IG-00-INTRO",
+      "supporting_units": ["IG-00", "IG-01", "IG-02"],
+      "synonyms_merged": ["IG-00.P3"]
+    },
+    {
+      "canonical_id": "P-004",
+      "claim": "Involvement is the prior analytical category to presence and immersion; both higher-order phenomena rest on a well-modeled involvement substrate (which itself rests on attention).",
+      "tier": 1,
+      "primary_unit_id": "IG-03-MODEL",
+      "supporting_units": ["IG-02", "IG-03"],
+      "synonyms_merged": ["P-INV-PRIOR", "P-IG02-CHALLENGE-4"]
+    },
+    {
+      "canonical_id": "P-005",
+      "claim": "Player experience is structured by two temporal phases — macro (off-line) and micro (in-session) — within each of which the six dimensions operate at distinct temporal grains.",
+      "tier": 1,
+      "primary_unit_id": "IG-03-MODEL",
+      "supporting_units": ["IG-03", "IG-04", "IG-05", "IG-06", "IG-07", "IG-08", "IG-09"],
+      "synonyms_merged": ["P-MACRO-MICRO"]
+    },
+    {
+      "canonical_id": "P-006",
+      "claim": "The six dimensions are layered and transparent rather than discrete; one dimension changes the perception of the others without occluding them; inclusion/exclusion alters how the others operate.",
+      "tier": 1,
+      "primary_unit_id": "IG-03-MODEL",
+      "supporting_units": ["IG-03", "IG-10"],
+      "synonyms_merged": ["P-DIM-LAYERED"]
+    },
+    {
+      "canonical_id": "P-007",
+      "claim": "Ergodicity is first and foremost a disposition / readiness to act, not the physical pressing of an input device; cognitive effort and patient alertness are equally ergodic.",
+      "tier": 1,
+      "primary_unit_id": "IG-03-MODEL",
+      "supporting_units": ["IG-03", "IG-04"],
+      "synonyms_merged": ["P-ERG-DISPO", "pos.disposition_extends_kinesthetic"]
+    },
+    {
+      "canonical_id": "P-008",
+      "claim": "The magic circle is redundant for digital games as a spatial marker and empirically unsupported as an experiential bracket; it is excluded from the model.",
+      "tier": 1,
+      "primary_unit_id": "IG-03-MODEL",
+      "supporting_units": ["IG-03", "IG-06", "IG-10"],
+      "synonyms_merged": ["P-MC-EXCISED", "P02 (IG-06)"]
+    },
+    {
+      "canonical_id": "P-009",
+      "claim": "Fun is not the essence of play and is analytically empty; it imposes a normative status that obscures variation in experiential states (including MMOG labor / tedium).",
+      "tier": 1,
+      "primary_unit_id": "IG-03-MODEL",
+      "supporting_units": ["IG-03"],
+      "synonyms_merged": ["P-FUN-EXCISED"]
+    },
+    {
+      "canonical_id": "P-010",
+      "claim": "Games are members of an extended family that share resemblances (Wittgensteinian) — not a set with a rigid essentialist definition (refuses Juul 2005 and Salen+Zimmerman 2003 essentialisms).",
+      "tier": 1,
+      "primary_unit_id": "IG-01-GAMES",
+      "supporting_units": ["IG-01", "IG-03", "IG-10"],
+      "synonyms_merged": ["P01-ANTI-JUUL-ESSENTIALISM", "P02-ANTI-SZ-ESSENTIALISM"]
+    },
+    {
+      "canonical_id": "P-011",
+      "claim": "Virtual game environments — the intersection of the game-family and the virtual-environment-family — are the volume's unit of analysis (digitized card/puzzle games excluded; Half-Life 2 + WoW paradigmatic).",
+      "tier": 1,
+      "primary_unit_id": "IG-01-GAMES",
+      "supporting_units": ["IG-01"],
+      "synonyms_merged": ["P05-VIRTUAL-GAME-ENV-AS-UNIT"]
+    },
+    {
+      "canonical_id": "P-012",
+      "claim": "Habitation (not plunge) is the right metaphor; spatial+kinesthetic are the necessary minimum cornerstone of incorporation.",
+      "tier": 1,
+      "primary_unit_id": "IG-10-INCORPORATION",
+      "supporting_units": ["IG-10"],
+      "synonyms_merged": ["P02 (IG-10)", "P03 (IG-10)"]
+    },
+    {
+      "canonical_id": "P-013",
+      "claim": "Virtual environments are continuous with media-saturated everyday life, not experientially separate otherworlds; subjective disposition (not merely medium acknowledgment) is required for incorporation.",
+      "tier": 1,
+      "primary_unit_id": "IG-10-INCORPORATION",
+      "supporting_units": ["IG-10", "IG-11"],
+      "synonyms_merged": ["P04 (IG-10)", "P05 (IG-10)", "C-IG11-08 here-there-dichotomy-critique"]
+    },
+    {
+      "canonical_id": "P-014",
+      "claim": "Calleja DISSOLVES the narratology-vs-ludology binary by treating scripted-narrative and alterbiography as co-constitutive of narrative involvement.",
+      "tier": 1,
+      "primary_unit_id": "IG-07-NARRATIVE",
+      "supporting_units": ["IG-07", "IG-09"],
+      "synonyms_merged": ["P01 (IG-07)", "P02 (IG-07)", "P03 (IG-07)"]
+    },
+    {
+      "canonical_id": "P-015",
+      "claim": "Escapism is a legitimate, defensible cultural-imaginative round-trip activity — not a derogatory one-way escape — and the affective dimension is the volume's substantively under-developed dimension (not a description-deficit).",
+      "tier": 2,
+      "primary_unit_id": "IG-08-AFFECTIVE",
+      "supporting_units": ["IG-08"],
+      "synonyms_merged": ["P2 (IG-08)", "P5 (IG-08)"]
+    },
+    {
+      "canonical_id": "P-016",
+      "claim": "Rules constrain action AND enable meaning — restriction is constitutive of meaningfulness, not opposed to it; without repercussions, actions lose meaning.",
+      "tier": 2,
+      "primary_unit_id": "IG-09-LUDIC",
+      "supporting_units": ["IG-09"],
+      "synonyms_merged": ["P01 (IG-09)"]
+    },
+    {
+      "canonical_id": "P-017",
+      "claim": "The PIM is offered as a common holistic framework for further research — a first considered step toward eventual poststructural successor models, not a closed system.",
+      "tier": 2,
+      "primary_unit_id": "IG-11-CONCLUSION",
+      "supporting_units": ["IG-00", "IG-11"],
+      "synonyms_merged": ["IG-00.P5", "P-IG11-01", "P-IG11-05"]
+    },
+    {
+      "canonical_id": "P-018",
+      "claim": "WoW (Blizzard 2004) and Planetside (SOE 2003) are prototypical MMORPG/MMOFPS case-sites whose binary comparative scaffold is the volume's methodological backbone.",
+      "tier": 2,
+      "primary_unit_id": "IG-APX",
+      "supporting_units": ["IG-03", "IG-APX"],
+      "synonyms_merged": ["P-APX-01", "P-APX-02", "P-APX-03"]
+    }
+  ],
+
+  "tier_distribution": {
+    "1": 23,
+    "2": 13,
+    "3": 2,
+    "total_canonical_concepts_including_dimensions_and_phases": 46,
+    "concepts_only": 38,
+    "positions": 18,
+    "dimensions": 6,
+    "temporal_phases": 2
+  },
+
+  "consolidation_summary": {
+    "raw_unit_concept_count_estimate": 330,
+    "canonical_concept_count": 38,
+    "compression_ratio": "~8.7:1",
+    "biggest_dedup_merges": [
+      {"canonical": "C-002 Involvement", "merged_synonyms_count": 7, "note": "involvement / player engagement / involvement-as-umbrella across nearly every unit"},
+      {"canonical": "C-008 Virtual environment habitation", "merged_synonyms_count": 8, "note": "habitation / metaphorically-habitable-environment / place (Tuan) / virtual-environment habitation / inhabited place — spread across IG-00/02/05/10/11"},
+      {"canonical": "C-003 Incorporation", "merged_synonyms_count": 6, "note": "incorporation / incorporation-preview / incorporation-as-immersion-as-transportation-expanded / incorporation-vs-merely-involved"},
+      {"canonical": "C-010 Ergodicity as dispositional readiness", "merged_synonyms_count": 7, "note": "ergodicity / ergodic effort / dispositional readiness / anticipatory readiness — Calleja's reformulation of Aarseth pervasive across IG-01/02/03/04/09"},
+      {"canonical": "C-011 Internalization", "merged_synonyms_count": 6, "note": "internalization / control internalization / 'Quan' / spatial internalization / shared-involvement internalization — Calleja's universal move applied to each dimension"}
+    ]
+  },
+
+  "notable_tensions_flagged_for_3B": [
+    {
+      "tension_id": "FLAG-1",
+      "label": "Anti-essentialist Wittgensteinian methodology vs. construction of a six-dimensional taxonomic apparatus",
+      "units": ["IG-01", "IG-03"],
+      "summary": "C-007 (family-resemblance) refuses essentialist necessary-and-sufficient conditions; C-001 (PIM) and the six dimensions then constitute a 6x2 grid that taxonomically organizes player experience. Calleja softens this via the 'layered + transparent' principle (P-006), but the formal structure remains taxonomic."
+    },
+    {
+      "tension_id": "FLAG-2",
+      "label": "Metaphor-disclaimer vs. analytic-superiority claim about incorporation",
+      "units": ["IG-00", "IG-10"],
+      "summary": "Calleja simultaneously calls incorporation 'ultimately a metaphor like presence or immersion' (IG-00) and claims it provides 'a more robust concept' (IG-10). Robustness must therefore live in the metaphor's tracking of the multi-dimensional phenomenon, not in literal ontological gain — important for any project that wants to ground incorporation ontologically."
+    },
+    {
+      "tension_id": "FLAG-3",
+      "label": "Bottom-up grounded-theoretic emergence vs. presentation as exhaustive taxonomy",
+      "units": ["IG-03"],
+      "summary": "Calleja states the six dimensions are clusters derived from interview data on two MMOG case-sites — implying revisability — but the chapter-architecture treats them as the complete inventory. Empirical-base / claim-scope asymmetry."
+    },
+    {
+      "tension_id": "FLAG-4",
+      "label": "Macro vs. micro phase developmental asymmetry",
+      "units": ["IG-03", "IG-04", "IG-05", "IG-06", "IG-07", "IG-08", "IG-09"],
+      "summary": "Micro exposition dominates IG-03 and the dimension chapters; macro phase is comparatively thin and often appears as chapter-opening section. T-001 is under-theorized relative to T-002 across the volume."
+    },
+    {
+      "tension_id": "FLAG-5",
+      "label": "Diagrammatic-structural vs. experiential-phenomenological registers of the PIM",
+      "units": ["IG-03"],
+      "summary": "The model is presented diagrammatically (Figure 3.1's wagon-wheel) but the underlying phenomenology is continuous, gradient, non-discrete. Diagrammatic and experiential registers pull against each other."
+    },
+    {
+      "tension_id": "FLAG-6",
+      "label": "Generic 'affordances' usage without Gibson attribution (Phase 0 finding)",
+      "units": ["IG-01", "IG-02", "IG-04", "IG-05", "IG-07"],
+      "summary": "Calleja uses 'affordance' 11 times across the volume without citing Gibson — the Gibson-as-implicit-Uexküll-bridge hypothesis is falsified. The dissertation's Layer C must treat Uexküll mapping as singly-anchored anticipatory projection."
+    },
+    {
+      "tension_id": "FLAG-7",
+      "label": "Three-not-four shared-modalities authorial enumeration slip",
+      "units": ["IG-06"],
+      "summary": "Internal-text inconsistency in IG-06's enumeration of shared modalities — cohabitation/cooperation/competition (3) where some passages imply 4. Worth flagging for the concept-matrix audit."
+    },
+    {
+      "tension_id": "FLAG-8",
+      "label": "Affective chapter's substantive under-development (acknowledged by Calleja)",
+      "units": ["IG-08"],
+      "summary": "IG-08 is the volume's shortest dimension chapter (12 pp.) and Calleja flags it as substantively under-developed (P-015). The affective dimension is therefore the weakest link in the PIM's empirical-systematic exposition."
+    }
+  ]
+}

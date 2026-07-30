@@ -1,0 +1,86 @@
+%% Phase 4I: Psychology — De Anima + Parva Naturalia
+%% Soul, perception, phantasia, nous
+%% Generated: 2026-03-09
+
+graph TD
+
+    psuche["ψυχή\nsoul"]
+    entelecheia["ἐντελέχεια ἡ πρώτη\nfirst actuality"]
+    eidos["εἶδος\nform"]
+    hyle["ὕλη\nmatter/body"]
+    aisthesis["αἴσθησις\nperception"]
+    dynamis_energeia["δύναμις / ἐνέργεια\npotentiality / actuality"]
+    phantasia["φαντασία\nimagination"]
+    phantasma["φάντασμα\nimage"]
+    nous["νοῦς\nmind"]
+    nous_poietikos["νοῦς ποιητικός\nactive intellect"]
+    orexis["ὄρεξις\ndesire"]
+    koine_aisthesis["κοινὴ αἴσθησις\ncommon sense"]
+    form_without_matter["εἶδος ἄνευ ὕλης\nform without matter"]
+    mesotes["μεσότης\nmean"]
+    kinesis["κίνησις\nmotion"]
+    mneme["μνήμη\nmemory"]
+    anamnesis["ἀνάμνησις\nrecollection"]
+    to_diaphanes["τὸ διαφανές\ntransparent"]
+    chroma["χρῶμα\ncolour"]
+    phone["φωνή\nvoice"]
+
+    %% Soul definition (Book II)
+    psuche -->|"defined as"| entelecheia
+    psuche -->|"substance as"| eidos
+    eidos -->|"actuality of"| hyle
+
+    %% Perception
+    aisthesis -->|"transition via"| dynamis_energeia
+    aisthesis -->|"receives"| form_without_matter
+    aisthesis -->|"organ is"| mesotes
+    koine_aisthesis -->|"unifies"| aisthesis
+    to_diaphanes -->|"medium for"| aisthesis
+    chroma -->|"limit of"| to_diaphanes
+
+    %% Phantasia (Book III)
+    phantasia -->|"movement from"| aisthesis
+    phantasia -->|"defined as"| kinesis
+    phantasia -->|"produces"| phantasma
+    phantasia -->|"guides"| orexis
+
+    %% Nous
+    nous -->|"never thinks without"| phantasma
+    nous_poietikos -->|"makes all things"| nous
+    nous -->|"impassible unlike"| aisthesis
+
+    %% Desire and movement
+    orexis -->|"causes animal"| kinesis
+    orexis -->|"activated by"| phantasia
+
+    %% Memory and recollection
+    mneme -->|"depends on"| phantasma
+    mneme -->|"belongs to"| koine_aisthesis
+    anamnesis -->|"reactivates"| kinesis
+    anamnesis -->|"presupposes"| mneme
+
+    %% Voice
+    phone -->|"requires"| phantasia
+    phone -->|"species of sound"| aisthesis
+
+    %% Styles
+    style psuche fill:#6a1b9a,stroke:#4a148c,color:#fff,stroke-width:3px
+    style entelecheia fill:#7b1fa2,stroke:#4a148c,color:#fff
+    style eidos fill:#9c27b0,stroke:#6a1b9a,color:#fff
+    style hyle fill:#ce93d8,stroke:#9c27b0
+    style aisthesis fill:#ab47bc,stroke:#7b1fa2,color:#fff,stroke-width:2px
+    style dynamis_energeia fill:#e65100,stroke:#bf360c,color:#fff
+    style phantasia fill:#d50000,stroke:#b71c1c,color:#fff,stroke-width:3px
+    style phantasma fill:#ff1744,stroke:#d50000,color:#fff
+    style nous fill:#1565c0,stroke:#0d47a1,color:#fff,stroke-width:2px
+    style nous_poietikos fill:#1976d2,stroke:#0d47a1,color:#fff
+    style orexis fill:#c62828,stroke:#b71c1c,color:#fff
+    style koine_aisthesis fill:#8e24aa,stroke:#6a1b9a,color:#fff
+    style form_without_matter fill:#ba68c8,stroke:#8e24aa,color:#fff
+    style mesotes fill:#ce93d8,stroke:#ab47bc
+    style kinesis fill:#2e7d32,stroke:#1b5e20,color:#fff
+    style mneme fill:#5e35b1,stroke:#4527a0,color:#fff
+    style anamnesis fill:#7e57c2,stroke:#5e35b1,color:#fff
+    style to_diaphanes fill:#00695c,stroke:#004d40,color:#fff
+    style chroma fill:#00897b,stroke:#00695c,color:#fff
+    style phone fill:#ad1457,stroke:#880e4f,color:#fff

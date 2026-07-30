@@ -1,0 +1,66 @@
+%% Heidegger and Rhetoric (Gross & Kemmann eds., SUNY 2005) — Rhetoric Genealogy (Phase 3I-4)
+%% How rhetoric is figured across the volume — from opening centrality (Gross) to closing restriction (Pöggeler).
+%% Visualizes the 7 contributors' positions as a flow from rhetoric-as-rejected-technē → seven inflections → topology of being supplants.
+graph LR
+  rejTech[<b>Rhetoric-as-Technē</b><br/><i>handbook craft / Hellenistic-Ramist tradition</i><br/>REJECTED by all contributors]
+  rejTech -.->|Aristotle Rhet. I.2 1355b25 reread| dyn
+
+  dyn[<b>Rhetoric-as-Dynamis</b><br/><i>dynamis tou theoresai</i><br/>GA 18 114]
+
+  subgraph CENT["Centrality cluster"]
+    grossCH[<b>Gross</b>: rhetoric at heart<br/>of fundamental ontology<br/><i>rhetorical ontology</i>]
+    michPhil[<b>Michalski</b>: Heideggerian<br/>philology / hermeneutic<br/>phenomenology]
+    hydeEpid[<b>Hyde</b>: epideictic-conscience<br/>bridge / call as showing-forth]
+    struevLife[<b>Struever</b>: rhetoric as<br/>life-science / colonizes BT<br/>from within]
+    kisProto[<b>Kisiel</b>: rhetorical<br/>protopolitics / 1923-25<br/>phenomenological polis]
+    gadHerm[<b>Gadamer</b>: rhetoric and<br/>hermeneutics coextensive<br/><i>It is the same dynamis!</i>]
+  end
+
+  rhetDasein[<b>Rhetoric as<br/>Auslegung des Daseins</b><br/>GA 18 110]
+  rhetSysHerm[<b>Rhetoric as first systematic<br/>Hermeneutic of everydayness</b><br/>BT 178 / H 138]
+
+  rejTech -.->|Heidegger renames WS 1925-26| restr
+  restr[<b>Pöggeler</b>: Restricted Conception<br/><i>Marburg 1923-28 bounded;<br/>BT §29 confines political to das Man</i>]
+  topol[<b>Topologie des Seins</b><br/><i>Aus der Erfahrung des Denkens 1947;<br/>Geviert; Hölderlin/Heraclitus turn</i>]
+
+  %% Centrality cluster: dynamis grounds all six readings
+  dyn -->|defines rhetoric for| grossCH
+  dyn -->|defines rhetoric for| gadHerm
+  dyn -->|defines rhetoric for| struevLife
+  dyn -->|presupposed by| kisProto
+
+  %% GA 18 110 / BT 178 are the master loci all six engage positively
+  rhetDasein -->|grounds| grossCH
+  rhetDasein -->|grounds| michPhil
+  rhetDasein -->|grounds| kisProto
+  rhetSysHerm -->|grounds| grossCH
+  rhetSysHerm -->|grounds| hydeEpid
+  rhetSysHerm -->|grounds| struevLife
+
+  %% Centrality cluster mutual relations
+  grossCH ---|supports| struevLife
+  hydeEpid ---|supports| grossCH
+  michPhil ---|supports philologically| grossCH
+  gadHerm ---|interview support| grossCH
+  kisProto ---|supports protopolitically| grossCH
+
+  %% Pöggeler's countertitle: Pöggeler reads BT §29 as restriction (where others read positive)
+  rhetSysHerm -.->|VT9: same passage,<br/>opposite valence| restr
+  restr -.->|VT1 contrasts with| grossCH
+  restr -.->|undermines| hydeEpid
+  restr -.->|contrasts with| struevLife
+  restr -.->|differs from| kisProto
+  restr -->|leads to| topol
+
+  %% Topology supplants rhetoric in mature Heidegger
+  topol -.->|supersedes| rhetDasein
+  topol -.->|supersedes| rhetSysHerm
+
+  classDef rejected fill:#dcdcdc,stroke:#888,stroke-dasharray:5 5,color:#000
+  classDef anchor fill:#ffd6d6,stroke:#a83232,stroke-width:3px,color:#000
+  classDef centrality fill:#d8f0e0,stroke:#2c6e49,stroke-width:1px,color:#000
+  classDef restriction fill:#cfd8dc,stroke:#37474f,stroke-width:2px,stroke-dasharray:5 5,color:#000
+  class rejTech rejected
+  class dyn,rhetDasein,rhetSysHerm anchor
+  class grossCH,michPhil,hydeEpid,struevLife,kisProto,gadHerm centrality
+  class restr,topol restriction

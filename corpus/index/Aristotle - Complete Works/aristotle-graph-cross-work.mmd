@@ -1,0 +1,114 @@
+%% Phase 4I: Cross-Work Concept Bridges
+%% Concepts appearing in 2+ works with connecting edges
+%% Generated: 2026-03-09
+
+graph LR
+
+    %% Concepts shared across multiple works
+    kinesis["κίνησις\nmotion"]
+    energeia["ἐνέργεια\nactuality"]
+    dynamis["δύναμις\npotentiality"]
+    entelecheia["ἐντελέχεια\nfulfillment"]
+    eidos["εἶδος\nform"]
+    hyle["ὕλη\nmatter"]
+    ousia["οὐσία\nsubstance"]
+    phusis["φύσις\nnature"]
+    aition["αἴτιον\ncause"]
+    telos["τέλος\nend"]
+    logos["λόγος\naccount"]
+    techne["τέχνη\nart"]
+    psuche["ψυχή\nsoul"]
+    aisthesis["αἴσθησις\nperception"]
+    phantasia["φαντασία\nimagination"]
+    nous["νοῦς\nmind"]
+    orexis["ὄρεξις\ndesire"]
+    chronos["χρόνος\ntime"]
+    topos["τόπος\nplace/topic"]
+    pathos["πάθος\naffection"]
+    hexis["ἕξις\nstate"]
+    unmoved_mover["κινοῦν ἀκίνητον\nunmoved mover"]
+    phantasma["φάντασμα\nimage"]
+    koine_aisthesis["κοινὴ αἴσθησις\ncommon sense"]
+
+    %% === CROSS-WORK BRIDGES ===
+
+    %% entelecheia: Physics (def. of motion) <-> DA (def. of soul) <-> Met (fulfillment)
+    entelecheia -->|"Phys III: motion as\nfulfilment of potential"| kinesis
+    entelecheia -->|"DA II.1: soul as\nfirst actuality"| psuche
+    entelecheia -.->|"Met Theta:\nextended to energeia"| energeia
+
+    %% energeia: Met (priority) <-> DA (perception) <-> Rhet (vividness)
+    energeia -->|"Met Theta.8:\nprior to dynamis"| dynamis
+    energeia -->|"DA II.5: joint actuality\nof sense + sensible"| aisthesis
+    energeia -->|"Rhet III.11: rhetorical\nvividness"| phantasia
+
+    %% kinesis: Physics <-> DA <-> MA <-> On Memory
+    kinesis -->|"Phys III.1:\nactuality of potential"| dynamis
+    kinesis -->|"DA III.3: phantasia\nis a kinesis"| phantasia
+    kinesis -->|"MA: animal locomotion\ncaused by desire"| orexis
+    kinesis -->|"On Mem: residual\nmovements"| phantasma
+
+    %% eidos / hyle: Met <-> DA <-> Physics
+    eidos -->|"Met Z.xvii:\nsubstance = form"| ousia
+    eidos -->|"DA II.1: soul is\nsubstance as form"| psuche
+    eidos -->|"Phys II.1: form is\nnature more properly"| phusis
+    hyle -->|"Met: receives form"| eidos
+    hyle -->|"DA: body is\nmatter to soul"| psuche
+
+    %% phantasia: DA <-> Rhet <-> MA <-> On Memory
+    phantasia -->|"DA III.3: movement\nfrom actual sense"| aisthesis
+    phantasia -->|"Rhet I.11: feeble\nsort of sensation"| pathos
+    phantasia -->|"MA: presents objects\nto desire"| orexis
+    phantasia -->|"On Mem: produces\nphantasmata"| phantasma
+
+    %% orexis: DA <-> MA <-> Met Lambda
+    orexis -->|"DA III.10: moves\nwith phantasia"| phantasia
+    orexis -->|"Met Lambda.7: unmoved\nmover moves as beloved"| unmoved_mover
+
+    %% nous: DA <-> Met Lambda
+    nous -->|"DA III.4: requires\nphantasmata"| phantasma
+    nous -->|"Met Lambda.9: divine\nself-thinking"| unmoved_mover
+
+    %% chronos: Physics <-> On Memory
+    chronos -->|"Phys IV.11: number\nof motion"| kinesis
+    chronos -->|"On Mem: memory requires\nlapse of time"| phantasma
+
+    %% topos: Physics <-> Rhetoric (different senses!)
+    topos -->|"Phys IV: boundary\nof container"| phusis
+    topos -->|"Rhet: argumentative\ncommonplace"| logos
+
+    %% aition / telos: Physics <-> Met <-> DA
+    aition -->|"Phys II: four causes"| phusis
+    aition -->|"Met Alpha: first causes"| ousia
+    telos -->|"DA II.4: soul is\nfinal cause"| psuche
+    telos -->|"Met Theta.8: actuality\nis the end"| energeia
+
+    %% koine aisthesis: DA <-> Sens <-> On Memory
+    koine_aisthesis -->|"DA III.1: unifies\nperception"| aisthesis
+    koine_aisthesis -->|"On Mem: memory\nbelongs to"| phantasma
+
+    %% Styles — color by primary home
+    style kinesis fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style energeia fill:#bbdefb,stroke:#1565c0,stroke-width:2px
+    style dynamis fill:#ffe0b2,stroke:#e65100
+    style entelecheia fill:#ffccbc,stroke:#bf360c
+    style eidos fill:#bbdefb,stroke:#1565c0
+    style hyle fill:#bbdefb,stroke:#1565c0
+    style ousia fill:#bbdefb,stroke:#1565c0,stroke-width:2px
+    style phusis fill:#c8e6c9,stroke:#2e7d32
+    style aition fill:#c8e6c9,stroke:#2e7d32
+    style telos fill:#c8e6c9,stroke:#2e7d32
+    style logos fill:#e8eaf6,stroke:#3949ab
+    style techne fill:#d7ccc8,stroke:#5d4037
+    style psuche fill:#e1bee7,stroke:#6a1b9a,stroke-width:2px
+    style aisthesis fill:#e1bee7,stroke:#6a1b9a
+    style phantasia fill:#ffcdd2,stroke:#c62828,stroke-width:3px
+    style nous fill:#e1bee7,stroke:#6a1b9a
+    style orexis fill:#e1bee7,stroke:#6a1b9a
+    style chronos fill:#c8e6c9,stroke:#2e7d32
+    style topos fill:#c8e6c9,stroke:#2e7d32
+    style pathos fill:#ffcdd2,stroke:#c62828
+    style hexis fill:#d7ccc8,stroke:#5d4037
+    style unmoved_mover fill:#6a1b9a,stroke:#4a148c,color:#fff
+    style phantasma fill:#f3e5f5,stroke:#8e24aa
+    style koine_aisthesis fill:#e1bee7,stroke:#6a1b9a

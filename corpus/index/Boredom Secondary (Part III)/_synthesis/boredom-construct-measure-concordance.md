@@ -101,27 +101,36 @@ is the same finding as §2, seen from the row axis.
 
 ## 4. Column → dataset channel mapping (gate: every measure column maps to ≥1 dataset channel)
 
-**`****** UNVERIFIED:`** — the `corpus/index/Boredom Experiment (VR Attention Study)/` entry is **not yet built** (confirmed
-absent on disk at Phase 0 and re-confirmed at Phase 3). Every mapping below is a **flagged pointer to a plausible future
-channel**, per the plan's §9 decision 4. None is a verified correspondence. Re-verify all twelve when that entry exists.
+**RESOLVED 2026-07-29.** The `corpus/index/Boredom Experiment (VR Attention Study)/` entry — absent at Phase 0 and
+Phase 3, which is why every row below carried a `****** UNVERIFIED:` placeholder — now exists, with seven
+DATASET-CHANNEL nodes (`ch-selfreport`, `ch-eeg`, `ch-gaze`, `ch-hmd`, `ch-obs`, `ch-fig`, `ch-stimulus`), and three of
+its four raw channels were processed at O-9 (2026-07-16, full N=8). All twelve pointers are resolved below against the
+built entry.
 
-| Measure column | Plausible dataset channel | Cluster's methodological authority |
+**The resolution is not twelve confirmations.** Five columns resolve to a channel that exists *and* was computed; one
+resolves to a channel that exists but whose measure was never computed; five resolve to **documented non-coverage** —
+this dataset has no instrument for them; and one was always a category error (§5). Recording the non-coverage is the
+more useful half: it states precisely what this study cannot speak to, which is directly reusable as a limitations
+statement rather than a gap to be apologized for.
+
+| Measure column | Dataset channel — status 2026-07-29 | Cluster's methodological authority |
 |---|---|---|
-| EEG frontal alpha asymmetry | `****** UNVERIFIED:` EEG frontal-asymmetry channel | bor-sec-30 (method), **bor-sec-27 + bor-sec-31 (caution — DA-05)** |
-| EEG alpha/theta power | `****** UNVERIFIED:` EEG band-power channel | bor-sec-29, bor-sec-27 |
-| EEG functional connectivity | `****** UNVERIFIED:` EEG connectivity channel | **bor-sec-33** (only first-party study; educational context) |
-| EEG eyes-open vs eyes-closed | `****** UNVERIFIED:` EEG resting-baseline protocol | **bor-sec-27** (the two are not equivalent baselines) |
-| pupil dilation / pupillometry | `****** UNVERIFIED:` HMD pupillometry / cognitive-load channel | bor-sec-38 (research-grade apparatus detail); **bor-sec-40 (excludes pupil over luminance confound)**; bor-sec-35 (sign contradiction — CR-10) |
-| gaze variance / fixation dispersion | `****** UNVERIFIED:` HMD eye-tracking channel | **bor-sec-36** (reporting standard); bor-sec-28 (AOI/heat-map method) |
-| blink / eye-closure | `****** UNVERIFIED:` blink channel | bor-sec-36, bor-sec-37; **bor-sec-30 (treats blinks as artifact, not data)** |
-| heart rate / HRV | `****** UNVERIFIED:` HR/HRV channel | bor-sec-21 (**directional fractionation** — the reason HR alone will not settle anything) |
-| self-report / survey scale | `****** UNVERIFIED:` survey/self-report channel | bor-sec-04 (**what it cannot reach**); bor-sec-28 (**null correlation**); DA-04 |
-| behavioral (RT / errors) | `****** UNVERIFIED:` behavioural-performance channel | **bor-sec-32** (commission ≠ omission errors; P3/ERN dissociation) |
-| predictive-processing model | `****** UNVERIFIED:` — *no plausible channel; see §5* | bor-sec-20 |
-| ML classification | `****** UNVERIFIED:` ML classifier channel | **bor-sec-31** (86.73%, the only validated first-party accuracy); bor-sec-41 (**borrowed-accuracy caution**) |
+| EEG frontal alpha asymmetry | **`ch-eeg` — channel exists, measure NOT computed.** The montage carries the frontal pair (F3/F4), so FEA is computable, but O-9 computed DMN alpha+theta and parietal alpha instead. Any future FEA index needs DA-05's arousal control. | bor-sec-30 (method), **bor-sec-27 + bor-sec-31 (caution — DA-05)** |
+| EEG alpha/theta power | **`ch-eeg` — VERIFIED, computed at O-9.** DMN power in alpha (8–12) + theta (4–8), per P1's own definition; N=8. Directional only (DMN p=0.20, parietal α p=0.22). | bor-sec-29, bor-sec-27 |
+| EEG functional connectivity | **NON-COVERAGE.** Four electrodes (F3/F4/P3/P4); connectivity is not meaningfully estimable at this montage and was not computed. bor-sec-33's approach has no counterpart here. | **bor-sec-33** (only first-party study; educational context) |
+| EEG eyes-open vs eyes-closed | **NON-COVERAGE.** No resting baseline was recorded; all three conditions are active eyes-open viewing. (The stimulus corpus carries `EC` = eyes-closed *clip labels*, which are exemplar categories, not a resting protocol.) This dataset sidesteps Barry's caution the same way bor-sec-33 does. | **bor-sec-27** (the two are not equivalent baselines) |
+| pupil dilation / pupillometry | **`ch-hmd` + `ch-fig` — VERIFIED, computed at O-9, and the dataset's one statistically robust surface** (Boring < Clinical in all 8, p=0.008 Holm, rank-biserial −1.0). `ch-fig` additionally holds a five-level denoise cascade unavailable in the raw CSV. NB CR-10's sign contradiction: this dataset's sign runs *pupil up = engaged*. | bor-sec-38 (research-grade apparatus detail); **bor-sec-40 (excludes pupil over luminance confound)**; bor-sec-35 (sign contradiction — CR-10) |
+| gaze variance / fixation dispersion | **`ch-gaze` (P2 published, N=12) + `ch-hmd`/`ch-fig` (reprocessed, N=8) — VERIFIED, computed at O-9** using P2's own definition: variance of the 5-point-median Euclidean deviation from centre. Directional at N=8 (p=0.61). | **bor-sec-36** (reporting standard); bor-sec-28 (AOI/heat-map method) |
+| blink / eye-closure | **NON-COVERAGE.** `ch-hmd` carries per-eye *validity* flags and a −1 invalid sentinel, which mark tracking loss rather than scored blinks; no blink measure was derived. Consistent with bor-sec-30's treatment of blinks as artifact. | bor-sec-36, bor-sec-37; **bor-sec-30 (treats blinks as artifact, not data)** |
+| heart rate / HRV | **`ch-hmd` — VERIFIED, computed at O-9**, vendor-derived (Omnicept). Secondary evidence only: HRV's algorithm (RMSSD vs SDNN) is undocumented vendor black-box, S08 has heavy dropout, and both run n.s. (HR p=0.20, HRV p=0.61) — precisely bor-sec-21's directional-fractionation caution. | bor-sec-21 (**directional fractionation** — the reason HR alone will not settle anything) |
+| self-report / survey scale | **`ch-selfreport` — VERIFIED.** 7-item per-video instrument, N=8 × 3 stimuli = 24 episodes, including a felt-duration probe. Critically it asks boredom **and** engagement as two separate items rather than one bipolar axis, which is what let S07 return boredom-6 ∧ engagement-7 on one stimulus — DA-04's dissociation appearing *within* a single instrument. | bor-sec-04 (**what it cannot reach**); bor-sec-28 (**null correlation**); DA-04 |
+| behavioral (RT / errors) | **NON-COVERAGE.** No performance task: subjects watched, they did not respond. bor-sec-32's commission/omission dissociation has no counterpart in this design. | **bor-sec-32** (commission ≠ omission errors; P3/ERN dissociation) |
+| predictive-processing model | **N/A — category error, see §5.** A modelling formalism, not an instrument; belongs in a THEORY-MODEL register. | bor-sec-20 |
+| ML classification | **NON-COVERAGE.** No classifier was trained on this dataset. The three-state classifier remains a *proposed* redesign (FCM bridge §7.3), not an implemented channel — do not read bor-sec-31's 86.73% as transferable. | **bor-sec-31** (86.73%, the only validated first-party accuracy); bor-sec-41 (**borrowed-accuracy caution**) |
 
-**Gate satisfied** in the form the plan specifies for an unbuilt dataset entry: 12/12 columns carry an explicit
-`****** UNVERIFIED:` pointer rather than a fabricated correspondence.
+**Gate satisfied, and now in the stronger form:** 12/12 columns are resolved against a built entry — 5 verified and
+computed, 1 channel-present-but-uncomputed, 5 documented non-coverage, 1 category error. No correspondence is
+fabricated, and no placeholder remains.
 
 ---
 
@@ -178,5 +187,7 @@ edges, 32 in the cluster). These are the defensible ones:
    in this cluster does. That should be stated as a contribution and defended methodologically, not assumed.
 4. **Use the psychological rows for measurement and the FCM rows for interpretation** — and keep the seam visible rather
    than papering it with a claimed equivalence the grid does not support.
-5. **Re-verify all twelve column mappings** once `corpus/index/Boredom Experiment (VR Attention Study)/` exists. Every one
-   is currently a flagged pointer.
+5. ~~Re-verify all twelve column mappings once the entry exists.~~ **DONE 2026-07-29** — see §4. The result sharpens
+   recommendation 3 rather than softening it: this dataset instruments roughly half the measure space the literature
+   uses, and the half it lacks (connectivity, resting baselines, blink, behavioural performance, ML classification) is
+   worth stating explicitly wherever Part III's instrumentation is compared to the field's.

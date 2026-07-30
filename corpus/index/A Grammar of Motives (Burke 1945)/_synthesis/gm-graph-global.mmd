@@ -1,0 +1,125 @@
+%% gm-graph-global.mmd
+%% Burke 1945 Grammar of Motives — Tier-1 concept network (book-level)
+%% Generated: Phase 3 Wave 2 Agent (graph 1 of 5)
+%% Plan ref: plans/grammar-of-motives-burke-1945-analysis.md §5 Phase 3 Wave 2 graph 1
+%% Node selection: 5 pentad + 10 ratios + 4 tropes + 8 substance + 3 methodological + 2 dialectical = 32 nodes
+%% Edge sources: book-level-ontology Tier-1 + global-edges.csv (defines, ratio-of, features-as-locus, extends)
+%% Caps: <=32 nodes / <=45 edges
+flowchart LR
+
+    %% ===== PENTAD cluster (5 nodes) =====
+    subgraph PENTAD["Pentad (5 terms)"]
+        direction TB
+        pentad-act["C-PENTAD-ACT<br/>Act"]
+        pentad-scene["C-PENTAD-SCENE<br/>Scene"]
+        pentad-agent["C-PENTAD-AGENT<br/>Agent"]
+        pentad-agency["C-PENTAD-AGENCY<br/>Agency"]
+        pentad-purpose["C-PENTAD-PURPOSE<br/>Purpose"]
+    end
+
+    %% ===== RATIOS cluster (10 nodes) =====
+    subgraph RATIOS["10 Dyadic Ratios"]
+        direction TB
+        ratio-scene-act["Scene-Act"]
+        ratio-scene-agent["Scene-Agent"]
+        ratio-scene-agency["Scene-Agency"]
+        ratio-scene-purpose["Scene-Purpose"]
+        ratio-act-agent["Act-Agent"]
+        ratio-act-agency["Act-Agency"]
+        ratio-act-purpose["Act-Purpose"]
+        ratio-agent-agency["Agent-Agency"]
+        ratio-agent-purpose["Agent-Purpose"]
+        ratio-agency-purpose["Agency-Purpose"]
+    end
+
+    %% ===== TROPES cluster (4 nodes) =====
+    subgraph TROPES["4 Master Tropes"]
+        direction TB
+        trope-metaphor["Metaphor / perspective"]
+        trope-metonymy["Metonymy / reduction"]
+        trope-synecdoche["Synecdoche / representation"]
+        trope-irony["Irony / dialectic"]
+    end
+
+    %% ===== SUBSTANCE cluster (8 nodes) =====
+    subgraph SUBSTANCE["Substance Vocabulary"]
+        direction TB
+        sub-paradox["Paradox of Substance"]
+        sub-contextual["Contextual / Geometric"]
+        sub-familial["Familial / Ancestral"]
+        sub-directional["Directional"]
+        sub-dialectic["Dialectic Substance"]
+        sub-consubstantial["Consubstantial"]
+        sub-actus-status["Actus / Status"]
+        sub-universal-monetary["Universal / Monetary"]
+    end
+
+    %% ===== METHODOLOGY + DIALECTIC (5 nodes outside clusters) =====
+    rep-anecdote["Representative Anecdote"]
+    circumference["Circumference / Scope of Scene"]
+    act-vs-motion["Action vs. Motion"]
+    sym-action["Symbolic Action"]
+    school-feat["Philosophic-School Featuring"]
+
+    %% ===== EDGES (44 total) =====
+
+    %% Pentad defines each ratio (10 ratio-of edges)
+    pentad-scene -- ratio-of --> ratio-scene-act
+    pentad-act --> ratio-scene-act
+    pentad-scene --> ratio-scene-agent
+    pentad-agent --> ratio-scene-agent
+    pentad-scene --> ratio-scene-agency
+    pentad-scene --> ratio-scene-purpose
+    pentad-act --> ratio-act-agent
+    pentad-act --> ratio-act-agency
+    pentad-act --> ratio-act-purpose
+    pentad-agent --> ratio-agent-agency
+    pentad-agent --> ratio-agent-purpose
+    pentad-agency --> ratio-agency-purpose
+    pentad-purpose --> ratio-agency-purpose
+
+    %% Philosophic-school featuring (5 features-as-locus edges)
+    school-feat -- features --> pentad-scene
+    school-feat --> pentad-agent
+    school-feat --> pentad-act
+    school-feat --> pentad-agency
+    school-feat --> pentad-purpose
+
+    %% Substance defines / aligns with pentad terms
+    sub-contextual -- aligns --> pentad-scene
+    sub-familial --> pentad-agent
+    sub-directional --> pentad-purpose
+    sub-actus-status --> ratio-act-agent
+    sub-consubstantial --> pentad-agent
+    sub-universal-monetary --> pentad-scene
+    sub-paradox -- grounds --> sub-dialectic
+    sub-dialectic -- grounds --> pentad-act
+
+    %% Tropes (parallel apparatus) — each trope most-implicates a term
+    trope-metaphor -- implicates --> pentad-agency
+    trope-metonymy --> pentad-scene
+    trope-synecdoche --> pentad-agent
+    trope-irony -- implicates-all --> PENTAD
+
+    %% Methodological apparatuses
+    rep-anecdote -- scopes --> sym-action
+    circumference -- scopes --> pentad-scene
+    act-vs-motion -- distinguishes --> pentad-act
+    sym-action -- instances --> pentad-act
+
+    %% Cross-cluster: trope-pentad totality + reversibility
+    trope-irony -- folds-into --> trope-synecdoche
+    trope-metaphor -- extends-to --> trope-synecdoche
+    trope-synecdoche -- one-direction --> trope-metonymy
+
+    %% ===== Styling =====
+    classDef pentad fill:#c8e6c9,stroke:#1b5e20,stroke-width:3px;
+    classDef ratio fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef trope fill:#fce4ec,stroke:#880e4f,stroke-width:2px;
+    classDef sub fill:#e1f5ff,stroke:#01579b,stroke-width:2px;
+    classDef method fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
+    class pentad-act,pentad-scene,pentad-agent,pentad-agency,pentad-purpose pentad;
+    class ratio-scene-act,ratio-scene-agent,ratio-scene-agency,ratio-scene-purpose,ratio-act-agent,ratio-act-agency,ratio-act-purpose,ratio-agent-agency,ratio-agent-purpose,ratio-agency-purpose ratio;
+    class trope-metaphor,trope-metonymy,trope-synecdoche,trope-irony trope;
+    class sub-paradox,sub-contextual,sub-familial,sub-directional,sub-dialectic,sub-consubstantial,sub-actus-status,sub-universal-monetary sub;
+    class rep-anecdote,circumference,act-vs-motion,sym-action,school-feat method;

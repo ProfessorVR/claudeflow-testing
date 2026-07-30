@@ -1,0 +1,81 @@
+%% Graph 4 — Aristotle-work × article density (edges where unit cites ≥3 loci from work)
+%% 10 Aristotle-works + 8 units + 2 highlighted mandatory loci
+graph LR
+    classDef work fill:#fff3e0,stroke:#e65100,stroke-width:1px,color:#000
+    classDef unit fill:#e3f2fd,stroke:#1565c0,color:#000
+    classDef mand fill:#ffd54f,stroke:#b8860b,stroke-width:3px,color:#000
+
+    %% Mandatory loci (universal citation anchors)
+    M1["DA III.3 428a1ff<br/>(mandatory)"]:::mand
+    M2["De Mem. 450a<br/>(mandatory)"]:::mand
+
+    %% Aristotle-work nodes
+    DA["De Anima"]:::work
+    RH["Rhetoric"]:::work
+    DM["De Memoria"]:::work
+    DMA["De Motu Animalium"]:::work
+    PH["Physics"]:::work
+    NE["Nicomachean Ethics"]:::work
+    MT["Metaphysics"]:::work
+    DI["De Insomniis"]:::work
+    DS["De Sensu"]:::work
+    SR["Soph. Refutations"]:::work
+
+    %% Unit nodes
+    U1["PHX-01 Nussbaum"]:::unit
+    U2["PHX-02 White"]:::unit
+    U3["PHX-03 Frede"]:::unit
+    U4["PHX-04 Caston"]:::unit
+    U5["PHX-05 O'Gorman"]:::unit
+    U6["PHX-06 Gonzalez"]:::unit
+    U7["PHX-07 Hawhee"]:::unit
+    U8["PHX-08 Papachristou"]:::unit
+
+    %% Mandatory anchor edges
+    M1 --- DA
+    M2 --- DM
+
+    %% Density edges (label = locus count from that work)
+    U1 -->|27| DA
+    U1 -->|14| MT
+    U1 -->|10| NE
+    U1 -->|6| DMA
+    U1 -->|5| DI
+    U1 -->|4| RH
+    U1 -->|4| DM
+
+    U2 -->|24| DA
+    U2 -->|7| RH
+    U2 -->|4| DI
+    U2 -->|3| NE
+
+    U3 -->|27| DA
+    U3 -->|6| DI
+    U3 -->|4| DS
+    U3 -->|3| NE
+
+    U4 -->|40| DA
+    U4 -->|7| MT
+    U4 -->|7| DI
+    U4 -->|6| DMA
+    U4 -->|5| PH
+    U4 -->|5| DM
+    U4 -->|4| RH
+    U4 -->|4| DS
+
+    U5 -->|20| RH
+    U5 -->|11| DA
+    U5 -->|6| NE
+    U5 -->|4| MT
+
+    U6 -->|27| RH
+    U6 -->|14| DA
+    U6 -->|8| NE
+    U6 -->|4| SR
+    U6 -->|3| DM
+
+    U7 -->|18| RH
+    U7 -->|6| DA
+
+    U8 -->|25| DA
+    U8 -->|3| DI

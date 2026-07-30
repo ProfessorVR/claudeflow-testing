@@ -1,0 +1,101 @@
+%% BCAP Global Concept Graph — GA 18 Full Course
+%% ~25 key nodes, ~48 edges, color-coded by centrality
+graph TD
+
+    %% === Core nodes (highest centrality, appear in 7+ units) ===
+    logos["λόγος<br/>(logos)"]
+    ousia["οὐσία<br/>(ousia)"]
+    psyche["ψυχή<br/>(psyche)"]
+    pathos["πάθος<br/>(pathos)"]
+    arete["ἀρετή<br/>(arete)"]
+    hexis["ἕξις<br/>(hexis)"]
+    kinesis["κίνησις<br/>(kinesis)"]
+    dunamis["δύναμις<br/>(dunamis)"]
+    praxis["πρᾶξις<br/>(praxis)"]
+    peras["πέρας<br/>(peras)"]
+    telos["τέλος / τέλειον<br/>(telos)"]
+    energeia["ἐνέργεια<br/>(energeia)"]
+    BIW["being-in-the-world"]
+
+    %% === Important nodes (4-6 units) ===
+    phronesis["φρόνησις<br/>(phronesis)"]
+    koinonia["κοινωνία<br/>(koinonia)"]
+    agathon["ἀγαθόν<br/>(agathon)"]
+    doxa["δόξα<br/>(doxa)"]
+    entelecheia["ἐντελέχεια<br/>(entelecheia)"]
+    nous["νοῦς<br/>(nous)"]
+    steresis["στέρησις<br/>(steresis)"]
+    pistis["πίστις<br/>(pistis)"]
+    ethos["ἦθος<br/>(ethos)"]
+    kairos["καιρός<br/>(kairos)"]
+    hedone["ἡδονή / λύπη<br/>(hedone/lupe)"]
+    aletheuein["ἀληθεύειν<br/>(aletheuein)"]
+
+    %% === Peripheral nodes (2-3 units) ===
+    phantasia["φαντασία<br/>(phantasia)"]
+    horismos["ὁρισμός<br/>(horismos)"]
+    proairesis["προαίρεσις<br/>(proairesis)"]
+    phusis["φύσις<br/>(phusis)"]
+    arche["ἀρχή<br/>(arche)"]
+
+    %% === Edges: Ontological-structural ===
+    ousia -->|"grounds"| logos
+    logos -->|"reveals"| ousia
+    psyche -->|"is mode of"| BIW
+    logos -->|"belongs to"| psyche
+    ousia -->|"determined by"| peras
+    peras -->|"completes as"| telos
+    telos -->|"realized through"| energeia
+    energeia -->|"fulfills"| entelecheia
+    entelecheia -->|"defines"| kinesis
+    kinesis -->|"presupposes"| dunamis
+    dunamis -->|"actualized as"| energeia
+    steresis -->|"constitutive of"| kinesis
+    kinesis -->|"governed by"| phusis
+    phusis -->|"is mode of"| arche
+    arche -->|"grounds"| kinesis
+
+    %% === Edges: Practical-existential ===
+    psyche -->|"oriented toward"| agathon
+    agathon -->|"realized through"| praxis
+    praxis -->|"guided by"| phronesis
+    phronesis -->|"is highest"| arete
+    arete -->|"is mode of"| hexis
+    hexis -->|"shaped by"| ethos
+    ethos -->|"disclosed through"| pathos
+    pathos -->|"structured by"| hexis
+    kairos -->|"determines"| praxis
+    hedone -->|"discloses"| BIW
+    proairesis -->|"directs"| praxis
+    koinonia -->|"ground of"| logos
+
+    %% === Edges: Rhetorical-doxastic ===
+    pistis -->|"grounded in"| ethos
+    pistis -->|"mobilizes"| pathos
+    pistis -->|"articulated through"| logos
+    doxa -->|"is mode of"| aletheuein
+    doxa -->|"presupposes"| koinonia
+    logos -->|"produces"| horismos
+    horismos -->|"delimits"| ousia
+    phantasia -->|"mediates"| nous
+    nous -->|"grasps"| aletheuein
+
+    %% === Edges: Cross-domain bridges ===
+    BIW -->|"articulated as"| logos
+    BIW -->|"disclosed through"| pathos
+    BIW -->|"structured by"| praxis
+    arete -->|"completion of"| psyche
+    kairos -->|"is μέσον of"| pathos
+    agathon -->|"is τέλειον"| telos
+    phronesis -->|"discloses"| aletheuein
+    entelecheia -->|"grounds"| ousia
+    dunamis -->|"characterizes"| phusis
+
+    %% === Style classes ===
+    classDef core fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+    classDef important fill:#ffd93d,stroke:#333,stroke-width:1.5px,color:#333
+    classDef peripheral fill:#6bcb77,stroke:#333,stroke-width:1px,color:#333
+
+    class logos,ousia,psyche,pathos,arete,hexis,kinesis,dunamis,praxis,peras,telos,energeia,BIW core
+    class phronesis,koinonia,agathon,doxa,entelecheia,nous,steresis,pistis,ethos,kairos,hedone,aletheuein important
+    class phantasia,horismos,proairesis,phusis,arche peripheral

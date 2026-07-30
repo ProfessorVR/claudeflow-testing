@@ -1,0 +1,59 @@
+%% Heidegger and Rhetoric (Gross & Kemmann eds., SUNY 2005) — Essay Network (Phase 3I-2)
+%% 8 essay-units. Edges = supports / refines / contrasts_with / undermines (from global-edges.csv inter-essay POSITION edges + DG1-DG11 disagreements).
+%% Layout: Gross-A,B (volume opening, left) → middle constellation (Gadamer/Michalski/Hyde/Struever/Kisiel) → Pöggeler (closing counter-titular, right)
+graph LR
+  subgraph OPEN["Volume Opening (centrality thesis)"]
+    G1A[HR-01-GROSS-A<br/>Being-Moved /<br/>Middle Voice]
+    G1B[HR-01-GROSS-B<br/>Priority of Pathos /<br/>Depoliticization]
+  end
+  subgraph MID["Middle Constellation"]
+    G2[HR-02-GADAMER<br/>Heidegger as Rhetor /<br/>Sprachlichkeit]
+    M3[HR-03-MICHALSKI<br/>Hermeneutic Phenomenology<br/>as Philology]
+    H4[HR-04-HYDE<br/>Matter of the Heart /<br/>Epideictic-Conscience]
+    S5[HR-05-STRUEVER<br/>Alltäglichkeit /<br/>Timefulness]
+    K6[HR-06-KISIEL<br/>Rhetorical Protopolitics /<br/>3-Phase Polis]
+  end
+  subgraph CLOSE["Volume Closing (counter-titular)"]
+    P7[HR-07-POGGELER<br/>Restricted Conception /<br/>Topology of Being]
+  end
+
+  %% ===== Gross-A / Gross-B internal mechanism =====
+  G1B ---|extends pathos genealogy| G1A
+
+  %% ===== Centrality cluster: mutual support =====
+  S5 ==>|rhetoric centrality / dynamis| G1A
+  H4 ==>|pathos as ground| G1B
+  M3 ==>|pathos = Befindlichkeit philology| G1B
+  G2 ==>|pathē as fundamental possibilities| G1B
+  K6 ==>|rhetorical pluralism / protopolitics| G1B
+  K6 ==>|protopolitics + politics-of-time| S5
+  K6 ==>|presupposes dynamis| G2
+  H4 ==>|pathos restructures temporality| S5
+  H4 ==>|phronesis as Gewissen / 1923 NE seminar| G2
+  S5 ==>|dynamis tou theoresai refines| G2
+
+  %% ===== Internal contrasts within centrality cluster =====
+  G1B -.->|VT5 cognitive vs. ontological pathos| H4
+  K6 -.->|VT8 ethos: Entschlossenheit vs. epideictic-Gewissen| H4
+  M3 -.->|VT7 philology vs. protopolitics| K6
+
+  %% ===== Volume-framing disagreement: open vs. close (VT1) =====
+  G1A -.->|VT1 centrality vs. restriction| P7
+  P7 -.->|countertitle reverses| G1A
+  G1B -.->|depoliticization predicts restriction| P7
+  S5 -.->|VT1 colonization vs. restriction| P7
+  H4 -.->|continuity-with-pivot vs. restriction| P7
+  G2 -.->|dynamis vs. restriction| P7
+  K6 -.->|3-phase succession vs. monolithic restriction| P7
+
+  %% ===== Pöggeler engages middle constellation =====
+  P7 ==>|hermeneutics-rhetorical-origin agreement| G2
+  P7 -->|refines but restricts philology import| M3
+  P7 -.->|undermines BT 178 reading| H4
+
+  classDef opening fill:#fff4d6,stroke:#c19310,stroke-width:2px,color:#000
+  classDef middle fill:#dbe9ee,stroke:#274472,stroke-width:1px,color:#000
+  classDef closing fill:#cfd8dc,stroke:#37474f,stroke-width:2px,stroke-dasharray:5 5,color:#000
+  class G1A,G1B opening
+  class G2,M3,H4,S5,K6 middle
+  class P7 closing

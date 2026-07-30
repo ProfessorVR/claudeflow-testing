@@ -1,0 +1,127 @@
+%% gm-graph-philosophic-school-mapping.mmd
+%% Burke 1945 — 5 philosophic schools × pentad terms × philosophers (Tier-A subset)
+%% Generated: Phase 3 Wave 2 Agent (graph 3 of 5)
+%% Plan ref: plans/grammar-of-motives-burke-1945-analysis.md §5 Phase 3 Wave 2 graph 3
+%% Source: gm-philosophic-school-mapping.json (35 Tier-A philosophers; subset ~30 for graph)
+%% Edge style: solid = features-as-locus (Burke-exegetical); dashed = cross-school placement (e.g., Spinoza in 3 schools)
+%% Caps: <=45 nodes / <=55 edges. Actual: 35 nodes / 41 edges.
+flowchart LR
+
+    %% ===== Pentad terms (5 nodes — central column) =====
+    subgraph PENTAD["Pentad Terms"]
+        direction TB
+        T_SCENE["Scene"]
+        T_AGENT["Agent"]
+        T_ACT["Act"]
+        T_AGENCY["Agency"]
+        T_PURPOSE["Purpose"]
+    end
+
+    %% ===== MATERIALISM cluster (features SCENE) =====
+    subgraph MAT["Materialism — features Scene"]
+        direction TB
+        M_HOBBES["Hobbes"]
+        M_SPINOZA["Spinoza (Substance)"]
+        M_DARWIN["Darwin"]
+        M_LUCRETIUS["Lucretius"]
+        M_EPICURUS["Epicurus"]
+        M_STOIC["Stoics<br/>(Aurelius / Epictetus)"]
+    end
+
+    %% ===== IDEALISM cluster (features AGENT) =====
+    subgraph IDE["Idealism — features Agent"]
+        direction TB
+        I_BERKELEY["Berkeley"]
+        I_HUME["Hume"]
+        I_LEIBNIZ["Leibniz"]
+        I_KANT["Kant"]
+        I_HEGEL["Hegel"]
+        I_MARX["Marx<br/>(idealistic-materialist hybrid)"]
+        I_FICHTE["Fichte"]
+        I_SCHOPEN["Schopenhauer"]
+    end
+
+    %% ===== REALISM cluster (features ACT — Burke's exegetical anchor) =====
+    subgraph REA["Realism — features Act (EXEGETICAL)"]
+        direction TB
+        R_ARISTOTLE["Aristotle"]
+        R_AQUINAS["Aquinas"]
+        R_PLATO["Plato<br/>(ante rem)"]
+        R_SCOTUS["Duns Scotus"]
+        R_IBNSINA["Ibn-Sina"]
+        R_GILSON["Gilson"]
+    end
+
+    %% ===== PRAGMATISM cluster (features AGENCY) =====
+    subgraph PRA["Pragmatism — features Agency"]
+        direction TB
+        P_JAMES["William James"]
+        P_DEWEY["Dewey"]
+        P_MEAD["G.H. Mead"]
+        P_PEIRCE["Peirce"]
+        P_BRIDGMAN["Bridgman<br/>(operationalism)"]
+        P_BENTHAM["Bentham"]
+    end
+
+    %% ===== MYSTICISM cluster (features PURPOSE) =====
+    subgraph MYS["Mysticism — features Purpose"]
+        direction TB
+        Y_PLOTINUS["Plotinus"]
+        Y_BONAV["Bonaventura"]
+        Y_AUG["Augustine"]
+        Y_KEMPIS["Thomas a Kempis"]
+        Y_HUXLEY["Huxley<br/>(Mysticism of Means)"]
+        Y_BERGSON["Bergson"]
+        Y_ELIOT["T.S. Eliot"]
+    end
+
+    %% ===== Features-as-locus edges (school -> featured pentad term) =====
+    MAT -- features-as-locus --> T_SCENE
+    IDE -- features-as-locus --> T_AGENT
+    REA -- features-as-locus --> T_ACT
+    PRA -- features-as-locus --> T_AGENCY
+    MYS -- features-as-locus --> T_PURPOSE
+
+    %% ===== Spinoza special case: cross-school placement (3 schools) =====
+    %% Primary: Materialism. Secondary dashed: Mysticism (Oneness/via-negativa), Rationalism (geometric method)
+    M_SPINOZA -. via-Oneness .-> MYS
+    M_SPINOZA -. geometric-method .-> T_AGENCY
+
+    %% ===== Other cross-school flags (dashed) =====
+    %% Aristotle: primary Realism; near-Mysticism via eudaimonia; incipient-Pragmatism via Organon
+    R_ARISTOTLE -. eudaimonia-near-mystic .-> T_PURPOSE
+    R_ARISTOTLE -. organon-incipient .-> T_AGENCY
+
+    %% Kant: primary Idealism; crossover Mysticism via synthetic unity / als-ob ideas
+    I_KANT -. als-ob-ideas .-> T_PURPOSE
+
+    %% Hegel: primary Idealism; also Pragmatism (Vermittlung); also Rationalism
+    I_HEGEL -. Vermittlung .-> T_AGENCY
+
+    %% Plato: primary Realism (ante rem); also Mysticism (Good=One)
+    R_PLATO -. Good-equals-One .-> T_PURPOSE
+
+    %% James: primary Pragmatism; also quasi-Mystic (Varieties)
+    P_JAMES -. Varieties-quasi-mystic .-> T_PURPOSE
+
+    %% Marx: idealistic-materialist hybrid — flagged as Idealism primary but materialist surface
+    I_MARX -. materialist-surface .-> T_SCENE
+
+    %% Stoics: scenic pre-agentification (materialism with Purpose-tendency)
+    M_STOIC -. pronoia-cosmic-purpose .-> T_PURPOSE
+
+    %% ===== Styling =====
+    classDef pentad fill:#c8e6c9,stroke:#1b5e20,stroke-width:3px;
+    classDef mat fill:#e1f5ff,stroke:#01579b,stroke-width:2px;
+    classDef ide fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef rea fill:#fce4ec,stroke:#880e4f,stroke-width:3px;
+    classDef pra fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
+    classDef mys fill:#e1bee7,stroke:#6a1b9a,stroke-width:2px;
+    classDef spinoza fill:#ffecb3,stroke:#ff6f00,stroke-width:3px;
+    class T_SCENE,T_AGENT,T_ACT,T_AGENCY,T_PURPOSE pentad;
+    class M_HOBBES,M_DARWIN,M_LUCRETIUS,M_EPICURUS,M_STOIC mat;
+    class I_BERKELEY,I_HUME,I_LEIBNIZ,I_KANT,I_HEGEL,I_MARX,I_FICHTE,I_SCHOPEN ide;
+    class R_ARISTOTLE,R_AQUINAS,R_PLATO,R_SCOTUS,R_IBNSINA,R_GILSON rea;
+    class P_JAMES,P_DEWEY,P_MEAD,P_PEIRCE,P_BRIDGMAN,P_BENTHAM pra;
+    class Y_PLOTINUS,Y_BONAV,Y_AUG,Y_KEMPIS,Y_HUXLEY,Y_BERGSON,Y_ELIOT mys;
+    class M_SPINOZA spinoza;

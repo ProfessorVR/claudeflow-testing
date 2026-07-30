@@ -1,0 +1,56 @@
+graph TD
+    classDef core fill:#4a90d9,stroke:#2c5f8a,color:#fff
+    classDef important fill:#7fb069,stroke:#4a7a3a,color:#fff
+    classDef peripheral fill:#d4a574,stroke:#a07a50,color:#fff
+    classDef method fill:#9b72aa,stroke:#6e4f7a,color:#fff
+
+    AR["Ambient Rhetoric"]:::core
+    ATT["Attunement / Stimmung"]:::core
+    DW["Dwelling"]:::core
+    CH["Chora"]:::core
+    DIS["Disclosure / Aletheia"]:::important
+    AMB["Ambience"]:::important
+    INV["Invention"]:::important
+    WD["Withdrawal"]:::important
+    RT("Rhetorical Thing"):::important
+    FF{{"Fourfold"}}:::important
+    KAI["Kairos"]:::important
+    MAT["Materiality"]:::important
+    NHA["Nonhuman Agency"]:::important
+    PL["Place / Emplacement"]:::important
+    ECO["Ecology / Oikos"]:::important
+    SUF["Sufficiency"]:::peripheral
+    PR("Preparatory Rhetoric"):::peripheral
+    PER["Periechon"]:::peripheral
+    BH("Burke / Heidegger Synthesis"):::method
+
+    AR -->|"grounded in"| ATT
+    AR -->|"operationalizes"| AMB
+    AR -->|"depends on"| DW
+    AR -->|"recovers"| PER
+    ATT -->|"enables"| DIS
+    DIS -->|"co-constituted by"| WD
+    DW -->|"cultivates attunement to"| FF
+    DW -->|"emerges from"| PL
+    DW -->|"is ecological"| ECO
+    CH -->|"ancient precursor of"| AMB
+    CH -->|"grounds"| INV
+    CH -->|"operates through"| WD
+    CH -->|"generates"| PL
+    KAI -->|"parallels"| CH
+    KAI -->|"discloses"| INV
+    KAI -->|"requires"| ATT
+    AMB -->|"exceeds"| NET["Networks"]:::peripheral
+    AMB -->|"characterized by immersion"| MAT
+    BH -->|"synthesizes language and world"| AR
+    BH -->|"reveals"| DIS
+    RT -->|"requires attention to"| WD
+    RT -->|"instantiated by"| NHA
+    NHA -->|"distributed across"| ECO
+    FF -->|"gathers"| RT
+    FF -->|"constitutive withdrawal"| WD
+    SUF -->|"emerges from"| DW
+    SUF -->|"opposes"| EFF["Efficiency"]:::peripheral
+    PR -->|"mode of"| AR
+    PR -->|"enables"| DIS
+    PER -->|"etymological precursor"| AMB

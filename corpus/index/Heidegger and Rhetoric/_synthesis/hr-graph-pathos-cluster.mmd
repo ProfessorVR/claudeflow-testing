@@ -1,0 +1,80 @@
+%% Heidegger and Rhetoric (Gross & Kemmann eds., SUNY 2005) — Pathos Cluster (Phase 3I-3)
+%% Volume pillar concept w/ German correlates, Aristotelian + Heideggerian context, and 5 contributor positions (Gross / Hyde / Kisiel / Gadamer / Pöggeler).
+graph TD
+  pat(("<b>Pathos</b><br/><i>pathē</i>"))
+
+  subgraph DE["German correlates"]
+    stm[Stimmung<br/><i>mood</i>]
+    bef[Befindlichkeit<br/><i>Sich-Befinden / SS 1924</i>]
+    aff[Affektenlehre<br/><i>Lutheran tradition</i>]
+  end
+
+  subgraph GR["Aristotelian context"]
+    phob[Phobos<br/><i>fear / Rhet. II.5</i>]
+    ele[Eleos<br/><i>pity / Rhet. II.8</i>]
+    eth[Ethos]
+    log[Logos]
+    rhet2[Aristotle Rhetoric II<br/><i>1378a-1388b: pathē catalog</i>]
+  end
+
+  subgraph HE["Heideggerian context"]
+    sor[Sorge<br/><i>BT §§39-44</i>]
+    ang[Angst<br/><i>BT §40</i>]
+    fur[Furcht<br/><i>BT §30</i>]
+    man[Das Man<br/><i>BT §27</i>]
+  end
+
+  subgraph POS["Contributor positions"]
+    gross[<b>Gross</b><br/>ontological substrate of logos<br/><i>GA 18 262 / Intro p.4</i>]
+    hyde["<b>Hyde</b><br/>cognitive-rhetorical resource<br/><i>orator intentional structure</i>"]
+    kisiel[<b>Kisiel</b><br/>protopolitical disposition<br/><i>pisteis equiprimordial w/ aletheia</i>]
+    gad[<b>Gadamer</b><br/>bewährt-warranted middle<br/><i>fundamental possibilities, GA 18 117</i>]
+    poeg[<b>Pöggeler</b><br/>moment of restriction<br/><i>pathos = Befindlichkeit dissolves rhetoric</i>]
+  end
+
+  %% pathos correlates: Greek to German bridges
+  pat -->|is_meaning_of<br/>GA 18 122| bef
+  pat -->|aligned with| stm
+  bef -->|refines / narrows<br/>BT 344 / 434| pat
+  aff -->|historicizes via Luther| pat
+
+  %% Aristotelian context: pathos in Rhetoric II
+  rhet2 -->|catalog grounds| pat
+  pat -->|exemplified by| phob
+  pat -->|exemplified by| ele
+  pat -->|with ethos and logos= pisteis| eth
+  pat -->|grounds<br/>GA 18 169| log
+
+  %% Heideggerian context: BT chain
+  bef -->|operationalizes| fur
+  bef -->|operationalizes| ang
+  fur -->|presupposes| sor
+  ang -->|presupposes| sor
+  bef -.->|positive vs. inauthentic pole| man
+
+  %% Contributor positions on pathos
+  gross -->|reads as| pat
+  hyde -->|reads as| pat
+  kisiel -->|reads as| pat
+  gad -->|reads as| pat
+  poeg -.->|reads as restriction of| pat
+
+  %% Internal contributor disagreement (VT5)
+  gross -.->|VT5 ontological vs. cognitive| hyde
+  gad ---|productive middle bewährt| gross
+  gad ---|productive middle bewährt| hyde
+  kisiel -->|equiprimordial w/ aletheia| gross
+  poeg -.->|VT1 restriction vs. centrality| gross
+
+  classDef pillar fill:#ffd6d6,stroke:#a83232,stroke-width:3px,color:#000
+  classDef de fill:#fff4d6,stroke:#c19310,stroke-width:1px,color:#000
+  classDef gr fill:#dde7f0,stroke:#274472,stroke-width:1px,color:#000
+  classDef bt fill:#e6dff5,stroke:#5d3a8e,stroke-width:1px,color:#000
+  classDef pos fill:#d8f0e0,stroke:#2c6e49,stroke-width:1px,color:#000
+  classDef poegcls fill:#cfd8dc,stroke:#37474f,stroke-width:2px,stroke-dasharray:5 5,color:#000
+  class pat pillar
+  class stm,bef,aff de
+  class phob,ele,eth,log,rhet2 gr
+  class sor,ang,fur,man bt
+  class gross,hyde,kisiel,gad pos
+  class poeg poegcls

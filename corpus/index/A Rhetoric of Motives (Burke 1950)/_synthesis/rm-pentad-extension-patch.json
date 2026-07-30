@@ -1,0 +1,95 @@
+{
+  "patch_id": "rm-pentad-extension-patch",
+  "title": "RM Pentad-Extension Patch (deltas for the Grammar pentad manual)",
+  "pipeline": "Burke, A Rhetoric of Motives (1950)",
+  "generated": "2026-05-27",
+  "target_file_DO_NOT_EDIT": "corpus/index/A Grammar of Motives (Burke 1945)/_synthesis/gm-pentad-operationalization-manual.{md,json}",
+  "status": "PATCH SPEC ONLY — specifies deltas to fold in at integration time (Plan Phase 2); does NOT modify the Grammar manual file.",
+  "provenance": {"burke-direct": "Burke claims, book-page anchored (Rhetoric of Motives)", "anticipatory-projection": "game/PIM/pentad mappings"},
+  "three_deltas": ["I: new Attitude 6th-term entry (Grammar Section A.6)", "II: per-term forward_reference_to_rhetoric_of_motives_attitude updates", "III: consubstantiation_pipeline_status -> consolidated-via-RM-01 + consolidated bridge"],
+
+  "section_I_attitude_6th_term_entry": {
+    "insertion_point": "gm-pentad-operationalization-manual.md, after A.5 PURPOSE, as new subsection A.6 ATTITUDE (6th term)",
+    "entry": {
+      "operational_definition": "Attitude = the sixth dramatistic term (added by Burke himself, GM-09 1962 Addendum; operationalized in Rhetoric of Motives). Names an INCIPIENT ACT: a disposition/leaning/orientation toward action not yet (or not necessarily) overt; the suspended/symbolic-rehearsal mode mediating dynamis and energeia; carries affective/evaluative tone.",
+      "question_answered": "in what disposition / with what orientation? (transverse — askable of any of the five placement-terms)",
+      "paradigm_examples": [
+        "'attitude being an incipient act' — poetic/scientific/rhetorical triad (RM-01 p.42)",
+        "avarice as 'property' translated into an agent's attitude (RM-01 p.24)",
+        "acting-together's shared 'attitudes' make men consubstantial (RM-01 p.21)",
+        "persuasion-to-attitude vs persuasion-to-action; attitude as leaning/inclination (RM-02 pp.50-51)",
+        "'renunciation and advance fused in one attitude' (RM-06 p.251)",
+        "mountain-climbing as 'attitude' literally enacted (RM-07 p.302)",
+        "mystic 'attitudinal glow' / 'half-way status nascendi' (RM-07 pp.331-332)",
+        "standoffishness of pure persuasion as attitudinal stance (RM-07 pp.269-271)",
+        "(Grammar seeds) attitude as beginning of acts (GM-06 p.236); incipient action (GM-06 p.235); Urn-as-Attitude (GM-10 p.458)"
+      ],
+      "decision_rules": [
+        "disposition not yet issued in completed external conduct -> Attitude (else Act)",
+        "disposition deliberately/constitutively HELD without consummation -> Attitude (suspended-act sense)",
+        "supplies disposition-with-which rather than end-toward-which -> Attitude, not Purpose",
+        "carries affective/evaluative tone coloring an act -> Attitude as tonal modifier",
+        "rhetoric/poetic aims at orientation only, no overt act -> persuasion-to-attitude (more general target)"
+      ],
+      "status_modifier_not_box": "Attitude is TRANSVERSE — a dispositional modifier (disposition-with-which) askable of Act/Scene/Agent/Agency/Purpose; best represented as a COLUMN across all five (as in Grammar Section E), not a sixth ratio-row.",
+      "calleja_pim_mapping": {"primary": "AFFECTIVE", "rationale": "Affective is the response-state dimension; already carries Layer-B target 'ATTITUDE (Burke's later sixth term)' (ig-pim A.5/E.1); player-attitude register maps here (rm-attitude-as-sixth-term E).", "provenance": "anticipatory-projection"},
+      "uexkull_mapping": {"construct": "Merktöne / Wirktöne", "provenance": "anticipatory-projection"},
+      "ontological_target": {"target": "Aristotelian pathē (Rhetoric II) + hexis/dunamis (attitude as dunamis-as-hexis); cross-anchor Gross 2017", "note": "this is the ONE pentad term Burke himself supplements (GM-09 Addendum) — entry is burke-direct in architecture even where grounding is anticipatory", "provenance": "anticipatory-projection"},
+      "ratio_note": "Attitude does NOT enter the 10-ratio matrix as an 11th pair; it MODIFIES each existing ratio (an act-purpose ratio can be eager/reluctant/ironic). Attitude-ratios = modulations, not new pairs."
+    }
+  },
+
+  "section_II_forward_reference_updates": {
+    "note": "Grammar A.1-A.5 forward-reference fields were FORECASTS ('will require...'); now FULFILLED. Replace each + Section-E 'Rhetoric-Attitude (future pipeline)' column cells. Source: rm-attitude-as-sixth-term C.",
+    "updates": [
+      {"term": "ACT", "new_field": "Attitude as incipient-act sub-term / symbolic-rehearsal spectrum (RM-01 p.42; RM-07 p.302; GM-06 p.243). burke-direct. Calleja: readiness-to-move + theorycrafting (Kinesthetic readiness; Ludic rehearsal). anticipatory-projection."},
+      {"term": "SCENE", "new_field": "Attitudinal-scene: situation-as-already-evaluated (RM-01 p.24; GM-10 p.458). burke-direct. Calleja: gameworld as already affectively coloured (atmospherics-as-affect). anticipatory-projection."},
+      {"term": "AGENT", "new_field": "Attitude as agent's dispositional stance / identification-disposition; shared attitudes make agents consubstantial (RM-01 p.21; RM-06 p.251). LOAD-BEARING FORWARD-BRIDGE now consolidated (see III). burke-direct. Calleja: player stance toward avatar/guild/co-players (Shared+Affective). anticipatory-projection."},
+      {"term": "AGENCY", "new_field": "Rhetorical-instrumentality of address (attitudinal use of means); censorial appellative as tonal gesture (RM-03 pp.91,98; RM-07 pp.269-271). burke-direct. Calleja: attitudinal coloring of control/rule-use; standoffish element of skilled performance (Kinesthetic/Ludic; Performative). anticipatory-projection."},
+      {"term": "PURPOSE", "new_field": "Attitudinal-purpose: the end held in a disposition; ultimate vocabulary realigns attitude (RM-05 p.188); pure persuasion = purpose in standoffishness (RM-07 pp.269-274). Calleja-incorporation parallel consolidated (III). burke-direct. Calleja: same goal in different registers (Ludic+Narrative+Affective). anticipatory-projection."}
+    ],
+    "section_E_column_replacement": {
+      "column": "replace 'Rhetoric-Attitude (future pipeline)' with 'Rhetoric-Attitude (CONSOLIDATED)'",
+      "cells": {
+        "ACT": "incipient-act sub-term; symbolic-rehearsal spectrum (RM-01 p.42; RM-07 p.302) [burke-direct]",
+        "SCENE": "attitudinal-scene: situation-as-already-evaluated (RM-01 p.24; GM-10 p.458) [burke-direct]",
+        "AGENT": "identification/consubstantiation as agent's stance — bridge CONSOLIDATED via RM-01 (III) [burke-direct arch / anticipatory-projection integration]",
+        "AGENCY": "rhetorical-instrumentality of address; attitudinal use of means (RM-03 pp.91,98; RM-07 pp.269-271) [burke-direct]",
+        "PURPOSE": "attitudinal-purpose; Calleja-incorporation parallel CONSOLIDATED (III) (RM-05 p.188; RM-07 pp.269-274) [burke-direct arch]"
+      },
+      "adds_row_label": "change 'Rhetoric-Attitude (future)' label to '(consolidated — RM pipeline)'; CONFLICTS cell 'none — supplementary by Burke himself' stays."
+    }
+  },
+
+  "section_III_consubstantiation_status": {
+    "target": "gm-pentad-operationalization-manual Section E, 'The incorporation <-> consubstantiation bridge'",
+    "III_1_status_flag": {"set": "consubstantiation_pipeline_status = \"consolidated-via-RM-01\"", "was": "\"pending-future-rhetoric-of-motives-pipeline\""},
+    "III_2_replace_blocker_with_consolidation_note": "Bridge consolidated. RM-01 supplies the burke-direct ground the Grammar only seeded (GM-00 p.xix; GM-02 type-16; GM-13 peripety): consubstantiation defined at p.21 ('substantially one' yet 'individual locus of motives'; 'both joined and separate'), act-grounded at p.21, compensatory to division at p.22. RM-07 supplies the apex (pp.328-333). Full bridge: rm-identification-consubstantiation-manual D. Calleja-side 'exegetically inadmissible' caveat ANSWERED from the Burke side: textually grounded in Burke though Burke absent from Calleja — homology FUNCTIONAL not lexical (Burke tension T2).",
+    "III_3_consolidated_homology_and_divergences": {
+      "homology_alignments": [
+        "Calleja R1 assimilation (env INTO consciousness) <-> Burke 'A is substantially one with' the other (p.21)",
+        "Calleja R2 embodiment (player INTO env via avatar = single systemically-upheld locus) <-> Burke 'yet remains an individual locus of motives ... both joined and separate' (p.21)",
+        "Calleja R3 simultaneity <-> Burke both-joined-AND-separate (one in act yet two in being, p.21)",
+        "Calleja R4/R5 cornerstone+blending <-> Burke 'acting-together makes men consubstantial' (co-action, p.21)",
+        "Calleja incorporation-at-its-fullest <-> Burke ultimate identification (RM-07 p.333)"
+      ],
+      "five_divergences": [
+        "1 medium of union: symbolic-substance vs phenomenological-absorption",
+        "2 ontological status: real-or-persuaded vs sustained-but-fleeting experiential state",
+        "3 grounding theory: substance-metaphysics vs experientialist embodied cognition (NOT Merleau-Ponty/Heidegger)",
+        "4 directionality: asymmetrically-deployed vs insistently-bidirectional",
+        "5 scope: society-wide + self-address + by-default vs bounded-to-ergodic-media"
+      ],
+      "provenance": "anticipatory-projection (Calleja mapping); burke-direct (Burke text)",
+      "detail_ref": "rm-identification-consubstantiation-manual D.2/D.3"
+    },
+    "III_4_forward_pipeline_anchor_update": {
+      "was": "'Rhetoric of Motives (1950) pipeline WILL populate Section A Attitude-modifier slots; consolidate the consubstantiation bridge; activate the player-as-identifying-agent apparatus.'",
+      "now": "'Rhetoric of Motives (1950) pipeline — DONE. Section A Attitude-modifier slots populated (II); consubstantiation bridge consolidated (status=consolidated-via-RM-01, III); player-as-identifying-agent apparatus active (rm-identification-consubstantiation-manual A,E). Sixth-term entry added as Grammar A.6 (I).'"
+    }
+  },
+
+  "application_note": "Non-destructive enrichments: I adds a subsection; II replaces forecast text with fulfilled text in 5 fields + 1 table column; III flips one status string + replaces one blocker note + one bullet set. No Grammar pentad analysis (Sections B-D, ratios, worked examples, question battery) changes. Apply at integration (Plan Phase 2); until then Grammar manual = v0 baseline, this file = patch-of-record.",
+  "cross_references": {"attitude_detail": "rm-attitude-as-sixth-term", "consolidated_bridge_detail": "rm-identification-consubstantiation-manual D"},
+  "content_filter_compliance": "PASS — all Burke prose paraphrased; no >=25-word verbatim; Burke claims burke-direct (book-page anchored); all game/PIM/pentad mappings anticipatory-projection."
+}

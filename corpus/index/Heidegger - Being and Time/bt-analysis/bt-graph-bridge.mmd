@@ -1,0 +1,39 @@
+graph TD
+    %% B&T CONCEPTS (left)
+    BITW_BT["B&T: Being-in-the-world<br/><i>In-der-Welt-sein</i>"]
+    Befind_BT["B&T: State-of-mind<br/><i>Befindlichkeit</i>"]
+    Care_BT["B&T: Care<br/><i>Sorge</i>"]
+    Temp_BT["B&T: Temporality<br/><i>Zeitlichkeit</i>"]
+    Verstehen_BT["B&T: Understanding<br/><i>Verstehen</i>"]
+    Rede_BT["B&T: Discourse<br/><i>Rede</i>"]
+    RTH_BT["B&T: Readiness-to-hand<br/><i>Zuhandenheit</i>"]
+    DasMan_BT["B&T: das Man"]
+    Falling_BT["B&T: Fallenness<br/><i>Verfallenheit</i>"]
+    Angst_BT["B&T: Anxiety<br/><i>Angst</i>"]
+
+    %% BCAP CONCEPTS (right)
+    Praxis_BCAP["BCAP: Practical life<br/><i>ζωή πρακτική</i>"]
+    Pathos_BCAP["BCAP: Pathos<br/><i>πάθος</i>"]
+    Energeia_BCAP["BCAP: Energeia<br/><i>ψυχῆς ἐνέργεια</i>"]
+    Kinesis_BCAP["BCAP: Kinēsis<br/><i>κίνησις</i>"]
+    Phronesis_BCAP["BCAP: Phronēsis<br/><i>φρόνησις</i>"]
+    Logos_BCAP["BCAP: Logos<br/><i>λόγος</i>"]
+    Techne_BCAP["BCAP: Technē<br/><i>τέχνη</i>"]
+    Polis_BCAP["BCAP: Being-with-one-another<br/><i>πόλις</i>"]
+    Doxa_BCAP["BCAP: Doxa<br/><i>δόξα</i>"]
+
+    %% BRIDGE EDGES [all INTERP-high]
+    BITW_BT -.->|"INFORMS [INTERP-high]"| Praxis_BCAP
+    Befind_BT -.->|"INFORMS [INTERP-high]"| Pathos_BCAP
+    Care_BT -.->|"EXTENDS [INTERP-high]"| Energeia_BCAP
+    Temp_BT -.->|"REORIENTS [INTERP-high]"| Kinesis_BCAP
+    Verstehen_BT -.->|"INFORMS [INTERP-high]"| Phronesis_BCAP
+    Rede_BT -.->|"DISTORTS [INTERP-high]"| Logos_BCAP
+    RTH_BT -.->|"EXTENDS [INTERP-high]"| Techne_BCAP
+    DasMan_BT -.->|"REORIENTS [INTERP-high]"| Polis_BCAP
+    Falling_BT -.->|"EXTENDS [INTERP-high]"| Doxa_BCAP
+    Angst_BT -.->|"CONTRASTS [INTERP-high]"| Pathos_BCAP
+
+    %% NOTE: All bridge edges are [INTERP-high] — BCAP ontology not yet available.
+    %% These are projected integration surfaces based on B&T §§5-7 and §§78-83.
+    %% Do not treat as confirmed until BCAP ontology artifacts exist.

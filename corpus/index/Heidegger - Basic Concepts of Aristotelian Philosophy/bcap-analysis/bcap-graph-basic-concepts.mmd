@@ -1,0 +1,73 @@
+%% BCAP Sub-graph: Ontological Core — "Physics Gamma" Cluster
+%% Second Part focus (U-SP1, U-SP2a, U-SP2b) with structural roots in First Part
+%% 18 nodes, edges primarily from U-SP1, U-SP2a, U-SP2b
+graph TD
+
+    %% === Central ontological concepts ===
+    kinesis["κίνησις<br/>(movement)"]
+    entelecheia["ἐντελέχεια<br/>(being-at-work-staying-itself)"]
+    energeia["ἐνέργεια<br/>(being-at-work)"]
+    dunamis["δύναμις<br/>(capacity/potency)"]
+    ousia["οὐσία<br/>(beingness)"]
+    steresis["στέρησις<br/>(privation)"]
+    phusis["φύσις<br/>(nature)"]
+    arche["ἀρχή<br/>(origin/principle)"]
+    aoriston["ἀόριστον<br/>(the indeterminate)"]
+
+    %% === Supporting structural concepts ===
+    peras["πέρας<br/>(limit)"]
+    telos["τέλος<br/>(end/completion)"]
+    eidos["εἶδος<br/>(look/form)"]
+    hule["ὕλη<br/>(matter)"]
+    kategoria["κατηγορία<br/>(category)"]
+
+    %% === Hermeneutic-methodological ===
+    Vorhabe["fore-having<br/>(Vorhabe)"]
+    Vorsicht["fore-sight<br/>(Vorsicht)"]
+    Vorgriff["fore-grasp<br/>(Vorgriff)"]
+    logos["λόγος<br/>(logos)"]
+
+    %% === First definition: kinesis = entelecheia tou dunamei ontos ===
+    kinesis -->|"defined as"| entelecheia
+    entelecheia -->|"of the"| dunamis
+    dunamis -->|"actualized as"| energeia
+    energeia -->|"distinguished from"| entelecheia
+
+    %% === Constitutive structure of kinesis ===
+    steresis -->|"constitutive of"| kinesis
+    kinesis -->|"characterized as"| aoriston
+    aoriston -->|"is ἀτελές of"| kinesis
+    kinesis -->|"toward"| telos
+    telos -->|"is"| peras
+    peras -->|"delimits"| ousia
+
+    %% === Phusis as arche ===
+    phusis -->|"is mode of"| arche
+    arche -->|"grounds"| kinesis
+    phusis -->|"governs"| kinesis
+
+    %% === Categorial structure ===
+    ousia -->|"articulated through"| kategoria
+    kategoria -->|"derived from"| logos
+    eidos -->|"contrasts with"| hule
+    eidos -->|"determines"| ousia
+    dunamis -->|"characterizes"| phusis
+    steresis -->|"contrasts with"| eidos
+
+    %% === Hermeneutic fore-structure ===
+    Vorhabe -->|"guides"| Vorsicht
+    Vorsicht -->|"specifies"| Vorgriff
+    Vorgriff -->|"articulates through"| logos
+    logos -->|"reveals"| ousia
+
+    %% === Genuine definition: kinesis = energeia tou dunamei poietikou kai pathetikou ===
+    energeia -->|"genuine definition of"| kinesis
+
+    %% === Style classes ===
+    classDef core fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+    classDef important fill:#ffd93d,stroke:#333,stroke-width:1.5px,color:#333
+    classDef peripheral fill:#6bcb77,stroke:#333,stroke-width:1px,color:#333
+
+    class kinesis,entelecheia,energeia,dunamis,ousia,steresis core
+    class phusis,arche,aoriston,peras,telos,eidos important
+    class hule,kategoria,Vorhabe,Vorsicht,Vorgriff,logos peripheral

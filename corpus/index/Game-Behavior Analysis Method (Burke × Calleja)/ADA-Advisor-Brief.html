@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actualization-of-Desire Analysis — Methodology Brief</title>
+<style>
+  :root{
+    --ink:#1c2230; --soft:#55607a; --line:#d8dee9; --bg:#ffffff;
+    --spine:#b8860b; --spineBg:#fbf4e2;        /* the original ontology */
+    --cal:#178a7e;  --calBg:#e6f6f3;            /* absorbed from Calleja */
+    --bur:#b1492f;  --burBg:#fbece7;            /* absorbed from Burke */
+    --union:#6a4ca3; --unionBg:#f1ecfa;         /* the original fused core */
+    --loop:#5a6577; --loopBg:#eef1f5;           /* the diachronic loop */
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#f4f6f9;color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    line-height:1.62;font-size:16px}
+  .sheet{max-width:880px;margin:24px auto;background:var(--bg);padding:48px 56px;
+    box-shadow:0 1px 6px rgba(0,0,0,.08);border-radius:4px}
+  h1{font-size:25px;margin:0 0 2px;line-height:1.25}
+  .sub{color:var(--soft);font-size:15px;margin:0 0 4px}
+  .meta{color:var(--soft);font-size:13px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:8px}
+  h2{font-size:19px;margin:30px 0 8px;padding-bottom:5px;border-bottom:2px solid var(--line)}
+  h3{font-size:16px;margin:18px 0 3px}
+  p{margin:8px 0}
+  .lead{color:#33405c}
+  .lineage{font-size:13.5px;color:var(--soft);margin:3px 0 0;padding-left:12px;border-left:3px solid var(--line)}
+  .lineage b{color:var(--ink)}
+  em.gk{font-style:italic;color:#6a5320}
+  .small{font-size:13.5px;color:var(--soft)}
+  /* diagram */
+  figure{margin:14px 0 6px;border:1px solid var(--line);border-radius:8px;padding:20px;background:#fcfdff}
+  figcaption{font-size:12.5px;color:var(--soft);text-align:center;margin-top:12px}
+  .driver{text-align:center;background:var(--spineBg);border:1px solid #e7d9a8;border-radius:7px;
+    padding:8px 10px;font-size:14px;font-weight:600;color:#6e520a}
+  .arrow{text-align:center;color:var(--soft);font-size:18px;line-height:1;margin:4px 0}
+  .spine{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .stage{background:var(--spineBg);border:1px solid #e7d9a8;border-radius:7px;padding:8px 6px;text-align:center}
+  .stage .nm{font-weight:700;font-size:13.5px;color:#6e520a}
+  .stage .tm{font-size:11px;color:var(--soft);display:block;margin-top:2px}
+  .spinelabel{text-align:center;font-size:12px;color:var(--spine);font-weight:600;margin:6px 0 2px;letter-spacing:.02em}
+  .union{background:var(--unionBg);border:1.5px solid #c9b8ec;border-radius:8px;padding:11px 13px;margin:12px 0}
+  .union .hd{text-align:center;font-weight:700;color:var(--union);font-size:14px;margin-bottom:8px}
+  .faces{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .face{border-radius:6px;padding:8px 10px;font-size:13px}
+  .face.w{background:var(--calBg);border:1px solid #b6e0d8} .face.w b{color:var(--cal)}
+  .face.o{background:var(--burBg);border:1px solid #ecc4b8} .face.o b{color:var(--bur)}
+  .rails{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .rail{border-radius:6px;padding:9px 11px;font-size:12.5px}
+  .rail.cal{background:var(--calBg);border:1px solid #b6e0d8}
+  .rail.bur{background:var(--burBg);border:1px solid #ecc4b8}
+  .rail .rh{font-weight:700;font-size:12.5px;margin-bottom:3px}
+  .rail.cal .rh{color:var(--cal)} .rail.bur .rh{color:var(--bur)}
+  .loopbar{margin-top:10px;background:var(--loopBg);border:1px solid #d3dae3;border-radius:7px;
+    padding:8px 10px;text-align:center;font-size:13px;color:#3c4658}
+  .loopbar b{color:var(--loop)}
+  /* legend */
+  .legend{margin-top:14px;border:1px dashed var(--line);border-radius:8px;padding:12px 14px;background:#fbfcfe}
+  .legend h4{margin:0 0 8px;font-size:13px;letter-spacing:.04em;color:var(--soft);text-transform:uppercase}
+  .key{display:flex;flex-wrap:wrap;gap:6px 16px;margin-bottom:8px;font-size:12.5px}
+  .key span{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:13px;height:13px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.15)}
+  .legend dl{margin:0;font-size:12.8px}
+  .legend dt{font-weight:700;margin-top:6px}
+  .legend dd{margin:0;color:#39435a}
+  .callout{background:#f1ecfa;border:1px solid #cdbcec;border-left:4px solid var(--union);
+    border-radius:6px;padding:10px 14px;margin:12px 0}
+  .callout h3{margin:0 0 4px;color:var(--union)}
+  .ex{background:#fbfaf4;border:1px solid #e7e0c5;border-left:4px solid var(--spine);border-radius:6px;padding:12px 16px}
+  .refs{font-size:13.5px} .refs p{margin:5px 0;padding-left:22px;text-indent:-22px}
+  @media print{
+    body{background:#fff;font-size:11.5pt}
+    .sheet{box-shadow:none;margin:0;max-width:none;padding:0.4in 0.2in;border-radius:0}
+    h2{break-before:auto} .keeptogether,figure,.callout,.ex{break-inside:avoid}
+    a{color:inherit;text-decoration:none}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <h1>Actualization-of-Desire Analysis</h1>
+  <p class="sub">A method for analyzing player behavior in game worlds — how designed worlds turn desire into action, and how that action can reshape who we are.</p>
+  <p class="meta">Dalton Salvo · Doctoral methodology brief · June 2026 · <i>working name: ADA</i></p>
+
+  <p class="lead">This brief sets out a method I am developing for the analysis of player behavior. It takes two established frameworks — Gordon Calleja's model of game involvement and Kenneth Burke's dramatism — as its baseline, but it does not simply apply them in turn. Instead it absorbs them into a single account of action grounded in what I call the <b>actualization of desire</b>. The visual below gives the whole apparatus at a glance; the sections that follow explain each element in plain terms and mark, in a <b>Lineage</b> line, exactly where the element comes from and what I have changed.</p>
+
+  <!-- ============ THE VISUAL ============ -->
+  <h2>1 · The method at a glance</h2>
+  <figure>
+    <div style="text-align:center;background:#fbfcfe;border:1px solid #d8dee9;border-radius:7px;padding:8px 11px;font-size:12.5px;color:#55607a;margin-bottom:6px">Every episode is, in Aristotle's terms, a <b style="color:#33405c">motion of a substance, explained by four causes</b> (material · formal · efficient · final) — <b style="color:#33405c">divided between designer and player</b>. What follows is the fine grain of one of them: the efficient-and-final cause of desire.</div>
+    <div class="driver">THE OBJECT OF DESIRE — what the player wants (the prime mover of the whole sequence)</div>
+    <div class="arrow">▼</div>
+    <div class="spinelabel">THE ACTUALIZATION OF DESIRE · the analytic spine</div>
+    <div class="spine">
+      <div class="stage"><span class="nm">Encounter</span><span class="tm">A₀ · the world meets the senses</span></div>
+      <div class="stage"><span class="nm">Perception</span><span class="tm">A₁ · what's taken in + how it feels</span></div>
+      <div class="stage"><span class="nm">Image</span><span class="tm">A₂ · the charged mental image</span></div>
+      <div class="stage"><span class="nm">Judgment</span><span class="tm">A₃ · thinking + believing it</span></div>
+      <div class="stage"><span class="nm">Action</span><span class="tm">A₄ · the deed</span></div>
+    </div>
+
+    <div class="union">
+      <div class="hd">◆ THE CENTRAL EVENT — RHETORICAL INCORPORATION (the substantial union: becoming one with world &amp; others, while staying a distinct self)</div>
+      <div class="faces">
+        <div class="face w"><b>World-face — Incorporation.</b> The player becomes one with the world she acts <i>in</i>: the gameworld becomes her surroundings and she is embodied in it through the avatar — both at once.</div>
+        <div class="face o"><b>Other-face — Consubstantiation.</b> The player becomes one with what she acts <i>as</i> and <i>with</i> — the avatar, the party, the community — yet remains a distinct source of motives.</div>
+      </div>
+      <p class="small" style="text-align:center;margin:8px 0 0">The decisive question the method asks: <b>does this union <i>source</i> the action?</b> (e.g., the player fights because she is one with the gang.)</p>
+    </div>
+
+    <div class="rails">
+      <div class="rail cal">
+        <div class="rh">How the world engineers it — DESIGNED CHANNELS (from Calleja)</div>
+        Kinesthetic (control) · Spatial (place) · Shared (others) · Narrative (story) · Affective (feeling) · Ludic (rules &amp; goals). These are the routes through which a game applies pressure to the chain.
+      </div>
+      <div class="rail bur">
+        <div class="rh">How motive is read — THE RHETORIC OF MOTIVE (from Burke)</div>
+        The pentad (act · scene · agent · agency · purpose · attitude) and the relations among its terms — used to read <i>why</i> the player acts, and how she explains it to herself (often concealing her own disposition).
+      </div>
+    </div>
+
+    <div class="loopbar"><b>↺ Over time:</b> each completed action settles into <b>disposition (hexis)</b> — both <i>skill</i> and <i>character</i> — which reshapes the next encounter. This is where a game can change how a player meets the world, in and beyond the game.</div>
+
+    <!-- legend -->
+    <div class="legend">
+      <h4>Legend</h4>
+      <div class="key">
+        <span><i class="sw" style="background:var(--spineBg);border-color:#e7d9a8"></i> the spine (my ontology)</span>
+        <span><i class="sw" style="background:var(--calBg);border-color:#b6e0d8"></i> absorbed from Calleja</span>
+        <span><i class="sw" style="background:var(--burBg);border-color:#ecc4b8"></i> absorbed from Burke</span>
+        <span><i class="sw" style="background:var(--unionBg);border-color:#c9b8ec"></i> the original fused core</span>
+        <span><i class="sw" style="background:var(--loopBg);border-color:#d3dae3"></i> the over-time loop</span>
+      </div>
+      <dl>
+        <dt>The spine — the actualization of desire</dt><dd>Every action runs a course from encounter to deed; the object of desire sets it in motion. This chain is the method's organizing structure.</dd>
+        <dt>Rhetorical incorporation (the central event)</dt><dd>The union the chain reaches in a designed world — its two faces are Calleja's <i>incorporation</i> and Burke's <i>consubstantiation</i>, here treated as one thing.</dd>
+        <dt>Designed channels</dt><dd>Calleja's six dimensions of involvement, recast as the places where game design exerts pressure on the chain.</dd>
+        <dt>The rhetoric of motive</dt><dd>Burke's pentad, recast as the way an action's motive is rendered and, often, its real source concealed.</dd>
+        <dt>Disposition (hexis)</dt><dd>What repeated action leaves behind — skill and character — and what carries into later play and ordinary life.</dd>
+      </dl>
+    </div>
+    <figcaption>Figure 1. Actualization-of-Desire Analysis (ADA). The chain generates; Calleja and Burke are absorbed, not applied side by side.</figcaption>
+  </figure>
+
+  <!-- ============ OVERVIEW ============ -->
+  <h2>2 · What the method is, and what is new in it</h2>
+  <p>The method begins from a simple claim: all action is the <b>actualization of desire</b>. We encounter something, it strikes us as good or bad, we form an image of it, we judge it, and — if it discloses something worth pursuing — we act. Aristotle treats animal movement in just these terms, with the object of desire as the unmoved mover that sets the whole sequence going; I draw the stages into a single chain and read it as the structure of any action, in a game or out of one. Games matter here not because they offer an illusory second world, but because they are <i>designed</i> environments that can intensify, pattern, and repeat this movement until it sediments into a player's lasting disposition.</p>
+
+  <p>Before going further, one piece of Aristotelian scaffolding makes the rest precise. Every action — in a game or out of one — is a <b>motion</b>, a change in some substance over time, and Aristotle explains any such change by <b>four causes</b>: its matter, its form, what sets it going (the <i>efficient</i> cause), and what it is for (the <i>final</i> cause). The chain just described is the fine grain of <i>one</i> of those four — the efficient-and-final cause of a desiring agent, the part where a rational animal's own motion gets started and directed. Seating the method this way does real work, because in a <i>designed</i> world the four causes <b>divide between designer and player</b>: the designer supplies the materials, the rules and the avatar's form, the <i>trigger</i> that starts a beat ('why now'), and often a <i>foreclosed</i> outcome; the player supplies the moving principle ('which way') and her own end, which may or may not coincide with the design's. This division gives the otherwise loose phrase 'what the game supplies versus what the player does' an exact, ontological sense.</p>
+  <p class="lineage"><b>Lineage:</b> the four causes are <b>Aristotle's</b> (<i>Physics</i> II; <i>Metaphysics</i> I); the <b>designer/player partition</b> of them — and the seating of the chain in the efficient-final cause — are <b>original to this work</b>. Aristotle's distinction between the art that <i>uses</i> a product (which 'knows the form') and the art that <i>produces</i> it (which 'knows the matter'), <i>Physics</i> II.2, supplies the warrant.</p>
+
+  <p>What a designed world drives the player toward is a <b>union</b> — the moment she is absorbed into the world she acts in and bound to the avatar and others she acts with, while remaining herself. This union is the heart of the method, and it is where my two sources meet. Calleja calls the world-side of it <i>incorporation</i>; Burke calls the social side of it <i>consubstantiation</i>. Neither author sees that these are two faces of one event, and neither grounds the event in desire. Treating them as one — and showing that the union can itself <i>source</i> an action — is the method's central contribution. I call the fused event <b>rhetorical incorporation</b>.</p>
+
+  <p>Three things, then, are new. First, the chain of desire is used as the analytic spine, so that involvement and motive are read <i>through</i> it rather than alongside each other. Second, incorporation and consubstantiation are re-grounded and fused. Third, the method follows the union past the moment of play into <b>disposition</b>, and so can describe how a game reshapes a player's way of being in the world — the claim my capstone case is built to test. Burke and Calleja are the baseline I build from; the method transforms their concepts rather than borrowing them intact. The result is meant to be a single instrument, not two reports stapled together.</p>
+
+  <!-- ============ ELEMENTS ============ -->
+  <h2>3 · The elements, explained</h2>
+
+  <h3>3.1 · The spine: the actualization of desire</h3>
+  <p>The spine is a five-stage chain — <b>encounter, perception, image, judgment, action</b> — through which desire becomes a deed. Each stage is an achievement; each step between them is a movement; and the object of desire, held in view, is what moves the whole. Reading an episode means tracing this passage: what the player meets, how it registers, what image she forms, what she comes to believe, and what she does. The chain is read in two registers (see 3.7): a single pass in the moment, and the accumulation of passes over time.</p>
+  <p class="lineage"><b>Lineage:</b> developed from Aristotle (<i>On the Soul</i>, <i>On the Movement of Animals</i>) and Heidegger; the unified chain, and its use as an analytic of game experience, is <b>original to this work</b>.</p>
+
+  <h3>3.2 · The five stages</h3>
+  <p><b>Encounter (A₀)</b> — the world meets the senses, within the flow of motion and time; the designed environment, the gameworld as a place that can be inhabited. <b>Perception (A₁)</b> — what is taken in, together with how it feels: every perception carries a basic tone of pleasant or painful, attractive or aversive. <b>Image (A₂)</b> — the charged mental image (Aristotle's <em class="gk">phantasia</em>): the picture-with-a-feeling that the rest of the mind works upon. This is the pivot of the chain. <b>Judgment (A₃)</b> — thinking about the image and, distinctly, <i>believing</i> it (opinion, or <em class="gk">doxa</em>); this is where conviction, and with it emotion, enters. <b>Action (A₄)</b> — desire issues in movement; the deed is done, and it changes both the world and the agent.</p>
+  <p class="lineage"><b>Lineage:</b> Aristotelian; the stage-by-stage construction is <b>original</b>. Plain-English names are used throughout; the Greek terms appear only where they earn their place.</p>
+
+  <h3>3.3 · The object of desire (the driving force)</h3>
+  <p>Nothing in the chain moves without an object of desire. It is what the player wants — to win, to belong, to know what is behind the door, to be the kind of person who does this rather than that — and it is the "unmoved mover" that sets perception, judgment, and action going. A central diagnostic of the method is simply: <i>what is desired here, and is that object the player's own or the group's?</i> When the object is collective ("what <i>we</i> want"), the union is doing the work (3.4).</p>
+  <p class="lineage"><b>Lineage:</b> Aristotle; the framing as the analyst's first question is <b>original</b>.</p>
+
+  <h3>3.4 · Rhetorical incorporation — the central event</h3>
+  <p>As the chain runs in a designed world, it reaches a union: the player becomes one with the world she acts in and with the avatar and others she acts as and with — while remaining a distinct self. I call this <b>rhetorical incorporation</b>, and I treat it as having two faces that are really one event. It is the method's pivot: the place where the design's pressure, the player's desire, and the social field all meet. Crucially, the union is not only a state the chain arrives at; it can be what <i>sources</i> the next action — a player throws herself into a fight not from her own grievance but because she is one with the gang whose grievance it is.</p>
+  <p class="lineage"><b>Lineage:</b> <b>original fusion.</b> Combines Calleja's <i>incorporation</i> (2011) and Burke's <i>consubstantiation</i> (1950), re-grounded as a single event in the chain of desire. Neither author joins the two faces or grounds them in desire; that step is mine.</p>
+
+  <h3>3.5 · The world-face: incorporation</h3>
+  <p>The world-face of the union is Calleja's <b>incorporation</b>: the gameworld is taken into the player's awareness as her immediate surroundings, and at the same time the player is embodied in the world through the avatar — both directions at once. Calleja makes the two-way structure and its <i>simultaneity</i> the strict test of incorporation: if only one direction is active, the player is merely "involved," not incorporated. I keep his test (and a seven-point version of his criteria for judging it) but change its standing — from a psychological state of intense engagement to an <i>ontological</i> event within the chain, the world-side of the substantial union.</p>
+  <p>What that ontological event <i>is</i>, I take from Thomas Rickert's reading of Heidegger's <b>dwelling</b> (<i>Ambient Rhetoric</i>, 2013): the player does not merely take the world into her consciousness — Calleja's own phrase, "the absorption of a virtual environment into consciousness," tilts too far toward the mind — but is <i>constituted with</i> it, already <i>dwelling</i> in a designed world that conditions and claims her before she acts ("not a worldview but a principle of being … a way of being conditioned and permeated by things"). This keeps the world an <i>active</i> party — it makes claims, it pushes back — while the chain keeps the player an agent, not a vessel: she is at once gathered by the world and gathering it. (I take Rickert's distinction between a <i>thing</i> that makes claims and an <i>object</i> available on demand, but not his Heideggerian Fourfold.)</p>
+  <p class="lineage"><b>Lineage:</b> <b>Calleja (2011, esp. pp. 169–173)</b>, <i>In-Game: From Immersion to Incorporation</i>. <b>Transformed:</b> re-grounded from psychological intensification to an event in the chain; one of the two faces of the union.</p>
+
+  <h3>3.6 · The other-face: consubstantiation (identification)</h3>
+  <p>The other-face is Burke's <b>consubstantiation</b>: to identify with another is to become "substantially one" with them while remaining "a distinct locus of motives — both joined and separate." In play this is the bond with the avatar, the party, the guild, the faction. Burke locates it in shared symbols and shared action; I keep the bond but change what it does — it becomes a <i>desire-sourced</i> event in the chain, and, as noted, it can supply the very motive of an action. This is why identification is not a side-topic in the method but half of its central event.</p>
+  <p class="lineage"><b>Lineage:</b> <b>Burke (1950, p. 21)</b>, <i>A Rhetoric of Motives</i>. <b>Transformed:</b> from symbolic persuasion to a desire-sourced union; recognized as a <i>source</i> of action, not only a description of one.</p>
+
+  <h3>3.7 · The designed channels (from Calleja)</h3>
+  <p>Calleja decomposes game involvement into six dimensions: <b>kinesthetic</b> (control and movement), <b>spatial</b> (place and habitation), <b>shared</b> (other agents), <b>narrative</b> (story), <b>affective</b> (feeling), and <b>ludic</b> (rules and goals). In this method they are not a checklist to be filled in turn; they are the <b>channels through which a designed world applies pressure to the chain</b> — the places where one looks to see how a game engineers the movement toward incorporation. Within the narrative channel I keep Calleja's useful distinction between <i>push</i> narrative (story delivered to the player, as in a cut scene that suspends her action) and <i>pull</i> narrative (story the player must seek out and assemble, as with the audio diaries strewn through a world); a forced, unskippable cut scene is push carried to its limit, where the player no longer acts but is acted upon (see 3.9).</p>
+  <p class="lineage"><b>Lineage:</b> <b>Calleja (2011)</b>; push/pull at ch. 7 (after Levine, 2008). <b>Transformed:</b> from a descriptive taxonomy of involvement into a map of where design exerts force on the chain.</p>
+
+  <h3>3.8 · The reading of motive (from Burke)</h3>
+  <p>To explain <i>why</i> a player acts, the method uses Burke's <b>pentad</b> — act, scene, agent, agency, purpose, and the later sixth term, attitude — together with the relations ("ratios") among these terms. Its sharpest use here is diagnostic: it shows how a player renders her own action intelligible, and how she tends to <i>relocate</i> its source — to the situation, to the tools, to the other players — and so conceal her own settled disposition. Burke supplies the grammar of self-explanation; the method uses it to catch the gap between why a player did something and how she accounts for it.</p>
+  <p class="lineage"><b>Lineage:</b> <b>Burke (1945, 1950)</b>, <i>A Grammar of Motives</i> and <i>A Rhetoric of Motives</i>. <b>Transformed:</b> used to diagnose motive-attribution and the concealment of disposition, rather than as a grid applied to every act.</p>
+
+  <h3>3.9 · The kinds of action — four types, and a second branch</h3>
+  <p>Not all action is alike. The method sorts <i>agent-caused</i> action — action the player freely takes — by the kind of desire that sources it: <b>appetite</b> (the pursuit of the pleasant), <b>spiritedness</b> (answering a slight, defending honor — always social), <b>rational wish</b> (wanting an end as good), and <b>deliberate choice</b> (choosing the means to a wished end). But some of what happens to a player is <i>not</i> her own action at all: it belongs to a second branch — <b>chance</b> (designed randomness), <b>nature</b> (reflex), and <b>force</b> (an unskippable sequence in which control is taken away). The line between these branches is where the most revealing moments occur — above all when a game strips a willing agent of her agency.</p>
+  <p class="lineage"><b>Lineage:</b> developed from Aristotle (the kinds of desire; the causes of action in the <i>Rhetoric</i>; voluntary and involuntary action in the <i>Ethics</i>). The four-type taxonomy and its use in game analysis are <b>original</b>.</p>
+
+  <h3>3.10 · Disposition: skill and character (hexis)</h3>
+  <p>Repeated action leaves something behind — a settled disposition, what Aristotle calls <em class="gk">hexis</em>. The method distinguishes two kinds. <b>Skill</b> is the cultivated competence that makes play transparent: the parry that no longer needs thinking, the rotation that runs itself. <b>Character</b> is the evaluative "how" of one's conduct: what one comes to find acceptable, cruel, honorable, or beneath one. Games cultivate both, and they can cultivate them independently — a player may be highly skilled yet ethically untouched, or be changed in character while still fumbling the controls. This distinction (skill versus wisdom, by design) is one of the method's primary diagnostic instruments.</p>
+  <p class="lineage"><b>Lineage:</b> Aristotle and Heidegger (the two senses of disposition); the application to game design — and the claim that games <i>engineer</i> each kind — is <b>original</b>.</p>
+
+  <h3>3.11 · The two registers: the moment and the long run</h3>
+  <p>The method reads at two scales. <b>Synchronically</b>, it follows a single pass through the chain — one bounded episode, from encounter to deed. <b>Diachronically</b>, it follows how passes accumulate: how a player's history tilts what she notices and how readily she believes it, and how each completed action sediments into the disposition she brings to the next. The diachronic register is where the strongest claim lives — that game experience does not stay in the game, but can be carried back into ordinary life. Because incorporation is not a sealed bubble (Calleja shows that real-world intrusions blend into it rather than breaking it), the boundary between the virtual and the actual is porous, and that porosity is the channel through which a game can change how a player meets the real world.</p>
+  <p>This is also where the word <i>rhetorical</i> earns its fullest sense. Rickert's thesis is that rhetoric "transforms our fundamental disposition concerning how we are in the world, how we dwell" (2013) — which is precisely this carry-over, stated as rhetorical theory. A designed world that reshapes how a player dwells is thus doing <i>rhetorical</i> work in the deepest sense; and a world's <b>recalcitrance</b> — whether it makes claims and pushes back, or yields objects on demand — is part of what lets it come to dwell in the player at all.</p>
+  <p class="lineage"><b>Lineage:</b> the porosity of incorporation is <b>Calleja (2011)</b>; the two-register reading and the carry-over claim are <b>original</b> (Aristotle's account of habituation and Heidegger's of historicity in the background).</p>
+
+  <div class="callout keeptogether">
+    <h3>3.12 · What the method contributes that neither source supplies</h3>
+    <p style="margin:4px 0">Five working concepts belong to the method itself, not to Calleja or Burke:</p>
+    <p style="margin:4px 0"><b>The union as a source.</b> Identification can supply the very motive of an action, not merely describe a bond. <b>Conscripted imagination.</b> When a game <i>withholds</i> a scene and only implies it, the player's own imagination must supply the missing content — and what she supplies depends on her own history, which is why the same scene can mean robbery to one player and rape to another. <b>The turn from agent to patient.</b> When force takes control away, the player is converted from one who <i>acts</i> into one who is <i>acted upon</i> — a structural account of a scene's violence. <b>Two senses of compulsion.</b> External force (an unskippable scene) is one thing; the habituated capture of the grind, where the means quietly becomes the end, is another. <b>The carry-over.</b> The route by which a sedimented disposition follows the player out of the game and into the world.</p>
+  </div>
+
+  <!-- ============ WORKED EXAMPLE ============ -->
+  <h2>4 · A worked example — the saloon brawl in <i>Red Dead Redemption 2</i></h2>
+  <div class="ex keeptogether">
+    <p style="margin-top:0">Early in the game the player, as Arthur, drinks with his gang in a saloon; a gang-mate, Bill, shoves a stranger, and a brawl erupts that spills into the muddy street, where a crowd gathers and eggs on a local fighter. The method reads it as a single pass of the chain.</p>
+    <p><b>What is desired</b> is not Arthur's own honor but the gang's: he wades in <i>because he is one with them</i> ("we can handle these fools"). So the action is <b>sourced by the union</b> — a <i>spirited</i> action (answering a slight, defending the group, irreducibly social), driven by belonging rather than by a private grievance. This is the reading neither source gives alone: Calleja can show how absorbed the player is, and Burke can name the identification, but only together, on the chain, do we see the union <i>generating</i> the act.</p>
+    <p><b>How the world engineers it — the four causes, divided.</b> The designer supplies the <i>material</i> (the saloon, the mud, the fists), the <i>form</i> (the melee rules and Arthur's body, which the player wears), the <i>efficient trigger</i> — Bill's shove is scripted to find Arthur, so the 'why now' is the designer's — and a <i>foreclosed final</i> end: the encounter is <b>scripted to be won</b>, so the player's freedom lies in <i>how</i> she fights, not <i>whether</i> she prevails. The player supplies the other half: the moving principle ('which way' — the spirited impulse to wade in) and her own end, which here happens to coincide with the design's. The on-screen prompt — "Hold R to block" — is the designer's hand reaching directly into the efficient cause, <b>installing a combat skill in real time</b>; and the brawl's true product is exactly that, a lasting change in Arthur's (and the player's) fighting <b>disposition</b> — the very ground the game's later, darker scenes will exploit. (The crowd, meanwhile, raises the stakes on the <i>shared</i> and <i>affective</i> channels.)</p>
+    <p><b>How motive is rendered:</b> the brawl is framed as provoked loyalty — attributed to Bill and the stranger — which quietly conceals Arthur's own readiness for violence. <b>What it leaves behind:</b> a combat skill carried into every later fight, a deepened bond with the gang, and — at the close, when a bystander begs Arthur to stop ("I beg you") — a fork of <b>character</b>, staged cinematically, that the game's honor system will compound. In a few minutes of play, the method can show the world cultivating skill with one hand and testing character with the other.</p>
+  </div>
+
+  <!-- ============ REFERENCES ============ -->
+  <h2>5 · References</h2>
+  <div class="refs">
+    <p>Aristotle. <i>Physics</i>, <i>Metaphysics</i>, <i>On the Soul</i>, <i>On the Movement of Animals</i>, <i>Nicomachean Ethics</i>, <i>Rhetoric</i>. (Standard translations.)</p>
+    <p>Burke, K. (1945). <i>A Grammar of Motives</i>. New York: Prentice-Hall.</p>
+    <p>Burke, K. (1950). <i>A Rhetoric of Motives</i>. New York: Prentice-Hall. [consubstantiation, p. 21]</p>
+    <p>Calleja, G. (2011). <i>In-Game: From Immersion to Incorporation</i>. Cambridge, MA: MIT Press. [incorporation, pp. 169–173; narrative push/pull, ch. 7]</p>
+    <p>Rickert, T. (2013). <i>Ambient Rhetoric: The Attunements of Rhetorical Being</i>. Pittsburgh: University of Pittsburgh Press. [dwelling, pp. 223–225; a priori affectability, p. 161; rhetoric as the transformation of dwelling, Introduction]</p>
+    <p>Heidegger, M. <i>Being and Time</i>; <i>Basic Concepts of Aristotelian Philosophy</i>. (Standard translations.)</p>
+    <p>Levine, K. (2008). "Narrative design" address, Game Developers Conference. (Source of Calleja's push/pull distinction.)</p>
+  </div>
+
+  <p class="small" style="margin-top:24px;border-top:1px solid var(--line);padding-top:10px">To send: open in a browser and use <b>Print → Save as PDF</b> (the layout is print-formatted). A fuller, fully-referenced statement of the method is available on request.</p>
+
+</div>
+</body>
+</html>

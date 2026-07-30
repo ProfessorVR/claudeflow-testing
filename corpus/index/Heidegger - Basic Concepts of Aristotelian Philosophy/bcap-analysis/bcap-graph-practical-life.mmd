@@ -1,0 +1,79 @@
+%% BCAP Sub-graph: Existential-Rhetorical — "Rhetoric/Ethics" Cluster
+%% First Part Chs 2-3 focus (U-FP2a through U-FP3e)
+%% 19 nodes, edges from practical-existential and rhetorical analyses
+graph TD
+
+    %% === Existential-practical core ===
+    psyche["ψυχή<br/>(psyche/soul)"]
+    pathos["πάθος<br/>(pathos/affect)"]
+    hexis["ἕξις<br/>(hexis/disposition)"]
+    arete["ἀρετή<br/>(arete/excellence)"]
+    phronesis["φρόνησις<br/>(phronesis/practical insight)"]
+    ethos["ἦθος<br/>(ethos/character)"]
+    praxis["πρᾶξις<br/>(praxis/action)"]
+    agathon["ἀγαθόν<br/>(agathon/the good)"]
+
+    %% === Rhetorical concepts ===
+    pistis["πίστις<br/>(pistis/persuasion)"]
+    doxa["δόξα<br/>(doxa/opinion)"]
+    logos["λόγος<br/>(logos/speech)"]
+    kairos["καιρός<br/>(kairos/right moment)"]
+
+    %% === Affective-existential ===
+    phobos["φόβος<br/>(phobos/fear)"]
+    hedone["ἡδονή / λύπη<br/>(hedone/lupe)"]
+    mesotes["μεσότης<br/>(mesotes/mean)"]
+
+    %% === Practical-political ===
+    koinonia["κοινωνία<br/>(koinonia/community)"]
+    proairesis["προαίρεσις<br/>(proairesis/deliberate choice)"]
+    zoePraktike["ζωὴ πρακτική<br/>(zoe praktike)"]
+
+    %% === Heideggerian ===
+    DasMan["Das Man<br/>(The One)"]
+
+    %% === Pathos-Hexis-Arete structural nexus ===
+    pathos -->|"structured by"| hexis
+    hexis -->|"perfected as"| arete
+    arete -->|"guided by"| phronesis
+    arete -->|"is μεσότης"| mesotes
+    mesotes -->|"determined by"| kairos
+    ethos -->|"generates"| arete
+    hexis -->|"four senses of ἔχειν"| psyche
+
+    %% === Affective disclosure ===
+    phobos -->|"is species of"| pathos
+    hedone -->|"is species of"| pathos
+    pathos -->|"discloses"| zoePraktike
+    hedone -->|"fundamental to"| zoePraktike
+    phobos -->|"condition of"| arete
+
+    %% === Rhetorical structure ===
+    pistis -->|"grounded in"| ethos
+    pistis -->|"mobilizes"| pathos
+    pistis -->|"articulated through"| logos
+    doxa -->|"ground of"| pistis
+    logos -->|"belongs to"| psyche
+    koinonia -->|"ground of"| logos
+
+    %% === Practical teleology ===
+    psyche -->|"oriented toward"| agathon
+    agathon -->|"realized through"| praxis
+    praxis -->|"guided by"| phronesis
+    proairesis -->|"directs"| praxis
+    kairos -->|"determines"| praxis
+
+    %% === Das Man and everydayness ===
+    DasMan -->|"dominates"| doxa
+    DasMan -->|"structures"| koinonia
+    zoePraktike -->|"interpreted through"| DasMan
+    logos -->|"falls into"| DasMan
+
+    %% === Style classes ===
+    classDef core fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+    classDef important fill:#ffd93d,stroke:#333,stroke-width:1.5px,color:#333
+    classDef peripheral fill:#6bcb77,stroke:#333,stroke-width:1px,color:#333
+
+    class pathos,hexis,arete,psyche,logos,praxis,pistis core
+    class phronesis,ethos,agathon,doxa,kairos,hedone,koinonia important
+    class phobos,mesotes,proairesis,zoePraktike,DasMan peripheral

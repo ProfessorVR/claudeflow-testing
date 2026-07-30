@@ -1,0 +1,139 @@
+%% ig-graph-games-cited-network.mmd
+%% Calleja 2011 In-Game — Top-15 games x 13 chapter-units bipartite
+%% Generated: Phase 3 Wave 2 Agent (graph 4 of 5)
+%% Plan ref: plans/in-game-calleja-2011-analysis.md §5 Phase 3 Wave 2 graph 4
+%% Source: ig-games-cited-concordance.json — 12 Tier-A + top 3 Tier-B
+%% Edge styles:
+%%   thick (==>)  = sustained-analysis treatment
+%%   solid (-->) = illustrative paradigm
+%%   dashed (-.->) = passing/light citation
+flowchart LR
+    subgraph GAMES["Games cited (12 Tier-A + top 3 Tier-B)"]
+        direction TB
+        WOW["**World of Warcraft** (Tier-A)<br/>Blizzard 2004"]
+        PS["**Planetside** (Tier-A)<br/>SOE 2003"]
+        CSS["**Counter-Strike: Source** (Tier-A)<br/>Valve 2004"]
+        HL2["**Half-Life 2** (Tier-A)<br/>Valve 2004"]
+        OBL["**Elder Scrolls IV: Oblivion** (Tier-A)<br/>Bethesda 2006"]
+        GTA4["**GTA IV** (Tier-A)<br/>Rockstar 2008"]
+        TET["**Tetris** (Tier-A)<br/>Pajitnov 1984"]
+        ETW["**Empire: Total War** (Tier-A)<br/>Creative Assembly 2009"]
+        BIO["**Bioshock** (Tier-A)<br/>2K/Irrational 2008"]
+        MP["**Max Payne** (Tier-A)<br/>Remedy 2001"]
+        ME["**Mirror's Edge** (Tier-A)<br/>DICE 2008"]
+        FIFA["**FIFA 2009** (Tier-A)<br/>EA Sports 2008"]
+        RO["Red Orchestra (Tier-B)<br/>2006"]
+        COD4["Call of Duty 4 (Tier-B)<br/>IW 2007"]
+        L4D2["Left 4 Dead 2 (Tier-B)<br/>Valve 2009"]
+    end
+
+    subgraph UNITS["Chapter Units"]
+        direction TB
+        U00["IG-00 Intro"]
+        U01["IG-01 Games"]
+        U02["IG-02 Immersion"]
+        U03["IG-03 Model"]
+        U04["IG-04 Kinesthetic"]
+        U05["IG-05 Spatial"]
+        U06["IG-06 Shared"]
+        U07["IG-07 Narrative"]
+        U08["IG-08 Affective"]
+        U09["IG-09 Ludic"]
+        U10["IG-10 Incorporation"]
+        U11["IG-11 Conclusion"]
+        UAPX["IG-APX Appendix"]
+    end
+
+    %% ===== WoW (9 units) — densest sustained-analysis =====
+    WOW ==> U03
+    WOW ==> U04
+    WOW ==> U05
+    WOW ==> U06
+    WOW ==> U07
+    WOW ==> U08
+    WOW ==> U09
+    WOW ==> U10
+    WOW ==> UAPX
+
+    %% ===== Planetside (8 units) — densest contrasting case =====
+    PS ==> U03
+    PS ==> U04
+    PS ==> U05
+    PS ==> U06
+    PS ==> U07
+    PS ==> U09
+    PS ==> U10
+    PS ==> UAPX
+
+    %% ===== Counter-Strike Source (5 units) =====
+    CSS ==> U04
+    CSS ==> U05
+    CSS --> U08
+    CSS ==> U09
+    CSS ==> U10
+
+    %% ===== Half-Life 2 (5 units) =====
+    HL2 --> U02
+    HL2 --> U03
+    HL2 ==> U05
+    HL2 -.-> U06
+    HL2 -.-> UAPX
+
+    %% ===== Oblivion (5 units) =====
+    OBL --> U03
+    OBL --> U04
+    OBL ==> U05
+    OBL ==> U07
+    OBL --> U09
+
+    %% ===== GTA IV (4 units) =====
+    GTA4 -.-> U00
+    GTA4 --> U06
+    GTA4 ==> U07
+    GTA4 ==> U09
+
+    %% ===== Tetris (4 units) =====
+    TET -.-> U00
+    TET --> U02
+    TET --> U04
+    TET ==> U10
+
+    %% ===== Empire: Total War (4 units) — macro/micro fulcrum =====
+    ETW ==> U03
+    ETW --> U04
+    ETW --> U05
+    ETW -.-> U06
+
+    %% ===== Bioshock (1 unit, sustained) =====
+    BIO ==> U07
+
+    %% ===== Max Payne (2 units) =====
+    MP --> U04
+    MP ==> U07
+
+    %% ===== Mirror's Edge (1 unit, sustained) =====
+    ME ==> U04
+
+    %% ===== FIFA 2009 (4 units) =====
+    FIFA --> U03
+    FIFA --> U04
+    FIFA --> U06
+    FIFA ==> U09
+
+    %% ===== Tier-B top 3 =====
+    RO --> U03
+    RO --> U04
+    RO --> U08
+    COD4 --> U06
+    COD4 --> U07
+    COD4 ==> U09
+    L4D2 --> U08
+    L4D2 --> U10
+
+    %% ===== Styling =====
+    classDef tierA fill:#c8e6c9,stroke:#1b5e20,stroke-width:2px;
+    classDef tierB fill:#fff9c4,stroke:#f57f17,stroke-width:1px;
+    classDef unit fill:#e1f5fe,stroke:#01579b,stroke-width:1px;
+    class WOW,PS,CSS,HL2,OBL,GTA4,TET,ETW,BIO,MP,ME,FIFA tierA;
+    class RO,COD4,L4D2 tierB;
+    class U00,U01,U02,U03,U04,U05,U06,U07,U08,U09,U10,U11,UAPX unit;

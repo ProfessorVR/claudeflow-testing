@@ -1,0 +1,52 @@
+Mermaid Render Validation Report
+=================================
+Phase 3 Wave 2 — Uncomfortable Situations (Gross 2017)
+Generated: 2026-05-10
+mmdc version: 11.14.0
+
+Graph 1: us-graph-global.mmd
+  - Type: graph TD (top-down)
+  - Nodes: 24 (11 Tier-1 + 13 Tier-2)
+  - Edges: 29
+  - Quality gate: <=30 nodes / <=40 edges  -> PASS
+  - Render: SUCCESS (PNG generated and removed)
+
+Graph 2: us-graph-chapter-network.mmd
+  - Type: graph LR (left-right)
+  - Nodes: 8 (TITLE + 6 units + NOTES)
+  - Edges: 27
+  - Quality gate: 8 nodes, 20-30 edges -> PASS
+  - Render: SUCCESS
+
+Graph 3: us-graph-emotion-cluster.mmd
+  - Type: graph TD
+  - Nodes: 22 (2 hubs + 20 satellites)
+  - Edges: 28
+  - Quality gate: <=22 nodes / <=30 edges -> PASS
+  - Render: SUCCESS
+
+Graph 4: us-graph-science-humanities-bridge.mmd
+  - Type: graph LR with SCIENCES / BRIDGE / HUMANITIES subgraphs
+  - Nodes: 24 (10 sci + 4 bridge + 10 hum)
+  - Edges: 33 (11 within-cluster + 22 bridge edges, dotted/red style)
+  - Quality gate: ~25 nodes / >=20 bridge edges -> PASS
+  - Render: SUCCESS (after fixing linkStyle index range)
+  - Fix note: initial linkStyle referenced indices 11-35 but only 33 edges existed;
+    corrected to 11-32 (the 22 bridge edges) and rendered cleanly.
+
+Graph 5: us-graph-cross-pipeline-bridge.mmd
+  - Type: graph TD with 5 pipeline subgraphs
+  - Nodes: 18 (5 US + 3 HR + 3 Aristotle + 3 Rickert + 2 BCAP + 1 BT-via-HR + 1 note)
+  - Edges: 19 (5 HR + 5 Aristotle + 4 Rickert + 3 BCAP + 1 BT + 1 note tether)
+  - Quality gate: HARD CAP 25 edges -> PASS (19 <= 25)
+  - Per-pipeline distribution:
+      US<->HR-2005: 5 (cap 8)
+      US<->Aristotle: 5 (cap 6)
+      US<->Rickert: 4 (cap 5; flagged candidate)
+      US<->Heidegger-BCAP: 3 (cap 4)
+      US<->BT: 1 (cap 2)
+  - Render: SUCCESS
+  - Rickert pipeline explicitly annotated "BRIDGE CANDIDATE — not yet in corpus"
+
+All five .mmd files validated and rendered cleanly via mmdc.
+No PNGs committed; all test renders deleted.

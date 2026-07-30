@@ -1,0 +1,81 @@
+{
+  "section_id": "DISS-DIAG-V7",
+  "title": "Actualization Chain v7 (Interactive HTML+SVG)",
+  "file_path": "tmp/Dissertation/Actualization of Desire (perception-to-movement) Diagram/actualization-chain-v7.html",
+  "file_sha256": "daf6b613f1d0fc28dde58703cb82e8cdcdfef7363fe8f3cf09599e9dcfbb1383",
+  "format": "html-svg-interactive",
+  "line_count": 3623,
+  "chain_region_covered": [
+    "A0", "A1", "A2",
+    "A3-NOESIS", "A3-MEMORY", "A3-DISCURSIVE", "A3-SPECULATIVE", "A3-DELIBERATIVE",
+    "A3-doxa-band", "settled-doxai (hexeis)",
+    "M01", "M12", "M23", "M34",
+    "A4", "recursive-loop-A4->A0'"
+  ],
+  "diagram_nodes_canonical": ["A0", "A1", "A2", "A3-NOESIS", "A3-MEMORY", "A3-DISCURSIVE", "A3-SPECULATIVE", "A3-DELIBERATIVE", "A4"],
+  "diagram_motions_canonical": ["M01", "M12", "M23", "M34"],
+  "diagram_supplementary_elements": ["A3-doxa-band", "settled-doxai (hexeis)", "recursive-loop"],
+  "diagram_label_convention": "Mn→An display labels (e.g., M01 displays as M₁→A₁); the SVG arrow labels are on the new convention",
+  "diagram_narrative_text_convention": "MIXED — SVG arrow labels use new M→A; narrative HTML text/tooltips contain old M2→M3 / M3→M3 strings in places (line 1185, 1313)",
+  "static_export_format": "TikZ-LaTeX-in-markdown (.md file containing complete \\documentclass[border=30pt,tikz]{standalone} block, compilable with pdflatex)",
+  "static_export_reference": "tmp/Dissertation/Actualization of Desire (perception-to-movement) Diagram/Actualization of Desire Diagram in Latex Format.md",
+  "static_exports_needed": [
+    {
+      "id": "diag-A0",
+      "for_section": "DISS-01-A0",
+      "scope": "A0 standalone (sensible object in actuality, motion-time substrate)",
+      "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-A0-for-section-1.1.md"
+    },
+    {
+      "id": "diag-A1-A2",
+      "for_section": "DISS-02-A1A2",
+      "scope": "A1 → M01 → A2 with resonant_kinesis dual-trace (resonant_aisthema + resonant_orexis) + kinetic-roles column",
+      "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-A1-A2-for-section-1.2.md"
+    },
+    {
+      "id": "diag-M2-A3-doxa",
+      "for_section": "DISS-03-A3",
+      "scope": "M2→A3 with three orientational modes (NOESIS, MEMORY, DISCURSIVE+SPECULATIVE) + doxa band as orthogonal layer",
+      "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-M2-A3-doxa-for-section-1.3.md"
+    },
+    {
+      "id": "diag-A3-M3-A4-feedback",
+      "for_section": "DISS-04-EMOTION",
+      "scope": "A3-doxa-band → M3→A4 three input paths (deliberation-no-doxa, settled-hexis, emotion-mediated) + A4 + diachronic feedback loop indicator",
+      "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-A3-M3-A4-for-section-1.4.md"
+    },
+    {
+      "id": "diag-hexeis",
+      "for_section": "DISS-04-EMOTION",
+      "scope": "hexeis/settled doxa with M23 connector (for §1.4 hexis-saturation + technē/praxis bivalent treatment); user has flagged this region as currently under-developed in the source HTML — static export will match source state + note the gap",
+      "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-hexeis-for-section-1.4.md"
+    },
+    {
+      "id": "diag-A4-recursive",
+      "for_section": "DISS-05-A4",
+      "scope": "A4 + recursive loop back to A0' (showing how completed action reconstitutes the perceptual field as a new A0 substrate)",
+      "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-A4-recursive-for-section-1.5.md"
+    },
+    {
+      "id": "diag-full",
+      "for_section": "DISS-00-INTRO and final document front-matter",
+      "scope": "Full A0→A4 chain at single-page scale (for the introduction's overview reference)",
+      "output_path": "_per-section/DISS-DIAG-V7/static-exports/diag-full-chain.md"
+    }
+  ],
+  "underdeveloped_subsections": ["hexeis/settled-doxai region (per user note 2026-05-13); contains only a single Settled-Doxai box at <g id=\"settled-doxai\"> line 732"],
+  "narrative_text_inconsistencies_observed": [
+    "Line 1185: 'Settled doxai as hexeis — additional unmoved originator at M2→M3' (OLD form)",
+    "Line 1193: 'Settled doxai function alongside A₂ as additional unmoved originators of M₃→A₃' (NEW form, but used within a narrative paragraph that elsewhere has old form)",
+    "Line 1313: 'phantasma + settled doxai as hexeis' (no motion-form reference)"
+  ],
+  "two_pass": true,
+  "special_instructions": [
+    "(a) Compare diagram's node IDs and motion IDs against every prose reference in §§1.0-1.5; report mismatches in Phase 2c.",
+    "(b) Identify static-export specifications needed for each section (already enumerated above).",
+    "(c) Identify hexeis/settled-doxai region's under-development per user note.",
+    "(d) Verify Mₙ→Aₙ display-label transform is consistently applied at SVG arrows.",
+    "(e) Cross-reference HTML narrative text and tooltip strings against the prose-level numbering audit (Phase 3B)."
+  ],
+  "agent_notes": "Source HTML totals: 16 <g id=> groups, 0 <rect id=> directly (rects nested in groups), 13 <path> elements, 3 visible <text> elements. SVG diagram is interactive; pdflatex exports must use TikZ shapes + arrows. Color palette and node-style conventions match `Actualization of Desire Diagram in Latex Format.md` reference."
+}

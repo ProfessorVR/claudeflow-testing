@@ -1,0 +1,51 @@
+%% Channel map — Boredom Experiment (VR Attention Study), the lab/VR pole raw dataset.
+%% Left: the 7 measurement channels. Middle: what each published derivation (P1/P2/P3) drew from them.
+%% Right: this anchor's OUTBOUND relationships (it points OUT to the phenomenology; it is not grounded by
+%% the pedagogy literature). Solid = available/published; dashed = raw, O-9 deferred (declared-but-unprocessed).
+graph LR
+    subgraph Channels["Raw dataset channels (S01-S08)"]
+        SR["ch-selfreport<br/>7-item, 24 episodes (FE-U)"]
+        EEG["ch-eeg<br/>F3/F4/P3/P4 DMN (FE P1 / raw)"]
+        GZ["ch-gaze<br/>variance@120Hz + pupil (FE P2)"]
+        HMD["ch-hmd<br/>Omnicept exposure (raw)"]
+        OBS["ch-obs<br/>session video (raw)"]
+        FIG["ch-fig<br/>MATLAB .fig (derived)"]
+        STIM["ch-stimulus<br/>10x 4K60 (FE)"]
+    end
+
+    subgraph Pub["Published derivations"]
+        P1["P1 EEG (ASEE 2023, N=3)"]
+        P2["P2 gaze (ASEE 2024, N=12; p=0.0004)"]
+        P3["P3 phenomenological (BME 2024)"]
+    end
+
+    subgraph Out["Outbound (this anchor points OUT)"]
+        FCM["FCM king-salvo-bridge<br/>second-form KEYSTONE"]
+        M23["Part III M2/M3<br/>felt-duration / Hingehaltenheit"]
+        VLE2["vle-02 (anonymized derivative)"]
+    end
+
+    EEG --> P1
+    GZ --> P2
+    STIM --> P1
+    STIM --> P2
+    STIM --> P3
+    HMD -.-> P1
+
+    SR ==> M23
+    SR ==> VLE2
+    P1 --> FCM
+    P2 --> FCM
+    SR --> FCM
+
+    HMD -.raw.-> HMD
+    OBS -.O-9 deferred.-> OBS
+    EEG -.raw .mat O-9.-> EEG
+
+    ped14["ped-sec-14 (pedagogy)"] -. bridges-to .-> STIM
+
+    style Channels fill:#eef6ff
+    style Out fill:#d4edda
+    style OBS stroke-dasharray: 5 5
+    style HMD stroke-dasharray: 5 5
+    note1["Cohort-N kept distinct: P1 EEG N=3 (1 clean) / P2 gaze N=12 / raw self-report N=8.<br/>ch-obs, ch-hmd, ch-eeg(raw), ch-fig are declared-but-unprocessed (O-9).<br/>Findings are NOT re-registered here - they live at vle-02 (nodes 10-14)."]

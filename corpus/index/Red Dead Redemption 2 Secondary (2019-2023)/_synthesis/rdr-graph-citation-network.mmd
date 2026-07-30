@@ -1,0 +1,14 @@
+%% Intra-cluster citation network (sparse: 4 edges). Most-cited: rdr-02. Hub citer: rdr-03.
+graph LR
+  rdr01["rdr-01 Bagnoli 2019"]
+  rdr02["rdr-02 Westerside & Holopainen 2019"]
+  rdr03["rdr-03 Tuominen 2020"]
+  rdr04["rdr-04 Crowley 2021"]
+  rdr11["rdr-11 Donald & Reid"]
+  isolated["rdr-05 / 06 / 07 / 08 / 09 / 10 / 12<br/>(cite no cluster-mate)"]
+  rdr03 --> rdr01
+  rdr03 --> rdr02
+  rdr03 --> rdr11
+  rdr04 --> rdr02
+  class isolated dim
+  classDef dim fill:#f6f6f6,stroke:#bbb,color:#888;

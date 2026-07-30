@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "Validated Burke-pentad × Calleja-PIM crosswalk",
+    "date": "2026-05-27",
+    "plan": "plans/burke-calleja-game-behavior-integration.md (Phase 2)",
+    "method": "bidirectional validation of two independently-authored one-directional anticipatory tables (gm-pentad §E ; ig-pim §E.1) against each other and both source texts",
+    "provenance_note": "All pentad<->PIM bindings are anticipatory-projection (neither Burke nor Calleja makes the cross-claim). Validation upgrades epistemic status from one-directional guess to bidirectionally-warranted; it does not make them author claims.",
+    "status_legend": {
+      "validated": "asserted in both directions (or one + clear textual support on the other)",
+      "extended": "added by the Rhetoric pipeline; not available to the Grammar-only pass",
+      "revised": "binding holds but rescoped (primary->secondary, or split)",
+      "rejected": "no textual warrant (NONE occurred)"
+    }
+  },
+  "axes": {
+    "motive_burke_6term": ["Act", "Scene", "Agent", "Agency", "Purpose", "Attitude"],
+    "involvement_calleja_6dim": ["Kinesthetic", "Spatial", "Shared", "Narrative", "Affective", "Ludic"],
+    "temporal_phases": ["macro", "micro"],
+    "dynamics_layer": "the 10 dramatistic ratios (Grammar) operate between cells; Attitude is a transverse modifier on all five placement-terms",
+    "synthesis_construct": "Incorporation (Calleja IG-10 p.169) <-> Consubstantiation (Burke RM-01 p.21)"
+  },
+  "core_bindings_bijective": [
+    {"pentad": "Scene", "pim": "Spatial", "strength": "primary", "status": "validated", "both_directions": true, "burke_warrant": "GM §A.2 Scene = container of the act / place-as-inhabited", "calleja_warrant": "IG §E.1 'place-as-inhabited is the Burkean Scene'; §A.2 Spatial", "note": "strongest binding"},
+    {"pentad": "Agent", "pim": "Shared", "strength": "primary", "status": "validated", "both_directions": true, "burke_warrant": "GM §A.3 Agent + co/counter-agent; RM consubstantiation deepens it", "calleja_warrant": "IG §E.1 'other agents populate the dramatistic field'; §A.3 Shared", "note": "deepened by consubstantiation (see keystone)"},
+    {"pentad": "Agency", "pim": "Kinesthetic", "strength": "primary", "status": "validated", "both_directions": true, "burke_warrant": "GM §A.4 Agency = means/instrument", "calleja_warrant": "IG §E.1 'cleanest pentad mapping; symbolic/mimetic/symbiotic continuum is a typology of Agency'", "note": ""},
+    {"pentad": "Attitude", "pim": "Affective", "strength": "primary", "status": "validated_extended", "both_directions": true, "burke_warrant": "RM-01 p.42 'attitude being an incipient act'; rm-attitude §A", "calleja_warrant": "IG §A.5 / §E.1 Affective Layer-B target = 'ATTITUDE (Burke's later sixth term)'", "note": "the two pipelines met blind on this term; Attitude is new from the Rhetoric pipeline"}
+  ],
+  "cluster_bindings_many_to_many": [
+    {"pentad": "Act", "pim": "Ludic", "strength": "primary", "status": "validated", "both_directions": true, "burke_warrant": "GM §A.1 Act = actualization of plan into executed doing", "calleja_warrant": "IG §E.1 'Ludic -> Purpose + Act'"},
+    {"pentad": "Act", "pim": "Narrative", "strength": "primary", "status": "validated", "both_directions": true, "burke_warrant": "GM §A.1 Act/plot foremost (Burke on Poetics)", "calleja_warrant": "IG §E.1 'Narrative -> Act + Purpose'"},
+    {"pentad": "Purpose", "pim": "Ludic", "strength": "primary", "status": "validated", "both_directions": true, "burke_warrant": "GM §A.5 Purpose = the why/telos", "calleja_warrant": "IG §E.1 'Ludic -> Purpose + Act'"},
+    {"pentad": "Purpose", "pim": "Narrative", "strength": "primary", "status": "validated", "both_directions": true, "burke_warrant": "GM §A.5 end pursued through act", "calleja_warrant": "IG §E.1 'Narrative -> Act + Purpose'"}
+  ],
+  "resolved_divergence": {
+    "name": "the Ludic split",
+    "candidate": {"pentad": "Agency", "pim": "Ludic", "burke_says": "Agency -> Ludic (rules-as-means)", "calleja_says": "Ludic -> Purpose + Act (choice-and-repercussion)"},
+    "status": "revised_split",
+    "resolution": "Split the Ludic dimension along Burke's own Agency/Act cut: (a) the rule-SYSTEM (mechanics, cooldowns, economy) = Agency; (b) the act of CHOOSING-under-repercussion = Act + Purpose. The DIA method treats these as two distinct grid cells.",
+    "significance": "a refinement the fusion produces that neither framework states alone"
+  },
+  "secondary_ties": [
+    {"pentad": "Act", "pim": "Kinesthetic", "strength": "secondary", "status": "revised", "note": "physical-execution pole of Act; subordinate to Agency<->Kinesthetic"},
+    {"pentad": "Scene", "pim": "Kinesthetic", "strength": "secondary", "status": "revised", "note": "bodily-orientation residue of Scene; weak"},
+    {"pentad": "Purpose", "pim": "Affective", "strength": "secondary", "status": "revised", "note": "mastery / affect-regulation drive behind a goal; subordinate to Attitude<->Affective"}
+  ],
+  "rejected_bindings": [],
+  "keystone": {
+    "name": "Consubstantiation <-> Incorporation",
+    "level": "synthesis-construct (vertical binding above the term-by-dimension grid)",
+    "status": "validated_burke_direct_grounded",
+    "previously": "pending-future-rhetoric-of-motives-pipeline (Grammar side) / exegetically-inadmissible (Calleja side)",
+    "now": "RM-01 p.21 supplies burke-direct text; rm-identification-consubstantiation-manual §D consolidates",
+    "homology": [
+      {"burke": "A is substantially one with the other (p.21)", "calleja": "R1 assimilation axis (environment INTO consciousness)"},
+      {"burke": "yet remains a distinct locus of motives (p.21)", "calleja": "R2 embodiment axis (player INTO world via avatar)"},
+      {"burke": "both joined AND separate, held simultaneously (p.21)", "calleja": "R3 simultaneity condition"},
+      {"burke": "acting-together makes consubstantial (p.21)", "calleja": "R4/R5 spatial+kinesthetic cornerstone + blending"},
+      {"burke": "ultimate identification — dissolution into boundless being (RM-07 p.333)", "calleja": "incorporation at its fullest (peak state)"}
+    ],
+    "five_divergences": ["medium of union (symbolic vs phenomenological)", "ontological status (real-or-persuaded vs experiential-state)", "grounding theory (substance-metaphysics vs experientialist cognition)", "directionality (asymmetric-deployed vs bidirectional)", "scope (society-wide+self-address vs ergodic-bounded)"],
+    "note": "homology, not equation; functional not lexical (Burke never says 'embodiment', Calleja never says 'substance')"
+  },
+  "grid_summary_for_DIA": {
+    "Act":     {"primary": ["Ludic", "Narrative"], "secondary": ["Kinesthetic"]},
+    "Scene":   {"primary": ["Spatial"], "secondary": ["Kinesthetic"]},
+    "Agent":   {"primary": ["Shared"], "secondary": []},
+    "Agency":  {"primary": ["Kinesthetic", "Ludic(rule-system)"], "secondary": []},
+    "Purpose": {"primary": ["Ludic(choosing)", "Narrative"], "secondary": ["Affective"]},
+    "Attitude":{"primary": ["Affective"], "secondary": [], "note": "transverse modifier across all five placement-terms"}
+  }
+}

@@ -1,0 +1,159 @@
+---
+title: GM Cross-Pipeline Bridge Graph (graph 5 of 5)
+---
+%% Burke 1945 cross-pipeline bridge. HARD CAP 30 edges (this file = exactly 30).
+%% Edge priority per plan §5: dissertation > Calleja-PIM > Aristotle (exegetical) >
+%%                            Heidegger BCAP > Uexkull > others > Rhetoric-forward-ref.
+%% Provenance:
+%%   solid (-->)     = exegetical-direct (only Act <-> Aristotle via GM-06)
+%%   dashed (-.->)   = anticipatory-projection (PIM mappings, Uexkull mappings, Heidegger)
+%%   dotted (==o)    = pending-future-pipeline (Burke Rhetoric, War of Words)
+%% Hawhee Moving Bodies node EXCLUDED per Phase 0 finding (index does not exist;
+%% plan §1.4's reference was incorrect).
+%% Key dissertation findings annotated as 4 labeled super-edges (FIND-1 through FIND-4).
+flowchart LR
+
+    %% ===== BURKE 1945 LEFT-SIDE NODES =====
+    subgraph BURKE["Burke 1945 Grammar of Motives — canonical concepts"]
+        direction TB
+        B_ACT["C-PENTAD-ACT<br/>Act"]
+        B_SCENE["C-PENTAD-SCENE<br/>Scene"]
+        B_AGENT["C-PENTAD-AGENT<br/>Agent"]
+        B_AGENCY["C-PENTAD-AGENCY<br/>Agency"]
+        B_PURPOSE["C-PENTAD-PURPOSE<br/>Purpose"]
+        B_R_SA["Scene-Act ratio"]
+        B_R_AP["Agency-Purpose ratio"]
+        B_REP["Representative Anecdote"]
+        B_TROPES["Four Master Tropes"]
+        B_CONSUB["Consubstantial Substance"]
+    end
+
+    %% ===== RIGHT-SIDE BRIDGE TARGETS =====
+    subgraph DISS["Dalton Dissertation (highest priority)"]
+        DISS_FRAME["3-layer operational<br/>game-user-motive framework"]
+    end
+
+    subgraph CALLEJA["Calleja In-Game 2011 (PIM)"]
+        IG_PIM["C-001 PIM hub"]
+        IG_KIN["D-001 KINESTHETIC"]
+        IG_SPA["D-002 SPATIAL"]
+        IG_NAR["D-004 NARRATIVE"]
+        IG_AFF["D-005 AFFECTIVE"]
+        IG_LUD["D-006 LUDIC"]
+        IG_ALT["C-009 Alterbiography"]
+    end
+
+    subgraph ARIST["Aristotle Complete Works"]
+        AR_ENERG["energeia / entelechy<br/>(Metaph IX + Poetics)"]
+    end
+
+    subgraph PHANT["Phantasia Cluster"]
+        PH_CL["phantasia<br/>(image-perspective)"]
+    end
+
+    subgraph BCAP["Heidegger BCAP"]
+        BC_KAIROS["In-der-Welt-sein /<br/>kairos / Befindlichkeit"]
+    end
+
+    subgraph SZ["Heidegger Being and Time"]
+        SZ_DASEIN["Dasein /<br/>thrown-projection"]
+    end
+
+    subgraph RICKERT["Rickert Ambient Rhetoric"]
+        RK_AMB["ambient-scene /<br/>atmospheric agency"]
+    end
+
+    subgraph US["Uncomfortable Situations"]
+        US_GR["Gross 2017<br/>situated emotion"]
+    end
+
+    subgraph UEX["Uexkull Foray"]
+        UX_UM["Umwelt<br/>(species-bounded env)"]
+        UX_FK["Funktionskreis"]
+    end
+
+    subgraph FUTURE["Pending Future-Pipeline (Burke trilogy)"]
+        ROM["Burke Rhetoric of Motives<br/>(consubstantiation, identification)"]
+        WOW["Burke War of Words<br/>(forward-projection)"]
+    end
+
+    %% ===== EDGES (30 total — at the hard cap) =====
+
+    %% --- Tier 1: DISSERTATION (5 edges) ---
+    DISS_FRAME -.-> B_ACT
+    DISS_FRAME -.-> B_SCENE
+    DISS_FRAME -.-> B_AGENCY
+    DISS_FRAME -.-> B_R_AP
+    DISS_FRAME -.-> B_TROPES
+
+    %% --- Tier 2: CALLEJA-PIM mapping (8 edges) — anticipatory-projection ---
+    %% FIND-3: agency-purpose ratio maps to KINESTHETIC+LUDIC vs NARRATIVE+AFFECTIVE
+    B_AGENCY -.-> IG_KIN
+    B_AGENCY -.-> IG_LUD
+    B_PURPOSE -.-> IG_NAR
+    B_PURPOSE -.-> IG_AFF
+    B_SCENE -.-> IG_SPA
+    B_R_SA -.-> IG_PIM
+    B_R_AP -.-> IG_PIM
+    B_AGENT -.-> IG_ALT
+
+    %% --- Tier 3: ARISTOTLE (2 edges — exegetical-direct, solid) ---
+    %% FIND-1: Act <-> Aristotle exegetical via GM-06
+    B_ACT --> AR_ENERG
+    B_R_SA --> AR_ENERG
+
+    %% --- Tier 4: HEIDEGGER BCAP (3 edges) ---
+    B_SCENE -.-> BC_KAIROS
+    B_ACT -.-> BC_KAIROS
+    B_AGENT -.-> SZ_DASEIN
+
+    %% --- Tier 5: UEXKULL (3 edges) ---
+    %% FIND-2: Umwelt <-> Scene strongest Layer-C convergence
+    B_SCENE -.-> UX_UM
+    B_AGENCY -.-> UX_FK
+    B_R_SA -.-> UX_UM
+
+    %% --- Tier 6: PHANTASIA (2 edges) ---
+    B_TROPES -.-> PH_CL
+    B_REP -.-> PH_CL
+
+    %% --- Tier 7: RICKERT + US (3 edges) ---
+    B_SCENE -.-> RK_AMB
+    B_AGENCY -.-> RK_AMB
+    B_AGENT -.-> US_GR
+
+    %% --- Tier 8: PENDING FUTURE-PIPELINE — Burke Rhetoric forward refs (4 edges, dotted ==o) ---
+    %% FIND-4: consubstantiation <-> incorporation pending future Rhetoric pipeline
+    B_CONSUB ==o ROM
+    B_AGENT ==o ROM
+    B_TROPES ==o WOW
+    B_R_AP ==o WOW
+
+    %% ===== Styling =====
+    classDef burke fill:#fce4ec,stroke:#880e4f,stroke-width:2px;
+    classDef diss fill:#ffccbc,stroke:#bf360c,stroke-width:3px;
+    classDef calleja fill:#c8e6c9,stroke:#1b5e20,stroke-width:2px;
+    classDef arist fill:#fff3e0,stroke:#e65100,stroke-width:3px;
+    classDef phant fill:#f8bbd0,stroke:#ad1457,stroke-width:2px;
+    classDef heid fill:#bbdefb,stroke:#0d47a1,stroke-width:2px;
+    classDef rick fill:#d1c4e9,stroke:#311b92,stroke-width:2px;
+    classDef us fill:#e1bee7,stroke:#4a148c,stroke-width:2px;
+    classDef uex fill:#fff9c4,stroke:#f57f17,stroke-width:2px;
+    classDef future fill:#eeeeee,stroke:#616161,stroke-width:1px,stroke-dasharray: 3 3,font-style:italic;
+
+    class B_ACT,B_SCENE,B_AGENT,B_AGENCY,B_PURPOSE,B_R_SA,B_R_AP,B_REP,B_TROPES,B_CONSUB burke;
+    class DISS_FRAME diss;
+    class IG_PIM,IG_KIN,IG_SPA,IG_NAR,IG_AFF,IG_LUD,IG_ALT calleja;
+    class AR_ENERG arist;
+    class PH_CL phant;
+    class BC_KAIROS,SZ_DASEIN heid;
+    class RK_AMB rick;
+    class US_GR us;
+    class UX_UM,UX_FK uex;
+    class ROM,WOW future;
+
+    %% Make the 2 Aristotle exegetical edges visually solid + thick (edges 13-14 zero-indexed)
+    %% Order: 0-4 DISS dashed, 5-12 PIM dashed, 13-14 ARIST solid, 15-17 BCAP dashed,
+    %%        18-20 UEX dashed, 21-22 PHANT dashed, 23-25 RICK+US dashed, 26-29 FUTURE dotted
+    linkStyle 13 stroke:#bf360c,stroke-width:4px;
+    linkStyle 14 stroke:#bf360c,stroke-width:4px;

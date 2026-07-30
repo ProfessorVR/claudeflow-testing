@@ -1,0 +1,71 @@
+%% Graph 5 — Cross-pipeline bridges from US to other corpus pipelines
+%% HARD CAP: 25 edges total
+graph TD
+    subgraph USP["US PIPELINE"]
+        UINTRO["US-00 Intro"]:::us
+        UDARWIN["US-01 Darwin"]:::us
+        UEQUIANO["US-02 Equiano"]:::us
+        URADCLIFFE["US-03 Radcliffe"]:::us
+        UAUSTEN["US-04 Austen"]:::us
+    end
+
+    subgraph HRP["HR-2005 PIPELINE"]
+        HR01["HR-01-GROSS<br/>Secret History"]:::hr
+        HR04["HR-04-HYDE<br/>epideictic / pathē"]:::hr
+        HR05["HR-05-STRUEVER<br/>Alltäglichkeit"]:::hr
+    end
+
+    subgraph ARP["ARISTOTLE PIPELINE"]
+        ARH["Rhetoric II<br/>pathē"]:::aris
+        ANE["NE VI<br/>phronesis"]:::aris
+        APO["Politics<br/>zōon politikon"]:::aris
+    end
+
+    subgraph RKP["RICKERT (CANDIDATE)"]
+        RAMB["ambient"]:::rick
+        RATT["attunement"]:::rick
+        RKAI["kairos-situated"]:::rick
+    end
+
+    subgraph BCAP["HEIDEGGER BCAP"]
+        HGA18["GA 18<br/>(Intro n.37)"]:::heid
+        HWV["Wittgenstein/<br/>Vygotsky"]:::heid
+    end
+
+    NOTE["BRIDGE CANDIDATE:<br/>Rickert pipeline<br/>not yet in corpus"]:::note
+    RAMB -.- NOTE
+
+    %% US <-> HR-2005 (max 8) — actually 5
+    UINTRO -- "extends (2005 polemic)" --> HR01
+    UDARWIN -- "cites Damasio critique" --> HR01
+    URADCLIFFE -- "applies 2005 thesis" --> HR01
+    UAUSTEN -- "extends rhet ontology" --> HR01
+    UINTRO -. "shares-concept: pathē" .-> HR04
+
+    %% US <-> Aristotle (max 6) — 5
+    UINTRO -- "cites Rhetoric II" --> ARH
+    UEQUIANO -- "shares pathos lexicon" --> ARH
+    URADCLIFFE -- "extends as proto-affordance" --> ARH
+    UAUSTEN -- "Austen-as-Aristotelian" --> ANE
+    UINTRO -. "shares-concept" .-> APO
+
+    %% US <-> Rickert candidate (max 5) — 4
+    UINTRO -- "cites Ambient Rhetoric" --> RAMB
+    UEQUIANO -- "books as orientation" --> RAMB
+    URADCLIFFE -- "cultural attunement" --> RATT
+    URADCLIFFE -- "ecological-situated" --> RKAI
+
+    %% US <-> Heidegger BCAP (max 4) — 3
+    UINTRO -- "cites GA 18 n.37" --> HGA18
+    UDARWIN -- "lineage" --> HWV
+    UAUSTEN -. "shares-concept" .-> HWV
+
+    %% US <-> BT (max 2) — placeholder via Struever shared with HR
+    UINTRO -. "bridges-via Alltäglichkeit" .-> HR05
+
+    classDef us fill:#9cf,stroke:#369,stroke-width:2px,color:#000
+    classDef hr fill:#fc9,stroke:#963,color:#000
+    classDef aris fill:#cfc,stroke:#383,color:#000
+    classDef rick fill:#ffc,stroke:#aa3,stroke-dasharray:5 5,color:#000
+    classDef heid fill:#fcf,stroke:#939,color:#000
+    classDef note fill:#fee,stroke:#a33,color:#000,font-style:italic

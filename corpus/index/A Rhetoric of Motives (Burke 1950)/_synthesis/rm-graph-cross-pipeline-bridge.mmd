@@ -1,0 +1,75 @@
+graph LR
+  %% =====================================================================
+  %% Burke Rhetoric of Motives × Grammar of Motives × Calleja PIM
+  %% Cross-Pipeline Bridge Graph
+  %% Provenance: burke-direct edges from source texts;
+  %%             anticipatory-projection edges labeled [AP]
+  %% Hard cap: ~25 edges
+  %% =====================================================================
+
+  %% --- Rhetoric nodes (RM) ---
+  RM_id["identification<br/>(RM-01)"]
+  RM_con["consubstantiality<br/>(RM-01)"]
+  RM_att["Attitude<br/>incipient-act<br/>(RM-01/02)"]
+  RM_crt["courtship<br/>(RM-06)"]
+  RM_hie["hierarchy<br/>(RM-03/04)"]
+  RM_mys["mystery<br/>(RM-03/04)"]
+  RM_pp["pure-persuasion<br/>(RM-07)"]
+  RM_uid["ultimate-identification<br/>(RM-07)"]
+
+  %% --- Grammar pentad nodes (GM) ---
+  GM_Agent["(Grammar)<br/>Agent"]
+  GM_Act["(Grammar)<br/>Act"]
+  GM_Scene["(Grammar)<br/>Scene"]
+  GM_Att6["(Grammar)<br/>Attitude 6th term"]
+
+  %% --- Calleja PIM nodes (IG) ---
+  IG_Inc["(Calleja)<br/>Incorporation<br/>IG-10"]
+  IG_Shared["(Calleja)<br/>Shared-involvement<br/>IG-06"]
+  IG_Aff["(Calleja)<br/>Affective-involvement"]
+  IG_Lud["(Calleja)<br/>Ludic-involvement"]
+
+  %% =====================================================================
+  %% Rhetoric internal spine edges (burke-direct)
+  %% =====================================================================
+  RM_id -- "grounds" --> RM_con
+  RM_con -- "extends-to" --> RM_uid
+  RM_hie -- "generates" --> RM_mys
+  RM_mys -- "enables" --> RM_crt
+  RM_crt -- "culminates-in" --> RM_pp
+
+  %% =====================================================================
+  %% Rhetoric → Grammar pentad bridges (burke-direct)
+  %% =====================================================================
+  RM_id -- "maps-to-pentad-term" --> GM_Agent
+  RM_con -- "maps-to-pentad-term" --> GM_Act
+  RM_hie -- "maps-to-pentad-term" --> GM_Scene
+  RM_att -- "seeds-6th-term" --> GM_Att6
+
+  %% =====================================================================
+  %% Rhetoric → Calleja PIM bridges (anticipatory-projection [AP])
+  %% =====================================================================
+  RM_con -- "[AP] consubstantiation" --> IG_Inc
+  RM_crt -- "[AP] courtship" --> IG_Shared
+  RM_hie -- "[AP] hierarchy" --> IG_Shared
+  RM_mys -- "[AP] mystery" --> IG_Shared
+  RM_att -- "[AP] Attitude" --> IG_Aff
+  RM_uid -- "[AP] ultimate-identification" --> IG_Inc
+  RM_pp  -- "[AP] pure-persuasion" --> IG_Lud
+
+  %% =====================================================================
+  %% Grammar → Calleja PIM bridges (anticipatory-projection [AP])
+  %% =====================================================================
+  GM_Att6 -- "[AP] Attitude-PIM" --> IG_Aff
+  GM_Agent -- "[AP] Agent-PIM" --> IG_Shared
+
+  %% =====================================================================
+  %% Styling
+  %% =====================================================================
+  classDef rhetoric fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef grammar fill:#dcfce7,stroke:#16a34a,color:#14532d
+  classDef calleja fill:#fef9c3,stroke:#ca8a04,color:#78350f
+
+  class RM_id,RM_con,RM_att,RM_crt,RM_hie,RM_mys,RM_pp,RM_uid rhetoric
+  class GM_Agent,GM_Act,GM_Scene,GM_Att6 grammar
+  class IG_Inc,IG_Shared,IG_Aff,IG_Lud calleja

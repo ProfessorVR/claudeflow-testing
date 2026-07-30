@@ -1,0 +1,56 @@
+%% ig-graph-temporal-phase-arc.mmd
+%% Calleja 2011 In-Game — macro/micro temporal phase arc with concept distribution
+%% Generated: Phase 3 Wave 2 Agent (graph 3 of 5)
+%% Plan ref: plans/in-game-calleja-2011-analysis.md §5 Phase 3 Wave 2 graph 3
+%% Layout: two columns — macro (off-line) | micro (in-session); arrows = phase transition
+%% Annotation: NARRATIVE micro-phase has dashed boundary (Ch.7 lacks labeled micro-phase subsection;
+%%             alterbiography declared at p.131) — per tension-edges T-007
+flowchart LR
+    subgraph MACRO["T-001 MACRO PHASE — off-line involvement"]
+        direction TB
+        M_KIN["KIN macro:<br/>recalling avatar-control feats"]
+        M_SPA["SPA macro:<br/>spatial mental models<br/>(WoW Ratchet->Feathermoon)"]
+        M_SHA["SHA macro:<br/>clan/guild work; persisting bonds"]
+        M_NAR["NAR macro:<br/>speculation re designed narrative;<br/>story-construction"]
+        M_AFF["AFF macro:<br/>inner peace post-session;<br/>anticipatory excite/anxiety"]
+        M_LUD["LUD macro:<br/>winning-strategy formation;<br/>character-dev planning"]
+    end
+
+    subgraph MICRO["T-002 MICRO PHASE — in ludo res / in-session"]
+        direction TB
+        MI_KIN["KIN micro:<br/>control-internalization;<br/>Red Orchestra readiness"]
+        MI_SPA["SPA micro:<br/>navigation + exploration +<br/>place-internalization"]
+        MI_SHA["SHA micro:<br/>cohab/coop/compete + ambient<br/>social-context awareness"]
+        MI_NAR{{"NAR micro (UNLABELED in Ch.7):<br/>scripted + emergent;<br/>alterbiography (p.131)"}}
+        MI_AFF["AFF micro:<br/>calming / adrenaline / uncanny"]
+        MI_LUD["LUD micro:<br/>choice + repercussion +<br/>opportunity-cost weighting"]
+    end
+
+    %% macro -> micro transitions
+    M_KIN --> MI_KIN
+    M_SPA --> MI_SPA
+    M_SHA --> MI_SHA
+    M_NAR -.-> MI_NAR
+    M_AFF --> MI_AFF
+    M_LUD --> MI_LUD
+
+    %% feedback: micro experiences feed macro reflection (lighter return arrow)
+    MI_KIN -.-> M_KIN
+    MI_SPA -.-> M_SPA
+    MI_SHA -.-> M_SHA
+    MI_NAR -.-> M_NAR
+    MI_AFF -.-> M_AFF
+    MI_LUD -.-> M_LUD
+
+    %% Annotation: NARRATIVE Ch.7 deviation
+    NOTE["Ch.7 NARRATIVE deviation:<br/>no labeled micro-phase subsection;<br/>alterbiography declared p.131<br/>(see tension T-007)"]
+    NOTE -.-> MI_NAR
+
+    classDef macro fill:#e3f2fd,stroke:#0d47a1,stroke-width:2px;
+    classDef micro fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
+    classDef defect fill:#fff9c4,stroke:#f57f17,stroke-width:2px,stroke-dasharray: 4 3;
+    classDef note fill:#ffebee,stroke:#b71c1c,stroke-width:1px,font-style:italic;
+    class M_KIN,M_SPA,M_SHA,M_NAR,M_AFF,M_LUD macro;
+    class MI_KIN,MI_SPA,MI_SHA,MI_AFF,MI_LUD micro;
+    class MI_NAR defect;
+    class NOTE note;

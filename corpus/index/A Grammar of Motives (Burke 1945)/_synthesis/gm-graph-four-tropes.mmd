@@ -1,0 +1,93 @@
+%% gm-graph-four-tropes.mmd
+%% Burke 1945 — 4 master tropes × 5 pentad terms interaction matrix + dissertation deployment
+%% Generated: Phase 3 Wave 2 Agent (graph 4 of 5)
+%% Plan ref: plans/grammar-of-motives-burke-1945-analysis.md §5 Phase 3 Wave 2 graph 4
+%% Source: gm-four-master-tropes-manual.json (5x4 = 20 pentad_interaction cells + mutual_transformability + discourse_regime)
+%% Edge styles: solid = pentad-interaction edge (20 cells); thick (==>) = mutual-transformation cycle;
+%%              dashed (-.->) = dissertation game-user deployment annotation
+%% Caps: <=20 nodes / <=30 edges. Actual: 18 nodes / 30 edges.
+flowchart TB
+
+    %% ===== 5 PENTAD TERMS =====
+    subgraph PENTAD["Pentad Terms"]
+        direction LR
+        P_ACT["Act"]
+        P_SCENE["Scene"]
+        P_AGENT["Agent"]
+        P_AGENCY["Agency"]
+        P_PURPOSE["Purpose"]
+    end
+
+    %% ===== 4 MASTER TROPES (with alias-roles) =====
+    subgraph TROPES["Four Master Tropes (with alias-roles)"]
+        direction LR
+        T_META["Metaphor<br/>= perspective"]
+        T_METO["Metonymy<br/>= reduction"]
+        T_SYNE["Synecdoche<br/>= representation"]
+        T_IRON["Irony<br/>= dialectic"]
+    end
+
+    %% ===== DISSERTATION DEPLOYMENT ANNOTATIONS (4 nodes) =====
+    subgraph DISS["Dissertation Game-User Deployment"]
+        direction LR
+        D_GAMIF["Gamification rhetoric<br/>(metaphor — cross-domain framing)"]
+        D_TELEM["Telemetric KDA/MMR/funnel<br/>(metonymy — reduction)"]
+        D_AVATAR["Avatar / leaderboard / clip<br/>(synecdoche — part-for-whole)"]
+        D_META["Meta-gaming / speedrun / exploit<br/>(irony — consubstantial peripety)"]
+    end
+
+    %% ===== 20 PENTAD-INTERACTION EDGES (5x4 matrix from manual) =====
+
+    %% METAPHOR (perspective) — most-implicates AGENCY + SCENE
+    T_META -- frame --> P_ACT
+    T_META -- circumference --> P_SCENE
+    T_META -- agent-type-frame --> P_AGENT
+    T_META -- instrument-frame --> P_AGENCY
+    T_META -- end-as-frame --> P_PURPOSE
+
+    %% METONYMY (reduction) — most-implicates AGENCY + SCENE
+    T_METO -- act-to-behavior --> P_ACT
+    T_METO -- to-substrate --> P_SCENE
+    T_METO -- to-body-demos --> P_AGENT
+    T_METO -- technique-shorn --> P_AGENCY
+    T_METO -- to-quant-goal --> P_PURPOSE
+
+    %% SYNECDOCHE (representation) — most-implicates AGENT + PURPOSE
+    T_SYNE -- rep-anecdote --> P_ACT
+    T_SYNE -- micro-macro --> P_SCENE
+    T_SYNE -- avatar-stands-for --> P_AGENT
+    T_SYNE -- instrument-represents --> P_AGENCY
+    T_SYNE -- primus-inter-pares --> P_PURPOSE
+
+    %% IRONY (dialectic) — implicates ALL FIVE
+    T_IRON -- peripety --> P_ACT
+    T_IRON -- perspective-of-perspectives --> P_SCENE
+    T_IRON -- consubstantial-enemy --> P_AGENT
+    T_IRON -- emergent-result --> P_AGENCY
+    T_IRON -- internal-fatality --> P_PURPOSE
+
+    %% ===== MUTUAL-TRANSFORMABILITY CYCLE (4 thick edges) =====
+    T_META ==> T_SYNE
+    T_SYNE ==> T_METO
+    T_METO ==> T_IRON
+    T_IRON ==> T_META
+
+    %% ===== DISSERTATION DEPLOYMENT ANNOTATIONS (4 dashed edges) =====
+    T_META -.-> D_GAMIF
+    T_METO -.-> D_TELEM
+    T_SYNE -.-> D_AVATAR
+    T_IRON -.-> D_META
+
+    %% ===== Styling =====
+    classDef pentad fill:#c8e6c9,stroke:#1b5e20,stroke-width:3px;
+    classDef trope fill:#fce4ec,stroke:#880e4f,stroke-width:3px;
+    classDef diss fill:#ffccbc,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5;
+    class P_ACT,P_SCENE,P_AGENT,P_AGENCY,P_PURPOSE pentad;
+    class T_META,T_METO,T_SYNE,T_IRON trope;
+    class D_GAMIF,D_TELEM,D_AVATAR,D_META diss;
+
+    %% Mutual-transformation cycle styled thick magenta (edges 20-23 zero-indexed after 20 matrix edges)
+    linkStyle 20 stroke:#d81b60,stroke-width:4px;
+    linkStyle 21 stroke:#d81b60,stroke-width:4px;
+    linkStyle 22 stroke:#d81b60,stroke-width:4px;
+    linkStyle 23 stroke:#d81b60,stroke-width:4px;

@@ -1,0 +1,343 @@
+{
+  "section_id": "DISS-02-A1A2",
+  "run_id": "2026-05-13T1439",
+  "schema_version": "Plan v1.4 §8.1.5",
+  "sort_order": "remediation_effort (small→large) THEN severity (T6 > T5 > T8 > T4 > T7)",
+  "total_flagged_claims": 16,
+  "summary_by_tier": {
+    "T4-interpretive-but-unflagged": 0,
+    "T5-under-supported": 13,
+    "T6-unsupported": 0,
+    "T7-overreach": 0,
+    "T8-secondary-needed": 3
+  },
+  "summary_by_route": {
+    "Tier_A_corpus_index_routable": 11,
+    "Tier_B_chromadb_routable": 0,
+    "Tier_C_perplexity_or_cache": 0,
+    "asterisk_placeholder_manual_fill": 6,
+    "in_text_fix_only_no_external_lookup": 5
+  },
+  "cross_section_overlap_with_DISS-04-EMOTION": {
+    "note": "Many §1.2 placeholder/citation-gap claims overlap with §1.4 source-claims due to the three user-mandated relocations. BCAP 126 (line 23 #1), BCAP 131-132 (line 47), BCAP 164/166 (line 79 dual) all have corpus/index/Heidegger/bcap-analysis material available. White and Frede placeholders (line 23 #2, line 55) are reachable via corpus/index/Aristotelian Phantasia Secondary if indexed there; otherwise Tier C cache lookup."
+  },
+
+  "gaps": [
+    {
+      "rank": 1,
+      "claim_id": "DISS-02-C033",
+      "claim_text_short": "ASTERISK PLACEHOLDER #1 (line 23): BCAP 126 perception-as-kritikon — 'aisthēsis as a mesotēs with the character of kritikon'.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Placeholder ******; locus identified by author footnote",
+      "remediation": {
+        "action": "FILL_ASTERISK_PLACEHOLDER",
+        "tier": "asterisk_placeholder_manual_fill_OR_A",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/phase2-u-fp3c.md SS17b-beta pp. 126-127 — VERIFIED CONTAINS the relevant passage"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small (5-10 min) — verbatim text available in corpus/index"
+      },
+      "cache_likely_overlap": "n/a — Heidegger primary text",
+      "location": "line 23",
+      "relocation_status": "This placeholder is the §1.4 → §1.2 RELOCATION TARGET (iii); the §1.4 source-claim DISS-04-C114 contains the same BCAP 126 quotation. Verbatim should match."
+    },
+    {
+      "rank": 2,
+      "claim_id": "DISS-02-C075",
+      "claim_text_short": "ASTERISK PLACEHOLDER #3 (line 47): BCAP 131-132 — Heidegger's progressive-narrowing reading of the Met. Δ.21 fourfold + sōtēria thesis.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Placeholder ******; locus identified by author footnote",
+      "remediation": {
+        "action": "FILL_ASTERISK_PLACEHOLDER",
+        "tier": "asterisk_placeholder_manual_fill_OR_A",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/phase2-u-fp3c.md — VERIFIED CONTAINS BCAP 131-132 sōtēria material"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small (5-10 min)"
+      },
+      "cache_likely_overlap": "n/a — Heidegger primary text",
+      "location": "line 47",
+      "relocation_status": "This placeholder is the §1.4 → §1.2 RELOCATION TARGET (i); the §1.4 source-claims DISS-04-C084 through C098 contain the relevant BCAP 131-132 material."
+    },
+    {
+      "rank": 3,
+      "claim_id": "DISS-02-C091",
+      "claim_text_short": "ASTERISK PLACEHOLDER #4 (line 55): White p. 498 — 'lingering, resonating, echoing presence of sensible forms freed from their original matter'.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Placeholder ******; locus identified by author footnote with paraphrase",
+      "remediation": {
+        "action": "FILL_ASTERISK_PLACEHOLDER",
+        "tier": "asterisk_placeholder_manual_fill",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotelian Phantasia Secondary (White, Meaning of Phantasia) — verify indexing"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": "Stephen White Meaning of Phantasia in Aristotle's De Anima III.3-8 page 498 resonant phantasia residual sensation",
+        "estimated_effort": "small (5-10 min)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 55"
+    },
+    {
+      "rank": 4,
+      "claim_id": "DISS-02-C120",
+      "claim_text_short": "ASTERISK PLACEHOLDER #5 (line 79, first ******): BCAP 164 — hēdonē as 'in the moment,' not in time as determinate span.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Placeholder ******; locus identified by author footnote",
+      "remediation": {
+        "action": "FILL_ASTERISK_PLACEHOLDER",
+        "tier": "asterisk_placeholder_manual_fill_OR_A",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis (BCAP 164)"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small (5-10 min)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 79"
+    },
+    {
+      "rank": 5,
+      "claim_id": "DISS-02-C121",
+      "claim_text_short": "ASTERISK PLACEHOLDER #6 (line 79, second ******): BCAP 166 — hēdonē/lypē co-given with every mode of being-there.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Placeholder ******; locus identified by author footnote. PHASE 1 metadata recorded 4 placeholders; line 79 contains TWO placeholders (this and C120). Total placeholder count is 6, not 4.",
+      "remediation": {
+        "action": "FILL_ASTERISK_PLACEHOLDER",
+        "tier": "asterisk_placeholder_manual_fill_OR_A",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis (BCAP 166)"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small (5-10 min)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 79"
+    },
+    {
+      "rank": 6,
+      "claim_id": "DISS-02-C036",
+      "claim_text_short": "ASTERISK PLACEHOLDER #2 (line 23): White pp. 9-11 — to kritikon as the unifying capacity connecting perception, phantasia, and thought.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Placeholder ******; locus identified by author footnote with paraphrase",
+      "remediation": {
+        "action": "FILL_ASTERISK_PLACEHOLDER",
+        "tier": "asterisk_placeholder_manual_fill",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotelian Phantasia Secondary (White, Meaning of Phantasia) — verify indexing for pp. 9-11"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": "Stephen White Meaning of Phantasia Aristotle De Anima III.3-8 to kritikon pp 9-11",
+        "estimated_effort": "small (5-10 min)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 23"
+    },
+    {
+      "rank": 7,
+      "claim_id": "DISS-02-C003",
+      "claim_text_short": "Three-factor schema applied to perception lacks DA III.10, 433b12-25 citation anchor for the originating passage.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Cross-references §1.1 but no Bekker locus in this section",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION",
+        "tier": "A_corpus_index_routable",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/De Anima III.10"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small (3-5 min)"
+      },
+      "cache_likely_overlap": "n/a — Aristotle primary text",
+      "location": "line 5"
+    },
+    {
+      "rank": 8,
+      "claim_id": "DISS-02-C021",
+      "claim_text_short": "Burnyeat / Sorabji / Caston short-title citations need full bibliographic data.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Short-title citations in footnote without full bibliographic entries",
+      "remediation": {
+        "action": "ADD_BIBLIOGRAPHIC_DATA",
+        "tier": "A_corpus_index_routable",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotelian Phantasia Secondary"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": "Burnyeat 'Aristotelian Philosophy of Mind Still Credible' bibliography; Sorabji 'Body and Soul in Aristotle' bibliography; Caston 'Aristotle and the Problem of Intentionality' bibliography",
+        "estimated_effort": "small (5 min)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 15"
+    },
+    {
+      "rank": 9,
+      "claim_id": "DISS-02-C153",
+      "claim_text_short": "LATENT TENSION: resonant kinēsis named kinēsis without dialectical justification for canonical-kinēsis-definition applicability (Phys. III.1, 201a10-11).",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Analyst-flagged; no current treatment in §1.2",
+      "remediation": {
+        "action": "ADD_CITATION+CLARIFY",
+        "tier": "A_corpus_index_routable",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Physics III.1-2"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "medium (15-20 min — requires one-paragraph addition or footnote clarifying applicability)"
+      },
+      "cache_likely_overlap": "n/a — §1.1 cross-reference",
+      "location": "line 55"
+    },
+    {
+      "rank": 10,
+      "claim_id": "DISS-02-C154",
+      "claim_text_short": "ANALYST PLACEHOLDER IDENTIFICATION (BCAP 126, line 23 #1) — corpus/index source verified.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Same as C033; recorded separately as analyst-finding",
+      "remediation": {
+        "action": "FILL_ASTERISK_PLACEHOLDER",
+        "tier": "asterisk_placeholder_manual_fill_OR_A",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/phase2-u-fp3c.md SS17b-beta"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small — same as rank 1"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 23 (analyst record)"
+    },
+    {
+      "rank": 11,
+      "claim_id": "DISS-02-C155",
+      "claim_text_short": "ANALYST PLACEHOLDER IDENTIFICATION (White pp. 9-11, line 23 #2) — corpus indexing uncertain.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Same as C036; recorded separately",
+      "remediation": {
+        "action": "FILL_ASTERISK_PLACEHOLDER",
+        "tier": "asterisk_placeholder_manual_fill",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotelian Phantasia Secondary"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 23 (analyst record)"
+    },
+    {
+      "rank": 12,
+      "claim_id": "DISS-02-C156",
+      "claim_text_short": "ANALYST PLACEHOLDER IDENTIFICATION (BCAP 131-132, line 47) — corpus/index source verified.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Same as C075",
+      "remediation": {
+        "action": "FILL_ASTERISK_PLACEHOLDER",
+        "tier": "asterisk_placeholder_manual_fill_OR_A",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/phase2-u-fp3c.md"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 47 (analyst record)"
+    },
+    {
+      "rank": 13,
+      "claim_id": "DISS-02-C157",
+      "claim_text_short": "ANALYST PLACEHOLDER IDENTIFICATION (White p. 498, line 55) — corpus indexing uncertain.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Same as C091",
+      "remediation": {
+        "action": "FILL_ASTERISK_PLACEHOLDER",
+        "tier": "asterisk_placeholder_manual_fill",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotelian Phantasia Secondary"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 55 (analyst record)"
+    },
+    {
+      "rank": 14,
+      "claim_id": "DISS-02-C129",
+      "claim_text_short": "Higher-order pathē Rhetoric definitions (anger, fear, pity) paraphrased without explicit Bekker citations.",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "Paraphrased; no Bekker references in this section",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION",
+        "tier": "A_corpus_index_routable",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Rhetoric II.2 (anger)","corpus/index/Aristotle - Complete Works/Rhetoric II.5 (fear)","corpus/index/Aristotle - Complete Works/Rhetoric II.8 (pity)"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small (5 min)"
+      },
+      "cache_likely_overlap": "cache-likely-strong (Rhet. II.2/II.5/II.8 definitions are heavily cited in MASTER-CITATION-REPORT)",
+      "location": "line 83"
+    },
+    {
+      "rank": 15,
+      "claim_id": "DISS-02-C146",
+      "claim_text_short": "Animal-locomotion deferral: Nussbaum (De Motu Animalium) and Caston (phantasia in animal cognition) flagged as principal interlocutors without full citations.",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "Author-names only; no full citations",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATION_IF_DEFERRAL_DEVELOPED",
+        "tier": "A_corpus_index_routable_OR_in_text_fix_only",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotelian Phantasia Secondary (Nussbaum De Motu; Caston)"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": "Nussbaum Aristotle De Motu Animalium commentary 1978 1985 bibliography; Caston phantasia animal cognition bibliography",
+        "estimated_effort": "medium (only if deferral is developed; otherwise none required for the deferral as stated)"
+      },
+      "cache_likely_overlap": "cache-possible (Nussbaum is in MASTER-CITATION-REPORT)",
+      "location": "line 99"
+    },
+    {
+      "rank": 16,
+      "claim_id": "DISS-02-C158",
+      "claim_text_short": "PHASE 1 METADATA DISCREPANCY: recorded 4 asterisk placeholders at lines [23, 47, 55, 79], but actual count is 6 (line 23 and line 79 each contain TWO placeholders).",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "Phase 1 metadata under-counted placeholders",
+      "remediation": {
+        "action": "UPDATE_PHASE_1_METADATA",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": [],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "trivial (1 min) — update phase1-metadata.json field asterisk_placeholders from 4 → 6, asterisk_lines from [23, 47, 55, 79] to [23, 23, 47, 55, 79, 79]"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "phase 1 metadata"
+    }
+  ],
+
+  "asterisk_placeholders_summary": {
+    "total_in_§1.2": 6,
+    "by_line": {
+      "23": {"count": 2, "loci": ["BCAP 126 perception-as-kritikon", "White pp. 9-11 to kritikon"]},
+      "47": {"count": 1, "loci": ["BCAP 131-132 progressive-narrowing/sōtēria"]},
+      "55": {"count": 1, "loci": ["White p. 498 resonant phantasia"]},
+      "79": {"count": 2, "loci": ["BCAP 164 hēdonē-in-the-moment", "BCAP 166 hēdonē-co-given"]}
+    },
+    "corpus_index_coverage": {
+      "BCAP placeholders (4 of 6)": "REACHABLE via corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/phase2-u-fp3c.md (verified contains BCAP 126, BCAP 131-132 sōtēria material) and bcap-analysis materials for BCAP 164 and 166",
+      "White placeholders (2 of 6)": "POSSIBLY REACHABLE via corpus/index/Aristotelian Phantasia Secondary if White is indexed; otherwise Perplexity query needed"
+    }
+  },
+
+  "remediation_summary": {
+    "total_gaps": 16,
+    "deduplicated_actual_actions": 12,
+    "by_action": {
+      "FILL_ASTERISK_PLACEHOLDER": 6,
+      "ADD_PRIMARY_CITATION": 2,
+      "ADD_BIBLIOGRAPHIC_DATA": 1,
+      "ADD_CITATION+CLARIFY": 1,
+      "ADD_SECONDARY_CITATION_IF_DEFERRAL_DEVELOPED": 1,
+      "UPDATE_PHASE_1_METADATA": 1
+    },
+    "by_effort": {
+      "trivial": 1,
+      "small": 13,
+      "medium": 2,
+      "large": 0
+    },
+    "estimated_total_effort_hours": "1.5-2.5 hours (12 deduplicated actions; small-effort dominant)"
+  },
+
+  "relocation_dependency_summary": {
+    "note": "5 of 6 asterisk placeholders + the higher-order pathē Rhetoric citation gap (rank 14) will be auto-resolved by the three user-mandated relocations from §1.4:",
+    "relocation_i_resolves": ["C075 (BCAP 131-132)", "C156 (analyst placeholder line 47)", "fourfold treatment of pathē structure"],
+    "relocation_ii_resolves": ["C062 anchor for paschein extension"],
+    "relocation_iii_resolves": ["C033 (BCAP 126)", "C154 (analyst placeholder line 23 #1)"],
+    "remaining_after_relocations": ["C036/C155 (White 9-11)", "C091/C157 (White 498)", "C120 (BCAP 164)", "C121 (BCAP 166)", "C129 (Rhetoric Bekkers)", "C003 (DA III.10 citation)", "C021 (bibliographic)", "C146 (Nussbaum/Caston)", "C153 (kinesis-applicability latent tension)"]
+  }
+}

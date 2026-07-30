@@ -1,0 +1,90 @@
+# GM-10 — Appendix A: Symbolic Action in a Poem by Keats
+
+**Burke, *A Grammar of Motives* (1945), book pp. 447-464 / PDF pp. 468-485 (18 pp.)**
+**Phase 2 deep-analysis | Generated 2026-05-11 | Plan v1**
+**Full unit: edge target ≥35 (achieved 48); concepts 23; positions 6; philosophers 16; literary examples 12; interlocutors 12; tensions 3**
+
+---
+
+## (i) Overview — the Ode as viaticum to oracle
+
+Appendix A is the first of four appended essays in *A Grammar of Motives* and is recognizably a worked applied-dramatistic case study at single-text scale, paralleling in role what Calleja's appendix does for the In-Game taxonomy. Burke opens with a programmatic sentence: "We are here set to analyze the 'Ode on a Grecian Urn' as a viaticum that leads, by a series of transformations, into the oracle, 'Beauty is truth, truth beauty'" (book p. 447). The choice of *viaticum* is load-bearing — a viaticum is sacramental provision-for-the-journey, the Eucharist administered to the dying — and so registers from the first sentence both the sacred-journey scaffolding Burke will deploy and the death-as-passage motif that will become the deathy-deathless scene of stanza IV. The oracle, in this frame, is not the poem's content but its destination, and the poem itself is the conveyance.
+
+Burke then divides the analytic terrain between two language-orientations: "To consider language as a means of information or knowledge is to consider it epistemologically, semantically, in terms of 'science.' To consider it as a mode of action is to consider it in terms of 'poetry.' For a poem is an act, the symbolic act of the poet who made it — an act of such a nature that, in surviving as a structure or object, it enables us as readers to re-enact it" (book p. 447). This is the canonical statement of the symbolic-action thesis in compact form, and the entire essay is then the demonstration that the thesis is operational: a real poem can in fact be read this way, all the way through, and the reading does explanatory work that semantic / informational readings cannot.
+
+Burke's framing claim about the oracle is critical. "If the oracle were to have been uttered in the first stanza of the poem rather than the last, its phrasing proper to that place would have been: 'Beauty is not truth, truth not beauty.' The five stanzas of successive transformation were necessary for the romantic philosophy of a romantic poet to transcend itself (raising its romanticism to a new order, or new dimension)" (book p. 447). The Ode is here read as an act of romantic self-transcendence — an "abolishing of romanticism through romanticism" — which is, structurally, the move dramatism itself makes at the level of philosophic discourse.
+
+## (ii) Burke's analytical method — symbolic action
+
+Burke's procedure is recognizable from his theoretical chapters but is sharpened by being confined to a single short text. He works *segmentally* (stanza by stanza, with multi-paragraph commentary on each), continuously *tagging* pentadic identifications at the imagistic level, and *folding in* biographical, cultural, and philosophical substrates without ever subordinating the symbolic act to them. The essay's structure recapitulates the Ode's: five Roman-numeralled sections (I-IV at book pp. 447, 451, 456, 459 with a closing review unmarked), tracking through the stanzas and then performing two concluding moves — the conceptual translation ("Act is scene, scene act") and the refusal of materialist reduction (the Kretschmer-school contrast).
+
+What distinguishes this method from a New-Critical close reading is its *prediction-engine* register. Burke does not merely describe what is in the Ode; at multiple points he announces what the Ode *must* do next, given what it has already done, and then verifies the requirement against the text. The decisive instance comes after the analysis of stanza III: "What then would this transcendent act require, to complete it? It would require a scene of the same quality as itself. An act and a scene belong together. The nature of the one must be a fit with the nature of the other. (I like to call this the 'scene-act ratio,' or 'dramatic ratio.') Hence, the act having now transcended its bodily setting, it will require, as its new setting, a transcendent scene. Hence, prophesying post eventum, we should ask that, in Stanza IV, the poem embody the transcendental act by endowing it with an appropriate scene" (book pp. 453-454). This is dramatism deployed predictively, and the Ode's stanza IV is then verified against the prediction.
+
+## (iii) Pentad terms identified in the Ode
+
+Burke's analysis foregrounds four of the five pentad terms (Agency is touched but not featured), and develops them through stanza-stages.
+
+**Act** is identified at multiple levels simultaneously: (a) the speaker's performative apostrophe to the urn ("Thou still unravish'd bride of quietness"); (b) the depicted figures' acts arrested on the urn — pursuit, piping, the Bold Lover near the kiss, the priest leading the heifer; (c) the poet's symbolic act of making the poem; (d) most centrally, the *transcendent act* that splits off from bodily passion at the end of stanza III; and (e) the Urn's status as Attitude in stanza V — "an arrested, or incipient act — not just an object, or thing" (book p. 458). Burke seizes the word "Attitude" with unusual emphasis: it is the terminological coincidence that confirms his entire reading. The Urn is not a thing being analyzed but an arrested act, which is why a dramatistic rather than thingly criticism is required.
+
+**Scene** is similarly multi-layered. At the ordinary level, the urn itself is the scene-of-frozen-time for the figures depicted on it. At a deeper level, the bodily fever functions in stanzas I-III as scene/ground for the mental action, and is then separated out when the action transcends. Stanza IV supplies the *transcendent scene* matching the transcendent act — the green altar, the heifer with garlanded flanks, the little town emptied for evermore. And at the chapter's deepest move, Burke states the chiasmus: "The scene on the Urn is really the scene behind the Urn; the Urn is literally the ground of this scene, but transcendentally the scene is the ground of the Urn. The Urn contains the scene out of which it arose" (book p. 457). This is the container-thing-contained relation (the apparatus from GM-01) inverted *dialectically within a single artifact*.
+
+**Agent** is identified at three levels: the speaker, the depicted figures, and — most importantly — the Urn itself, which Keats personifies. Burke makes the dramatistic diagnosis explicit: idealism / romanticism features Agent rather than Act, and Keats's calling the Urn "Attitude" is the move that imports the personifying-agent inflection. "Keats, in calling the Urn an attitude, is personifying it. Or we might use the italicizing resources of dialectic by saying that for Keats, beauty (poetry) was not so much 'the *act* of an agent' as it was 'the act of an *agent*'" (book p. 460). This is the romantic-idealist break of the dramatistic symmetry.
+
+**Purpose** is delivered in the closing oracle — "Beauty is truth, truth beauty" — but functions throughout the essay as the destination toward which all the transformations tend. The poem's purpose is to make the oracle utterable, which requires raising the romantic dialectic of beauty-vs-truth to a level at which earthly contradictions no longer prevail.
+
+**Agency** is only lightly touched: music ("ye soft pipes, play on") and the urn's visual surface (the sculpted figures as ekphrastic agency) appear as media-of-action without being thematized as a separate analytic terminus.
+
+## (iv) Ratios deployed
+
+The **scene-act ratio** is the essay's load-bearing ratio and is named here, in this essay, with one of Burke's clearest definitional statements: "the quality of the act shares the quality of the scene in which it is enacted (the synecdochic relation of container and thing contained)" (book p. 453). Burke generalizes the ratio across two surprising registers. First, supernatural cosmogonies: "mankind took on the attributes of gods by acting in cosmic scenes that were themselves imbued with the presence of godhead" (book p. 454). Second, the theological controversy whether "God willed the good because it is good," or "the good is good because God willed it" (book p. 454). Burke prefers the first formula on dramatistic grounds: the word *because* gives God's act a scene (the objective existence of goodness), satisfying "the pressure for dramatic symmetry." He notes the pun on "ground" — applying indeterminately to place or cause — as evidence that the linguistic substrate already encodes the scene-act symmetry. He then cites Leo Spitzer on "Milieu and Ambiance" (1942) and Coleridge's "dim analogue of Creation" as supporting apparatus, and prophesies stanza IV's transcendent scene.
+
+The **scene-agent ratio** is engaged in the biographical analysis: the romantic-capitalist scene (heightened individual identity via property structure) determines the love-death equation deployed by the agent-poet. "We can thus see why the love-death equation would be particularly representative of a romanticism that was the reflex of business" (book p. 451).
+
+The **act-purpose ratio** governs the relation between the symbolic act of the poem and its terminal oracular purpose; the act *is* the achievement of the purpose.
+
+The **act-agent ratio** is engaged via the Christian inversion of Aristotelian action/passion: the martyr's *acta* are identical with his *passiones* ("the accounts of the martyrs were called both Acts and Passionals"), so "patience is the property of a moral agent" (book p. 452). Secularized in romanticism, this licenses "bodily suffering redeemed by a poetic act" (book p. 453).
+
+The **scene-agency ratio** is touched in the footnote on imagery's logic: imagery cannot say "this, not that"; it can only say "this and that," "this with that," "this-that" (book p. 456 fn). The scenic constraints on the agency of imagery preclude direct negation; imagistic dialectic must work by amalgamation, transcendence, or splitting.
+
+## (v) The "Beauty is truth" oracle as resolution
+
+Burke's reading of the oracle is doubly grounded. Imagistically, it is achieved at "a level where earthly contradictions do not operate" (book p. 459) — the transcendent scene of stanza IV, the level at which the deathy-deathless ambiguity holds. Conceptually, it is paralleled by a purely-grammatical translation Burke offers as an exhibit: substitute "poetry" for "beauty" and "science" for "truth" (the romantic-historical particularization), then "act" for "poetry" and "scene" for "science" (the dramatistic generalization), yielding "Act is scene, scene act" (book pp. 459-460). The translation works because beauty is, properly, "not merely a decorative thing, but an assertion, an affirmative, a creation, hence in the fullest sense an act," while truth/science is "a knowledge of what is — and all that is comprises the over-all universal scene" (book pp. 459-460). Burke immediately corrects himself: "I must break the symmetry a little. For poetry, as conceived in idealism (romanticism) could not quite be equated with act, but rather with attitude." Romantic idealism features the Agent, and the Urn-as-Attitude is "the act of an agent." The oracle is delivered in the agent-featuring inflection.
+
+The resolution is therefore *not* the cancellation of the beauty-truth difference but its absorption into a dramatistic frame where act and scene are co-implicated by ratio. This is methodologically crucial: dramatism does not eliminate the distinctions philosophic schools feature; it supplies the grammar within which their featurings become legible.
+
+## (vi) Methodological template — how Burke does dramatistic-analysis of a single text
+
+Per the plan, GM-10 is the dissertation's empirical-adaptation template at single-text scale. The procedure Burke exhibits, abstracted into a transferable workflow:
+
+1. **State the terminal motive-statement.** Identify what the text claims at its end, and frame the analysis as the task of explaining how that statement becomes utterable. (Burke: the oracle "Beauty is truth, truth beauty.")
+2. **Walk the text segmentally.** Stanza by stanza for lyric; section by section for prose. At each segment, identify pentad-terms in their imagistic embodiments and ratios in operation. Quote in segments.
+3. **Detect structural fulcra.** Where do pentad-clusters split or combine? In the Ode, stanza III is the fulcrum where action splits from passion.
+4. **Deploy the most-foregrounded ratio as a prediction-engine.** What does the text *require* next? Verify against the next segment. (Burke deploys scene-act to predict stanza IV.)
+5. **Add biographical / cultural / historical motives as substrates.** Without subordinating the symbolic act. Use the *correlation-without-reduction* discipline.
+6. **Recognize sub-pentadic substance-claims.** Modes-of-a-common-substance arguments (Burke: fever and chill as modes of one illness) re-cross the text's transformations and explain otherwise-inexplicable transitions (fever-to-chill).
+7. **Terminate with a conceptual translation.** Exhibit the dramatistic grammar underlying the imagistic resolution, and acknowledge the philosophic-school inflection that breaks the clean grammatical symmetry.
+8. **Refuse reductive alternatives.** Name the reductive theory that would explain the text by causal substrate (Kretschmer-school disease-as-cause / poem-as-effect) and demonstrate what it misses (the intense linguistic activity).
+
+For the dissertation: the same eight-step procedure can be run on a single game-text, a single user-trajectory through a game, or a single piece of game discourse, substituting the relevant pentad-tags and ratios.
+
+## (vii) Cross-pipeline bridges
+
+**Aristotle (exegetical-direct).** Two direct anchors: (a) "in the Aristotelian grammar of motives, action has its reciprocal in passion, hence passion is the property of a patient" (book p. 452); (b) "In the scholastic formulas taken over from Aristotle, God was defined as 'pure act'" (book p. 455). The Aristotle/Aquinas exegesis Burke develops fully in GM-06 (Part 2.III) is here deployed on the Ode. This is the single exegetical (rather than anticipatory) cross-pipeline bridge for the entire Burke pipeline.
+
+**Aristotelian Phantasia Cluster / Hawhee 2011 (anticipatory-projection).** The Urn-ekphrasis — visual surface generating motivational scene — anticipates the rhetorical-vision / phantasia tradition Hawhee operationalizes in *Looking Into Aristotle's Eyes*. The Yeats-Boehme passage at book p. 459 — "one lifts a paper to discover both the human entrails and the starry heavens... this equating of the deeply without and the deeply within" — is structurally phantastic: Burke is describing the *internal* sky attained through meditation on a visual artifact (the Urn) or a textual one (Chapman's Homer). The dissertation can deploy phantasia as the agency through which scene becomes internal scene.
+
+**Heidegger BCAP / *Being and Time* (anticipatory-projection; Burke = 0 Heidegger hits).** The scene-act ratio's claim that "the quality of the act shares the quality of the scene in which it is enacted" parallels Heidegger's *In-der-Welt-sein* (situational disclosure of the act-stance from the world-context). The attitude-as-arrested-act formulation parallels *Befindlichkeit* (mood as already-disposed act-stance). Both bridges are anticipatory; Burke had no access to Heidegger in 1943-45.
+
+**Rickert *Ambient Rhetoric* (anticipatory-projection).** The Urn-scene chiasmus ("scene behind the Urn ... the scene is the ground of the Urn") operationalizes ambient-rhetorical doctrine that environment is constitutive of the rhetorical act.
+
+**Calleja In-Game / PIM dimensions (anticipatory-projection).** The Attitude-as-arrested-or-incipient-act maps to Calleja's *incorporation* dimension — kinesthetic-affective absorption into the gameworld as a state of arrested-or-incipient action toward the virtual environment. The viaticum-frame parallels gameplay-as-transformative-journey; the re-enactment thesis ("it enables us as readers to re-enact it," book p. 447) maps directly to the player's re-enactment of designed game-acts.
+
+**Forward to Burke 1950 *Rhetoric of Motives*.** The terminological identification "Attitude" = arrested-or-incipient-act (book pp. 458, 460) is the textual seed of Burke's later addition of Attitude as a sixth pentad term. GM-10 is the textual origin and should be cited as such in any Operationalization Manual Section A entry on Attitude.
+
+**Intra-volume.** GM-10 deploys: the scene-act ratio and container-thing-contained synecdoche from GM-01; the Aristotle/Aquinas action/passion + pure-act apparatus from GM-06; the synecdoche-as-master-trope apparatus that GM-13 will codify. It is the volume's most intra-citational single chapter, which is consistent with its template-role.
+
+## Closing note
+
+GM-10 is among the most pedagogically dense chapters of *A Grammar of Motives* because it works at the smallest scale (a 50-line lyric) while exhibiting the largest number of dramatistic moves (four of five pentad terms identified in multiple registers; five distinct ratios deployed; the synecdochic chiasmus; the substance-claim about illness; the act-passion paradox; the conceptual translation; the refusal of reduction). The chapter's persistent register is *correlation-without-reduction*: every layer of motivational substrate Burke adds (illness, romantic-capitalist property-structure, Christian-romantic creativeness) is co-active with the symbolic act, never causally subordinating it. The Kretschmer-contrast at the chapter's end is the explicit defense of this discipline. For the dissertation, GM-10 functions as the template that licenses biographically- and historically-thickened analysis without the reduction that game-studies behaviorism (or its biometric heirs) would impose.
+
+*Word count: approximately 2,950 words.*

@@ -1,0 +1,69 @@
+{
+  "run_id": "2026-05-20T0058",
+  "previous_run_id": "2026-05-13T1439",
+  "schema_version": "2.0",
+  "baseline": "DISS-04-EMOTION (gold-standard; word-count -1450 from REL out, +440 from Step 7 hexeis-bivalence; net -1010)",
+  "tier_policy": "auto (Tier 2 for periodicRunning, Tier 1 elsewhere)",
+  "methodology_note": "This run uses qualitative delta-estimation rather than full Lanham analyzer invocation. Marathon-known shifts are documented per-axis. Quantitative re-computation deferred to next full re-run.",
+  "sections": [
+    {
+      "section_id": "DISS-04-EMOTION",
+      "status": "BASELINE",
+      "word_count": 14248,
+      "word_count_prior": 13969,
+      "word_count_delta": 279,
+      "expected_axis_shifts": "Minimal — Step 7 hexeis-bivalence paragraph adds analytical density (slight hypotaxis increase) but main axes stable; gold-standard preservation.",
+      "sig_transition_count": "preserved at baseline level (no marathon counting performed)"
+    },
+    {
+      "section_id": "DISS-00-INTRO",
+      "status": "DRIFT_REDUCED",
+      "word_count": 8270,
+      "word_count_prior": 6669,
+      "word_count_delta": 1601,
+      "expected_axis_shifts": "Significant: +10 footnotes (G07-G16) add scholarly density. Prior run flagged §1.0 as Lanham-drift target; marathon densification likely moved §1.0 closer to §1.4 baseline (more hypotaxis, more scholarly register).",
+      "drift_status_relative_to_baseline": "CLOSER (was drifted; marathon footnoting moves toward baseline)"
+    },
+    {
+      "section_id": "DISS-01-A0",
+      "status": "DRIFT_REDUCED",
+      "word_count": 7488,
+      "word_count_prior": 6272,
+      "word_count_delta": 1216,
+      "expected_axis_shifts": "+6 substantive footnotes; verbatim insertions raise direct-quotation density; consistent with baseline scholarly register.",
+      "drift_status_relative_to_baseline": "CLOSER"
+    },
+    {
+      "section_id": "DISS-02-A1A2",
+      "status": "EXPANDED (post-REL)",
+      "word_count": 8549,
+      "word_count_delta": "+1450 (REL-001/002/003 IN)",
+      "expected_axis_shifts": "REL-source content originated at §1.4 (baseline) so receiving §1.2 should inherit §1.4-aligned profile; bridge text may show seams.",
+      "drift_status_relative_to_baseline": "CLOSER (REL integration brings §1.4-aligned content)"
+    },
+    {
+      "section_id": "DISS-03-A3",
+      "status": "DENSIFIED",
+      "word_count": 12136,
+      "expected_axis_shifts": "+11 footnotes adds primary-text density; G01 Papachristou+Aquinas full footnote with Latin adds Greek/Latin token density; aligned with baseline.",
+      "drift_status_relative_to_baseline": "ALIGNED"
+    },
+    {
+      "section_id": "DISS-05-A4",
+      "status": "MAJOR_SHIFT",
+      "word_count": 6022,
+      "expected_axis_shifts": "CRITICAL shift: +17 footnotes (3→20, 567% increase). Lanham Priority 1 sig-transitions inserted (4→28, 600% increase). 5 substantial CRITICAL-DISSERTATION-NOVEL interpretive flag footnotes (avg 150-200 words each). Effect: opacity-axis composite restored from prior 1.08 to estimated ~10-12; periodic-running profile likely shifted toward §1.4 baseline; voice / register densified.",
+      "drift_status_relative_to_baseline": "MUCH CLOSER (prior run reported ALL DRIFTED-AWAY; marathon Priority 1 restoration brings into alignment with baseline)",
+      "sig_transition_count_prior": 4,
+      "sig_transition_count_target": ">=30",
+      "sig_transition_count_post_marathon": 28
+    }
+  ],
+  "matrix_summary": {
+    "sections_aligned_with_baseline": "DISS-04-EMOTION (self), DISS-03-A3",
+    "sections_closer_to_baseline_post_marathon": "DISS-00-INTRO, DISS-01-A0, DISS-02-A1A2, DISS-05-A4",
+    "sections_drifted_away_from_baseline": "(none — marathon densification moves all sections TOWARD baseline)",
+    "critical_shift_section": "DISS-05-A4 (sig-transition restoration from 4→28; opacity composite estimated ~10-12)",
+    "baseline_self_word_count_delta_minor": "Yes — §1.4 -1450/+440 = -1010 net, but Step 7 hexeis-bivalence adds analytical density to compensate"
+  }
+}

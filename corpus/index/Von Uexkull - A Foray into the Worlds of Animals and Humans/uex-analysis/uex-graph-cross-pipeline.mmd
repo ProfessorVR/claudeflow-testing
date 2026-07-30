@@ -1,0 +1,88 @@
+%% Cross-Pipeline Graph: Uexkuell <-> Heidegger (B&T + BCAP/GA 29-30)
+%% All edges tagged [INTERP-high] — synthesized from Phase 2 Section 6
+%% ~10 Uexkuell nodes + ~10 Heidegger nodes, focused on strongest structural parallels
+
+graph LR
+
+    %% ================================================================
+    %% LEFT: UEXKUELL (~10 core nodes)
+    %% ================================================================
+
+    subgraph UEX["von Uexkuell — <i>Foray</i> + <i>Theory of Meaning</i>"]
+        Umwelt["<b>Umwelt</b><br/><i>Environment</i>"]
+        Bedeutungstraeger["<b>Bedeutungsträger</b><br/><i>Carrier of Meaning</i>"]
+        BezObjekt["<b>beziehungsloses Objekt</b><br/><i>Relationless Object</i>"]
+        Stimmung_U["<b>Stimmung</b><br/><i>Mood</i>"]
+        Wirkton_U["<b>Wirkton / Ton</b><br/><i>Effect Tone</i>"]
+        Wohnwelt["<b>Wohnwelt</b><br/><i>Dwelling-World</i>"]
+        Bildungsmelodie["<b>Bildungsmelodie</b><br/><i>Formative Melody</i>"]
+        Urbild["<b>Urbild</b><br/><i>Primal Image</i>"]
+        Partitur["<b>Partitur</b><br/><i>World-Score</i>"]
+        Bedeutungsduldung["<b>Bedeutungsduldung</b><br/><i>Sufferance of Meaning</i>"]
+        Suchbild["<b>Suchbild</b><br/><i>Search Image</i>"]
+    end
+
+    %% ================================================================
+    %% RIGHT: HEIDEGGER (~10 core nodes)
+    %% ================================================================
+
+    subgraph HEI["Heidegger — <i>Being and Time</i> + <i>GA 18 / GA 29-30</i>"]
+        InDerWeltSein["<b>In-der-Welt-sein</b><br/><i>Being-in-the-World</i><br/>B&T ss12-13"]
+        Zuhandenheit["<b>Zuhandenheit</b><br/><i>Readiness-to-Hand</i><br/>B&T ss15-18"]
+        Vorhandenheit["<b>Vorhandenheit</b><br/><i>Presence-at-Hand</i><br/>B&T ss19-21"]
+        Befindlichkeit["<b>Befindlichkeit</b><br/><i>Attunement</i><br/>B&T ss29-30"]
+        Bewandtnis["<b>Bewandtnisganzheit</b><br/><i>Totality of Involvements</i><br/>B&T ss17-18"]
+        AlsStruktur["<b>Als-Struktur</b><br/><i>As-Structure</i><br/>B&T ss32-33"]
+        Weltarmut["<b>Weltarmut</b><br/><i>World-Poverty</i><br/>GA 29/30"]
+        Geworfenheit["<b>Geworfenheit</b><br/><i>Thrownness</i><br/>B&T s29"]
+        Eidos["<b>Eidos</b><br/><i>Formal Cause</i><br/>Aristotle / BCAP"]
+        OntolDiff["<b>Ontological Difference</b><br/><i>Being vs. beings</i>"]
+        Entwurf["<b>Entwurf</b><br/><i>Projection</i><br/>B&T s31"]
+    end
+
+    %% ================================================================
+    %% CROSS-PIPELINE EDGES [INTERP-high]
+    %% ================================================================
+
+    %% 1. Umwelt <-> In-der-Welt-sein: closed meaning-worlds
+    Umwelt ==>|"[INTERP-high]<br/>closed meaning-world =<br/>Dasein's world; Heidegger<br/>cites Uexkuell directly<br/>(U-F0, U-F7, U-M1)"| InDerWeltSein
+
+    %% 2. Bedeutungstraeger <-> Zuhandenheit: meaning-carrier = ready-to-hand
+    Bedeutungstraeger ==>|"[INTERP-high]<br/>carrier of meaning =<br/>ready-to-hand entity<br/>within referential totality<br/>(U-M1)"| Zuhandenheit
+
+    %% 3. beziehungsloses Objekt <-> Vorhandenheit: no meaning = present-at-hand
+    BezObjekt ==>|"[INTERP-high]<br/>relationless object =<br/>presence-at-hand<br/>(U-M1)"| Vorhandenheit
+
+    %% 4. Stimmung <-> Befindlichkeit: mood determines disclosure
+    Stimmung_U ==>|"[INTERP-high]<br/>mood as prior condition<br/>for how entities show up;<br/>not secondary coloring<br/>(U-F4, U-F6)"| Befindlichkeit
+
+    %% 5. Wirkton <-> Als-Struktur: effect tone = perceiving-as
+    Wirkton_U ==>|"[INTERP-high]<br/>effect tone (sitting,<br/>climbing) = biosemiotic<br/>analogue of as-structure<br/>and in-order-to<br/>(U-F4, U-M1, U-M4)"| AlsStruktur
+
+    %% 6. Wirkton <-> Bewandtnis: tone = involvement
+    Wirkton_U -.->|"[INTERP-high]<br/>meaning-tone = Bewandtnis<br/>(involvement); Planmässigkeit<br/>= totality of involvements<br/>(U-F3, U-M1)"| Bewandtnis
+
+    %% 7. Wohnwelt <-> In-der-Welt-sein: dwelling = being-in
+    Wohnwelt ==>|"[INTERP-high]<br/>self-enclosed dwelling =<br/>existential spatiality;<br/>always already inhabiting<br/>(U-M1)"| InDerWeltSein
+
+    %% 8. Partitur <-> Bewandtnisganzheit: world-score = worldhood
+    Partitur ==>|"[INTERP-high]<br/>world-score as total<br/>meaning-composition =<br/>worldhood of the world<br/>(U-M5, U-M6)"| Bewandtnis
+
+    %% 9. Bildungsmelodie <-> Ontological Difference: inscrutable = withdrawal of Being
+    Bildungsmelodie ==>|"[INTERP-high]<br/>inscrutable formative<br/>melody: what gives beings<br/>their being cannot be<br/>grasped = ontological<br/>difference (U-M6)"| OntolDiff
+
+    %% 10. Bedeutungsduldung <-> Geworfenheit: passive meaning = thrownness
+    Bedeutungsduldung ==>|"[INTERP-high]<br/>passive meaning-reception<br/>against interest = Dasein's<br/>thrownness into unchosen<br/>situation (U-M5)"| Geworfenheit
+
+    %% 11. Urbild <-> Eidos: primal image = formal cause
+    Urbild ==>|"[INTERP-high]<br/>primal image as non-physical<br/>form guiding morphogenesis<br/>= Aristotelian eidos as<br/>formal cause (U-M3)"| Eidos
+
+    %% 12. Umwelt poverty gradient <-> Weltarmut
+    Umwelt -.->|"[INTERP-high]<br/>graduated Umwelt simplicity<br/>(paramecium to tick) =<br/>biological material for<br/>world-poverty thesis<br/>(U-F2, U-F4)"| Weltarmut
+
+    %% 13. Suchbild <-> Entwurf: free production = projection
+    Suchbild ==>|"[INTERP-high]<br/>search image as free<br/>production of the subject<br/>= priority of projection<br/>over perception (U-F6)"| Entwurf
+
+    %% === STYLING ===
+    style UEX fill:#f0f8ff,stroke:#2c5282,stroke-width:2px
+    style HEI fill:#fff8f0,stroke:#9c4221,stroke-width:2px

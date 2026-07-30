@@ -1,0 +1,84 @@
+%% Graph 4 — Science <-> Humanities bridge (the volume's titular argument)
+%% Left: SCIENCES (~10) | Center: BRIDGE NODES | Right: HUMANITIES (~10)
+graph LR
+    subgraph SCI["SCIENCES"]
+        DARW["Darwin 1872<br/>Expression"]:::sci
+        EKM["Ekman<br/>FACS"]:::sci
+        PHEL["Phelps 2000<br/>fMRI"]:::sci
+        PREST["Preston<br/>empathy lab"]:::sci
+        BARR["Barrett<br/>constructed emotion"]:::sci
+        BARS["Barsalou<br/>situated cognition"]:::sci
+        DAMA["Damasio<br/>somatic markers"]:::sci
+        KT["Kahneman-Tversky<br/>behav econ"]:::sci
+        POLD["Poldrack<br/>reverse inference"]:::sci
+        MRS["Modern Racism<br/>Scale"]:::sci
+    end
+
+    subgraph BR["BRIDGE NODES"]
+        US["uncomfortable<br/>situation"]:::bridge
+        RO["rhetorical ontology<br/>of emotion"]:::bridge
+        SC["situated<br/>conceptualization"]:::bridge
+        AFF["negative/rhetorical<br/>affordance"]:::bridge
+    end
+
+    subgraph HUM["HUMANITIES"]
+        EQUI["Equiano<br/>Interesting Narrative"]:::hum
+        RADC["Radcliffe<br/>Romance of the Forest"]:::hum
+        AUST["Austen<br/>Sense and Sensibility"]:::hum
+        STER["Sterne<br/>Sentimental Journey"]:::hum
+        BERL["Berlant<br/>Cruel Optimism"]:::hum
+        AHM["Ahmed<br/>queer phenomenology"]:::hum
+        REDD["Reddy<br/>history of emotions"]:::hum
+        CHAN["Chandler<br/>sentiment"]:::hum
+        BITZ["Bitzer<br/>rhet situation"]:::hum
+        GROSS["Gross 2006<br/>Secret History"]:::hum
+    end
+
+    %% Within-cluster (sciences)
+    DARW -- misread-by --> EKM
+    EKM -- contested-by --> BARR
+    BARR -- aligns-with --> BARS
+    PHEL -- uses --> MRS
+    PHEL -- limited-by --> POLD
+    PREST -- extends --> BARS
+
+    %% Within-cluster (humanities)
+    EQUI -- forecasts --> AUST
+    RADC -- shares-genre --> STER
+    BERL -- aligns-with --> AHM
+    REDD -- historicizes --> CHAN
+    GROSS -- builds-on --> BITZ
+
+    %% Bridge edges SCI -> BRIDGE
+    DARW -. grounds .-> RO
+    BARS -. grounds .-> SC
+    BARR -. grounds .-> SC
+    PREST -. grounds .-> SC
+    KT -. prefigured-by .-> RO
+    PHEL -. reframed-by .-> US
+    EKM -. contested-by .-> RO
+
+    %% Bridge edges HUM -> BRIDGE
+    EQUI -. instantiates .-> US
+    RADC -. instantiates .-> AFF
+    AUST -. instantiates .-> RO
+    BERL -. aligns-with .-> US
+    AHM -. aligns-with .-> US
+    BITZ -. extended-by .-> AFF
+    GROSS -. authors .-> RO
+    REDD -. aligns-with .-> RO
+    STER -. exemplifies .-> RO
+    CHAN -. qualified-by .-> RO
+
+    %% Direct cross-cluster bridges (the load-bearing claim)
+    KT -. prefigured-by .-> AUST
+    PHEL -. reframed-via .-> EQUI
+    BARS -. invites .-> GROSS
+    DARW -. read-as-rhetor .-> GROSS
+    EKM -. critiqued-via .-> AUST
+
+    classDef sci fill:#9cf,stroke:#369,stroke-width:1px,color:#000
+    classDef hum fill:#fc9,stroke:#963,stroke-width:1px,color:#000
+    classDef bridge fill:#f96,stroke:#a33,stroke-width:2px,color:#000
+
+    linkStyle 11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32 stroke:#c00,stroke-width:2px,stroke-dasharray: 5 5

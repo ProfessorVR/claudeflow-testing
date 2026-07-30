@@ -1,0 +1,97 @@
+%% Uexkuell Bridge Graph: Part I (Foray) --> Part II (Theory of Meaning)
+%% Shows how Foray concepts transform into Theory of Meaning concepts
+%% ~15 nodes, bipartite layout
+%% Edge relations from Phase 2 Section 9 that cross the Part I / Part II boundary
+
+graph LR
+
+    %% ================================================================
+    %% LEFT SIDE: PART I — A FORAY (U-F0 through U-F7)
+    %% ================================================================
+
+    subgraph PART_I["Part I: <i>A Foray into the Worlds of Animals and Humans</i>"]
+        FK_F["<b>Funktionskreis</b><br/><i>Functional Cycle</i>"]
+        Merkmal_F["<b>Merkmal</b><br/><i>Perception Mark</i>"]
+        Wirkmal_F["<b>Wirkmal</b><br/><i>Effect Mark</i>"]
+        Gegengefuege_F["<b>Gegengefüge</b><br/><i>Counterstructure</i>"]
+        Merkzeichen_F["<b>Merkzeichen</b><br/><i>Perception Sign</i>"]
+        Planmaessigkeit_F["<b>Planmäßigkeit</b><br/><i>Conformity to Plan</i>"]
+        Merkbild_F["<b>Merkbild</b><br/><i>Perception Image</i>"]
+        Wirkton_F["<b>Wirkton</b><br/><i>Effect Tone</i>"]
+        Suchton_F["<b>Suchton</b><br/><i>Search Tone</i>"]
+        Stimmung_F["<b>Stimmung</b><br/><i>Mood</i>"]
+        Umwelt_F["<b>Umwelt</b><br/><i>Environment</i>"]
+        Natur_F["<b>Natur</b><br/><i>Nature</i>"]
+        Suchbild_F["<b>Suchbild</b><br/><i>Search Image</i>"]
+        Subjekt_F["<b>Subjekt</b><br/><i>Subject</i>"]
+        Magische_F["<b>Magische Umwelt</b><br/><i>Magical Environment</i>"]
+    end
+
+    %% ================================================================
+    %% RIGHT SIDE: PART II — THEORY OF MEANING (U-M1 through U-M6)
+    %% ================================================================
+
+    subgraph PART_II["Part II: <i>The Theory of Meaning</i>"]
+        Bedeutungsverwertung["<b>Bedeutungsverwertung</b><br/><i>Meaning Utilization</i>"]
+        Bedeutungstraeger["<b>Bedeutungsträger</b><br/><i>Carrier of Meaning</i>"]
+        Kontrapunkt["<b>Kontrapunkt</b><br/><i>Counterpoint</i>"]
+        Eigenton["<b>Eigenton</b><br/><i>Self-Tone</i>"]
+        Bedeutungsregel["<b>Bedeutungsregel</b><br/><i>Meaning Rule</i>"]
+        Urbild["<b>Urbild</b><br/><i>Primal Image</i>"]
+        Bedeutungsverbraucher["<b>Bedeutungsverbraucher</b><br/><i>Consumer of Meaning</i>"]
+        Wohnhuelle["<b>Wohnhülle</b><br/><i>Dwelling-Shell</i>"]
+        Bedeutungsplan["<b>Bedeutungsplan</b><br/><i>Meaning Plan</i>"]
+        Partitur["<b>Partitur</b><br/><i>World-Score</i>"]
+        Kompositionslehre["<b>Kompositionslehre</b><br/><i>Composition Theory</i>"]
+    end
+
+    %% ================================================================
+    %% BRIDGING EDGES (Part I --> Part II transformations)
+    %% ================================================================
+
+    %% Funktionskreis --> Bedeutungsverwertung
+    FK_F ==>|"refines<br/>functional cycles<br/>become meaning cycles"| Bedeutungsverwertung
+
+    %% Merkmal / Wirkmal --> Bedeutungstraeger
+    Merkmal_F ==>|"refines<br/>marks become marks<br/>on carriers of meaning"| Bedeutungstraeger
+    Wirkmal_F ==>|"operationalizes<br/>effect marks operate<br/>on meaning-carriers"| Bedeutungstraeger
+
+    %% Gegengefuege --> Kontrapunkt
+    Gegengefuege_F ==>|"refines<br/>object-level counter-<br/>structure generalizes to<br/>cross-Umwelt counterpoint"| Kontrapunkt
+
+    %% Merkzeichen --> Eigenton
+    Merkzeichen_F ==>|"explains<br/>perception signs<br/>grounded in cell<br/>self-tones"| Eigenton
+
+    %% Planmäßigkeit --> Bedeutungsregel
+    Planmaessigkeit_F ==>|"refines<br/>plan-conformity<br/>becomes meaning rule"| Bedeutungsregel
+
+    %% Merkbild --> Urbild
+    Merkbild_F ==>|"presupposes<br/>individual perception<br/>image grounded in<br/>species archetype"| Urbild
+
+    %% Suchbild --> Urbild
+    Suchbild_F ==>|"presupposes<br/>innate search images<br/>suggest species-level<br/>primal images"| Urbild
+
+    %% Wirkton --> Bedeutungstraeger
+    Wirkton_F ==>|"refines<br/>effect tone becomes<br/>meaning-tone on<br/>carriers"| Bedeutungstraeger
+
+    %% Suchton --> Bedeutungsregel
+    Suchton_F ==>|"presupposes<br/>function-oriented search<br/>systematized as<br/>meaning rule"| Bedeutungsregel
+
+    %% Stimmung --> Bedeutungstraeger
+    Stimmung_F ==>|"explains<br/>mood determines<br/>meaning-switch"| Bedeutungstraeger
+
+    %% Subjekt --> Bedeutungsverbraucher
+    Subjekt_F ==>|"refines<br/>subject reframed as<br/>consumer of meaning"| Bedeutungsverbraucher
+
+    %% Umwelt --> Wohnhülle
+    Umwelt_F ==>|"refines<br/>extended to plants<br/>as dwelling-shell"| Wohnhuelle
+
+    %% Magische Umwelt --> Bedeutungsplan
+    Magische_F ==>|"presupposes<br/>free productions<br/>point to supra-individual<br/>meaning plan"| Bedeutungsplan
+
+    %% Natur --> Partitur
+    Natur_F ==>|"refines<br/>unknowable totality<br/>becomes composed<br/>world-score"| Partitur
+
+    %% === STYLING ===
+    style PART_I fill:#f0f8ff,stroke:#2c5282,stroke-width:2px
+    style PART_II fill:#fff8f0,stroke:#9c4221,stroke-width:2px

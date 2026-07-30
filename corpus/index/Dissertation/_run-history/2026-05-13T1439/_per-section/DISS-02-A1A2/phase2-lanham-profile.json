@@ -1,0 +1,193 @@
+{
+  "section_id": "DISS-02-A1A2",
+  "section_title": "A_1 → A_2: The Actualization of Perception",
+  "run_id": "2026-05-13T1439",
+  "genre": "academic",
+  "analyzer_tier": "analyst-computed-Tier-1-heuristic",
+  "computation_basis": "whole-section (7,774 source words → 6,995 prose tokens after LaTeX/footnote/Greek strip; 296 sentences)",
+  "is_gold_standard_baseline": false,
+  "baseline_section": "DISS-04-EMOTION",
+  "baseline_run_id": "2026-05-13T1439",
+  "baseline_path": "_per-section/DISS-04-EMOTION/phase2-lanham-profile.json",
+  "computation_method": "Regex-heuristic computation modeled on src/god-agent/cli/style/lanham-prose-analyzer.ts (Tier 1), with explicit analyst rationale per axis. Per Plan §9.3.1, this profile is reported as deltas relative to the §1.4 (DISS-04-EMOTION) gold-standard baseline.",
+
+  "raw_metrics_snapshot": {
+    "total_words_post_strip": 6995,
+    "total_sentences": 296,
+    "avg_words_per_sentence": 23.63,
+    "word_tokens_full": 8279,
+    "nominalizations_proxy_count": 526,
+    "be_verbs_count": 349,
+    "prepositions_count": 833,
+    "relative_pronouns_count": 167,
+    "coordinators_count": 354,
+    "passive_proxy_count": 29,
+    "greek_tokens_count": 10,
+    "textit_count": 42,
+    "footnote_count": 7,
+    "semicolons_count": 81,
+    "user_signature_transitions": {"thus": 3, "accordingly": 3, "therefore": 7, "hence": 0, "indeed": 0, "specifically": 1, "total": 17}
+  },
+
+  "axes": {
+    "nounVerb": {
+      "score": 0.59,
+      "label": "noun-style (slightly below §1.4 baseline)",
+      "confidence": 0.74,
+      "sub_metrics": {
+        "nominalizations_per_1000_words": 75.20,
+        "be_verb_rate_per_sentence": 1.18,
+        "prep_phrases_per_sentence": 2.81,
+        "be_verb_ratio_of_finite_verbs_est": 0.36,
+        "raw_counts": {"nominalizations": 526, "be_verbs": 349, "preps": 833}
+      },
+      "rationale_short": "Nominalization rate 75.2/1000 vs §1.4's 78.01/1000 — substantially aligned. Be-verb rate 1.18/sentence is markedly LOWER than §1.4's 1.82/sentence; this is the most diagnostic delta on the axis. §1.2's lower be-verb density is consistent with its more action-oriented exposition (organ receives form, perception alters, trace persists) vs. §1.4's heavier philosophical-definitional construction ('emotion IS the form of desire'). Preposition rate 2.81 is also markedly lower than §1.4's 4.09, indicating LESS prepositional-phrase chaining — §1.2 is structurally simpler. Confidence 0.74. Nominalization counts include philosophical-Greek vocabulary that should be discounted in cross-section comparison (kinēsis, alloiōsis, aisthēsis, hexis, paschein, pathos, hēdonē).",
+      "delta_vs_§1.4_baseline": -0.03,
+      "delta_band": "ALIGNED [0.52, 0.72]",
+      "interpretive_note": "ALIGNED with §1.4 on noun-style as expected for a chain-architectural section. The slight downward drift toward neutral (0.5) is structurally appropriate: §1.2 has more concrete process-description (perceptual mechanics, medium-affection, residual motion) than §1.4's higher-order pathē architecture."
+    },
+
+    "parataxisHypotaxis": {
+      "score": 0.58,
+      "label": "hypotactic (slightly below §1.4 baseline)",
+      "confidence": 0.78,
+      "sub_metrics": {
+        "subordinator_proxy_per_sentence": 0.56,
+        "coordinator_count_per_sentence": 1.20,
+        "subord_to_coord_ratio_est": 0.47,
+        "relative_pronouns_per_sentence": 0.564,
+        "raw_counts": {"relative_pronouns": 167, "coordinators": 354}
+      },
+      "rationale_short": "Relative-pronoun density 0.564/sentence (which/that/who/whom) is significant; coordinator density 1.20/sentence is below §1.4's 1.42. Subordinator-to-coordinator ratio computed via relative-pronouns (0.47) is lower than §1.4's 0.839, but the §1.2 sentences still heavily braid coordination and subordination together. The 0.58 hypotactic score is on the hypotactic side of neutral because (a) heavy relative-clause embedding ('whose terminus, A_2, is the completed perceptual act'); (b) frequent 'X is Y, where Z' constructions; (c) participial-phrase modifiers ('extended to three phases', 'sustained in the original cause's absence', 'mediated by doxa'). Confidence 0.78.",
+      "delta_vs_§1.4_baseline": -0.03,
+      "delta_band": "ALIGNED [0.51, 0.71]",
+      "interpretive_note": "ALIGNED with §1.4. The slight drift toward neutral is consistent with §1.2's mix of architectural-philosophical hypotaxis and more concrete process-description (which favors shorter, less-embedded sentences). Average sentence length 23.63 words is meaningfully below §1.4's 32.72 — supporting the slight drift toward parataxis."
+    },
+
+    "periodicRunning": {
+      "score": 0.38,
+      "label": "running-with-periodic-cohabitation",
+      "confidence": 0.62,
+      "sub_metrics": {
+        "periodic_candidate_rate_est": 0.380,
+        "avg_sentence_length_words": 23.63,
+        "median_sentence_length_words_est": 22,
+        "pct_sentences_25_plus_est": 47,
+        "pct_sentences_35_plus_est": 22,
+        "raw_counts": {"sentences": 296, "periodic_candidates_est": 112}
+      },
+      "rationale_short": "§1.2's sentences are shorter than §1.4's (avg 23.63 vs 32.72; median est 22 vs 29), which reduces the room for elaborate periodic-front-loaded structures. The periodic-candidate rate ~0.38 is slightly below §1.4's 0.414 — i.e., §1.2 leans slightly more running. The Aristotelian-quotation-heavy passages (§S4-§S6) interrupt sustained periodic architecture with extended block-quoted material and discursive analysis around it. Confidence 0.62 reflects Tier-1 heuristic brittleness on this axis (per MEMORY.md, Tier 2 is promoted on periodic).",
+      "delta_vs_§1.4_baseline": -0.03,
+      "delta_band": "ALIGNED [0.31, 0.51]",
+      "interpretive_note": "ALIGNED with §1.4. §1.2's running-leaning drift is within expectation for a section that has substantially more block quotations than §1.4."
+    },
+
+    "voice": {
+      "score": 0.30,
+      "label": "predominantly-active",
+      "confidence": 0.70,
+      "sub_metrics": {
+        "passive_constructions_count_est": 29,
+        "passive_per_sentence": 0.098,
+        "passive_ratio_estimate": 0.10,
+        "active_marker": "Author-prominent citation construction sustained (Aristotle distinguishes, Heidegger insists, Frede notes, White captures)",
+        "raw_counts": {"passive_hits": 29, "be_verbs_total": 349, "sentences": 296}
+      },
+      "rationale_short": "Passive density per sentence (0.098) is lower than §1.4's 0.238 — §1.2 is more active than the §1.4 baseline. This is structurally consistent: §1.2 has more concrete process-description (the eye sees, the medium transmits, the organ receives) where the subject is naturally the agent. Most §1.2 passives are philosophical-process passives ('the form is received,' 'the trace is deposited,' 'the alteration is propagated') where agent is grammatically irrelevant. Author-prominent citation construction sustained throughout (Aristotle distinguishes, Heidegger insists, Frede notes, White captures, Nussbaum observes, von Uexküll offers). Confidence 0.70.",
+      "delta_vs_§1.4_baseline": -0.02,
+      "delta_band": "ALIGNED [0.22, 0.42]",
+      "interpretive_note": "ALIGNED with §1.4 (drift toward MORE active). §1.2's tighter author-prominent register is consistent with user style profile dalton-academic-mkn82c3v (99.2% author-prominent citations)."
+    },
+
+    "register": {
+      "score": 0.71,
+      "label": "high-Latinate-formal",
+      "confidence": 0.82,
+      "sub_metrics": {
+        "latinate_proxy_ratio_est": 0.215,
+        "user_signature_transitions_present_in_section": {"thus": 3, "specifically": 1, "indeed": 0, "accordingly": 3, "hence": 0, "therefore": 7, "total": 14},
+        "Greek_term_density": "high (10 \\gk{} tokens for canonical-form Greek terms; 87 surface occurrences of pathos/pathē/paschein/aisthēsis/aisthēma/kinēsis/alloiōsis/phantasia/phantasma/doxa/orexis/hexis/logos/hēdonē/lypē)",
+        "German_term_density": "low-moderate (Geworfenheit x1, In-der-Welt-sein x1, Befindlichkeit x1 — single-instance reckonings only; user has deferred fuller German vocabulary to emotion section)",
+        "raw_counts": {"greek_textgreek_tokens": 10, "textit_total": 42, "footnotes": 7, "user_signature_transitions": 14}
+      },
+      "rationale_short": "Latinate-proxy ratio est 0.215 is comparable to §1.4's 0.220; the user's signature transitions are present (14 total occurrences, with stronger emphasis on 'therefore' than §1.4's 'accordingly'/'indeed' patterns). Score 0.71 reflects (a) sustained Greek-with-gloss; (b) Latinate philosophical compounds (alloiōsis, paschein, pathos, hexis); (c) German-philosophical vocabulary integrated but minimally (3 single-instance uses); (d) Aristotelian-Bekker citation conventions throughout; (e) author-prominent citation style. Confidence 0.82 (register is the most measurable axis heuristically). NOTE: §1.2 uses 'indeed' 0 times and 'hence' 0 times — markedly lower than §1.4 (10 + 1). This indicates a register-marker drift: §1.2 underuses two of the user's signature transitions. Recommend pickup during revision.",
+      "delta_vs_§1.4_baseline": -0.01,
+      "delta_band": "ALIGNED [0.62, 0.82]",
+      "interpretive_note": "ALIGNED with §1.4. The 'indeed'/'hence' absence is the only notable register-marker gap. Overall: §1.2 sustains the §1.4-grade high-Latinate-formal register expected for a gold-standard-track section."
+    },
+
+    "opacity": {
+      "score": 0.31,
+      "label": "moderately-transparent",
+      "confidence": 0.55,
+      "sub_metrics": {
+        "meta_linguistic_transition_density_est": 0.106,
+        "explicit_interpretive_flags_count_est": "high (per Phase 2 claims: 95 of 160 claims are T3-interpretive-but-flagged = 59%)",
+        "alliteration_adjacent_count_est_per_sentence": 0.95,
+        "raw_counts": {"meta_transitions": 14, "alliteration_adj_est": 281, "sentences": 296}
+      },
+      "rationale_short": "Meta-linguistic transition density 0.106/sentence is BELOW §1.4's 0.208 — §1.2 uses fewer meta-transitions per sentence than §1.4. However, the EXPLICIT INTERPRETIVE FLAGGING rate is high (59% T3) and matches §1.4's flagging-dominant rhetorical mode. The 0.31 score reflects: (a) lower meta-transition density than §1.4 (0.208 vs 0.106); (b) but still-strong interpretive flagging via 'On the present reading,' 'I argue,' 'the chapter adopts,' 'I will refer to'; (c) the section's transparency to itself — the methodological-restriction statement at C022 ('The section's task is to deploy the hylomorphic analysis... not to adjudicate the controversy') is a paradigm meta-cognitive transparency move. Confidence 0.55 — heuristic noisy.",
+      "delta_vs_§1.4_baseline": -0.03,
+      "delta_band": "ALIGNED [0.24, 0.44]",
+      "interpretive_note": "ALIGNED with §1.4. The slight drift toward more opacity (lower transparency score) corresponds to §1.2's heavier reliance on extended block-quotation passages (5 inline block-quotes from DA, Met. Δ, On Dreams, vs §1.4's mixed citation modes), where the quotation's surface obscures the user's meta-frame. Once relocations land, opacity should re-converge."
+    }
+  },
+
+  "tacit_patterns": {
+    "anaphora_rate": "moderate ('The X is Y, the Y is Z' parallel openings in §S6 dual-trace argument; subsection-opening 'The X' construction)",
+    "antithesis_rate": "high (organ vs. faculty, sense vs. organ, form vs. matter, destruction vs. preservation, kinēsis vs. trace, formal vs. appetitive, perception vs. appetite, basic vs. higher-order)",
+    "isocolon_rate": "moderate ('the eye in seeing red... the ear in hearing sound... the flesh in being heated' parallel constructions in §S4 alloiōsis; 'resonant aisthēma preserves X / resonant orexis preserves Y' in §S6-S7)",
+    "chiasmus_rate": "low",
+    "climax_rate": "moderate (the dual-trace argument builds from analytic entailment → modus tollens → architectural payoff in §S6)",
+    "polyptoton_rate": "high (the paschein/pathos/pathē/pathēsis cluster; the kinein/kinēsis/kinetic cluster; the aisthēsis/aisthēma/aisthētikon cluster)",
+    "alliteration_density_per_sentence_est": 0.95,
+    "rationale_short": "§1.2's tacit-pattern profile is most distinctive in its ANTITHETICAL ARCHITECTURE (8+ antithetical pairs structuring the section) and its POLYPTOTON via the Greek-philosophical etymological clustering. The dual-trace thesis itself is structured as a chiasmic-resembling double-articulation (formal/appetitive AT perception ↔ formal/appetitive PERSISTING in trace). The alliteration density (0.95/sentence) is below §1.4's 1.422, consistent with §1.2's somewhat less ornate register. Recommendation for §1.2 revision: explicitly mark the antithetical pairs in the upcoming relocation-receipt subsections to maintain §1.4-grade tacit-pattern density.",
+    "comparison_to_§1.4_baseline": "ALIGNED on antithesis (both sections deploy heavy antithetical architecture); ALIGNED on polyptoton (Greek-cluster polyptoton is the same in both); BELOW §1.4 on alliteration density (0.95 vs 1.422)."
+  },
+
+  "summary_six_axis_profile_for_§1.2": {
+    "nounVerb": 0.59,
+    "parataxisHypotaxis": 0.58,
+    "periodicRunning": 0.38,
+    "voice": 0.30,
+    "register": 0.71,
+    "opacity": 0.31
+  },
+
+  "deltas_from_§1.4_baseline": {
+    "nounVerb": {"§1.4_baseline": 0.62, "§1.2_score": 0.59, "delta": -0.03, "band": "ALIGNED"},
+    "parataxisHypotaxis": {"§1.4_baseline": 0.61, "§1.2_score": 0.58, "delta": -0.03, "band": "ALIGNED"},
+    "periodicRunning": {"§1.4_baseline": 0.41, "§1.2_score": 0.38, "delta": -0.03, "band": "ALIGNED"},
+    "voice": {"§1.4_baseline": 0.32, "§1.2_score": 0.30, "delta": -0.02, "band": "ALIGNED"},
+    "register": {"§1.4_baseline": 0.72, "§1.2_score": 0.71, "delta": -0.01, "band": "ALIGNED"},
+    "opacity": {"§1.4_baseline": 0.34, "§1.2_score": 0.31, "delta": -0.03, "band": "ALIGNED"}
+  },
+
+  "composite_aggregate_metric": {
+    "§1.4_baseline_register_x_hypotaxis": 0.4392,
+    "§1.2_register_x_hypotaxis": 0.4118,
+    "diagnostic_threshold_below_developed": 0.35,
+    "diagnostic_threshold_above_over_formal": 0.55,
+    "§1.2_status": "ABOVE under-developed threshold by 0.062; well within the developed band"
+  },
+
+  "interpretive_notes": {
+    "headline_finding": "DISS-02-A1A2 is ALIGNED with §1.4 on ALL SIX AXES. Every axis-delta is within ±0.10 of the §1.4 baseline; all six fall well within the ALIGNED band. This contradicts the Phase 2a prediction in the §1.4 Lanham profile which anticipated DRIFT-TOWARD on register and opacity owing to §1.2's reported under-development.",
+    "what_this_means": "§1.2 in its current state already meets §1.4-grade Lanham profile, indicating the user's prose-craft is consistent across sections. The reported under-development of §1.2 per Phase 1 metadata pertains to the THREE RELOCATION-RECEIPT FRONTS (fourfold, paschein-dual, perception-as-kritikon) — content gaps that DO NOT show as Lanham-axis drift because the existing §1.2 prose is already idiomatically the user's. The relocations will INCREASE word-count + claim-density but should not substantially shift the Lanham profile.",
+    "secondary_finding_register_markers": "§1.2 underuses two of the user's signature transitions ('indeed' = 0, 'hence' = 0; vs. §1.4's 10 + 1 occurrences). Recommendation: insert at least 1-2 'indeed' markers in upcoming relocations (e.g., 'Aristotle's distinction is, indeed, the structural ground of the dual-trace thesis'); insert at least 1 'hence' marker to round out the user's signature transition palette.",
+    "secondary_finding_alliteration_density": "§1.2's alliteration density (0.95/sentence) is below §1.4's 1.422. This is structurally appropriate (§1.2 has more block quotations, which interrupt prose-alliteration), but a modest revision-pass to slightly increase alliteration in the relocation-receipt subsections would tighten the §1.4-parity.",
+    "axis_with_highest_diagnostic_value": "REGISTER (0.71 vs §1.4's 0.72) — strongest alignment, indicates §1.2 sustains the gold-standard high-Latinate-formal register without deviation.",
+    "axis_with_lowest_diagnostic_value": "OPACITY (heuristic confidence 0.55) — Tier-1 brittle. The 0.31 score should be treated with caution; substantive interpretive-flagging (95 of 160 claims = 59%) is consistent with §1.4's flagging-density (51%), so the opacity-deltas may understate alignment.",
+    "voice_caveat": "§1.2's voice score (0.30) is slightly more active than §1.4 (0.32). This is the desired direction (toward MORE active). No revision recommended on this axis.",
+    "noun_style_caveat": "The 0.59 noun-style score is INFLATED by the user's Greek/German philosophical-vocabulary requirements (alloiōsis, paschein, hexis, kinēsis, etc.). Cross-section comparison should use the glossed-vocabulary-excluded variant if available; otherwise treat 0.59 as the realistic ALIGNED value."
+  },
+
+  "quality_gates": {
+    "axes_computed": 6,
+    "tacit_patterns_computed": "yes (7 patterns)",
+    "delta_vs_§1.4_baseline_specified": "yes (all 6 axes)",
+    "band_classification_specified": "yes (all 6 axes ALIGNED)",
+    "raw_counts_specified": "yes",
+    "confidence_per_axis_specified": "yes (range 0.55-0.82)"
+  }
+}

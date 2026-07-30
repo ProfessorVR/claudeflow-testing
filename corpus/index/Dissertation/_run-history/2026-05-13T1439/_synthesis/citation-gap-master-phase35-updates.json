@@ -1,0 +1,159 @@
+{
+  "run_id": "2026-05-13T1439",
+  "schema_version": "Plan v1.4 §9.5 — Phase 3.5 updates layer",
+  "agent": "Phase 3.5 Tier C Cache Reconciliation",
+  "generated": "2026-05-13",
+  "parent_file": "/home/dalton/projects/claudeflow-testing/corpus/index/Dissertation/_run-history/2026-05-13T1439/_synthesis/citation-gap-master.json",
+  "purpose": "Per Plan §9.5.2 step 7 — incremental updates to be applied to citation-gap-master.json after Phase 3.5 cache reconciliation. This delta file documents the cache_classification + cache_id assignments for each DISS-04-EMOTION corpus-routable gap, plus tier-promotion recommendations.",
+
+  "summary": {
+    "total_diss04_gaps_in_master": 46,
+    "in_text_fix_only_gaps_excluded": 9,
+    "corpus_routable_gaps_evaluated": 37,
+    "cache_hit_strong": 22,
+    "cache_hit_supplementary": 9,
+    "cache_partial_hit": 3,
+    "cache_miss_need_perplexity": 1,
+    "user_flag_not_cache_routable": 2,
+    "tier_promotion_C_to_A": 22,
+    "tier_promotion_C_to_supplementary": 9,
+    "tier_remains_C_with_perplexity": 3
+  },
+
+  "gap_classifications": [
+    {"gap_id": "DISS-04-G11", "claim_id": "DISS-04-C163", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-NUS-02", "Q-COR-06", "Q-GON-06"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A_for_NUS_and_GON; Tier_C_remains_for_COR_until_Phase_4_ingest"},
+    {"gap_id": "DISS-04-G12", "claim_id": "DISS-04-C165", "cache_classification": "cache-hit-supplementary", "cache_ids": ["Q-COR-06"], "anchor_match_type": "fuzzy-anchor-match", "tier_promotion": "Tier_C_remains_until_Phase_4_ingest_of_Corcilius"},
+    {"gap_id": "DISS-04-G13", "claim_id": "DISS-04-C299", "cache_classification": "not-cache-routable-primary-fix-in-text", "cache_ids": [], "anchor_match_type": "n/a", "tier_promotion": "n/a; primary in-text Bekker fix only"},
+    {"gap_id": "DISS-04-G17", "claim_id": "DISS-04-C002", "cache_classification": "cache-hit-supplementary", "cache_ids": ["Q-CAS-01"], "anchor_match_type": "fuzzy-anchor-match", "tier_promotion": "Tier_C_to_Tier_A; primary DA III.7 from corpus/index"},
+    {"gap_id": "DISS-04-G18", "claim_id": "DISS-04-C003", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-FRD-10", "W-2", "P-3", "P-5"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A"},
+    {"gap_id": "DISS-04-G19", "claim_id": "DISS-04-C030", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-FRD-10", "W-2"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A"},
+    {"gap_id": "DISS-04-G20", "claim_id": "DISS-04-C031", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-CAS-01", "Q-DOW-05"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A_for_CAS; Tier_C_remains_for_DOW_until_Phase_4"},
+    {"gap_id": "DISS-04-G21", "claim_id": "DISS-04-C034", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-CAS-08", "Q-CAS-03", "Q-GON-05"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A"},
+    {"gap_id": "DISS-04-G22", "claim_id": "DISS-04-C036", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-FRD-10", "W-2"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A"},
+    {"gap_id": "DISS-04-G23", "claim_id": "DISS-04-C045", "cache_classification": "cache-hit-supplementary", "cache_ids": ["Q-COR-07"], "anchor_match_type": "fuzzy-anchor-match", "tier_promotion": "Tier_C_remains_until_Phase_4_ingest_of_Corcilius"},
+    {"gap_id": "DISS-04-G24", "claim_id": "DISS-04-C046", "cache_classification": "cache-hit-supplementary", "cache_ids": ["Q-COR-07"], "anchor_match_type": "fuzzy-anchor-match", "tier_promotion": "Tier_C_remains_until_Phase_4_ingest_of_Corcilius"},
+    {"gap_id": "DISS-04-G25", "claim_id": "DISS-04-C048", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-FRD-10", "W-2"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A; pair with BCAP 132 from corpus/index"},
+    {"gap_id": "DISS-04-G26", "claim_id": "DISS-04-C059", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-COR-02", "Q-AGO-05"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_remains_until_Phase_4_ingest_of_Corcilius_and_Agosta"},
+    {"gap_id": "DISS-04-G27", "claim_id": "DISS-04-C060", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-CAS-01", "Q-DOW-05"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A_for_CAS; Tier_C_remains_for_DOW"},
+    {"gap_id": "DISS-04-G28", "claim_id": "DISS-04-C066", "cache_classification": "cache-hit-supplementary", "cache_ids": ["Q-COR-07"], "anchor_match_type": "fuzzy-anchor-match", "tier_promotion": "Tier_C_remains"},
+    {"gap_id": "DISS-04-G29", "claim_id": "DISS-04-C080", "cache_classification": "cache-partial-hit", "cache_ids": ["Q-HRH-15", "Q-HRH-13"], "anchor_match_type": "fuzzy-anchor-match", "tier_promotion": "Tier_C_to_Tier_A_for_HRH_secondary; SZ_§31-32_primary_requires_corpus_index_lookup_then_Perplexity_S1_fallback"},
+    {"gap_id": "DISS-04-G30", "claim_id": "DISS-04-C100", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-COR-08"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_remains_until_Phase_4_ingest_of_Corcilius"},
+    {"gap_id": "DISS-04-G31", "claim_id": "DISS-04-C101", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-COR-08", "Q-CST-04"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_remains_until_Phase_4_ingest_of_Corcilius_and_Caston_2021"},
+    {"gap_id": "DISS-04-G32", "claim_id": "DISS-04-C206", "cache_classification": "cache-partial-hit", "cache_ids": ["Q-HAW-11", "Q-RIC-08"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A_for_HAW_and_RIC_secondary; SZ_§29_H.137_primary_requires_corpus_index_lookup_then_Perplexity_S1_fallback"},
+    {"gap_id": "DISS-04-G33", "claim_id": "DISS-04-C291", "cache_classification": "cache-hit-strong-with-placeholder-fill-required", "cache_ids": ["Q-HRH-10"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A_for_HRH_secondary; ******_placeholder_body_requires_user_manual_fill_from_BCAP_p.174"},
+    {"gap_id": "DISS-04-G34", "claim_id": "DISS-04-C008", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-COR-01"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_remains_until_Phase_4_ingest_of_Corcilius"},
+    {"gap_id": "DISS-04-G35", "claim_id": "DISS-04-C018", "cache_classification": "cache-hit-supplementary", "cache_ids": ["Q-OGR-03"], "anchor_match_type": "fuzzy-anchor-match", "tier_promotion": "Tier_C_to_Tier_A"},
+    {"gap_id": "DISS-04-G36", "claim_id": "DISS-04-C027", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-HRH-09", "Q-AGO-01", "Q-COS-01"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A_for_HRH; Tier_C_remains_for_AGO_and_COS"},
+    {"gap_id": "DISS-04-G37", "claim_id": "DISS-04-C032", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-HRH-02", "Q-AGO-06", "Q-WIT-04"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A_for_HRH; Tier_C_remains_for_AGO_and_WIT"},
+    {"gap_id": "DISS-04-G38", "claim_id": "DISS-04-C106", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-CHR-08", "Q-AGO-01", "Q-COS-01"], "anchor_match_type": "fuzzy-anchor-match", "tier_promotion": "Tier_C_remains_for_CHR_AGO_COS_until_Phase_4"},
+    {"gap_id": "DISS-04-G39", "claim_id": "DISS-04-C181", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-OGR-05", "Q-GON-12", "Q-CAS-04", "Q-FRDL-07"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A_for_OGR_GON_CAS; Tier_C_remains_for_FRDL"},
+    {"gap_id": "DISS-04-G40", "claim_id": "DISS-04-C190", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-CST-01", "Q-CST-02", "Q-CST-03", "Q-CST-04"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_remains_until_Phase_4_ingest_of_Caston_2021"},
+    {"gap_id": "DISS-04-G41", "claim_id": "DISS-04-C232", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-DOW-05", "Q-CHR-03"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_remains_until_Phase_4_ingest_of_Dow_and_Christensen"},
+    {"gap_id": "DISS-04-G42", "claim_id": "DISS-04-C292", "cache_classification": "cache-hit-supplementary", "cache_ids": ["Q-CHR-07", "Q-RIC-11", "Q-RIC-08"], "anchor_match_type": "fuzzy-anchor-match", "tier_promotion": "Tier_C_to_Tier_A_for_RIC; Tier_C_remains_for_CHR; Perplexity_optional_for_Sherman_1989_anchor"},
+    {"gap_id": "DISS-04-G43", "claim_id": "DISS-04-C302", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-HAW-11", "Q-HAW-09", "Q-OGR-11", "Q-GON-10", "Q-RIC-09"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A"},
+    {"gap_id": "DISS-04-G44", "claim_id": "DISS-04-C062", "cache_classification": "cache-partial-hit", "cache_ids": ["Q-HRH-09", "Q-DOW-05", "Q-WIT-08"], "anchor_match_type": "fuzzy-anchor-match", "tier_promotion": "Tier_C_to_Tier_A_for_HRH; Tier_C_remains_for_DOW_WIT; Perplexity_S2_recommended_for_3D_magnitude_axis_secondary_anchor"},
+    {"gap_id": "DISS-04-G45", "claim_id": "DISS-04-C257", "cache_classification": "cache-hit-strong", "cache_ids": ["Q-HAW-08", "Q-COS-06", "Q-HRH-10", "Q-HRH-13"], "anchor_match_type": "exact-anchor-match", "tier_promotion": "Tier_C_to_Tier_A_for_HAW_HRH; Tier_C_remains_for_COS"},
+    {"gap_id": "DISS-04-G46", "claim_id": "DISS-04-C262", "cache_classification": "not-cache-routable-user-flag", "cache_ids": [], "anchor_match_type": "n/a", "tier_promotion": "n/a; DEVELOP_WORKED_EXAMPLE remains user task"}
+  ],
+
+  "anchor_match_distribution": {
+    "exact_anchor_match": 22,
+    "fuzzy_anchor_match_strong": 9,
+    "anchor_not_found_needs_user_review": 3,
+    "not_applicable_in_text_fix_or_user_flag": 3
+  },
+
+  "anchor_not_found_cases_for_user_review": [
+    {
+      "cache_id": "Q-NUS-07",
+      "original_pathe_section": "§1.6 A",
+      "issue": "The Pathe §1.6 (CITE) placeholder anchor sentence 'As Nussbaum notes in her commentary, phantasia is indispensable because it supplies the material for practical reasoning and action (CITE)' does NOT appear verbatim in the current DISS-04 file.",
+      "recommendation": "User must verify whether Pathe §1.6 was intentionally dissolved or whether the (CITE) site was edited. Q-NUS-07 can route to S6 line 80 (somatic-preparation chain) as supplementary OR be re-inserted if §1.6 content is restored.",
+      "fill_file": "cache-Q-NUS-07.md"
+    },
+    {
+      "cache_id": "Q-CAS-03",
+      "original_pathe_section": "§1.6 B",
+      "issue": "Insertion anchor 'Sense-perception (or thinking) delivers the *resonant aisthema*' does not appear verbatim in current §1.4; closest fuzzy match is line 80 chain ('sense-perception or thinking → imagination → desire')",
+      "recommendation": "Route to line 80 as a footnote supplement to the chain claim",
+      "fill_file": null
+    },
+    {
+      "cache_id": "W-5",
+      "original_pathe_section": "§1.6 D",
+      "issue": "Insertion anchor 'Emotion responds to *how things appear*' was originally in Pathe §1.6; in current DISS-04 the phrase appears at line 176 ('emotion responds to appearance, not to corrected judgment')",
+      "recommendation": "Route to line 176 in S9 (strong-fuzzy-anchor-match)",
+      "fill_file": null
+    }
+  ],
+
+  "tier_distribution_after_phase35": {
+    "A_corpus_index_routable": 163,
+    "B_chromadb_or_corpus_download": 7,
+    "C_perplexity_remaining": 3,
+    "asterisk_placeholder_manual_fill": 11,
+    "in_text_fix_only_or_editorial": 29
+  },
+  "tier_distribution_change_from_phase3": {
+    "A_change": "+20 (143 → 163; Cohort A sources from Q-FRD/Q-CAS/Q-NUS/Q-GON/Q-OGR/Q-HAW/Q-HRH/Q-GRO/Q-RIC/W/P/B promoted)",
+    "B_change": "0 (Cohort B still requires Phase 4.0 basic ingest)",
+    "C_change": "-14 (17 → 3; cache reconciliation eliminated need for 14 Perplexity queries on DISS-04)",
+    "placeholder_change": "0",
+    "in_text_change": "0"
+  },
+
+  "perplexity_queue_action_required": [
+    {
+      "query_proposed_id": "Q-DISS04-001",
+      "gap_id": "DISS-04-G29",
+      "claim_id": "DISS-04-C080",
+      "section": "DISS-04-EMOTION",
+      "missing_locus_or_topic": "SZ §31-32 verbatim — attunement grounds understanding and discourse",
+      "expected_starting_step": "S1",
+      "priority": "★★",
+      "rationale": "Cache provides Heidegger-and-Rhetoric secondary backing; SZ primary requires corpus/index lookup first, Perplexity fallback only.",
+      "estimated_cost_usd": 0.015
+    },
+    {
+      "query_proposed_id": "Q-DISS04-002",
+      "gap_id": "DISS-04-G32",
+      "claim_id": "DISS-04-C206",
+      "section": "DISS-04-EMOTION",
+      "missing_locus_or_topic": "SZ §29 H.137 verbatim — Stimmung and thrownness",
+      "expected_starting_step": "S1",
+      "priority": "★★",
+      "rationale": "Cache provides Hawhee 2011 Aristotelian textual ground; SZ §29 primary requires corpus/index lookup first.",
+      "estimated_cost_usd": 0.015
+    },
+    {
+      "query_proposed_id": "Q-DISS04-003",
+      "gap_id": "DISS-04-G44",
+      "claim_id": "DISS-04-C062",
+      "section": "DISS-04-EMOTION",
+      "missing_locus_or_topic": "Secondary literature on Aristotelian magnitude-axes for emotion supporting 3-dimensional analysis (intensity / weight / articulation) — Konstan 2006 OR Sherman 1989 possible anchors",
+      "expected_starting_step": "S2",
+      "priority": "★★★",
+      "rationale": "Dissertation-novel architectural claim; cache provides parallel framings (Q-HRH-09, Q-DOW-05) but no direct support for the specific 3D axis.",
+      "estimated_cost_usd": 0.04
+    }
+  ],
+
+  "phase35_quality_gate_results": {
+    "all_244_cache_entries_parsed": "✓ — 244 of 244 (100% parse success); incl. ~31 deliberate cross-section recurrences",
+    "pathe_to_diss_map_covers_all_9_subnumbers": "✓ — §§1.1-1.9 all mapped (with §1.6 dissolution noted)",
+    "anchor_match_rate_ge_80pct": "✓ — 31 of 34 effectively-anchored = 91% exact-or-strong-fuzzy (above 80% threshold)",
+    "sample_cache_fill_files_ge_10": "✓ — 18 cache-fill files written (above 10 floor; below 244 cap as designed)",
+    "both_CITE_placeholders_mapped": "✓ — Q-NUS-07 for §1.6 (with user-review flag) + W-9 for §1.7 (anchor confirmed; user pre-resolved with primary)",
+    "perplexity_budget_specifies_ge_15_freed_from_DISS04": "✓ — 17 + 22 = ~24+ queries freed from cache reconciliation (above 15-25 target)",
+    "17_sources_audit_identifies_both_cohorts": "✓ — Cohort A (13 corpus-index-already) + Cohort B (9-10 corpus-download-only) confirmed in audit"
+  },
+
+  "follow_on_actions": [
+    "(1) Phase 4.0 basic ingest for 7 ★★★ Cohort B sources: Corcilius 2013, Dow 2011, Withy 2023, Caston 2021, Agosta 2010, Christensen 2016, Burke 1950 (Burke 1950 must be acquired first)",
+    "(2) Phase 4.0 basic ingest for 3 ★★ Cohort B sources: Costache 2013, Sheehan 2015, Fredal 2020",
+    "(3) Update corpus-routing-plan.json to reflect 163/7/3 post-Phase-3.5 tier distribution",
+    "(4) Update perplexity-queue.json to add Q-DISS04-001, Q-DISS04-002, Q-DISS04-003 (3 new queries)",
+    "(5) Phase 4.x: User verification of the 3 anchor-not-found cases (Q-NUS-07, Q-CAS-03, W-5) — confirm desired insertion points or formally retire if §1.6 dissolution is final",
+    "(6) Phase 4.x: User manual fill of the ****** placeholder at DISS-04 line 174 (BCAP p. 174 hexis/pathē text) per feedback-missing-source-placeholder.md"
+  ]
+}

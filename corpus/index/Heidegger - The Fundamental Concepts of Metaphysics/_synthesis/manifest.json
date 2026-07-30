@@ -1,0 +1,66 @@
+{
+  "entry": "Heidegger - The Fundamental Concepts of Metaphysics",
+  "work": {
+    "author": "Martin Heidegger",
+    "title": "The Fundamental Concepts of Metaphysics: World, Finitude, Solitude",
+    "original": "Die Grundbegriffe der Metaphysik. Welt — Endlichkeit — Einsamkeit (GA 29/30, 1929-30)",
+    "translators": "William McNeill & Nicholas Walker",
+    "publisher": "Indiana University Press, 1995",
+    "isbn": "0-253-21429-7",
+    "source_pdf": "corpus/metaphysics/Heidegger, Martin - The Fundamental Concepts of Metaphysics.pdf"
+  },
+  "focus": "boredom as fundamental attunement; bridge to King-Salvo VR/physiological studies",
+  "built": "2026-06-19",
+  "page_offset": {"formula": "book_page = 2*pdf_page - 24", "verified": true, "loci": "triple (book / GA / pdf)"},
+  "structure": {"prefix": "fcm-", "pattern": "Calleja-A (_synthesis + units + bridge-sources)"},
+  "units": {
+    "count": 15,
+    "deep_spine": ["fcm-03", "fcm-04", "fcm-05", "fcm-06", "fcm-07", "fcm-08", "fcm-09"],
+    "map": ["fcm-00", "fcm-01", "fcm-02", "fcm-10", "fcm-11", "fcm-12", "fcm-13", "fcm-14"],
+    "files_per_unit": ["<id>.json", "<id>.md", "<id>-edges.csv"]
+  },
+  "synthesis_artifacts": [
+    "page-offset-verification.md",
+    "phase0-overview.md",
+    "book-level-ontology.md",
+    "book-level-ontology.json",
+    "fcm-terminology-appendix.md",
+    "fcm-german-appendix.md",
+    "fcm-bibliography.md",
+    "fcm-boredom-attunement-manual.md",
+    "fcm-king-salvo-bridge.md",
+    "concept-matrix.csv",
+    "global-edges.csv",
+    "tension-edges.json",
+    "manifest.json"
+  ],
+  "bridge_sources": [
+    "king-salvo-physiological-digest.md",
+    "king-salvo-eyetracking-digest.md",
+    "king-salvo-phenomenological-digest.md"
+  ],
+  "metrics": {
+    "deep_md_words": 46622,
+    "global_edges": 452,
+    "edges_faithful": 441,
+    "edges_anticipatory_application": 11,
+    "terminology_lemmas": 150,
+    "german_lemmas": 66,
+    "bibliography_entries": 49,
+    "concept_matrix_rows": 45,
+    "ontology_nodes_registered": 32,
+    "tension_edges_registered": 7
+  },
+  "quality_gates": {
+    "edges_min_220": "PASS (452)",
+    "terminology_min_100": "PASS (150)",
+    "german_min_40": "PASS (66)",
+    "deep_units_min_2000w": "PASS (all spine units >2600w)",
+    "no_verbatim_over_25w": "PASS (anchor-phrases only, <=20w)",
+    "provenance_tags": "PASS (projected claims tagged anticipatory-application)",
+    "triple_loci": "PASS",
+    "bibliography_min_120": "RELAXED -> 49 (honest interlocutor count for a lecture course; padding would fabricate figures)"
+  },
+  "registration": {"compiled_index": "corpus/index/compiled-index.json", "builder": "scripts/compile-corpus-index.py", "text_dirs_entry_added": true},
+  "provenance_discipline": "FAITHFUL-HEIDEGGER / FAITHFUL-EMPIRICAL / PROJECTED kept separate; no projected claim represented as established"
+}

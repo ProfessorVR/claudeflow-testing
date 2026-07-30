@@ -1,0 +1,309 @@
+{
+  "schema_version": "phx-citation-network-v1",
+  "cluster": "Aristotelian Phantasia Secondary (1985-2017)",
+  "n_units": 8,
+  "unit_ids": [
+    "PHX-01-NUSSBAUM-1985",
+    "PHX-02-WHITE-1985",
+    "PHX-03-FREDE-1992",
+    "PHX-04-CASTON-1996",
+    "PHX-05-OGORMAN-2005",
+    "PHX-06-GONZALEZ-2006",
+    "PHX-07-HAWHEE-2011",
+    "PHX-08-PAPACHRISTOU-2013"
+  ],
+  "note_on_directionality": "Intra-cluster citations only. PHX-01 (Nussbaum 1985) and PHX-02 (White 1985) are co-temporal and could not cite each other or any later unit. PHX-04 Caston is dated 1995 (acceptance) / 1996 (publication); the cluster header uses 1995, but Hawhee, O'Gorman, González, Papachristou all cite 'Caston 1996'. Citations to 'Nussbaum 1978' (De Motu Animalium 1st ed.) are recorded as gestures toward PHX-01 only when the unit-JSON explicitly maps the 1978 citation to the PHX-01 cluster slot; otherwise they appear as a gap (Nussbaum's 1985 second-edition essay was the actual PHX-01 target).",
+  "directed_citations": [
+    {
+      "from_unit": "PHX-02-WHITE-1985",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "fn. 92 (works cited)",
+      "relation": "cites-as-contemporary",
+      "note": "White cites 'Nussbaum, M. C., Aristotle's De Motu Animalium (Princeton 1978)' — the 1978 first edition. White's essay was contemporaneous with Nussbaum's 1985 second-edition reprint and could not have cited the 1985 essay. The two units are independent contemporaries with overlapping interlocutor sets (Freudenthal, Schofield, Sorabji, Ross, Hicks)."
+    },
+    {
+      "from_unit": "PHX-03-FREDE-1992",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "PDF 2 (book 280, fn. 5); PDF 4 (book 285, fn. 23); PDF 7 (book 289, fn. 34)",
+      "relation": "contests",
+      "note": "Frede cites Nussbaum 1978 (De Motu Animalium), but the substantive content overlaps the 1985 essay (PHX-01). Frede criticizes Nussbaum for 'severing the ties to envisaging' and broadening phantasia such that Aristotle's assignment to aisthesis becomes unmotivated."
+    },
+    {
+      "from_unit": "PHX-04-CASTON-1996",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "PDF p. 1 (book p. 20), fn. 1 (literature review)",
+      "relation": "background-cited",
+      "note": "Caston cites only Nussbaum 1978 De Motu, not the 1985 expanded essay. Engagement is gestural; Caston does NOT engage Nussbaum's signature 'phantasia-in-action' thesis. The non-engagement is itself a citation-gap (see citation_gaps)."
+    },
+    {
+      "from_unit": "PHX-05-OGORMAN-2005",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "p. 19 (printed) / p. 4 (PDF); n. 5 at p. 37; n. 17 at p. 38",
+      "relation": "endorses-with-modification",
+      "note": "Heavy use. O'Gorman cites Nussbaum's 1978 De Motu commentary AND her Therapy of Desire (1994). The 1978 commentary stands in for PHX-01's phantasia-in-action thesis, which O'Gorman extends into the epideictic register."
+    },
+    {
+      "from_unit": "PHX-05-OGORMAN-2005",
+      "to_unit": "PHX-02-WHITE-1985",
+      "page_anchor_in_from": "n. 6 at p. 37 / p. 12 (PDF); works cited p. 40",
+      "relation": "cites-among-visual-readers",
+      "note": "O'Gorman groups White with the 'visual reading' camp (alongside Caston, Wedin, Turnbull, Birondo) at n. 6."
+    },
+    {
+      "from_unit": "PHX-05-OGORMAN-2005",
+      "to_unit": "PHX-03-FREDE-1992",
+      "page_anchor_in_from": "pp. 20-22, p. 28 (printed); works cited p. 39",
+      "relation": "endorses-and-deploys",
+      "note": "Frede 1992 is the most-cited cluster source for O'Gorman: explicitly deployed for the 'after-image' phantasia gloss and the cognitive-supervenience reading."
+    },
+    {
+      "from_unit": "PHX-05-OGORMAN-2005",
+      "to_unit": "PHX-04-CASTON-1996",
+      "page_anchor_in_from": "n. 6 at p. 37 / p. 12 (PDF); works cited p. 38",
+      "relation": "cites-among-visual-readers",
+      "note": "O'Gorman cites Caston 1996 in n. 6 grouping of visual-readers. Not centrally engaged."
+    },
+    {
+      "from_unit": "PHX-06-GONZALEZ-2006",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "p. 99 n. 1; p. 100 n. 6; pp. 113-114; p. 119 n. 62; p. 120 n. 67; p. 120 n. 70; works cited p. 130",
+      "relation": "primary-foil",
+      "note": "Heavy and multi-edged. González treats Nussbaum 1978 as the modern popularizer of Freudenthal's 'mere show' reading of phantasia at DA 428a1-4 and Rhet. 1404a11. Disputes Nussbaum but adopts her De motu translation at 700b17-21."
+    },
+    {
+      "from_unit": "PHX-06-GONZALEZ-2006",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "p. 100 n. 6; works cited p. 130",
+      "relation": "contests",
+      "note": "Second edge: González disagrees with Nussbaum 1996 ('Aristotle on Emotions and Rational Persuasion' in Rorty's Essays on Aristotle's Rhetoric, pp. 303-23) at pp. 307, 321 n. 16 on phantasia-without-belief in Rh. II. Doubly engaged with the Nussbaum corpus."
+    },
+    {
+      "from_unit": "PHX-06-GONZALEZ-2006",
+      "to_unit": "PHX-03-FREDE-1992",
+      "page_anchor_in_from": "p. 114 n. 48; p. 115 n. 52; works cited p. 129",
+      "relation": "secondary-ally",
+      "note": "González cites Frede on (a) whether Aristotle held a single consistent phantasia view (Frede 279-82) and (b) non-visual phantasmata (Frede 285). Not centrally engaged."
+    },
+    {
+      "from_unit": "PHX-07-HAWHEE-2011",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "pp. 142, 144, 148, 150, 152, 161 (six anchors)",
+      "relation": "extends",
+      "note": "Most explicit alignment in the cluster: 'phantasia moves closer to the way Nussbaum (1985) figures it — as interpretation, but it is interpretation that is grafted onto direct perception' (p. 152). Hawhee uses Nussbaum 1985 264-65 on deliberative phantasia."
+    },
+    {
+      "from_unit": "PHX-07-HAWHEE-2011",
+      "to_unit": "PHX-02-WHITE-1985",
+      "page_anchor_in_from": "p. 161 (note 12)",
+      "relation": "engages",
+      "note": "Note 12 engages White on the Galenic genealogy of phantasia/phantastikon (484n4) and the 'extreme inappropriateness of post-Aristotelian connotations.'"
+    },
+    {
+      "from_unit": "PHX-07-HAWHEE-2011",
+      "to_unit": "PHX-03-FREDE-1992",
+      "page_anchor_in_from": "p. 144",
+      "relation": "adopts",
+      "note": "Hawhee adopts the 'after-image' phrase that O'Gorman developed from Frede; transitive dependency through O'Gorman 2005."
+    },
+    {
+      "from_unit": "PHX-07-HAWHEE-2011",
+      "to_unit": "PHX-04-CASTON-1996",
+      "page_anchor_in_from": "pp. 141, 161, 162",
+      "relation": "cites-as-philosopher-ally",
+      "note": "Note 12 'Caston follows a similar logic linking Aristotle's phantasia to Plato.' At p. 141 pairs 'philosophers Victor Caston (1996, 20-21) and Deborah Modrak (1986, 47n1)' on the ill fit of the term 'imagination.'"
+    },
+    {
+      "from_unit": "PHX-07-HAWHEE-2011",
+      "to_unit": "PHX-05-OGORMAN-2005",
+      "page_anchor_in_from": "pp. 139, 144, 161",
+      "relation": "extends-as-sister-essay",
+      "note": "Centerpiece sister-essay: 'Ned O'Gorman (2005) offers the most thorough and head-on examination of phantasia in the context of epideictic discourse' (p. 144). Hawhee thanks O'Gorman at the acknowledgments (p. 139). Note 20 says 'My reading of hyperochē complements O'Gorman's reading of epideictic.'"
+    },
+    {
+      "from_unit": "PHX-07-HAWHEE-2011",
+      "to_unit": "PHX-06-GONZALEZ-2006",
+      "page_anchor_in_from": "p. 161 (note 16)",
+      "relation": "cites-as-exception",
+      "note": "Note 16: 'González (2006), whose treatment of phantasia in book III of the Rhetoric will be considered later in this article, is an important exception here.' Hawhee uniquely cites ALL six prior cluster siblings."
+    },
+    {
+      "from_unit": "PHX-08-PAPACHRISTOU-2013",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "fn. 34 (PDF p. 12)",
+      "relation": "background-listing",
+      "note": "Papachristou cites Nussbaum 1978 (NOT the 1985 second-edition essay) as 'indicative reading.' No substantive engagement."
+    },
+    {
+      "from_unit": "PHX-08-PAPACHRISTOU-2013",
+      "to_unit": "PHX-02-WHITE-1985",
+      "page_anchor_in_from": "fn. 34 (PDF p. 12)",
+      "relation": "background-listing",
+      "note": "White 1985 listed as indicative reading. Convergent Thomistic-scholastic frame (Phillipe 1971, Roth 1963 background) but no head-to-head engagement."
+    },
+    {
+      "from_unit": "PHX-08-PAPACHRISTOU-2013",
+      "to_unit": "PHX-03-FREDE-1992",
+      "page_anchor_in_from": "fn. 34 (PDF p. 12)",
+      "relation": "background-listing",
+      "note": "Frede 1992 listed as indicative reading. Convergent supervenience framework but Papachristou's tripartite scheme departs from Frede's unitary phantasia."
+    },
+    {
+      "from_unit": "PHX-08-PAPACHRISTOU-2013",
+      "to_unit": "PHX-04-CASTON-1996",
+      "page_anchor_in_from": "fn. 34 (PDF p. 12)",
+      "relation": "background-listing",
+      "note": "Caston 1996 (Phronesis 41.1) listed as indicative reading. Both endorse cognitive sophistication of irrational animals (ants, bees) and unified reading of DA III.3-11."
+    },
+    {
+      "from_unit": "PHX-03-FREDE-1992",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "PDF 4 (book 285, fn. 23)",
+      "relation": "contests-image-theory",
+      "note": "Second Nussbaum edge in Frede: extended discussion of Nussbaum's image-theory, criticism that Nussbaum 'tries as far as possible to sever the ties to envisaging.'"
+    },
+    {
+      "from_unit": "PHX-03-FREDE-1992",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "PDF 7 (book 289, fn. 34)",
+      "relation": "contests-broadened-phantasia",
+      "note": "Third Nussbaum edge in Frede: critique that Nussbaum's broadened phantasia cannot explain why Aristotle assigns it to aisthesis if perceptions are not involved."
+    },
+    {
+      "from_unit": "PHX-06-GONZALEZ-2006",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "pp. 113-114 (printed) — Freudenthal 'mere show' popularizer",
+      "relation": "primary-foil",
+      "note": "González at pp. 113-114 treats Nussbaum 1978:254 as the modern popularizer of Freudenthal's 'mere show' gloss on phantasia at DA 428a1-4 and Rh. 1404a11. This is the central polemical edge."
+    },
+    {
+      "from_unit": "PHX-06-GONZALEZ-2006",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "p. 119 n. 62; p. 120 n. 67; p. 120 n. 70",
+      "relation": "adopts-translation",
+      "note": "Despite the polemic, González adopts Nussbaum's De motu translation at 700b17-21 — a methodological dependency."
+    },
+    {
+      "from_unit": "PHX-07-HAWHEE-2011",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "p. 142",
+      "relation": "uses-citation",
+      "note": "Hawhee at p. 142 deploys Nussbaum 1985:265 on phantasia as 'abstract thought thought to concrete perceptibles or situations.'"
+    },
+    {
+      "from_unit": "PHX-07-HAWHEE-2011",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "p. 148",
+      "relation": "uses-citation",
+      "note": "Hawhee at p. 148 deploys Nussbaum 1985:264 on deliberative phantasia as 'envisaging.'"
+    },
+    {
+      "from_unit": "PHX-07-HAWHEE-2011",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "p. 152",
+      "relation": "explicit-alignment",
+      "note": "The signature alignment: 'phantasia moves closer to the way Nussbaum (1985) figures it — as interpretation, but it is interpretation that is grafted onto direct perception.' Hawhee's most direct cluster-citation."
+    },
+    {
+      "from_unit": "PHX-05-OGORMAN-2005",
+      "to_unit": "PHX-03-FREDE-1992",
+      "page_anchor_in_from": "p. 28 (printed) / p. 7 (PDF)",
+      "relation": "deploys-after-image",
+      "note": "Second O'Gorman edge to Frede: deploys Frede's after-image gloss into the epideictic framework — the conceptual bridge later inherited by Hawhee."
+    },
+    {
+      "from_unit": "PHX-05-OGORMAN-2005",
+      "to_unit": "PHX-01-NUSSBAUM-1985",
+      "page_anchor_in_from": "n. 17 at p. 38 / p. 13 (PDF)",
+      "relation": "secondary-citation",
+      "note": "Second Nussbaum edge in O'Gorman: methodological footnote on phantasia-action linkage in De Motu."
+    },
+    {
+      "from_unit": "PHX-07-HAWHEE-2011",
+      "to_unit": "PHX-04-CASTON-1996",
+      "page_anchor_in_from": "p. 162 (n. 12)",
+      "relation": "second-edge-philosophical",
+      "note": "Second Caston edge in Hawhee: 'Caston follows a similar logic linking Aristotle's phantasia to Plato.'"
+    },
+    {
+      "from_unit": "PHX-07-HAWHEE-2011",
+      "to_unit": "PHX-05-OGORMAN-2005",
+      "page_anchor_in_from": "p. 144",
+      "relation": "centerpiece-extension",
+      "note": "Hawhee at p. 144: 'Ned O'Gorman (2005) offers the most thorough and head-on examination of phantasia in the context of epideictic discourse.' Second edge marking O'Gorman as Hawhee's primary methodological model."
+    }
+  ],
+  "citation_gaps": [
+    {
+      "from_unit": "PHX-03-FREDE-1992",
+      "to_unit": "PHX-02-WHITE-1985",
+      "note": "Frede does not cite White 1985 despite contemporaneous, substantively convergent readings (both emphasize phantasia's parasitic/derivative status on perception). Likely explanations: (a) White appeared in Dialogue (Canadian Philosophical Review), outside the Anglo-American Aristotle-revival channels; (b) the Nussbaum-Rorty volume circulated drafts 1985-1990, so White's 1985 essay may not have reached Frede in time."
+    },
+    {
+      "from_unit": "PHX-04-CASTON-1996",
+      "to_unit": "PHX-02-WHITE-1985",
+      "note": "White 1985 absent from Caston's apparatus. The two essays appeared in different traditions (Dialogue vs. Phronesis) and apparently did not cross. White's Thomistic-philological reading is independent of Caston's analytic-philosophy-of-mind reading."
+    },
+    {
+      "from_unit": "PHX-04-CASTON-1996",
+      "to_unit": "PHX-01-NUSSBAUM-1985-as-1985-essay",
+      "note": "Caston cites only Nussbaum's 1978 De Motu, NOT the 1985 expanded essay. Major lacuna given that Caston's central thesis (phantasia as paradigmatic locus of animal intentionality) directly bears on Nussbaum's phantasia-in-action thesis."
+    },
+    {
+      "from_unit": "PHX-06-GONZALEZ-2006",
+      "to_unit": "PHX-02-WHITE-1985",
+      "note": "González does not cite White 1985 despite Rhetoric-cluster overlap. Likely a Thomistic / classical-philological vs. Thomistic / analytic-classical mismatch: White's Dialogue venue did not enter González's classical-philology bibliography."
+    },
+    {
+      "from_unit": "PHX-06-GONZALEZ-2006",
+      "to_unit": "PHX-04-CASTON-1996",
+      "note": "González does not cite Caston 1996 despite shared interest in phantasia's appearance/truth dichotomy. TAPA 136 went to press Spring 2006; Caston 1996 (Phronesis 41.1) had been available a decade. Discipline-culture gap: González worked in classics/philology; Caston in analytic philosophy of mind."
+    },
+    {
+      "from_unit": "PHX-06-GONZALEZ-2006",
+      "to_unit": "PHX-05-OGORMAN-2005",
+      "note": "González does not cite O'Gorman 2005 despite both being rhetoric-cluster papers on phantasia. Publication-timing close (O'Gorman P&R 2005; González TAPA 2006); plausibly González's manuscript was complete before O'Gorman's article reached him."
+    },
+    {
+      "from_unit": "PHX-08-PAPACHRISTOU-2013",
+      "to_unit": "PHX-05-OGORMAN-2005",
+      "note": "Papachristou does not cite O'Gorman 2005. Rhetorical-tradition phantasia scholarship outside Papachristou's analytic-Thomistic bibliography."
+    },
+    {
+      "from_unit": "PHX-08-PAPACHRISTOU-2013",
+      "to_unit": "PHX-06-GONZALEZ-2006",
+      "note": "Papachristou does not cite González 2006. Papachristou treats De Anima phantasia, not Rhetoric III.1 phantasia; discipline split."
+    },
+    {
+      "from_unit": "PHX-08-PAPACHRISTOU-2013",
+      "to_unit": "PHX-07-HAWHEE-2011",
+      "note": "Papachristou does not cite Hawhee 2011. Rhetorical-vision scholarship outside Papachristou's bibliography."
+    }
+  ],
+  "hub_score": {
+    "PHX-01-NUSSBAUM-1985": 7,
+    "PHX-02-WHITE-1985": 3,
+    "PHX-03-FREDE-1992": 4,
+    "PHX-04-CASTON-1996": 3,
+    "PHX-05-OGORMAN-2005": 1,
+    "PHX-06-GONZALEZ-2006": 1,
+    "PHX-07-HAWHEE-2011": 0,
+    "PHX-08-PAPACHRISTOU-2013": 0
+  },
+  "hub_score_method": "Inbound directed-citation count from other cluster units. PHX-01 is counted from each unit that cites either Nussbaum 1978 De Motu or Nussbaum 1985 essay; per unit-JSON conventions, both function as the PHX-01 anchor. PHX-06 second edge to Nussbaum 1996 is counted once toward PHX-01 (multi-edge collapsed).",
+  "outbound_count": {
+    "PHX-01-NUSSBAUM-1985": 0,
+    "PHX-02-WHITE-1985": 1,
+    "PHX-03-FREDE-1992": 1,
+    "PHX-04-CASTON-1996": 1,
+    "PHX-05-OGORMAN-2005": 4,
+    "PHX-06-GONZALEZ-2006": 2,
+    "PHX-07-HAWHEE-2011": 6,
+    "PHX-08-PAPACHRISTOU-2013": 4
+  },
+  "discipline_culture_map": {
+    "analytic-anglophone-philosophy-of-mind": ["PHX-03-FREDE-1992", "PHX-04-CASTON-1996"],
+    "thomistic-philological": ["PHX-02-WHITE-1985", "PHX-08-PAPACHRISTOU-2013"],
+    "rhetoric-classical": ["PHX-05-OGORMAN-2005", "PHX-06-GONZALEZ-2006", "PHX-07-HAWHEE-2011"],
+    "ancient-philosophy-action-theory": ["PHX-01-NUSSBAUM-1985"]
+  }
+}

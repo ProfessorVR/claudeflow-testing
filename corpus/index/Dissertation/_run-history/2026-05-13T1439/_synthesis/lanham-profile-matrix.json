@@ -1,0 +1,374 @@
+{
+  "schema_version": "1.0",
+  "agent": "Phase 3 Wave 3 Agent 3F (Lanham profile matrix)",
+  "run_id": "2026-05-13T1439",
+  "date": "2026-05-13",
+  "plan_reference": {
+    "deliverable_goal": "G6",
+    "phase": "3.3",
+    "section": "9.3.1",
+    "axes_spec_section": "5.5"
+  },
+
+  "baseline": {
+    "section_id": "DISS-04-EMOTION",
+    "section_label": "§1.4",
+    "title": "Emotion: The Form of Desire Under Evaluative Disclosure (E-motion is Motion)",
+    "is_gold_standard": true,
+    "six_axis_profile": {
+      "nounVerb": 0.62,
+      "parataxisHypotaxis": 0.61,
+      "periodicRunning": 0.41,
+      "voice": 0.32,
+      "register": 0.72,
+      "opacity": 0.34
+    },
+    "composite_register_x_hypotaxis": 0.4392,
+    "healthy_composite_band": {"under_developed_below": 0.35, "over_formal_above": 0.55},
+    "tacit_patterns": {
+      "anaphora": "moderate",
+      "antithesis": "high",
+      "isocolon": "moderate",
+      "chiasmus": "low",
+      "climax": "moderate",
+      "polyptoton": "moderate-to-high",
+      "alliteration_density_per_sentence": 1.422
+    },
+    "user_signature_transitions": {
+      "thus": 12, "specifically": 4, "indeed": 10, "accordingly": 18, "hence": 1, "total": 45
+    },
+    "section_word_count_prose": 13190,
+    "section_sentence_count": 403
+  },
+
+  "delta_classification_thresholds": {
+    "spec_source": "Plan §9.3.1",
+    "ALIGNED": "within ±0.10 of baseline",
+    "DRIFT_TOWARD": "Δ in (0.10, 0.20] toward neutral 0.5 — section weaker than baseline on this axis",
+    "DRIFT_AWAY": "Δ in (0.10, 0.20] away from neutral, beyond baseline — section stronger than baseline on this axis",
+    "INVERSE": "|Δ| > 0.20 OR crosses axis-label threshold — on the other side of the label"
+  },
+
+  "per_axis_thresholds_from_DISS04": {
+    "nounVerb": {"baseline": 0.62, "aligned": [0.52, 0.72], "drift_toward": [0.42, 0.52], "drift_away": [0.72, 0.82], "inverse_below": [0, 0.42], "inverse_above": [0.82, 1]},
+    "parataxisHypotaxis": {"baseline": 0.61, "aligned": [0.51, 0.71], "drift_toward": [0.41, 0.51], "drift_away": [0.71, 0.81], "inverse_below": [0, 0.41], "inverse_above": [0.81, 1]},
+    "periodicRunning": {"baseline": 0.41, "aligned": [0.31, 0.51], "drift_toward_above": [0.51, 0.61], "drift_away_below": [0.21, 0.31], "inverse_below": [0, 0.21], "inverse_above": [0.61, 1]},
+    "voice": {"baseline": 0.32, "aligned": [0.22, 0.42], "drift_toward_above": [0.42, 0.52], "drift_away_below": [0.12, 0.22], "inverse_below": [0, 0.12], "inverse_above": [0.52, 1]},
+    "register": {"baseline": 0.72, "aligned": [0.62, 0.82], "drift_toward": [0.52, 0.62], "drift_away": [0.82, 0.92], "inverse_below": [0, 0.52], "inverse_above": [0.92, 1]},
+    "opacity": {"baseline": 0.34, "aligned": [0.24, 0.44], "drift_toward_below": [0.14, 0.24], "drift_away_above": [0.44, 0.54], "inverse_below": [0, 0.14], "inverse_above": [0.54, 1]}
+  },
+
+  "sections": [
+    {
+      "section_id": "DISS-00-INTRO",
+      "label": "§1.0",
+      "title": "Introduction: Rhetorical Phantasia: The Soul's Temporal Medium",
+      "word_count_prose": 4009,
+      "sentence_count": 129,
+      "six_axis_profile": {"nounVerb": 0.58, "parataxisHypotaxis": 0.55, "periodicRunning": 0.36, "voice": 0.34, "register": 0.64, "opacity": 0.27},
+      "deltas_vs_baseline": {
+        "nounVerb": {"delta": -0.04, "tag": "ALIGNED"},
+        "parataxisHypotaxis": {"delta": -0.06, "tag": "ALIGNED"},
+        "periodicRunning": {"delta": -0.05, "tag": "ALIGNED"},
+        "voice": {"delta": 0.02, "tag": "ALIGNED"},
+        "register": {"delta": -0.08, "tag": "ALIGNED (boundary)"},
+        "opacity": {"delta": -0.07, "tag": "ALIGNED"}
+      },
+      "composite_register_x_hypotaxis": 0.352,
+      "composite_band_assessment": "lower edge of healthy [0.35, 0.55] band",
+      "user_signature_transitions": {"thus": 3, "specifically": 0, "indeed": 0, "accordingly": 5, "hence": 1, "total": 13},
+      "tacit_patterns_signature": "isocolon (high; T₁-T₄ + A₀-A₄ + chapter-procession catalogs), polyptoton (high; phantasia cluster), antithesis (moderate; less aggressively cultivated than §1.4), alliteration 0.938/s",
+      "overall_tag": "ALL-ALIGNED",
+      "verdict_summary": "All 6 axes within ALIGNED window. Register at -0.08 sits at boundary (intentional accessibility). Largest single deviation is register, driven by absence of German-philosophical vocabulary and zero 'specifically'/'indeed'.",
+      "recommendation": {
+        "priority": 6,
+        "category": "style + content (decision point)",
+        "summary": "Keep as-is if intentionally accessible. If lifting toward §1.4: integrate 1-2 'specifically'/'indeed', introduce Befindlichkeit/Stimmung at §1.0 anticipation points of §§1.1/1.4 content. Do not drop below composite 0.35."
+      },
+      "tier1_confidence_range": [0.55, 0.79],
+      "first_person_interpretive_flags_count_in_section": 16
+    },
+
+    {
+      "section_id": "DISS-01-A0",
+      "label": "§1.1",
+      "title": "A_0: Motion and Time as Ontological Horizon",
+      "word_count_prose": 5950,
+      "sentence_count": 165,
+      "six_axis_profile": {"nounVerb": 0.64, "parataxisHypotaxis": 0.66, "periodicRunning": 0.46, "voice": 0.30, "register": 0.74, "opacity": 0.32},
+      "deltas_vs_baseline": {
+        "nounVerb": {"delta": 0.02, "tag": "ALIGNED"},
+        "parataxisHypotaxis": {"delta": 0.05, "tag": "ALIGNED"},
+        "periodicRunning": {"delta": 0.05, "tag": "ALIGNED"},
+        "voice": {"delta": -0.02, "tag": "ALIGNED"},
+        "register": {"delta": 0.02, "tag": "ALIGNED"},
+        "opacity": {"delta": -0.02, "tag": "ALIGNED"}
+      },
+      "composite_register_x_hypotaxis": 0.4884,
+      "composite_band_assessment": "above §1.4 baseline; well-developed; well within healthy band",
+      "user_signature_transitions": {"thus": 3, "specifically": 0, "indeed": 0, "accordingly": 4, "hence": 5, "therefore": 4, "total_canonical_five": 12, "total_including_extras": 22},
+      "tacit_patterns_signature": "antithesis (high; Aristotelian-Heideggerian dyadic pairs throughout), isocolon (mod-high; three-senses-of-priority listing, three-ecstases listing), polyptoton (high; kinēsis/energeia/entelecheia cluster), alliteration 1.318/s",
+      "overall_tag": "ALL-ALIGNED",
+      "verdict_summary": "All 6 axes within ALIGNED window with marginal positive drift on hypotaxis, periodic, register. Composite sits ABOVE §1.4 at 0.488 — well-developed.",
+      "recommendation": {
+        "priority": 7,
+        "category": "style (modest) + content (separate)",
+        "summary": "No structural style revision needed. Modest tightening: increase explicit interpretive flagging on un-flagged Heideggerian-radicalization moves (kinēsis ≅ Bewegtheit, dyadic kinēsis ≅ proto-In-der-Welt-sein) to nudge opacity from 0.32 → 0.34."
+      },
+      "tier1_confidence_range": [0.56, 0.83]
+    },
+
+    {
+      "section_id": "DISS-02-A1A2",
+      "label": "§1.2",
+      "title": "A_1 → A_2: The Actualization of Perception",
+      "word_count_prose": 6995,
+      "sentence_count": 296,
+      "six_axis_profile": {"nounVerb": 0.59, "parataxisHypotaxis": 0.58, "periodicRunning": 0.38, "voice": 0.30, "register": 0.71, "opacity": 0.31},
+      "deltas_vs_baseline": {
+        "nounVerb": {"delta": -0.03, "tag": "ALIGNED"},
+        "parataxisHypotaxis": {"delta": -0.03, "tag": "ALIGNED"},
+        "periodicRunning": {"delta": -0.03, "tag": "ALIGNED"},
+        "voice": {"delta": -0.02, "tag": "ALIGNED"},
+        "register": {"delta": -0.01, "tag": "ALIGNED"},
+        "opacity": {"delta": -0.03, "tag": "ALIGNED"}
+      },
+      "composite_register_x_hypotaxis": 0.4118,
+      "composite_band_assessment": "above under-developed threshold by 0.062; well within developed band",
+      "user_signature_transitions": {"thus": 3, "specifically": 1, "indeed": 0, "accordingly": 3, "hence": 0, "therefore": 7, "total_canonical_five": 7, "total_including_extras": 14},
+      "tacit_patterns_signature": "antithesis (high; 8+ antithetical pairs), polyptoton (high; paschein/pathos/pathē cluster), isocolon (moderate; eye/ear/flesh parallel constructions, resonant aisthēma/orexis parallels), alliteration 0.95/s",
+      "overall_tag": "ALL-ALIGNED",
+      "verdict_summary": "Uniform Δ ≈ -0.02 to -0.03 across all axes. Pattern is uniform mild under-baseline, NOT directional drift. Phase 1 'under-development' flag pertains to content (three pending relocations from §1.4 + citation gaps) not style. Existing §1.2 prose already meets §1.4-grade Lanham profile.",
+      "recommendation": {
+        "priority": 5,
+        "category": "content (relocations) + minor signature transitions",
+        "summary": "As three relocations from §1.4 land (fourfold, paschein-dual, perception-as-krisis), insert ≥1-2 'indeed' and ≥1 'hence' to restore the signature-transition palette. Explicitly mark antithetical pairs in relocation-receipt subsections."
+      },
+      "tier1_confidence_range": [0.55, 0.82],
+      "phase1_underdevelopment_note": "Reported under-development is content-level (relocation-receipt fronts), not style-level. Lanham profile is already §1.4-grade."
+    },
+
+    {
+      "section_id": "DISS-03-A3",
+      "label": "§1.3",
+      "title": "A_3: Completed Cognitive Actuality and the Three Orientational Modes",
+      "word_count_prose": 9650,
+      "sentence_count": 290,
+      "six_axis_profile": {"nounVerb": 0.61, "parataxisHypotaxis": 0.63, "periodicRunning": 0.44, "voice": 0.33, "register": 0.74, "opacity": 0.33},
+      "deltas_vs_baseline": {
+        "nounVerb": {"delta": -0.01, "tag": "ALIGNED"},
+        "parataxisHypotaxis": {"delta": 0.02, "tag": "ALIGNED"},
+        "periodicRunning": {"delta": 0.03, "tag": "ALIGNED"},
+        "voice": {"delta": 0.01, "tag": "ALIGNED"},
+        "register": {"delta": 0.02, "tag": "ALIGNED"},
+        "opacity": {"delta": -0.01, "tag": "ALIGNED"}
+      },
+      "composite_register_x_hypotaxis": 0.4662,
+      "composite_band_assessment": "+0.027 above §1.4; well within developed band; closest single match to §1.4",
+      "user_signature_transitions": {"thus": 11, "specifically": 1, "indeed": 3, "accordingly": 9, "hence": 0, "however": 6, "therefore": 5, "furthermore": 1, "total_canonical_five": 24, "total_including_extras": 36},
+      "tacit_patterns_signature": "anaphora (mod-high; three-mode triadic refrain in S5/S6/S10), antithesis (very high; pre-propositional/propositional + aspectual/propositional + voluntary/involuntary), isocolon (high; three-axis enumeration + thirst-cases + three-conditions-for-doxa), climax (mod-high; four-step phantasia → doxa → emotion → action chain), alliteration 1.38/s",
+      "overall_tag": "ALL-ALIGNED (closest match to §1.4)",
+      "verdict_summary": "Closest single match to §1.4 of any non-gold section. All 6 axes within -0.01 to +0.03 of baseline. Confirms §1.4 baseline prediction (ALIGNED-to-DRIFT-AWAY on register and hypotaxis): stays inside ALIGNED with marginal positive drift. Architectural-conclusory function explains the marginal positive drift.",
+      "recommendation": {
+        "priority": 8,
+        "category": "style (optional) + content (Papachristou inlinenote + hexeis expansion)",
+        "summary": "Minimal style edits needed. OPTIONAL: insert 4-5 additional 'accordingly' (current 9 vs §1.4's 18) to match cadence — gap not large enough to count as drift."
+      },
+      "tier1_confidence_range": [0.54, 0.83]
+    },
+
+    {
+      "section_id": "DISS-05-A4",
+      "label": "§1.5",
+      "title": "M_3 → M_4 and A_4: The Three Types of Action (Completed Action)",
+      "word_count_prose": 3506,
+      "sentence_count": 92,
+      "six_axis_profile": {"nounVerb": 0.58, "parataxisHypotaxis": 0.66, "periodicRunning": 0.55, "voice": 0.34, "register": 0.69, "opacity": 0.27},
+      "deltas_vs_baseline": {
+        "nounVerb": {"delta": -0.04, "tag": "ALIGNED"},
+        "parataxisHypotaxis": {"delta": 0.05, "tag": "ALIGNED"},
+        "periodicRunning": {"delta": 0.14, "tag": "DRIFT-TOWARD-periodic"},
+        "voice": {"delta": 0.02, "tag": "ALIGNED"},
+        "register": {"delta": -0.03, "tag": "ALIGNED"},
+        "opacity": {"delta": -0.07, "tag": "ALIGNED (lower edge)"}
+      },
+      "composite_register_x_hypotaxis": 0.4554,
+      "composite_band_assessment": "+0.017 above §1.4 — but COUNTERINTUITIVE given under-development. Composite FAILS to detect §1.5's under-development because hypotaxis is elevated (compression forces braiding) while register is preserved (Greek-term density).",
+      "alternative_composite_opacity_x_sigtransitions": 1.08,
+      "alternative_composite_baseline_for_DISS04": 15.30,
+      "alternative_composite_ratio_to_baseline": 0.071,
+      "alternative_composite_interpretation": "§1.5 at 7% of §1.4 baseline = 14.2× reduction. THIS is the correct diagnostic for §1.5's under-development.",
+      "user_signature_transitions": {"thus": 0, "specifically": 0, "indeed": 0, "accordingly": 4, "hence": 0, "total": 4},
+      "user_signature_transitions_baseline_DISS04": 45,
+      "user_signature_transitions_collapse_ratio": "11.25× reduction (45 → 4)",
+      "tacit_patterns_signature": "anaphora (very high; three-types catalog 'In simple appetition...' etc.), antithesis (very high; technē-hexis/praxis-hexis + simple/habitual/evaluatively-complex), isocolon (very high; kinetic-roles formulae three parallel triadic ostinatos), climax (high; line-27 four-step gradatio 'phantasia presents → doxa commits → emotion mobilizes → action completes'), polyptoton (very high; hexis/hexeis 31 occurrences), alliteration 1.05/s",
+      "tacit_patterns_note": "§1.5's tacit-pattern profile is MORE rhetorically marked than §1.4's. Compression-into-fewer-paragraphs has FORCED rhetorical patterning to organize the matter. This is a section-strength to PRESERVE during revision.",
+      "footnotes_count": 0,
+      "footnotes_count_baseline": "substantial",
+      "german_vocabulary_status": "Befindlichkeit × 1, Stimmung × 1, both confined to closing paragraph (vs §1.4's sustained alternation)",
+      "explicit_interpretive_flags_in_section": 0,
+      "explicit_interpretive_flags_baseline_proportion": "high (per §1.4: 51% of claims are T3-interpretive-but-flagged)",
+      "overall_tag": "DRIFT (5/6 axes ALIGNED + 1 DRIFT-TOWARD; multiple under-development signals at signature-marker level not captured by axis bands)",
+      "verdict_summary": "DRIFT — the conclusion that needs revision. Periodic +0.14 DRIFT-TOWARD is content-driven (hexis/aretē/kairos demand suspended-completion grammar). The actual under-development signal is the signature-transition collapse 45 → 4 (4 of 5 signature transitions absent) + opacity-via-meta-transitions density 4.8× reduction + zero footnotes + zero explicit interpretive flags.",
+      "recommendation": {
+        "priority_restore": [1, 2, 3],
+        "priority_preserve": [4],
+        "actions": [
+          {"priority": 1, "action": "Restore user-signature transitions {thus, specifically, indeed, hence}", "target": "≥30 total signature transitions (from current 4)", "diagnostic": "45 → 4 collapse is the section's clearest under-development signal"},
+          {"priority": 2, "action": "Add explicit interpretive flags ('I argue', 'on the present reading', 'the present chapter contends') at every Heideggerian interpretive move", "target": "Praxis-hexis bivalence, hexis-modulation of doxa-gate, hexis-as-co-original-with-pathos — currently T4-unflagged should be T3-flagged per §5.3 ledger"},
+          {"priority": 3, "action": "Add footnote apparatus (currently zero) for architectural-conclusory claims; sustain German-philosophical vocabulary beyond closing paragraph"},
+          {"priority": 4, "action": "PRESERVE line-27 four-part climax verbatim; PRESERVE three-types anaphoric/isocolonic catalog", "rationale": "Compression-driven rhetorical density IS the conclusion's signature"}
+        ],
+        "sequencing": "Revise §1.5 AFTER §§1.0-1.4 finalize (content depends on upstream determinations)"
+      },
+      "tier1_confidence_range": [0.50, 0.78],
+      "section_brevity_note": "3,506 words, 28 lines, 92 sentences — chain's shortest section. Tier-1 measurements lower-confidence due to sample size."
+    }
+  ],
+
+  "matrix_summary": {
+    "overall_tag_counts_across_5_non_gold_sections": {
+      "ALL_ALIGNED": 4,
+      "DRIFT": 1
+    },
+    "axes_with_drift": [
+      {"section": "DISS-05-A4 (§1.5)", "axis": "periodicRunning", "value": 0.55, "delta": 0.14, "tag": "DRIFT-TOWARD-periodic"}
+    ],
+    "boundary_aligned_findings": [
+      {"section": "DISS-00-INTRO (§1.0)", "axis": "register", "value": 0.64, "delta": -0.08, "note": "at boundary of ALIGNED window — intentional accessibility"},
+      {"section": "DISS-05-A4 (§1.5)", "axis": "opacity", "value": 0.27, "delta": -0.07, "note": "lower edge of ALIGNED — driven by zero explicit interpretive flags + 4.8× reduction in meta-transition density"}
+    ],
+    "composite_scores_summary": {
+      "register_x_hypotaxis": {
+        "§1.0": 0.352, "§1.1": 0.4884, "§1.2": 0.4118, "§1.3": 0.4662, "§1.4_baseline": 0.4392, "§1.5": 0.4554,
+        "healthy_band": [0.35, 0.55],
+        "all_within_band": true,
+        "note": "§1.5 composite misleading; see opacity_x_sigtransitions instead"
+      },
+      "opacity_x_signature_transitions": {
+        "§1.0": 3.51, "§1.1": 7.04, "§1.2": 4.34, "§1.3": 11.88, "§1.4_baseline": 15.30, "§1.5": 1.08,
+        "note": "Alternative composite that correctly identifies §1.5's under-development (14.2× reduction)"
+      }
+    },
+    "cross_axis_correlations_pearson_r": {
+      "parataxisHypotaxis_x_periodicRunning": 0.886,
+      "opacity_x_section_length": 0.891,
+      "signature_transitions_x_section_length": 0.949,
+      "opacity_x_signature_transitions": 0.884,
+      "register_x_parataxisHypotaxis": 0.648,
+      "register_x_periodicRunning": 0.278,
+      "interpretation": "Strongest cross-axis coupling is hypotaxis × periodic (r = 0.89) — long subordinate-clause-embedded sentences cluster with periodic suspension. Register × hypotaxis correlation is moderate (r = 0.65), not the assumed ~0.85. Opacity scales near-linearly with section length and signature-transition count, confirming that the user's signature transitions ARE the dominant transparency-toward-meta mechanism."
+    }
+  },
+
+  "diagnostic_findings": {
+    "primary_finding": "§1.5 is the only non-gold section with DRIFT — periodic-axis content-driven drift (+0.14) plus a critical loss of user-signature transitions (45 → 4, 11.25× reduction) and the resulting opacity × sig-transitions composite collapse (15.30 → 1.08, 14.2× reduction). §§1.0/1.1/1.2/1.3 are ALL-ALIGNED on all six axes.",
+    "secondary_finding": "§1.0's register sits at the boundary of the ALIGNED window (-0.08), driven by absence of German-philosophical vocabulary and zero 'specifically'/'indeed' usage. Could be intentional accessibility OR an opportunity to lift toward §1.4.",
+    "tertiary_finding": "§1.3 is the closest single match to §1.4 of any non-gold section. All deltas within ±0.03. Confirms §1.3 is structurally on the gold-standard trajectory; remaining work is content-level (Papachristou inlinenote, hexeis expansion).",
+    "tier1_confidence_caveat": "Opacity axis confidence is 0.50-0.55 across sections (Tier-1 brittle per MEMORY.md). Signature-transition raw count is a more reliable proxy than the opacity axis itself.",
+    "tier2_promotion_caveat": "Periodic-running is Tier-2 promoted per MEMORY.md. §1.5's +0.14 drift would benefit from Tier-2 re-analysis on the next run.",
+    "internal_consistency": "Every section except §1.5 (periodic-axis) sits within ±0.10 of §1.4 on every axis. The dissertation's collective Lanham signature is internally consistent: hypotactic, register-heavy, opaque-transparent (meta-flagged), and active — signature of disciplined Aristotelian-Heideggerian academic prose."
+  },
+
+  "revision_recommendations_priority_ordered": [
+    {
+      "priority": 1,
+      "section": "DISS-05-A4 (§1.5)",
+      "action": "Restore user-signature transitions {thus, specifically, indeed, hence} — target ≥30 total occurrences across the section",
+      "lanham_diagnostic": "opacity × sig-transitions composite 14.2× below §1.4 baseline (15.30 → 1.08); 45 → 4 signature-transition collapse",
+      "category": "under-development restoration"
+    },
+    {
+      "priority": 2,
+      "section": "DISS-05-A4 (§1.5)",
+      "action": "Add explicit interpretive flags at every Heideggerian interpretive move (praxis-hexis bivalence, hexis-modulation of doxa-gate, hexis-as-co-original-with-pathos)",
+      "lanham_diagnostic": "opacity -0.07; zero explicit interpretive markers in current state",
+      "category": "ledger compliance — currently T4-unflagged should be T3-flagged"
+    },
+    {
+      "priority": 3,
+      "section": "DISS-05-A4 (§1.5)",
+      "action": "Add footnote apparatus (currently zero) for architectural-conclusory claims; sustain German-philosophical vocabulary beyond closing paragraph",
+      "lanham_diagnostic": "Footnotes 0 vs §1.4's substantial apparatus; German vocabulary confined to single closing paragraph",
+      "category": "under-development restoration"
+    },
+    {
+      "priority": 4,
+      "section": "DISS-05-A4 (§1.5)",
+      "action": "PRESERVE line-27 four-part climax verbatim; PRESERVE three-types anaphoric/isocolonic catalog",
+      "lanham_diagnostic": "Tacit patterns (anaphora, isocolon, climax, polyptoton) MORE pronounced than §1.4 — compression-driven rhetorical density is the conclusion's signature",
+      "category": "preservation"
+    },
+    {
+      "priority": 5,
+      "section": "DISS-02-A1A2 (§1.2)",
+      "action": "As three relocations land (pathos-fourfold + paschein-dual + perception-as-krisis from §1.4), insert ≥1-2 'indeed' and ≥1 'hence' to restore signature-transition palette; explicitly mark antithetical pairs in relocation-receipt subsections",
+      "lanham_diagnostic": "'indeed' × 0 and 'hence' × 0 in current state; alliteration 0.95/s vs §1.4's 1.42/s",
+      "category": "signature-transition restoration + tacit-pattern reinforcement"
+    },
+    {
+      "priority": 6,
+      "section": "DISS-00-INTRO (§1.0)",
+      "action": "Decision point: accept boundary register (-0.08) as intentional accessibility, OR lift toward §1.4 by adding 1-2 'specifically'/'indeed' and integrating Befindlichkeit/Stimmung at §§1.1/1.4-anticipation points. Do not drop below composite 0.35.",
+      "lanham_diagnostic": "Composite register × hypotaxis = 0.352 at lower edge of healthy [0.35, 0.55] band",
+      "category": "decision point + boundary protection"
+    },
+    {
+      "priority": 7,
+      "section": "DISS-01-A0 (§1.1)",
+      "action": "Tighten explicit interpretive flagging on un-flagged Heideggerian-radicalization moves (kinēsis ≅ Bewegtheit, dyadic kinēsis ≅ proto-In-der-Welt-sein); nudges opacity 0.32 → 0.34",
+      "lanham_diagnostic": "Opacity -0.02; one interpretive move (strong reading of Phys. IV.14) is flagged, others less so",
+      "category": "modest tightening"
+    },
+    {
+      "priority": 8,
+      "section": "DISS-03-A3 (§1.3)",
+      "action": "OPTIONAL — insert 4-5 additional 'accordingly' to match §1.4's cadence (current 9 vs §1.4's 18). Gap within stylistic noise.",
+      "lanham_diagnostic": "Signature-transitions 36 vs §1.4's 45; 'accordingly' is the largest single sub-gap",
+      "category": "optional cadence-matching"
+    }
+  ],
+
+  "downstream_synthesis_handoffs": {
+    "phase_3A_ontology_terminology_numbering": {
+      "relevant_finding": "§1.5's signature-transition collapse intersects with the unflagged Heideggerian interpretive moves (praxis-hexis bivalence). Phase 3A's claim-ledger should reclassify §1.5's relevant claims as T3 (currently T4-unflagged) once §1.5 is revised."
+    },
+    "phase_3B_cross_section_consistency_relocations": {
+      "relevant_finding": "§1.2's uniform -0.03 across axes is content-driven not style-driven. Phase 3B should predict that landing the three §1.4→§1.2 relocations leaves Lanham profile in the same ALIGNED range (not push toward §1.4 baseline). Word-count and claim-density will increase; axis scores will not shift significantly."
+    },
+    "phase_3D_citation_gap_corpus_routing": {
+      "relevant_finding": "§1.0's register at the lower-edge composite (0.352) intersects with §1.0's citation-density gap. Sequencing: after §1.0 receives additional Heidegger-vocabulary integration and inline citations to anticipate §§1.1/1.4 register, expect register to rise from 0.64 toward 0.68-0.70 (still ALIGNED). §1.5's zero footnotes is the most pressing apparatus-deficit."
+    },
+    "phase_3_revision_roadmap_assembly": {
+      "highest_priority_section_for_master_revision_roadmap": "DISS-05-A4 (§1.5)",
+      "rationale": "Lanham under-development signal combines with content-level under-development per Phase 1 metadata (3,506 words, 28 lines, 0 footnotes, undeveloped praxis-hexis interpretation). §1.5 is the SINGLE highest-priority section by both Lanham diagnostic AND content diagnostic.",
+      "sequencing_constraint": "§1.5 should be revised AFTER §§1.0-1.4 finalize per user's workflow."
+    }
+  },
+
+  "quality_gates": {
+    "matrix_covers_all_6_sections": true,
+    "baseline_explicit": "DISS-04-EMOTION (§1.4)",
+    "delta_classification_per_plan_9_3_1_applied": true,
+    "per_section_recommendations_written": true,
+    "tacit_patterns_summarized_per_section": true,
+    "composite_metrics_computed": ["register × hypotaxis (all 6 sections)", "opacity × sig-transitions (all 6 sections)"],
+    "cross_axis_correlations_computed": true,
+    "tier1_confidence_caveats_noted": true,
+    "downstream_handoffs_specified": ["Phase 3A", "Phase 3B", "Phase 3D", "revision-roadmap"]
+  },
+
+  "provenance": {
+    "input_files": [
+      "_per-section/DISS-00-INTRO/phase2-lanham-profile.json",
+      "_per-section/DISS-01-A0/phase2-lanham-profile.json",
+      "_per-section/DISS-02-A1A2/phase2-lanham-profile.json",
+      "_per-section/DISS-03-A3/phase2-lanham-profile.json",
+      "_per-section/DISS-04-EMOTION/phase2-lanham-profile.json",
+      "_per-section/DISS-05-A4/phase2-lanham-profile.json"
+    ],
+    "analyzer_tier_used": "Tier 1 (regex-heuristic, analyst-computed per LanhamStyleController Tier 1 protocol)",
+    "tier_2_promoted_axes": ["periodicRunning"],
+    "tier_1_calibration_ceiling_note": "MEMORY.md 2026-04-16: nv=0.590, reg=0.574, voice=0.372, para=0.372, opacity=0.193, periodic=0.349 (gold-set means; §1.4 baseline computed against this calibration)"
+  }
+}

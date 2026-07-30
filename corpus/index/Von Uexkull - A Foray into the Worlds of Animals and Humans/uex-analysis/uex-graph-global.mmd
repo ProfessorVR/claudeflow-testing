@@ -1,0 +1,102 @@
+%% Uexkuell Global Concept Graph — Phase 3 Synthesis
+%% A Foray into the Worlds of Animals and Humans + Theory of Meaning
+%% ~28 nodes, ~38 edges — most important structural relations from global-edges.csv
+%% Centrality: bold border = core, normal = important, dashed = peripheral
+
+graph TD
+
+    %% === CORE NODES ===
+    Subjekt["<b>Subjekt</b><br/><i>Subject</i>"]
+    Umwelt["<b>Umwelt</b><br/><i>Environment</i>"]
+    Umgebung["Umgebung<br/><i>Surroundings</i>"]
+    Merkwelt["Merkwelt<br/><i>Perception World</i>"]
+    Wirkwelt["Wirkwelt<br/><i>Effect World</i>"]
+    FK["<b>Funktionskreis</b><br/><i>Functional Cycle</i>"]
+    Merkmal["<b>Merkmal</b><br/><i>Perception Mark</i>"]
+    Wirkmal["Wirkmal<br/><i>Effect Mark</i>"]
+    Gegengefuege["Gegengefüge<br/><i>Counterstructure</i>"]
+    Merkzeichen["Merkzeichen<br/><i>Perception Sign</i>"]
+    Stimmung["Stimmung<br/><i>Mood</i>"]
+    Wirkbild["Wirkbild<br/><i>Effect Image</i>"]
+    Wirkton["<b>Wirkton / Ton</b><br/><i>Effect Tone</i>"]
+    Suchbild["Suchbild<br/><i>Search Image</i>"]
+    Merkbild["Merkbild<br/><i>Perception Image</i>"]
+    Planmaessigkeit["Planmäßigkeit<br/><i>Conformity to Plan</i>"]
+    Natur["Natur<br/><i>Nature</i>"]
+    BT["<b>Bedeutungsträger</b><br/><i>Carrier of Meaning</i>"]
+    BV["Bedeutungsverbraucher<br/><i>Consumer of Meaning</i>"]
+    Bauplan["Bauplan<br/><i>Construction Plan</i>"]
+    Wohnhulle["Wohnhülle<br/><i>Dwelling-Shell</i>"]
+    Urbild["<b>Urbild</b><br/><i>Primal Image</i>"]
+    Kontrapunkt["<b>Kontrapunkt</b><br/><i>Counterpoint</i>"]
+    Kompositionslehre["<b>Kompositionslehre</b><br/><i>Composition Theory</i>"]
+    Bedeutungsregel["<b>Bedeutungsregel</b><br/><i>Meaning Rule</i>"]
+    Eigenton["<b>Eigenton</b><br/><i>Self-Tone</i>"]
+    Bildungsmelodie["<b>Bildungsmelodie</b><br/><i>Formative Melody</i>"]
+    Bedeutungskeim["Bedeutungskeim<br/><i>Meaning-Germ</i>"]
+    Partitur["<b>Partitur</b><br/><i>World-Score</i>"]
+
+    %% === PART I: UMWELT ARCHITECTURE ===
+    Subjekt -->|"presupposes"| Umwelt
+    Umwelt -->|"depends_on"| Merkwelt
+    Umwelt -->|"depends_on"| Wirkwelt
+    Umwelt -.-|"contrasts_with"| Umgebung
+    Natur -->|"presupposes"| Umwelt
+
+    %% === FUNCTIONAL CYCLE ===
+    FK -->|"depends_on"| Merkmal
+    FK -->|"depends_on"| Wirkmal
+    FK -->|"depends_on"| Gegengefuege
+    Wirkmal -->|"extinguishes"| Merkmal
+    Merkzeichen -->|"becomes"| Merkmal
+
+    %% === PERCEPTION HIERARCHY ===
+    Merkbild -->|"refines"| Merkmal
+    Wirkbild -->|"refines"| Merkbild
+    Suchbild -.-|"overrides"| Merkbild
+
+    %% === MOOD AND TONE ===
+    Stimmung -->|"determines"| Wirkbild
+    Wirkton -->|"from"| Wirkbild
+    Wirkton -->|"conferred on"| Merkbild
+    Umwelt -->|"depends_on"| Wirkton
+
+    %% === TELEOLOGY ===
+    Planmaessigkeit -->|"governs"| FK
+
+    %% === MEANING THEORY (Part II) ===
+    BT -->|"depends_on"| Subjekt
+    Wirkton -->|"operationalizes"| BT
+    BV -->|"receives from"| BT
+    FK -->|"operationalizes"| BT
+    Bedeutungsregel -->|"bridges"| BT
+    Bedeutungsregel -->|"controls"| Bauplan
+
+    %% === COMPOSITION THEORY ===
+    Kontrapunkt -->|"depends_on"| BT
+    Kompositionslehre -->|"depends_on"| Kontrapunkt
+    Partitur -->|"composed of"| Umwelt
+    Partitur -->|"refines"| Kompositionslehre
+
+    %% === DEVELOPMENTAL HIERARCHY ===
+    Eigenton -->|"composes into"| Bildungsmelodie
+    Bildungsmelodie -->|"produces"| Urbild
+    Bedeutungskeim -->|"crystallizes into"| Bildungsmelodie
+    Urbild -->|"grounds"| Kontrapunkt
+
+    %% === PLANT / ANIMAL DISTINCTION ===
+    Wohnhulle -.-|"contrasts_with"| Umwelt
+
+    %% === MEANING RULE / FUNCTIONAL CYCLE BRIDGE ===
+    Bedeutungsregel -->|"refines"| FK
+    Eigenton -->|"explains"| Merkzeichen
+    Natur -.-|"unknowable by"| Subjekt
+
+    %% === STYLES ===
+    classDef partI fill:#e8f4fd,stroke:#2196F3,stroke-width:2px
+    classDef partII fill:#fff3e0,stroke:#FF9800,stroke-width:2px
+    classDef contrast fill:#f5f5f5,stroke:#999,stroke-width:1px
+
+    class Subjekt,Umwelt,Merkwelt,Wirkwelt,FK,Merkmal,Wirkmal,Gegengefuege,Merkzeichen,Stimmung,Wirkbild,Wirkton,Suchbild,Merkbild,Planmaessigkeit,Natur partI
+    class BT,BV,Bauplan,Wohnhulle,Urbild,Kontrapunkt,Kompositionslehre,Bedeutungsregel,Eigenton,Bildungsmelodie,Bedeutungskeim,Partitur partII
+    class Umgebung contrast

@@ -54,6 +54,21 @@ TEXT_DIRS: dict[str, dict] = {
         "ontology_format": "header",
         "analysis_subdir": "_synthesis",
     },
+    "Social Presence in Virtual Worlds (Part III)": {
+        "label": "Social Presence in Virtual Worlds (Part III)",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
+    },
+    "Presence Theory (Foundations)": {
+        "label": "Presence Theory (Foundations)",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
+    },
+    "Rhetoric of Interactivity and Virtual Reality (Part III)": {
+        "label": "Rhetoric of Interactivity and Virtual Reality (Part III)",
+        "ontology_format": "header",
+        "analysis_subdir": "_synthesis",
+    },
     "Aristotle - Complete Works": {
         "label": "Aristotle",
         "ontology_format": "table",

@@ -1,0 +1,147 @@
+%% Phase 4I: Cross-Pipeline Bridge Graph
+%% Aristotle <-> Heidegger (BCAP + B&T) <-> Uexkull
+%% All edges [INTERP-high]
+%% Generated: 2026-03-09
+
+graph LR
+
+    %% === ARISTOTLE NODES ===
+    subgraph ARIST["Aristotle"]
+        a_ousia["οὐσία\nsubstance"]
+        a_kinesis["κίνησις\nmotion"]
+        a_energeia["ἐνέργεια\nactuality"]
+        a_dynamis["δύναμις\npotentiality"]
+        a_phantasia["φαντασία\nimagination"]
+        a_aisthesis["αἴσθησις\nperception"]
+        a_psuche["ψυχή\nsoul"]
+        a_phantasma["φάντασμα\nimage"]
+        a_orexis["ὄρεξις\ndesire"]
+        a_nous["νοῦς\nmind"]
+        a_chronos["χρόνος\ntime"]
+        a_pathos["πάθος\nemotion"]
+        a_phobos["φόβος\nfear"]
+        a_eidos["εἶδος / ὕλη\nform / matter"]
+        a_phusis["φύσις / τέχνη\nnature / art"]
+        a_telos["τέλος\nend"]
+        a_aletheia["ἀλήθεια\ntruth"]
+        a_pro_ommaton["πρὸ ὀμμάτων\nbefore the eyes"]
+        a_to_on["τὸ ὂν ᾗ ὄν\nbeing qua being"]
+        a_ethos["ἦθος\ncharacter"]
+        a_lexis["λέξις / μεταφορά\nstyle / metaphor"]
+    end
+
+    %% === HEIDEGGER BCAP (GA 18) ===
+    subgraph BCAP["Heidegger BCAP (GA 18)"]
+        b_anwesenheit["Anwesenheit\npresence"]
+        b_bewegtheit["Bewegtheit\nmovedness"]
+        b_energeia["Energeia as\nbeing-at-work"]
+        b_herstellung["Herstellung\nproduction"]
+        b_phantasia_bcap["φαντασία as\nmaking-present"]
+        b_befindlichkeit_bcap["Befindlichkeit\n(via Rhetoric)"]
+        b_ethos_bcap["ἦθος as\ndisclosive comportment"]
+        b_philia["Miteinandersein\nbeing-with"]
+    end
+
+    %% === HEIDEGGER B&T ===
+    subgraph BT["Heidegger B&T"]
+        bt_seinsfrage["Seinsfrage\nquestion of being"]
+        bt_vorhandenheit["Vorhandenheit\npresence-at-hand"]
+        bt_zuhandenheit["Zuhandenheit\nready-to-hand"]
+        bt_erschlossenheit["Erschlossenheit\ndisclosedness"]
+        bt_befindlichkeit["Befindlichkeit\nattunement"]
+        bt_furcht["Furcht / Angst\nfear / anxiety"]
+        bt_zeitlichkeit["Zeitlichkeit\ntemporality"]
+        bt_jetzt_zeit["Jetzt-Zeit\nnow-time"]
+        bt_aletheia["Unverborgenheit\nuncoveredness"]
+        bt_wiederholung["Wiederholung\nretrieval"]
+    end
+
+    %% === UEXKULL ===
+    subgraph UEX["Uexkull"]
+        u_merkbild["Merkbild\nperceptual image"]
+        u_umwelt["Umwelt\nenvironment-world"]
+        u_funktionskreis["Funktionskreis\nfunctional circle"]
+        u_bauplan["Bauplan\nbody plan"]
+        u_naturtechnik["Naturtechnik\nnatural technique"]
+        u_planmassigkeit["Planmassigkeit\nplan-conformity"]
+    end
+
+    %% === RICKERT ===
+    subgraph RICK["Rickert"]
+        r_ambient["ambient rhetoric\npre-deliberative"]
+        r_materiality["suasive\nmateriality"]
+        r_attunement["environmental\nattunement"]
+    end
+
+    %% === ARISTOTLE -> BCAP ===
+    a_ousia -->|"read as"| b_anwesenheit
+    a_kinesis -->|"reinterpreted as"| b_bewegtheit
+    a_energeia -->|"recovered as"| b_energeia
+    a_eidos -->|"production thesis"| b_herstellung
+    a_phantasia -->|"making-present"| b_phantasia_bcap
+    a_pathos -->|"first hermeneutic\nof everydayness"| b_befindlichkeit_bcap
+    a_ethos -->|"existential reading"| b_ethos_bcap
+
+    %% === ARISTOTLE -> B&T ===
+    a_to_on -->|"forgotten question"| bt_seinsfrage
+    a_ousia -->|"critiqued as"| bt_vorhandenheit
+    a_phantasia -->|"structural parallel"| bt_erschlossenheit
+    a_aisthesis -->|"proto-attunement"| bt_befindlichkeit
+    a_phobos -->|"threefold structure\n-> remove object"| bt_furcht
+    a_chronos -->|"vulgar concept of time"| bt_zeitlichkeit
+    a_chronos -->|"now-sequence"| bt_jetzt_zeit
+    a_aletheia -->|"Theta.10 contact"| bt_aletheia
+    a_nous -->|"noesis noeseos\n-> self-disclosure"| bt_erschlossenheit
+    a_pro_ommaton -->|"disclosive logos"| bt_erschlossenheit
+
+    %% === ARISTOTLE -> UEXKULL ===
+    a_phantasma -->|"organism-side\ncorrelate"| u_merkbild
+    a_aisthesis -->|"species-specific\nperceptual world"| u_umwelt
+    a_eidos -->|"biological analogue"| u_bauplan
+    a_energeia -->|"capacities actualized in"| u_funktionskreis
+    a_phusis -->|"nature exhibits\ntechnique"| u_naturtechnik
+    a_telos -->|"plan-conformity"| u_planmassigkeit
+
+    %% === ARISTOTLE -> RICKERT ===
+    a_phantasia -->|"phantasia-orexis-kinesis\ncircuit"| r_ambient
+    a_lexis -->|"art concealing art"| r_attunement
+    a_aisthesis -->|"metaphor grounded\nin perception"| r_materiality
+
+    %% === B&T <-> MEM (via temporal bridge) ===
+    bt_wiederholung -.->|"parallel to\nanamnesis"| a_chronos
+
+    %% === STYLES ===
+    style ARIST fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style BCAP fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    style BT fill:#e8eaf6,stroke:#283593,stroke-width:2px
+    style UEX fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style RICK fill:#fce4ec,stroke:#c62828,stroke-width:2px
+
+    style a_phantasia fill:#ff8a65,stroke:#e64a19,stroke-width:3px
+    style a_aisthesis fill:#ffab91,stroke:#e64a19
+    style a_ousia fill:#ffcc80,stroke:#ef6c00
+    style a_kinesis fill:#ffe0b2,stroke:#ff9800
+    style a_energeia fill:#ffe0b2,stroke:#ff9800
+    style a_chronos fill:#ffe0b2,stroke:#ff9800
+    style a_pathos fill:#ffab91,stroke:#e64a19
+    style a_aletheia fill:#ffcc80,stroke:#ef6c00
+    style a_to_on fill:#ffcc80,stroke:#ef6c00
+    style a_pro_ommaton fill:#ff8a65,stroke:#e64a19
+
+    style bt_erschlossenheit fill:#7986cb,stroke:#3949ab,color:#fff,stroke-width:2px
+    style bt_befindlichkeit fill:#9fa8da,stroke:#5c6bc0
+    style bt_zeitlichkeit fill:#7986cb,stroke:#3949ab,color:#fff
+    style bt_aletheia fill:#9fa8da,stroke:#5c6bc0
+    style bt_furcht fill:#9fa8da,stroke:#5c6bc0
+
+    style b_anwesenheit fill:#64b5f6,stroke:#1976d2
+    style b_bewegtheit fill:#64b5f6,stroke:#1976d2
+    style b_phantasia_bcap fill:#42a5f5,stroke:#1565c0,color:#fff
+
+    style u_merkbild fill:#81c784,stroke:#388e3c
+    style u_umwelt fill:#66bb6a,stroke:#2e7d32,stroke-width:2px
+    style u_funktionskreis fill:#a5d6a7,stroke:#43a047
+
+    style r_ambient fill:#ef9a9a,stroke:#e53935,stroke-width:2px
+    style r_materiality fill:#ef9a9a,stroke:#e53935
+    style r_attunement fill:#ef9a9a,stroke:#e53935

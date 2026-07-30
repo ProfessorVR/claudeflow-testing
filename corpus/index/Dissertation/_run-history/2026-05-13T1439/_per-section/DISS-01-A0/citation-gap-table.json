@@ -1,0 +1,413 @@
+{
+  "section_id": "DISS-01-A0",
+  "section_title": "A_0: Motion and Time as Ontological Horizon",
+  "run_id": "2026-05-13T1439",
+  "compiled_from": "phase2-claims.json",
+  "total_gaps": 18,
+  "gaps_by_tier": {
+    "T4-interpretive-but-unflagged": 4,
+    "T5-under-supported": 8,
+    "T6-unsupported": 0,
+    "T7-overreach": 1,
+    "T8-secondary-needed": 5
+  },
+  "gaps_by_remediation_effort": {
+    "small_5-10min": 9,
+    "medium_15-30min": 7,
+    "large_30plus": 2
+  },
+  "gaps": [
+    {
+      "gap_id": "DISS-01-G01",
+      "claim_id": "DISS-01-C042",
+      "line": 25,
+      "support_tier": "T5-under-supported",
+      "claim_brief": "kinēsis as Bewegtheit verbatim from BCAP / GA 18",
+      "placeholder_type": "asterisk-six (\\textbf{******}) — placeholder body + page reference",
+      "named_locus_in_text": "Basic Concepts of Aristotelian Philosophy, p. ******",
+      "expected_content": "Heidegger's verbatim statement that kinēsis names the structural-existential determination of a being's there; the BCAP / GA 18 passage articulating Bewegtheit as the recovery of energeia ateles at the level of fundamental ontology.",
+      "current_citation_status": "locus named (BCAP / GA 18) but verbatim quote and page number missing",
+      "remediation": {
+        "action": "ADD_VERBATIM_FROM_CORPUS",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-structured/ (manifest.json indexes 12 fingerprint units u-fp1a through u-fp3e; primary candidate is u-fp2a/u-fp2b on kinēsis-as-Seinscharakter, secondary u-fp1a/u-fp1b on Aristotelian categorial framework)",
+          "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/ (deep-analysis output of bcap-structured units)"
+        ],
+        "candidate_loci_from_chromadb": ["chroma collection: metaphysics — query: 'Bewegtheit kinēsis Seinscharakter GA 18'"],
+        "candidate_perplexity_query": "verbatim Heidegger GA 18 / Basic Concepts of Aristotelian Philosophy passage on kinēsis as Seinscharakter Bewegtheit being-in-movement structural existential",
+        "estimated_remediation_effort": "medium (15-30 min) — corpus query + verbatim extraction + page-number assignment",
+        "user_note_applicable": "feedback-missing-source-placeholder.md — if verbatim is not in corpus, cite by GA 18 locus and leave ****** for user manual fill"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G02",
+      "claim_id": "DISS-01-C089",
+      "line": 53,
+      "support_tier": "T5-under-supported",
+      "claim_brief": "In-der-Welt-sein / Bewandtnis verbatim from SZ §18",
+      "placeholder_type": "asterisk-six (\\textbf{******}) — placeholder body + English pagination",
+      "named_locus_in_text": "Being and Time §18 (Involvement and Significance: the Worldhood of the World), SZ §18, H.84; Eng. ******",
+      "expected_content": "Heidegger's verbatim statement in SZ §18 that involvement (Bewandtnis) is the structural character of entities encountered within the world, and that the totality of involvements (Bewandtnisganzheit) is grounded in the for-the-sake-of-which (Worumwillen) of Dasein's own existence.",
+      "current_citation_status": "locus named (SZ §18, H.84) but verbatim quote and English pagination missing",
+      "remediation": {
+        "action": "ADD_VERBATIM_FROM_CORPUS",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Heidegger - Being and Time/bt-structured/ (locate §18 unit by H-page=84)",
+          "corpus/index/Heidegger - Being and Time/bt-analysis/ (deep-analysis output of bt-structured §18 unit)"
+        ],
+        "candidate_loci_from_chromadb": ["chroma collection: metaphysics — query: 'Bewandtnis Bewandtnisganzheit Worumwillen §18 H.84'"],
+        "candidate_perplexity_query": "Heidegger Being and Time §18 H.84 verbatim Bewandtnis involvement Worumwillen worldhood of the world",
+        "estimated_remediation_effort": "medium (15-30 min) — corpus query + verbatim extraction + Macquarrie-Robinson page lookup",
+        "user_note_applicable": "feedback-missing-source-placeholder.md"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G03",
+      "claim_id": "DISS-01-C124",
+      "line": 67,
+      "support_tier": "T5-under-supported",
+      "claim_brief": "Innerzeitigkeit / Aristotle's time definition verbatim from SZ §81",
+      "placeholder_type": "asterisk-six (\\textbf{******}) — placeholder body + English pagination",
+      "named_locus_in_text": "Being and Time §81 (Within-time-ness and the genesis of the ordinary conception of time), SZ §81, H.421-422; Eng. ******",
+      "expected_content": "Heidegger's verbatim statement in SZ §81 characterizing the Aristotelian definition of time (number of motion) as the most rigorous philosophical account of the time encountered in everyday concern, while indicating that the analysis leaves unthematized the originary temporality from which Innerzeitigkeit derives.",
+      "current_citation_status": "locus named (SZ §81, H.421-422) but verbatim quote and English pagination missing",
+      "remediation": {
+        "action": "ADD_VERBATIM_FROM_CORPUS",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Heidegger - Being and Time/bt-structured/ (locate §81 unit by H-page=421-422)",
+          "corpus/index/Heidegger - Being and Time/bt-analysis/ (deep-analysis output of bt-structured §81 unit)"
+        ],
+        "candidate_loci_from_chromadb": ["chroma collection: metaphysics — query: 'Innerzeitigkeit ordinary conception of time §81 H.421 Aristotle definition'"],
+        "candidate_perplexity_query": "Heidegger Being and Time §81 H.421 verbatim engagement Aristotle definition time number motion Innerzeitigkeit",
+        "estimated_remediation_effort": "medium (15-30 min)",
+        "user_note_applicable": "feedback-missing-source-placeholder.md"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G04",
+      "claim_id": "DISS-01-C148",
+      "line": 79,
+      "support_tier": "T5-under-supported",
+      "claim_brief": "Zeitlichkeit / three-ecstases verbatim from SZ §65",
+      "placeholder_type": "asterisk-six (\\textbf{******}) — placeholder body + English pagination",
+      "named_locus_in_text": "Being and Time §65 (Temporality as the ontological meaning of care), SZ §65, H.328-329; Eng. ******",
+      "expected_content": "Heidegger's verbatim statement in SZ §65 introducing the three ecstases by name (Gewesenheit, Gegenwart, Zukunft) and characterizing their co-original unity as the originary phenomenon from which Innerzeitigkeit is derived.",
+      "current_citation_status": "locus named (SZ §65, H.328-329) but verbatim quote and English pagination missing",
+      "remediation": {
+        "action": "ADD_VERBATIM_FROM_CORPUS",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Heidegger - Being and Time/bt-structured/ (locate §65 unit by H-page=328-329)",
+          "corpus/index/Heidegger - Being and Time/bt-analysis/ (deep-analysis output of bt-structured §65 unit)"
+        ],
+        "candidate_loci_from_chromadb": ["chroma collection: metaphysics — query: 'Zeitlichkeit three ecstases Gewesenheit Gegenwart Zukunft §65 H.328'"],
+        "candidate_perplexity_query": "Heidegger Being and Time §65 H.328 verbatim temporality ecstases having-been present future co-original",
+        "estimated_remediation_effort": "medium (15-30 min)",
+        "user_note_applicable": "feedback-missing-source-placeholder.md. Note: phase1-metadata.json originally guessed In-der-Welt-sein verbatim for this line; actual locus per footnote is SZ §65 three-ecstases."
+      }
+    },
+    {
+      "gap_id": "DISS-01-G05",
+      "claim_id": "DISS-01-C016",
+      "line": 7,
+      "support_tier": "T7-overreach",
+      "claim_brief": "Burke page-number citation MISMATCH — pp. 280-281 vs. corpus-attested pp. 253, 261-262",
+      "named_locus_in_text": "Burke, Grammar, pp. 280-281, glossing Metaphysics IX.8",
+      "expected_content": "The cited verbatim — 'one actuality always precedes another in time right back to the actuality of the eternal prime mover' and 'man is prior to boy because man has already attained its complete form whereas boy has not' — corresponds (per corpus/index Burke pipeline GM-06 Burke - Act (Aristotle and Aquinas)) to Burke's discussion at pp. 253, 261-262 of A Grammar of Motives, NOT pp. 280-281 as the dissertation currently cites. The corpus index records: 'C34 Aristotelian actuality-prior-to-potentiality, anchor: p.253 + pp.261-262. Aristotle's principle: Actuality is prior both to potency and to every principle of change. Temporal sense (one actuality always precedes another in time back to eternal prime mover); form-and-substantiality sense (man is prior to boy because man has attained complete form).'",
+      "current_citation_status": "cited at pp. 280-281; corpus-attested location is pp. 253, 261-262",
+      "remediation": {
+        "action": "CORRECT_PAGE_NUMBERS",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/A Grammar of Motives (Burke 1945)/Burke - Act (Aristotle and Aquinas)/gm-06-deep.json (entries C34, C04 with anchors p.253 + pp.261-262)",
+          "corpus/index/A Grammar of Motives (Burke 1945)/Burke - Act (Aristotle and Aquinas)/gm-06-deep.md (paragraph at line 63 covering this material)"
+        ],
+        "verification_needed": "User to confirm: are the dissertation's pp. 280-281 (in the Burke - Agent in General chapter, which covers Marx pp. 209-214/Hegel-reversal pp. 281-282) the user's intended citation, OR is the citation a typo for pp. 261-262 (Burke - Act chapter)? Strong corpus evidence supports pp. 261-262. The 'priority of actuality' material at pp. 280-281 would be unusual — the corpus index has no record of priority-of-actuality discussion at pp. 280-281; that page-region in the volume is on the Hegel-Marx reversal in the Agent chapter.",
+        "candidate_perplexity_query": "Burke Grammar of Motives Aristotle actuality prior potentiality 'one actuality always precedes another in time' page number",
+        "estimated_remediation_effort": "small (5 min) — change page numbers; user verification needed",
+        "severity": "HIGH — load-bearing citation for the iterated-chain architectural argument"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G06",
+      "claim_id": "DISS-01-C088",
+      "line": 51,
+      "support_tier": "T7-overreach",
+      "claim_brief": "Burke pp. 214-215 'conditions are likewise contextual' quote — VERIFY",
+      "named_locus_in_text": "Burke, Grammar, pp. 214-215",
+      "expected_content": "Per the dissertation: 'conditions are likewise contextual, as with the conditions of an organism's existence.' This quote is attributed to Burke pp. 214-215. The corpus/index Burke pipeline records pp. 214-223 as Burke's sustained treatment of Santayana (Agent chapter), and pp. 209-214 as Burke's dramatist-grammar-for-Marxism treatment. The exact 'conditions of an organism's existence' phrasing has not been verified in the corpus index; it MAY appear in this page-range but corpus index has it on contextual-substance and Darwin sections (pp.152-159 in Scene chapter on 'Conditions of Existence').",
+      "current_citation_status": "cited at pp. 214-215; verbatim phrasing unverified in corpus",
+      "remediation": {
+        "action": "VERIFY_OR_CORRECT_PAGE_NUMBERS",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/A Grammar of Motives (Burke 1945)/Burke - Agent in General/gm-05-deep.md (covers pp. 192-227 of the Agent chapter)",
+          "corpus/index/A Grammar of Motives (Burke 1945)/Burke - Scene (Philosophic Schools)/gm-04-deep.md (covers Darwin's Conditions of Existence; pp. 152-159 in book — discusses 'agent-minus' organism)",
+          "corpus/index/A Grammar of Motives (Burke 1945)/Burke - Antinomies of Definition/gm-02-deep.md (contextual substance discussion)"
+        ],
+        "verification_needed": "User to verify the verbatim 'conditions are likewise contextual, as with the conditions of an organism's existence' appears at pp. 214-215 of the Grammar (Agent chapter section on Santayana). The Scene chapter's Darwin discussion (pp. 152-159) is the more likely locus for the organism-conditions phrasing per corpus evidence.",
+        "candidate_perplexity_query": "Burke Grammar of Motives 'conditions are contextual' 'organism's existence' page number Agent Scene chapter",
+        "estimated_remediation_effort": "small (5-10 min)",
+        "severity": "MEDIUM"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G07",
+      "claim_id": "DISS-01-C033",
+      "line": 21,
+      "support_tier": "T7-overreach",
+      "claim_brief": "Hawhee 'Bodily Arts p. 154' attribution — likely Rhetorical Vision (2011), not Bodily Arts (2004)",
+      "named_locus_in_text": "Hawhee, Bodily Arts, p. 154",
+      "expected_content": "Per the dissertation: 'energeia names something like physical presence: energeia means the presence of the thing.' This quote is attributed to Hawhee, Bodily Arts, p. 154. Per corpus/index Aristotelian Phantasia Secondary pipeline, the exact phrase 'Energeia means the presence of the thing' is attributed to Hawhee 2011 'Rhetorical Vision' p. 154 (which itself quotes Aristotle, Metaph. 9.5.1048a.32-34). The corpus has Hawhee 2011 indexed at corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Hawhee - Rhetorical Vision (2011)/phx-07-hawhee.json — see line 31 of the json: 'energeia-style id with pages [140, 152, 153, 154, 157]'.",
+      "current_citation_status": "cited as Hawhee, Bodily Arts, p. 154; corpus-attested locus is Hawhee 2011, Rhetorical Vision, p. 154",
+      "remediation": {
+        "action": "CORRECT_WORK_TITLE",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Hawhee - Rhetorical Vision (2011)/phx-07-hawhee.md (line 23: '3.11.1411b.22-23, Metaph. 9.5.1048a.32-34 — Energeia means the presence of the thing — Hawhee 2011 p. 154')",
+          "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Hawhee - Rhetorical Vision (2011)/phx-07-hawhee.json (lines 31, 191: energeia-style entry, pages 140, 152, 153, 154, 157)"
+        ],
+        "verification_needed": "User to verify which Hawhee work is intended. If the quote is from Bodily Arts (2004), that work's p. 154 may have a different formulation. The Rhetorical Vision (2011) article cites the Metaph. 9.5.1048a.32-34 passage by name; Bodily Arts (2004) precedes this article. Strong corpus evidence supports Rhetorical Vision (2011) p. 154 attribution.",
+        "candidate_perplexity_query": "Hawhee 'energeia means the presence of the thing' Bodily Arts vs Rhetorical Vision 2011 page 154",
+        "estimated_remediation_effort": "small (5-10 min)",
+        "severity": "MEDIUM"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G08",
+      "claim_id": "DISS-01-C141",
+      "line": 77,
+      "support_tier": "T5-under-supported",
+      "claim_brief": "Physics IV.14 strong-reading Bekker MISMATCH — 223a25-27 vs. corpus-attested 223a21-26",
+      "named_locus_in_text": "Physics IV.14, 223a25-27",
+      "expected_content": "The cited verbatim — 'If nothing but soul, or in soul reason, is qualified to count, it is impossible for there to be time unless there is soul, but only that of which time is an attribute — i.e., if movement can exist without soul' — is quoted at Bekker 223a25-27. Per corpus/index Aristotle pipeline, this passage spans 223a21-26 (Bekker index line 236; phase2-phys-04.md lines 162-165, 217). The corpus-attested range is 223a21-26 (PDF p.65 in the Princeton/Barnes edition). The dissertation's 223a25-27 is shifted by 4 lines and may have been computed from a different edition's pagination or be a transcription error.",
+      "current_citation_status": "cited at 223a25-27; corpus-attested range is 223a21-26",
+      "remediation": {
+        "action": "VERIFY_OR_CORRECT_BEKKER_RANGE",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Aristotle - Complete Works/aristotle-phys-04.json + phase2-phys-04.md (canonical Phys. IV reference unit)",
+          "corpus/index/Aristotle - Complete Works/aristotle-bekker-index.md line 236: '223a21--26: Whether if soul did not exist, time would exist'",
+          "corpus/index/Aristotelian Motion and Time Secondary/Bowin - Perception and Cognition of Time (2017)/amt-01-bowin.md (line 49: cites 223a21-26 / 4.14 measurement anchor)"
+        ],
+        "verification_needed": "User to verify the Bekker range. If the dissertation's 223a25-27 is intentional (e.g., to cite only the conditional clause 'if nothing but soul...'), it should be reformatted as 223a25-27 within the broader 223a21-26 passage with a note. If unintentional, correct to 223a21-26 (the standard reference) or 223a25-26 (the conditional-clause-only reference).",
+        "candidate_perplexity_query": "Aristotle Physics IV.14 Bekker 223a 'time without soul' 'qualified to count' exact line numbers",
+        "estimated_remediation_effort": "small (5 min)",
+        "severity": "HIGH — load-bearing locus for the section's most consequential interpretive move"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G09",
+      "claim_id": "DISS-01-C081",
+      "line": 41,
+      "support_tier": "T5-under-supported",
+      "claim_brief": "Met. XI.6, 1063a19-21 motion-as-passage citation — VERIFY chapter and Bekker",
+      "named_locus_in_text": "Metaphysics XI.6, 1063a19-21",
+      "expected_content": "The cited verbatim — 'if there is movement and something moved, that which is moved must first be in that out of which it is to be moved, and then not be in it, and move into the other and come to be in it' — is attributed to Met. XI.6, 1063a19-21. Per corpus/index Aristotle pipeline phase2-meta-08.md, Met XI K.6 covers the Protagoras refutation at 1062b12-1063b35 (Aristotle's resolution of becoming-from-what-is-not via the actuality/potentiality distinction). The recapitulated definition of motion is at Met XI K.9, 1065b5-1066a34. The change-as-passage formulation (every movement from something to something) is at Met XI K.12, 1067b1-1068b25. The exact verbatim at 1063a19-21 needs verification — it may be within Aristotle's discussion of becoming-from-what-is-potentially at K.6 (1063a10 area) but the explicit motion-as-passage formulation may be elsewhere.",
+      "current_citation_status": "cited at Met. XI.6, 1063a19-21; corpus has motion-recapitulation at K.9 (1065b-1066a) and change-as-passage at K.12 (1067b-1068b)",
+      "remediation": {
+        "action": "VERIFY_BEKKER_RANGE_AND_CHAPTER",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Aristotle - Complete Works/phase2-meta-08.md (lines 60-63: K.6 Protagoras, K.7-9 movement-recap, K.10-12 change-as-passage)",
+          "corpus/index/Aristotle - Complete Works/aristotle-meta-08.json (Met X-XI structured analysis)"
+        ],
+        "verification_needed": "User to verify the exact verbatim. If the dissertation's intent is the motion-as-passage formulation, the more likely Bekker is Met XI.12 around 1067b1-1068b25 ('Every movement is from something and to something'). If the intent is the becoming-from-potentially formulation, Met XI.6 around 1062b24-1063a10 is the proper range, but 1063a19-21 falls just past that and within K.6's Protagoras refutation.",
+        "candidate_perplexity_query": "Aristotle Metaphysics XI K.6 K.12 1063a19 'that which is moved must first be in that out of which it is to be moved' Bekker chapter verification",
+        "estimated_remediation_effort": "medium (15-30 min) — full verbatim verification across Met XI K.6 / K.9 / K.12",
+        "severity": "MEDIUM"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G10",
+      "claim_id": "DISS-01-C129",
+      "line": 71,
+      "support_tier": "T4-interpretive-but-unflagged",
+      "claim_brief": "Soul/time parallel to motion/actuality is interpretive, not textually-recovered",
+      "named_locus_in_text": "lines 73 (S6 opening paragraph)",
+      "expected_content": "The dissertation asserts: 'Just as motion is the actuality of the potential qua potential, so the soul is the actuality of the body's potential for life; just as time is the numbered aspect of motion, so the rational soul is the numbering principle that articulates temporal flow.' This is presented as a direct entailment of Aristotle's text but is an interpretive synthesis combining DA II.1, 412a19-20 (soul as form) with Phys. IV.14 (soul as counter). Aristotle himself does not make the four-term proportional analogy explicit. The claim should be flagged as the chapter's interpretive synthesis ('On the present reading...', 'The chapter argues that...').",
+      "current_citation_status": "claim presented as textual recovery; no interpretive flag",
+      "remediation": {
+        "action": "ADD_INTERPRETIVE_FLAG",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Aristotle - Complete Works/aristotle-da-02.json (DA II.1 soul-as-form)",
+          "corpus/index/Aristotle - Complete Works/phase2-phys-04.md (Phys. IV.14 soul-as-counter)"
+        ],
+        "verification_needed": "Standard interpretive-flag insertion. The four-term proportional analogy is the user's interpretive bridge; acknowledge it as such.",
+        "estimated_remediation_effort": "small (5-10 min) — sentence-level interpretive flagging",
+        "severity": "MEDIUM"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G11",
+      "claim_id": "DISS-01-C051",
+      "line": 25,
+      "support_tier": "T4-interpretive-but-unflagged",
+      "claim_brief": "Kinēsis ≅ Bewegtheit identification is interpretive; flag not fully explicit",
+      "named_locus_in_text": "lines 25 (S2 closing paragraph)",
+      "expected_content": "The dissertation asserts: 'Motion, on Heidegger's reading, is a Seinscharakter: if a being is determined in its there as Aristotle determines kinēsis, then that being is in movement, and kinēsis accordingly names what Heidegger develops as Bewegtheit.' This is a load-bearing interpretive claim — the bridge between Aristotelian and Heideggerian registers that animates the whole section. The dissertation introduces this claim as Heidegger's own reading ('on Heidegger's reading') rather than as the dissertation's interpretive synthesis. While the Heideggerian attribution is correct (Heidegger does read kinēsis this way in GA 18), the dissertation's specific framing (proto-form of energeia ateles, bridge to the iterated chain structure) is the user's interpretive move. Add a flag: 'The chapter reads this Heideggerian transposition as the proto-form...'",
+      "current_citation_status": "claim presented as Heideggerian reading; the dissertation's framing-of-the-framing is unflagged",
+      "remediation": {
+        "action": "ADD_INTERPRETIVE_FLAG_AT_FRAMING_LEVEL",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/ (verifies the Heideggerian claim)",
+          "Phase 4 corpus query to confirm the chapter-author's interpretive reading is distinct from Heidegger's own"
+        ],
+        "estimated_remediation_effort": "small (5-10 min)",
+        "severity": "MEDIUM"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G12",
+      "claim_id": "DISS-01-C094",
+      "line": 53,
+      "support_tier": "T4-interpretive-but-unflagged",
+      "claim_brief": "Dyadic kinēsis ≅ proto-form of In-der-Welt-sein is interpretive; flag not explicit",
+      "named_locus_in_text": "lines 53 (S4 closing paragraph)",
+      "expected_content": "The dissertation asserts: 'The Aristotelian relational kinēsis is, on this reading, the proto-form of Heideggerian worldly involvement: motion is always a being-toward, an articulation between an active power and a passive power that are not first independent substances and then jointly active but are co-constituted in the actuality of the motion they share.' The proto-form attribution is interpretive; 'on this reading' is a weak flag that should be strengthened to 'On the present reading, the chapter argues that...'",
+      "current_citation_status": "claim presented with weak interpretive marker ('on this reading'); strengthen to explicit chapter-attribution",
+      "remediation": {
+        "action": "STRENGTHEN_INTERPRETIVE_FLAG",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Heidegger - Being and Time/ (SZ §§14-18 In-der-Welt-sein analysis)",
+          "Phase 4 query to confirm proto-form attribution is the dissertation's interpretive synthesis"
+        ],
+        "estimated_remediation_effort": "small (5 min)",
+        "severity": "LOW"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G13",
+      "claim_id": "DISS-01-C113",
+      "line": 41,
+      "support_tier": "T4-interpretive-but-unflagged",
+      "claim_brief": "Hermeneutical circle ≅ proto-form of energeia-ateles-entelecheia iteration is interpretive",
+      "named_locus_in_text": "lines 41 (S3 closing paragraph)",
+      "expected_content": "The dissertation asserts: 'The chain's iterated structure — energeia ateles generating entelecheia generating new conditions for energeia ateles — is the proto-form of the hermeneutical circle Heidegger generalizes for Dasein's interpretive comportment as a whole.' This is a major interpretive move; the proto-form relation runs in the dissertation's interpretive direction (Aristotelian categorial structure as PRIOR proto-form of Heideggerian hermeneutical structure). Heidegger himself would not necessarily endorse this characterization. The claim is presented as architectural fact rather than as the dissertation's reading.",
+      "current_citation_status": "claim presented as architectural fact; needs explicit interpretive flag",
+      "remediation": {
+        "action": "ADD_INTERPRETIVE_FLAG",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Heidegger - Being and Time/ (SZ §§32-33 understanding-interpretation circle)",
+          "Phase 4 query to confirm proto-form attribution is the dissertation's interpretive synthesis"
+        ],
+        "estimated_remediation_effort": "small (5-10 min)",
+        "severity": "MEDIUM"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G14",
+      "claim_id": "DISS-01-C144",
+      "line": 77,
+      "support_tier": "T8-secondary-needed",
+      "claim_brief": "Strong reading of Phys. IV.14 — secondary literature on Coope and Broadie",
+      "named_locus_in_text": "lines 77, 87-89 (S6 + Deferrals)",
+      "expected_content": "The dissertation acknowledges the strong-reading interpretive move and gestures at Coope and Broadie as 'principal interlocutors' in the Deferrals subsection. The current text does not provide specific citations to Coope (Time for Aristotle, 2005) or Broadie (commentary on Physics IV). Both works are required for the gold-standard treatment of the strong-reading defense.",
+      "current_citation_status": "gestured at; specific page references missing",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATIONS",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Aristotelian Motion and Time Secondary/Bowin - Perception and Cognition of Time (2017)/amt-01-bowin.md (Bowin 2017 cites Coope and Broadie throughout)",
+          "Bowin's bibliography in amt-01-bowin.md provides Coope/Broadie citation entries"
+        ],
+        "candidate_loci_from_chromadb": ["chroma collection: metaphysics — query: 'Coope time-for-Aristotle Broadie Physics IV.14 strong reading without soul'"],
+        "candidate_perplexity_query": "Coope 'Time for Aristotle' Broadie Physics IV.14 commentary 'time without soul' counting weak strong reading citation",
+        "estimated_remediation_effort": "large (30-60 min) — secondary-literature engagement for the section's most consequential interpretive move",
+        "severity": "HIGH"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G15",
+      "claim_id": "DISS-01-C158",
+      "line": 83,
+      "support_tier": "T8-secondary-needed",
+      "claim_brief": "Heidegger's productive imagination in Kant book (GA 3) needs locus citation",
+      "named_locus_in_text": "lines 83 (S7 mention of GA 3)",
+      "expected_content": "The dissertation asserts: 'Heidegger's analysis of productive imagination in Kant and the Problem of Metaphysics (GA 3) radicalizes this Aristotelian capacity as the temporalizing-synthesis that knits the three ecstases into the unity of originary temporality.' GA 3 is named but no specific page or section is cited.",
+      "current_citation_status": "work named; no specific locus",
+      "remediation": {
+        "action": "ADD_SPECIFIC_PAGE_LOCUS",
+        "candidate_loci_from_corpus_index": ["No direct corpus index for GA 3 — Heidegger - Being and Time and Heidegger - BCAP pipelines are the closest"],
+        "candidate_perplexity_query": "Heidegger Kant and Problem of Metaphysics GA 3 productive imagination synthesis temporalizing three ecstases page section",
+        "estimated_remediation_effort": "medium (15-30 min)",
+        "severity": "LOW — flagged as belonging to subsequent sections, but a locus would strengthen the threshold-of-A1 setup"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G16",
+      "claim_id": "DISS-01-C098",
+      "line": 55,
+      "support_tier": "T5-under-supported",
+      "claim_brief": "Phys. IV.11, 219a4-8 'we perceive movement and time together' — verify Bekker",
+      "named_locus_in_text": "Physics IV.11, 219a4-8",
+      "expected_content": "Per corpus/index, the Bekker index line 228 records '219a14: Before-and-after in time derives from that in motion from that in magnitude.' The standard locus for 'we perceive movement and time together' is earlier — typically Phys. IV.11, 218b21-219a1 (the awakened-sleeping passage). The dissertation's 219a4-8 may capture a slightly different segment of that block. The exact Bekker line for the quoted verbatim deserves verification against Phys. IV.11.",
+      "current_citation_status": "cited at 219a4-8; corpus has 219a14 indexed but the quoted material is part of the broader 218b21-219a15 awakened-sleeping passage",
+      "remediation": {
+        "action": "VERIFY_BEKKER_LINES",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Aristotle - Complete Works/aristotle-phys-04.json + phase2-phys-04.md"
+        ],
+        "candidate_perplexity_query": "Aristotle Physics IV.11 'we perceive movement and time together' 'in the dark' Bekker line 219a exact range",
+        "estimated_remediation_effort": "small (5 min)",
+        "severity": "LOW"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G17",
+      "claim_id": "DISS-01-C104",
+      "line": 65,
+      "support_tier": "T5-under-supported",
+      "claim_brief": "Phys. IV.11, 219b22-25 'body-carried-along analogy' — verify Bekker",
+      "named_locus_in_text": "Physics IV.11, 219b22-25",
+      "expected_content": "Per corpus/index Bekker index line 232: '219b12-15: The now — same in substratum, different in being.' The body-carried-along analogy in the quoted verbatim ('the now corresponds to the body that is carried along, as time corresponds to the motion') is part of the now-discussion in Phys. IV.11; the exact lines 219b22-25 need verification. The standard locus for this analogy is around 219b16-25.",
+      "current_citation_status": "cited at 219b22-25; corpus has 219b12-15 indexed for the now-as-same-in-substratum claim",
+      "remediation": {
+        "action": "VERIFY_BEKKER_LINES",
+        "candidate_loci_from_corpus_index": [
+          "corpus/index/Aristotle - Complete Works/aristotle-phys-04.json + phase2-phys-04.md"
+        ],
+        "estimated_remediation_effort": "small (5 min)",
+        "severity": "LOW"
+      }
+    },
+    {
+      "gap_id": "DISS-01-G18",
+      "claim_id": "DISS-01-C166",
+      "line": 89,
+      "support_tier": "T8-secondary-needed",
+      "claim_brief": "Hexis/settled doxai connection to rhetorical theory — citation gestured at, not provided",
+      "named_locus_in_text": "lines 89 (Deferrals subsection, third item)",
+      "expected_content": "The dissertation states: 'the entelechial structure displayed by the chain at each completed actuality... suggests an affinity with the rhetorical theory of motivated action subsequent chapters will develop.' No specific citation provided. The Burke-Aristotle bridge to rhetorical motive-theory is the deferral target. While appropriate for the deferral framing, a placeholder forward-reference to §1.4 or to specific Burke material would strengthen the bridge.",
+      "current_citation_status": "gestured at; no specific reference",
+      "remediation": {
+        "action": "OPTIONAL_FORWARD_REFERENCE",
+        "estimated_remediation_effort": "small (5 min)",
+        "severity": "LOW — deferral framing is acceptable but a footnote pointing to §1.4's rhetorical-theory development would strengthen the bridge"
+      }
+    }
+  ],
+
+  "citation_gap_split": {
+    "structural_T4_interpretive_unflagged": 4,
+    "load_bearing_T5_T7_verbatim_or_correction": 9,
+    "supplementary_T8_secondary_needed": 5,
+    "corpus_index_resolvable": {
+      "tier_A_yes": 14,
+      "tier_B_chromadb": 2,
+      "tier_C_perplexity": 2
+    }
+  },
+
+  "corpus_routing_summary": {
+    "primary_targets": [
+      "corpus/index/Heidegger - Being and Time/bt-structured/ + bt-analysis/ (for 3 of the 4 ****** placeholders)",
+      "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-structured/ + bcap-analysis/ (for the line-25 Bewegtheit placeholder)",
+      "corpus/index/A Grammar of Motives (Burke 1945)/Burke - Act (Aristotle and Aquinas)/ (for the Burke pp. 280-281 correction)",
+      "corpus/index/Aristotle - Complete Works/aristotle-phys-04.json + phase2-phys-04.md (for the 223a25-27 Bekker correction)",
+      "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Hawhee - Rhetorical Vision (2011)/ (for the Hawhee work-title correction)",
+      "corpus/index/Aristotelian Motion and Time Secondary/Bowin - Perception and Cognition of Time (2017)/ (for Coope/Broadie secondary engagement)"
+    ]
+  },
+
+  "quality_gates": {
+    "gaps_extracted": 18,
+    "every_gap_has_support_tier": true,
+    "every_gap_has_remediation_action": true,
+    "every_gap_has_at_least_one_candidate_locus": true,
+    "sorted_by_severity_and_effort": true
+  }
+}

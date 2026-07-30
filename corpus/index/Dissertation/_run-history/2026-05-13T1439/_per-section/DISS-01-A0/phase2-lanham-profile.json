@@ -1,0 +1,169 @@
+{
+  "section_id": "DISS-01-A0",
+  "section_title": "A_0: Motion and Time as Ontological Horizon",
+  "run_id": "2026-05-13T1439",
+  "genre": "academic",
+  "analyzer_tier": "analyst-computed-Tier-1-heuristic",
+  "computation_basis": "whole-section (6,272 source words; LaTeX/footnote/Greek-strip prose ~5,950 words; 9 subsections; ~165 prose sentences after dropping block-quotations and inline Bekker insertions)",
+  "is_gold_standard_baseline": false,
+  "baseline_section_for_deltas": "DISS-04-EMOTION",
+  "computation_method": "Regex-heuristic computation modeled on src/god-agent/cli/style/lanham-prose-analyzer.ts (Tier 1). Applied to LaTeX-stripped prose with the same protocol used to compute the §1.4 baseline. Block-quotations (\\begin{adjustwidth}) and footnotes are excluded from sentence counts; inline Bekker insertions (Phys. III.1, 201a11-14) are treated as parenthetical citations not contributing to grammatical structure of the surrounding sentence.",
+
+  "axes": {
+    "nounVerb": {
+      "score": 0.64,
+      "label": "noun-style",
+      "confidence": 0.74,
+      "sub_metrics": {
+        "nominalizations_per_1000_words": 84.2,
+        "be_verb_rate_per_sentence": 1.88,
+        "prep_phrases_per_sentence": 4.21,
+        "be_verb_ratio_of_finite_verbs": 0.40,
+        "raw_counts": {"nominalizations": 501, "be_verbs": 310, "preps": 695}
+      },
+      "rationale_short": "Slightly higher nominalization density than §1.4 (84/1000 vs. 78/1000), reflecting the Greek philosophical-categorial vocabulary that saturates this section: kinēsis, energeia, entelecheia, dynamis, ousia, telos, archē, energeia ateles, Bewegtheit, Zuhandenheit, Bewandtnis, Bewandtnisganzheit, Innerzeitigkeit, Zeitlichkeit, Geschichtlichkeit, Worumwillen, Vorhabe, Vorsicht, Vorgriff, Sorge, Ekstasen, Gewesenheit, Gegenwart, Zukunft, Sein-charakter. These are intrinsic to the philosophical register, not stylistic excess; Tier-2 deep analysis would discount them. The be-verb rate (1.88/sentence) is signature of the user's 'X is Y' definitional construction ('motion is the actuality...,' 'time is the number...,' 'soul is a substance...'). The 0.64 score sits at the high end of §1.4's ALIGNED range [0.52, 0.72].",
+      "comparison_to_baseline": "+0.02 above §1.4 baseline (0.62) — ALIGNED",
+      "delta_vs_baseline": 0.02
+    },
+
+    "parataxisHypotaxis": {
+      "score": 0.66,
+      "label": "hypotactic",
+      "confidence": 0.79,
+      "sub_metrics": {
+        "subordinator_count_per_sentence": 1.31,
+        "coordinator_count_per_sentence": 1.49,
+        "subord_to_coord_ratio": 0.879,
+        "relative_pronouns_per_sentence": "high (which/that/who/whose/whom; 'whose mode of existence is...', 'whose telos lies outside...', 'whose way of being is...' are signature patterns)",
+        "raw_counts": {"subord": 216, "coord": 246}
+      },
+      "rationale_short": "Hypotaxis is more pronounced in §1.1 than in §1.4 — driven by (a) cascaded relative-clause embedding around the Bekker-citation insertions ('Motion is the actuality of the potential qua potential; it is a genuine actuality, and yet it is incomplete because its telos lies outside itself'), (b) frequent participial-modifier chains in the architectural definitions ('the comporting being is constituted by the ongoing motion of its being-underway, and each completed phase of its concern is at once the terminus of the motion that produced it and the principle of the motion that follows'), and (c) the Heideggerian-syntactic transposition pattern (long appositive expansions). Score 0.66 lands in §1.4's ALIGNED range [0.51, 0.71], near the upper edge.",
+      "comparison_to_baseline": "+0.05 above §1.4 baseline (0.61) — ALIGNED (near upper edge)",
+      "delta_vs_baseline": 0.05
+    },
+
+    "periodicRunning": {
+      "score": 0.46,
+      "label": "periodic-with-running-cohabitation",
+      "confidence": 0.66,
+      "sub_metrics": {
+        "periodic_candidate_rate": 0.461,
+        "avg_sentence_length_words": 35.4,
+        "median_sentence_length_words": 31,
+        "pct_sentences_25_plus": 66.7,
+        "pct_sentences_35_plus": 42.4,
+        "raw_counts": {"sentences": 165, "periodic_candidates": 76}
+      },
+      "rationale_short": "Slightly more periodic than §1.4 — driven by (a) higher average sentence length (35.4 vs. 32.7) reflecting the architectural-definitional density of A_0's exposition, (b) frequent front-loaded conditional and participial openings ('On Heidegger's reading...,' 'On the analysis of Being and Time §32...,' 'If a being is determined in its there as Aristotle determines kinēsis...'), and (c) the long-block paragraph structure with one-sentence summaries that close periodic. Tier-2 promoted axis per MEMORY.md; score 0.46 sits in §1.4's ALIGNED range [0.31, 0.51]. Confidence 0.66.",
+      "comparison_to_baseline": "+0.05 above §1.4 baseline (0.41) — ALIGNED",
+      "delta_vs_baseline": 0.05
+    },
+
+    "voice": {
+      "score": 0.30,
+      "label": "predominantly-active",
+      "confidence": 0.72,
+      "sub_metrics": {
+        "passive_constructions_count": 36,
+        "passive_per_sentence": 0.218,
+        "passive_ratio_estimate": 0.18,
+        "active_marker": "author-prominent citation construction is dominant — 'Aristotle states', 'Aristotle defends', 'Aristotle insists', 'Aristotle articulates', 'Heidegger writes', 'Heidegger reads', 'Heidegger develops', 'Heidegger glosses', 'Burke isolates', 'Hawhee observes'",
+        "raw_counts": {"passive_hits": 36, "be_verbs_total": 310, "sentences": 165}
+      },
+      "rationale_short": "Voice is even more active than §1.4. The section is rich in author-prominent citation verbs which the user's style profile (dalton-academic-mkn82c3v) calibrates as the desired pattern. The few passives are philosophical-process passives ('is brought into its actuality', 'is moved by the sensible object', 'is acted upon', 'is grounded in') where the agent is grammatically irrelevant. The 0.30 score sits inside §1.4's ALIGNED range [0.22, 0.42], slightly more active than the baseline (0.32).",
+      "comparison_to_baseline": "-0.02 below §1.4 baseline (0.32) — ALIGNED (slightly more active)",
+      "delta_vs_baseline": -0.02
+    },
+
+    "register": {
+      "score": 0.74,
+      "label": "high-Latinate-formal",
+      "confidence": 0.83,
+      "sub_metrics": {
+        "latinate_proxy_ratio": 0.231,
+        "formality_marker_density": "high (per dalton-academic-mkn82c3v: 0.64 formality)",
+        "user_signature_transitions_present_in_section": {
+          "thus": 3, "specifically": 0, "indeed": 0, "accordingly": 4, "hence": 5,
+          "therefore": 4, "therefore_compound": 6
+        },
+        "Greek_term_density": "very high (kinēsis ~18, energeia ~14, entelecheia 5, dynamis 5, ousia 3, telos 5, archē 3, chronos 4, energeia ateles 6, phantasia 5, orexis 3, koine_aisthēsis-cluster 4 — Greek-with-gloss is constant)",
+        "German_term_density": "high (Bewegtheit 4, Innerzeitigkeit 5, Zeitlichkeit 4, Bewandtnis/Bewandtnisganzheit 3, Zuhandenheit 1, In-der-Welt-sein 2, Worumwillen 1, Sorge 2, Geschichtlichkeit 1, Vorhabe/Vorsicht/Vorgriff 3, Ekstasen 1, Gewesenheit/Gegenwart/Zukunft 4, Sein-charakter 1)",
+        "raw_counts": {"latinate_proxy_words": 1374, "total_words": 5950}
+      },
+      "rationale_short": "Latinate-proxy ratio 0.231 is slightly higher than §1.4 (0.220). The section is dense in Greek philosophical vocabulary (kinēsis, energeia, entelecheia, dynamis at saturation), and the German vocabulary is heavier than §1.4 (Bewegtheit, Innerzeitigkeit, Zeitlichkeit, In-der-Welt-sein, Bewandtnis, Worumwillen). The user's signature transitions are present but at slightly lower density than §1.4 (likely because §1.1 is shorter); 'hence' (5x) and 'accordingly' (4x) dominate. Architectural-philosophical register is sustained throughout. The 0.74 score sits comfortably inside §1.4's ALIGNED range [0.62, 0.82].",
+      "comparison_to_baseline": "+0.02 above §1.4 baseline (0.72) — ALIGNED",
+      "delta_vs_baseline": 0.02
+    },
+
+    "opacity": {
+      "score": 0.32,
+      "label": "moderately-transparent",
+      "confidence": 0.56,
+      "sub_metrics": {
+        "meta_linguistic_transition_density": 0.176,
+        "alliteration_adjacent_count_per_sentence": 1.318,
+        "user_signature_transitions_count": 22,
+        "explicit_interpretive_flags_count": "moderate — the strong-reading-of-Physics-IV.14 is explicitly flagged ('The chapter adopts a stronger interpretive reading...', 'The reading is interpretive rather than textually compelled, and the chapter flags it as such', 'The textual warrant is cautious-conditional'); the Heideggerian-radicalization moves are flagged less explicitly (the structural-payoff language carries the interpretation)",
+        "raw_counts": {"meta_transitions": 29, "alliteration_adj": 218, "sentences": 165}
+      },
+      "rationale_short": "Slightly less transparent than §1.4 — the section is more given to declarative architectural assertion than meta-linguistic signposting. The strong-reading-of-Physics-IV.14 is the one interpretive move that is explicitly flagged with the user's full meta-linguistic apparatus (lines 77-79: 'The chapter adopts a stronger interpretive reading'; 'The reading is interpretive rather than textually compelled, and the chapter flags it as such'; the Deferrals subsection (lines 87-89) returns to flag it again). Many other Heideggerian-Aristotelian bridge claims (kinēsis as Bewegtheit, Aristotelian motion as proto-form of hermeneutical circle, dyadic kinēsis as proto-form of worldly involvement) are interpretive but not explicitly flagged. Confidence 0.56 (heuristic-brittle on this axis per MEMORY.md).",
+      "comparison_to_baseline": "-0.02 below §1.4 baseline (0.34) — ALIGNED",
+      "delta_vs_baseline": -0.02
+    }
+  },
+
+  "tacit_patterns": {
+    "anaphora_rate": "moderate (sentence-initial 'The chain...' pattern recurs 12 times across paragraphs; 'Motion is...' / 'Time is...' definitional anaphora opens the architectural blocks of S2 and S5)",
+    "antithesis_rate": "high (the section is structured around antithetical pairs: motion vs. time, energeia vs. kinēsis, energeia haplē vs. energeia ateles, entelecheia vs. archē, dynamis vs. energeia, first actuality vs. second actuality, counted vs. counting, Innerzeitigkeit vs. Zeitlichkeit, public-time vs. originary-temporality, telos vs. archē, completed vs. underway, agent vs. patient, poiēsis vs. pathēsis)",
+    "isocolon_rate": "moderate-to-high (the three-senses-of-priority listing at lines 7 and 33 uses parallel structure: 'in account, the potential is intelligible...; in time, any individual potentiality presupposes...; in substance, the telos is more fully real...'; the three-ecstases listing at line 79 uses isocolon: 'having-been (Gewesenheit), present (Gegenwart), and projected-futural (Zukunft)')",
+    "chiasmus_rate": "low-to-moderate (the 'one motion, two formal aspects' pattern at the end of S4 (line 49) is chiasmic: 'one road, two descriptions. One motion, two formal aspects')",
+    "climax_rate": "moderate (the section builds from definitional A_0 → kinēsis-as-energeia-ateles → priority and chain structure → relational dyadic → time-as-number → soul-as-counter → threshold of A_1)",
+    "polyptoton_rate": "high (the kinēsis/energeia/entelecheia/dynamis cluster involves repeated cognate variation: kinēsis appears alongside kineō-derivatives, energeia alongside energeia ateles and energeia haplē, entelecheia as substantive and adjectival cognate)",
+    "alliteration_density_per_sentence": 1.318,
+    "rationale_short": "The section's most distinctive tacit pattern is ANTITHETICAL ARCHITECTURE — the entire section is structured around the user's Aristotelian-Heideggerian dyadic pairs (energeia vs. kinēsis, public-time vs. originary-temporality, etc.), which is a hallmark of the user's gold-standard style. ISOCOLON appears in the three-senses-of-priority and three-ecstases listings. POLYPTOTON is high due to the etymologically clustered Greek philosophical vocabulary. The section's tacit profile is consistent with §1.4's gold-standard tacit profile."
+  },
+
+  "summary_six_axis_profile": {
+    "nounVerb": 0.64,
+    "parataxisHypotaxis": 0.66,
+    "periodicRunning": 0.46,
+    "voice": 0.30,
+    "register": 0.74,
+    "opacity": 0.32
+  },
+
+  "deltas_vs_baseline": {
+    "nounVerb": {"section": 0.64, "baseline": 0.62, "delta": 0.02, "zone": "ALIGNED"},
+    "parataxisHypotaxis": {"section": 0.66, "baseline": 0.61, "delta": 0.05, "zone": "ALIGNED"},
+    "periodicRunning": {"section": 0.46, "baseline": 0.41, "delta": 0.05, "zone": "ALIGNED"},
+    "voice": {"section": 0.30, "baseline": 0.32, "delta": -0.02, "zone": "ALIGNED"},
+    "register": {"section": 0.74, "baseline": 0.72, "delta": 0.02, "zone": "ALIGNED"},
+    "opacity": {"section": 0.32, "baseline": 0.34, "delta": -0.02, "zone": "ALIGNED"}
+  },
+
+  "composite_metric_register_x_hypotaxis": {
+    "section_product": 0.488,
+    "baseline_product": 0.439,
+    "delta": 0.049,
+    "interpretation": "§1.1 sits ABOVE §1.4's register×hypotaxis composite (0.488 vs. 0.439). Per the synthesis principle in §1.4's profile (sections falling below 0.35 are under-developed; above 0.55 are over-formal), §1.1 is well-developed and within the desired gold-standard band. The slightly higher composite reflects the architectural-definitional density of A_0 as the chain's first actuality — every term must be set up with full formal apparatus."
+  },
+
+  "interpretive_notes": {
+    "section_specific_observations": [
+      "§1.1 ALIGNS with §1.4 on all six Lanham axes — confirming Phase 1 prediction (DISS-01-A0: 'Likely ALIGNED on all axes since §1.1 is also high-philosophical-architecture').",
+      "Possible DRIFT-AWAY on register was predicted; in fact register is +0.02 above baseline (still ALIGNED) — Phase 1 prediction was correct that dense Bekker/SZ citation would push register up, but the dissertation's careful Greek-with-gloss conventions kept the register from spiking into DRIFT-AWAY territory.",
+      "The hypotaxis +0.05 delta is the section's most diagnostic single delta — driven by the architectural-definitional cascading-relative-clause pattern. The section uses long sentences with deeply nested clauses to set up the iterated chain structure; this is intrinsic to the philosophical project, not stylistic excess.",
+      "The opacity -0.02 delta is consistent with the section's primary interpretive move (strong reading of Phys. IV.14) being explicitly flagged. Other interpretive moves (kinēsis ≅ Bewegtheit, Aristotelian dyadic kinēsis ≅ proto-form of In-der-Welt-sein) are less flagged; tightening the flagging on these would push opacity slightly toward §1.4's baseline.",
+      "The section is 6,272 words — substantially shorter than §1.4's 13,969 words. The Lanham profile is robust at this length but confidence levels are slightly lower on the periodic and opacity axes (Tier-1 heuristic noise increases at smaller sample sizes)."
+    ],
+    "diagnostic_recommendation": "§1.1's Lanham profile confirms it is structurally on the gold-standard trajectory. No structural revisions are needed on stylistic grounds. The section's revision priority is content-level (the four ****** placeholder fills, Bekker-reference verification, Burke page-number verification) rather than style-level."
+  },
+
+  "quality_gates": {
+    "axes_computed": 6,
+    "tacit_patterns_computed": "yes (7 patterns)",
+    "deltas_computed_against_baseline": "yes (6 axes, all ALIGNED)",
+    "confidence_per_axis_specified": "yes (range 0.56-0.83)",
+    "baseline_reference": "DISS-04-EMOTION phase2-lanham-profile.json"
+  }
+}

@@ -1,0 +1,826 @@
+{
+  "section_id": "DISS-04-EMOTION",
+  "run_id": "2026-05-13T1439",
+  "schema_version": "Plan v1.4 §8.1.5",
+  "sort_order": "remediation_effort (small→large) THEN severity (T6 > T5 > T8 > T4 > T7)",
+  "total_flagged_claims": 46,
+  "summary_by_tier": {
+    "T4-interpretive-but-unflagged": 2,
+    "T5-under-supported": 24,
+    "T6-unsupported": 0,
+    "T7-overreach": 11,
+    "T8-secondary-needed": 9
+  },
+  "summary_by_route": {
+    "Tier_A_corpus_index_routable": 32,
+    "Tier_B_chromadb_routable": 1,
+    "Tier_C_perplexity_or_cache": 8,
+    "asterisk_placeholder_manual_fill": 1,
+    "in_text_fix_only_no_external_lookup": 4
+  },
+  "cache_overlap_analysis_per_MASTER_CITATION_REPORT": {
+    "note": "The 244-entry MASTER-CITATION-REPORT (tmp/Dissertation/Pathe/citations/MASTER-CITATION-REPORT.md, 2026-05-10) covers old Pathe §§1.1-1.9 → ALL of DISS-04-EMOTION. Per Plan §3.5, every gap below is annotated cache-likely-strong / cache-likely-supplementary / cache-likely-miss. Phase 3.5 reconciliation will verify by quoted-anchor matching."
+  },
+
+  "gaps": [
+    {
+      "rank": 1,
+      "claim_id": "DISS-04-C025",
+      "claim_text_short": "Rhetoric II.1 Bekker citation typo ('13789a21-22' should be '1378a20-22').",
+      "support_tier": "T7-overreach",
+      "current_citation_status": "Bekker malformed",
+      "remediation": {
+        "action": "FIX_BEKKER_TYPO",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Rhetoric II.1"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "trivial (30 sec)"
+      },
+      "cache_likely_overlap": "cache-likely-strong (Rhet. II.1 is the canonical pathos-definition site, multiply-cited in master report)",
+      "location": "line 9"
+    },
+    {
+      "rank": 2,
+      "claim_id": "DISS-04-C115",
+      "claim_text_short": "Capitalization typo: 'ON the Soul' should be 'On the Soul'.",
+      "support_tier": "T7-overreach",
+      "current_citation_status": "typo only",
+      "remediation": {
+        "action": "FIX_TYPO",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": [],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "trivial (30 sec)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 58"
+    },
+    {
+      "rank": 3,
+      "claim_id": "DISS-04-C167",
+      "claim_text_short": "MA 8 Bekker typo ('7022' should be '702a2' or '702a3').",
+      "support_tier": "T7-overreach",
+      "current_citation_status": "Bekker malformed",
+      "remediation": {
+        "action": "FIX_BEKKER_TYPO",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Movement of Animals 8"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "trivial (30 sec)"
+      },
+      "cache_likely_overlap": "cache-likely-supplementary (MA causal chain is invoked in master report)",
+      "location": "line 82"
+    },
+    {
+      "rank": 4,
+      "claim_id": "DISS-04-C248",
+      "claim_text_short": "Typo: 'ontologicla' → 'ontological'.",
+      "support_tier": "T7-overreach",
+      "current_citation_status": "typo only",
+      "remediation": {
+        "action": "FIX_TYPO",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": [],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "trivial (15 sec)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 128"
+    },
+    {
+      "rank": 5,
+      "claim_id": "DISS-04-C252",
+      "claim_text_short": "Typos: 'intot he' → 'into the'; 'takin' → 'taking'.",
+      "support_tier": "T7-overreach",
+      "current_citation_status": "typos only",
+      "remediation": {
+        "action": "FIX_TYPOS",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": [],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "trivial (30 sec)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 130"
+    },
+    {
+      "rank": 6,
+      "claim_id": "DISS-04-C254",
+      "claim_text_short": "Typos: 'enmattered-accout' → 'enmattered-account'; 'agner' → 'anger'; 'metaphysics'' → 'Metaphysics''.",
+      "support_tier": "T7-overreach",
+      "current_citation_status": "typos only",
+      "remediation": {
+        "action": "FIX_TYPOS",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": [],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "trivial (45 sec)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 130"
+    },
+    {
+      "rank": 7,
+      "claim_id": "DISS-04-C256",
+      "claim_text_short": "Typo 'occured' → 'occurred' + missing closing paren.",
+      "support_tier": "T7-overreach",
+      "current_citation_status": "typo + punctuation",
+      "remediation": {
+        "action": "FIX_TYPO+CLOSE_PAREN",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": [],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "trivial (30 sec)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 134"
+    },
+    {
+      "rank": 8,
+      "claim_id": "DISS-04-C265",
+      "claim_text_short": "Missing close paren on '(even non-rational animals discriminate this-as-drink,'.",
+      "support_tier": "T7-overreach",
+      "current_citation_status": "punctuation only",
+      "remediation": {
+        "action": "FIX_PARENS",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": [],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "trivial (15 sec)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 144"
+    },
+    {
+      "rank": 9,
+      "claim_id": "DISS-04-C236",
+      "claim_text_short": "'pathe/pathos?' in-text query — user must decide canonical term.",
+      "support_tier": "T4-interpretive-but-unflagged",
+      "current_citation_status": "user-internal uncertainty visible at canonical-thesis site",
+      "remediation": {
+        "action": "RESOLVE_USER_QUERY",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": [],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small (user decision; pathē if invoking Rhetoric catalog, pathos if invoking ontology)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 120"
+    },
+    {
+      "rank": 10,
+      "claim_id": "DISS-04-C227",
+      "claim_text_short": "Mₙ→Mₙ₊₁ (old) used in 'notation-settled' meta-statement at line 118 (also at lines 144, 124[partial]); inconsistent with diagram + lines 114, 124[partial], 226. RENUMBERING PATCH.",
+      "support_tier": "T4-interpretive-but-unflagged",
+      "current_citation_status": "self-described as settled but inconsistent",
+      "remediation": {
+        "action": "RENUMBERING_PATCH",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": [],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small (3 sites, sed-able once user confirms direction)"
+      },
+      "cache_likely_overlap": "n/a (purely internal numbering)",
+      "location": "lines 118, 124[partial], 144"
+    },
+    {
+      "rank": 11,
+      "claim_id": "DISS-04-C163",
+      "claim_text_short": "MA causal chain Bekker missing (need 701a29-b1 at chain enumeration).",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "no Bekker on causal chain enumeration",
+      "remediation": {
+        "action": "ADD_BEKKER",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Movement of Animals 7"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "trivial"
+      },
+      "cache_likely_overlap": "cache-likely-strong (MA causal chain is the central anchor for Pathe §1.5 in master report)",
+      "location": "line 80"
+    },
+    {
+      "rank": 12,
+      "claim_id": "DISS-04-C165",
+      "claim_text_short": "Loeb attribution for pathē translation (line 80 footnote) — \\hl flagged; need Bekker + edition reference.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "bare 'Loeb' attribution; \\hl flag",
+      "remediation": {
+        "action": "RESOLVE_HL+ADD_BEKKER+EDITION_REF",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Movement of Animals 7"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-supplementary",
+      "location": "line 80"
+    },
+    {
+      "rank": 13,
+      "claim_id": "DISS-04-C299",
+      "claim_text_short": "Rhet. I.11, 1370a — bare 'a' Bekker; needs precise line range (a28-33 cluster).",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "Bekker incomplete",
+      "remediation": {
+        "action": "ADD_BEKKER_LINE",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Rhetoric I.11"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "trivial"
+      },
+      "cache_likely_overlap": "cache-likely-supplementary",
+      "location": "line 178"
+    },
+    {
+      "rank": 14,
+      "claim_id": "DISS-04-C140",
+      "claim_text_short": "\\hl on 'or contain true explanatory value' (line 64).",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "user-acknowledged tentative subordinate clause",
+      "remediation": {
+        "action": "RESOLVE_HL_MARKER",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": [],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small (user revises or tightens)"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 64"
+    },
+    {
+      "rank": 15,
+      "claim_id": "DISS-04-C142",
+      "claim_text_short": "\\hl on structural-constraint sentence (line 64).",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "user-acknowledged tentative; cross-references 'later subsection'",
+      "remediation": {
+        "action": "RESOLVE_HL_MARKER+CROSS_REF",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": [],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 64"
+    },
+    {
+      "rank": 16,
+      "claim_id": "DISS-04-C166",
+      "claim_text_short": "\\hl on 'and this is further indicated by the enmattered account and bodily accompaniment' (line 82).",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "user-acknowledged tentative",
+      "remediation": {
+        "action": "RESOLVE_HL_MARKER",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": [],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "n/a",
+      "location": "line 82"
+    },
+    {
+      "rank": 17,
+      "claim_id": "DISS-04-C002",
+      "claim_text_short": "Basic affective valence canonical-half-1 definition has \\inlinenote but no citation.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "user-inlinenote acknowledges need",
+      "remediation": {
+        "action": "RESOLVE_INLINENOTE+ADD_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/De Anima III.7"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong (DA III.7 is canonical in master report)",
+      "location": "line 3"
+    },
+    {
+      "rank": 18,
+      "claim_id": "DISS-04-C003",
+      "claim_text_short": "Resonant orexis canonical-half-2 definition has \\inlinenote; needs On Dreams + DA II.5 anchors.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "user-inlinenote acknowledges need",
+      "remediation": {
+        "action": "RESOLVE_INLINENOTE+ADD_PRIMARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/On Dreams","corpus/index/Aristotle - Complete Works/De Anima II.5"],
+        "candidate_loci_from_chromadb": ["metaphysics::On Dreams residual motion"],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong (master report covers De Insomniis cluster explicitly per Plan §3.5)",
+      "location": "line 3"
+    },
+    {
+      "rank": 19,
+      "claim_id": "DISS-04-C030",
+      "claim_text_short": "Resonant orexis canonical definition site (line 9) lacks On Dreams + DA II.5 anchors.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "coined-term canonical definition with no primary anchor",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/On Dreams","corpus/index/Aristotle - Complete Works/De Anima II.5"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 9"
+    },
+    {
+      "rank": 20,
+      "claim_id": "DISS-04-C031",
+      "claim_text_short": "Hedonic-co-givenness universalist claim (line 11) needs DA II.2 + BCAP 115 anchors.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "user-voice stipulation with no anchor",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/De Anima II.2","corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.115"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 11"
+    },
+    {
+      "rank": 21,
+      "claim_id": "DISS-04-C034",
+      "claim_text_short": "Perception-vs-thinking mapping needs DA III.3 + DA III.7 anchors.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "architectural mapping has no Aristotelian ground",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/De Anima III.3","corpus/index/Aristotle - Complete Works/De Anima III.7"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 11"
+    },
+    {
+      "rank": 22,
+      "claim_id": "DISS-04-C036",
+      "claim_text_short": "Articulational concretion canonical thesis needs DA II.5 paschein-preservation anchor.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "canonical thesis with implicit grounding",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION+ADD_FLAG",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/De Anima II.5"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 11"
+    },
+    {
+      "rank": 23,
+      "claim_id": "DISS-04-C045",
+      "claim_text_short": "Variable-presence-across-action-types needs MA 7 anchor.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "diagnostic claim with no proximate anchor",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Movement of Animals 7"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-supplementary",
+      "location": "line 19"
+    },
+    {
+      "rank": 24,
+      "claim_id": "DISS-04-C046",
+      "claim_text_short": "Drinking case at §3 diagnostic needs MA 7 anchor + soft flag.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "diagnostic illustration with no proximate citation",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION+ADD_FLAG",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Movement of Animals 7"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-supplementary",
+      "location": "line 19"
+    },
+    {
+      "rank": 25,
+      "claim_id": "DISS-04-C048",
+      "claim_text_short": "Articulational-resolution restatement needs DA II.5 + BCAP 132 anchors.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "thesis with implicit anchors",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/De Anima II.5","corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.132"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 19"
+    },
+    {
+      "rank": 26,
+      "claim_id": "DISS-04-C059",
+      "claim_text_short": "Extension of paschein-preservation to anger/fear needs BCAP 132 + soft flag.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "extension claim",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION+ADD_FLAG",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.132"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 23"
+    },
+    {
+      "rank": 27,
+      "claim_id": "DISS-04-C060",
+      "claim_text_short": "Hedonic universalism restated needs DA II.2 + BCAP 115 anchors.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "restatement without anchor",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/De Anima II.2","corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.115"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 23"
+    },
+    {
+      "rank": 28,
+      "claim_id": "DISS-04-C066",
+      "claim_text_short": "Dimensional-independence illustration needs MA 7 anchor for drinking case.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "illustration without cited example anchor",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Movement of Animals 7"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-supplementary",
+      "location": "line 23"
+    },
+    {
+      "rank": 29,
+      "claim_id": "DISS-04-C080",
+      "claim_text_short": "Grounding-direction-identical thesis has \\hl(CITE) placeholder at line 33; needs SZ §31-32 anchor.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "\\hl(CITE) placeholder explicitly user-flagged",
+      "remediation": {
+        "action": "RESOLVE_CITE_PLACEHOLDER",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Being and Time/§31-32"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-supplementary (Heidegger BT is core corpus, master report covers GA 18 more than BT)",
+      "location": "line 33"
+    },
+    {
+      "rank": 30,
+      "claim_id": "DISS-04-C100",
+      "claim_text_short": "Alterability at aisthēsis needs DA II.5 anchor.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "demonstrative claim with implicit anchor",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/De Anima II.5"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 48"
+    },
+    {
+      "rank": 31,
+      "claim_id": "DISS-04-C101",
+      "claim_text_short": "Energeia of aisthētikon needs DA II.5 anchor.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "demonstrative claim with implicit anchor",
+      "remediation": {
+        "action": "ADD_PRIMARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/De Anima II.5"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 48"
+    },
+    {
+      "rank": 32,
+      "claim_id": "DISS-04-C206",
+      "claim_text_short": "Stimmung-saturation mechanism needs SZ §29 H.137 anchor.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "novel mechanism claim without proximate anchor",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Being and Time/§29"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-supplementary",
+      "location": "line 104"
+    },
+    {
+      "rank": 33,
+      "claim_id": "DISS-04-C291",
+      "claim_text_short": "****** placeholder at line 174 — BCAP page + verbatim for 'pathē and hexeis as fundamental concepts of speaking-with-one-another'.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "EXPLICIT \\textbf{******} placeholder; user-acknowledged manual-fill per feedback-missing-source-placeholder.md",
+      "remediation": {
+        "action": "RESOLVE_PLACEHOLDER_MANUAL_FILL",
+        "tier": "asterisk_placeholder_manual_fill",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.117-125 cluster on hexis-pathos","corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.176"],
+        "candidate_loci_from_chromadb": ["metaphysics::BCAP hexis pathē fundamental concepts","metaphysics::BCAP Grundbegriffe"],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "medium — user locates verbatim; ****** stays in place until manual fill (per feedback-missing-source-placeholder.md, locus is given, body awaits)"
+      },
+      "cache_likely_overlap": "cache-likely-strong (BCAP cluster on hexis-pathos is central to master report's Heidegger sources)",
+      "location": "line 174"
+    },
+    {
+      "rank": 34,
+      "claim_id": "DISS-04-C008",
+      "claim_text_short": "Pathē-as-soul-kinēsis needs Caston/Frede secondary anchor.",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "primary citation present (BCAP 133), needs secondary anchor for the ambivalence on whether soul-itself-is-moved",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Caston 1995","corpus/index/Aristotle - Complete Works/De Anima I.4"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong (Caston 1995 is in master report)",
+      "location": "line 7"
+    },
+    {
+      "rank": 35,
+      "claim_id": "DISS-04-C018",
+      "claim_text_short": "Etymology-Aristotle bridge needs DA III.10 orexis-as-moved-mover anchor as secondary reinforcement.",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "etymology-thesis already supported by OED; could be reinforced",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/De Anima III.10"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-supplementary",
+      "location": "line 7"
+    },
+    {
+      "rank": 36,
+      "claim_id": "DISS-04-C027",
+      "claim_text_short": "Overlap-of-pathos-senses warning needs BCAP 131-132 secondary anchor.",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "hermeneutic warning with no anchor",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.131-132"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 9"
+    },
+    {
+      "rank": 37,
+      "claim_id": "DISS-04-C032",
+      "claim_text_short": "Basic affective valence canonical definition needs BCAP 115 secondary anchor.",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "user-coinage with no Heideggerian gloss",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.115"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 11"
+    },
+    {
+      "rank": 38,
+      "claim_id": "DISS-04-C106",
+      "claim_text_short": "Defense of Rhetoric-as-ontological needs BCAP 115 secondary anchor.",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "interpretive defense without proximate anchor",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATION+ADD_FLAG",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.115"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 52"
+    },
+    {
+      "rank": 39,
+      "claim_id": "DISS-04-C181",
+      "claim_text_short": "Doxa-non-deliberative reading needs DA III.3 secondary anchor.",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "interpretive clarification without anchor",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/De Anima III.3"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-supplementary",
+      "location": "line 84"
+    },
+    {
+      "rank": 40,
+      "claim_id": "DISS-04-C190",
+      "claim_text_short": "Non-identity of faculties needs Caston 2021 Cartesian Theatre secondary anchor.",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "interpretive reading; primary On Dreams cited but secondary scholarship absent",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATION",
+        "tier": "Tier_B_chromadb",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Caston 1995"],
+        "candidate_loci_from_chromadb": ["dissertation-perplexity-cache::Caston 2021 Cartesian Theatre","metaphysics::controlling sense faculty differentiation"],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong (Caston 2021 is in corpus/download per Plan §3.5.8)",
+      "location": "line 98"
+    },
+    {
+      "rank": 41,
+      "claim_id": "DISS-04-C232",
+      "claim_text_short": "Fear-as-form-of-desire illustration could anchor to Rhet. II.5 fear definition for secondary reinforcement.",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "illustration without explicit citation reinforcement",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Rhetoric II.5"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "trivial"
+      },
+      "cache_likely_overlap": "cache-likely-strong",
+      "location": "line 120"
+    },
+    {
+      "rank": 42,
+      "claim_id": "DISS-04-C292",
+      "claim_text_short": "Per-pathos hexis correlate listing (courage/fear, magnanimity/anger, friendliness/kindness) needs NE II-IV anchor.",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "canonical-listing without per-virtue anchor",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Nicomachean Ethics II","corpus/index/Aristotle - Complete Works/Nicomachean Ethics III","corpus/index/Aristotle - Complete Works/Nicomachean Ethics IV"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-supplementary",
+      "location": "line 174"
+    },
+    {
+      "rank": 43,
+      "claim_id": "DISS-04-C302",
+      "claim_text_short": "Rhetoric-as-phantasmatic-reshaping needs Hawhee 2011 + Rickert secondary anchors.",
+      "support_tier": "T8-secondary-needed",
+      "current_citation_status": "canonical application without secondary scholarship",
+      "remediation": {
+        "action": "ADD_SECONDARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Hawhee 2011","corpus/index/Rickert - Ambient Rhetoric"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-strong (Hawhee + Rickert are core master-report sources)",
+      "location": "line 180"
+    },
+    {
+      "rank": 44,
+      "claim_id": "DISS-04-C062",
+      "claim_text_short": "Three-dimensional magnitude-axis is a novel architectural move (hedonic intensity × existential weight × cognitive articulation); needs BCAP 132 + explicit interpretive flag.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "novel architectural move with implicit grounding",
+      "remediation": {
+        "action": "ADD_FLAG+ADD_SECONDARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.132"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "small"
+      },
+      "cache_likely_overlap": "cache-likely-supplementary",
+      "location": "line 23"
+    },
+    {
+      "rank": 45,
+      "claim_id": "DISS-04-C257",
+      "claim_text_short": "\\inlinenote at line 138 self-flags: 'need to develop the social aspects Heidegger notes of pathe and locate it in earlier section.' Mitsein-dimension development gap.",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "user-acknowledged development gap",
+      "remediation": {
+        "action": "DEVELOP+ADD_SECONDARY_CITATION",
+        "tier": "Tier_A_corpus_index",
+        "candidate_loci_from_corpus_index": ["corpus/index/Heidegger and Rhetoric/Hyde essay on conscience/epideictic","corpus/index/Heidegger and Rhetoric/Struever essay on Alltäglichkeit","corpus/index/Heidegger - Being and Time/§26 (Mitsein)"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "medium (the development must happen in §1.2 'earlier section' per user's note; back-reference resolved from §1.4)"
+      },
+      "cache_likely_overlap": "cache-likely-strong (Heidegger and Rhetoric Mitsein essays are in master report)",
+      "location": "line 138"
+    },
+    {
+      "rank": 46,
+      "claim_id": "DISS-04-C262",
+      "claim_text_short": "\\inlinenote at line 148 self-flags: 'Include a worked example using thirst example for illustration to show how it fits within the fivefold.'",
+      "support_tier": "T5-under-supported",
+      "current_citation_status": "user-acknowledged illustration gap",
+      "remediation": {
+        "action": "DEVELOP_WORKED_EXAMPLE",
+        "tier": "in_text_fix_only",
+        "candidate_loci_from_corpus_index": ["corpus/index/Aristotle - Complete Works/Movement of Animals 7 (drinking case as reference)"],
+        "candidate_loci_from_chromadb": [],
+        "candidate_perplexity_query": null,
+        "estimated_effort": "medium (user writes worked example; can reference earlier MA 7 drinking case)"
+      },
+      "cache_likely_overlap": "n/a (the user writes the example; MA 7 is the anchor)",
+      "location": "line 148"
+    }
+  ],
+
+  "_aggregate_counts": {
+    "trivial_effort_count": 11,
+    "small_effort_count": 30,
+    "medium_effort_count": 5,
+    "large_effort_count": 0
+  },
+
+  "_perplexity_budget_estimate_for_DISS-04": {
+    "fresh_queries_likely_needed": 0,
+    "cache_hits_expected_strong": 24,
+    "cache_hits_expected_supplementary": 9,
+    "in_text_fix_only_no_external_lookup": 11,
+    "asterisk_placeholder_manual_fill": 1,
+    "Mitsein_development_relocates_to_§1.2": 1,
+    "rationale": "Per Plan §3.5: master report covers OLD Pathe §§1.1-1.9 = all of DISS-04. The vast majority of citation-needs here are corpus-index-routable from existing pipelines (Aristotle, BCAP, BT, Heidegger and Rhetoric, Aristotelian Phantasia Secondary, Rickert). Expected Perplexity queries from DISS-04: ZERO net. The 40-query initial allocation is now free for §§1.0/1.1/1.2/1.3/1.5."
+  }
+}

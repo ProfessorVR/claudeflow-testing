@@ -1,0 +1,86 @@
+%% Phase 4I: Rhetoric Internal Structure
+%% Pisteis, pathos, lexis
+%% Generated: 2026-03-09
+
+graph TD
+
+    rhetorike["ῥητορική\nrhetoric"]
+    dialektike["διαλεκτική\ndialectic"]
+    pistis["πίστις\nmeans of persuasion"]
+    ethos["ἦθος\ncharacter"]
+    pathos["πάθος\nemotion"]
+    logos["λόγος\nargument"]
+    enthymema["ἐνθύμημα\nenthymeme"]
+    paradeigma["παράδειγμα\nexample"]
+    gnome["γνώμη\nmaxim"]
+    topoi["τόποι\ncommonplaces"]
+    phronesis["φρόνησις\ngood sense"]
+    arete["ἀρετή\nexcellence"]
+    eunoia["εὔνοια\ngoodwill"]
+    lexis["λέξις\nstyle"]
+    metaphora["μεταφορά\nmetaphor"]
+    to_prepon["τὸ πρέπον\nappropriateness"]
+    sapheneia["σαφήνεια\nclarity"]
+    pro_ommaton["πρὸ ὀμμάτων ποιεῖν\nsetting before eyes"]
+    energeia_rhet["ἐνέργεια\nvividness/activity"]
+    taxis["τάξις\narrangement"]
+    techne["τέχνη\nart"]
+
+    %% Definition
+    rhetorike -->|"counterpart of"| dialektike
+    rhetorike -->|"faculty of"| pistis
+    rhetorike -->|"is a"| techne
+
+    %% Three proofs
+    pistis -->|"1st: speaker"| ethos
+    pistis -->|"2nd: audience"| pathos
+    pistis -->|"3rd: speech"| logos
+
+    %% Ethos components
+    ethos -->|"source 1"| phronesis
+    ethos -->|"source 2"| arete
+    ethos -->|"source 3"| eunoia
+
+    %% Logical proof
+    enthymema -->|"body of"| pistis
+    paradeigma -->|"supports"| enthymema
+    gnome -->|"premiss of"| enthymema
+    topoi -->|"material for"| enthymema
+
+    %% Style
+    lexis -->|"depends on"| metaphora
+    lexis -->|"governed by"| to_prepon
+    lexis -->|"aims at"| sapheneia
+    metaphora -->|"highest effect via"| pro_ommaton
+    pro_ommaton -->|"works through"| energeia_rhet
+    to_prepon -->|"matches"| ethos
+    to_prepon -->|"matches"| pathos
+
+    %% Arrangement
+    taxis -->|"coordinate with"| lexis
+
+    %% Pathos operationalizes persuasion
+    pathos -->|"changes judgement via"| pistis
+
+    %% Styles
+    style rhetorike fill:#c62828,stroke:#b71c1c,color:#fff,stroke-width:3px
+    style dialektike fill:#ef9a9a,stroke:#c62828
+    style pistis fill:#d32f2f,stroke:#b71c1c,color:#fff,stroke-width:2px
+    style ethos fill:#e57373,stroke:#d32f2f,color:#fff
+    style pathos fill:#e57373,stroke:#d32f2f,color:#fff
+    style logos fill:#e57373,stroke:#d32f2f,color:#fff
+    style enthymema fill:#f44336,stroke:#d32f2f,color:#fff
+    style paradeigma fill:#ef5350,stroke:#e53935,color:#fff
+    style gnome fill:#ef5350,stroke:#e53935,color:#fff
+    style topoi fill:#ff8a80,stroke:#ff5252
+    style phronesis fill:#ffab91,stroke:#ff5722
+    style arete fill:#ffab91,stroke:#ff5722
+    style eunoia fill:#ffab91,stroke:#ff5722
+    style lexis fill:#ad1457,stroke:#880e4f,color:#fff,stroke-width:2px
+    style metaphora fill:#c2185b,stroke:#880e4f,color:#fff
+    style to_prepon fill:#d81b60,stroke:#ad1457,color:#fff
+    style sapheneia fill:#ec407a,stroke:#c2185b,color:#fff
+    style pro_ommaton fill:#880e4f,stroke:#4a0025,color:#fff,stroke-width:2px
+    style energeia_rhet fill:#e65100,stroke:#bf360c,color:#fff
+    style taxis fill:#f06292,stroke:#d81b60
+    style techne fill:#5d4037,stroke:#3e2723,color:#fff

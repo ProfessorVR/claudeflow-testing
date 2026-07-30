@@ -1,0 +1,84 @@
+%% BCAP Sub-graph: Phenomenological Bridge
+%% Aristotelian concepts → Heideggerian notions (BT anticipations)
+%% Bipartite layout: Aristotle left, Heidegger right
+%% Exactly 20 edges, diverse coverage across both domains
+graph LR
+
+    %% === Aristotelian concepts (left side) ===
+    subgraph Aristotle["Aristotelian Concepts"]
+        pathos["πάθος<br/>(pathos)"]
+        hexis["ἕξις<br/>(hexis)"]
+        logos["λόγος<br/>(logos)"]
+        ousia["οὐσία<br/>(ousia)"]
+        kinesis["κίνησις<br/>(kinesis)"]
+        doxa["δόξα<br/>(doxa)"]
+        phronesis["φρόνησις<br/>(phronesis)"]
+        aletheuein["ἀληθεύειν<br/>(aletheuein)"]
+        praxis["πρᾶξις<br/>(praxis)"]
+        steresis["στέρησις<br/>(steresis)"]
+        hedone["ἡδονή<br/>(hedone)"]
+        koinonia["κοινωνία<br/>(koinonia)"]
+        pistis["πίστις<br/>(pistis)"]
+    end
+
+    subgraph Heidegger["Heideggerian Notions"]
+        Befindlichkeit["Befindlichkeit<br/>(attunement)"]
+        BIW["being-in-the-world"]
+        Dasein["Dasein<br/>(being-there)"]
+        DasMan["Das Man<br/>(The One)"]
+        Sorge["Sorge<br/>(care)"]
+        Verfallen["Verfallen<br/>(falling)"]
+        Vorhabe["Vorhabe<br/>(fore-having)"]
+        Angst["Angst<br/>(anxiety)"]
+        Erschlossenheit["Erschlossenheit<br/>(disclosedness)"]
+        Gerede["Gerede<br/>(idle chatter)"]
+    end
+
+    %% === 20 bridge edges ===
+
+    %% Pathos → Befindlichkeit (the central bridge)
+    pathos -->|"anticipates"| Befindlichkeit
+    hedone -->|"anticipates"| Befindlichkeit
+
+    %% Hexis → being-in-the-world
+    hexis -->|"prefigures"| BIW
+    praxis -->|"prefigures"| BIW
+
+    %% Logos → multiple
+    logos -->|"grounds"| Dasein
+    logos -->|"falls into"| Gerede
+
+    %% Ousia → being-in-the-world
+    ousia -->|"reinterpreted as"| BIW
+
+    %% Kinesis → care
+    kinesis -->|"prefigures"| Sorge
+    steresis -->|"prefigures"| Angst
+
+    %% Doxa → Das Man
+    doxa -->|"anticipates"| DasMan
+    koinonia -->|"anticipates"| DasMan
+    pistis -->|"anticipates"| DasMan
+
+    %% Phronesis → disclosedness
+    phronesis -->|"anticipates"| Erschlossenheit
+    aletheuein -->|"anticipates"| Erschlossenheit
+
+    %% Falling
+    doxa -->|"prefigures"| Verfallen
+    logos -->|"prefigures"| Verfallen
+
+    %% Fore-structure
+    hexis -->|"anticipates"| Vorhabe
+    logos -->|"anticipates"| Vorhabe
+
+    %% Care structure
+    praxis -->|"anticipates"| Sorge
+    pathos -->|"anticipates"| Sorge
+
+    %% === Style: Aristotle nodes in warm tones, Heidegger in cool ===
+    classDef aristotle fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+    classDef heidegger fill:#4ecdc4,stroke:#333,stroke-width:2px,color:#fff
+
+    class pathos,hexis,logos,ousia,kinesis,doxa,phronesis,aletheuein,praxis,steresis,hedone,koinonia,pistis aristotle
+    class Befindlichkeit,BIW,Dasein,DasMan,Sorge,Verfallen,Vorhabe,Angst,Erschlossenheit,Gerede heidegger

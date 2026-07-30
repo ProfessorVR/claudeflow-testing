@@ -1,0 +1,55 @@
+%% Graph 2 — Inter-chapter conceptual network for Uncomfortable Situations
+%% 6 chapter units + 2 framing nodes; edges = inter-chapter cross-references
+graph LR
+    TITLE["Uncomfortable Situations<br/>(Gross 2017)"]:::frame
+    INTRO["US-00<br/>Introduction"]:::unit
+    DARWIN["US-01<br/>Darwin"]:::unit
+    EQUIANO["US-02<br/>Equiano"]:::unit
+    RADCLIFFE["US-03<br/>Radcliffe"]:::unit
+    AUSTEN["US-04<br/>Austen"]:::unit
+    EPILOGUE["US-05<br/>Epilogue<br/>(Gross + Preston)"]:::unit
+    NOTES["Notes + Index"]:::frame
+
+    TITLE --> INTRO
+
+    %% Intro forecasts all chapters
+    INTRO -- "forecasts unsealing" --> EQUIANO
+    INTRO -- "forecasts rhet affordance" --> RADCLIFFE
+    INTRO -- "forecasts mixed feelings" --> AUSTEN
+    INTRO -- "sets 7-mode typology" --> DARWIN
+    INTRO -- "frames two-cultures Q" --> EPILOGUE
+
+    %% Darwin forwards
+    DARWIN -- "forecasts negation in" --> AUSTEN
+    DARWIN -- "previews complex states" --> RADCLIFFE
+    DARWIN -- "anticipates Ekman critique" --> EPILOGUE
+    DARWIN -- "shares CAL critique with" --> AUSTEN
+
+    %% Equiano cross-refs
+    EQUIANO -- "instantiates prosthetic from" --> INTRO
+    EQUIANO -- "forecasts hostile env in" --> RADCLIFFE
+    EQUIANO -- "cited as 'happy' in" --> EPILOGUE
+    EQUIANO -- "bridges to Bentham/Kahneman" --> AUSTEN
+
+    %% Radcliffe cross-refs
+    RADCLIFFE -- "extends affordance from" --> INTRO
+    RADCLIFFE -- "applies paradiastole in" --> AUSTEN
+    RADCLIFFE -- "shares hostile-env with" --> EQUIANO
+    RADCLIFFE -- "uses Lewin from" --> INTRO
+
+    %% Austen
+    AUSTEN -- "cites Ch.2 'happily'" --> EQUIANO
+    AUSTEN -- "applies double-neg from" --> DARWIN
+    AUSTEN -- "feeds reference-values to" --> EPILOGUE
+
+    %% Epilogue calls back
+    EPILOGUE -- "calls back to 'happy'" --> EQUIANO
+    EPILOGUE -- "calls back to mixed feelings" --> AUSTEN
+    EPILOGUE -- "answers Snow Q from" --> INTRO
+    EPILOGUE -- "reframes Phelps via" --> EQUIANO
+    EPILOGUE -- "extends situated cog from" --> INTRO
+
+    EPILOGUE --> NOTES
+
+    classDef unit fill:#9cf,stroke:#369,stroke-width:2px,color:#000
+    classDef frame fill:#ddd,stroke:#666,stroke-width:1px,color:#000,font-style:italic

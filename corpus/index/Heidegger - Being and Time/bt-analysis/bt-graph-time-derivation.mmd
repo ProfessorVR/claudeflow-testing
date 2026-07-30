@@ -1,0 +1,28 @@
+graph TD
+    Temporality["Originary Temporality<br/><i>Zeitlichkeit</i>"]
+    Future["Future<br/><i>Zukunft</i>"]
+    HavingBeen["Having-been<br/><i>Gewesenheit</i>"]
+    Present["Present<br/><i>Gegenwart</i>"]
+    Augenblick["Moment of Vision<br/><i>Augenblick</i>"]
+    WorldTime["World-time<br/><i>Weltzeit</i>"]
+    Datability["Datability<br/><i>Datierbarkeit</i>"]
+    Significance_T["Significance<br/>(of time)"]
+    Spannedness["Spannedness<br/><i>Gespanntheit</i>"]
+    Publicness_T["Publicness<br/>(of time)"]
+    WithinTime["Within-time-ness<br/><i>Innerzeitigkeit</i>"]
+    ClockTime["Clock Time / Now-time<br/><i>Jetzt-Zeit</i>"]
+    VulgarTime["Ordinary Conception<br/>of Time"]
+
+    Temporality -->|"depends_on"| Future
+    Temporality -->|"depends_on"| HavingBeen
+    Temporality -->|"depends_on"| Present
+    Augenblick -->|"refines"| Present
+    WorldTime -->|"depends_on"| Temporality
+    WorldTime -->|"explains"| Datability
+    WorldTime -->|"explains"| Significance_T
+    WorldTime -->|"explains"| Spannedness
+    WorldTime -->|"explains"| Publicness_T
+    WithinTime -->|"depends_on"| WorldTime
+    ClockTime -->|"depends_on"| WithinTime
+    VulgarTime -->|"depends_on"| ClockTime
+    VulgarTime -->|"contrasts_with"| Temporality

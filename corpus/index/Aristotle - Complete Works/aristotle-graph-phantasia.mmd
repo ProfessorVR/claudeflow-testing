@@ -1,0 +1,139 @@
+%% Phase 4I: Phantasia Across All Works (Dissertation Focal Concept)
+%% Phantasia's connections in DA, Rhetoric, MA, On Memory, Sense & Sensibilia
+%% Generated: 2026-03-09
+
+graph TD
+
+    phantasia["φαντασία\nimagination\n(central concept)"]
+
+    %% === DE ANIMA ===
+    subgraph DA["De Anima III.3, III.11"]
+        da_aisthesis["αἴσθησις\nperception"]
+        da_kinesis["κίνησις\nmovement"]
+        da_nous["νοῦς\nmind"]
+        da_phantasma["φάντασμα\nimage"]
+        da_orexis["ὄρεξις\ndesire"]
+        da_bouleutike["φ. βουλευτική\ndeliberative"]
+        da_aisthetike["φ. αἰσθητική\nsensitive"]
+        da_phone["φωνή\nvoice"]
+        da_phaos["φάος\nlight (etymology)"]
+    end
+
+    %% === RHETORIC ===
+    subgraph RHET["Rhetoric I.11, II.5, III.10-11"]
+        rhet_hedone["ἡδονή\npleasure"]
+        rhet_phobos["φόβος\nfear"]
+        rhet_pro_ommaton["πρὸ ὀμμάτων\nsetting before eyes"]
+        rhet_energeia["ἐνέργεια\nvividness"]
+        rhet_metaphora["μεταφορά\nmetaphor"]
+        rhet_pathos["πάθος\nemotion"]
+    end
+
+    %% === MOVEMENT OF ANIMALS ===
+    subgraph MA["Movement of Animals"]
+        ma_orexis["ὄρεξις\ndesire"]
+        ma_practical_syll["practical\nsyllogism"]
+        ma_alloiosis["ἀλλοίωσις\nbodily change"]
+        ma_involuntary["involuntary\nmovement"]
+        ma_agathon["τὸ ἀγαθόν\nthe good"]
+    end
+
+    %% === ON MEMORY ===
+    subgraph MEM["On Memory"]
+        mem_phantasma["φάντασμα\nmemory-image"]
+        mem_mneme["μνήμη\nmemory"]
+        mem_anamnesis["ἀνάμνησις\nrecollection"]
+        mem_chronos["χρόνος\ntime"]
+        mem_eikon["εἰκών\nlikeness"]
+    end
+
+    %% === SENSE & SENSIBILIA ===
+    subgraph SS["Sense & Sensibilia"]
+        ss_koine["κοινὴ αἴσθησις\ncommon sense"]
+        ss_dynamis["δύναμις/ἐνέργεια\npot./act."]
+        ss_diaphanes["τὸ διαφανές\ntransparent"]
+    end
+
+    %% === DE ANIMA EDGES ===
+    phantasia -->|"movement resulting\nfrom actual sense\n(429a1-2)"| da_aisthesis
+    phantasia -->|"defined AS\na kinesis\n(429a1)"| da_kinesis
+    phantasia -->|"produces"| da_phantasma
+    da_nous -->|"never thinks without\nphantasma (431a17)"| da_phantasma
+    phantasia -->|"guides"| da_orexis
+    da_orexis -->|"causes animal"| da_kinesis
+    phantasia -->|"subdivided into"| da_bouleutike
+    phantasia -->|"subdivided into"| da_aisthetike
+    da_bouleutike -->|"extends"| da_aisthetike
+    da_phone -->|"requires (420b32)"| phantasia
+    phantasia -.->|"from phaos\n(429a3)"| da_phaos
+
+    %% === RHETORIC EDGES ===
+    phantasia -->|"'feeble sort of\nsensation' (1370a28)"| rhet_hedone
+    phantasia -->|"fear = pain from\nphantasia of evil\n(1382a21)"| rhet_phobos
+    rhet_metaphora -->|"achieves"| rhet_pro_ommaton
+    rhet_pro_ommaton -->|"works through\nenergeia (1411b24)"| rhet_energeia
+    rhet_pro_ommaton -->|"activates audience's"| phantasia
+    rhet_phobos -->|"species of"| rhet_pathos
+    rhet_pathos -->|"changes judgement\nvia phantasia"| phantasia
+
+    %% === MA EDGES ===
+    phantasia -->|"presents objects\nto desire\n(700b19-21)"| ma_orexis
+    phantasia -->|"supplies minor\npremise (701a29)"| ma_practical_syll
+    phantasia -->|"causes heating/\nchilling (701b16)"| ma_alloiosis
+    phantasia -->|"moves heart without\nrational mandate\n(703b6)"| ma_involuntary
+    ma_agathon -->|"initiates"| ma_orexis
+
+    %% === ON MEMORY EDGES ===
+    phantasia -->|"faculty producing"| mem_phantasma
+    mem_phantasma -->|"medium of"| mem_mneme
+    mem_phantasma -->|"dual nature:\nobject + likeness"| mem_eikon
+    mem_mneme -->|"requires"| mem_chronos
+    mem_anamnesis -->|"reactivates\nmovements of"| mem_phantasma
+
+    %% === SENSE & SENSIBILIA EDGES ===
+    phantasia -->|"operates on\nunified input from"| ss_koine
+    ss_koine -->|"memory belongs to"| mem_mneme
+    phantasia -->|"threshold between"| ss_dynamis
+    ss_diaphanes -->|"medium\nactualized by light"| da_aisthesis
+
+    %% === STYLES ===
+    style phantasia fill:#d50000,stroke:#b71c1c,color:#fff,stroke-width:4px
+
+    style DA fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
+    style RHET fill:#fce4ec,stroke:#c62828,stroke-width:2px
+    style MA fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style MEM fill:#e8eaf6,stroke:#283593,stroke-width:2px
+    style SS fill:#e0f7fa,stroke:#00695c,stroke-width:2px
+
+    style da_aisthesis fill:#e1bee7,stroke:#8e24aa
+    style da_kinesis fill:#c8e6c9,stroke:#388e3c
+    style da_nous fill:#bbdefb,stroke:#1565c0
+    style da_phantasma fill:#f8bbd0,stroke:#c2185b
+    style da_orexis fill:#ffccbc,stroke:#e64a19
+    style da_bouleutike fill:#f48fb1,stroke:#ad1457
+    style da_aisthetike fill:#f48fb1,stroke:#ad1457
+    style da_phone fill:#ce93d8,stroke:#7b1fa2
+    style da_phaos fill:#fff9c4,stroke:#f9a825
+
+    style rhet_hedone fill:#ffcdd2,stroke:#e53935
+    style rhet_phobos fill:#ffcdd2,stroke:#e53935
+    style rhet_pro_ommaton fill:#ef9a9a,stroke:#c62828
+    style rhet_energeia fill:#ffe0b2,stroke:#e65100
+    style rhet_metaphora fill:#ef9a9a,stroke:#c62828
+    style rhet_pathos fill:#ffcdd2,stroke:#e53935
+
+    style ma_orexis fill:#a5d6a7,stroke:#388e3c
+    style ma_practical_syll fill:#c8e6c9,stroke:#2e7d32
+    style ma_alloiosis fill:#a5d6a7,stroke:#2e7d32
+    style ma_involuntary fill:#81c784,stroke:#2e7d32
+    style ma_agathon fill:#66bb6a,stroke:#2e7d32
+
+    style mem_phantasma fill:#c5cae9,stroke:#3f51b5
+    style mem_mneme fill:#9fa8da,stroke:#3949ab
+    style mem_anamnesis fill:#7986cb,stroke:#303f9f,color:#fff
+    style mem_chronos fill:#b3e5fc,stroke:#0288d1
+    style mem_eikon fill:#c5cae9,stroke:#5c6bc0
+
+    style ss_koine fill:#b2dfdb,stroke:#00897b
+    style ss_dynamis fill:#b2dfdb,stroke:#00897b
+    style ss_diaphanes fill:#80cbc4,stroke:#00695c

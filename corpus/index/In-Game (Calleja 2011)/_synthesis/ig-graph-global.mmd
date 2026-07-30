@@ -1,0 +1,107 @@
+%% ig-graph-global.mmd
+%% Calleja 2011 In-Game — Tier-1 concept network (book-level)
+%% Generated: Phase 3 Wave 2 Agent (graph 1 of 5)
+%% Plan ref: plans/in-game-calleja-2011-analysis.md §5 Phase 3 Wave 2 graph 1
+%% Edge styles: solid = calleja-exegetical; dashed (-.->) = anticipatory-projection;
+%%              thick stroked-dasharray (==>) = mediated-exegetical (Sartre/Iser -> Phantasia)
+%% Node selection: top centrality from concept-matrix.csv (>=7) + 6 dimensions + 2 phases + PIM hub
+%% Cluster scheme: 6 INVOLVEMENT-DIMENSION subgraphs + central PIM/Incorporation hub
+%%                 + residual phenomenological-vocabulary cluster
+%% Caps: <=30 nodes, <=40 edges
+flowchart LR
+    %% ===== Central PIM / Incorporation hub =====
+    subgraph PIM_HUB["PIM / Incorporation Hub"]
+        C001["C-001 PIM"]
+        C002["C-002 Involvement"]
+        C003["C-003 Incorporation"]
+        C006["C-006 Attentional Hierarchy"]
+        C007["C-007 Family Resemblance"]
+        C013["C-013 Spatial+Kinesthetic Cornerstone"]
+        C014["C-014 Double-Axis Bidirectionality"]
+        C035["C-035 Magic-Circle Excision"]
+        T001["T-001 Macro Phase"]
+        T002["T-002 Micro Phase"]
+    end
+
+    %% ===== Residual phenomenological-vocabulary cluster =====
+    subgraph PHEN["Residual Phenomenological Vocabulary"]
+        C008["C-008 Virtual-Env Habitation"]
+        C010["C-010 Ergodic Disposition"]
+        C011["C-011 Internalization"]
+        C016["C-016 Experiential Gestalts"]
+        C017["C-017 Subjective Distance"]
+        C018["C-018 Four Challenges"]
+    end
+
+    %% ===== 6 Involvement Dimensions =====
+    subgraph KIN["KINESTHETIC"]
+        D001["D-001 Kinesthetic"]
+        C020["C-020 Symbolic/Mimetic/Symbiotic"]
+    end
+    subgraph SPA["SPATIAL"]
+        D002["D-002 Spatial"]
+        C023["C-023 5-Structure Taxonomy"]
+        C025["C-025 Space->Place (Tuan)"]
+    end
+    subgraph SHA["SHARED"]
+        D003["D-003 Shared"]
+        C027["C-027 Cohab/Coop/Compete"]
+    end
+    subgraph NAR["NARRATIVE"]
+        D004["D-004 Narrative"]
+        C009["C-009 Alterbiography"]
+        C029["C-029 Scripted vs Alterbio"]
+    end
+    subgraph AFF["AFFECTIVE"]
+        D005["D-005 Affective"]
+    end
+    subgraph LUD["LUDIC"]
+        D006["D-006 Ludic"]
+        C033["C-033 Strategy/Tactics/Microtactics"]
+    end
+
+    %% ===== Edges (solid = calleja-exegetical) =====
+    C001 --> D001
+    C001 --> D002
+    C001 --> D003
+    C001 --> D004
+    C001 --> D005
+    C001 --> D006
+    C001 --> T001
+    C001 --> T002
+    C002 --> C001
+    C006 --> C002
+    C002 --> C003
+    C003 --> C013
+    C003 --> C014
+    C013 --> D001
+    C013 --> D002
+    D001 --> C020
+    D002 --> C023
+    D002 --> C025
+    D003 --> C027
+    D004 --> C009
+    D004 --> C029
+    D006 --> C033
+    C010 --> D001
+    C011 --> D001
+    C011 --> D002
+    C008 --> D002
+    C008 --> C003
+    C017 --> C003
+    C018 --> C001
+    C016 --> C003
+    C007 --> C001
+    C007 --> C003
+    C035 --> C001
+    T001 --> T002
+
+    %% ===== Styling =====
+    classDef tier1 fill:#e1f5ff,stroke:#01579b,stroke-width:2px;
+    classDef dim fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef phase fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
+    classDef hub fill:#c8e6c9,stroke:#1b5e20,stroke-width:3px;
+    class C001,C003 hub;
+    class C002,C006,C007,C008,C009,C010,C011,C013,C014,C016,C017,C018,C020,C023,C025,C027,C029,C033,C035 tier1;
+    class D001,D002,D003,D004,D005,D006 dim;
+    class T001,T002 phase;

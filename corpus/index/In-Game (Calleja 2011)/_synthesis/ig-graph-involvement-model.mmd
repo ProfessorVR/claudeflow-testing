@@ -1,0 +1,135 @@
+%% ig-graph-involvement-model.mmd
+%% Calleja 2011 In-Game — 6-dimensional PIM with macro/micro arcs + Burke-pentad parallel column
+%% Generated: Phase 3 Wave 2 Agent (graph 2 of 5)
+%% Plan ref: plans/in-game-calleja-2011-analysis.md §5 Phase 3 Wave 2 graph 2
+%% Source: book-level-ontology.json (dimensions section) + ig-pim-operationalization-manual.json Section E
+%% Edge styles: solid = calleja-exegetical; dashed (-.->) = anticipatory-projection (Burke mapping per Manual §E)
+flowchart TB
+    PIM["C-001 PIM<br/>6 dimensions x 2 phases"]
+
+    subgraph DIMS["6 Involvement Dimensions"]
+        direction LR
+        D001["D-001 KINESTHETIC"]
+        D002["D-002 SPATIAL"]
+        D003["D-003 SHARED"]
+        D004["D-004 NARRATIVE"]
+        D005["D-005 AFFECTIVE"]
+        D006["D-006 LUDIC"]
+    end
+
+    PIM --> D001
+    PIM --> D002
+    PIM --> D003
+    PIM --> D004
+    PIM --> D005
+    PIM --> D006
+
+    %% ===== KINESTHETIC =====
+    KIN_MA["macro: recalling avatar-control feats"]
+    KIN_MI["micro: control-internalization;<br/>Red Orchestra readiness-to-act"]
+    KIN_G1["Counter-Strike: Source"]
+    KIN_G2["Mirror's Edge"]
+    KIN_G3["Empire: Total War"]
+    D001 --> KIN_MA
+    D001 --> KIN_MI
+    KIN_MA --> KIN_MI
+    KIN_MI --> KIN_G1
+    KIN_MI --> KIN_G2
+    KIN_MI --> KIN_G3
+
+    %% ===== SPATIAL =====
+    SPA_MA["macro: spatial mental models<br/>(WoW Ratchet->Feathermoon)"]
+    SPA_MI["micro: navigation + place-internalization"]
+    SPA_G1["World of Warcraft"]
+    SPA_G2["Half-Life 2"]
+    SPA_G3["Elder Scrolls IV: Oblivion"]
+    D002 --> SPA_MA
+    D002 --> SPA_MI
+    SPA_MA --> SPA_MI
+    SPA_MI --> SPA_G1
+    SPA_MI --> SPA_G2
+    SPA_MI --> SPA_G3
+
+    %% ===== SHARED =====
+    SHA_MA["macro: clan/guild work; bonds"]
+    SHA_MI["micro: cohab/coop/compete +<br/>ambient social-context awareness"]
+    SHA_G1["Planetside"]
+    SHA_G2["FIFA 2009"]
+    SHA_G3["Halo 3"]
+    D003 --> SHA_MA
+    D003 --> SHA_MI
+    SHA_MA --> SHA_MI
+    SHA_MI --> SHA_G1
+    SHA_MI --> SHA_G2
+    SHA_MI --> SHA_G3
+
+    %% ===== NARRATIVE =====
+    NAR_MA["macro: speculation re designed narrative"]
+    NAR_MI["micro: scripted + emergent;<br/>alterbiography (no labeled section)"]
+    NAR_G1["GTA IV"]
+    NAR_G2["Bioshock"]
+    NAR_G3["Max Payne"]
+    D004 --> NAR_MA
+    D004 -.-> NAR_MI
+    NAR_MA -.-> NAR_MI
+    NAR_MI --> NAR_G1
+    NAR_MI --> NAR_G2
+    NAR_MI --> NAR_G3
+
+    %% ===== AFFECTIVE =====
+    AFF_MA["macro: inner peace post-session;<br/>anticipatory excite/anxiety"]
+    AFF_MI["micro: calming / adrenaline / uncanny"]
+    AFF_G1["F.E.A.R."]
+    AFF_G2["Left 4 Dead 2"]
+    AFF_G3["Medal of Honor: AA"]
+    D005 --> AFF_MA
+    D005 --> AFF_MI
+    AFF_MA --> AFF_MI
+    AFF_MI --> AFF_G1
+    AFF_MI --> AFF_G2
+    AFF_MI --> AFF_G3
+
+    %% ===== LUDIC =====
+    LUD_MA["macro: winning-strategy formation;<br/>character-dev planning"]
+    LUD_MI["micro: choice + repercussion +<br/>opportunity-cost"]
+    LUD_G1["FIFA Ultimate Team"]
+    LUD_G2["Fallout 3"]
+    LUD_G3["Far Cry 2"]
+    D006 --> LUD_MA
+    D006 --> LUD_MI
+    LUD_MA --> LUD_MI
+    LUD_MI --> LUD_G1
+    LUD_MI --> LUD_G2
+    LUD_MI --> LUD_G3
+
+    %% ===== Burke pentad parallel column (anticipatory-projection, dashed) =====
+    subgraph BURKE["Burke Pentad (Manual sect E mapping — anticipatory-projection)"]
+        direction TB
+        B_AGENCY["Agency"]
+        B_SCENE["Scene"]
+        B_AGENT["Agent (+ co-agent ratios)"]
+        B_ACTPUR["Act + Purpose"]
+        B_ATTITUDE["Attitude (Burke's 6th)"]
+        B_PURACT["Purpose + Act"]
+    end
+
+    D001 -.-> B_AGENCY
+    D002 -.-> B_SCENE
+    D003 -.-> B_AGENT
+    D004 -.-> B_ACTPUR
+    D005 -.-> B_ATTITUDE
+    D006 -.-> B_PURACT
+
+    %% ===== Styling =====
+    classDef pim fill:#c8e6c9,stroke:#1b5e20,stroke-width:3px;
+    classDef dim fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef macro fill:#e3f2fd,stroke:#0d47a1,stroke-width:1px;
+    classDef micro fill:#f3e5f5,stroke:#4a148c,stroke-width:1px;
+    classDef game fill:#fafafa,stroke:#616161,stroke-width:1px,font-style:italic;
+    classDef burke fill:#fce4ec,stroke:#880e4f,stroke-width:2px,stroke-dasharray: 5 5;
+    class PIM pim;
+    class D001,D002,D003,D004,D005,D006 dim;
+    class KIN_MA,SPA_MA,SHA_MA,NAR_MA,AFF_MA,LUD_MA macro;
+    class KIN_MI,SPA_MI,SHA_MI,NAR_MI,AFF_MI,LUD_MI micro;
+    class KIN_G1,KIN_G2,KIN_G3,SPA_G1,SPA_G2,SPA_G3,SHA_G1,SHA_G2,SHA_G3,NAR_G1,NAR_G2,NAR_G3,AFF_G1,AFF_G2,AFF_G3,LUD_G1,LUD_G2,LUD_G3 game;
+    class B_AGENCY,B_SCENE,B_AGENT,B_ACTPUR,B_ATTITUDE,B_PURACT burke;

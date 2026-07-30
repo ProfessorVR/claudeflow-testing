@@ -1,0 +1,30 @@
+%% Game-element density: which units treat each element (the honor system is the hub). Dissertation RODA targets flagged.
+flowchart LR
+  HONOR["HONOR SYSTEM (hub)"]
+  rdr01["rdr-01"] --- HONOR
+  rdr02["rdr-02"] --- HONOR
+  rdr03["rdr-03"] --- HONOR
+  rdr04["rdr-04"] --- HONOR
+  rdr07["rdr-07"] --- HONOR
+  rdr08["rdr-08"] --- HONOR
+  rdr09["rdr-09"] --- HONOR
+  TB["Arthur's TB / illness"]
+  rdr10["rdr-10"] --- TB
+  rdr09 --- TB
+  rdr06["rdr-06"] --- TB
+  rdr08 --- TB
+  SD["Saint Denis"]
+  rdr05["rdr-05"] --- SD
+  rdr08 --- SD
+  rdr11["rdr-11"] --- SD
+  rdr02 --- SD
+  rdr09 --- SD
+  BAR["Valentine tutorial bar-fight (RODA target)"]:::tgt
+  rdr08 --- BAR
+  DIS["Saint Denis disruption scene (RODA target)"]:::tgt
+  rdr09 --- DIS
+  NAT["hunting / nature"]
+  rdr04 --- NAT
+  rdr07 --- NAT
+  rdr06 --- NAT
+  classDef tgt fill:#ffe9d6,stroke:#e8772e,color:#7a3d10;

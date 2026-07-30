@@ -1,0 +1,37 @@
+{
+  "entry": "Red Dead Redemption 2 Secondary (2019-2023)",
+  "type": "scholarly-article cluster",
+  "model": "corpus/index/Aristotelian Phantasia Secondary (1985-2017)",
+  "plan": "plans/rdr2-secondary-cluster-analysis.md",
+  "prefix": "rdr-",
+  "purpose": "Secondary-literature backbone for the dissertation's Part II RDR2 (screen) analysis + the RODA game-behavior method, keyed to the actualization-of-desire chain. Centerpiece = game-element/scene concordance anchored to the tutorial, Valentine bar-fight, and disruption scene.",
+  "sourceDir": "corpus/new_media/",
+  "locusPolicy": "each article's own page/section numbering; born-digital PDFs",
+  "verbatimPolicy": "no >=25-word verbatim (copyrighted); anchor-phrases <=12 words + paraphrase",
+  "units": [
+    { "id": "rdr-01", "slug": "bagnoli", "folder": "Bagnoli - Discourse About Another Era (2019)", "author": "Bagnoli, Nicolas", "year": 2019, "title": "How video games reflect a discourse about another era (RDR2)", "type": "MA thesis", "pp": 101, "strand": "history/discourse", "depth": "deep-long" },
+    { "id": "rdr-02", "slug": "westerside", "folder": "Westerside & Holopainen - Sites of Play (2019)", "author": "Westerside, Andrew & Jussi Holopainen", "year": 2019, "title": "Sites of Play: Locating Gameplace in RDR2", "pp": 14, "strand": "game space/phenomenology", "depth": "deep" },
+    { "id": "rdr-03", "slug": "tuominen", "folder": "Tuominen - Ideological Apparatuses (2020)", "author": "Tuominen, Juho", "year": 2020, "title": "Rockstar's Open World Video Games as Ideological Apparatuses", "type": "MA thesis", "pp": 87, "strand": "ideology critique", "depth": "deep-long" },
+    { "id": "rdr-04", "slug": "crowley", "folder": "Crowley - Virtual Ecologies (2021)", "author": "Crowley, E.", "year": 2021, "title": "The Educational Value of Virtual Ecologies in RDR2", "pp": 15, "strand": "ecology/pedagogy", "depth": "deep" },
+    { "id": "rdr-05", "slug": "wright", "folder": "Wright - Narratives of Progress (2021)", "author": "Wright, Esther", "year": 2021, "title": "Rockstar Games, Red Dead Redemption, and Narratives of 'Progress'", "pp": 18, "strand": "history/authenticity", "depth": "deep" },
+    { "id": "rdr-06", "slug": "vanderhoef", "folder": "Vanderhoef & Payne - Press X to Wait (2022)", "author": "Vanderhoef, John & Matthew Thomas Payne", "year": 2022, "title": "Press X to Wait: The Cultural Politics of Slow Game Time in RDR2", "pp": 18, "strand": "temporality/pace", "depth": "deep" },
+    { "id": "rdr-07", "slug": "ventomaki", "folder": "Ventomaki - Representations of Nature (2022)", "author": "Ventomäki, Hanna", "year": 2022, "title": "Representations of Nature in RDR2", "type": "MA thesis", "pp": 75, "strand": "ecocriticism", "depth": "deep-long" },
+    { "id": "rdr-08", "slug": "mcevoy", "folder": "McEvoy - Digitizing the American West (2023)", "author": "McEvoy, Amalia", "year": 2023, "title": "Digitizing the American West: Analyzing Rhetoric in RDR2", "pp": 41, "strand": "rhetoric of the West", "depth": "deep" },
+    { "id": "rdr-09", "slug": "moser", "folder": "Moser - A Crash of Worlds (Empathy)", "author": "Moser, Heather R.", "year": null, "title": "'A Crash of Worlds': RDR2 ... Empathy Through Character Performance", "type": "thesis", "pp": 50, "strand": "empathy/performance", "depth": "deep-long" },
+    { "id": "rdr-10", "slug": "ruffino", "folder": "Ruffino - There Is No Cure (Paratexts)", "author": "Ruffino, Paolo", "year": null, "title": "There Is No Cure: Paratexts as Remediations of Agency in RDR2", "pp": 14, "strand": "paratexts/agency", "depth": "deep" },
+    { "id": "rdr-11", "slug": "donald-reid", "folder": "Donald & Reid - The Wild West (Authenticity)", "author": "Donald, Iain & Reid", "year": null, "title": "The Wild West: Accuracy, Authenticity and Gameplay in RDR2", "pp": 9, "strand": "authenticity/accuracy", "depth": "deep" },
+    { "id": "rdr-12", "slug": "immersion-ux", "folder": "Immersion vs UX Design (RDR2)", "author": "(anonymous)", "year": null, "title": "Analysis of the relationship between user immersion levels and the quality of UX design in RDR2", "pp": 9, "strand": "immersion/UX", "depth": "map", "note": "image-only PDF; image-read + self-authored (no OCR tool available)" }
+  ],
+  "excluded": [
+    "Beyond Narrative - Exploring Narrative Liminality (271pp monograph, not RDR2-specific)",
+    "Daneels et al - DiGAP (game-analysis method; cross-link to RODA, not a cluster member)",
+    "Vella - Dark Souls and the Ludic Sublime (other game)",
+    "Champion - Oblivion / virtual places (other game)"
+  ],
+  "themes": ["rhetoric of the American West / frontier myth", "narratives of progress & ideology critique", "nature/ecology", "slow time & temporality", "empathy & character performance", "gameplace / open-world spatiality", "authenticity & accuracy", "paratexts & agency", "immersion/UX", "environmental education"],
+  "debate_axes": ["celebratory <-> critical-ideological", "authenticity-as-accuracy <-> authenticity-as-feel", "player-agency <-> scripted-constraint", "nature-as-resource <-> nature-as-aesthetic/ecological", "narrative-determinism <-> player-authored experience"],
+  "crossPipelineTargets": ["Part II RDR2 analysis", "RODA method (read-only)", "Wendt - Design for Dasein entry", "Calleja - In-Game", "actualization-of-desire chain"],
+  "concordanceAnchors": ["tutorial", "Valentine bar-fight", "disruption scene"],
+  "status": "COMPLETE 2026-06-23 — 12 units + _synthesis (22 files, incl. game-element concordance, debate-map, citation/secondary-lit networks, scholarly-evolution, 5 graphs, cross-pipeline bridge) built & quality-gate-verified (506 edges, 10 debates, 65 lemmas; see _synthesis/quality-gates-report.md). compiled-index.json compilation pending (generated index; run /god-learn-compile; not hand-edited).",
+  "metrics": { "units": 12, "global_edges": 506, "debates": 10, "terminology_lemmas": 65, "synthesis_files": 22, "graphs": 5, "intra_cluster_citations": 4 }
+}

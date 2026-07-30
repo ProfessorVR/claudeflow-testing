@@ -1,0 +1,23 @@
+%% Cross-pipeline bridge (<=25 edges): RDR2 cluster -> dissertation assets. Detail in _synthesis cross-pipeline notes.
+flowchart LR
+  CL["RDR2 Secondary Cluster (12 units)"]
+  PARTII["Part II: RDR2 (screen) analysis"]
+  RODA["RODA method (read-only)"]
+  WENDT["Wendt: Design for Dasein entry"]
+  CALLEJA["Calleja: In-Game (corpus)"]
+  CHAIN["Actualization-of-desire chain (A0-A4)"]
+
+  CL -->|"secondary-lit backbone"| PARTII
+  CL -->|"scholarly grounding for scenes"| RODA
+  CL -->|"game-element concordance"| RODA
+  CL -->|"UX/immersion <-> design lens"| WENDT
+  CL -->|"rdr-02 cites Calleja involvement"| CALLEJA
+  CL -->|"honor system / agency / empathy map to nodes"| CHAIN
+
+  HONOR["honor system (7 units)"] --> CHAIN
+  BAR["Valentine bar-fight (rdr-08)"] --> RODA
+  DIS["disruption scene (rdr-09)"] --> RODA
+  EMP["empathy/performance (rdr-09)"] -->|"A3 being-moved"| CHAIN
+  SLOW["slow time (rdr-06)"] -->|"A0/A1 tempo"| CHAIN
+  PLACE["gameplace (rdr-02)"] -->|"A0 horizon"| CHAIN
+  UX["auditory presence (rdr-12)"] --> WENDT

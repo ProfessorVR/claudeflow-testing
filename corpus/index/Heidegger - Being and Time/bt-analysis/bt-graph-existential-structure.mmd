@@ -1,0 +1,41 @@
+graph TD
+    Dasein["Dasein<br/><i>Dasein</i>"]
+    BITW["Being-in-the-world<br/><i>In-der-Welt-sein</i>"]
+    World["World<br/><i>Welt</i>"]
+    Worldhood["Worldhood<br/><i>Weltlichkeit</i>"]
+    Equipment["Equipment<br/><i>Zeug</i>"]
+    RTH["Readiness-to-hand<br/><i>Zuhandenheit</i>"]
+    PAH["Presence-at-hand<br/><i>Vorhandenheit</i>"]
+    Significance["Significance<br/><i>Bedeutsamkeit</i>"]
+    BeingWith["Being-with<br/><i>Mitsein</i>"]
+    DasMan["das Man<br/><i>das Man</i>"]
+    BeingIn["Being-in<br/><i>In-Sein</i>"]
+    Befindlichkeit["State-of-mind<br/><i>Befindlichkeit</i>"]
+    Verstehen["Understanding<br/><i>Verstehen</i>"]
+    Rede["Discourse<br/><i>Rede</i>"]
+    Falling["Fallenness<br/><i>Verfallenheit</i>"]
+    Care["Care<br/><i>Sorge</i>"]
+    Angst["Anxiety<br/><i>Angst</i>"]
+    Thrownness["Thrownness<br/><i>Geworfenheit</i>"]
+    Projection["Projection<br/><i>Entwurf</i>"]
+
+    BITW -->|"depends_on"| Dasein
+    World -->|"depends_on"| BITW
+    Worldhood -->|"explains"| World
+    Equipment -->|"depends_on"| RTH
+    RTH -->|"contrasts_with"| PAH
+    Significance -->|"explains"| Worldhood
+    BeingWith -->|"depends_on"| BITW
+    DasMan -->|"operationalizes"| BeingWith
+    BeingIn -->|"depends_on"| BITW
+    Befindlichkeit -->|"depends_on"| BeingIn
+    Verstehen -->|"depends_on"| BeingIn
+    Rede -->|"depends_on"| BeingIn
+    Falling -->|"depends_on"| BeingIn
+    Thrownness -->|"depends_on"| Befindlichkeit
+    Projection -->|"depends_on"| Verstehen
+    Angst -->|"operationalizes"| Befindlichkeit
+    Care -->|"presupposes"| Thrownness
+    Care -->|"presupposes"| Projection
+    Care -->|"presupposes"| Falling
+    Angst -->|"explains"| Care

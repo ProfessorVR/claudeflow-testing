@@ -1,0 +1,80 @@
+%% Heidegger and Rhetoric (Gross & Kemmann eds., SUNY 2005) — Global Concept Graph (Phase 3I-1)
+%% 28 of 36 canonical nodes; ~37 load-bearing edges (of 204). Clusters: Rhetorical / Ontological / Political / Hermeneutic
+graph TD
+  subgraph RH["Rhetorical Domain"]
+    rh[Rhetoric]
+    dyn[Dynamis]
+    pis[Pisteis ethos/pathos/logos]
+    epi[Epideictic]
+    del[Deliberative]
+    enth[Enthymeme]
+    rcr[Restricted Conception<br/><i>Pöggeler</i>]
+    rprot[Rhetorical Protopolitics<br/><i>Kisiel</i>]
+  end
+  subgraph ON["Ontological Domain"]
+    fo[Fundamental Ontology]
+    pat[Pathos]
+    log[Logos / Rede]
+    kin[Kinēsis / Being-moved]
+    hex[Hexis]
+    dox[Doxa / endoxa]
+    top[Topology of Being]
+  end
+  subgraph PO["Political Domain"]
+    mit[Mitsein / koinōnia]
+    zoo[Zōon Politikon]
+    man[Das Man / Publicness]
+    res[Resoluteness]
+    phr[Phronēsis]
+  end
+  subgraph HE["Hermeneutic Domain"]
+    bef[Befindlichkeit]
+    all[Alltäglichkeit]
+    jew[Jeweiligkeit]
+    cal[Call of Conscience]
+    hpf[Hermeneutic Phenomenology / Philology]
+    hof[Hermeneutics of Facticity]
+    kar[Kairos / Augenblick]
+    sor[Sorge / Care]
+  end
+  rh ---|is_meaning_of| fo
+  rh -->|is_meaning_of| dyn
+  rh -->|depends_on| mit
+  rh -->|is_meaning_of| all
+  rh -.->|contrasts_with| rcr
+  dyn -.->|contrasts_with| rcr
+  rprot -->|presupposes| dyn
+  mit -->|grounds| rprot
+  pat -->|grounds| log
+  pat -->|is_meaning_of| bef
+  bef -->|refines| pat
+  pat -->|presupposes| hex
+  pat -->|exemplifies| rcr
+  kin -->|is_meaning_of| pat
+  kin -->|presupposes| all
+  pis -->|operationalizes| pat
+  mit -->|is_meaning_of| zoo
+  all -->|is_meaning_of| mit
+  all -.->|contrasts_with| rcr
+  man -->|exemplifies| all
+  phr -->|is_meaning_of| cal
+  phr -->|operationalizes| kar
+  cal -->|is_meaning_of| epi
+  cal -.->|contrasts_with| rcr
+  res -->|presupposes| cal
+  kar -->|refines| jew
+  hpf -->|presupposes| hof
+  hpf -->|operationalizes| bef
+  enth -->|grounds| log
+  enth -->|operationalizes| cal
+  del -.->|contrasts_with| epi
+  dox -->|is_meaning_of| mit
+  top -.->|supersedes| rh
+  rcr -->|operationalizes| top
+  sor -->|presupposes| kar
+  classDef core fill:#fde2e4,stroke:#a83232,stroke-width:2px,color:#000
+  classDef imp fill:#e2eafc,stroke:#2c5282,stroke-width:1px,color:#000
+  classDef restr fill:#cfd8dc,stroke:#37474f,stroke-width:2px,stroke-dasharray:5 5,color:#000
+  class rh,pat,log,mit,bef,all,phr,dyn,kar,fo,kin,dox,pis,cal core
+  class enth,hex,jew,zoo,rprot,res,epi,del,man,hpf,hof,sor imp
+  class rcr,top restr

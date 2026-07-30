@@ -1,0 +1,1759 @@
+{
+  "run_id": "2026-05-13T1439",
+  "schema_version": "Plan v1.4 §9.4 + §10",
+  "agent": "Phase 3 Wave 4 Agent G",
+  "generated": "2026-05-13",
+  "tier_a_count_total": 143,
+  "tier_b_count_total": 7,
+  "tier_c_count_total": 17,
+  "placeholder_count_total": 7,
+  "in_text_only_count_total": 26,
+  "source_priority": "corpus/index FIRST -> ChromaDB -> Perplexity (feedback-corpus-index-first.md)",
+  "routes_by_pipeline_summary": {
+    "Aristotle - Complete Works": 73,
+    "Heidegger - Basic Concepts of Aristotelian Philosophy": 18,
+    "Heidegger - Being and Time": 15,
+    "Heidegger and Rhetoric": 3,
+    "Aristotelian Phantasia Secondary (1985-2017)": 15,
+    "Aristotelian Motion and Time Secondary": 3,
+    "Rickert - Ambient Rhetoric": 1,
+    "A Grammar of Motives (Burke 1945)": 5,
+    "Cross-section reference": 1,
+    "corpus/download (Phase 4.0 promote)": 4,
+    "corpus/index Dissertation (cross-section)": 1
+  },
+  "routes": [
+    {
+      "gap_id": "DISS-00-G07",
+      "claim_id": "DISS-00-C026",
+      "section": "DISS-00-INTRO",
+      "missing_locus": "DA III.7 431a8-12 — diakrisis methodological remark",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-7",
+        "expected_content": "Perception-as-krisis at DA III.7 431a8-12",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima III.7 (431a8-12)"
+      },
+      "retrieval_action": "ADD_VERBATIM_FROM_CORPUS",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-00-G08",
+      "claim_id": "DISS-00-C001",
+      "section": "DISS-00-INTRO",
+      "missing_locus": "DA III.10 433a13-15 + MA 6 700b15-22 — animal motion as actualization of desire",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-10 + MA-06",
+        "expected_content": "Orexis-as-moved-mover (DA III.10) + animal locomotion (MA 6)",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima III.10 + Movement of Animals 6"
+      },
+      "retrieval_action": "ADD_VERBATIM_FROM_CORPUS",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-00-G09",
+      "claim_id": "DISS-00-C072",
+      "section": "DISS-00-INTRO",
+      "missing_locus": "Phys. VII.3 245b1-13 — psychic events as species of natural motion",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "PHYS-07",
+        "expected_content": "Alteration-applies-to-soul argument",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Physics VII.3"
+      },
+      "retrieval_action": "ADD_FLAG_OR_PRIMARY_CITATION",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-00-G10",
+      "claim_id": "DISS-00-C022",
+      "section": "DISS-00-INTRO",
+      "missing_locus": "DA II.5 + On Dreams + On Memory + DA III.3 — four temporal events T_1..T_4",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-II-5 + ON-DREAMS + ON-MEMORY + DA-III-3",
+        "expected_content": "Perception actualization, residual motion, memory-imagination linkage, phantasia distinction",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{De Anima II.5 (416b32-417a20), De Anima III.3 (429a1-2), On Dreams (459a24-460b3), On Memory (449b9-450a25)}"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATIONS+RESOLVE_HL",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-00-G11",
+      "claim_id": "DISS-00-C027",
+      "section": "DISS-00-INTRO",
+      "missing_locus": "Phys. III.1 201a10-14 + Phys. IV.11 219b1-2 — continuous-unfolding thesis",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "PHYS-03 + PHYS-04",
+        "expected_content": "Energeia-ateles definition + time-canonical anchor",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Physics III.1 + Physics IV.11"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATIONS",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-00-G12",
+      "claim_id": "DISS-00-C028",
+      "section": "DISS-00-INTRO",
+      "missing_locus": "SZ §65 (H.327) or §72 (H.373) — Heidegger BT 499 stretching-along claim sharpening",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Being and Time",
+        "unit_id": "BT-§65 + BT-§72",
+        "expected_content": "Ecstases of temporality (§65) + connectedness-of-life (§72)",
+        "expected_unit_path": "corpus/index/Heidegger - Being and Time/§65 + §72"
+      },
+      "retrieval_action": "SHARPEN_CITATION_TO_SZ_SECTION",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-00-G13",
+      "claim_id": "DISS-00-C029",
+      "section": "DISS-00-INTRO",
+      "missing_locus": "DA III.3 427b15-428a18 — phantasia-temporal-distinguishing thesis",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-3",
+        "expected_content": "Phantasia-distinct-from-aisthēsis/doxa/episteme/nous",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima III.3 (427b15-428a18)"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-00-G14",
+      "claim_id": "DISS-00-C030",
+      "section": "DISS-00-INTRO",
+      "missing_locus": "DA III.3 427b14-26 — not-a-mixture / kinetic-constitution thesis",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-3",
+        "expected_content": "Same DA III.3 cluster as gap-13",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima III.3 (427b14-26)"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION+ADD_FLAG",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-00-G15",
+      "claim_id": "DISS-00-C044",
+      "section": "DISS-00-INTRO",
+      "missing_locus": "BCAP 133 — anti-internalist pathē-as-being-taken anchor",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "BCAP-p133",
+        "expected_content": "Pathē-as-being-taken canonical anchor",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.133"
+      },
+      "retrieval_action": "ADD_HEIDEGGER_CITATION",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-00-G16",
+      "claim_id": "DISS-00-C045",
+      "section": "DISS-00-INTRO",
+      "missing_locus": "DA I.1 403a25-b19 + DA II.5 416b33-417a20 + DA III.2 425b26-27 — enmattered-accounts cluster",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-I-1 + DA-II-5 + DA-III-2",
+        "expected_content": "Enmattered accounts + joint actualization + single-event-under-two-logoi",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{De Anima I.1, De Anima II.5, De Anima III.2}"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATIONS+RESOLVE_HL",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-01-G01",
+      "claim_id": "DISS-01-C042",
+      "section": "DISS-01-A0",
+      "missing_locus": "BCAP / GA 18 — kinēsis as Bewegtheit verbatim (asterisk-six placeholder)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "u-fp2a or u-fp2b",
+        "expected_content": "Kinēsis as Seinscharakter Bewegtheit; recovery of energeia ateles at fundamental-ontology level",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-structured/u-fp2a"
+      },
+      "retrieval_action": "ADD_VERBATIM_FROM_CORPUS",
+      "estimated_effort": "medium",
+      "placeholder_type": "asterisk-six"
+    },
+    {
+      "gap_id": "DISS-01-G02",
+      "claim_id": "DISS-01-C089",
+      "section": "DISS-01-A0",
+      "missing_locus": "SZ §18 H.84 — Bewandtnis/Worumwillen worldhood (asterisk-six placeholder)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Being and Time",
+        "unit_id": "BT-§18",
+        "expected_content": "Involvement (Bewandtnis), totality of involvements, for-the-sake-of-which",
+        "expected_unit_path": "corpus/index/Heidegger - Being and Time/bt-structured/§18 (H.84)"
+      },
+      "retrieval_action": "ADD_VERBATIM_FROM_CORPUS",
+      "estimated_effort": "medium",
+      "placeholder_type": "asterisk-six"
+    },
+    {
+      "gap_id": "DISS-01-G03",
+      "claim_id": "DISS-01-C124",
+      "section": "DISS-01-A0",
+      "missing_locus": "SZ §81 H.421-422 — Innerzeitigkeit / Aristotle's time definition (asterisk-six placeholder)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Being and Time",
+        "unit_id": "BT-§81",
+        "expected_content": "Within-time-ness, ordinary conception of time, engagement with Aristotelian time-as-number-of-motion",
+        "expected_unit_path": "corpus/index/Heidegger - Being and Time/bt-structured/§81 (H.421-422)"
+      },
+      "retrieval_action": "ADD_VERBATIM_FROM_CORPUS",
+      "estimated_effort": "medium",
+      "placeholder_type": "asterisk-six"
+    },
+    {
+      "gap_id": "DISS-01-G04",
+      "claim_id": "DISS-01-C148",
+      "section": "DISS-01-A0",
+      "missing_locus": "SZ §65 H.328-329 — Zeitlichkeit / three ecstases (asterisk-six placeholder)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Being and Time",
+        "unit_id": "BT-§65",
+        "expected_content": "Gewesenheit, Gegenwart, Zukunft; co-original unity",
+        "expected_unit_path": "corpus/index/Heidegger - Being and Time/bt-structured/§65 (H.328-329)"
+      },
+      "retrieval_action": "ADD_VERBATIM_FROM_CORPUS",
+      "estimated_effort": "medium",
+      "placeholder_type": "asterisk-six"
+    },
+    {
+      "gap_id": "DISS-01-G05",
+      "claim_id": "DISS-01-C016",
+      "section": "DISS-01-A0",
+      "missing_locus": "Burke Grammar pp. 261-262 (NOT 280-281) — actuality-prior-to-potentiality",
+      "corpus_index_route": {
+        "pipeline": "A Grammar of Motives (Burke 1945)",
+        "unit_id": "gm-06-deep (Burke - Act chapter)",
+        "expected_content": "C34 + C04 anchors at pp.253, 261-262: 'one actuality always precedes another in time' + 'man is prior to boy'",
+        "expected_unit_path": "corpus/index/A Grammar of Motives (Burke 1945)/Burke - Act (Aristotle and Aquinas)/gm-06-deep.json"
+      },
+      "retrieval_action": "CORRECT_PAGE_NUMBERS",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-01-G06",
+      "claim_id": "DISS-01-C088",
+      "section": "DISS-01-A0",
+      "missing_locus": "Burke Grammar pp. 214-215 OR pp. 152-159 — 'conditions of an organism's existence' VERIFY",
+      "corpus_index_route": {
+        "pipeline": "A Grammar of Motives (Burke 1945)",
+        "unit_id": "gm-04-deep (Scene/Darwin) or gm-05-deep (Agent/Santayana)",
+        "expected_content": "Darwin's Conditions of Existence (Scene chapter, pp. 152-159) or Santayana (Agent chapter, pp. 192-227)",
+        "expected_unit_path": "corpus/index/A Grammar of Motives (Burke 1945)/Burke - Scene + Burke - Agent"
+      },
+      "retrieval_action": "VERIFY_OR_CORRECT_PAGE_NUMBERS",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-01-G07",
+      "claim_id": "DISS-01-C033",
+      "section": "DISS-01-A0",
+      "missing_locus": "Hawhee 2011 Rhetorical Vision p. 154 (NOT Bodily Arts 2004)",
+      "corpus_index_route": {
+        "pipeline": "Aristotelian Phantasia Secondary (1985-2017)",
+        "unit_id": "phx-07-hawhee",
+        "expected_content": "'Energeia means the presence of the thing' at p. 154, with Metaph. 9.5.1048a.32-34 quotation",
+        "expected_unit_path": "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Hawhee - Rhetorical Vision (2011)/phx-07-hawhee.json"
+      },
+      "retrieval_action": "CORRECT_WORK_TITLE",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-01-G08",
+      "claim_id": "DISS-01-C141",
+      "section": "DISS-01-A0",
+      "missing_locus": "Phys. IV.14 223a21-26 (NOT 223a25-27) — time-without-soul",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "PHYS-04",
+        "expected_content": "Bekker line 236: 223a21-26 'Whether if soul did not exist, time would exist'",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/aristotle-phys-04.json + phase2-phys-04.md"
+      },
+      "retrieval_action": "VERIFY_OR_CORRECT_BEKKER_RANGE",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-01-G09",
+      "claim_id": "DISS-01-C081",
+      "section": "DISS-01-A0",
+      "missing_locus": "Met. XI.6/K.9/K.12 — motion-as-passage verbatim verification",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "META-08",
+        "expected_content": "K.6 Protagoras refutation; K.9 motion recap; K.12 change-as-passage",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/phase2-meta-08.md + aristotle-meta-08.json"
+      },
+      "retrieval_action": "VERIFY_BEKKER_RANGE_AND_CHAPTER",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-01-G10",
+      "claim_id": "DISS-01-C129",
+      "section": "DISS-01-A0",
+      "missing_locus": "DA II.1 412a19-20 + Phys. IV.14 — soul/time parallel flag",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-II-1 + PHYS-04",
+        "expected_content": "Soul as form + soul as counter",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/aristotle-da-02.json + aristotle-phys-04.json"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-01-G11",
+      "claim_id": "DISS-01-C051",
+      "section": "DISS-01-A0",
+      "missing_locus": "BCAP — kinēsis ≅ Bewegtheit interpretive flag at framing level",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "bcap-analysis",
+        "expected_content": "Verify Heideggerian attribution; flag dissertation's framing-of-the-framing",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG_AT_FRAMING_LEVEL",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-01-G12",
+      "claim_id": "DISS-01-C094",
+      "section": "DISS-01-A0",
+      "missing_locus": "SZ §§14-18 — In-der-Welt-sein analysis; strengthen interpretive flag",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Being and Time",
+        "unit_id": "BT-§14-18",
+        "expected_content": "Worldhood analysis",
+        "expected_unit_path": "corpus/index/Heidegger - Being and Time/bt-structured/§14-18"
+      },
+      "retrieval_action": "STRENGTHEN_INTERPRETIVE_FLAG",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-01-G13",
+      "claim_id": "DISS-01-C113",
+      "section": "DISS-01-A0",
+      "missing_locus": "SZ §§32-33 — understanding-interpretation circle",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Being and Time",
+        "unit_id": "BT-§32-33",
+        "expected_content": "Hermeneutical circle structure",
+        "expected_unit_path": "corpus/index/Heidegger - Being and Time/bt-structured/§32-33"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-01-G16",
+      "claim_id": "DISS-01-C098",
+      "section": "DISS-01-A0",
+      "missing_locus": "Phys. IV.11 218b21-219a15 — 'we perceive movement and time together' Bekker verification",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "PHYS-04",
+        "expected_content": "Awakened-sleeping passage, before-and-after in time/motion/magnitude",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/aristotle-phys-04.json + phase2-phys-04.md"
+      },
+      "retrieval_action": "VERIFY_BEKKER_LINES",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-01-G17",
+      "claim_id": "DISS-01-C104",
+      "section": "DISS-01-A0",
+      "missing_locus": "Phys. IV.11 219b16-25 — body-carried-along analogy",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "PHYS-04",
+        "expected_content": "Now corresponds to body carried along; time corresponds to motion; now same in substratum, different in being (219b12-15)",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/aristotle-phys-04.json + phase2-phys-04.md"
+      },
+      "retrieval_action": "VERIFY_BEKKER_LINES",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-02-G01",
+      "claim_id": "DISS-02-C033",
+      "section": "DISS-02-A1A2",
+      "missing_locus": "BCAP 126 — aisthēsis as mesotēs with character of kritikon (asterisk-six placeholder)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "u-fp3c (SS17b-beta)",
+        "expected_content": "BCAP pp. 126-127 perception-as-kritikon VERIFIED in phase2-u-fp3c.md",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/phase2-u-fp3c.md"
+      },
+      "retrieval_action": "FILL_ASTERISK_PLACEHOLDER",
+      "estimated_effort": "small",
+      "placeholder_type": "asterisk-six",
+      "relocation_note": "§1.4 → §1.2 RELOCATION TARGET (iii); verbatim should match DISS-04-C114"
+    },
+    {
+      "gap_id": "DISS-02-G02",
+      "claim_id": "DISS-02-C075",
+      "section": "DISS-02-A1A2",
+      "missing_locus": "BCAP 131-132 — Met. Δ.21 fourfold + sōtēria thesis (asterisk-six placeholder)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "u-fp3c",
+        "expected_content": "Progressive-narrowing reading + sōtēria thesis VERIFIED",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/phase2-u-fp3c.md"
+      },
+      "retrieval_action": "FILL_ASTERISK_PLACEHOLDER",
+      "estimated_effort": "small",
+      "placeholder_type": "asterisk-six",
+      "relocation_note": "§1.4 → §1.2 RELOCATION TARGET (i); source-claims DISS-04-C084 through C098"
+    },
+    {
+      "gap_id": "DISS-02-G03",
+      "claim_id": "DISS-02-C091",
+      "section": "DISS-02-A1A2",
+      "missing_locus": "White p. 498 — resonant phantasia (asterisk-six placeholder)",
+      "corpus_index_route": {
+        "pipeline": "Aristotelian Phantasia Secondary (1985-2017)",
+        "unit_id": "White - Meaning of Phantasia",
+        "expected_content": "'Lingering, resonating, echoing presence of sensible forms freed from their original matter'",
+        "expected_unit_path": "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/White - Meaning of Phantasia"
+      },
+      "retrieval_action": "FILL_ASTERISK_PLACEHOLDER",
+      "estimated_effort": "small",
+      "placeholder_type": "asterisk-six",
+      "user_action_note": "User supplies verbatim manually per feedback-missing-source-placeholder.md if White not indexed; Perplexity Q-013 as fallback."
+    },
+    {
+      "gap_id": "DISS-02-G04",
+      "claim_id": "DISS-02-C120",
+      "section": "DISS-02-A1A2",
+      "missing_locus": "BCAP 164 — hēdonē 'in the moment' (asterisk-six placeholder)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "bcap-analysis (p.164)",
+        "expected_content": "Hēdonē as in-the-moment, not in time as determinate span",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis (BCAP 164)"
+      },
+      "retrieval_action": "FILL_ASTERISK_PLACEHOLDER",
+      "estimated_effort": "small",
+      "placeholder_type": "asterisk-six"
+    },
+    {
+      "gap_id": "DISS-02-G05",
+      "claim_id": "DISS-02-C121",
+      "section": "DISS-02-A1A2",
+      "missing_locus": "BCAP 166 — hēdonē/lypē co-given (asterisk-six placeholder)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "bcap-analysis (p.166)",
+        "expected_content": "Hēdonē/lypē co-given with every mode of being-there",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis (BCAP 166)"
+      },
+      "retrieval_action": "FILL_ASTERISK_PLACEHOLDER",
+      "estimated_effort": "small",
+      "placeholder_type": "asterisk-six"
+    },
+    {
+      "gap_id": "DISS-02-G06",
+      "claim_id": "DISS-02-C036",
+      "section": "DISS-02-A1A2",
+      "missing_locus": "White pp. 9-11 — to kritikon unifying capacity (asterisk-six placeholder)",
+      "corpus_index_route": {
+        "pipeline": "Aristotelian Phantasia Secondary (1985-2017)",
+        "unit_id": "White - Meaning of Phantasia",
+        "expected_content": "To kritikon as unifying capacity (perception, phantasia, thought)",
+        "expected_unit_path": "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/White - Meaning of Phantasia"
+      },
+      "retrieval_action": "FILL_ASTERISK_PLACEHOLDER",
+      "estimated_effort": "small",
+      "placeholder_type": "asterisk-six",
+      "user_action_note": "User supplies verbatim manually if White not indexed; Perplexity Q-012 as fallback."
+    },
+    {
+      "gap_id": "DISS-02-G07",
+      "claim_id": "DISS-02-C003",
+      "section": "DISS-02-A1A2",
+      "missing_locus": "DA III.10 433b12-25 — three-factor schema",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-10",
+        "expected_content": "Three-factor schema (unmoved originator / moved mover / that which is moved)",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima III.10"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-02-G08",
+      "claim_id": "DISS-02-C153",
+      "section": "DISS-02-A1A2",
+      "missing_locus": "Phys. III.1 201a10-11 — kinēsis canonical definition applicability",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "PHYS-03",
+        "expected_content": "Kinēsis canonical definition for resonant-kinēsis justification",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Physics III.1-2"
+      },
+      "retrieval_action": "ADD_CITATION+CLARIFY",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-02-G09",
+      "claim_id": "DISS-02-C129",
+      "section": "DISS-02-A1A2",
+      "missing_locus": "Rhet. II.2 (anger) + II.5 (fear) + II.8 (pity) — Bekker references",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "RHET-02",
+        "expected_content": "Anger 1378a30-32, fear 1382a21-25, pity 1385b13-16",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Rhetoric II.2 + II.5 + II.8"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-02-G10",
+      "claim_id": "DISS-02-C146",
+      "section": "DISS-02-A1A2",
+      "missing_locus": "Nussbaum De Motu + Caston phantasia-in-animal-cognition — full citations if developed",
+      "corpus_index_route": {
+        "pipeline": "Aristotelian Phantasia Secondary (1985-2017)",
+        "unit_id": "Nussbaum + Caston",
+        "expected_content": "Nussbaum 1978/1985 De Motu Animalium commentary; Caston phantasia",
+        "expected_unit_path": "corpus/index/Aristotelian Phantasia Secondary (1985-2017)"
+      },
+      "retrieval_action": "ADD_SECONDARY_CITATION_IF_DEFERRAL_DEVELOPED",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-03-G01",
+      "claim_id": "DISS-03-C076",
+      "section": "DISS-03-A3",
+      "missing_locus": "Papachristou 2013 'Three Kinds of Phantasia' pdf p.16 fn.57 Aquinas Sentencia Liber II",
+      "corpus_index_route": {
+        "pipeline": "Aristotelian Phantasia Secondary (1985-2017)",
+        "unit_id": "phx-08-papachristou",
+        "expected_content": "Three-kinds expansion of DA III.10 binary; Aquinas motus phantasiae citation",
+        "expected_unit_path": "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Papachristou - Three Kinds of Phantasia (2013)/phx-08-papachristou.md"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION (CRITICAL — Plan §8.2 special instruction b)",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-03-G02",
+      "claim_id": "DISS-03-C006",
+      "section": "DISS-03-A3",
+      "missing_locus": "Papachristou + Frede — phantasia/phantasma distinction",
+      "corpus_index_route": {
+        "pipeline": "Aristotelian Phantasia Secondary (1985-2017)",
+        "unit_id": "phx-08-papachristou + phx-XX-frede",
+        "expected_content": "Capacity/activity/product (Papachristou); cognitive role (Frede)",
+        "expected_unit_path": "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/{Papachristou - Three Kinds of Phantasia, Frede - Cognitive Role of Phantasia}"
+      },
+      "retrieval_action": "REPLACE_HL_CITE_WITH_FOOTNOTE",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G03",
+      "claim_id": "DISS-03-C008",
+      "section": "DISS-03-A3",
+      "missing_locus": "DA III.10 433b29 (sensory phantasia) + DA III.3 428a1-3/428b11 — two footnote placeholders",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-10 + DA-III-3",
+        "expected_content": "Sensory phantasia in all animals; phantasia-as-residual-perception",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{DA-III-10, DA-III-11}"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATIONS",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G04",
+      "claim_id": "DISS-03-C010",
+      "section": "DISS-03-A3",
+      "missing_locus": "DA III.7 431a16-17 (soul never thinks without an image) + BCAP 134",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "DA-III-7 + BCAP-p134",
+        "expected_content": "Verbatim Aristotelian dictum + Heideggerian noein-grounded-in-phantasia",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/DA-III-7 + corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy"
+      },
+      "retrieval_action": "ADD_VERBATIM_FROM_CORPUS",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G05",
+      "claim_id": "DISS-03-C011",
+      "section": "DISS-03-A3",
+      "missing_locus": "Burke RoM 19-23 + 55-59 — Burke/Hazlitt identification expansion",
+      "corpus_index_route": {
+        "pipeline": "A Grammar of Motives (Burke 1945)",
+        "unit_id": "Burke RoM (Rhetoric of Motives) — separate corpus item",
+        "expected_content": "Identification + quotation/definition/point expansion",
+        "expected_unit_path": "corpus/index/A Grammar of Motives (Burke 1945) [or separate Burke RoM pipeline]"
+      },
+      "retrieval_action": "EXPAND_BURKE_HAZLITT_TREATMENT",
+      "estimated_effort": "small-medium"
+    },
+    {
+      "gap_id": "DISS-03-G06",
+      "claim_id": "DISS-03-C035",
+      "section": "DISS-03-A3",
+      "missing_locus": "DA III.3 427b14-15 (or 427b14-21) — full Bekker for truncated '14-15'",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-3",
+        "expected_content": "Phantasia is different from sense and thought",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/DA-III-3"
+      },
+      "retrieval_action": "REPLACE_BEKKER_TRUNCATION",
+      "estimated_effort": "trivial"
+    },
+    {
+      "gap_id": "DISS-03-G07",
+      "claim_id": "DISS-03-C038",
+      "section": "DISS-03-A3",
+      "missing_locus": "BCAP 95/110/176 — Heidegger logos/speech quote placeholder",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "bcap-analysis (95, 110, 176)",
+        "expected_content": "Logos as articulation of being; rhetoric as interpretation of being-there; logos-articulation grounded in pre-logos Befindlichkeit",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy"
+      },
+      "retrieval_action": "INSERT_BCAP_LOGOS_QUOTE",
+      "estimated_effort": "small-medium"
+    },
+    {
+      "gap_id": "DISS-03-G09",
+      "claim_id": "DISS-03-C052",
+      "section": "DISS-03-A3",
+      "missing_locus": "SZ §65 / §§72-77 — ecstatic-temporality + Gewesenheit",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Being and Time",
+        "unit_id": "BT-§65 + BT-§72-77",
+        "expected_content": "Verbatim quotations on ecstatic temporality + Gewesenheit as living dimension",
+        "expected_unit_path": "corpus/index/Heidegger - Being and Time"
+      },
+      "retrieval_action": "INSERT_VERBATIM_QUOTATIONS",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-03-G10",
+      "claim_id": "DISS-03-C053",
+      "section": "DISS-03-A3",
+      "missing_locus": "SZ §65 — Gewesenheit gloss supporting quotation",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Being and Time",
+        "unit_id": "BT-§65",
+        "expected_content": "Combinable with G09 remediation",
+        "expected_unit_path": "corpus/index/Heidegger - Being and Time/bt-structured/§65"
+      },
+      "retrieval_action": "INSERT_SUPPORTING_QUOTATION",
+      "estimated_effort": "medium (combined with G09)"
+    },
+    {
+      "gap_id": "DISS-03-G12",
+      "claim_id": "DISS-03-C082",
+      "section": "DISS-03-A3",
+      "missing_locus": "SZ §65 H.323-331 — three ecstases of Zeitlichkeit",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Being and Time",
+        "unit_id": "BT-§65",
+        "expected_content": "Future / having-been / present ecstases",
+        "expected_unit_path": "corpus/index/Heidegger - Being and Time/bt-structured/§65 (H.323-331)"
+      },
+      "retrieval_action": "ADD_CITATION_AND_QUOTATION",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G14",
+      "claim_id": "DISS-03-C090",
+      "section": "DISS-03-A3",
+      "missing_locus": "BCAP 93-94 — 'truthood added from without' (phantasia) vs 'already in formation' (doxa)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "bcap-analysis (93-94)",
+        "expected_content": "Dynaton-adynaton distinction; structural-distinctness argument",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy"
+      },
+      "retrieval_action": "EXPAND_HEIDEGGERIAN_TREATMENT",
+      "estimated_effort": "small-medium"
+    },
+    {
+      "gap_id": "DISS-03-G15",
+      "claim_id": "DISS-03-C145",
+      "section": "DISS-03-A3",
+      "missing_locus": "DA II.4 415b21-28 (soul as origin) OR DA III.10 — replace vague 'DA p. 6'",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-II-4 + DA-III-10",
+        "expected_content": "Soul as origin; orexis as mover",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{DA-II-4, DA-III-10}"
+      },
+      "retrieval_action": "REPLACE_VAGUE_PAGINATION_WITH_BEKKER",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G16",
+      "claim_id": "DISS-03-C148",
+      "section": "DISS-03-A3",
+      "missing_locus": "Phys. II.1 192b13-23 — nature as principle of motion (replace 'Physics 15-17')",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "PHYS-02",
+        "expected_content": "Nature as principle of motion canonical statement",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/PHYS-02"
+      },
+      "retrieval_action": "REPLACE_VAGUE_PAGINATION_WITH_BEKKER",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G17",
+      "claim_id": "DISS-03-C155",
+      "section": "DISS-03-A3",
+      "missing_locus": "BCAP 124 — Heidegger doxa-through-discourse/view-construction (inlinenote integration decision)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "bcap-analysis (124)",
+        "expected_content": "Public-orientation thesis; doxa as view-construction",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy"
+      },
+      "retrieval_action": "USER_DECISION_INTEGRATE_OR_DELETE",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-03-G20",
+      "claim_id": "DISS-03-C003",
+      "section": "DISS-03-A3",
+      "missing_locus": "DA III.7 431a14-17 — phantasia architectonic-hinge",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-7",
+        "expected_content": "Phantasmata as substitutes for sensibles in nous",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/DA-III-7"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G21",
+      "claim_id": "DISS-03-C009",
+      "section": "DISS-03-A3",
+      "missing_locus": "DA III.3 428a1-3 + 429a1-2 (primary); Frede 1992 + Caston 1995 (secondary)",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Aristotelian Phantasia Secondary (1985-2017)",
+        "unit_id": "DA-III-3 + Frede + Caston",
+        "expected_content": "Determinacy + availability features of phantasma; secondary on determinate-image and intentionality",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/DA-III-3 + corpus/index/Aristotelian Phantasia Secondary (1985-2017)/{Frede - Cognitive Role of Phantasia (1992), Caston - Why Aristotle Needs Imagination (1995)}"
+      },
+      "retrieval_action": "ADD_PRIMARY_AND_SECONDARY_CITATIONS",
+      "estimated_effort": "small-medium"
+    },
+    {
+      "gap_id": "DISS-03-G22",
+      "claim_id": "DISS-03-C026",
+      "section": "DISS-03-A3",
+      "missing_locus": "DA III.11 434a16-21 — phantasia bouleutikē",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-11",
+        "expected_content": "Phantasia bouleutikē introduction",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/DA-III-11"
+      },
+      "retrieval_action": "ADD_INLINE_REFERENCE",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G23",
+      "claim_id": "DISS-03-C078",
+      "section": "DISS-03-A3",
+      "missing_locus": "DA III.10 433b12-25 — three-factor schema applied to M_2",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-10",
+        "expected_content": "Unmoved originator / moved mover / that which is moved",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/DA-III-10"
+      },
+      "retrieval_action": "ADD_FOOTNOTE_CITATION",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G24",
+      "claim_id": "DISS-03-C021",
+      "section": "DISS-03-A3",
+      "missing_locus": "Met. IX.6-8 — dunamis/energeia for resonant orexis",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "MET-09",
+        "expected_content": "Dunamis/energeia distinction canonical site",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/MET-09"
+      },
+      "retrieval_action": "OPTIONAL_REINFORCEMENT_FOOTNOTE",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G25",
+      "claim_id": "DISS-03-C034",
+      "section": "DISS-03-A3",
+      "missing_locus": "DA III.8 432a3-9 — forms-in-phantasmata",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-8",
+        "expected_content": "Forms-in-phantasmata canonical statement",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/DA-III-8"
+      },
+      "retrieval_action": "OPTIONAL_REINFORCEMENT",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G26",
+      "claim_id": "DISS-03-C036",
+      "section": "DISS-03-A3",
+      "missing_locus": "Met. Z.10 1035b27-30 + Caston 1996/2002 — universal-as-predicable",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Aristotelian Phantasia Secondary (1985-2017)",
+        "unit_id": "MET-07 + Caston",
+        "expected_content": "Met. Z.10 universal; Caston abstraction-doctrine contestation",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/MET-07 + corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Caston - Why Aristotle Needs Imagination (1995)"
+      },
+      "retrieval_action": "OPTIONAL_PLUS_HEDGING",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G27",
+      "claim_id": "DISS-03-C063",
+      "section": "DISS-03-A3",
+      "missing_locus": "DA III.10 433b29 + DA III.11 434a16-21 — sensory/deliberative distinction",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-10 + DA-III-11",
+        "expected_content": "Logistikē/aisthētikē distinction + phantasia bouleutikē",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{DA-III-10, DA-III-11}"
+      },
+      "retrieval_action": "ADD_CITATIONS",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G28",
+      "claim_id": "DISS-03-C115",
+      "section": "DISS-03-A3",
+      "missing_locus": "Rhet. II.1 1378a20-22 — definition of pathē",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "RHET-02",
+        "expected_content": "Canonical pathē definition (covered canonically in §1.4)",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/RHET-02"
+      },
+      "retrieval_action": "OPTIONAL_GESTURE",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-03-G29",
+      "claim_id": "DISS-03-C143",
+      "section": "DISS-03-A3",
+      "missing_locus": "DA III.10 433a27-29 — apparent good moves orexis",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-10",
+        "expected_content": "Apparent-good-moves-orexis doctrine",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/DA-III-10"
+      },
+      "retrieval_action": "ADD_CITATION",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-04-G-C163",
+      "claim_id": "DISS-04-C163",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "MA 7 701a29-b1 — causal chain enumeration",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "MA-07",
+        "expected_content": "Causal-chain enumeration Bekker addition",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Movement of Animals 7"
+      },
+      "retrieval_action": "ADD_BEKKER",
+      "estimated_effort": "trivial",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C165",
+      "claim_id": "DISS-04-C165",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "MA 7 — Loeb edition + Bekker for pathē translation footnote",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "MA-07",
+        "expected_content": "Loeb edition cite + Bekker",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Movement of Animals 7"
+      },
+      "retrieval_action": "RESOLVE_HL+ADD_BEKKER+EDITION_REF",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-supplementary"
+    },
+    {
+      "gap_id": "DISS-04-G-C299",
+      "claim_id": "DISS-04-C299",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "Rhet. I.11 1370a28-33 — precise Bekker line range",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "RHET-01",
+        "expected_content": "Bekker line completion",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Rhetoric I.11"
+      },
+      "retrieval_action": "ADD_BEKKER_LINE",
+      "estimated_effort": "trivial",
+      "cache_overlap_estimate": "cache-likely-supplementary"
+    },
+    {
+      "gap_id": "DISS-04-G-C002",
+      "claim_id": "DISS-04-C002",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "DA III.7 — basic affective valence canonical-half-1",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-7",
+        "expected_content": "DA III.7 canonical anchor in master report",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima III.7"
+      },
+      "retrieval_action": "RESOLVE_INLINENOTE+ADD_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C003",
+      "claim_id": "DISS-04-C003",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "On Dreams + DA II.5 — resonant orexis canonical-half-2",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "ON-DREAMS + DA-II-5",
+        "expected_content": "Residual motion (De Insomniis) + perception actualization",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{On Dreams, De Anima II.5}"
+      },
+      "retrieval_action": "RESOLVE_INLINENOTE+ADD_PRIMARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C030",
+      "claim_id": "DISS-04-C030",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "On Dreams + DA II.5 — resonant orexis canonical definition (line 9)",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "ON-DREAMS + DA-II-5",
+        "expected_content": "Same as C003",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{On Dreams, De Anima II.5}"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C031",
+      "claim_id": "DISS-04-C031",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "DA II.2 + BCAP 115 — hedonic-co-givenness universalist",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "DA-II-2 + BCAP-p115",
+        "expected_content": "DA II.2 anchor + BCAP 115 Heideggerian gloss",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima II.2 + corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.115"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C034",
+      "claim_id": "DISS-04-C034",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "DA III.3 + DA III.7 — perception-vs-thinking mapping",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-3 + DA-III-7",
+        "expected_content": "Phantasia distinct + nous-soul-thinks-with-image",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{De Anima III.3, De Anima III.7}"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C036",
+      "claim_id": "DISS-04-C036",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "DA II.5 — articulational concretion canonical thesis (paschein-preservation)",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-II-5",
+        "expected_content": "DA II.5 paschein-preservation canonical anchor",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima II.5"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION+ADD_FLAG",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C045",
+      "claim_id": "DISS-04-C045",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "MA 7 — variable-presence-across-action-types",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "MA-07",
+        "expected_content": "MA 7 causal chain canonical site",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Movement of Animals 7"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-supplementary"
+    },
+    {
+      "gap_id": "DISS-04-G-C046",
+      "claim_id": "DISS-04-C046",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "MA 7 — drinking case",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "MA-07",
+        "expected_content": "Drinking case reference",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Movement of Animals 7"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION+ADD_FLAG",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-supplementary"
+    },
+    {
+      "gap_id": "DISS-04-G-C048",
+      "claim_id": "DISS-04-C048",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "DA II.5 + BCAP 132 — articulational-resolution restatement",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "DA-II-5 + BCAP-p132",
+        "expected_content": "Articulational-resolution anchor",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima II.5 + corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.132"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C059",
+      "claim_id": "DISS-04-C059",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "BCAP 132 — paschein-preservation extended to anger/fear",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "BCAP-p132",
+        "expected_content": "Paschein-preservation extension argument",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.132"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION+ADD_FLAG",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C060",
+      "claim_id": "DISS-04-C060",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "DA II.2 + BCAP 115 — hedonic universalism restated",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "DA-II-2 + BCAP-p115",
+        "expected_content": "Same as C031",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima II.2 + corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.115"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C066",
+      "claim_id": "DISS-04-C066",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "MA 7 — drinking case illustration",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "MA-07",
+        "expected_content": "Drinking case",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Movement of Animals 7"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-supplementary"
+    },
+    {
+      "gap_id": "DISS-04-G-C080",
+      "claim_id": "DISS-04-C080",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "SZ §31-32 — grounding-direction-identical thesis",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Being and Time",
+        "unit_id": "BT-§31-32",
+        "expected_content": "Understanding/state-of-mind grounding",
+        "expected_unit_path": "corpus/index/Heidegger - Being and Time/bt-structured/§31-32"
+      },
+      "retrieval_action": "RESOLVE_CITE_PLACEHOLDER",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-supplementary"
+    },
+    {
+      "gap_id": "DISS-04-G-C100",
+      "claim_id": "DISS-04-C100",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "DA II.5 — alterability at aisthēsis",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-II-5",
+        "expected_content": "DA II.5 anchor",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima II.5"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C101",
+      "claim_id": "DISS-04-C101",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "DA II.5 — energeia of aisthētikon",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-II-5",
+        "expected_content": "Same as C100",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima II.5"
+      },
+      "retrieval_action": "ADD_PRIMARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C206",
+      "claim_id": "DISS-04-C206",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "SZ §29 H.137 — Stimmung-saturation mechanism",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Being and Time",
+        "unit_id": "BT-§29",
+        "expected_content": "Befindlichkeit canonical site",
+        "expected_unit_path": "corpus/index/Heidegger - Being and Time/bt-structured/§29"
+      },
+      "retrieval_action": "ADD_SECONDARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-supplementary"
+    },
+    {
+      "gap_id": "DISS-04-G-C291",
+      "claim_id": "DISS-04-C291",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "BCAP p. 174 — 'pathē and hexeis as fundamental concepts of speaking-with-one-another' (asterisk-six placeholder)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "BCAP-p117-125 cluster + BCAP-p176",
+        "expected_content": "Hexis-pathos cluster + fundamental-concepts statement",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.117-125 + p.176"
+      },
+      "retrieval_action": "RESOLVE_PLACEHOLDER_MANUAL_FILL",
+      "estimated_effort": "medium",
+      "placeholder_type": "asterisk-six",
+      "cache_overlap_estimate": "cache-likely-strong",
+      "user_action_note": "Locus given; body awaits user verbatim (per feedback-missing-source-placeholder.md)."
+    },
+    {
+      "gap_id": "DISS-04-G-C008",
+      "claim_id": "DISS-04-C008",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "Caston 1995 + DA I.4 — pathē-as-soul-kinēsis secondary",
+      "corpus_index_route": {
+        "pipeline": "Aristotelian Phantasia Secondary (1985-2017) + Aristotle - Complete Works",
+        "unit_id": "Caston-1995 + DA-I-4",
+        "expected_content": "Secondary anchor for soul-itself-is-moved ambivalence",
+        "expected_unit_path": "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Caston - Why Aristotle Needs Imagination (1995) + corpus/index/Aristotle - Complete Works/De Anima I.4"
+      },
+      "retrieval_action": "ADD_SECONDARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C018",
+      "claim_id": "DISS-04-C018",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "DA III.10 — etymology-Aristotle bridge",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-10",
+        "expected_content": "Orexis-as-moved-mover for etymology reinforcement",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima III.10"
+      },
+      "retrieval_action": "ADD_SECONDARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-supplementary"
+    },
+    {
+      "gap_id": "DISS-04-G-C027",
+      "claim_id": "DISS-04-C027",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "BCAP 131-132 — overlap-of-pathos-senses warning",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "BCAP-p131-132",
+        "expected_content": "Hermeneutic warning anchor",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.131-132"
+      },
+      "retrieval_action": "ADD_SECONDARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C032",
+      "claim_id": "DISS-04-C032",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "BCAP 115 — basic affective valence Heideggerian gloss",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "BCAP-p115",
+        "expected_content": "Heideggerian basic-affective-valence gloss",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.115"
+      },
+      "retrieval_action": "ADD_SECONDARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C106",
+      "claim_id": "DISS-04-C106",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "BCAP 115 — defense of Rhetoric-as-ontological",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "BCAP-p115",
+        "expected_content": "Same as C032",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.115"
+      },
+      "retrieval_action": "ADD_SECONDARY_CITATION+ADD_FLAG",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C181",
+      "claim_id": "DISS-04-C181",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "DA III.3 — doxa-non-deliberative reading",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-3",
+        "expected_content": "Doxa secondary anchor",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/De Anima III.3"
+      },
+      "retrieval_action": "ADD_SECONDARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-supplementary"
+    },
+    {
+      "gap_id": "DISS-04-G-C190",
+      "claim_id": "DISS-04-C190",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "Caston 2021 Cartesian Theatre — non-identity of faculties (Tier B / corpus-download promote)",
+      "corpus_index_route": {
+        "pipeline": "Aristotelian Phantasia Secondary (1985-2017) + Tier B ChromaDB",
+        "unit_id": "Caston-1995 + dissertation-perplexity-cache::Caston-2021",
+        "expected_content": "Cartesian Theatre + controlling sense faculty differentiation",
+        "expected_unit_path": "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Caston - Why Aristotle Needs Imagination (1995) + ChromaDB dissertation-perplexity-cache"
+      },
+      "retrieval_action": "ADD_SECONDARY_CITATION (Tier B)",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong (Caston 2021 in corpus/download per Plan §3.5.8)"
+    },
+    {
+      "gap_id": "DISS-04-G-C232",
+      "claim_id": "DISS-04-C232",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "Rhet. II.5 — fear-as-form-of-desire reinforcement",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "RHET-02",
+        "expected_content": "Fear definition Rhet. II.5",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Rhetoric II.5"
+      },
+      "retrieval_action": "ADD_SECONDARY_CITATION",
+      "estimated_effort": "trivial",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C292",
+      "claim_id": "DISS-04-C292",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "NE II-IV per-virtue-pathos correlate listing",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "NE-02 + NE-03 + NE-04",
+        "expected_content": "Courage/fear, magnanimity/anger, friendliness/kindness per-virtue anchors",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{Nicomachean Ethics II, III, IV}"
+      },
+      "retrieval_action": "ADD_SECONDARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-supplementary"
+    },
+    {
+      "gap_id": "DISS-04-G-C302",
+      "claim_id": "DISS-04-C302",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "Hawhee 2011 + Rickert — Rhetoric-as-phantasmatic-reshaping",
+      "corpus_index_route": {
+        "pipeline": "Aristotelian Phantasia Secondary (1985-2017) + Rickert - Ambient Rhetoric",
+        "unit_id": "phx-07-hawhee + Rickert",
+        "expected_content": "Phantasmatic-reshaping secondary anchors",
+        "expected_unit_path": "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Hawhee - Rhetorical Vision (2011) + corpus/index/Rickert - Ambient Rhetoric"
+      },
+      "retrieval_action": "ADD_SECONDARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-04-G-C062",
+      "claim_id": "DISS-04-C062",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "BCAP 132 — three-dimensional magnitude-axis",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "BCAP-p132",
+        "expected_content": "Hedonic intensity × existential weight × cognitive articulation",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/p.132"
+      },
+      "retrieval_action": "ADD_FLAG+ADD_SECONDARY_CITATION",
+      "estimated_effort": "small",
+      "cache_overlap_estimate": "cache-likely-supplementary"
+    },
+    {
+      "gap_id": "DISS-04-G-C257",
+      "claim_id": "DISS-04-C257",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "Heidegger and Rhetoric: Hyde + Struever + SZ §26 (Mitsein) — Mitsein-dimension development gap",
+      "corpus_index_route": {
+        "pipeline": "Heidegger and Rhetoric + Heidegger - Being and Time",
+        "unit_id": "Hyde + Struever + BT-§26",
+        "expected_content": "Mitsein anchoring for social pathē + epideictic/Alltäglichkeit essays",
+        "expected_unit_path": "corpus/index/Heidegger and Rhetoric/{Hyde, Struever} + corpus/index/Heidegger - Being and Time/§26"
+      },
+      "retrieval_action": "DEVELOP+ADD_SECONDARY_CITATION",
+      "estimated_effort": "medium",
+      "cache_overlap_estimate": "cache-likely-strong"
+    },
+    {
+      "gap_id": "DISS-05-G-C003",
+      "claim_id": "DISS-05-C003",
+      "section": "DISS-05-A4",
+      "missing_locus": "DA III.10 433a31-b30 — orexis as moved-mover verbatim",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-10",
+        "expected_content": "Orexis-as-moved-mover verbatim",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/DA III.10, 433a31-b30"
+      },
+      "retrieval_action": "MIGRATE_NUMBERING+ADD_VERBATIM",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C013",
+      "claim_id": "DISS-05-C013",
+      "section": "DISS-05-A4",
+      "missing_locus": "MA somatic-preparation reading + Corcilius 2013 (Tier B / corpus-download promote)",
+      "corpus_index_route": {
+        "pipeline": "Aristotelian Motion and Time Secondary + corpus/download/Corcilius-2013",
+        "unit_id": "amt-XX + Corcilius",
+        "expected_content": "MA somatic preparation interpretation",
+        "expected_unit_path": "corpus/index/Aristotelian Motion and Time Secondary + corpus/download/Corcilius-2013"
+      },
+      "retrieval_action": "MIGRATE_NUMBERING+ADD_INTERPRETIVE_FLAG+ADD_CORCILIUS",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-05-G-C016",
+      "claim_id": "DISS-05-C016",
+      "section": "DISS-05-A4",
+      "missing_locus": "DA I.1 403a25-b19 + MA 8 702a15-21 — heating/cooling claim",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-I-1 + MA-08",
+        "expected_content": "Enmattered accounts + MA somatic preparation",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{De Anima I.1, Movement of Animals 8}"
+      },
+      "retrieval_action": "MIGRATE_NUMBERING+ADD_INTERPRETIVE_FLAG+ADD_DA_I1_LOCUS",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C031",
+      "claim_id": "DISS-05-C031",
+      "section": "DISS-05-A4",
+      "missing_locus": "GA 18 §17-18 + Sheehan 2015 (Tier B / corpus-download promote)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Basic Concepts of Aristotelian Philosophy + corpus/download/Sheehan-2015",
+        "unit_id": "BCAP-§17-18 + Sheehan",
+        "expected_content": "Three-types/technē-praxis alignment",
+        "expected_unit_path": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/GA18 §17-18 + corpus/download/Sheehan-2015"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG_SUBSTANTIAL (+ Perplexity Q-002 fallback for Sherman/Aubenque)",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-05-G-C036",
+      "claim_id": "DISS-05-C036",
+      "section": "DISS-05-A4",
+      "missing_locus": "DA III.7 431a8-12 — resonant orexis definition cross-ref",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-III-7",
+        "expected_content": "Pursue/avoid charge of perception",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/DA III.7, 431a8-12"
+      },
+      "retrieval_action": "ADD_DEFINITION_CROSSREF+ADD_DA_III7_LOCUS",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C044",
+      "claim_id": "DISS-05-C044",
+      "section": "DISS-05-A4",
+      "missing_locus": "NE VI.4 1140a1-23 (technē) + GA 18 §17",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "NE-06 + BCAP-§17",
+        "expected_content": "Technē definition + Heidegger reading",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/NE VI.4 + corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/GA18 §17"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG+ADD_NE_VI4_LOCUS+ADD_GA18_§17",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C047",
+      "claim_id": "DISS-05-C047",
+      "section": "DISS-05-A4",
+      "missing_locus": "NE VII.3 1147a25-b3 + Frede 1992",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Aristotelian Phantasia Secondary (1985-2017)",
+        "unit_id": "NE-07 + Frede",
+        "expected_content": "Practical syllogism + cognitive impression",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/NE VII.3 + corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Frede - Cognitive Role of Phantasia (1992)"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG+ADD_NE_VII3+ADD_FREDE_SECONDARY",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C053",
+      "claim_id": "DISS-05-C053",
+      "section": "DISS-05-A4",
+      "missing_locus": "Heidegger and Rhetoric (Gross/Kemmann 2005) + Sheehan 2015 (Tier B promote)",
+      "corpus_index_route": {
+        "pipeline": "Heidegger and Rhetoric + corpus/download/Sheehan-2015",
+        "unit_id": "Gross-Kemmann + Sheehan",
+        "expected_content": "Structural-condition-for-unreflective-action support",
+        "expected_unit_path": "corpus/index/Heidegger and Rhetoric + corpus/download/Sheehan-2015"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG_SUBSTANTIAL",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-05-G-C058",
+      "claim_id": "DISS-05-C058",
+      "section": "DISS-05-A4",
+      "missing_locus": "NE VI.5 + GA 18 §17-18 + Perplexity Q-016 deep-research",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "NE-06 + BCAP-§17-18",
+        "expected_content": "Master synthesis support",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/NE VI.5 + corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/GA18 §17-18"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG_SUBSTANTIAL+CORPUS_FIRST_THEN_PERPLEXITY_Q016",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-05-G-C060",
+      "claim_id": "DISS-05-C060",
+      "section": "DISS-05-A4",
+      "missing_locus": "DA I.1 403a25-b19 + MA 8 702a15-21",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-I-1 + MA-08",
+        "expected_content": "Somatic-specificity (heated/cooled/sympathetic)",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{DA I.1, MA 8}"
+      },
+      "retrieval_action": "MIGRATE_NUMBERING+ADD_DA_I1_AND_MA8",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C062",
+      "claim_id": "DISS-05-C062",
+      "section": "DISS-05-A4",
+      "missing_locus": "DA I.1 403a25-b19 + Rhet. II.2 1378a30-32 — anger-as-desire-to-retaliate",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "DA-I-1 + RHET-02",
+        "expected_content": "Anger definition canonical",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{DA I.1, Rhet. II.2}"
+      },
+      "retrieval_action": "ADD_DA_I1_AND_RHET_II2_LOCI",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C063",
+      "claim_id": "DISS-05-C063",
+      "section": "DISS-05-A4",
+      "missing_locus": "Rhet. II.5 1382a21-25 — fear-as-desire-to-flee",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "RHET-02",
+        "expected_content": "Fear definition",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Rhet. II.5, 1382a21-25"
+      },
+      "retrieval_action": "ADD_RHET_II5_LOCUS",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C065",
+      "claim_id": "DISS-05-C065",
+      "section": "DISS-05-A4",
+      "missing_locus": "Nussbaum 1985 — pre-deliberative mobilization",
+      "corpus_index_route": {
+        "pipeline": "Aristotelian Phantasia Secondary (1985-2017)",
+        "unit_id": "Nussbaum-1985",
+        "expected_content": "Pre-deliberative emotional mobilization secondary",
+        "expected_unit_path": "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Nussbaum 1985"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG+VERIFY_AGAINST_NUSSBAUM_1985",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C070",
+      "claim_id": "DISS-05-C070",
+      "section": "DISS-05-A4",
+      "missing_locus": "NE II.1-6 + GA 18 §18-19 + Perplexity Q-001 Sherman 1989",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "NE-02 + BCAP-§18-19",
+        "expected_content": "Habituation cluster + Heidegger Type-3-praxis-hexeis grounds",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/NE II.1-6 + corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/GA18 §18-19"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG_SUBSTANTIAL+CORPUS_PLUS_Q001_FALLBACK",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-05-G-C074",
+      "claim_id": "DISS-05-C074",
+      "section": "DISS-05-A4",
+      "missing_locus": "NE III.7 1115a6-1116b22 + NE IV.3 + NE IV.9 — per-virtue-pathos pairings",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "NE-03 + NE-04",
+        "expected_content": "Courage/fear, megalopsychia/anger, aidōs/shame",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/{NE III.7, NE IV.3, NE IV.9}"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG_SUBSTANTIAL+ADD_NE_LOCI+Q017_DEEP_RESEARCH",
+      "estimated_effort": "large"
+    },
+    {
+      "gap_id": "DISS-05-G-C076",
+      "claim_id": "DISS-05-C076",
+      "section": "DISS-05-A4",
+      "missing_locus": "Rhet. II.2-11 — Type-3-hexeis two-modulation thesis",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "RHET-02",
+        "expected_content": "Categorical analysis of pathē-arousal",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Rhet. II.2-11"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG_SUBSTANTIAL+ADD_RHET_II_PRESUPPOSITION",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-05-G-C080",
+      "claim_id": "DISS-05-C080",
+      "section": "DISS-05-A4",
+      "missing_locus": "Rhet. II.12-17 (ēthos) — hexis-modulation",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works",
+        "unit_id": "RHET-02",
+        "expected_content": "Character/ēthos analysis",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Rhet. II.12-17"
+      },
+      "retrieval_action": "ADD_RHET_II12_BEKKER+ADD_INTERPRETIVE_FLAG",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C081",
+      "claim_id": "DISS-05-C081",
+      "section": "DISS-05-A4",
+      "missing_locus": "Cross-section §1.4 hexis bivalence treatment (blocked-on-upstream)",
+      "corpus_index_route": {
+        "pipeline": "corpus/index Dissertation (cross-section)",
+        "unit_id": "§1.4 hexis bivalence",
+        "expected_content": "Type 2 hexis vs Type 3 hexeis bivalent functions",
+        "expected_unit_path": "corpus/index/Dissertation/§1.4"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG_SUBSTANTIAL+CROSS_CHECK_WITH_§1.4",
+      "estimated_effort": "medium",
+      "blocked_on_upstream": "DISS-04-EMOTION"
+    },
+    {
+      "gap_id": "DISS-05-G-C085",
+      "claim_id": "DISS-05-C085",
+      "section": "DISS-05-A4",
+      "missing_locus": "White 1985 + Papachristou 2013 (corpus-download promote) — phantasia tri-modal thesis",
+      "corpus_index_route": {
+        "pipeline": "Aristotelian Phantasia Secondary (1985-2017) + corpus/download/Papachristou-2013",
+        "unit_id": "White + Papachristou",
+        "expected_content": "Phantasia tri-modal Type 1/2/3 + three-grades",
+        "expected_unit_path": "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/{White 1985, Papachristou - Three Kinds of Phantasia (2013)}"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG+ADD_PAPACHRISTOU_CROSSREF",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C088",
+      "claim_id": "DISS-05-C088",
+      "section": "DISS-05-A4",
+      "missing_locus": "DA III.3 428a19-24 + SZ §32-33 — doxa ratifies phantasma's taking-as",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Heidegger - Being and Time",
+        "unit_id": "DA-III-3 + BT-§32-33",
+        "expected_content": "Doxa Aristotelian + taking-as Heideggerian",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/DA III.3 + corpus/index/Heidegger - Being and Time/SZ §32-33"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG+ADD_TAKING_AS+ADD_DA_III3",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C093",
+      "claim_id": "DISS-05-C093",
+      "section": "DISS-05-A4",
+      "missing_locus": "Burke entelechy + SZ §65 — recursivity thesis A_4 → A_0'",
+      "corpus_index_route": {
+        "pipeline": "A Grammar of Motives (Burke 1945) + Heidegger - Being and Time",
+        "unit_id": "Burke-entelechy + BT-§65",
+        "expected_content": "Entelechy + temporality of care",
+        "expected_unit_path": "corpus/index/A Grammar of Motives (Burke 1945) + corpus/index/Heidegger - Being and Time/SZ §65"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG+ADD_BURKE+ADD_SZ_§65",
+      "estimated_effort": "small-medium"
+    },
+    {
+      "gap_id": "DISS-05-G-C095",
+      "claim_id": "DISS-05-C095",
+      "section": "DISS-05-A4",
+      "missing_locus": "SZ §65 + NE II.1 — recursivity-as-hexis-formation bridge",
+      "corpus_index_route": {
+        "pipeline": "Heidegger - Being and Time + Aristotle - Complete Works",
+        "unit_id": "BT-§65 + NE-02",
+        "expected_content": "Temporality of care + habituation",
+        "expected_unit_path": "corpus/index/Heidegger - Being and Time/SZ §65 + corpus/index/Aristotle - Complete Works/NE II.1"
+      },
+      "retrieval_action": "ADD_INTERPRETIVE_FLAG_SUBSTANTIAL+ADD_SZ_§65",
+      "estimated_effort": "medium"
+    },
+    {
+      "gap_id": "DISS-05-G-C096",
+      "claim_id": "DISS-05-C096",
+      "section": "DISS-05-A4",
+      "missing_locus": "Rhet. B 1 1378a20-22 vs 1378a24 verification + GA 18 §17-18 + SZ §29",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Heidegger - Basic Concepts of Aristotelian Philosophy + Heidegger - Being and Time",
+        "unit_id": "RHET-02 + BCAP-§17-18 + BT-§29",
+        "expected_content": "Rhetoric II.1 'how we find ourselves' threefold + Heidegger reading",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Rhet. B 1 + corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/GA18 §17-18 + corpus/index/Heidegger - Being and Time/SZ §29"
+      },
+      "retrieval_action": "VERIFY_BEKKER+VERIFY_HEIDEGGER_ATTRIBUTION",
+      "estimated_effort": "small"
+    },
+    {
+      "gap_id": "DISS-05-G-C098",
+      "claim_id": "DISS-05-C098",
+      "section": "DISS-05-A4",
+      "missing_locus": "Pol. I.4-7 (praktikē) + GA 18 §15-17 — zōē praktikē meta logou (blocked-on-upstream)",
+      "corpus_index_route": {
+        "pipeline": "Aristotle - Complete Works + Heidegger - Basic Concepts of Aristotelian Philosophy",
+        "unit_id": "POL-01 + BCAP-§15-17",
+        "expected_content": "Praktikē + zōē praktikē meta logou",
+        "expected_unit_path": "corpus/index/Aristotle - Complete Works/Pol. I.4-7 + corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/GA18 §15-17"
+      },
+      "retrieval_action": "SOFTEN_OVERREACH_AFTER_UPSTREAM_REVISION",
+      "estimated_effort": "small",
+      "blocked_on_upstream": "DISS-00-INTRO+§§1.1-1.3"
+    }
+  ],
+  "tier_b_chromadb_routes": [
+    {
+      "gap_id": "DISS-04-G-C190",
+      "claim_id": "DISS-04-C190",
+      "section": "DISS-04-EMOTION",
+      "missing_locus": "Caston 2021 Cartesian Theatre",
+      "chromadb_route": "dissertation-perplexity-cache::Caston 2021 Cartesian Theatre + metaphysics::controlling sense faculty differentiation",
+      "rationale": "Caston 2021 in corpus/download per Plan §3.5.8 but not yet promoted to corpus/index"
+    },
+    {
+      "gap_id": "DISS-05-G-C013",
+      "claim_id": "DISS-05-C013",
+      "section": "DISS-05-A4",
+      "missing_locus": "Corcilius 2013",
+      "chromadb_route": "corpus/download/Corcilius-2013 (MA somatic preparation)",
+      "rationale": "In corpus/download; needs Phase 4.0 ingest before Tier A routing"
+    },
+    {
+      "gap_id": "DISS-05-G-C031",
+      "claim_id": "DISS-05-C031",
+      "section": "DISS-05-A4",
+      "missing_locus": "Sheehan 2015",
+      "chromadb_route": "corpus/download/Sheehan-2015 (Heidegger Aristotle technē/praxis)",
+      "rationale": "In corpus/download; needs Phase 4.0 ingest"
+    },
+    {
+      "gap_id": "DISS-05-G-C053",
+      "claim_id": "DISS-05-C053",
+      "section": "DISS-05-A4",
+      "missing_locus": "Sheehan 2015 (duplicate)",
+      "chromadb_route": "corpus/download/Sheehan-2015",
+      "rationale": "Same as C031"
+    },
+    {
+      "gap_id": "DISS-05-G-C070",
+      "claim_id": "DISS-05-C070",
+      "section": "DISS-05-A4",
+      "missing_locus": "Costache 2013",
+      "chromadb_route": "corpus/download/Costache-2013 (Heidegger pathos)",
+      "rationale": "In corpus/download; needs Phase 4.0 ingest"
+    },
+    {
+      "gap_id": "DISS-05-G-C085",
+      "claim_id": "DISS-05-C085",
+      "section": "DISS-05-A4",
+      "missing_locus": "Papachristou 2013",
+      "chromadb_route": "corpus/download/Papachristou-2013",
+      "rationale": "In corpus/download (already shared via DISS-03 routing also)"
+    },
+    {
+      "gap_id": "DISS-01-G01-fallback",
+      "claim_id": "DISS-01-C042",
+      "section": "DISS-01-A0",
+      "missing_locus": "BCAP / GA 18 Bewegtheit if corpus/index miss",
+      "chromadb_route": "metaphysics — query: 'Bewegtheit kinēsis Seinscharakter GA 18'",
+      "rationale": "Fallback if u-fp2a/u-fp2b corpus/index miss"
+    }
+  ],
+  "placeholders_summary": [
+    {"section": "DISS-01-A0", "count": 4, "placeholder_type": "asterisk-six", "loci": ["BCAP/GA 18 Bewegtheit (line 25)", "SZ §18 H.84 Bewandtnis (line 53)", "SZ §81 H.421-422 Innerzeitigkeit (line 67)", "SZ §65 H.328-329 Zeitlichkeit (line 79)"]},
+    {"section": "DISS-02-A1A2", "count": 6, "placeholder_type": "asterisk-six (5 unique + 1 duplicate via analyst record)", "loci": ["BCAP 126 (line 23)", "White pp. 9-11 (line 23)", "BCAP 131-132 (line 47)", "White p. 498 (line 55)", "BCAP 164 (line 79)", "BCAP 166 (line 79)"]},
+    {"section": "DISS-04-EMOTION", "count": 1, "placeholder_type": "asterisk-six", "loci": ["BCAP p. 174 hexis/pathē (line 174)"]}
+  ],
+  "quality_gates": {
+    "tier_a_percentage": 78.6,
+    "tier_a_percentage_pass": "yes (>=70%)",
+    "every_placeholder_has_named_locus_and_corpus_route": true,
+    "every_route_has_pipeline_unit_path": true,
+    "user_action_documented_for_manual_fill_placeholders": true,
+    "tier_b_routes_documented_for_chromadb_fallback": true,
+    "corpus_index_first_routing_applied": true
+  }
+}
