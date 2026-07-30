@@ -77,6 +77,28 @@ Sizes: corpus/index 47M · gold 1.3M · claims corpus 49M · archive 41M.
 **Phase 0 complete. Nothing pushed to any git remote. Next: Phase A (A1–A13), no
 decision blocks it.**
 
+# D5 pilot — executed 2026-07-29 (same session, "proceed"); commit `165e59a7` (ar, pushed). **Gate G-D CLOSED.**
+
+N4 resolved by default recommendation: single-source Part III-relevant ARTICLE →
+**vle-eyetracking-2024** (King, Lo, Das & Salvo, ASEE 2024 — the user's own paper;
+rights own-work; archon doc-7e845356, Marker fidelity 0.978).
+
+- **105 records** (66 claims + 22 clauses + 17 edges) over a machine-measured 4,218
+  words → density 24.9/1k total, **15.6/1k claims — in the Decision-2 band**.
+- Page loci machine-resolved (form-feed page splits + unique locator phrases; the
+  builder REFUSES ambiguity — caught 2 ambiguous phrases at authoring).
+- **All 22 clause quotes re-anchor EXACT against the cited document.** The gate
+  caught two real authoring defects live: a too-short generic quote (drifted to the
+  wrong doc) and a span whose Marker store text differs from pdftotext at the
+  sentence head — both fixed by re-authoring the QUOTE, never by bypassing the gate.
+- Per-entry gates: schema ✓ · ids ✓ (the one global dangler is pre-existing
+  DISS-03-C001) · density ✓ · quotes 22/22 ✓ · GROUP N/A-by-construction ✓.
+
+**G-D verdict: D1 suite red-on-bad (proven) + green-on-pilot (proven) + D3 regression
+seeded + D4 replay parity + D5 end-to-end = CLOSED.** Store now 32,186 rows / 25
+sources. Remaining global reds are honest and tracked: C8 running (557/4,872 at log
+time), 8 unimplemented roster checkers, DISS-03-C001, NEEDS-DATA word counts (E0).
+
 # Phase D (D1–D4) — executed 2026-07-29 (same session, "proceed"); commit `e5b2e1cb` (ar, pushed to private)
 
 | Piece | Result |
