@@ -1,0 +1,37 @@
+{
+  "release": 1,
+  "created": "2026-04-19T07:58:00Z",
+  "description": "Initial sandbox release — all v1 artifacts. Establishes the rollback baseline for the E0–E8 experiment ladder.",
+  "artifacts": {
+    "compiled-index": {
+      "version": null,
+      "symlink": "compiled-index.json",
+      "file": null,
+      "notes": "Will be populated by phase 2 B1 compile-corpus-index.py extension once claims/mentions/bridges exist."
+    },
+    "ontology-embeddings": {
+      "version": 1,
+      "symlink": "ontology-embeddings.jsonl",
+      "file": "ontology-embeddings.v1.jsonl",
+      "notes": "Ported from tmp/analysis-upgrade/integration-sandbox/corpus/index/ontology-embeddings.jsonl (277 × 1536-D GTE-Qwen embeddings)."
+    },
+    "claims": {
+      "version": null,
+      "symlink": "claims.jsonl",
+      "file": null,
+      "notes": "Aggregated corpus-wide claims; populated by batch extraction in phase 3."
+    },
+    "concept-mentions": {
+      "version": null,
+      "symlink": "concept-mentions.jsonl",
+      "file": null,
+      "notes": "Aggregated corpus-wide concept mentions; populated by batch extraction in phase 3."
+    },
+    "bridge-candidates": {
+      "version": null,
+      "symlink": "bridge-candidates.jsonl",
+      "file": null,
+      "notes": "Aggregated corpus-wide bridge candidates; populated by batch extraction in phase 3."
+    }
+  }
+}

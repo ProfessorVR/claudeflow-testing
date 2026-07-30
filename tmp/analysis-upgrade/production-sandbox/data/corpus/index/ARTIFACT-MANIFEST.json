@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "active_release": 2,
+  "releases": [
+    {
+      "n": 1,
+      "created": "2026-04-19T07:58:00Z",
+      "description": "Initial bootstrap — ontology-embeddings only"
+    },
+    {
+      "n": 2,
+      "created": "2026-04-19T17:50:35Z",
+      "description": "Post-Phase-3a hydrated baseline"
+    }
+  ],
+  "artifacts": {
+    "compiled-index": {
+      "current_version": 2,
+      "symlink": "compiled-index.json"
+    },
+    "ontology-embeddings": {
+      "current_version": 1,
+      "symlink": "ontology-embeddings.jsonl"
+    },
+    "claims": {
+      "current_version": null,
+      "symlink": "claims.jsonl"
+    },
+    "concept-mentions": {
+      "current_version": null,
+      "symlink": "concept-mentions.jsonl"
+    },
+    "bridge-candidates": {
+      "current_version": null,
+      "symlink": "bridge-candidates.jsonl"
+    }
+  },
+  "notes": "Populated by create-release.sh; swapped by activate-release.sh. Do not hand-edit.",
+  "canonical_prompt_suite": {
+    "path": "data/prompts/canonical-suite.json",
+    "sha256": "80e76b57f5fefc8814c0f23c801cddce8dc351137052b6992074dc826883eea4",
+    "frozen_at": "2026-04-19",
+    "frozen_note": "FROZEN — must not be modified without incrementing version and recording new SHA."
+  }
+}
