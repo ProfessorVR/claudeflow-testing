@@ -1,0 +1,458 @@
+======================================================================================================================================================
+VERDICT: STRONGLY-FAVOURS
+  scope: Traced the FCDP drafting protocol end-to-end in archon-cli — from `archon evidence curate` / the `archon draft` wizard through pack assembly,
+  scope: the draft-time bank gate, the D1→D1.5→D2→gauntlet→R-loop orchestrator, «Qnn» substitution, and the post-run provenance import — naming every
+  scope: function and recording what provenance is carried and dropped at each hop. Read crates/archon-draft in full
+  scope: (src/{lib,fable,gauntlet,judge,orchestrator,provenance}.rs, src/bin/archon_fcdp.rs, tests/{golden,orchestrator}.rs, tests/fixtures/m6/*),
+  scope: crates/archon-evidence/src/{lib,pack,verify,quote_trim,index}.rs, src/command/{curate,curate_agent,evidence,draft}.rs, crates/archon-
+  scope: docs/src/quote_verify.rs, plus plans/fable-console-drafting-protocol-v2.md and both plans/fcdp-archon-port-plan*.md. Ran read-only `archon
+  scope: docs verify-quote` and `archon evidence find` (with and without --index) against the live 942 MB store. This agent establishes the VALUE side
+  scope: only; I did not re-audit the incumbent compiler/runtime beyond confirming whether an FCDP implementation exists there.
+
+  PORT COST:
+      Two separable costs; I size the first two and refuse to invent the third.  (1) THREADING PROVENANCE THROUGH THE EXISTING PACK PATH — 300-500
+      lines across 5 structs in 5 files, plus golden-fixture regeneration. Add {char_start, char_end} to QuoteFragment (crates/archon-
+      docs/src/quote_verify.rs:33-42, values already computed at :167-170), stop discarding FragmentLocator and similarity at
+      src/command/curate.rs:44-107, carry chunk_id/bbox/document_id through CuratedQuote (crates/archon-evidence/src/pack.rs:20-41, which already
+      carries document_id), widen QuoteEntry (crates/archon-draft/src/lib.rs:169-173) additively with #[serde(default)]. BASIS: commit 4c581761
+      "feat(evidence): Pack assembly" = 250 insertions / 4 files; commit 3e689c7f "bank re-verification" = 298 insertions / 4 files; commit ac7bd3b4
+      "trim pack quotes to claim-relevant sentence spans" = 387 insertions / 5 files. This work is the same shape and scale as all three. Add fixture
+      cost: provenance.rs declare() output is byte-asserted (tests/golden.rs:169-188) and five gauntlet reference JSONs are equality-checked
+      (golden.rs:55-125).  (2) CLAIM-LEVEL STORE + READER + QUERY SURFACE IN ARCHON — 900-1,400 lines. BASIS: commit 6cd6691a "feat(evidence):
+      compiled research index — canonical expansion, owning-work routing, tension surfacing" = 857 insertions / 6 files delivered the directly
+      analogous reader-plus-routing layer (now 977 lines at crates/archon-evidence/src/index.rs), and crates/archon-docs/src/schema.rs is the in-repo
+      precedent for a CozoDB relation module. Add ~150-250 lines to thread claim/tension material into build_head and d15_prompt (orchestrator.rs:67,
+      :127), on the additive-Pack-field precedent set by DraftType (lib.rs:45-64, :48 serde default, round-trip test at :652).  (3) CLAIM EXTRACTION
+      AT 45,000-CLAIM / 450,000-CLAUSE SCALE — NO ESTIMATE. Nothing in archon-cli extracts claims or clauses today; ingestion produces chunks, blocks,
+      page breaks and locators only. No commit in this repo is comparable, so any number I gave would be invented. What I can say with evidence: this
+      cost is repo-independent — it is new work whether it lands in Rust or in Python — so it does not discriminate between the two hosts. What DOES
+      discriminate is that building it in claudeflow-testing additionally requires re-implementing (1) and (2), i.e. a second copy of the index
+      consumer (977 lines already written in Rust) and a second copy of the span prover (crates/archon-docs/src/quote_verify.rs, backed by a 942 MB
+      store with 224 documents), to feed a drafting protocol that has no implementation in that repo at all.
+
+  SUMMARY:
+      The user's statement that "the FCDP drafting protocol pulls its quotations from archon" is literally true and stronger than stated: FCDP has NO
+      implementation in claudeflow-testing at all. The only FCDP artifact there is the 43-line scripts/substitute-quote-ids.py plus the plan
+      documents; `find . -name "*.py" | grep -iE "fcdp|gauntlet|judge"` returns nothing else. The entire gate-enforced pipeline — pack schema, G-P,
+      «Qnn» substitution, the seven-gate gauntlet, the G-E/G-G judges, the R-loop, the hash chain, the disclosure declaration — is 3,686 lines of Rust
+      in crates/archon-draft, driven from src/command/draft.rs. Quotations reach a draft through exactly one path: assemble_pack (pack.rs:72) →
+      trim_to_relevant_span (pack.rs:92) → reanchor_cites (pack.rs:165) → write_pack (pack.rs:236) → preflight_draft_inputs/verify_bank (draft.rs:972,
+      verify.rs:130) → orchestrator::run (orchestrator.rs:412) → substitute_quote_ids (draft lib.rs:246), which is the single hop where quoted words
+      enter the prose.  All three assertions are CONFIRMED. QuoteEntry is exactly `{text, cite}` (draft lib.rs:169-173) — no chunk_id, no offsets, no
+      bbox, no match_kind. Verification is `{quotes_verified_at: String, verified_against: Vec<String>, test_fixture: bool}` (lib.rs:158-166); in the
+      real m6 pack `verified_against` holds two free-text notes naming PDF paths and extraction method — nothing machine-checks them. gp_validate
+      (lib.rs:178-234) takes no db handle and never touches the corpus: it checks P4a↔P4b id bijection, non-empty text/evidence/locks/usage, and
+      `quotes_verified_at == today`. One important CORRECTION to the framing: gp_validate is not the only gate on the drafting path. `archon draft`
+      runs preflight_draft_inputs (draft.rs:972), which calls archon_evidence::verify_bank and BLOCKS the run on any non-Exact status including
+      NearVerbatim (verify.rs:88-101, H-9). So a content re-check against the live corpus DOES exist today — it is just not in gp_validate, it is
+      skipped for test_fixture packs, it degrades to a warning when the corpus is absent (draft.rs ~1046), and the standalone archon-fcdp binary
+      bypasses it entirely (bin/archon_fcdp.rs:116-173).  The provenance loss is severe and is a pure field-width problem, not a missing-capability
+      problem. quote_verify computes exact char offsets (a,b) at quote_verify.rs:167-170, threads them into build_location's local_of closure to
+      narrow page and bbox, then discards them because QuoteFragment (quote_verify.rs:33-42) has no offset field. curate.rs:44 then collapses the
+      whole QuoteLocation into a ReviewItem, dropping the FragmentLocator (the Bekker number — the citation-grade locus) entirely and reducing
+      similarity to the string "exact-1.00" or "fuzzy". curate.rs:174-215 then drops bbox, chunk_id and page_boxes, hardcodes `intended_use:
+      "evidential grounding"`, and writes the RA's one-line claim into BOTH `description` and `evidence` — so G-E item E4 ("Is each quotation used in
+      a way consistent with its stated intended rhetorical use?", judge.rs:54) judges every RA-curated pack against a constant. The RA's per-quote
+      `rationale` reaches stdout (evidence.rs:343) and the --json dump (evidence.rs:401) and nothing else. By the time the pack is on disk, a quote is
+      two strings.  The value of a claim-level index living in archon is demonstrable rather than theoretical, and the live run shows it exactly.
+      `archon evidence find "rhetorical incorporation"` returns 10/10 candidates from Bitzer's "The Rhetorical Situation", every one OCR-corrupted
+      ("pnractical", "consiaered", "moditication"), none about incorporation. With `--index` the compiled index matches the concept "Incorporation"
+      and work-boosts Calleja's In-Game into the top two slots — but the chunks it surfaces are "mimetic control" (p.64, provenance unresolved) and
+      "macro Involvernent" (p.38). The work-level index gets the right BOOK and cannot get the right SENTENCE. Meanwhile the m6 pack's Q1 — the
+      definitional passage — verifies live at exact-1.00, p.169, bbox [58,365,375,487]. A human found that sentence; the pipeline cannot. That gap is
+      precisely what claim-level granularity closes, and archon already owns both halves it would connect: the index consumer (archon-
+      evidence/src/index.rs, 977 lines, already reading compiled-index.json) and the span prover (quote_verify, already returning sub-span-resolved
+      page and bbox).  Concretely, a claim-level index in archon lets a pack carry what it cannot today: QuoteEntry widened with {document_id,
+      chunk_id, char_start, char_end, page, bbox, match_kind, similarity} — every field already computed and thrown away; a typed FragmentLocator
+      instead of a formatted locus string; real per-claim intended_use and distinct description/evidence instead of one duplicated note; index
+      tension-edge material bound to the specific claim for D1.5's counterargument pass (today TensionEdge and Hook are parsed at index.rs:71-100 and
+      used only for query expansion — build_head and d15_prompt carry none of it); and content hashes from doc_chunk_hashes instead of free-text
+      verification notes. It also enables four gates that cannot run today: (1) offset-anchored re-verification, which catches the case that currently
+      passes silently — the quote is verbatim somewhere in the cited document but not at the passage it was curated from, because find_fragment_bboxes
+      takes the FIRST exact substring match (quote_verify.rs:167) and cannot tell "my sentence" from "the same words 300 pages later"; (2) a
+      mechanical claim-fidelity check, replacing part of the LLM-judged E2/E3/E5 battery whose truncation failure mode is documented as L7 in the port
+      plan; (3) a cleaning-version/re-ingest staleness gate keyed on raw_sha256 rather than a calendar date; (4) a coverage gate over contested
+      claims, so "every weakness" is checkable rather than detected by substring-searching the model's own skeleton for "SURFACE-TO-USER"
+      (orchestrator.rs:484).  Building the overhaul in claudeflow-testing means building a second copy of the index consumer and a second copy of the
+      span prover, in a repo whose .archon store is 28 KB and empty, to feed a drafting protocol that does not exist there. The honest counterweight
+      is corpus quality, not architecture: the Bitzer hits show heavy OCR corruption and `has_bbox` was false on every one of them, so 450,000 clause
+      records extracted over that text will inherit the corruption, and claim records must tolerate bbox:None.
+
+======================================================================================================================================================
+VERDICT: STRONGLY-OPPOSES
+  scope: Adversarial (opponent) assessment of the proposal to implement the corpus-index overhaul in archon-cli (Rust/CozoDB) rather than in
+  scope: claudeflow-testing (Python compiler + TypeScript runtime). Read-only inspection of both repos on 2026-07-29: git history and branch/remote
+  scope: topology in both; the four prior archon port/handoff/validation documents; the pre-existing corpus-index→archon migration spec; live archon
+  scope: binary (1.3.11, 7b44c665) read-only subcommands; quote_verify.rs / archon-draft / archon-docs schema source; compile-corpus-index.py; live
+  scope: npx tsc --noEmit; dissertation drafting file mtimes. No writes, no builds, no pushes.
+
+  PORT COST:
+      3–6 months of calendar time to reach the spec's own P5 parity gate, versus days for the cheap alternative. Three independent bases.  BASIS 1 —
+      the repo's own build-ready spec. `plans/archon-corpus-index-migration-spec.md:130-142` sizes this exact migration at nine phases: P0=M, P0.5=L,
+      P1=L, P2=M, P3=L, P4=M, P5=XL, P6=M, P7=M — one XL, three L, five M. P5 is "Datalog retriever to PARITY — 3 blocks + mandatory bridge, exact
+      templates/caps/scorers, line-for-line diff vs live TS as the HARD gate." The spec was written against "~19 hand-authored entries"; there are now
+      27 (+42%), 1,759 files, 39 MB (`find corpus/index -type f -not -path '*/.backups/*' | wc -l` → 1759).  BASIS 2 — observed archon delivery rate
+      on a comparable item in an ALREADY-ported crate. V-3/V-4 quote verification was scoped "M–L" in archon-ingestion-port-finish-
+      plan-2026-06-30.md:217-218. It first landed 2026-07-01 (00d01f0e) and required six more commits through 2026-07-16 (a3126b02, b425789d,
+      5589ec30, e4b25301, 2bf98d8a, 849eadfc) — 15 days elapsed for 596 lines — and is still incomplete on three axes (offsets discarded at
+      quote_verify.rs:405; REPORT_FLOOR=0.60 ungated at :20; archon-draft has no archon-docs dependency so the drafting path cannot call it). If one
+      M–L item costs ~15 days elapsed and lands incomplete, five M + three L + one XL across a subsystem with zero existing substrate is
+      conservatively 3–6 months — and that assumes a nonzero cadence, whereas the observed cadence for the last 11 days is zero commits.  BASIS 3 —
+      prior port completion record. ARCHON-PORT2-COMPLETE-2026-06-25.md declared the ingestion port complete, then documents 21 adversarial findings
+      (17 confirmed, 7 substantive fixed) at :70-88 and a "NOT implemented (out of scope, tracked)" list at :102-106; HANDOFF-archon-ingestion-
+      port-2026-07-01.md:92-111 still carried a five-item queue six days later.  CHEAP ALTERNATIVE COST — days, all in the existing split. (a)
+      QuoteFragment gains char_start/char_end: struct at quote_verify.rs:33-42, literal at :405-411; `local_range: Option<(usize,usize)>` is already a
+      parameter at :371 and destructured at :374 — ~4 lines. (b) Verification gate keyed on match_kind: `MatchKind::{Exact,Fuzzy}` already exists at
+      :26-29 — one match arm. (c) compile-corpus-index.py:718-721 elif reorder — 4 lines, fixes the last-field-absorbs-the-file pollution. (d) Add
+      "index" to SKIP_DIRS at run_ingest.py:365, run_ingest_phase2.py:978, parallel_ingest.py:69 — 3 tokens, stops 518 of 522 index manifest records
+      re-embedding into the live corpus.
+
+  SUMMARY:
+      The strongest case against archon-first does not rest on Rust being worse. It rests on four verified facts.  First, a build-ready,
+      adversarially-reviewed spec for this exact port already exists and has produced nothing. `plans/archon-corpus-index-migration-spec.md`
+      (2026-06-24) specs corpus/index → archon Cozo across nine phases and was endorsed "high confidence." Thirty-five days later `grep -rn
+      'corpus_entries|corpus_concepts|ensure_corpus_schema' crates/` returns empty and archon's 942 MB store holds 227 documents, all PDFs, zero index
+      entries. The spec's own framing is the decisive line: "The substrate is the easy part; ADAPTER COVERAGE is the long pole. The build is gated not
+      by CozoDB mechanics (verified trivial) but by the heterogeneity of ~19 hand-authored entries." Cozo and Rust buy nothing on the critical path;
+      the long pole is irregular hand-authored markdown, which is where Rust is slowest and where the 231-agent review explicitly recommended KEEPING
+      the five Python parsers.  Second, the two-repo split is not a hypothetical cost — it has already happened and already silently lost data.
+      `archon-cli/index/` is a checked-in duplicate of `corpus/index/` (1,731 tracked files). It is missing three entire entries — Presence Theory
+      (Foundations), Rhetoric of Interactivity and VR (Part III), Social Presence in Virtual Worlds (Part III), 25 files — and its `compiled-
+      index.json` is 643,548 bytes from Jul 16 against the incumbent's 664,494 from Jul 20, different md5. Sync is manual (`chore(index): commit
+      compiled research index as a working data asset`). Archon-first makes the authoring side permanently remote from the compiler.  Third, archon
+      has no delivery capacity and a poor completion record. HEAD 8758f2fa is on no remote at all — `git branch -r --contains` returns empty — with
+      186 commits unlanded and origin/main frozen since 2026-06-13. Last archon commit was 2026-07-18, eleven days ago. Meanwhile dissertation
+      drafting ran 26 files on 07-29 and 6 on 07-28. Port #2 was declared COMPLETE on 06-25, then an adversarial review found 21 defects (17
+      confirmed, 7 substantive, including a byte-vs-code-point token estimator that shifted every chunk boundary on the Greek corpus), and a five-item
+      queue was still open on 07-01. The comparable V-3/V-4 quote matcher, scoped "M–L," took 7 commits across 15 days and is still incomplete on
+      three axes.  Fourth, the cheapest thing that works is genuinely days, not months, and the usual justification for porting does not survive
+      inspection. `npx tsc --noEmit` does report 157 errors — but zero of them are in the four index-consuming modules; they are concentrated in
+      section-orchestrator (26) and __experimental__ (45). The index layer being overhauled is type-clean. The highest-value fixes are tiny:
+      reordering two elif arms at compile-corpus-index.py:718-721 kills the pollution that has one centralityTier holding 10,009 chars; adding "index"
+      to three SKIP_DIRS sets stops 518 index manifest records being re-embedded; and adding char_start/char_end to QuoteFragment is a four-line
+      change because local_range is already in scope at quote_verify.rs:371 and thrown away at :405.  The honest caveat: archon's capabilities are
+      real. doc_chunk_blocks carries char offsets, quote_verify resolves sub-span page and bbox, archon-evidence/index.rs is 977 working lines. But
+      archon-draft — where the drafting protocol actually pulls quotations — has no dependency on archon-docs and therefore cannot call locate_quote
+      at all. Two components in the same repo, still unconnected after 15 days of work. That argues for calling archon as a verification service from
+      the incumbent, not for relocating the overhaul into it.
+
+======================================================================================================================================================
+VERDICT: FAVOURS
+  scope: True state of the evidence-curation work in archon-cli: full read of crates/archon-evidence/ (lib.rs, index.rs, pack.rs, verify.rs,
+  scope: quote_trim.rs, outcome.rs = 3,112 lines), its CLI surface (src/command/evidence.rs, curate.rs, curate_agent.rs, evidence_view.rs,
+  scope: evidence_index.rs = 2,619 lines), its TUI record types, git log on feat/evidence-curation, and a re-test of the six CRITICALs and the
+  scope: "declarative pipeline non-functional" finding from the 2026-07-13 adversarial review against current HEAD (8758f2fa). Live read-only runs of
+  scope: `archon docs status`, `archon evidence find --json`, `archon docs verify-quote --json` against .archon/archon-data.db. Plan documents read:
+  scope: plans/index-entry-creation-plan-CLAIM-LEVEL-2026-07-29.md §§0-5 and the memory record project-archon-adversarial-review-results.md (the
+  scope: RESULTS .md itself exists only in git history at b0a29a50, not on disk). Not in scope / not done: no cargo build or test, no write
+  scope: operations, no assessment of the TypeScript runtime beyond one spot-check.
+
+  PORT COST:
+      Two separable pieces, sized against measured prior work in this repo. (1) The parts that already exist need no port at all: the clause layer,
+      the verification gate and the index reader are shipped, merged into HEAD and CI-tested; exposing the offsets is ~25-40 lines (P19). (2) The
+      compiler/authoring adapter has no Rust counterpart and must be built: ~1,900 lines of source to replace (~1,100 of compile-corpus-index.py's
+      1,412 plus ~600 of cross-author-utils.ts and 202 of corpus-index-provider.ts). Basis for the expansion factor: the FCDP port removed 891 lines
+      of Python across 7 files (365be93b) and added 2,497 lines of Rust including tests and fixtures (8bfe441d), both landed 2026-07-08 alongside the
+      crate scaffold f8779fd1 — 2.8x lines, ~1 day. That projects to ~4,500-5,500 Rust lines for the compiler, i.e. one crate of roughly archon-
+      evidence's size. Basis for the schedule: archon-evidence itself went from crate creation (c98aca59, 2026-07-10) to hardened-and-committed
+      (2bf98d8a, 2026-07-14) — 3,112 lines of crate source plus 2,619 lines of bin modules plus TUI screens, 56 tests, in 5 days. archon-lanham (2,461
+      lines) was ported in a comparable window (f637a00c, 2026-06-25). So: compiler port ≈ 1-2 weeks at the observed pace, plus the CozoDB record
+      schema and validator (~600-900 lines, ~3-5 days). The ~40-field CLAIM model, the five sibling record types and the migration of ~5,000 authored
+      records are NOT port cost — they are new construction that costs the same in either repo. The genuine archon-vs-claudeflow differential is
+      therefore the compiler (a real net cost in archon) against the corpus store, addressing, verification gate, tested index reader and CI (all real
+      net costs in claudeflow, and one of them — re-ingesting 226 PDFs to recover per-block char offsets and bboxes — is by far the largest single
+      item on either side).
+
+  SUMMARY:
+      The evidence-curation work is real, shipped, merged and tested — it is not a prototype. `archon evidence curate` today runs an agentic research
+      assistant that may only select retrieved spans by id, then produces two files: pack.json and quotes.json. Its record shape is quote-centric —
+      QuoteIndexEntry {id, source, locus, description, intended_use} joined positionally to QuoteEntry {text, cite} and EvidenceItem {id, grade,
+      content}. Something already resembles a claim record with a locus: ReviewItem (crates/archon-tui/src/screens/evidence_curation_util.rs:62-91)
+      carries a one-line claim, a locus, a cite, page, bbox, chunk_id and every located page-box — but it is transient, and NOTHING from a curation is
+      ever written to the store. verify.rs re-verifies each bank quote against the live corpus scoped to the document the pack cites, classifies it
+      Exact/NearVerbatim/Drift/Missing/WrongSource, and blocks every non-exact status. On the 2026-07-13 review: all six CRITICALs are fixed and on
+      the current branch — CR-1/CR-2 by an exact-only delete/reprocess resolver with --all-matching opt-in and two named regression tests, CR-3 by
+      source-scoped verify_bank plus the WrongSource class, CR-4 by gating the 2-up remap on a genuine-2-up check, CR-5 by reading
+      manifest.vector_count in snapshot_is_current plus snapshot invalidation and auto-rebuild, CR-6 by replacing the sticky latch with an expiring
+      cooldown. feat/evidence-curation (2bf98d8a) is an ancestor of HEAD 8758f2fa, so none of this is stranded. The separate "declarative pipeline run
+      non-functional" finding is STILL TRUE and untouched since 2026-05-08. On the sizing question: roughly the clause layer, the addressing, the
+      verification gate and a tested index reader are already built in archon — the corpus is live at 226 documents / 17,824 chunks with per-block
+      char offsets and bboxes, while claudeflow's .archon is 28 KB and empty. What is NOT built in archon is the whole authoring side: no index
+      compiler exists there at all (its index/ is a hand-copied, already-drifted snapshot), no claim/clause/edge/tension/term/source relations exist,
+      no validator, and no persistence for anything a curation produces. That splits cleanly: everything downstream of the record already favours
+      archon and would have to be rebuilt or re-ingested to move to claudeflow; everything upstream of the record is a genuine net cost in archon,
+      estimated at one crate of archon-evidence's size (~4,500-5,500 Rust lines, 1-2 weeks at this repo's measured pace). The honest recommendation
+      the evidence supports is archon-first for the store, schema, addressing and verification, with the five markdown parsers kept where the review
+      put them — as adapters emitting a typed intermediate — rather than ported wholesale.
+
+======================================================================================================================================================
+VERDICT: STRONGLY-FAVOURS
+  scope: Read crates/archon-evidence/src/index.rs in full (977 lines, incl. all 12 unit tests + 2 inline fixtures), plus quote_verify.rs (596),
+  scope: archon-docs/src/schema.rs, archon-knowledge (schema.rs, claim_extractor.rs, store.rs), archon-draft/src/lib.rs
+  scope: (Pack/QuoteEntry/Verification/gp_validate), archon-evidence/src/pack.rs (CuratedQuote), the verify-quote JSON emitter (src/command/docs.rs)
+  scope: and provenance_json (src/command/evidence.rs). On the incumbent side: read the live 664 KB compiled-index.json field-by-field,
+  scope: scripts/compile-corpus-index.py structure + TEXT_DIRS, and the three live TS consumers (jsonl-loaders.ts loader, corpus-index-provider.ts,
+  scope: cross-author-utils.ts). Ran archon live read-only: docs status, evidence find --index (hybrid + exact). No writes, no builds.
+
+  PORT COST:
+      ~1,200–1,400 new Rust LOC for the recommended path; ~2,600–3,000 if all markdown scrapers must be ported too. Breakdown with basis: (1)
+      char_start/char_end exposure — 4 files, ~10 lines, values already in scope (measured, see finding). (2) Legacy-view emitter — add `Serialize` +
+      7 missing fields to the 4 raw structs at index.rs:36-107 (72 lines today) + an emit fn + one CLI arm; basis = the existing verify-quote JSON
+      emitter at src/command/docs.rs:139-165 is 27 lines for a comparable nested shape, and crates/archon-evidence/src/pack.rs already has write_pack
+      as the artifact-writing precedent → ~250 LOC + ~100 LOC golden-file tests. (3) Claim + clause Cozo relations — 2 `ensure_*` fns modeled exactly
+      on schema.rs:193-210 (ensure_doc_chunk_blocks, 18 lines) and schema.rs:215-224 (10 lines) → ~40 LOC schema + ~200 LOC store put/list modeled on
+      store::list_chunk_blocks_for_chunk. (4) Structured-JSON reader for the 12 *-ontology.json files (2 shapes: book-level with
+      concepts/dimensions/positions/notable_tensions, cluster with nodes) → serde structs + mapper, ~400-600 LOC. (5) Claim-grounding driver (claim
+      text → find_fragment_bboxes → persist span) → ~200-300 LOC; basis = crates/archon-evidence/src/lib.rs:362 already performs exactly this locate-
+      and-join for candidates. EXCLUDED and separately estimated: porting the 5 markdown parsers, compile-corpus-index.py lines 195-1176 = ~980 Python
+      lines across 7 layouts → ~1,300-1,600 Rust LOC. That last figure is my weakest estimate: there is no comparable Python→Rust port already in the
+      repo to calibrate the ratio against, so I am applying a generic 1.3-1.6x and flagging it as such. Note the 15 entry dirs with no structured JSON
+      would need this path (or new authored JSON) to reach parity.
+
+  SUMMARY:
+      Archon-as-producer is a real migration path, not wishful thinking — but for a reason sharper than "Rust is better". The compiled artifact's
+      three fatal absences (no id, no page, no quote/locus on any node) are exactly the three things archon already computes and already discards.
+      quote_verify.rs computes char offsets (a,b) at line 163-166, narrows page through doc_chunk_page_breaks and bbox through doc_chunk_blocks,
+      resolves a Bekker/PageNumber locator off the running head — then throws the offsets away because QuoteFragment has no field for them. Exposing
+      them is a 2-field change across 4 files, ~10 added lines, with the values already in scope at the construction site. Meanwhile the incumbent
+      compiler ignores 12 structured *-ontology.json files that ALREADY carry canonical_id, page_anchors{unit, book_page}, tier, type, and an explicit
+      `positions` array of claim records — i.e. the id/page/claim layer the artifact lacks is sitting on disk unread. A Rust producer that reads those
+      12 JSON files and grounds each claim through the existing find_fragment_bboxes gets id + exact char span + page + bbox + locator + match_kind
+      per claim, which no amount of work on the Python scraper can produce because the Python discards offsets in the first statement of every parser
+      and has no corpus text at all. The legacy view is cheap and safe: RawIndex/RawNode/Hook/TensionEdge already model the artifact's 4 arrays; they
+      are missing only 7 optional String fields and the Serialize derive. Two caveats that are real, not cosmetic: (1) the two repos ALREADY hold
+      divergent copies of compiled-index.json today (670/1663 in archon vs 701/1722 in claudeflow-testing, different md5) — archon-as-producer fixes
+      this rather than causing it; (2) the full 45k-claim/450k-clause corpus can never round-trip through the legacy JSON view (~121 MB projected),
+      but it does not need to: the TS renders at most 12 nodes + 3 hooks + 5 tensions per prompt, so the legacy view is correctly a bounded
+      projection.
+
+======================================================================================================================================================
+VERDICT: STRONGLY-FAVOURS
+  scope: Storage-layer feasibility for the corpus-index overhaul: can the archon-cli CozoDB store hold ~45,000 claim + ~450,000 clause records with
+  scope: exact provenance? Read crates/archon-docs/src/schema.rs in full and crates/archon-cozo/ to establish every declared relation, the storage
+  scope: engine, indexing, FTS and vector support; measure the live 987 MB store read-only; confirm doc_chunk_blocks actually has rows by tracing
+  scope: quote_verify.rs fragment_for(); project to 450,000 clause records and compare against the incumbent's measured ceilings. Read-only throughout
+  scope: — no builds, no writes, no git write operations.
+
+  PORT COST:
+      Roughly 1,000-1,600 lines of new Rust plus ~75 lines of query rewrites, against the review's ~1,700 lines slated for replacement in the
+      incumbent (~1,100 of scripts/compile-corpus-index.py plus ~600 of the TS matching layer). Breakdown with basis, all from comparable prior work
+      in this repo: (a) 5 new Cozo relations, ~80 lines — basis: schema.rs:193-210 defines doc_chunk_blocks, the most complex existing relation, in 18
+      lines, and the whole 18-relation schema.rs is 644 lines including 8 tests; (b) batched store layer for those relations, ~250 lines — basis:
+      archon-docs/src/store.rs:508-545 is 38 lines per batched writer, and archon-knowledge/src/store.rs is 402 lines for 5 relations in the unbatched
+      style; (c) prefix-pushdown query rewrites, ~75 lines — basis: 24 `= $param` sites in archon-docs/src/store.rs at ~3 lines each; (d) offsets
+      plumbed through QuoteFragment and archon-draft's QuoteEntry, ~150 lines — basis: QuoteFragment is 11 lines, fragment_for is 46
+      (quote_verify.rs:367-412), build_location already threads matched_span (:213-290); (e) offset-preserving claim/clause extractor, 400-600 lines —
+      basis: the existing heuristic claim_extractor.rs is 171 lines and lacks offsets, clause decomposition and any real confidence model, so ~3x; (f)
+      guard + retry wiring for archon-knowledge, ~40 lines — basis: archon-docs/src/cozo_retry.rs is 60 lines including tests, of which the delegating
+      wrapper is 8. NOT included and identical in either repo: the semantic quality of extraction, and the reingest needed to lift spatial coverage
+      above 63.5%. Storage cost of the result: ~200-260 MB added to a 987 MB store (basis: doc_locators measures 232 B/row for a text-bearing record;
+      a kb_claims-shaped row with provenance columns is ~450-550 B; 495,000 rows x ~500 B), taking row count from 2,751,189 to ~3.25M — a +18%
+      increase on a store whose largest relation full-scans in 80 ms.
+
+  SUMMARY:
+      The CozoDB store can hold the target volume with room to spare, and — more decisively — it already holds the one thing the overhaul is actually
+      about: exact character-level provenance. Verified: the store is a single SQLite table `cozo(k BLOB primary key, v BLOB)` (cozo-ce
+      0.7.13-alpha.3, features storage-sqlite), 2,751,189 rows / 987,086,848 bytes / 240,988 pages, page_size 4096, journal_mode DELETE, freelist 0. I
+      decoded the Cozo catalogue (relation id 0, 27 rows) and mapped every relation id to its row count. doc_chunk_blocks IS populated: 114,612 rows /
+      26,360,674 bytes (230 B/row); doc_chunk_page_breaks 27,227 rows; doc_chunk_hashes 17,819; doc_chunk_spatial 11,311; doc_locators 2,961;
+      doc_chunks 17,824 / 56,023,036 bytes of content; the FTS inverted index 2,475,077 rows / 465,776,028 bytes. The sub-span bbox is real and block-
+      driven: `archon docs verify-quote "the soul is in a way all existing things"` returns EXACT, p.48, bbox [66,327,360,368] (41pt tall) with
+      locator 431b1 (Bekker), while the two fuzzy hits fall back to full-chunk boxes 519pt and 472pt tall — exactly the fragment_for() branch at
+      quote_verify.rs:373-394, which calls store::list_chunk_blocks_for_chunk (quote_verify.rs:377) and narrows via sub_span_bbox
+      (quote_verify.rs:343-361) only when blocks are non-empty.  Adding 45,000 claims + 450,000 clauses is a +18% row-count increase (2.75M -> ~3.25M)
+      and, at doc_locators' measured 232 B/row for a text-bearing record scaled to ~450-550 B for a claim/clause row, roughly +200-260 MB on a 987 MB
+      store. That is not close to any engine limit. SQLite's own ceiling is 281 TB; the measured full-scan rate on this machine is ~31M key-rows/s
+      (2,475,077 rows in 80 ms; 114,612 in 3.84 ms), a point lookup is 0.07 ms and a prefix range scan of 2,399 rows is 0.19 ms. Crucially, my probe
+      used the exact SQL Cozo's sqlite backend issues — cozo-ce-0.7.13-alpha.3/src/storage/sqlite.rs:131-139 defines QUERIES as `select v from cozo
+      where k = ?`, `select k, v from cozo where k >= ? and k < ? order by k`, `select count(*) from cozo where k >= ? and k < ?` — so these are the
+      storage primitives, not analogues.  Against that, the incumbent format cannot hold the target at all. corpus/index/compiled-index.json is
+      666,303 bytes for 2,559 records: ontologyNodes 701 at 649 B/record, crossPipelineHooks 72 at 533 B, tensionEdges 64 at 682 B, canonicalTerms
+      1,722 at 27 B — and those 649-byte node records carry no id, page, quote or locus. 450,000 clause records with provenance at >=650 B/record is
+      ~292 MB in one file, loaded by src/god-agent/shared/jsonl-loaders.ts:210-211 as `readFileSync(indexPath, 'utf-8')` then `JSON.parse(raw)` into a
+      module-level cache — a whole-file JS string plus a parsed object graph typically 5-10x the text, in every tsx process. That is ~18x past the
+      review's measured 24.97x loader ceiling (~16.6 MB), before the 157 tsc errors and zero tests are considered.  The archon side is not free of
+      defects, but every one is implementation-level and fixable inside the repo, whereas the incumbent's are format-level. The important one: Cozo's
+      StoredRA::iter (query/ra.rs:1502-1509) is `self.storage.scan_all(tx)` plus a post-filter, with no compute_bounds — compute_bounds appears only
+      inside prefix_join (ra.rs:1348). And compile.rs:601 turns `chunk_id = $cid` into `ret.filter(build_equate(...))` when chunk_id is already bound
+      by the preceding atom. So archon's standard query form `*doc_chunk_blocks{...}, chunk_id = $cid` (store.rs:554-556) is a FULL RELATION SCAN
+      today, and there are 24 such `= $param` filter lines in archon-docs/src/store.rs alone. At 114,612 rows that costs single-digit ms and nobody
+      noticed; at 450,000 clause rows / ~200 MB it becomes ~50 ms warm per lookup and far worse cold. The engine has the fast path —
+      scan_bounded_prefix, measured at 0.19 ms — archon's query style just does not reach it. Second: archon-knowledge/src/store.rs:77-87 issues one
+      db.run_script per claim, and with journal_mode=DELETE and no synchronous pragma that is one fsync-bounded transaction per row; 45,000 claims
+      would be 45,000 transactions. archon-docs already has the correct batched pattern (store.rs:508-545, one multi-row `:put` over `$rows`). Third:
+      archon-knowledge has no archon-cozo dependency and makes 7 raw db.run_script calls, so its writes bypass the retry/lock guard that every archon-
+      docs write goes through (cozo_retry.rs:20-28).  The decisive asymmetry is not capacity, it is that archon already computes the offsets the goal
+      requires and merely fails to persist them, while the incumbent never has them at all. quote_verify.rs:162-166 computes (a,b) via find_subslice,
+      local_span_in_chunk (quote_verify.rs:297-311) computes (lo,hi), both are used to narrow page and bbox, and then QuoteFragment
+      (quote_verify.rs:32-42) has no field to carry them. Adding two usize fields there is a smaller change than any part of the incumbent's
+      replacement, and it lands on a store that already has 114,612 block rows to anchor against.
+
+======================================================================================================================================================
+VERDICT: FAVOURS
+  scope: Engineering-health comparison of /home/dalton/projects/archon-cli (Rust, 39 crates) vs /home/dalton/projects/claudeflow-testing (Python
+  scope: compiler + TypeScript runtime) as the home for the corpus-index overhaul (~45,000 claims / ~450,000 clause records with per-clause
+  scope: provenance). Read-only: greps, file reads, git log/ls-tree/ls-files, `npx tsc --noEmit`, and read-only `archon docs status` / `archon docs
+  scope: verify-quote` against the prebuilt debug binary. No cargo invoked, nothing written to either repo.
+
+  PORT COST:
+      Roughly 4,000-6,500 new Rust lines across two crates (archon-docs schema additions + a new or extended archon-evidence/archon-corpus), of which
+      2,500-4,000 is adapter work that costs the same in any language. Bases, each measured: schema.rs is 644 lines for 20 CozoDB relations (~32
+      lines/relation) and the migration spec names ~14 new ones => ~450 lines; the TS query surface being replaced is 816 lines (corpus-index-
+      provider.ts 202 + cross-author-utils.ts 614) => ~600-900 Rust; the incumbent's five parsers are ~880 lines and cover 2.7% of the 1,856 files in
+      corpus/index, so full coverage of 883 .md + 271 .csv (65 header dialects, 25,278 rows) + the -DEEP.json shapes is a multiple, not a fraction;
+      the offset plumbing in quote_verify.rs is ~30-60 lines because the values are already computed at the call site. Comparable prior work in this
+      repo: crates/archon-lanham (the completed Python->Rust Lanham port) is 2,461 Rust LOC total, so this is roughly 2x the largest port archon has
+      actually landed. The 2026-06-24 migration spec rates its own phases P0=M, P0.5=L, P1=L, P2=M, P3=L, P4=M, P5=XL, P6=M, P7=M, with P5 (line-for-
+      line parity against the live TS) as the cutover gate — consistent with the line estimate. Excluded from this number: re-ingest, embedding
+      backfill, and the ~9,762 distinct edge triples' semantic normalization, all of which are data work rather than code.
+
+  SUMMARY:
+      Archon-first is the right call, but for a narrower reason than "Rust is better": the overhaul is fundamentally a STORE-and-PROVENANCE problem,
+      and archon is the only one of the two repos that has a store or provenance at all. Measured: archon runs a 987 MB CozoDB with 226 documents /
+      17,824 chunks / 17,744 pages, all 17,824 indexed (`archon docs status`), with `doc_chunk_blocks{char_start,char_end,page,x0,y0,x1,y1}` and
+      `doc_locators{kind,value,bbox}` declared at crates/archon-docs/src/schema.rs:196-241, and a live quote-verify that returns exact/p.48/bbox
+      [66,327,360,368]/Bekker 431b1 for a real quotation. The incumbent's entire index runtime is one 664 KB JSON blob read whole-file (src/god-
+      agent/shared/jsonl-loaders.ts:212 `readFileSync` + `JSON.parse`, no streaming) whose 701 ontologyNodes carry zero ids, zero pages, zero quotes
+      (verified by direct enumeration: 0/701 for each). You cannot attach 450,000 clause records with per-clause provenance to a record type that has
+      no id.  Engineering health also favours archon, but less than the raw numbers suggest, and I want the downside stated plainly. archon's
+      advantages are real: 515,197 Rust LOC across 39 crates, 8,131 `#[test]`/`#[tokio::test]` attributes in 1,215 files, five GitHub Actions
+      workflows, a documented clippy remediation that took `clippy --workspace --all-targets -D warnings` from 243 findings to 0 with adversarial
+      verification of 47 call sites, and `crates/archon-evidence/src/index.rs` — 977 lines, 13 named semantic tests, already a Rust reader over
+      compiled-index.json implementing canonical-term expansion, tension-pole surfacing and owning-work re-rank, including
+      `substring_inside_a_word_does_not_match`, a regression test for exactly the bug class the TS runtime still ships. Against that: `main` is 186
+      commits behind HEAD and last moved 2026-06-13, and every workflow triggers only on push/PR to `main` (.github/workflows/ci.yml:4-7), so **not
+      one of those 186 commits has ever been through CI**. Clippy is advisory in CI (`continue-on-error: true`, ci.yml:31); the one blocking gate is
+      `cargo fmt --all -- --check`, and the project's own report says ~114 files are not rustfmt-clean — that gate would fail today. The four most
+      recent feature commits (0057412b, 7b44c665, c3719bff, 8758f2fa) added **zero** `#[test]` blocks between them, and the last 60 commits are 55
+      `fix` / 3 `feat` / 1 `test` / 1 `style`. archon's testing culture is historically strong and currently lapsed.  Where Rust genuinely helps here:
+      the schema (CozoDB `:create` + serde-derived types make the 31 unenforced id prefixes and 645 free-text relation values into enums the compiler
+      checks), the validator (the incumbent has no schema file and no validator anywhere — verified), and exhaustive matching over the tension-shape
+      superset the migration spec already enumerates. Where it genuinely hurts: adapters over irregular text. That work is guess-inspect-adjust
+      against 883 markdown files, 271 CSVs in 65 distinct header dialects, and a dozen JSON shapes, and a REPL beats a compiler at it. Cargo.lock
+      lists 1,061 packages, target/ is 21 GB, and ci.yml budgets 45 min (ubuntu) / ~28.5 min (macOS) for a full-workspace nextest run. My honest
+      recommendation is the split the repo's own 2026-06-24 migration spec already implies: put the store, the schema, the validator and the query
+      surface in archon; let the adapters emit a normalized intermediate and keep them wherever iteration is fastest. Two things must be fixed before
+      any of it starts, or archon-first makes things worse: archon carries its own tracked copy of the index (1,731 files, `index/`) that is already
+      13 days and 31 nodes stale against the incumbent's, and `main` needs to catch up so CI means something again.
+
+======================================================================================================================================================
+VERDICT: STRONGLY-FAVOURS
+  scope: Consumer-side impact analysis in /home/dalton/projects/claudeflow-testing of making archon-cli the producer of corpus/index/compiled-
+  scope: index.json. Covers: (a) full enumeration of every consumer of the artifact in the incumbent with the exact fields each reads; (b) the byte-
+  scope: level legacy view contract archon must emit for zero TypeScript changes; (c) the risk direction of a producer swap given 157 tsc errors and
+  scope: zero tests on these modules; (d) a dual-producer diff path before cutover. Verified read-only against the working tree on 2026-07-29 with the
+  scope: prebuilt archon 1.3.11 (7b44c665) binary, npx tsc --noEmit, and python3 inspection of the live artifact. NOT covered: sizing the claim/clause
+  scope: extraction itself over 226 documents; I did not open the five markdown parsers line by line beyond the offset question.
+
+  PORT COST:
+      Legacy-view producer swap only (the question in scope): ~350-450 Rust lines in archon + ~150 Python lines for the differ + ZERO TypeScript
+      lines.  Basis, itemized against real code rather than intuition: - Serialize derives + emitter: the four structs already exist as Deserialize at
+      crates/archon-evidence/src/index.rs:36-104 (69 lines) — a derive change, not authoring. The write path has a working precedent at crates/archon-
+      evidence/src/pack.rs:239-255 (17 lines: create_dir_all + to_string_pretty + "\n"). Estimate ~200-300 impl lines. - Logic to port from Python: 94
+      lines total — build_canonical_terms (compile-corpus-index.py:1285-1304, 20 lines, the (-len, lower) sort), deduplicate_ontology_nodes
+      (:1311-1357, 47 lines, the name-keyed merge with "; "-joined text and sorted alias/unit unions), and main's emit (:1360-1386, 27 lines). -
+      Entry-ordering table: 19 TEXT_DIRS keys (compile-corpus-index.py:37-128) transcribed as data, ~40 lines. - Tests: ~150 lines, anchored by one
+      round-trip test (read the frozen artifact, emit, assert byte-identical) that subsumes the entire contract. - Differ: ~150 Python lines, reusing
+      verbatim the assertions I ran in this session.  Comparable prior work in the same crate, as the calibration anchor: crates/archon-
+      evidence/src/index.rs is 674 impl + 302 test lines (mod tests at :675) and delivers the strictly larger job — parse plus greedy longest-match
+      expansion plus tension surfacing plus owning-work routing, with 14 tests including two #[ignore] real-index integration tests. crates/archon-
+      evidence/src/pack.rs is 259 impl + 189 test (mod tests at :260). An emitter that reverses an already-written parser sits comfortably below both.
+      Confidence: high on the emitter, because the contract is fully pinned (one key order per record type, all-string scalars, no nulls, two explicit
+      sort rules) and the parsing half already exists and passes tests.  Explicitly NOT in this figure and not inferable from it: the claim/clause
+      extraction over 226 documents, and the archon-draft QuoteEntry provenance gap. Both are unestimated above and would dominate any total.
+
+  SUMMARY:
+      Yes — build it in archon, but gate the cutover on a byte-level differ, not on tsc.  The consumer surface is far smaller than the repo's size
+      suggests. Eleven live consumers, all funnelling through two loaders, reading a total of 22 distinct fields across four arrays. Ten of the eleven
+      never touch a record shape at all beyond those 22 fields, and the entire artifact is 664 KB of uniform, all-string JSON with zero nulls and one
+      key order. That makes a byte-identical legacy view a genuinely achievable target rather than an aspiration — I pinned the complete contract,
+      including the two sort rules, the array-order tiebreaks, and the emission flags.  Two consumers were missing from the brief: scripts/merge-
+      reasoning-edges.py and scripts/reason/reason_over_knowledge.py. The first matters because it reads node["name"] with a bare subscript — a hard
+      KeyError, the only non-silent failure anywhere in the consumer set.  On the risk question the honest answer cuts both ways, and the popular
+      reading is wrong. The 157 tsc errors are irrelevant here: I checked file by file and not one lands in the index path. Every index module
+      typechecks clean. But that cleanliness is a mirage, because every entry point widens to `any` (`loadCompiledIndex(): any | null`, `parsed as
+      CompiledIndex`, `(index as any).ontologyNodes`) — a cast is not a check, and tsc would not catch a renamed field, a missing field, or a null.
+      Meanwhile there are zero tests across 436 test files, zero CI references, and seven separate silent-catch layers. A malformed archon-emitted
+      file yields a successful run with a quietly smaller prompt: no exception, no log line, no non-zero exit. So: less risky at the type level,
+      considerably more risky at the behavioural level. The swap is safe only with a differ.  Two bug-compatibility landmines will bite anyone who
+      writes a "cleaner" emitter. I verified 31 of 72 hooks have an empty targetConcept, which makes `t.includes("")` always true — those 31 fire for
+      every topic, and filling them in silently changes bridge selection on every run. And the tag ranking tests for the substring "medium" while the
+      live values are INTERP-med — so med and low currently score identically. Normalizing either one is an invisible behaviour change with no test to
+      catch it.  The case for archon is one-sided on substrate rather than on preference. archon holds 987 MB of CozoDB with 226/227 documents, 17,824
+      chunks and 17,744 pages ingested; claudeflow-testing/.archon is 28 KB and empty. The goal's core requirement — character offsets for 450,000
+      clause records — already exists as schema (doc_chunk_blocks with char_start/char_end/page/bbox), while the Python compiler contains no
+      positional API that survives into a record: its seven .start() calls are all consumed immediately to slice section boundaries. And archon
+      already reads this exact artifact in 977 tested Rust lines, live. I confirmed the provenance end to end: verify-quote returned exact match,
+      similarity 1.000, p.48, bbox [66,327,360,368], Bekker 431b1.  One finding deserves attention on its own: archon-cli already carries its own copy
+      of the index at index/compiled-index.json, dated 2026-07-16 with 670 nodes / 1663 terms — exactly the incumbent's HEAD, while the incumbent's
+      worktree sits at 701 / 1722 and is uncommitted. Two producers of truth already exist and have already drifted. That is an argument for
+      consolidating, but it also means no diff is meaningful until the baseline is frozen — which is the first step, and it needs a commit decision
+      that is currently an open question in the handoff.  The main thing I would flag as unresolved by this work: archon-draft's QuoteEntry carries no
+      chunk_id, offsets, bbox or match_kind, and Verification is a date rather than a content check. That is the last hop before the drafting protocol
+      consumes quotations. Overhauling the index does not fix it, and if it is not scheduled alongside, the new index's precision dies at the pack
+      boundary. Related trap: REPORT_FLOOR is 0.60, so a fabricated quote still returns found:true — any gate must key on match_kind, not on found.
+
+======================================================================================================================================================
+VERDICT: STRONGLY-FAVOURS
+  scope: Costing the corpus/index asset (27 entry dirs, 1,857 files, 45 MB at /home/dalton/projects/claudeflow-testing/corpus/index/) for readability
+  scope: from archon-cli: real layout-family census, audit of /home/dalton/projects/claudeflow-testing/plans/archon-corpus-index-migration-spec.md
+  scope: against the tree, Rust adapter/LOC estimate with the JSON-vs-markdown reduction quantified per entry, and archon's path/root assumptions for
+  scope: a cross-repo read. Verified live against archon 1.3.11 (7b44c665), HEAD 8758f2fa, prebuilt debug binary. Read-only throughout; no build, no
+  scope: ingest, no writes.
+
+  PORT COST:
+      **~1,700–2,760 new lines of Rust (most likely ~2,200), plus ~700 test lines, to read all 27 entries into canonical concept/claim/edge/tension
+      records.** Every figure has an in-repo measuring stick.  Anchors measured in archon-cli: - `crates/archon-evidence/src/index.rs` = 977 lines
+      (673 code + 304 test, `#[cfg(test)]` at :674) for a reader over 4 record types from 1 JSON shape plus an inverted index and 3 query behaviors.
+      This is the unit of measure; the whole job is ~3–4x it. - `crates/archon-docs/src/schema.rs` = 644 lines for ~15 Cozo relations incl. an HNSW
+      template → ~43 lines/relation. - `crates/archon-knowledge/src/schema.rs` = 211 lines; `run_create` additive-or-ignore at :149–159 is reused, not
+      rewritten. - `scripts/compile-corpus-index.py:195–773` = 579 Python lines doing exactly the markdown ontology scraping that must be replaced for
+      the non-JSON entries.  Breakdown: - **A. `corpus_*` Cozo schema — 400–650 lines.** Spec §1 names 13 relations + 1 vector relation; 14 × 43
+      lines/relation ≈ 600. - **B. CSV dialect normalizer — 150–250 lines.** Basis: 41 dialects over 219 files / 19,770 rows, 100% name-addressable; a
+      HashMap synonym table (~60 tokens → 10 canonical fields) plus a `csv::Reader` loop. Prior art: `crates/archon-trading/src/ohlcv.rs:96`. NOT 41
+      adapters. - **C. Ontology-JSON adapter, 12 entries — 120–200 lines.** Basis: 11 flat arrays + 1 nested; one serde struct with aliases + 1
+      special case. - **D. Unit/per-chapter payload JSON adapter, 22 entries / 493 files — 400–650 lines.** Basis: 9 recurring payload keys (sections
+      164 files, concepts 137, interlocutors 135, tensions 133, readings 101, constructs 89, positions 42, claims 31, key_terms 19) × ~50 lines each.
+      The measured 50/53/41 record-shape variance is absorbed by aliases plus `#[serde(flatten)] extra: Map<String,Value>` for the bespoke tail — the
+      top-1 shape already covers 44–61% per key, and the tail is per-entry crown-jewel keys (Burke's `aristotle_exegesis_table`, Calleja's
+      `replaces_prior_construct_table`) that land in `extra` at zero marginal cost, or ~300 lines more if promoted to typed relations. - **E. Markdown
+      fallback, 9 entries + Aristotle's 10 `*-ontology.md` — 400–600 lines.** Basis: the incumbent's 579 Python lines cover the same two forms;
+      `pulldown-cmark 0.12` is already a workspace dep (`Cargo.toml:57`), so no regex table-walking. - **F. Importer binary + idempotency + row-count
+      verification — 200–350 lines.** Basis: spec §7/P0 with `run_create` reused. - **G. Cross-repo path plumbing — 30–60 lines across 3 files.**
+      Basis: `DEFAULT_INDEX_PATH` is a single const at `crates/archon-evidence/src/index.rs:25`, consumed at `src/command/evidence.rs:154` and `:218`;
+      `CompiledIndex::load` is already path-generic; `ARCHON_INDEX_PATH` already exists as a test hook at `index.rs:804`.  Test lines: at the repo's
+      own observed ratio (304/977 ≈ 31%), ~700.  **Per-entry JSON-vs-markdown reduction.** The incumbent spends 579 Python lines on 19 entries ≈ 30
+      lines/entry for ontology extraction, and that number grows with every new layout. The 12 JSON-twin entries collectively cost ~150 lines of serde
+      ≈ 12 lines/entry, and that number does **not** grow with entry count. Net: 12 of 21 ontology-markdown files (~57% of the scraping surface)
+      disappear, and it is the high-payload 57% — GM 56 nodes, Boredom Secondary 68, VR Pedagogy 60, In-Game 44, RM 39, Uncomfortable 36, Heidegger &
+      Rhetoric 36 = 339 of ~700 nodes move from regex to typed deserialization.  What this estimate does NOT cover, and it dwarfs the above:
+      generating the remaining ~42,700 claims and ~450,000 clause records from the 224 ingested documents. No line estimate is offered for that here
+      because nothing in either repo is comparable prior work — an honest unknown rather than an invented number.
+
+  SUMMARY:
+      Build it in archon. Three measured facts decide it, and none is a preference.  FIRST: the asset is already in archon-cli, and better cared for
+      there. /home/dalton/projects/archon-cli/index/ holds 2,055 files (45 MB) of which **1,731 are tracked in git** (commits e910839c, 37c95f47).
+      /home/dalton/projects/claudeflow-testing/corpus/index/ has 1,857 files of which only **335 are tracked** — just Boredom Secondary, VR Pedagogy
+      Secondary, Boredom Experiment and compiled-index.json. About 1,522 files of the "irreplaceable asset" exist in the incumbent as untracked
+      working-tree files with no ignore rule (`git check-ignore` exits 1). The trees are 98.2% identical (2,029 shared, 10 content-differing, 26
+      present only in claudeflow, 0 only in archon) and drifting.  SECOND: archon already reads it, end to end, with provenance the incumbent cannot
+      express. `archon evidence find "energeia actuality" --index` prints `index: 670 nodes / 1663 canonical terms / 64 tension edges`, surfaces
+      tensions CT-01/CT-03/T1, expands to ἐνέργεια/energeia/actuality/activity/being-at-work, and returns candidates with `provenance: exact-1.00 (sim
+      1.00) · bbox ✓` and `locator: 1418a1 (Bekker)`. `archon docs verify-quote "the soul is in a way all existing things"` returns EXACT MATCH, De
+      Anima p.48, bbox [66,327,360,368], locator 431b1 (Bekker). Against a store of 226 ingested documents / 17,824 chunks / 17,744 pages. The
+      incumbent artifact by contrast carries 0/701 nodes with an id, 0/701 with a page or locus, 25/701 with an empty definition.  THIRD: reading the
+      source JSON collapses most of the adapter burden, and the burden is smaller than the spec fears. All 41 edge-CSV dialects across 219 files /
+      19,770 rows are **name-addressable** — every header uses a column name from a ~60-token synonym set mapping to 10 canonical fields, so one
+      sniffing table replaces 41 adapters. And the 12 `*-ontology.json` files the incumbent compiler ignores are verified 1:1 twins of the markdown it
+      does scrape: across 6 sampled entries, 273/273 node names round-trip and node counts match in 5 of 6. Those 12 JSONs are 11 flat arrays plus 1
+      nested, with field-synonym sets of ≤5 members each — one serde struct with `#[serde(alias)]` covers all of them.  The honest caveat, and it is
+      the one that matters most: this is not primarily a migration. The tree holds 12,067 structured JSON records + 19,770 edge rows + 840 matrix rows
+      = 32,677 machine-readable records, of which only **2,285 are claims and 0 are clauses**, against the goal's 45,000 claims and 450,000 clause
+      records. The hand-authored entries are ~5% of the claim target and 0% of the clause target — they are the gold seed, not the deliverable. The
+      other ~95% must be generated from the 224 ingested documents, and generation needs exactly what archon has (char offsets, page, bbox, exact-vs-
+      fuzzy quote verification, a 987 MB CozoDB) and what the incumbent structurally lacks (a compiler that destroys offsets in the first statement of
+      every parser, and a single-JSON artifact whose loader ceiling is ~25x against a ~591x requirement). Costing this decision off the migration
+      alone understates the job by roughly twentyfold — and every unit of that understated work lands on the side of the repo that already has the
+      primitives.
+

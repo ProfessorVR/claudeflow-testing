@@ -1,0 +1,26 @@
+== source stats ==
+started: 2026-07-28T23:32:07Z
+source:        /home/dalton/projects/claudeflow-testing
+host:          PROTEUS
+git branch:    feat/wraith-retrieval
+git HEAD:      6cb0f563b47ad559d8790f17175d0ca043fe4f42
+excluded:      ./backups/  and every .backups/ directory
+compressor:    zstd -1 -T0 (12 threads), speed-prioritised
+== archiving ==
+*** Zstandard CLI (64-bit) v1.5.5, by Yann Collet ***
+Note: 12 physical core(s) detected 
+/*stdin*\            : 89.02%   (  38.6 GiB =>   34.4 GiB, /mnt/c/Users/Dalton/Desktop/claudeflow-testing-backup-20260728T234500Z/claudeflow-testing-full-20260728T234500Z.tar.zst) 
+
+real	2m31.269s
+user	0m28.843s
+sys	0m42.916s
+tar exit: 0  (1 = files changed during read, tolerable)
+== archive stats ==
+-rwxrwxrwx 1 dalton dalton 35G Jul 28 16:34 /mnt/c/Users/Dalton/Desktop/claudeflow-testing-backup-20260728T234500Z/claudeflow-testing-full-20260728T234500Z.tar.zst
+== file list ==
+/*stdin*\            :  8.61%   (  10.8 MiB =>    950 KiB, /mnt/c/Users/Dalton/Desktop/claudeflow-testing-backup-20260728T234500Z/FILELIST.txt.zst) 
+entries archived: 86600
+== checksum ==
+fb4050dbb563d8b07c2c7cabcf37899a7a0a375ddea9d7cc42a56144cdb73646  claudeflow-testing-full-20260728T234500Z.tar.zst
+finished: 2026-07-28T23:40:05Z
+DONE

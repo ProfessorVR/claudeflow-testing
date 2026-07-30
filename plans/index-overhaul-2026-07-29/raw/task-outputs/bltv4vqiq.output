@@ -1,0 +1,902 @@
+--- default (PYTHONHASHSEED random), 6 processes ---
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 66, in apport_excepthook
+    import apport.report
+  File "/usr/lib/python3/dist-packages/apport/__init__.py", line 8, in <module>
+    from apport.report import Report
+  File "/usr/lib/python3/dist-packages/apport/report.py", line 45, in <module>
+    import apport.fileutils
+  File "/usr/lib/python3/dist-packages/apport/fileutils.py", line 32, in <module>
+    from problem_report import ProblemReport
+  File "/usr/lib/python3/dist-packages/problem_report.py", line 183, in <module>
+    @dataclasses.dataclass
+     ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1268, in dataclass
+    return wrap(cls)
+           ^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1258, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 970, in _process_class
+    cls_annotations = inspect.get_annotations(cls)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'inspect' has no attribute 'get_annotations'
+
+Original exception was:
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+==================== us-05-epilogue.json
+  KEY: /positions list 10
+    shape x10: ('anchor', 'claim', 'contributor', 'id', 'tier', 'type')
+    SAMPLE: {"id": "POS-snow-dichotomy-contested", "claim": "Snow's two-cultures dichotomy is the operative but contested frame for the volume; the Epilogue ultimately answers Snow's question with a qualified 'No' — the divide dissolves when emotion is studied with methodological diversity", "type": "POSITION", "tier": 1, "anchor": {"pdf": "139, 155", "book": "129, 145"}, "contributor": "Gross & Preston"}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'co_authored', 'authors_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'neuroscience_loci', 'rhetorical_loci', 'gross_2005_loci']
+==================== us-04-austen.json
+  KEY: /positions list 11
+    shape x10: ('claim', 'id', 'support_loci', 'tier')
+    shape x1: ('claim', 'id', 'qualification', 'support_loci', 'tier')
+    SAMPLE: {"id": "P-MIXED-FEELINGS-AS-RHETORICAL-SITUATED", "claim": "Mixed feelings are not internal proportional mixtures (Galen, Ekman, blending algorithms) but rhetorically-situated, negotiated reference values converging on character.", "support_loci": ["book p.111", "book p.113", "book p.119-120"], "tier": 1}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'shortest_chapter', 'phase2_completed', 'phase2_agent', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'austen_loci', 'neuroscience_loci', 'rhetoric_classical_loci', 'gross_2005_loci', 'other_primary_loci', 'cross_pipeline_anchors', 'figure_callouts', 'sections', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-01-darwin.json
+  KEY: /positions list 10
+    shape x10: ('gloss', 'id', 'label', 'pdf_pages')
+    SAMPLE: {"id": "P-US01-01", "label": "Darwin-as-rhetorician thesis", "pdf_pages": [38, 48, 50], "gloss": "Gross's titular wager: Darwin's Expression foregrounds inherent rhetoricity of emotion — medium, occasion, social situation — and is thereby a humanistic resource, not (as Ekman has it) a forerunner of decontextualized basic-emotions science."}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'figures', 'loci', 'tensions', 'interlocutors', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'latin_terms_expected', 'cross_pipeline_bridges', 'note']
+==================== us-02-equiano.json
+  KEY: /positions list 8
+    shape x8: ('advocate', 'id', 'opposition', 'pdf_locus', 'stance')
+    SAMPLE: {"id": "P-US02-Gross-thesis-bearing-up", "stance": "'Bearing up' names a rhetorical-emotional disposition that exceeds both submission and resistance, and that exceeds pragmatic-phenomenology's vocabulary of comfortable habituation.", "advocate": "Daniel M. Gross", "opposition": "Pragmatic phenomenology (Dreyfus, Noe-as-orthodox); science-of-happiness (Kahneman-Diener-Schwarz), insofar as it would render Equiano's case as 'adaptation'", "pdf_locus": "63 program; 79-86 development"}
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'phase2_completed', 'special_features', 'sections', 'outline_prose', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'literary_characters', 'german_terms_present', 'greek_terms_present', 'cross_pipeline_bridges', 'filter_observations', 'note']
+==================== us-00-intro.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'support_evidence')
+    SAMPLE: {"claimant": "Gross", "claim": "Emotion is neither biologically hardwired nor purely socially constructed; the rhetorical situation determines what we mean by 'emotion' in the first place.", "support_evidence": "PDF p.19 explicit rejection of 'Emotions: hardwired or socially constructed?' binary as collapsing phenomenology; PDF p.24 four-mode reading of Imitation of Christ.", "contested_by": "Paul Ekman (basic emotions program); Brian Massumi (autonomy of affect as pre-ideological)"}
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'notes_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-03-radcliffe.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'position_id', 'support')
+    SAMPLE: {"position_id": "P-USR-01", "claimant": "Gross", "claim": "J. J. Gibson's affordance theory can and must be extended into a rhetorical-historical-cultural theory of negative/hostile affordances, against the prevailing orthodox ecological-psychology reading that holds affordances strictly invariant and pre-linguistic.", "support": "Cop-car-roof case (PDF 104-105); Aristotle's Cydias on Samos as negative affordance (PDF 102-103); Lewin's Aufforderungscharakter genealogy (PDF 104-105); legal hostile-work-environment case (PDF 108).", "contested_by": "Orthodox Gibsonian ecological psychology; Scarantino's narrower taxonomy of affordances (PDF 109)."}
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'three_pass_recommended', 'dissertation_critical', 'ocr_confidence', 'longest_chapter', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'cross_pipeline_bridges', 'note']
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 66, in apport_excepthook
+    import apport.report
+  File "/usr/lib/python3/dist-packages/apport/__init__.py", line 8, in <module>
+    from apport.report import Report
+  File "/usr/lib/python3/dist-packages/apport/report.py", line 45, in <module>
+    import apport.fileutils
+  File "/usr/lib/python3/dist-packages/apport/fileutils.py", line 32, in <module>
+    from problem_report import ProblemReport
+  File "/usr/lib/python3/dist-packages/problem_report.py", line 183, in <module>
+    @dataclasses.dataclass
+     ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1268, in dataclass
+    return wrap(cls)
+           ^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1258, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 970, in _process_class
+    cls_annotations = inspect.get_annotations(cls)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'inspect' has no attribute 'get_annotations'
+
+Original exception was:
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+==================== us-05-epilogue.json
+  KEY: /positions list 10
+    shape x10: ('anchor', 'claim', 'contributor', 'id', 'tier', 'type')
+    SAMPLE: {"id": "POS-snow-dichotomy-contested", "claim": "Snow's two-cultures dichotomy is the operative but contested frame for the volume; the Epilogue ultimately answers Snow's question with a qualified 'No' — the divide dissolves when emotion is studied with methodological diversity", "type": "POSITION", "tier": 1, "anchor": {"pdf": "139, 155", "book": "129, 145"}, "contributor": "Gross & Preston"}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'co_authored', 'authors_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'neuroscience_loci', 'rhetorical_loci', 'gross_2005_loci']
+==================== us-04-austen.json
+  KEY: /positions list 11
+    shape x10: ('claim', 'id', 'support_loci', 'tier')
+    shape x1: ('claim', 'id', 'qualification', 'support_loci', 'tier')
+    SAMPLE: {"id": "P-MIXED-FEELINGS-AS-RHETORICAL-SITUATED", "claim": "Mixed feelings are not internal proportional mixtures (Galen, Ekman, blending algorithms) but rhetorically-situated, negotiated reference values converging on character.", "support_loci": ["book p.111", "book p.113", "book p.119-120"], "tier": 1}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'shortest_chapter', 'phase2_completed', 'phase2_agent', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'austen_loci', 'neuroscience_loci', 'rhetoric_classical_loci', 'gross_2005_loci', 'other_primary_loci', 'cross_pipeline_anchors', 'figure_callouts', 'sections', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-01-darwin.json
+  KEY: /positions list 10
+    shape x10: ('gloss', 'id', 'label', 'pdf_pages')
+    SAMPLE: {"id": "P-US01-01", "label": "Darwin-as-rhetorician thesis", "pdf_pages": [38, 48, 50], "gloss": "Gross's titular wager: Darwin's Expression foregrounds inherent rhetoricity of emotion — medium, occasion, social situation — and is thereby a humanistic resource, not (as Ekman has it) a forerunner of decontextualized basic-emotions science."}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'figures', 'loci', 'tensions', 'interlocutors', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'latin_terms_expected', 'cross_pipeline_bridges', 'note']
+==================== us-02-equiano.json
+  KEY: /positions list 8
+    shape x8: ('advocate', 'id', 'opposition', 'pdf_locus', 'stance')
+    SAMPLE: {"id": "P-US02-Gross-thesis-bearing-up", "stance": "'Bearing up' names a rhetorical-emotional disposition that exceeds both submission and resistance, and that exceeds pragmatic-phenomenology's vocabulary of comfortable habituation.", "advocate": "Daniel M. Gross", "opposition": "Pragmatic phenomenology (Dreyfus, Noe-as-orthodox); science-of-happiness (Kahneman-Diener-Schwarz), insofar as it would render Equiano's case as 'adaptation'", "pdf_locus": "63 program; 79-86 development"}
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'phase2_completed', 'special_features', 'sections', 'outline_prose', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'literary_characters', 'german_terms_present', 'greek_terms_present', 'cross_pipeline_bridges', 'filter_observations', 'note']
+==================== us-00-intro.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'support_evidence')
+    SAMPLE: {"claimant": "Gross", "claim": "Emotion is neither biologically hardwired nor purely socially constructed; the rhetorical situation determines what we mean by 'emotion' in the first place.", "support_evidence": "PDF p.19 explicit rejection of 'Emotions: hardwired or socially constructed?' binary as collapsing phenomenology; PDF p.24 four-mode reading of Imitation of Christ.", "contested_by": "Paul Ekman (basic emotions program); Brian Massumi (autonomy of affect as pre-ideological)"}
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'notes_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-03-radcliffe.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'position_id', 'support')
+    SAMPLE: {"position_id": "P-USR-01", "claimant": "Gross", "claim": "J. J. Gibson's affordance theory can and must be extended into a rhetorical-historical-cultural theory of negative/hostile affordances, against the prevailing orthodox ecological-psychology reading that holds affordances strictly invariant and pre-linguistic.", "support": "Cop-car-roof case (PDF 104-105); Aristotle's Cydias on Samos as negative affordance (PDF 102-103); Lewin's Aufforderungscharakter genealogy (PDF 104-105); legal hostile-work-environment case (PDF 108).", "contested_by": "Orthodox Gibsonian ecological psychology; Scarantino's narrower taxonomy of affordances (PDF 109)."}
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'three_pass_recommended', 'dissertation_critical', 'ocr_confidence', 'longest_chapter', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'cross_pipeline_bridges', 'note']
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 66, in apport_excepthook
+    import apport.report
+  File "/usr/lib/python3/dist-packages/apport/__init__.py", line 8, in <module>
+    from apport.report import Report
+  File "/usr/lib/python3/dist-packages/apport/report.py", line 45, in <module>
+    import apport.fileutils
+  File "/usr/lib/python3/dist-packages/apport/fileutils.py", line 32, in <module>
+    from problem_report import ProblemReport
+  File "/usr/lib/python3/dist-packages/problem_report.py", line 183, in <module>
+    @dataclasses.dataclass
+     ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1268, in dataclass
+    return wrap(cls)
+           ^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1258, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 970, in _process_class
+    cls_annotations = inspect.get_annotations(cls)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'inspect' has no attribute 'get_annotations'
+
+Original exception was:
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+==================== us-05-epilogue.json
+  KEY: /positions list 10
+    shape x10: ('anchor', 'claim', 'contributor', 'id', 'tier', 'type')
+    SAMPLE: {"id": "POS-snow-dichotomy-contested", "claim": "Snow's two-cultures dichotomy is the operative but contested frame for the volume; the Epilogue ultimately answers Snow's question with a qualified 'No' — the divide dissolves when emotion is studied with methodological diversity", "type": "POSITION", "tier": 1, "anchor": {"pdf": "139, 155", "book": "129, 145"}, "contributor": "Gross & Preston"}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'co_authored', 'authors_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'neuroscience_loci', 'rhetorical_loci', 'gross_2005_loci']
+==================== us-04-austen.json
+  KEY: /positions list 11
+    shape x10: ('claim', 'id', 'support_loci', 'tier')
+    shape x1: ('claim', 'id', 'qualification', 'support_loci', 'tier')
+    SAMPLE: {"id": "P-MIXED-FEELINGS-AS-RHETORICAL-SITUATED", "claim": "Mixed feelings are not internal proportional mixtures (Galen, Ekman, blending algorithms) but rhetorically-situated, negotiated reference values converging on character.", "support_loci": ["book p.111", "book p.113", "book p.119-120"], "tier": 1}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'shortest_chapter', 'phase2_completed', 'phase2_agent', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'austen_loci', 'neuroscience_loci', 'rhetoric_classical_loci', 'gross_2005_loci', 'other_primary_loci', 'cross_pipeline_anchors', 'figure_callouts', 'sections', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-01-darwin.json
+  KEY: /positions list 10
+    shape x10: ('gloss', 'id', 'label', 'pdf_pages')
+    SAMPLE: {"id": "P-US01-01", "label": "Darwin-as-rhetorician thesis", "pdf_pages": [38, 48, 50], "gloss": "Gross's titular wager: Darwin's Expression foregrounds inherent rhetoricity of emotion — medium, occasion, social situation — and is thereby a humanistic resource, not (as Ekman has it) a forerunner of decontextualized basic-emotions science."}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'figures', 'loci', 'tensions', 'interlocutors', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'latin_terms_expected', 'cross_pipeline_bridges', 'note']
+==================== us-02-equiano.json
+  KEY: /positions list 8
+    shape x8: ('advocate', 'id', 'opposition', 'pdf_locus', 'stance')
+    SAMPLE: {"id": "P-US02-Gross-thesis-bearing-up", "stance": "'Bearing up' names a rhetorical-emotional disposition that exceeds both submission and resistance, and that exceeds pragmatic-phenomenology's vocabulary of comfortable habituation.", "advocate": "Daniel M. Gross", "opposition": "Pragmatic phenomenology (Dreyfus, Noe-as-orthodox); science-of-happiness (Kahneman-Diener-Schwarz), insofar as it would render Equiano's case as 'adaptation'", "pdf_locus": "63 program; 79-86 development"}
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'phase2_completed', 'special_features', 'sections', 'outline_prose', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'literary_characters', 'german_terms_present', 'greek_terms_present', 'cross_pipeline_bridges', 'filter_observations', 'note']
+==================== us-00-intro.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'support_evidence')
+    SAMPLE: {"claimant": "Gross", "claim": "Emotion is neither biologically hardwired nor purely socially constructed; the rhetorical situation determines what we mean by 'emotion' in the first place.", "support_evidence": "PDF p.19 explicit rejection of 'Emotions: hardwired or socially constructed?' binary as collapsing phenomenology; PDF p.24 four-mode reading of Imitation of Christ.", "contested_by": "Paul Ekman (basic emotions program); Brian Massumi (autonomy of affect as pre-ideological)"}
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'notes_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-03-radcliffe.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'position_id', 'support')
+    SAMPLE: {"position_id": "P-USR-01", "claimant": "Gross", "claim": "J. J. Gibson's affordance theory can and must be extended into a rhetorical-historical-cultural theory of negative/hostile affordances, against the prevailing orthodox ecological-psychology reading that holds affordances strictly invariant and pre-linguistic.", "support": "Cop-car-roof case (PDF 104-105); Aristotle's Cydias on Samos as negative affordance (PDF 102-103); Lewin's Aufforderungscharakter genealogy (PDF 104-105); legal hostile-work-environment case (PDF 108).", "contested_by": "Orthodox Gibsonian ecological psychology; Scarantino's narrower taxonomy of affordances (PDF 109)."}
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'three_pass_recommended', 'dissertation_critical', 'ocr_confidence', 'longest_chapter', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'cross_pipeline_bridges', 'note']
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 66, in apport_excepthook
+    import apport.report
+  File "/usr/lib/python3/dist-packages/apport/__init__.py", line 8, in <module>
+    from apport.report import Report
+  File "/usr/lib/python3/dist-packages/apport/report.py", line 45, in <module>
+    import apport.fileutils
+  File "/usr/lib/python3/dist-packages/apport/fileutils.py", line 32, in <module>
+    from problem_report import ProblemReport
+  File "/usr/lib/python3/dist-packages/problem_report.py", line 183, in <module>
+    @dataclasses.dataclass
+     ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1268, in dataclass
+    return wrap(cls)
+           ^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1258, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 970, in _process_class
+    cls_annotations = inspect.get_annotations(cls)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'inspect' has no attribute 'get_annotations'
+
+Original exception was:
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+==================== us-05-epilogue.json
+  KEY: /positions list 10
+    shape x10: ('anchor', 'claim', 'contributor', 'id', 'tier', 'type')
+    SAMPLE: {"id": "POS-snow-dichotomy-contested", "claim": "Snow's two-cultures dichotomy is the operative but contested frame for the volume; the Epilogue ultimately answers Snow's question with a qualified 'No' — the divide dissolves when emotion is studied with methodological diversity", "type": "POSITION", "tier": 1, "anchor": {"pdf": "139, 155", "book": "129, 145"}, "contributor": "Gross & Preston"}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'co_authored', 'authors_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'neuroscience_loci', 'rhetorical_loci', 'gross_2005_loci']
+==================== us-04-austen.json
+  KEY: /positions list 11
+    shape x10: ('claim', 'id', 'support_loci', 'tier')
+    shape x1: ('claim', 'id', 'qualification', 'support_loci', 'tier')
+    SAMPLE: {"id": "P-MIXED-FEELINGS-AS-RHETORICAL-SITUATED", "claim": "Mixed feelings are not internal proportional mixtures (Galen, Ekman, blending algorithms) but rhetorically-situated, negotiated reference values converging on character.", "support_loci": ["book p.111", "book p.113", "book p.119-120"], "tier": 1}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'shortest_chapter', 'phase2_completed', 'phase2_agent', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'austen_loci', 'neuroscience_loci', 'rhetoric_classical_loci', 'gross_2005_loci', 'other_primary_loci', 'cross_pipeline_anchors', 'figure_callouts', 'sections', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-01-darwin.json
+  KEY: /positions list 10
+    shape x10: ('gloss', 'id', 'label', 'pdf_pages')
+    SAMPLE: {"id": "P-US01-01", "label": "Darwin-as-rhetorician thesis", "pdf_pages": [38, 48, 50], "gloss": "Gross's titular wager: Darwin's Expression foregrounds inherent rhetoricity of emotion — medium, occasion, social situation — and is thereby a humanistic resource, not (as Ekman has it) a forerunner of decontextualized basic-emotions science."}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'figures', 'loci', 'tensions', 'interlocutors', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'latin_terms_expected', 'cross_pipeline_bridges', 'note']
+==================== us-02-equiano.json
+  KEY: /positions list 8
+    shape x8: ('advocate', 'id', 'opposition', 'pdf_locus', 'stance')
+    SAMPLE: {"id": "P-US02-Gross-thesis-bearing-up", "stance": "'Bearing up' names a rhetorical-emotional disposition that exceeds both submission and resistance, and that exceeds pragmatic-phenomenology's vocabulary of comfortable habituation.", "advocate": "Daniel M. Gross", "opposition": "Pragmatic phenomenology (Dreyfus, Noe-as-orthodox); science-of-happiness (Kahneman-Diener-Schwarz), insofar as it would render Equiano's case as 'adaptation'", "pdf_locus": "63 program; 79-86 development"}
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'phase2_completed', 'special_features', 'sections', 'outline_prose', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'literary_characters', 'german_terms_present', 'greek_terms_present', 'cross_pipeline_bridges', 'filter_observations', 'note']
+==================== us-00-intro.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'support_evidence')
+    SAMPLE: {"claimant": "Gross", "claim": "Emotion is neither biologically hardwired nor purely socially constructed; the rhetorical situation determines what we mean by 'emotion' in the first place.", "support_evidence": "PDF p.19 explicit rejection of 'Emotions: hardwired or socially constructed?' binary as collapsing phenomenology; PDF p.24 four-mode reading of Imitation of Christ.", "contested_by": "Paul Ekman (basic emotions program); Brian Massumi (autonomy of affect as pre-ideological)"}
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'notes_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-03-radcliffe.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'position_id', 'support')
+    SAMPLE: {"position_id": "P-USR-01", "claimant": "Gross", "claim": "J. J. Gibson's affordance theory can and must be extended into a rhetorical-historical-cultural theory of negative/hostile affordances, against the prevailing orthodox ecological-psychology reading that holds affordances strictly invariant and pre-linguistic.", "support": "Cop-car-roof case (PDF 104-105); Aristotle's Cydias on Samos as negative affordance (PDF 102-103); Lewin's Aufforderungscharakter genealogy (PDF 104-105); legal hostile-work-environment case (PDF 108).", "contested_by": "Orthodox Gibsonian ecological psychology; Scarantino's narrower taxonomy of affordances (PDF 109)."}
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'three_pass_recommended', 'dissertation_critical', 'ocr_confidence', 'longest_chapter', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'cross_pipeline_bridges', 'note']
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 66, in apport_excepthook
+    import apport.report
+  File "/usr/lib/python3/dist-packages/apport/__init__.py", line 8, in <module>
+    from apport.report import Report
+  File "/usr/lib/python3/dist-packages/apport/report.py", line 45, in <module>
+    import apport.fileutils
+  File "/usr/lib/python3/dist-packages/apport/fileutils.py", line 32, in <module>
+    from problem_report import ProblemReport
+  File "/usr/lib/python3/dist-packages/problem_report.py", line 183, in <module>
+    @dataclasses.dataclass
+     ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1268, in dataclass
+    return wrap(cls)
+           ^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1258, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 970, in _process_class
+    cls_annotations = inspect.get_annotations(cls)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'inspect' has no attribute 'get_annotations'
+
+Original exception was:
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+==================== us-05-epilogue.json
+  KEY: /positions list 10
+    shape x10: ('anchor', 'claim', 'contributor', 'id', 'tier', 'type')
+    SAMPLE: {"id": "POS-snow-dichotomy-contested", "claim": "Snow's two-cultures dichotomy is the operative but contested frame for the volume; the Epilogue ultimately answers Snow's question with a qualified 'No' — the divide dissolves when emotion is studied with methodological diversity", "type": "POSITION", "tier": 1, "anchor": {"pdf": "139, 155", "book": "129, 145"}, "contributor": "Gross & Preston"}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'co_authored', 'authors_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'neuroscience_loci', 'rhetorical_loci', 'gross_2005_loci']
+==================== us-04-austen.json
+  KEY: /positions list 11
+    shape x10: ('claim', 'id', 'support_loci', 'tier')
+    shape x1: ('claim', 'id', 'qualification', 'support_loci', 'tier')
+    SAMPLE: {"id": "P-MIXED-FEELINGS-AS-RHETORICAL-SITUATED", "claim": "Mixed feelings are not internal proportional mixtures (Galen, Ekman, blending algorithms) but rhetorically-situated, negotiated reference values converging on character.", "support_loci": ["book p.111", "book p.113", "book p.119-120"], "tier": 1}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'shortest_chapter', 'phase2_completed', 'phase2_agent', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'austen_loci', 'neuroscience_loci', 'rhetoric_classical_loci', 'gross_2005_loci', 'other_primary_loci', 'cross_pipeline_anchors', 'figure_callouts', 'sections', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-01-darwin.json
+  KEY: /positions list 10
+    shape x10: ('gloss', 'id', 'label', 'pdf_pages')
+    SAMPLE: {"id": "P-US01-01", "label": "Darwin-as-rhetorician thesis", "pdf_pages": [38, 48, 50], "gloss": "Gross's titular wager: Darwin's Expression foregrounds inherent rhetoricity of emotion — medium, occasion, social situation — and is thereby a humanistic resource, not (as Ekman has it) a forerunner of decontextualized basic-emotions science."}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'figures', 'loci', 'tensions', 'interlocutors', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'latin_terms_expected', 'cross_pipeline_bridges', 'note']
+==================== us-02-equiano.json
+  KEY: /positions list 8
+    shape x8: ('advocate', 'id', 'opposition', 'pdf_locus', 'stance')
+    SAMPLE: {"id": "P-US02-Gross-thesis-bearing-up", "stance": "'Bearing up' names a rhetorical-emotional disposition that exceeds both submission and resistance, and that exceeds pragmatic-phenomenology's vocabulary of comfortable habituation.", "advocate": "Daniel M. Gross", "opposition": "Pragmatic phenomenology (Dreyfus, Noe-as-orthodox); science-of-happiness (Kahneman-Diener-Schwarz), insofar as it would render Equiano's case as 'adaptation'", "pdf_locus": "63 program; 79-86 development"}
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'phase2_completed', 'special_features', 'sections', 'outline_prose', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'literary_characters', 'german_terms_present', 'greek_terms_present', 'cross_pipeline_bridges', 'filter_observations', 'note']
+==================== us-00-intro.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'support_evidence')
+    SAMPLE: {"claimant": "Gross", "claim": "Emotion is neither biologically hardwired nor purely socially constructed; the rhetorical situation determines what we mean by 'emotion' in the first place.", "support_evidence": "PDF p.19 explicit rejection of 'Emotions: hardwired or socially constructed?' binary as collapsing phenomenology; PDF p.24 four-mode reading of Imitation of Christ.", "contested_by": "Paul Ekman (basic emotions program); Brian Massumi (autonomy of affect as pre-ideological)"}
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'notes_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-03-radcliffe.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'position_id', 'support')
+    SAMPLE: {"position_id": "P-USR-01", "claimant": "Gross", "claim": "J. J. Gibson's affordance theory can and must be extended into a rhetorical-historical-cultural theory of negative/hostile affordances, against the prevailing orthodox ecological-psychology reading that holds affordances strictly invariant and pre-linguistic.", "support": "Cop-car-roof case (PDF 104-105); Aristotle's Cydias on Samos as negative affordance (PDF 102-103); Lewin's Aufforderungscharakter genealogy (PDF 104-105); legal hostile-work-environment case (PDF 108).", "contested_by": "Orthodox Gibsonian ecological psychology; Scarantino's narrower taxonomy of affordances (PDF 109)."}
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'three_pass_recommended', 'dissertation_critical', 'ocr_confidence', 'longest_chapter', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'cross_pipeline_bridges', 'note']
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 66, in apport_excepthook
+    import apport.report
+  File "/usr/lib/python3/dist-packages/apport/__init__.py", line 8, in <module>
+    from apport.report import Report
+  File "/usr/lib/python3/dist-packages/apport/report.py", line 45, in <module>
+    import apport.fileutils
+  File "/usr/lib/python3/dist-packages/apport/fileutils.py", line 32, in <module>
+    from problem_report import ProblemReport
+  File "/usr/lib/python3/dist-packages/problem_report.py", line 183, in <module>
+    @dataclasses.dataclass
+     ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1268, in dataclass
+    return wrap(cls)
+           ^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1258, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 970, in _process_class
+    cls_annotations = inspect.get_annotations(cls)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'inspect' has no attribute 'get_annotations'
+
+Original exception was:
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+==================== us-05-epilogue.json
+  KEY: /positions list 10
+    shape x10: ('anchor', 'claim', 'contributor', 'id', 'tier', 'type')
+    SAMPLE: {"id": "POS-snow-dichotomy-contested", "claim": "Snow's two-cultures dichotomy is the operative but contested frame for the volume; the Epilogue ultimately answers Snow's question with a qualified 'No' — the divide dissolves when emotion is studied with methodological diversity", "type": "POSITION", "tier": 1, "anchor": {"pdf": "139, 155", "book": "129, 145"}, "contributor": "Gross & Preston"}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'co_authored', 'authors_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'neuroscience_loci', 'rhetorical_loci', 'gross_2005_loci']
+==================== us-04-austen.json
+  KEY: /positions list 11
+    shape x10: ('claim', 'id', 'support_loci', 'tier')
+    shape x1: ('claim', 'id', 'qualification', 'support_loci', 'tier')
+    SAMPLE: {"id": "P-MIXED-FEELINGS-AS-RHETORICAL-SITUATED", "claim": "Mixed feelings are not internal proportional mixtures (Galen, Ekman, blending algorithms) but rhetorically-situated, negotiated reference values converging on character.", "support_loci": ["book p.111", "book p.113", "book p.119-120"], "tier": 1}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'shortest_chapter', 'phase2_completed', 'phase2_agent', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'austen_loci', 'neuroscience_loci', 'rhetoric_classical_loci', 'gross_2005_loci', 'other_primary_loci', 'cross_pipeline_anchors', 'figure_callouts', 'sections', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-01-darwin.json
+  KEY: /positions list 10
+    shape x10: ('gloss', 'id', 'label', 'pdf_pages')
+    SAMPLE: {"id": "P-US01-01", "label": "Darwin-as-rhetorician thesis", "pdf_pages": [38, 48, 50], "gloss": "Gross's titular wager: Darwin's Expression foregrounds inherent rhetoricity of emotion — medium, occasion, social situation — and is thereby a humanistic resource, not (as Ekman has it) a forerunner of decontextualized basic-emotions science."}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'figures', 'loci', 'tensions', 'interlocutors', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'latin_terms_expected', 'cross_pipeline_bridges', 'note']
+==================== us-02-equiano.json
+  KEY: /positions list 8
+    shape x8: ('advocate', 'id', 'opposition', 'pdf_locus', 'stance')
+    SAMPLE: {"id": "P-US02-Gross-thesis-bearing-up", "stance": "'Bearing up' names a rhetorical-emotional disposition that exceeds both submission and resistance, and that exceeds pragmatic-phenomenology's vocabulary of comfortable habituation.", "advocate": "Daniel M. Gross", "opposition": "Pragmatic phenomenology (Dreyfus, Noe-as-orthodox); science-of-happiness (Kahneman-Diener-Schwarz), insofar as it would render Equiano's case as 'adaptation'", "pdf_locus": "63 program; 79-86 development"}
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'phase2_completed', 'special_features', 'sections', 'outline_prose', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'literary_characters', 'german_terms_present', 'greek_terms_present', 'cross_pipeline_bridges', 'filter_observations', 'note']
+==================== us-00-intro.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'support_evidence')
+    SAMPLE: {"claimant": "Gross", "claim": "Emotion is neither biologically hardwired nor purely socially constructed; the rhetorical situation determines what we mean by 'emotion' in the first place.", "support_evidence": "PDF p.19 explicit rejection of 'Emotions: hardwired or socially constructed?' binary as collapsing phenomenology; PDF p.24 four-mode reading of Imitation of Christ.", "contested_by": "Paul Ekman (basic emotions program); Brian Massumi (autonomy of affect as pre-ideological)"}
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'notes_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-03-radcliffe.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'position_id', 'support')
+    SAMPLE: {"position_id": "P-USR-01", "claimant": "Gross", "claim": "J. J. Gibson's affordance theory can and must be extended into a rhetorical-historical-cultural theory of negative/hostile affordances, against the prevailing orthodox ecological-psychology reading that holds affordances strictly invariant and pre-linguistic.", "support": "Cop-car-roof case (PDF 104-105); Aristotle's Cydias on Samos as negative affordance (PDF 102-103); Lewin's Aufforderungscharakter genealogy (PDF 104-105); legal hostile-work-environment case (PDF 108).", "contested_by": "Orthodox Gibsonian ecological psychology; Scarantino's narrower taxonomy of affordances (PDF 109)."}
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'three_pass_recommended', 'dissertation_critical', 'ocr_confidence', 'longest_chapter', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'cross_pipeline_bridges', 'note']
+--- pinned seeds ---
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 66, in apport_excepthook
+    import apport.report
+  File "/usr/lib/python3/dist-packages/apport/__init__.py", line 8, in <module>
+    from apport.report import Report
+  File "/usr/lib/python3/dist-packages/apport/report.py", line 45, in <module>
+    import apport.fileutils
+  File "/usr/lib/python3/dist-packages/apport/fileutils.py", line 32, in <module>
+    from problem_report import ProblemReport
+  File "/usr/lib/python3/dist-packages/problem_report.py", line 183, in <module>
+    @dataclasses.dataclass
+     ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1268, in dataclass
+    return wrap(cls)
+           ^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1258, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 970, in _process_class
+    cls_annotations = inspect.get_annotations(cls)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'inspect' has no attribute 'get_annotations'
+
+Original exception was:
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+==================== us-05-epilogue.json
+  KEY: /positions list 10
+    shape x10: ('anchor', 'claim', 'contributor', 'id', 'tier', 'type')
+    SAMPLE: {"id": "POS-snow-dichotomy-contested", "claim": "Snow's two-cultures dichotomy is the operative but contested frame for the volume; the Epilogue ultimately answers Snow's question with a qualified 'No' — the divide dissolves when emotion is studied with methodological diversity", "type": "POSITION", "tier": 1, "anchor": {"pdf": "139, 155", "book": "129, 145"}, "contributor": "Gross & Preston"}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'co_authored', 'authors_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'neuroscience_loci', 'rhetorical_loci', 'gross_2005_loci']
+==================== us-04-austen.json
+  KEY: /positions list 11
+    shape x10: ('claim', 'id', 'support_loci', 'tier')
+    shape x1: ('claim', 'id', 'qualification', 'support_loci', 'tier')
+    SAMPLE: {"id": "P-MIXED-FEELINGS-AS-RHETORICAL-SITUATED", "claim": "Mixed feelings are not internal proportional mixtures (Galen, Ekman, blending algorithms) but rhetorically-situated, negotiated reference values converging on character.", "support_loci": ["book p.111", "book p.113", "book p.119-120"], "tier": 1}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'shortest_chapter', 'phase2_completed', 'phase2_agent', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'austen_loci', 'neuroscience_loci', 'rhetoric_classical_loci', 'gross_2005_loci', 'other_primary_loci', 'cross_pipeline_anchors', 'figure_callouts', 'sections', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-01-darwin.json
+  KEY: /positions list 10
+    shape x10: ('gloss', 'id', 'label', 'pdf_pages')
+    SAMPLE: {"id": "P-US01-01", "label": "Darwin-as-rhetorician thesis", "pdf_pages": [38, 48, 50], "gloss": "Gross's titular wager: Darwin's Expression foregrounds inherent rhetoricity of emotion — medium, occasion, social situation — and is thereby a humanistic resource, not (as Ekman has it) a forerunner of decontextualized basic-emotions science."}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'figures', 'loci', 'tensions', 'interlocutors', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'latin_terms_expected', 'cross_pipeline_bridges', 'note']
+==================== us-02-equiano.json
+  KEY: /positions list 8
+    shape x8: ('advocate', 'id', 'opposition', 'pdf_locus', 'stance')
+    SAMPLE: {"id": "P-US02-Gross-thesis-bearing-up", "stance": "'Bearing up' names a rhetorical-emotional disposition that exceeds both submission and resistance, and that exceeds pragmatic-phenomenology's vocabulary of comfortable habituation.", "advocate": "Daniel M. Gross", "opposition": "Pragmatic phenomenology (Dreyfus, Noe-as-orthodox); science-of-happiness (Kahneman-Diener-Schwarz), insofar as it would render Equiano's case as 'adaptation'", "pdf_locus": "63 program; 79-86 development"}
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'phase2_completed', 'special_features', 'sections', 'outline_prose', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'literary_characters', 'german_terms_present', 'greek_terms_present', 'cross_pipeline_bridges', 'filter_observations', 'note']
+==================== us-00-intro.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'support_evidence')
+    SAMPLE: {"claimant": "Gross", "claim": "Emotion is neither biologically hardwired nor purely socially constructed; the rhetorical situation determines what we mean by 'emotion' in the first place.", "support_evidence": "PDF p.19 explicit rejection of 'Emotions: hardwired or socially constructed?' binary as collapsing phenomenology; PDF p.24 four-mode reading of Imitation of Christ.", "contested_by": "Paul Ekman (basic emotions program); Brian Massumi (autonomy of affect as pre-ideological)"}
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'notes_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-03-radcliffe.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'position_id', 'support')
+    SAMPLE: {"position_id": "P-USR-01", "claimant": "Gross", "claim": "J. J. Gibson's affordance theory can and must be extended into a rhetorical-historical-cultural theory of negative/hostile affordances, against the prevailing orthodox ecological-psychology reading that holds affordances strictly invariant and pre-linguistic.", "support": "Cop-car-roof case (PDF 104-105); Aristotle's Cydias on Samos as negative affordance (PDF 102-103); Lewin's Aufforderungscharakter genealogy (PDF 104-105); legal hostile-work-environment case (PDF 108).", "contested_by": "Orthodox Gibsonian ecological psychology; Scarantino's narrower taxonomy of affordances (PDF 109)."}
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'three_pass_recommended', 'dissertation_critical', 'ocr_confidence', 'longest_chapter', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'cross_pipeline_bridges', 'note']
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 66, in apport_excepthook
+    import apport.report
+  File "/usr/lib/python3/dist-packages/apport/__init__.py", line 8, in <module>
+    from apport.report import Report
+  File "/usr/lib/python3/dist-packages/apport/report.py", line 45, in <module>
+    import apport.fileutils
+  File "/usr/lib/python3/dist-packages/apport/fileutils.py", line 32, in <module>
+    from problem_report import ProblemReport
+  File "/usr/lib/python3/dist-packages/problem_report.py", line 183, in <module>
+    @dataclasses.dataclass
+     ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1268, in dataclass
+    return wrap(cls)
+           ^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1258, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 970, in _process_class
+    cls_annotations = inspect.get_annotations(cls)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'inspect' has no attribute 'get_annotations'
+
+Original exception was:
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+==================== us-05-epilogue.json
+  KEY: /positions list 10
+    shape x10: ('anchor', 'claim', 'contributor', 'id', 'tier', 'type')
+    SAMPLE: {"id": "POS-snow-dichotomy-contested", "claim": "Snow's two-cultures dichotomy is the operative but contested frame for the volume; the Epilogue ultimately answers Snow's question with a qualified 'No' — the divide dissolves when emotion is studied with methodological diversity", "type": "POSITION", "tier": 1, "anchor": {"pdf": "139, 155", "book": "129, 145"}, "contributor": "Gross & Preston"}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'co_authored', 'authors_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'neuroscience_loci', 'rhetorical_loci', 'gross_2005_loci']
+==================== us-04-austen.json
+  KEY: /positions list 11
+    shape x10: ('claim', 'id', 'support_loci', 'tier')
+    shape x1: ('claim', 'id', 'qualification', 'support_loci', 'tier')
+    SAMPLE: {"id": "P-MIXED-FEELINGS-AS-RHETORICAL-SITUATED", "claim": "Mixed feelings are not internal proportional mixtures (Galen, Ekman, blending algorithms) but rhetorically-situated, negotiated reference values converging on character.", "support_loci": ["book p.111", "book p.113", "book p.119-120"], "tier": 1}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'shortest_chapter', 'phase2_completed', 'phase2_agent', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'austen_loci', 'neuroscience_loci', 'rhetoric_classical_loci', 'gross_2005_loci', 'other_primary_loci', 'cross_pipeline_anchors', 'figure_callouts', 'sections', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-01-darwin.json
+  KEY: /positions list 10
+    shape x10: ('gloss', 'id', 'label', 'pdf_pages')
+    SAMPLE: {"id": "P-US01-01", "label": "Darwin-as-rhetorician thesis", "pdf_pages": [38, 48, 50], "gloss": "Gross's titular wager: Darwin's Expression foregrounds inherent rhetoricity of emotion — medium, occasion, social situation — and is thereby a humanistic resource, not (as Ekman has it) a forerunner of decontextualized basic-emotions science."}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'figures', 'loci', 'tensions', 'interlocutors', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'latin_terms_expected', 'cross_pipeline_bridges', 'note']
+==================== us-02-equiano.json
+  KEY: /positions list 8
+    shape x8: ('advocate', 'id', 'opposition', 'pdf_locus', 'stance')
+    SAMPLE: {"id": "P-US02-Gross-thesis-bearing-up", "stance": "'Bearing up' names a rhetorical-emotional disposition that exceeds both submission and resistance, and that exceeds pragmatic-phenomenology's vocabulary of comfortable habituation.", "advocate": "Daniel M. Gross", "opposition": "Pragmatic phenomenology (Dreyfus, Noe-as-orthodox); science-of-happiness (Kahneman-Diener-Schwarz), insofar as it would render Equiano's case as 'adaptation'", "pdf_locus": "63 program; 79-86 development"}
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'phase2_completed', 'special_features', 'sections', 'outline_prose', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'literary_characters', 'german_terms_present', 'greek_terms_present', 'cross_pipeline_bridges', 'filter_observations', 'note']
+==================== us-00-intro.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'support_evidence')
+    SAMPLE: {"claimant": "Gross", "claim": "Emotion is neither biologically hardwired nor purely socially constructed; the rhetorical situation determines what we mean by 'emotion' in the first place.", "support_evidence": "PDF p.19 explicit rejection of 'Emotions: hardwired or socially constructed?' binary as collapsing phenomenology; PDF p.24 four-mode reading of Imitation of Christ.", "contested_by": "Paul Ekman (basic emotions program); Brian Massumi (autonomy of affect as pre-ideological)"}
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'notes_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-03-radcliffe.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'position_id', 'support')
+    SAMPLE: {"position_id": "P-USR-01", "claimant": "Gross", "claim": "J. J. Gibson's affordance theory can and must be extended into a rhetorical-historical-cultural theory of negative/hostile affordances, against the prevailing orthodox ecological-psychology reading that holds affordances strictly invariant and pre-linguistic.", "support": "Cop-car-roof case (PDF 104-105); Aristotle's Cydias on Samos as negative affordance (PDF 102-103); Lewin's Aufforderungscharakter genealogy (PDF 104-105); legal hostile-work-environment case (PDF 108).", "contested_by": "Orthodox Gibsonian ecological psychology; Scarantino's narrower taxonomy of affordances (PDF 109)."}
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'three_pass_recommended', 'dissertation_critical', 'ocr_confidence', 'longest_chapter', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'cross_pipeline_bridges', 'note']
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 66, in apport_excepthook
+    import apport.report
+  File "/usr/lib/python3/dist-packages/apport/__init__.py", line 8, in <module>
+    from apport.report import Report
+  File "/usr/lib/python3/dist-packages/apport/report.py", line 45, in <module>
+    import apport.fileutils
+  File "/usr/lib/python3/dist-packages/apport/fileutils.py", line 32, in <module>
+    from problem_report import ProblemReport
+  File "/usr/lib/python3/dist-packages/problem_report.py", line 183, in <module>
+    @dataclasses.dataclass
+     ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1268, in dataclass
+    return wrap(cls)
+           ^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1258, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 970, in _process_class
+    cls_annotations = inspect.get_annotations(cls)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'inspect' has no attribute 'get_annotations'
+
+Original exception was:
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+==================== us-05-epilogue.json
+  KEY: /positions list 10
+    shape x10: ('anchor', 'claim', 'contributor', 'id', 'tier', 'type')
+    SAMPLE: {"id": "POS-snow-dichotomy-contested", "claim": "Snow's two-cultures dichotomy is the operative but contested frame for the volume; the Epilogue ultimately answers Snow's question with a qualified 'No' — the divide dissolves when emotion is studied with methodological diversity", "type": "POSITION", "tier": 1, "anchor": {"pdf": "139, 155", "book": "129, 145"}, "contributor": "Gross & Preston"}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'co_authored', 'authors_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'neuroscience_loci', 'rhetorical_loci', 'gross_2005_loci']
+==================== us-04-austen.json
+  KEY: /positions list 11
+    shape x10: ('claim', 'id', 'support_loci', 'tier')
+    shape x1: ('claim', 'id', 'qualification', 'support_loci', 'tier')
+    SAMPLE: {"id": "P-MIXED-FEELINGS-AS-RHETORICAL-SITUATED", "claim": "Mixed feelings are not internal proportional mixtures (Galen, Ekman, blending algorithms) but rhetorically-situated, negotiated reference values converging on character.", "support_loci": ["book p.111", "book p.113", "book p.119-120"], "tier": 1}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'shortest_chapter', 'phase2_completed', 'phase2_agent', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'austen_loci', 'neuroscience_loci', 'rhetoric_classical_loci', 'gross_2005_loci', 'other_primary_loci', 'cross_pipeline_anchors', 'figure_callouts', 'sections', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-01-darwin.json
+  KEY: /positions list 10
+    shape x10: ('gloss', 'id', 'label', 'pdf_pages')
+    SAMPLE: {"id": "P-US01-01", "label": "Darwin-as-rhetorician thesis", "pdf_pages": [38, 48, 50], "gloss": "Gross's titular wager: Darwin's Expression foregrounds inherent rhetoricity of emotion — medium, occasion, social situation — and is thereby a humanistic resource, not (as Ekman has it) a forerunner of decontextualized basic-emotions science."}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'figures', 'loci', 'tensions', 'interlocutors', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'latin_terms_expected', 'cross_pipeline_bridges', 'note']
+==================== us-02-equiano.json
+  KEY: /positions list 8
+    shape x8: ('advocate', 'id', 'opposition', 'pdf_locus', 'stance')
+    SAMPLE: {"id": "P-US02-Gross-thesis-bearing-up", "stance": "'Bearing up' names a rhetorical-emotional disposition that exceeds both submission and resistance, and that exceeds pragmatic-phenomenology's vocabulary of comfortable habituation.", "advocate": "Daniel M. Gross", "opposition": "Pragmatic phenomenology (Dreyfus, Noe-as-orthodox); science-of-happiness (Kahneman-Diener-Schwarz), insofar as it would render Equiano's case as 'adaptation'", "pdf_locus": "63 program; 79-86 development"}
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'phase2_completed', 'special_features', 'sections', 'outline_prose', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'literary_characters', 'german_terms_present', 'greek_terms_present', 'cross_pipeline_bridges', 'filter_observations', 'note']
+==================== us-00-intro.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'support_evidence')
+    SAMPLE: {"claimant": "Gross", "claim": "Emotion is neither biologically hardwired nor purely socially constructed; the rhetorical situation determines what we mean by 'emotion' in the first place.", "support_evidence": "PDF p.19 explicit rejection of 'Emotions: hardwired or socially constructed?' binary as collapsing phenomenology; PDF p.24 four-mode reading of Imitation of Christ.", "contested_by": "Paul Ekman (basic emotions program); Brian Massumi (autonomy of affect as pre-ideological)"}
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'notes_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-03-radcliffe.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'position_id', 'support')
+    SAMPLE: {"position_id": "P-USR-01", "claimant": "Gross", "claim": "J. J. Gibson's affordance theory can and must be extended into a rhetorical-historical-cultural theory of negative/hostile affordances, against the prevailing orthodox ecological-psychology reading that holds affordances strictly invariant and pre-linguistic.", "support": "Cop-car-roof case (PDF 104-105); Aristotle's Cydias on Samos as negative affordance (PDF 102-103); Lewin's Aufforderungscharakter genealogy (PDF 104-105); legal hostile-work-environment case (PDF 108).", "contested_by": "Orthodox Gibsonian ecological psychology; Scarantino's narrower taxonomy of affordances (PDF 109)."}
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'three_pass_recommended', 'dissertation_critical', 'ocr_confidence', 'longest_chapter', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'cross_pipeline_bridges', 'note']
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 66, in apport_excepthook
+    import apport.report
+  File "/usr/lib/python3/dist-packages/apport/__init__.py", line 8, in <module>
+    from apport.report import Report
+  File "/usr/lib/python3/dist-packages/apport/report.py", line 45, in <module>
+    import apport.fileutils
+  File "/usr/lib/python3/dist-packages/apport/fileutils.py", line 32, in <module>
+    from problem_report import ProblemReport
+  File "/usr/lib/python3/dist-packages/problem_report.py", line 183, in <module>
+    @dataclasses.dataclass
+     ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1268, in dataclass
+    return wrap(cls)
+           ^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 1258, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/dataclasses.py", line 970, in _process_class
+    cls_annotations = inspect.get_annotations(cls)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'inspect' has no attribute 'get_annotations'
+
+Original exception was:
+  File "/home/dalton/.claude-tmp/claude-1000/-home-dalton-projects-claudeflow-testing/b7a45413-ca33-4977-ba33-1664e7796fa8/scratchpad/tie.py", line 9
+    hashlib.sha256('
+SyntaxError: source code cannot contain null bytes
+==================== us-05-epilogue.json
+  KEY: /positions list 10
+    shape x10: ('anchor', 'claim', 'contributor', 'id', 'tier', 'type')
+    SAMPLE: {"id": "POS-snow-dichotomy-contested", "claim": "Snow's two-cultures dichotomy is the operative but contested frame for the volume; the Epilogue ultimately answers Snow's question with a qualified 'No' — the divide dissolves when emotion is studied with methodological diversity", "type": "POSITION", "tier": 1, "anchor": {"pdf": "139, 155", "book": "129, 145"}, "contributor": "Gross & Preston"}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'co_authored', 'authors_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'neuroscience_loci', 'rhetorical_loci', 'gross_2005_loci']
+==================== us-04-austen.json
+  KEY: /positions list 11
+    shape x10: ('claim', 'id', 'support_loci', 'tier')
+    shape x1: ('claim', 'id', 'qualification', 'support_loci', 'tier')
+    SAMPLE: {"id": "P-MIXED-FEELINGS-AS-RHETORICAL-SITUATED", "claim": "Mixed feelings are not internal proportional mixtures (Galen, Ekman, blending algorithms) but rhetorically-situated, negotiated reference values converging on character.", "support_loci": ["book p.111", "book p.113", "book p.119-120"], "tier": 1}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'shortest_chapter', 'phase2_completed', 'phase2_agent', 'outline', 'concepts', 'positions', 'tensions', 'interlocutors', 'austen_loci', 'neuroscience_loci', 'rhetoric_classical_loci', 'gross_2005_loci', 'other_primary_loci', 'cross_pipeline_anchors', 'figure_callouts', 'sections', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-01-darwin.json
+  KEY: /positions list 10
+    shape x10: ('gloss', 'id', 'label', 'pdf_pages')
+    SAMPLE: {"id": "P-US01-01", "label": "Darwin-as-rhetorician thesis", "pdf_pages": [38, 48, 50], "gloss": "Gross's titular wager: Darwin's Expression foregrounds inherent rhetoricity of emotion — medium, occasion, social situation — and is thereby a humanistic resource, not (as Ekman has it) a forerunner of decontextualized basic-emotions science."}
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'first_publication', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'figures', 'loci', 'tensions', 'interlocutors', 'primary_loci_expected', 'german_terms_expected', 'greek_terms_expected', 'latin_terms_expected', 'cross_pipeline_bridges', 'note']
+==================== us-02-equiano.json
+  KEY: /positions list 8
+    shape x8: ('advocate', 'id', 'opposition', 'pdf_locus', 'stance')
+    SAMPLE: {"id": "P-US02-Gross-thesis-bearing-up", "stance": "'Bearing up' names a rhetorical-emotional disposition that exceeds both submission and resistance, and that exceeds pragmatic-phenomenology's vocabulary of comfortable habituation.", "advocate": "Daniel M. Gross", "opposition": "Pragmatic phenomenology (Dreyfus, Noe-as-orthodox); science-of-happiness (Kahneman-Diener-Schwarz), insofar as it would render Equiano's case as 'adaptation'", "pdf_locus": "63 program; 79-86 development"}
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  KEY: /positions[]/opposition str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'phase2_completed', 'special_features', 'sections', 'outline_prose', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'literary_characters', 'german_terms_present', 'greek_terms_present', 'cross_pipeline_bridges', 'filter_observations', 'note']
+==================== us-00-intro.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'support_evidence')
+    SAMPLE: {"claimant": "Gross", "claim": "Emotion is neither biologically hardwired nor purely socially constructed; the rhetorical situation determines what we mean by 'emotion' in the first place.", "support_evidence": "PDF p.19 explicit rejection of 'Emotions: hardwired or socially constructed?' binary as collapsing phenomenology; PDF p.24 four-mode reading of Imitation of Christ.", "contested_by": "Paul Ekman (basic emotions program); Brian Massumi (autonomy of affect as pre-ideological)"}
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  KEY: /tensions[]/gross_position str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'notes_page_count', 'two_pass', 'dissertation_critical', 'ocr_confidence', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'german_terms_expected', 'greek_terms_expected', 'note']
+==================== us-03-radcliffe.json
+  KEY: /positions list 8
+    shape x8: ('claim', 'claimant', 'contested_by', 'position_id', 'support')
+    SAMPLE: {"position_id": "P-USR-01", "claimant": "Gross", "claim": "J. J. Gibson's affordance theory can and must be extended into a rhetorical-historical-cultural theory of negative/hostile affordances, against the prevailing orthodox ecological-psychology reading that holds affordances strictly invariant and pre-linguistic.", "support": "Cop-car-roof case (PDF 104-105); Aristotle's Cydias on Samos as negative affordance (PDF 102-103); Lewin's Aufforderungscharakter genealogy (PDF 104-105); legal hostile-work-environment case (PDF 108).", "contested_by": "Orthodox Gibsonian ecological psychology; Scarantino's narrower taxonomy of affordances (PDF 109)."}
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  KEY: /positions[]/position_id str 
+  TOPLEVEL KEYS: ['volume', 'author_of_volume', 'year', 'publisher', 'unit_id', 'ordinal', 'essay_title', 'author_of_unit', 'book_pages', 'pdf_pages', 'body_page_count', 'two_pass', 'three_pass_recommended', 'dissertation_critical', 'ocr_confidence', 'longest_chapter', 'special_features', 'sections', 'outline', 'concepts', 'positions', 'loci', 'tensions', 'interlocutors', 'cross_pipeline_bridges', 'note']

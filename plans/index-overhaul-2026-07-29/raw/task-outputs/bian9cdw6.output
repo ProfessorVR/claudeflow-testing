@@ -1,0 +1,250 @@
+.backups/20260409_103215/src/god-agent/shared/cross-author-utils.ts:10: * Loads corpus/index/compiled-index.json with mtime-based caching
+.backups/20260409_103215/src/god-agent/shared/cross-author-utils.ts:334: * Load compiled-index.json via the shared centralized loader (Task #21).
+.backups/20260409_103215/src/god-agent/shared/cross-author-utils.ts:555: * Synchronous. Uses mtime-cached compiled-index.json.
+.backups/20260409_103215/src/god-agent/shared/jsonl-loaders.ts:188:// Compiled Index loader (centralized cache for compiled-index.json)
+.backups/20260409_103215/src/god-agent/shared/jsonl-loaders.ts:194: * Load compiled-index.json with mtime-based caching.
+.backups/20260409_103215/src/god-agent/shared/jsonl-loaders.ts:200:  const indexPath = resolve(root, 'corpus', 'index', 'compiled-index.json');
+.backups/20260409_103215/src/god-agent/universal/quality-integration.ts:847: * @param projectRoot - Project root for locating compiled-index.json
+.backups/WARNING-domain-validation-may-affect-ingestion-20260409-091814/jsonl-loaders.ts:188:// Compiled Index loader (centralized cache for compiled-index.json)
+.backups/WARNING-domain-validation-may-affect-ingestion-20260409-091814/jsonl-loaders.ts:194: * Load compiled-index.json with mtime-based caching.
+.backups/WARNING-domain-validation-may-affect-ingestion-20260409-091814/jsonl-loaders.ts:200:  const indexPath = resolve(root, 'corpus', 'index', 'compiled-index.json');
+.backups/audit-fixes-20260407/smart-retrieval-layer.ts:738:   * Load canonical ontology terms from compiled-index.json.
+.backups/audit-fixes-20260407/smart-retrieval-layer.ts:745:      const indexPath = resolve(process.cwd(), 'corpus', 'index', 'compiled-index.json');
+.backups/audit-fixes-20260407/smart-retrieval-layer.ts:769:   * Ontology terms from compiled-index.json are exempt from stopword filtering (C-03).
+.backups/compiled-index-ext-20260623-221111/compile-corpus-index.py:1112:        base = CORPUS_INDEX / dir_name
+.backups/compiled-index-ext-20260623-221111/compile-corpus-index.py:1161:    aristotle_dir = CORPUS_INDEX / "Aristotle - Complete Works"
+.backups/compiled-index-ext-20260623-221111/compile-corpus-index.py:1181:        base = CORPUS_INDEX / dir_name
+.backups/compiled-index-ext-20260623-221111/compile-corpus-index.py:1284:    print(f"Compiling corpus index from: {CORPUS_INDEX}")
+.backups/compiled-index-ext-20260623-221111/compile-corpus-index.py:31:CORPUS_INDEX = REPO / "corpus" / "index"
+.backups/compiled-index-ext-20260623-221111/compile-corpus-index.py:32:OUTPUT = CORPUS_INDEX / "compiled-index.json"
+.backups/compiled-index-ext-20260623-221111/compile-corpus-index.py:5:Pre-compiles the corpus index (~290 files in corpus/index/) into a single
+.backups/compiled-index-ext-20260623-221111/compile-corpus-index.py:6:compiled-index.json.  The output contains four arrays:
+.backups/cross-author-integration-20260408-093114/corpus-index-provider.ts:4: * Loads the pre-compiled corpus index (compiled-index.json) and provides
+.backups/cross-author-integration-20260408-093114/corpus-index-provider.ts:77:  const resolvedPath = indexPath || path.join(process.cwd(), 'corpus', 'index', 'compiled-index.json');
+.backups/hardening-round1-20260408-104846/quality-integration.ts:661: * @param projectRoot - Project root for locating compiled-index.json
+.backups/kg-infra-2026-04-06/rollback.sh:39:rm -f "$REPO/corpus/index/compiled-index.json"
+plans/archon-video-policy.toml:13:# rides on top of Archon's video chunks and belongs to the corpus/index port (#3).
+scripts/compile-corpus-index.py:1186:        base = CORPUS_INDEX / dir_name
+scripts/compile-corpus-index.py:1239:    aristotle_dir = CORPUS_INDEX / "Aristotle - Complete Works"
+scripts/compile-corpus-index.py:1259:        base = CORPUS_INDEX / dir_name
+scripts/compile-corpus-index.py:1362:    print(f"Compiling corpus index from: {CORPUS_INDEX}")
+scripts/compile-corpus-index.py:31:CORPUS_INDEX = REPO / "corpus" / "index"
+scripts/compile-corpus-index.py:32:OUTPUT = CORPUS_INDEX / "compiled-index.json"
+scripts/compile-corpus-index.py:5:Pre-compiles the corpus index (~290 files in corpus/index/) into a single
+scripts/compile-corpus-index.py:6:compiled-index.json.  The output contains four arrays:
+scripts/merge-reasoning-edges.py:21:COMPILED_INDEX = REPO / "corpus" / "index" / "compiled-index.json"
+scripts/merge-reasoning-edges.py:32:    Build a list of (term, canonical_name) tuples from compiled-index.json.
+scripts/merge-reasoning-edges.py:7:via corpus/index/compiled-index.json. Unanchored edges (where one or both
+scripts/normalize-edges.py:37:    "rickert": "corpus/index/Rickert - Ambient Rhetoric/rickert-analysis/global-edges.csv",
+scripts/normalize-edges.py:38:    "bt": "corpus/index/Heidegger - Being and Time/bt-analysis/global-edges.csv",
+scripts/normalize-edges.py:39:    "bcap": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/global-edges.csv",
+scripts/normalize-edges.py:40:    "uexkull": "corpus/index/Von Uexkull - A Foray into the Worlds of Animals and Humans/uex-analysis/global-edges.csv",
+scripts/normalize-edges.py:41:    "aristotle": "corpus/index/Aristotle - Complete Works/global-edges.csv",
+scripts/reason/reason_over_knowledge.py:199:    index_path = Path("corpus/index/compiled-index.json")
+src/god-agent/retrieval/smart-retrieval-layer.ts:791:   * Load canonical ontology terms from compiled-index.json.
+src/god-agent/retrieval/smart-retrieval-layer.ts:798:      const indexPath = resolve(process.cwd(), 'corpus', 'index', 'compiled-index.json');
+src/god-agent/retrieval/smart-retrieval-layer.ts:822:   * Ontology terms from compiled-index.json are exempt from stopword filtering (C-03).
+src/god-agent/shared/cross-author-utils.ts:10: * Loads corpus/index/compiled-index.json with mtime-based caching
+src/god-agent/shared/cross-author-utils.ts:334: * Load compiled-index.json via the shared centralized loader (Task #21).
+src/god-agent/shared/cross-author-utils.ts:555: * Synchronous. Uses mtime-cached compiled-index.json.
+src/god-agent/shared/jsonl-loaders.ts:188:// Compiled Index loader (centralized cache for compiled-index.json)
+src/god-agent/shared/jsonl-loaders.ts:194: * Load compiled-index.json with mtime-based caching.
+src/god-agent/shared/jsonl-loaders.ts:200:  const indexPath = resolve(root, 'corpus', 'index', 'compiled-index.json');
+src/god-agent/universal/corpus-index-provider.ts:4: * Loads the pre-compiled corpus index (compiled-index.json) and provides
+src/god-agent/universal/quality-integration.ts:847: * @param projectRoot - Project root for locating compiled-index.json
+src/god-agent/universal/write-pipeline-orchestrator.ts:1772:    // Subsection-mode Phase 6: capture corpus/index contributions + active bridges
+src/god-agent/universal/write-pipeline-orchestrator.ts:3430:      // Subsection-mode Phase 6: corpus/index contributions + active bridges
+src/god-agent/universal/write-pipeline-orchestrator.ts:4030:      // Subsection-mode Phase 6: corpus/index contributions + active bridges (writeV2 path)
+tests/data-integrity/test_reasoning_edges.py:18:COMPILED_INDEX = REPO / "corpus" / "index" / "compiled-index.json"
+tests/data-integrity/test_reasoning_edges.py:29:def compiled_index():
+tests/data-integrity/test_reasoning_edges.py:74:    def test_no_duplicate_names(self, compiled_index):
+tests/data-integrity/test_reasoning_edges.py:75:        names = [n["name"].lower() for n in compiled_index["ontologyNodes"]]
+tests/data-integrity/test_reasoning_edges.py:7:  H-04: No duplicate ontology node names in compiled-index.json
+tmp/Dissertation/perplexity-fresh-2026-05-13T1439/executor.py:13:RUN_BASE = "/home/dalton/projects/claudeflow-testing/corpus/index/Dissertation/_run-history/2026-05-13T1439"
+tmp/Dissertation/perplexity-fresh-2026-05-13T1439/executor.py:276:    lines.append("- [ ] Cross-check against corpus/index entries if author already present")
+tmp/Dissertation/perplexity-fresh-2026-05-13T1439/postprocess-s3.py:13:PER_SECTION = "/home/dalton/projects/claudeflow-testing/corpus/index/Dissertation/_run-history/2026-05-13T1439/_per-section"
+tmp/Dissertation/perplexity-fresh-2026-05-13T1439/postprocess-s3.py:14:LOG = "/home/dalton/projects/claudeflow-testing/corpus/index/Dissertation/_run-history/2026-05-13T1439/_synthesis/perplexity-escalation-log.jsonl"
+tmp/Dissertation/phase4-prelude/run-ingest.py:124:    "_extra_The_20Nicomachean_20Ethics.pdf": "duplicate primary text (already in corpus/index/Aristotle - Complete Works); defer",
+tmp/Dissertation/phase4-prelude/run-ingest.py:38:# Cohort A (already in corpus/index — route cache hits to Tier A; do NOT ingest)
+tmp/Dissertation/phase4-prelude/run-ingest.py:39:# Map: filename -> corpus/index target directory
+tmp/Dissertation/phase4-prelude/run-ingest.py:425:            classification["A"].append({"filename": fn, "corpus_index_target": COHORT_A[fn]})
+tmp/Dissertation/phase4-prelude/run-ingest.py:42:        "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/White - Phantasia in DA III.3-8 (1985)/",
+tmp/Dissertation/phase4-prelude/run-ingest.py:44:        "corpus/index/Aristotelian Phantasia Secondary (1985-2017)/Frede - Cognitive Role of Phantasia (1992)/",
+tmp/Dissertation/phase4-prelude/run-ingest.py:47:# Cohort B (NOT in corpus/index — basic ingest required)
+tmp/Dissertation/phase4-tier-b/run_all.py:136:        "missing_locus": "BCAP / GA 18 Bewegtheit fallback if corpus/index miss",
+tmp/a0-aristotle-bekker-extract.py:69:    report.append("Source: `corpus/index/Aristotle - Complete Works/aristotle-bekker-index.json`\n")
+tmp/a0-aristotle-bekker-extract.py:7:BEKKER_INDEX = "/home/dalton/projects/claudeflow-testing/corpus/index/Aristotle - Complete Works/aristotle-bekker-index.json"
+tmp/a0-index-extract.py:46:        doc_dir = os.path.join(INDEX_DIR, doc)
+tmp/analysis-upgrade/integration-sandbox/scripts/generate_bridges.py:92:    idx = json.loads((BASE / "corpus" / "index" / "compiled-index.json").read_text())
+tmp/analysis-upgrade/integration-sandbox/scripts/generate_bridges.py:94:    print(f"[bridges] {len(hooks)} existing hooks in sandbox compiled-index")
+tmp/analysis-upgrade/integration-sandbox/scripts/recompile_index.py:25:INDEX_DIR = BASE / "corpus" / "index"
+tmp/analysis-upgrade/integration-sandbox/scripts/recompile_index.py:26:COMPILED = INDEX_DIR / "compiled-index.json"
+tmp/analysis-upgrade/integration-sandbox/scripts/recompile_index.py:2:"""Recompile sandbox compiled-index.json, integrating claims + mentions +
+tmp/analysis-upgrade/integration-sandbox/scripts/recompile_index.py:52:    paper_dirs = find_paper_dirs(INDEX_DIR)
+tmp/analysis-upgrade/integration-sandbox/scripts/recompile_index.py:6:    python recompile_index.py  # scans corpus/index/ for claims + mentions + bridges
+tmp/analysis-upgrade/integration-sandbox/scripts/recompile_index.py:9:- Concatenates claims/mentions/bridges across all papers under corpus/index/.
+tmp/analysis-upgrade/integration-sandbox/tests/run_e2e.sh:51:p = Path('$BASE/corpus/index/compiled-index.json')
+tmp/analysis-upgrade/production-sandbox/scripts/activate-release.sh:22:DATA_DIR="${SCRIPT_DIR}/../data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/scripts/create-release.sh:20:DATA_DIR="${SCRIPT_DIR}/../data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/scripts/diagnose-active-claims.ts:10: *   CORPUS_INDEX_PATH=<sandbox-index> npx tsx ../scripts/diagnose-active-claims.ts
+tmp/analysis-upgrade/production-sandbox/scripts/diagnose-active-claims.ts:65:  const f = path.join(indexPath, 'compiled-index.json');
+tmp/analysis-upgrade/production-sandbox/scripts/diagnose-active-claims.ts:80:  const indexPath = process.env.CORPUS_INDEX_PATH;
+tmp/analysis-upgrade/production-sandbox/scripts/diagnose-active-claims.ts:82:    console.error('CORPUS_INDEX_PATH not set');
+tmp/analysis-upgrade/production-sandbox/scripts/e0-lite-telemetry.py:237:        ctx = load_corpus_index_context(p["topic"], idx)
+tmp/analysis-upgrade/production-sandbox/scripts/e0-lite-telemetry.py:32:DATA_DIR = SANDBOX / "data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/scripts/e0-lite-telemetry.py:35:COMPILED = DATA_DIR / "compiled-index.json"
+tmp/analysis-upgrade/production-sandbox/scripts/e0-lite-telemetry.py:52:def load_corpus_index_context(topic: str, idx: dict,
+tmp/analysis-upgrade/production-sandbox/scripts/e0-lite-telemetry.py:5:`loadActiveClaims` scoring against the hydrated compiled-index. Report what
+tmp/analysis-upgrade/production-sandbox/scripts/post-canary-merge.sh:11:# Expects: data/corpus/index/<slug>/claims.jsonl (per-paper, from Phase 3a)
+tmp/analysis-upgrade/production-sandbox/scripts/post-canary-merge.sh:12:#          data/corpus/index/ontology-embeddings.jsonl (from B5)
+tmp/analysis-upgrade/production-sandbox/scripts/post-canary-merge.sh:20:DATA_DIR="${SANDBOX_ROOT}/data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/scripts/post-canary-merge.sh:23:export CORPUS_INDEX_PATH="${DATA_DIR}"
+tmp/analysis-upgrade/production-sandbox/scripts/post-canary-merge.sh:5:#   3. recompile_index.py             (merge all sidecars into compiled-index.json)
+tmp/analysis-upgrade/production-sandbox/scripts/preflight-phase6.sh:14:DATA_DIR="${SANDBOX_ROOT}/data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/scripts/run-experiment.sh:26:MANIFEST="${SANDBOX_ROOT}/data/corpus/index/ARTIFACT-MANIFEST.json"
+tmp/analysis-upgrade/production-sandbox/scripts/run-experiment.sh:6:#   2. Rebuild compiled-index if needed
+tmp/analysis-upgrade/production-sandbox/scripts/run-extractor.sh:25:DATA_DIR="${SANDBOX_ROOT}/data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/scripts/run-extractor.sh:41:export CORPUS_INDEX_PATH="${DATA_DIR}"
+tmp/analysis-upgrade/production-sandbox/scripts/run-extractor.sh:4:# Writes per-paper outputs into data/corpus/index/<paper-slug>/
+tmp/analysis-upgrade/production-sandbox/scripts/run-phase3b-batch.sh:105:echo "CORPUS_INDEX_PATH=$CORPUS_INDEX_PATH" | tee -a "$LOG"
+tmp/analysis-upgrade/production-sandbox/scripts/run-phase3b-batch.sh:10:# Each paper writes to ${CORPUS_INDEX_PATH}/<slug>/claims.jsonl and appends
+tmp/analysis-upgrade/production-sandbox/scripts/run-phase3b-batch.sh:159:  [ -f "$CORPUS_INDEX_PATH/$slug/claims.jsonl" ] && n=$(wc -l < "$CORPUS_INDEX_PATH/$slug/claims.jsonl")
+tmp/analysis-upgrade/production-sandbox/scripts/run-phase3b-batch.sh:37:export CORPUS_INDEX_PATH="$SANDBOX_ROOT/data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/scripts/run-phase3b-batch.sh:89:  local claims_file="$CORPUS_INDEX_PATH/$slug/claims.jsonl"
+tmp/analysis-upgrade/production-sandbox/scripts/run-step4-post3b.sh:31:export CORPUS_INDEX_PATH="$SANDBOX_ROOT/data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/scripts/run-step4-post3b.sh:43:echo "CORPUS_INDEX_PATH=$CORPUS_INDEX_PATH" | tee -a "$LOG"
+tmp/analysis-upgrade/production-sandbox/scripts/run-step4-prose.sh:33:export CORPUS_INDEX_PATH="$SANDBOX_ROOT/data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/scripts/run-step4-prose.sh:49:echo "CORPUS_INDEX_PATH=$CORPUS_INDEX_PATH" | tee -a "$LOG"
+tmp/analysis-upgrade/production-sandbox/scripts/run-step4-prose.sh:4:# (CORPUS_INDEX_PATH=sandbox) and captures each run's full JSON output + stderr.
+tmp/analysis-upgrade/production-sandbox/scripts/run-step4-r13.sh:31:export CORPUS_INDEX_PATH="$SANDBOX_ROOT/data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/scripts/run-step4-r13.sh:43:echo "CORPUS_INDEX_PATH=$CORPUS_INDEX_PATH" | tee -a "$LOG"
+tmp/analysis-upgrade/production-sandbox/scripts/run-step4-smoke.sh:30:export CORPUS_INDEX_PATH="$SANDBOX_ROOT/data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/scripts/run-step4-smoke.sh:39:echo "CORPUS_INDEX_PATH=$CORPUS_INDEX_PATH" | tee -a "$LOG"
+tmp/analysis-upgrade/production-sandbox/scripts/run-step4-smoke.sh:4:# to verify CORPUS_INDEX_PATH is honored + ACTIVE CLAIMS block fires.
+tmp/analysis-upgrade/production-sandbox/scripts/sample-gold-candidates.py:123:    ap.add_argument("--index-dir", default=os.environ.get("CORPUS_INDEX_PATH", "data/corpus/index"))
+tmp/analysis-upgrade/production-sandbox/scripts/sample-gold-candidates.py:5:Samples candidate claims from the compiled-index per genre, filtered by:
+tmp/analysis-upgrade/production-sandbox/scripts/smoke-test.sh:21:DATA_DIR="${SANDBOX_ROOT}/data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/scripts/smoke-test.sh:37:    "corpus/index" \
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/analyze-primary.sh:22:: "${CORPUS_INDEX_PATH:?CORPUS_INDEX_PATH must be set (sandbox data dir)}"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/analyze-primary.sh:24:export CORPUS_INDEX_PATH
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/analyze-primary.sh:28:  --output-dir "${CORPUS_INDEX_PATH}" \
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/analyze-primary.sh:6:# Writes to ${CORPUS_INDEX_PATH}/<paper-slug>/<slug>-claims.jsonl and friends.
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/analyze-primary.sh:7:# Sandbox use must set CORPUS_INDEX_PATH to the sandbox data dir.
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/analyze-secondary.sh:11:# Sandbox use must set CORPUS_INDEX_PATH to the sandbox data dir.
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/analyze-secondary.sh:34:: "${CORPUS_INDEX_PATH:?CORPUS_INDEX_PATH must be set (sandbox data dir)}"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/analyze-secondary.sh:36:OUT_DIR="${CORPUS_INDEX_PATH}/${SLUG}"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/analyze-secondary.sh:38:MANIFEST="${CORPUS_INDEX_PATH}/claim-extraction-manifest.jsonl"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/analyze-secondary.sh:42:export CORPUS_INDEX_PATH
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/analyze-secondary.sh:8:# Writes claims to ${CORPUS_INDEX_PATH}/<slug>/claims.jsonl
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/analyze-secondary.sh:9:# and a per-run manifest entry to ${CORPUS_INDEX_PATH}/claim-extraction-manifest.jsonl.
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/generate_bridges.py:107:    compiled_path = _resolve_compiled_index()
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/generate_bridges.py:109:        print(f"[bridges] NOTE: compiled-index.json missing at {compiled_path}; proceeding with empty hook set", file=sys.stderr)
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/generate_bridges.py:114:    print(f"[bridges] {len(hooks)} existing hooks in sandbox compiled-index")
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/generate_bridges.py:37:def _resolve_compiled_index() -> Path:
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/generate_bridges.py:38:    env = os.environ.get("CORPUS_INDEX_PATH")
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/generate_bridges.py:40:        p = Path(env) / "compiled-index.json"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/generate_bridges.py:44:        candidate = parent / "corpus" / "index" / "compiled-index.json"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/generate_bridges.py:47:    return Path(env or ".") / "compiled-index.json"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:111:    paper_dirs = find_paper_dirs(INDEX_DIR)
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:2:"""Recompile sandbox compiled-index.json, integrating claims + mentions +
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:50:        2. CORPUS_INDEX_PATH env var
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:51:        3. <repo-root>/corpus/index  (live fallback — two dirs up from this script)
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:55:    env = os.environ.get("CORPUS_INDEX_PATH")
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:58:    # Fallback: <script_dir>/../../corpus/index  (scripts/analyze-claims/ → repo root)
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:68:        help="Corpus index directory (default: $CORPUS_INDEX_PATH or <repo>/corpus/index)",
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:6:    python recompile_index.py  # scans corpus/index/ for claims + mentions + bridges
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:73:        help="If compiled-index.json is missing, create a minimal empty base instead of erroring",
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:77:    INDEX_DIR = resolve_index_dir(args.index_path)
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:78:    COMPILED = INDEX_DIR / "compiled-index.json"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:80:    if not INDEX_DIR.exists():
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:81:        print(f"[recompile] ERROR: index dir does not exist: {INDEX_DIR}", file=sys.stderr)
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:86:            print(f"[recompile] bootstrapping empty compiled-index at {COMPILED}")
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:95:            print(f"[recompile] ERROR: compiled-index missing: {COMPILED}", file=sys.stderr)
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:99:    print(f"[recompile] INDEX_DIR={INDEX_DIR}")
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/recompile_index.py:9:- Concatenates claims/mentions/bridges across all papers under corpus/index/.
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/resolve_concepts.py:22:        1. $CORPUS_INDEX_PATH/ontology-embeddings.jsonl
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/resolve_concepts.py:23:        2. <repo-root>/corpus/index/ontology-embeddings.jsonl (search up from script dir)
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/resolve_concepts.py:25:    env = os.environ.get("CORPUS_INDEX_PATH")
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/resolve_concepts.py:30:    # Walk up looking for corpus/index/ontology-embeddings.jsonl
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/analyze-claims/resolve_concepts.py:36:    return Path(os.environ.get("CORPUS_INDEX_PATH", ".")) / "ontology-embeddings.jsonl"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/compile-corpus-index.py:1107:        base = CORPUS_INDEX / dir_name
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/compile-corpus-index.py:1156:    aristotle_dir = CORPUS_INDEX / "Aristotle - Complete Works"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/compile-corpus-index.py:1176:        base = CORPUS_INDEX / dir_name
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/compile-corpus-index.py:1279:    print(f"Compiling corpus index from: {CORPUS_INDEX}")
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/compile-corpus-index.py:31:CORPUS_INDEX = REPO / "corpus" / "index"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/compile-corpus-index.py:32:OUTPUT = CORPUS_INDEX / "compiled-index.json"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/compile-corpus-index.py:5:Pre-compiles the corpus index (~290 files in corpus/index/) into a single
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/compile-corpus-index.py:6:compiled-index.json.  The output contains four arrays:
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/merge-reasoning-edges.py:21:COMPILED_INDEX = REPO / "corpus" / "index" / "compiled-index.json"
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/merge-reasoning-edges.py:32:    Build a list of (term, canonical_name) tuples from compiled-index.json.
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/merge-reasoning-edges.py:7:via corpus/index/compiled-index.json. Unanchored edges (where one or both
+tmp/analysis-upgrade/production-sandbox/src-worktree/scripts/reason/reason_over_knowledge.py:199:    index_path = Path("corpus/index/compiled-index.json")
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/retrieval/smart-retrieval-layer.ts:785:   * Load canonical ontology terms from compiled-index.json.
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/retrieval/smart-retrieval-layer.ts:792:      const indexPath = resolve(process.cwd(), 'corpus', 'index', 'compiled-index.json');
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/retrieval/smart-retrieval-layer.ts:816:   * Ontology terms from compiled-index.json are exempt from stopword filtering (C-03).
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/shared/cross-author-utils.ts:10: * Loads corpus/index/compiled-index.json with mtime-based caching
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/shared/cross-author-utils.ts:344: * Load compiled-index.json via the shared centralized loader (Task #21).
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/shared/cross-author-utils.ts:567: * Synchronous. Uses mtime-cached compiled-index.json.
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/shared/jsonl-loaders.ts:188:// Compiled Index loader (centralized cache for compiled-index.json)
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/shared/jsonl-loaders.ts:194: * Load compiled-index.json with mtime-based caching.
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/shared/jsonl-loaders.ts:199: *   1. `CORPUS_INDEX_PATH` env var — directory containing compiled-index.json.
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/shared/jsonl-loaders.ts:201: *   2. `<projectRoot>/corpus/index/compiled-index.json` — live fallback.
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/shared/jsonl-loaders.ts:204:  const envPath = process.env.CORPUS_INDEX_PATH;
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/shared/jsonl-loaders.ts:207:    ? resolve(envPath, 'compiled-index.json')
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/shared/jsonl-loaders.ts:208:    : resolve(root, 'corpus', 'index', 'compiled-index.json');
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/universal/corpus-index-provider.ts:316: * Topic-relevant claims from compiled-index.claims are scored by term-frequency
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/universal/corpus-index-provider.ts:4: * Loads the pre-compiled corpus index (compiled-index.json) and provides
+tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/universal/quality-integration.ts:847: * @param projectRoot - Project root for locating compiled-index.json
+tmp/analysis-upgrade/production-sandbox/src-worktree/tests/data-integrity/test_reasoning_edges.py:18:COMPILED_INDEX = REPO / "corpus" / "index" / "compiled-index.json"
+tmp/analysis-upgrade/production-sandbox/src-worktree/tests/data-integrity/test_reasoning_edges.py:29:def compiled_index():
+tmp/analysis-upgrade/production-sandbox/src-worktree/tests/data-integrity/test_reasoning_edges.py:74:    def test_no_duplicate_names(self, compiled_index):
+tmp/analysis-upgrade/production-sandbox/src-worktree/tests/data-integrity/test_reasoning_edges.py:75:        names = [n["name"].lower() for n in compiled_index["ontologyNodes"]]
+tmp/analysis-upgrade/production-sandbox/src-worktree/tests/data-integrity/test_reasoning_edges.py:7:  H-04: No duplicate ontology node names in compiled-index.json
+tmp/analysis-upgrade/production-sandbox/tests/claim-roundtrip.sh:18:DATA_DIR="${SANDBOX_ROOT}/data/corpus/index"
+tmp/analysis-upgrade/production-sandbox/tests/claim-roundtrip.sh:26:B1_MARKER="${SANDBOX_ROOT}/data/corpus/index/.b1-installed"
+tmp/analysis-upgrade/production-sandbox/tests/claim-roundtrip.sh:39:export CORPUS_INDEX_PATH="${DATA_DIR}"
+tmp/analysis-upgrade/production-sandbox/tests/claim-roundtrip.sh:48:# Step 3 — assert claim appears in compiled-index
+tmp/analysis-upgrade/production-sandbox/tests/claim-roundtrip.sh:49:if ! grep -q "RT-0001" "${DATA_DIR}/compiled-index.json" 2>/dev/null; then
+tmp/analysis-upgrade/production-sandbox/tests/claim-roundtrip.sh:4:# 1. Writes one hand-crafted claim into data/corpus/index/test-paper/claims.jsonl
+tmp/analysis-upgrade/production-sandbox/tests/claim-roundtrip.sh:52:  echo "--- compiled-index (head) ---"
+tmp/analysis-upgrade/production-sandbox/tests/claim-roundtrip.sh:53:  head -80 "${DATA_DIR}/compiled-index.json"
+tmp/analysis-upgrade/production-sandbox/tests/claim-roundtrip.sh:54:  fail "hand-crafted claim RT-0001 missing from compiled-index.json"
+tmp/analysis-upgrade/production-sandbox/tests/claim-roundtrip.sh:6:# 3. Verifies the claim appears in compiled-index.json
+tmp/analysis-upgrade/sandbox/scripts/compile_corpus_index_v2.py:10:  - corpus/index/<paper>/bridge-candidates.jsonl  → compiled-index.json["bridgeCandidates"]
+tmp/analysis-upgrade/sandbox/scripts/compile_corpus_index_v2.py:24:CORPUS_INDEX = REPO / "corpus" / "index"
+tmp/analysis-upgrade/sandbox/scripts/compile_corpus_index_v2.py:26:OUTPUT = CORPUS_INDEX / "compiled-index.json"
+tmp/analysis-upgrade/sandbox/scripts/compile_corpus_index_v2.py:32:        print(f"WARNING: original compiler not found at {ORIGINAL_COMPILER}; loading existing compiled-index.json", file=sys.stderr)
+tmp/analysis-upgrade/sandbox/scripts/compile_corpus_index_v2.py:49:    """Scan corpus/index/ for paper-specific claims/mentions/bridges files."""
+tmp/analysis-upgrade/sandbox/scripts/compile_corpus_index_v2.py:52:    for dir_path in CORPUS_INDEX.iterdir():
+tmp/analysis-upgrade/sandbox/scripts/compile_corpus_index_v2.py:8:  - corpus/index/<paper>/claims.jsonl             → compiled-index.json["claims"]
+tmp/analysis-upgrade/sandbox/scripts/compile_corpus_index_v2.py:9:  - corpus/index/<paper>/concept-mentions.jsonl   → compiled-index.json["conceptMentions"]
+tmp/analysis-upgrade/sandbox/scripts/embed_ontology.py:2:"""Embed all ontology nodes from compiled-index.json via the local GTE-Qwen embedder."""
+tmp/analysis-upgrade/sandbox/scripts/embed_ontology.py:8:INDEX_IN = SANDBOX / "corpus" / "index" / "compiled-index.json"
+tmp/analysis-upgrade/sandbox/scripts/embed_ontology.py:9:INDEX_OUT = SANDBOX / "corpus" / "index" / "compiled-index.json"   # in-place
+tmp/analysis-upgrade/sandbox/scripts/generate_bridges.py:22:COMPILED = SANDBOX / "corpus" / "index" / "compiled-index.json"
+tmp/analysis-upgrade/sandbox/scripts/recompile_index.py:2:"""Extend the sandbox compiled-index.json with claims, mentions, and bridges."""
+tmp/analysis-upgrade/sandbox/scripts/recompile_index.py:8:COMPILED = SANDBOX / "corpus" / "index" / "compiled-index.json"
+tmp/analysis-upgrade/sandbox/scripts/run_god_write_compare.sh:10:LIVE_INDEX="$REPO/corpus/index/compiled-index.json"
+tmp/analysis-upgrade/sandbox/scripts/run_god_write_compare.sh:11:SANDBOX_INDEX="$SANDBOX/corpus/index/compiled-index.json"
+tmp/analysis-upgrade/sandbox/scripts/run_god_write_compare.sh:12:BACKUP="$REPO/corpus/index/compiled-index.json.live-backup-$(date +%s)"
+tmp/analysis-upgrade/sandbox/scripts/run_god_write_compare.sh:2:# Run god-write twice: once with the live compiled-index.json, once with the sandbox version.
+tmp/analysis-upgrade/sandbox/scripts/run_god_write_compare.sh:38:echo "[2/4] BASELINE god-write (live compiled-index.json)"
+tmp/analysis-upgrade/sandbox/scripts/run_god_write_compare.sh:53:echo "[3/4] UPGRADED god-write (sandbox compiled-index.json)"
+tmp/analysis-upgrade/sandbox/scripts/run_god_write_v2.sh:13:LIVE_INDEX="$REPO/corpus/index/compiled-index.json"
+tmp/analysis-upgrade/sandbox/scripts/run_god_write_v2.sh:14:SANDBOX_INDEX="$SANDBOX/corpus/index/compiled-index.json"
+tmp/analysis-upgrade/sandbox/scripts/run_god_write_v2.sh:15:INDEX_BACKUP="$REPO/corpus/index/compiled-index.json.live-backup-$$"
+tmp/backup-pre-ku-plan-2026-03-18/python-scripts/normalize-edges.py:37:    "rickert": "corpus/index/Rickert - Ambient Rhetoric/rickert-analysis/global-edges.csv",
+tmp/backup-pre-ku-plan-2026-03-18/python-scripts/normalize-edges.py:38:    "bt": "corpus/index/Heidegger - Being and Time/bt-analysis/global-edges.csv",
+tmp/backup-pre-ku-plan-2026-03-18/python-scripts/normalize-edges.py:39:    "bcap": "corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/global-edges.csv",
+tmp/backup-pre-ku-plan-2026-03-18/python-scripts/normalize-edges.py:40:    "uexkull": "corpus/index/Von Uexkull - A Foray into the Worlds of Animals and Humans/uex-analysis/global-edges.csv",
+tmp/backup-pre-ku-plan-2026-03-18/python-scripts/normalize-edges.py:41:    "aristotle": "corpus/index/Aristotle - Complete Works/global-edges.csv",
+tmp/backup-pre-ku-plan-20260318/bootstrap-edges.py:25:with open("corpus/index/Rickert - Ambient Rhetoric/rickert-analysis/global-edges.csv") as f:
+tmp/backup-pre-ku-plan-20260318/bootstrap-edges.py:40:with open("corpus/index/Heidegger - Being and Time/bt-analysis/global-edges.csv") as f:
+tmp/backup-pre-ku-plan-20260318/bootstrap-edges.py:55:with open("corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/global-edges.csv") as f:
+tmp/backup-pre-ku-plan-20260318/bootstrap-edges.py:70:with open("corpus/index/Von Uexkull - A Foray into the Worlds of Animals and Humans/uex-analysis/global-edges.csv") as f:
+tmp/backup-pre-ku-plan-20260318/bootstrap-edges.py:85:with open("corpus/index/Aristotle - Complete Works/global-edges.csv") as f:
+tmp/bootstrap-edges.py:25:with open("corpus/index/Rickert - Ambient Rhetoric/rickert-analysis/global-edges.csv") as f:
+tmp/bootstrap-edges.py:40:with open("corpus/index/Heidegger - Being and Time/bt-analysis/global-edges.csv") as f:
+tmp/bootstrap-edges.py:55:with open("corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/global-edges.csv") as f:
+tmp/bootstrap-edges.py:70:with open("corpus/index/Von Uexkull - A Foray into the Worlds of Animals and Humans/uex-analysis/global-edges.csv") as f:
+tmp/bootstrap-edges.py:85:with open("corpus/index/Aristotle - Complete Works/global-edges.csv") as f:

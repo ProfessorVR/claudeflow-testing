@@ -1,0 +1,620 @@
+########## phx-aristotle-loci-concordance.json
+.meta: dict keys=['total_canonical_loci', 'tier_counts', 'total_raw_loci_in_units', 'unit_ids', 'canonicalization', 'tier_definition']
+.meta.total_canonical_loci: int = 288
+.meta.tier_counts: dict keys=['A', 'B']
+.meta.tier_counts.A: int = 43
+.meta.tier_counts.B: int = 245
+.meta.total_raw_loci_in_units: int = 628
+.meta.unit_ids: list[8]
+.meta.canonicalization: str = Loci aggregated by (work, chapter, Bekker-page, column); line-ranges collapsed t
+.meta.tier_definition: str = Tier-A = cited by ≥3 of 8 units; Tier-B = cited by 1-2 units.
+.loci_by_work: dict keys=['De Anima', 'Rhetoric', 'Metaphysics', 'Nicomachean Ethics', 'Physics', 'De Insomniis']
+.loci_by_work.De Anima: dict keys=['I.1', 'I.2', 'I.4', 'I.5', 'II.1', 'II.11']
+.loci_by_work.De Anima.I.1: list[4]
+.loci_by_work.De Anima.I.1[0].bekker: str = DA I.1 402b3-23
+.loci_by_work.De Anima.I.1[0].citing_units: list[5]
+.loci_by_work.De Anima.I.1[0].unit_count: int = 5
+.loci_by_work.De Anima.I.1[0].tier: str = A
+.loci_by_work.De Anima.I.1[0].themes_by_unit: dict keys=['PHX-03', 'PHX-06', 'PHX-01', 'PHX-05', 'PHX-02']
+.loci_by_work.De Anima.I.1[0].theme_summary: str = PHX-01: incidental attributes as they appear (kata ten phantasian) | PHX-02: war
+.loci_by_work.De Anima.I.2: list[5]
+.loci_by_work.De Anima.I.2[0].bekker: str = DA I.2 405b11-25
+.loci_by_work.De Anima.I.2[0].citing_units: list[2]
+.loci_by_work.De Anima.I.2[0].unit_count: int = 2
+.loci_by_work.De Anima.I.2[0].tier: str = B
+.loci_by_work.De Anima.I.2[0].themes_by_unit: dict keys=['PHX-04', 'PHX-02']
+.loci_by_work.De Anima.I.2[0].theme_summary: str = PHX-02: powers of soul correspond to kinds of life | PHX-04: Anaxagoras's intell
+.loci_by_work.De Anima.I.4: list[1]
+.loci_by_work.De Anima.I.4[0].bekker: str = DA I.4 408b16-18
+.loci_by_work.De Anima.I.4[0].citing_units: list[2]
+.loci_by_work.De Anima.I.4[0].unit_count: int = 2
+.loci_by_work.De Anima.I.4[0].tier: str = B
+.loci_by_work.De Anima.I.4[0].themes_by_unit: dict keys=['PHX-04', 'PHX-03']
+.loci_by_work.De Anima.I.4[0].theme_summary: str = PHX-03: the divine active mind as the only divinity Aristotle recognizes; reason
+.loci_by_work.De Anima.I.5: list[1]
+.loci_by_work.De Anima.I.5[0].bekker: str = DA I.5 411a3
+.loci_by_work.De Anima.I.5[0].citing_units: list[1]
+.loci_by_work.De Anima.I.5[0].unit_count: int = 1
+.loci_by_work.De Anima.I.5[0].tier: str = B
+.loci_by_work.De Anima.I.5[0].themes_by_unit: dict keys=['PHX-04']
+.loci_by_work.De Anima.I.5[0].theme_summary: str = PHX-04: early DA on contraries / recognition of contrary by contrary
+.loci_by_work.De Anima.II.1: list[3]
+.loci_by_work.De Anima.II.1[0].bekker: str = DA II.1 412a19-21
+.loci_by_work.De Anima.II.1[0].citing_units: list[1]
+.loci_by_work.De Anima.II.1[0].unit_count: int = 1
+.loci_by_work.De Anima.II.1[0].tier: str = B
+.loci_by_work.De Anima.II.1[0].themes_by_unit: dict keys=['PHX-08']
+.loci_by_work.De Anima.II.1[0].theme_summary: str = PHX-08: substance is actuality (ἐντελέχεια) of natural organic body
+.loci_by_work.De Anima.II.11: list[2]
+.loci_by_work.De Anima.II.11[0].bekker: str = DA II.11 424a17
+.loci_by_work.De Anima.II.11[0].citing_units: list[1]
+.loci_by_work.De Anima.II.11[0].unit_count: int = 1
+.loci_by_work.De Anima.II.11[0].tier: str = B
+.loci_by_work.De Anima.II.11[0].themes_by_unit: dict keys=['PHX-03']
+.loci_by_work.De Anima.II.11[0].theme_summary: str = PHX-03: sense-organ receives perceptible form without matter; wax-seal simile
+.loci_by_work.De Anima.II.12: list[1]
+.loci_by_work.De Anima.II.12[0].bekker: str = DA II.12 424a18-33
+.loci_by_work.De Anima.II.12[0].citing_units: list[1]
+.loci_by_work.De Anima.II.12[0].unit_count: int = 1
+.loci_by_work.De Anima.II.12[0].tier: str = B
+.loci_by_work.De Anima.II.12[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.De Anima.II.12[0].theme_summary: str = PHX-01: aisthesis receives form without matter — wax/signet metaphor
+.loci_by_work.De Anima.II.2: list[4]
+.loci_by_work.De Anima.II.2[0].bekker: str = DA II.2 413b7-22
+.loci_by_work.De Anima.II.2[0].citing_units: list[3]
+.loci_by_work.De Anima.II.2[0].unit_count: int = 3
+.loci_by_work.De Anima.II.2[0].tier: str = A
+.loci_by_work.De Anima.II.2[0].themes_by_unit: dict keys=['PHX-04', 'PHX-08', 'PHX-02']
+.loci_by_work.De Anima.II.2[0].theme_summary: str = PHX-02: phantasia + desire concomitant with sensation | PHX-04: phantasia belong
+.loci_by_work.De Anima.II.3: list[3]
+.loci_by_work.De Anima.II.3[0].bekker: str = DA II.3 414a31-32
+.loci_by_work.De Anima.II.3[0].citing_units: list[2]
+.loci_by_work.De Anima.II.3[0].unit_count: int = 2
+.loci_by_work.De Anima.II.3[0].tier: str = B
+.loci_by_work.De Anima.II.3[0].themes_by_unit: dict keys=['PHX-08', 'PHX-02']
+.loci_by_work.De Anima.II.3[0].theme_summary: str = PHX-02: five powers/four grades of living things; pre-thematic location of phant
+.loci_by_work.De Anima.II.4: list[2]
+.loci_by_work.De Anima.II.4[0].bekker: str = DA II.4 415a14-23
+.loci_by_work.De Anima.II.4[0].citing_units: list[1]
+.loci_by_work.De Anima.II.4[0].unit_count: int = 1
+.loci_by_work.De Anima.II.4[0].tier: str = B
+.loci_by_work.De Anima.II.4[0].themes_by_unit: dict keys=['PHX-08']
+.loci_by_work.De Anima.II.4[0].theme_summary: str = PHX-08: investigation must ascertain each faculty — what the rational, sensitive
+.loci_by_work.De Anima.II.5: list[4]
+.loci_by_work.De Anima.II.5[0].bekker: str = DA II.5 417a6-24
+.loci_by_work.De Anima.II.5[0].citing_units: list[3]
+.loci_by_work.De Anima.II.5[0].unit_count: int = 3
+.loci_by_work.De Anima.II.5[0].tier: str = A
+.loci_by_work.De Anima.II.5[0].themes_by_unit: dict keys=['PHX-04', 'PHX-03', 'PHX-08']
+.loci_by_work.De Anima.II.5[0].theme_summary: str = PHX-03: perception narrowly limited to immediate object | PHX-04: sensation as i
+.loci_by_work.De Anima.II.6: list[3]
+.loci_by_work.De Anima.II.6[0].bekker: str = DA II.6 418a9-11
+.loci_by_work.De Anima.II.6[0].citing_units: list[1]
+.loci_by_work.De Anima.II.6[0].unit_count: int = 1
+.loci_by_work.De Anima.II.6[0].tier: str = B
+.loci_by_work.De Anima.II.6[0].themes_by_unit: dict keys=['PHX-04']
+.loci_by_work.De Anima.II.6[0].theme_summary: str = PHX-04: the flower perceived only κατὰ συμβεβηκός (incidentally)
+.loci_by_work.De Anima.II.8: list[1]
+.loci_by_work.De Anima.II.8[0].bekker: str = DA II.8 420b29-31
+.loci_by_work.De Anima.II.8[0].citing_units: list[3]
+.loci_by_work.De Anima.II.8[0].unit_count: int = 3
+.loci_by_work.De Anima.II.8[0].tier: str = A
+.loci_by_work.De Anima.II.8[0].themes_by_unit: dict keys=['PHX-06', 'PHX-07', 'PHX-01']
+.loci_by_work.De Anima.II.8[0].theme_summary: str = PHX-01: voice is semantikos because produced by a creature with phantasia | PHX-
+.loci_by_work.De Anima.III.1: list[2]
+.loci_by_work.De Anima.III.1[0].bekker: str = DA III.1 425a10-17
+.loci_by_work.De Anima.III.1[0].citing_units: list[2]
+.loci_by_work.De Anima.III.1[0].unit_count: int = 2
+.loci_by_work.De Anima.III.1[0].tier: str = B
+.loci_by_work.De Anima.III.1[0].themes_by_unit: dict keys=['PHX-03', 'PHX-01']
+.loci_by_work.De Anima.III.1[0].theme_summary: str = PHX-01: phantasia granted to bee and ant, tentatively denied to worm | PHX-03: w
+.loci_by_work.Rhetoric: dict keys=['I.1', 'I.10', 'I.11', 'I.12', 'I.14', 'I.15']
+.loci_by_work.Rhetoric.I.1: list[3]
+.loci_by_work.Rhetoric.I.1[0].bekker: str = Rhet. I.1 1354a
+.loci_by_work.Rhetoric.I.1[0].citing_units: list[2]
+.loci_by_work.Rhetoric.I.1[0].unit_count: int = 2
+.loci_by_work.Rhetoric.I.1[0].tier: str = B
+.loci_by_work.Rhetoric.I.1[0].themes_by_unit: dict keys=['PHX-06', 'PHX-05']
+.loci_by_work.Rhetoric.I.1[0].theme_summary: str = PHX-05: Warping the jury by leading them into anger/envy/pity — phantasia's dang
+.loci_by_work.Rhetoric.I.10: list[2]
+.loci_by_work.Rhetoric.I.10[0].bekker: str = Rhet. I.10 1369a1
+.loci_by_work.Rhetoric.I.10[0].citing_units: list[1]
+.loci_by_work.Rhetoric.I.10[0].unit_count: int = 1
+.loci_by_work.Rhetoric.I.10[0].tier: str = B
+.loci_by_work.Rhetoric.I.10[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Rhetoric.I.10[0].theme_summary: str = PHX-06: βούλησις = λογιστικὴ ὄρεξις; ὀργή + ἐπιθυμία = ἄλογος ὄρεξις
+.loci_by_work.Rhetoric.I.11: list[7]
+.loci_by_work.Rhetoric.I.11[0].bekker: str = Rhet. I.11 1370a18-29
+.loci_by_work.Rhetoric.I.11[0].citing_units: list[5]
+.loci_by_work.Rhetoric.I.11[0].unit_count: int = 5
+.loci_by_work.Rhetoric.I.11[0].tier: str = A
+.loci_by_work.Rhetoric.I.11[0].themes_by_unit: dict keys=['PHX-04', 'PHX-06', 'PHX-07', 'PHX-01', 'PHX-02']
+.loci_by_work.Rhetoric.I.11[0].theme_summary: str = PHX-01: decaying-sense invoked in popular early work | PHX-02: phantasia as 'wea
+.loci_by_work.Rhetoric.I.12: list[1]
+.loci_by_work.Rhetoric.I.12[0].bekker: str = Rhet. I.12 1371a
+.loci_by_work.Rhetoric.I.12[0].citing_units: list[1]
+.loci_by_work.Rhetoric.I.12[0].unit_count: int = 1
+.loci_by_work.Rhetoric.I.12[0].tier: str = B
+.loci_by_work.Rhetoric.I.12[0].themes_by_unit: dict keys=['PHX-07']
+.loci_by_work.Rhetoric.I.12[0].theme_summary: str = PHX-07: Honor and reputation among pleasantest things via each person's phantasi
+.loci_by_work.Rhetoric.I.14: list[1]
+.loci_by_work.Rhetoric.I.14[0].bekker: str = Rhet. I.14 1375a
+.loci_by_work.Rhetoric.I.14[0].citing_units: list[1]
+.loci_by_work.Rhetoric.I.14[0].unit_count: int = 1
+.loci_by_work.Rhetoric.I.14[0].tier: str = B
+.loci_by_work.Rhetoric.I.14[0].themes_by_unit: dict keys=['PHX-07']
+.loci_by_work.Rhetoric.I.14[0].theme_summary: str = PHX-07: 'heaping up' (hyperochē) of wrongs — broken oaths, handshakes, promises,
+.loci_by_work.Rhetoric.I.15: list[1]
+.loci_by_work.Rhetoric.I.15[0].bekker: str = Rhet. I.15 1377b20-23
+.loci_by_work.Rhetoric.I.15[0].citing_units: list[1]
+.loci_by_work.Rhetoric.I.15[0].unit_count: int = 1
+.loci_by_work.Rhetoric.I.15[0].tier: str = B
+.loci_by_work.Rhetoric.I.15[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Rhetoric.I.15[0].theme_summary: str = PHX-06: ethos vs. pathos: 'showing oneself to be, and rendering the krites, of a
+.loci_by_work.Rhetoric.I.2: list[3]
+.loci_by_work.Rhetoric.I.2[0].bekker: str = Rhet. I.2 1356a3-25
+.loci_by_work.Rhetoric.I.2[0].citing_units: list[1]
+.loci_by_work.Rhetoric.I.2[0].unit_count: int = 1
+.loci_by_work.Rhetoric.I.2[0].tier: str = B
+.loci_by_work.Rhetoric.I.2[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Rhetoric.I.2[0].theme_summary: str = PHX-06: Rhetoric as 'offshoot of dialectic and of the study of character' — prop
+.loci_by_work.Rhetoric.I.3: list[1]
+.loci_by_work.Rhetoric.I.3[0].bekker: str = Rhet. I.3
+.loci_by_work.Rhetoric.I.3[0].citing_units: list[1]
+.loci_by_work.Rhetoric.I.3[0].unit_count: int = 1
+.loci_by_work.Rhetoric.I.3[0].tier: str = B
+.loci_by_work.Rhetoric.I.3[0].themes_by_unit: dict keys=['PHX-05']
+.loci_by_work.Rhetoric.I.3[0].theme_summary: str = PHX-05: Three-fold division of rhetorical species; epideictic distinguished from
+.loci_by_work.Rhetoric.I.4: list[1]
+.loci_by_work.Rhetoric.I.4[0].bekker: str = Rhet. I.4 1360b
+.loci_by_work.Rhetoric.I.4[0].citing_units: list[1]
+.loci_by_work.Rhetoric.I.4[0].unit_count: int = 1
+.loci_by_work.Rhetoric.I.4[0].tier: str = B
+.loci_by_work.Rhetoric.I.4[0].themes_by_unit: dict keys=['PHX-05']
+.loci_by_work.Rhetoric.I.4[0].theme_summary: str = PHX-05: Megalopsychia/megaloprepeia/scale of honor in epideictic
+.loci_by_work.Rhetoric.I.5: list[1]
+.loci_by_work.Rhetoric.I.5[0].bekker: str = Rhet. I.5 1362a
+.loci_by_work.Rhetoric.I.5[0].citing_units: list[1]
+.loci_by_work.Rhetoric.I.5[0].unit_count: int = 1
+.loci_by_work.Rhetoric.I.5[0].tier: str = B
+.loci_by_work.Rhetoric.I.5[0].themes_by_unit: dict keys=['PHX-05']
+.loci_by_work.Rhetoric.I.5[0].theme_summary: str = PHX-05: Megethos as quality relative to time/place/circumstance; addresses realm
+.loci_by_work.Rhetoric.I.6: list[1]
+.loci_by_work.Rhetoric.I.6[0].bekker: str = Rhet. I.6 1363b
+.loci_by_work.Rhetoric.I.6[0].citing_units: list[1]
+.loci_by_work.Rhetoric.I.6[0].unit_count: int = 1
+.loci_by_work.Rhetoric.I.6[0].tier: str = B
+.loci_by_work.Rhetoric.I.6[0].themes_by_unit: dict keys=['PHX-05']
+.loci_by_work.Rhetoric.I.6[0].theme_summary: str = PHX-05: The 'good' in Rhetoric — turns repeatedly to notions of size/scale/degre
+.loci_by_work.Rhetoric.I.7: list[2]
+.loci_by_work.Rhetoric.I.7[0].bekker: str = Rhet. I.7 1365b1
+.loci_by_work.Rhetoric.I.7[0].citing_units: list[1]
+.loci_by_work.Rhetoric.I.7[0].unit_count: int = 1
+.loci_by_work.Rhetoric.I.7[0].tier: str = B
+.loci_by_work.Rhetoric.I.7[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Rhetoric.I.7[0].theme_summary: str = PHX-06: Centerpiece of πρὸς ἀλήθειαν vs. πρὸς δόξαν analysis: 'what one would no
+.loci_by_work.Rhetoric.I.9: list[3]
+.loci_by_work.Rhetoric.I.9[0].bekker: str = Rhet. I.9 1368a
+.loci_by_work.Rhetoric.I.9[0].citing_units: list[2]
+.loci_by_work.Rhetoric.I.9[0].unit_count: int = 2
+.loci_by_work.Rhetoric.I.9[0].tier: str = B
+.loci_by_work.Rhetoric.I.9[0].themes_by_unit: dict keys=['PHX-07', 'PHX-05']
+.loci_by_work.Rhetoric.I.9[0].theme_summary: str = PHX-05: Centerpiece. Amplification (auxesis) 'falls among forms of praise; for i
+.loci_by_work.Rhetoric.II.1: list[3]
+.loci_by_work.Rhetoric.II.1[0].bekker: str = Rhet. II.1 1378a19
+.loci_by_work.Rhetoric.II.1[0].citing_units: list[2]
+.loci_by_work.Rhetoric.II.1[0].unit_count: int = 2
+.loci_by_work.Rhetoric.II.1[0].tier: str = B
+.loci_by_work.Rhetoric.II.1[0].themes_by_unit: dict keys=['PHX-06', 'PHX-07']
+.loci_by_work.Rhetoric.II.1[0].theme_summary: str = PHX-06: pathos hinted in the 'cause neither pain nor pleasure' clause of the 140
+.loci_by_work.Metaphysics: dict keys=['(unspecified)', 'I', 'I.1', 'IV', 'IV.5', 'IX']
+.loci_by_work.Metaphysics.(unspecified): list[1]
+.loci_by_work.Metaphysics.(unspecified)[0].bekker: str = Met. (unspecified)
+.loci_by_work.Metaphysics.(unspecified)[0].citing_units: list[1]
+.loci_by_work.Metaphysics.(unspecified)[0].unit_count: int = 1
+.loci_by_work.Metaphysics.(unspecified)[0].tier: str = B
+.loci_by_work.Metaphysics.(unspecified)[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Metaphysics.(unspecified)[0].theme_summary: str = PHX-01: interpretation of 'forms' in phantasia would require full analysis
+.loci_by_work.Metaphysics.I: list[4]
+.loci_by_work.Metaphysics.I[0].bekker: str = Met. I 980a
+.loci_by_work.Metaphysics.I[0].citing_units: list[1]
+.loci_by_work.Metaphysics.I[0].unit_count: int = 1
+.loci_by_work.Metaphysics.I[0].tier: str = B
+.loci_by_work.Metaphysics.I[0].themes_by_unit: dict keys=['PHX-05']
+.loci_by_work.Metaphysics.I[0].theme_summary: str = PHX-05: Other animals live by phantasiai/empeiriai; humans live by technē/logism
+.loci_by_work.Metaphysics.I.1: list[2]
+.loci_by_work.Metaphysics.I.1[0].bekker: str = Met. I.1 980b22-26
+.loci_by_work.Metaphysics.I.1[0].citing_units: list[2]
+.loci_by_work.Metaphysics.I.1[0].unit_count: int = 2
+.loci_by_work.Metaphysics.I.1[0].tier: str = B
+.loci_by_work.Metaphysics.I.1[0].themes_by_unit: dict keys=['PHX-01', 'PHX-08']
+.loci_by_work.Metaphysics.I.1[0].theme_summary: str = PHX-01: learning to perceive is learning to make distinctions | PHX-08: bees are
+.loci_by_work.Metaphysics.IV: list[1]
+.loci_by_work.Metaphysics.IV[0].bekker: str = Met. IV 1010b
+.loci_by_work.Metaphysics.IV[0].citing_units: list[1]
+.loci_by_work.Metaphysics.IV[0].unit_count: int = 1
+.loci_by_work.Metaphysics.IV[0].tier: str = B
+.loci_by_work.Metaphysics.IV[0].themes_by_unit: dict keys=['PHX-05']
+.loci_by_work.Metaphysics.IV[0].theme_summary: str = PHX-05: On phainomena and the truth of appearances; phainomenon as alēthes
+.loci_by_work.Metaphysics.IV.5: list[2]
+.loci_by_work.Metaphysics.IV.5[0].bekker: str = Met. IV.5 1010b2-3
+.loci_by_work.Metaphysics.IV.5[0].citing_units: list[2]
+.loci_by_work.Metaphysics.IV.5[0].unit_count: int = 2
+.loci_by_work.Metaphysics.IV.5[0].tier: str = B
+.loci_by_work.Metaphysics.IV.5[0].themes_by_unit: dict keys=['PHX-04', 'PHX-02']
+.loci_by_work.Metaphysics.IV.5[0].theme_summary: str = PHX-02: phantasia not the same as aisthesis | PHX-04: sensation of proper percep
+.loci_by_work.Metaphysics.IX: list[2]
+.loci_by_work.Metaphysics.IX[0].bekker: str = Met. IX 1048b
+.loci_by_work.Metaphysics.IX[0].citing_units: list[1]
+.loci_by_work.Metaphysics.IX[0].unit_count: int = 1
+.loci_by_work.Metaphysics.IX[0].tier: str = B
+.loci_by_work.Metaphysics.IX[0].themes_by_unit: dict keys=['PHX-05']
+.loci_by_work.Metaphysics.IX[0].theme_summary: str = PHX-05: Energeia/kinēsis distinction underlying 'bringing before the eyes' as le
+.loci_by_work.Metaphysics.IX.10: list[3]
+.loci_by_work.Metaphysics.IX.10[0].bekker: str = Met. IX.10
+.loci_by_work.Metaphysics.IX.10[0].citing_units: list[1]
+.loci_by_work.Metaphysics.IX.10[0].unit_count: int = 1
+.loci_by_work.Metaphysics.IX.10[0].tier: str = B
+.loci_by_work.Metaphysics.IX.10[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Metaphysics.IX.10[0].theme_summary: str = PHX-01: asuntheta — basic simple concepts
+.loci_by_work.Metaphysics.IX.5: list[1]
+.loci_by_work.Metaphysics.IX.5[0].bekker: str = Met. IX.5 1048a
+.loci_by_work.Metaphysics.IX.5[0].citing_units: list[1]
+.loci_by_work.Metaphysics.IX.5[0].unit_count: int = 1
+.loci_by_work.Metaphysics.IX.5[0].tier: str = B
+.loci_by_work.Metaphysics.IX.5[0].themes_by_unit: dict keys=['PHX-07']
+.loci_by_work.Metaphysics.IX.5[0].theme_summary: str = PHX-07: 'Energeia means the presence of the thing'
+.loci_by_work.Metaphysics.V: list[5]
+.loci_by_work.Metaphysics.V[0].bekker: str = Met. V 1015a11
+.loci_by_work.Metaphysics.V[0].citing_units: list[1]
+.loci_by_work.Metaphysics.V[0].unit_count: int = 1
+.loci_by_work.Metaphysics.V[0].tier: str = B
+.loci_by_work.Metaphysics.V[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Metaphysics.V[0].theme_summary: str = PHX-01: kata metaphoran
+.loci_by_work.Metaphysics.V.18: list[1]
+.loci_by_work.Metaphysics.V.18[0].bekker: str = Met. V.18 1022a19
+.loci_by_work.Metaphysics.V.18[0].citing_units: list[1]
+.loci_by_work.Metaphysics.V.18[0].unit_count: int = 1
+.loci_by_work.Metaphysics.V.18[0].tier: str = B
+.loci_by_work.Metaphysics.V.18[0].themes_by_unit: dict keys=['PHX-02']
+.loci_by_work.Metaphysics.V.18[0].theme_summary: str = PHX-02: kath' ho as cause (aition); unpacks 428a1-2
+.loci_by_work.Metaphysics.V.29: list[2]
+.loci_by_work.Metaphysics.V.29[0].bekker: str = Met. V.29 1024b17-23
+.loci_by_work.Metaphysics.V.29[0].citing_units: list[2]
+.loci_by_work.Metaphysics.V.29[0].unit_count: int = 2
+.loci_by_work.Metaphysics.V.29[0].tier: str = B
+.loci_by_work.Metaphysics.V.29[0].themes_by_unit: dict keys=['PHX-04', 'PHX-01']
+.loci_by_work.Metaphysics.V.29[0].theme_summary: str = PHX-01: things called false because of false phantasia they produce | PHX-04: sc
+.loci_by_work.Metaphysics.VI: list[1]
+.loci_by_work.Metaphysics.VI[0].bekker: str = Met. VI 1026a25
+.loci_by_work.Metaphysics.VI[0].citing_units: list[1]
+.loci_by_work.Metaphysics.VI[0].unit_count: int = 1
+.loci_by_work.Metaphysics.VI[0].tier: str = B
+.loci_by_work.Metaphysics.VI[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Metaphysics.VI[0].theme_summary: str = PHX-06: Geometry as part of mathematics
+.loci_by_work.Metaphysics.VI.4: list[1]
+.loci_by_work.Metaphysics.VI.4[0].bekker: str = Met. VI.4 1027b20
+.loci_by_work.Metaphysics.VI.4[0].citing_units: list[1]
+.loci_by_work.Metaphysics.VI.4[0].unit_count: int = 1
+.loci_by_work.Metaphysics.VI.4[0].tier: str = B
+.loci_by_work.Metaphysics.VI.4[0].themes_by_unit: dict keys=['PHX-04']
+.loci_by_work.Metaphysics.VI.4[0].theme_summary: str = PHX-04: the combinatorial nature of propositional truth/falsehood
+.loci_by_work.Metaphysics.VII.1: list[1]
+.loci_by_work.Metaphysics.VII.1[0].bekker: str = Met. VII.1
+.loci_by_work.Metaphysics.VII.1[0].citing_units: list[1]
+.loci_by_work.Metaphysics.VII.1[0].unit_count: int = 1
+.loci_by_work.Metaphysics.VII.1[0].tier: str = B
+.loci_by_work.Metaphysics.VII.1[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Metaphysics.VII.1[0].theme_summary: str = PHX-01: substance-term picks out the trackable individual
+.loci_by_work.Nicomachean Ethics: dict keys=['I', 'I.7', 'II', 'III', 'III.4', 'IV']
+.loci_by_work.Nicomachean Ethics.I: list[4]
+.loci_by_work.Nicomachean Ethics.I[0].bekker: str = NE I 1094a27
+.loci_by_work.Nicomachean Ethics.I[0].citing_units: list[1]
+.loci_by_work.Nicomachean Ethics.I[0].unit_count: int = 1
+.loci_by_work.Nicomachean Ethics.I[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.I[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Nicomachean Ethics.I[0].theme_summary: str = PHX-06: Political art's relation to dialectic and ethics
+.loci_by_work.Nicomachean Ethics.I.7: list[1]
+.loci_by_work.Nicomachean Ethics.I.7[0].bekker: str = NE I.7 1098a1
+.loci_by_work.Nicomachean Ethics.I.7[0].citing_units: list[1]
+.loci_by_work.Nicomachean Ethics.I.7[0].unit_count: int = 1
+.loci_by_work.Nicomachean Ethics.I.7[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.I.7[0].themes_by_unit: dict keys=['PHX-08']
+.loci_by_work.Nicomachean Ethics.I.7[0].theme_summary: str = PHX-08: nutritive-and-growth/perceptive/active-element with rational principle —
+.loci_by_work.Nicomachean Ethics.II: list[1]
+.loci_by_work.Nicomachean Ethics.II[0].bekker: str = NE II 1105b21
+.loci_by_work.Nicomachean Ethics.II[0].citing_units: list[1]
+.loci_by_work.Nicomachean Ethics.II[0].unit_count: int = 1
+.loci_by_work.Nicomachean Ethics.II[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.II[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Nicomachean Ethics.II[0].theme_summary: str = PHX-06: πάθη list: ἐπιθυμίαν, ὀργήν, φόβον, θάρσος, φθόνον, χαράν, φιλίαν, μῖσος
+.loci_by_work.Nicomachean Ethics.III: list[3]
+.loci_by_work.Nicomachean Ethics.III[0].bekker: str = NE III 1113a
+.loci_by_work.Nicomachean Ethics.III[0].citing_units: list[1]
+.loci_by_work.Nicomachean Ethics.III[0].unit_count: int = 1
+.loci_by_work.Nicomachean Ethics.III[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.III[0].themes_by_unit: dict keys=['PHX-05']
+.loci_by_work.Nicomachean Ethics.III[0].theme_summary: str = PHX-05: Proairesis (choice) as 'deliberative desire' (bouleutikē orexis) — found
+.loci_by_work.Nicomachean Ethics.III.4: list[1]
+.loci_by_work.Nicomachean Ethics.III.4[0].bekker: str = NE III.4 1113a
+.loci_by_work.Nicomachean Ethics.III.4[0].citing_units: list[1]
+.loci_by_work.Nicomachean Ethics.III.4[0].unit_count: int = 1
+.loci_by_work.Nicomachean Ethics.III.4[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.III.4[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Nicomachean Ethics.III.4[0].theme_summary: str = PHX-01: phainomenon agathon and Furley on self-movers
+.loci_by_work.Nicomachean Ethics.IV: list[2]
+.loci_by_work.Nicomachean Ethics.IV[0].bekker: str = NE IV 1122a
+.loci_by_work.Nicomachean Ethics.IV[0].citing_units: list[1]
+.loci_by_work.Nicomachean Ethics.IV[0].unit_count: int = 1
+.loci_by_work.Nicomachean Ethics.IV[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.IV[0].themes_by_unit: dict keys=['PHX-05']
+.loci_by_work.Nicomachean Ethics.IV[0].theme_summary: str = PHX-05: Megalopsychia/megaloprepeia in NE — scale of honor
+.loci_by_work.Nicomachean Ethics.IX: list[2]
+.loci_by_work.Nicomachean Ethics.IX[0].bekker: str = NE IX 1166b30
+.loci_by_work.Nicomachean Ethics.IX[0].citing_units: list[1]
+.loci_by_work.Nicomachean Ethics.IX[0].unit_count: int = 1
+.loci_by_work.Nicomachean Ethics.IX[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.IX[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Nicomachean Ethics.IX[0].theme_summary: str = PHX-06: Distinction between eunoia and philia — Fortenbaugh's basis for ethos/pa
+.loci_by_work.Nicomachean Ethics.V: list[1]
+.loci_by_work.Nicomachean Ethics.V[0].bekker: str = NE V 1130a12
+.loci_by_work.Nicomachean Ethics.V[0].citing_units: list[1]
+.loci_by_work.Nicomachean Ethics.V[0].unit_count: int = 1
+.loci_by_work.Nicomachean Ethics.V[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.V[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Nicomachean Ethics.V[0].theme_summary: str = PHX-01: arete/dikaiosune model for same disposition under different descriptions
+.loci_by_work.Nicomachean Ethics.V.1: list[1]
+.loci_by_work.Nicomachean Ethics.V.1[0].bekker: str = NE V.1 1129a17
+.loci_by_work.Nicomachean Ethics.V.1[0].citing_units: list[1]
+.loci_by_work.Nicomachean Ethics.V.1[0].unit_count: int = 1
+.loci_by_work.Nicomachean Ethics.V.1[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.V.1[0].themes_by_unit: dict keys=['PHX-04']
+.loci_by_work.Nicomachean Ethics.V.1[0].theme_summary: str = PHX-04: the contraries-rule: 'a contrary state is recognized from its contrary' 
+.loci_by_work.Nicomachean Ethics.VI: list[4]
+.loci_by_work.Nicomachean Ethics.VI[0].bekker: str = NE VI 1139a3-8
+.loci_by_work.Nicomachean Ethics.VI[0].citing_units: list[2]
+.loci_by_work.Nicomachean Ethics.VI[0].unit_count: int = 2
+.loci_by_work.Nicomachean Ethics.VI[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.VI[0].themes_by_unit: dict keys=['PHX-03', 'PHX-06']
+.loci_by_work.Nicomachean Ethics.VI[0].theme_summary: str = PHX-03: object-defines-faculty methodology | PHX-06: ἐπιστημονικόν vs. λογιστικό
+.loci_by_work.Nicomachean Ethics.VI.13: list[1]
+.loci_by_work.Nicomachean Ethics.VI.13[0].bekker: str = NE VI.13 1144a29
+.loci_by_work.Nicomachean Ethics.VI.13[0].citing_units: list[1]
+.loci_by_work.Nicomachean Ethics.VI.13[0].unit_count: int = 1
+.loci_by_work.Nicomachean Ethics.VI.13[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.VI.13[0].themes_by_unit: dict keys=['PHX-08']
+.loci_by_work.Nicomachean Ethics.VI.13[0].theme_summary: str = PHX-08: ἡ δ' ἕξις τῷ ὄμματι τούτῳ γίνεται τῆς ψυχῆς ('eye of the soul' acquires 
+.loci_by_work.Nicomachean Ethics.VII: list[3]
+.loci_by_work.Nicomachean Ethics.VII[0].bekker: str = NE VII 1147b4-24
+.loci_by_work.Nicomachean Ethics.VII[0].citing_units: list[3]
+.loci_by_work.Nicomachean Ethics.VII[0].unit_count: int = 3
+.loci_by_work.Nicomachean Ethics.VII[0].tier: str = A
+.loci_by_work.Nicomachean Ethics.VII[0].themes_by_unit: dict keys=['PHX-03', 'PHX-06', 'PHX-01']
+.loci_by_work.Nicomachean Ethics.VII[0].theme_summary: str = PHX-01: following phantasia of particulars vs. general belief | PHX-03: particul
+.loci_by_work.Nicomachean Ethics.X: list[1]
+.loci_by_work.Nicomachean Ethics.X[0].bekker: str = NE X 1174b20
+.loci_by_work.Nicomachean Ethics.X[0].citing_units: list[1]
+.loci_by_work.Nicomachean Ethics.X[0].unit_count: int = 1
+.loci_by_work.Nicomachean Ethics.X[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.X[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Nicomachean Ethics.X[0].theme_summary: str = PHX-06: Each sense has its corresponding pleasure
+.loci_by_work.Nicomachean Ethics.X.4: list[1]
+.loci_by_work.Nicomachean Ethics.X.4[0].bekker: str = NE X.4 1174a13
+.loci_by_work.Nicomachean Ethics.X.4[0].citing_units: list[1]
+.loci_by_work.Nicomachean Ethics.X.4[0].unit_count: int = 1
+.loci_by_work.Nicomachean Ethics.X.4[0].tier: str = B
+.loci_by_work.Nicomachean Ethics.X.4[0].themes_by_unit: dict keys=['PHX-02']
+.loci_by_work.Nicomachean Ethics.X.4[0].theme_summary: str = PHX-02: experience for practical wisdom rests on phantasia's preserving activity
+.loci_by_work.Physics: dict keys=['(unspecified)', 'I.1', 'III.2', 'IV.10']
+.loci_by_work.Physics.(unspecified): list[4]
+.loci_by_work.Physics.(unspecified)[0].bekker: str = Phys. 184a24
+.loci_by_work.Physics.(unspecified)[0].citing_units: list[1]
+.loci_by_work.Physics.(unspecified)[0].unit_count: int = 1
+.loci_by_work.Physics.(unspecified)[0].tier: str = B
+.loci_by_work.Physics.(unspecified)[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Physics.(unspecified)[0].theme_summary: str = PHX-01: cognitive development as progressively sophisticated sorting
+.loci_by_work.Physics.I.1: list[1]
+.loci_by_work.Physics.I.1[0].bekker: str = Phys. I.1 185a14
+.loci_by_work.Physics.I.1[0].citing_units: list[1]
+.loci_by_work.Physics.I.1[0].unit_count: int = 1
+.loci_by_work.Physics.I.1[0].tier: str = B
+.loci_by_work.Physics.I.1[0].themes_by_unit: dict keys=['PHX-02']
+.loci_by_work.Physics.I.1[0].theme_summary: str = PHX-02: kinesis as fundamental feature of physical world
+.loci_by_work.Physics.III.2: list[5]
+.loci_by_work.Physics.III.2[0].bekker: str = Phys. III.2 202a6
+.loci_by_work.Physics.III.2[0].citing_units: list[1]
+.loci_by_work.Physics.III.2[0].unit_count: int = 1
+.loci_by_work.Physics.III.2[0].tier: str = B
+.loci_by_work.Physics.III.2[0].themes_by_unit: dict keys=['PHX-04']
+.loci_by_work.Physics.III.2[0].theme_summary: str = PHX-04: agent-and-patient functioning at the same time (ἅμα); ἀλλοίωσις in categ
+.loci_by_work.Physics.IV.10: list[1]
+.loci_by_work.Physics.IV.10[0].bekker: str = Phys. IV.10
+.loci_by_work.Physics.IV.10[0].citing_units: list[1]
+.loci_by_work.Physics.IV.10[0].unit_count: int = 1
+.loci_by_work.Physics.IV.10[0].tier: str = B
+.loci_by_work.Physics.IV.10[0].themes_by_unit: dict keys=['PHX-02']
+.loci_by_work.Physics.IV.10[0].theme_summary: str = PHX-02: preserved phantasmata for learning
+.loci_by_work.De Insomniis: dict keys=['(unspecified)']
+.loci_by_work.De Insomniis.(unspecified): list[9]
+.loci_by_work.De Insomniis.(unspecified)[0].bekker: str = Insomn. 459a8-23
+.loci_by_work.De Insomniis.(unspecified)[0].citing_units: list[5]
+.loci_by_work.De Insomniis.(unspecified)[0].unit_count: int = 5
+.loci_by_work.De Insomniis.(unspecified)[0].tier: str = A
+.loci_by_work.De Insomniis.(unspecified)[0].themes_by_unit: dict keys=['PHX-04', 'PHX-03', 'PHX-01', 'PHX-08', 'PHX-02']
+.loci_by_work.De Insomniis.(unspecified)[0].theme_summary: str = PHX-01: phantasia same as aisthetikon, different in einai | PHX-02: imaginative 
+.loci_by_work.De Sensu: dict keys=['(unspecified)']
+.loci_by_work.De Sensu.(unspecified): list[8]
+.loci_by_work.De Sensu.(unspecified)[0].bekker: str = De Sensu 445b16-20
+.loci_by_work.De Sensu.(unspecified)[0].citing_units: list[2]
+.loci_by_work.De Sensu.(unspecified)[0].unit_count: int = 2
+.loci_by_work.De Sensu.(unspecified)[0].tier: str = B
+.loci_by_work.De Sensu.(unspecified)[0].themes_by_unit: dict keys=['PHX-04', 'PHX-01']
+.loci_by_work.De Sensu.(unspecified)[0].theme_summary: str = PHX-01: perception and distinction | PHX-04: contrary sensible qualities fall wi
+.loci_by_work.De Motu Animalium: dict keys=['(unspecified)']
+.loci_by_work.De Motu Animalium.(unspecified): list[7]
+.loci_by_work.De Motu Animalium.(unspecified)[0].bekker: str = De Motu 700b17
+.loci_by_work.De Motu Animalium.(unspecified)[0].citing_units: list[4]
+.loci_by_work.De Motu Animalium.(unspecified)[0].unit_count: int = 4
+.loci_by_work.De Motu Animalium.(unspecified)[0].tier: str = A
+.loci_by_work.De Motu Animalium.(unspecified)[0].themes_by_unit: dict keys=['PHX-04', 'PHX-06', 'PHX-01', 'PHX-05']
+.loci_by_work.De Motu Animalium.(unspecified)[0].theme_summary: str = PHX-01: kritika listed: phantasia, aisthesis, nous/dianoia | PHX-04: phantasia/s
+.loci_by_work.Historia Animalium: dict keys=['(unspecified)', 'I.1', 'I.3', 'I.5', 'II.15']
+.loci_by_work.Historia Animalium.(unspecified): list[2]
+.loci_by_work.Historia Animalium.(unspecified)[0].bekker: str = HA (unspecified)
+.loci_by_work.Historia Animalium.(unspecified)[0].citing_units: list[1]
+.loci_by_work.Historia Animalium.(unspecified)[0].unit_count: int = 1
+.loci_by_work.Historia Animalium.(unspecified)[0].tier: str = B
+.loci_by_work.Historia Animalium.(unspecified)[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Historia Animalium.(unspecified)[0].theme_summary: str = PHX-01: poor substitute for theory of animal psychology
+.loci_by_work.Historia Animalium.I.1: list[1]
+.loci_by_work.Historia Animalium.I.1[0].bekker: str = HA I.1 488a7
+.loci_by_work.Historia Animalium.I.1[0].citing_units: list[1]
+.loci_by_work.Historia Animalium.I.1[0].unit_count: int = 1
+.loci_by_work.Historia Animalium.I.1[0].tier: str = B
+.loci_by_work.Historia Animalium.I.1[0].themes_by_unit: dict keys=['PHX-08']
+.loci_by_work.Historia Animalium.I.1[0].theme_summary: str = PHX-08: ants and bees as political animals (πολιτικά): man, bee, wasp, ant, cran
+.loci_by_work.Historia Animalium.I.3: list[2]
+.loci_by_work.Historia Animalium.I.3[0].bekker: str = HA I.3 489a17
+.loci_by_work.Historia Animalium.I.3[0].citing_units: list[1]
+.loci_by_work.Historia Animalium.I.3[0].unit_count: int = 1
+.loci_by_work.Historia Animalium.I.3[0].tier: str = B
+.loci_by_work.Historia Animalium.I.3[0].themes_by_unit: dict keys=['PHX-04']
+.loci_by_work.Historia Animalium.I.3[0].theme_summary: str = PHX-04: all animals have at least one sense; testaceans as borderline cases for 
+.loci_by_work.Historia Animalium.I.5: list[1]
+.loci_by_work.Historia Animalium.I.5[0].bekker: str = HA I.5 489b9
+.loci_by_work.Historia Animalium.I.5[0].citing_units: list[1]
+.loci_by_work.Historia Animalium.I.5[0].unit_count: int = 1
+.loci_by_work.Historia Animalium.I.5[0].tier: str = B
+.loci_by_work.Historia Animalium.I.5[0].themes_by_unit: dict keys=['PHX-08']
+.loci_by_work.Historia Animalium.I.5[0].theme_summary: str = PHX-08: σκώληξ definition: that out of which in its entirety an animal is produc
+.loci_by_work.Historia Animalium.II.15: list[1]
+.loci_by_work.Historia Animalium.II.15[0].bekker: str = HA II.15 505b28
+.loci_by_work.Historia Animalium.II.15[0].citing_units: list[1]
+.loci_by_work.Historia Animalium.II.15[0].unit_count: int = 1
+.loci_by_work.Historia Animalium.II.15[0].tier: str = B
+.loci_by_work.Historia Animalium.II.15[0].themes_by_unit: dict keys=['PHX-08']
+.loci_by_work.Historia Animalium.II.15[0].theme_summary: str = PHX-08: blooded animals (ἔναιμα): man, viviparous/oviparous quadrupeds, birds, f
+.loci_by_work.Poetics: dict keys=['(unspecified)', '17.1']
+.loci_by_work.Poetics.(unspecified): list[6]
+.loci_by_work.Poetics.(unspecified)[0].bekker: str = Poet. 1455a22
+.loci_by_work.Poetics.(unspecified)[0].citing_units: list[2]
+.loci_by_work.Poetics.(unspecified)[0].unit_count: int = 2
+.loci_by_work.Poetics.(unspecified)[0].tier: str = B
+.loci_by_work.Poetics.(unspecified)[0].themes_by_unit: dict keys=['PHX-06', 'PHX-05']
+.loci_by_work.Poetics.(unspecified)[0].theme_summary: str = PHX-05: Pro ommatōn tithemenon — the poet should put the scene before his eyes w
+.loci_by_work.Poetics.17.1: list[1]
+.loci_by_work.Poetics.17.1[0].bekker: str = Poet. 17.1 1455a
+.loci_by_work.Poetics.17.1[0].citing_units: list[1]
+.loci_by_work.Poetics.17.1[0].unit_count: int = 1
+.loci_by_work.Poetics.17.1[0].tier: str = B
+.loci_by_work.Poetics.17.1[0].themes_by_unit: dict keys=['PHX-07']
+.loci_by_work.Poetics.17.1[0].theme_summary: str = PHX-07: Aristotle instructs dramatists to 'keep the material before the eyes' (p
+.loci_by_work.Politics: dict keys=['I', 'VI', 'VII', 'VIII.6']
+.loci_by_work.Politics.I: list[1]
+.loci_by_work.Politics.I[0].bekker: str = Pol. I 1253a2-10
+.loci_by_work.Politics.I[0].citing_units: list[1]
+.loci_by_work.Politics.I[0].unit_count: int = 1
+.loci_by_work.Politics.I[0].tier: str = B
+.loci_by_work.Politics.I[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Politics.I[0].theme_summary: str = PHX-06: phōnē as σημεῖον of pain/pleasure
+.loci_by_work.Politics.VI: list[1]
+.loci_by_work.Politics.VI[0].bekker: str = Pol. VI 1322a32
+.loci_by_work.Politics.VI[0].citing_units: list[1]
+.loci_by_work.Politics.VI[0].unit_count: int = 1
+.loci_by_work.Politics.VI[0].tier: str = B
+.loci_by_work.Politics.VI[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Politics.VI[0].theme_summary: str = PHX-01: pistis and political life
+.loci_by_work.Politics.VII: list[2]
+.loci_by_work.Politics.VII[0].bekker: str = Pol. VII 1326a26
+.loci_by_work.Politics.VII[0].citing_units: list[1]
+.loci_by_work.Politics.VII[0].unit_count: int = 1
+.loci_by_work.Politics.VII[0].tier: str = B
+.loci_by_work.Politics.VII[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Politics.VII[0].theme_summary: str = PHX-01: pistis
+.loci_by_work.Politics.VIII.6: list[3]
+.loci_by_work.Politics.VIII.6[0].bekker: str = Pol. VIII.6 1340b20
+.loci_by_work.Politics.VIII.6[0].citing_units: list[1]
+.loci_by_work.Politics.VIII.6[0].unit_count: int = 1
+.loci_by_work.Politics.VIII.6[0].tier: str = B
+.loci_by_work.Politics.VIII.6[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Politics.VIII.6[0].theme_summary: str = PHX-06: Mousikē's φορτικότης/θητικότης depends on focus on hearers' pleasure — s
+.loci_by_work.De Memoria: dict keys=['(unspecified)']
+.loci_by_work.De Memoria.(unspecified): list[6]
+.loci_by_work.De Memoria.(unspecified)[0].bekker: str = De Mem. 450a4-27
+.loci_by_work.De Memoria.(unspecified)[0].citing_units: list[8]
+.loci_by_work.De Memoria.(unspecified)[0].unit_count: int = 8
+.loci_by_work.De Memoria.(unspecified)[0].tier: str = A
+.loci_by_work.De Memoria.(unspecified)[0].themes_by_unit: dict keys=['PHX-04', 'PHX-03', 'PHX-06', 'PHX-07', 'PHX-01', 'PHX-05']
+.loci_by_work.De Memoria.(unspecified)[0].theme_summary: str = PHX-01: zographema / image regarded in isolation as theorema or phantasma | PHX-
+.loci_by_work.Eudemian Ethics: dict keys=['I', 'II', 'II.1', 'III', 'VII']
+.loci_by_work.Eudemian Ethics.I: list[2]
+.loci_by_work.Eudemian Ethics.I[0].bekker: str = EE I 1215a29
+.loci_by_work.Eudemian Ethics.I[0].citing_units: list[1]
+.loci_by_work.Eudemian Ethics.I[0].unit_count: int = 1
+.loci_by_work.Eudemian Ethics.I[0].tier: str = B
+.loci_by_work.Eudemian Ethics.I[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Eudemian Ethics.I[0].theme_summary: str = PHX-06: φορτικὰς τέχνας τὰς πρὸς δόξαν πραγματευομένας μόνον — Cope's parallel p
+.loci_by_work.Eudemian Ethics.II: list[1]
+.loci_by_work.Eudemian Ethics.II[0].bekker: str = EE II 1221a30
+.loci_by_work.Eudemian Ethics.II[0].citing_units: list[1]
+.loci_by_work.Eudemian Ethics.II[0].unit_count: int = 1
+.loci_by_work.Eudemian Ethics.II[0].tier: str = B
+.loci_by_work.Eudemian Ethics.II[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Eudemian Ethics.II[0].theme_summary: str = PHX-01: kata metaphoran usage
+.loci_by_work.Eudemian Ethics.II.1: list[1]
+.loci_by_work.Eudemian Ethics.II.1[0].bekker: str = EE II.1 1219b22-23
+.loci_by_work.Eudemian Ethics.II.1[0].citing_units: list[1]
+.loci_by_work.Eudemian Ethics.II.1[0].unit_count: int = 1
+.loci_by_work.Eudemian Ethics.II.1[0].tier: str = B
+.loci_by_work.Eudemian Ethics.II.1[0].themes_by_unit: dict keys=['PHX-08']
+.loci_by_work.Eudemian Ethics.II.1[0].theme_summary: str = PHX-08: sensitive and appetitive parts ineffective in sleep
+.loci_by_work.Eudemian Ethics.III: list[1]
+.loci_by_work.Eudemian Ethics.III[0].bekker: str = EE III 1231a31
+.loci_by_work.Eudemian Ethics.III[0].citing_units: list[1]
+.loci_by_work.Eudemian Ethics.III[0].unit_count: int = 1
+.loci_by_work.Eudemian Ethics.III[0].tier: str = B
+.loci_by_work.Eudemian Ethics.III[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Eudemian Ethics.III[0].theme_summary: str = PHX-01: kata metaphoran usage
+.loci_by_work.Eudemian Ethics.VII: list[1]
+.loci_by_work.Eudemian Ethics.VII[0].bekker: str = EE VII 1235b25
+.loci_by_work.Eudemian Ethics.VII[0].citing_units: list[1]
+.loci_by_work.Eudemian Ethics.VII[0].unit_count: int = 1
+.loci_by_work.Eudemian Ethics.VII[0].tier: str = B
+.loci_by_work.Eudemian Ethics.VII[0].themes_by_unit: dict keys=['PHX-01']
+.loci_by_work.Eudemian Ethics.VII[0].theme_summary: str = PHX-01: phantasia and doxa not in same part of soul
+.loci_by_work.Sophistical Refutations: dict keys=['(unspecified)']
+.loci_by_work.Sophistical Refutations.(unspecified): list[5]
+.loci_by_work.Sophistical Refutations.(unspecified)[0].bekker: str = SE 164a20-23
+.loci_by_work.Sophistical Refutations.(unspecified)[0].citing_units: list[1]
+.loci_by_work.Sophistical Refutations.(unspecified)[0].unit_count: int = 1
+.loci_by_work.Sophistical Refutations.(unspecified)[0].tier: str = B
+.loci_by_work.Sophistical Refutations.(unspecified)[0].themes_by_unit: dict keys=['PHX-06']
+.loci_by_work.Sophistical Refutations.(unspecified)[0].theme_summary: str = PHX-06: οἱ φαινόμενοι ἔλεγχοι — false-syllogism phantasia at the head of SE
+########## phx-greek-terminology-appendix.json
+.meta: dict keys=['total_canonical_lemmas', 'tier_counts', 'total_raw_greek_entries', 'unit_ids', 'canonicalization', 'tier_definition']
+.meta.total_canonical_lemmas: int = 213
+.meta.tier_counts: dict keys=['A', 'B']
+.meta.tier_counts.A: int = 29
+.meta.tier_counts.B: int = 184
+.meta.total_raw_greek_entries: int = 279
+.meta.unit_ids: list[8]
+.meta.canonicalization: str = Greek lemmas transliterated and collapsed via headword map (e.g., phantasmata→ph
+.meta.tier_definition: str = Tier-A = used by ≥3 of 8 units; Tier-B = used by 1-2 units.
+.lemmas: list[213]
+.lemmas[0].id: str = GR-001
+.lemmas[0].lemma_canonical: str = kinesis
+.lemmas[0].raw_forms: list[1]
+.lemmas[0].greek_script_attestations: list[1]
+.lemmas[0].translation_pool: list[3]
+.lemmas[0].used_by: list[8]
+.lemmas[0].unit_count: int = 8
+.lemmas[0].tier: str = A
+.lemmas[0].gloss_by_unit: dict keys=['PHX-04', 'PHX-03', 'PHX-06', 'PHX-07', 'PHX-01', 'PHX-05']
+.lemmas[0].gloss_by_unit.PHX-04: str = motion/change; the genus of phantasia's definition
+.lemmas[0].gloss_by_unit.PHX-03: str = phantasia as kinesis caused by perception (DA 428b11-15)
+.lemmas[0].gloss_by_unit.PHX-06: str = De motu causal chain features phantasia as KINETIC mediator. Not González's focu
+.lemmas[0].gloss_by_unit.PHX-07: str = Movement; 'energeia is motion' (Rhet. 3.11.1412a.9-10); Kennerly's 'rhetorical k
+.lemmas[0].gloss_by_unit.PHX-01: str = In decaying-sense theory: residual perceptual motion persisting in object's abse
+.lemmas[0].gloss_by_unit.PHX-05: str = DA 428b/429a: phantasia is a kinēsis caused by sense-perception. Per Newman: 'br
+.lemmas[0].gloss_by_unit.PHX-08: str = motion — phantasia as κίνησις ὑπὸ τῆς αἰσθήσεως κατ' ἐνέργειαν γιγνομένη (DA III
+.lemmas[0].gloss_by_unit.PHX-02: str = motion — the genus of the phantasia-definition (kinesis hypo tes aistheseos kat'

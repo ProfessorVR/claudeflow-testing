@@ -1,0 +1,673 @@
+================================================================================================
+A Grammar of Motives (Burke 1945)
+------------------------------------------------------------------------------------------------
+Finest structured unit = the CHAPTER (14 units). Everything registered at runtime is coarser
+still: 56 book-level concepts. But claim-level material is ALREADY PRESENT in structured form
+and simply has no canonical slot. Concretely, on disk right now: 101 unit-level `positions`,
+94 of them dicts, of which the well-formed ones look exactly like claim records —
+gm-00-deep.json positions[] carry {id: 'P-AMBIGUITY-AS-RESOURCE', claim: '<one-sentence
+proposition>', book_page: 18, critique_target: '<who it argues against>', centrality_tier: 1};
+48 of the 101 are page-anchored. Add 12 more book-level POSITIONs each with a `claim` field
+(book-level-ontology.json:593 shows the shape). Add 70 unit-level `tensions`, each a named
+contested proposition-pair (35 page-anchored), plus 16 canonical tensions and 21 unmatched raw
+tensions with per-unit provenance. Add 441 concept records (290 page-anchored) with
+paraphrastic definitions. Add 139 `outline` entries which are SUB-CHAPTER sections with
+book_pp/pdf_pp ranges and multi-sentence summaries — i.e. one granularity level below chapter
+already exists and is page-ranged. So the entry is roughly ONE level short of the target on
+the structured side, not two: chapter → section (139 outline records, exists) → claim (113
+position records, exists but heterogeneous) → clause (does not exist anywhere). The clause
+level is entirely absent: nothing on disk carries a sentence offset, a character span, or a
+bbox; the finest locator is a book page number. On the unstructured side the raw material is
+dense — 59,379 words / ~2,485 sentences of unit prose plus 39,356 words of synthesis prose,
+page-anchored throughout — from which claim extraction is a parsing problem, not an authoring
+problem. What would have to be added: (1) a canonical claim record type with a stable ID, a
+normalised page+paragraph or char-span locator, a provenance tag, and edges to the concepts it
+involves; (2) normalisation of the 101 existing positions (7 are bare strings, 40 lack a
+prefixed ID, 53 lack a page) into that type; (3) a compiler slot so claims and tensions reach
+compiled-index.json at all — today neither does. Cost is materially lower than a rebuild
+because the hard scholarly work (reading 518 pages, anchoring claims to pages) is done.
+
+================================================================================================
+A Rhetoric of Motives (Burke 1950)
+------------------------------------------------------------------------------------------------
+Finest structured unit = the CHAPTER (8 units, RM-00..RM-07). Runtime sees only 39 book-level
+concepts. But — and this is the more interesting finding — this entry's claim layer is BETTER
+FORMED than the Grammar's. All 53 `positions` are dicts, 100% of them carry an `id`, 47 of 53
+carry a `book_page`, and every one carries a `provenance` tag; rm-05-deep.json positions[0] =
+{id:'P1', claim:'Vocabulary has three irreducible orders — positive, dialectical, ultimate —
+each with distinct logical form and ontological reference; conflating them produces
+terministic impropriety.', book_page:183, provenance:'burke-direct'}. That is a clean, page-
+anchored, provenance-tagged claim record. There are 53 of them and they reach nothing. Below
+chapter there are also 84 `outline` records (section-level, with book_pp/pdf_pp ranges) and 35
+`calleja_pim_candidates` (each a typed cross-domain mapping with rationale and mandatory
+provenance='anticipatory-projection'). So the entry already encodes chapter → section (84) →
+claim (53), and is missing only the clause level entirely: nothing carries a sentence offset,
+char span or bbox, and the finest locator anywhere is a book page number. The concept layer is
+the weak link — 143 of 160 concepts have no locator at all — so a claim/clause programme would
+have to backfill concept anchors before it could tie claims to the concepts they involve.
+Unstructured claim material is abundant: 34,426 words / ~1,513 sentences of page-anchored unit
+prose plus 14,670 words of synthesis prose. What must be added: (1) a registered claim type so
+the 53 existing positions reach compiled-index.json; (2) page anchors for the 143 unanchored
+concepts; (3) a sub-page (paragraph or char-span) locator, which does not exist anywhere in
+this corpus; (4) a tension-edges.json in the schema the compiler actually parses. Items (1)
+and (4) are cheap and would immediately triple this entry's runtime footprint.
+
+================================================================================================
+Aristotelian Emotion Secondary (1975-2015)
+------------------------------------------------------------------------------------------------
+Finest unit actually encoded = the CHAPTER/SECTION, with claim-shaped objects beneath it that
+lack identity. `outline` holds 44 objects keyed by page range ('Introduction (1-7)', summary
+80 words); `concepts` holds 99 objects {id, label, tier, gloss}; `readings` 45 objects each a
+full thesis; `aristotle_loci` 168 objects {work, bekker, role} where `role` is already a claim
+('THE definition of the passions: states on account of which we change/differ pros tas
+kriseis, accompanied by pain and pleasure'); `tensions` 27 objects typed against dissertation
+questions ({'id':'TN1','type':'dissertation-T1-2','desc':'Dow is the ALLY: passions involve
+the subject\'s affirming their content…'}). Distance to claim level is ONE level and it is an
+identity problem, not a content problem: 45 readings + 27 tensions + 99 concept glosses = 171
+claim-shaped objects already exist, they just collide on C1..C26 and cannot be addressed.
+Distance to clause level: two levels — Bekker line-pairs are recorded on the Aristotle side
+(168 loci), but no sentence or clause offset exists on the secondary side. Notably, this entry
+has the FINEST-GRAINED EDGE LAYER of the four: unlike RDR2 and 7 of 8 Phantasia units, all
+five AES edge files use concept-level or term-level sources (99 distinct sources in global-
+edges.csv, e.g. 'affirmation as yes-saying', 'appetite-akrasia', "Odysseus's anger (thumos-
+akrasia)", "'last protasis'"). The edges ARE claim-to-claim. They are unusable only because
+the endpoints are free-text labels rather than IDs — which makes this the cheapest entry in
+the batch to lift to claim level: assign IDs to the existing 99 sources and the graph is
+already there.
+
+================================================================================================
+Aristotelian Motion and Time Secondary
+------------------------------------------------------------------------------------------------
+Finest unit actually encoded = the SECTION, and this is the only entry in the batch whose EDGE
+ENDPOINTS ARE PROPERLY TYPED AND ID'D. amt-01-bowin-edges.csv carries edge_id, contributor,
+source_type, source_id, relation, target_type, target_id, target_label, evidence_locus,
+strength, note — 11 columns, and all 58 source_ids resolve to declared objects (C01..C21,
+R01..R05, L01..L67, G01..G32, T01..T06, plus the unit). 67 aristotle_loci are recorded at
+Bekker line-pair precision with per-locus roles ('Phys. 4.10.218a8-21 — Puzzle of the ceasing
+instant; Bowin §3, referenced as temporal-passage metaphysics, not perception of time
+passing'), which is clause-granular on the primary-text side. Distance to claim level on the
+secondary side is ONE level: 21 concepts and 5 readings carry summaries that ARE claims
+('Perceiving time and grasping time intellectually are distinct modes of cognition; perceiving
+time does NOT presuppose grasping time intellectually'), and 6 tensions are stated as claim-
+pairs — roughly 32 claim-shaped objects with STABLE IDs, which no other entry in the batch
+achieves. Distance to clause level: one further level; no sentence offsets exist. The striking
+finding is that the entry the brief calls 'abandoned mid-creation' is in fact the ONLY one in
+the batch whose edge layer is already claim-addressable end to end. What it lacks is scale (1
+unit, 58 edges) and any cluster layer — and, fatally, an ontology file. If a redesign wants a
+schema exemplar, this is it: 37 of 58 edges are still UNIT-sourced, but 21 are already
+CONCEPT/LOCUS/TENSION/GREEK-TERM-sourced with resolvable IDs.
+
+================================================================================================
+Aristotelian Phantasia Secondary (1985-2017)
+------------------------------------------------------------------------------------------------
+Finest unit actually encoded = the SECTION and, for one unit, the CONCEPT. The unit records
+reach two sub-levels below the article: `section_structure` (51 objects, each with section_id,
+heading, pdf_pages, book_pages, summary) and `outline` (181 objects at paragraph-cluster
+granularity, e.g. phx-04-caston.json outline[5]: 'Cluster 6 (PDF 6, book 26, §II cont.):
+Caston distinguishes (1) thinking consists in the SAME KIND of process as perceiving, and
+(1\') thinking does not differ from perceiving in any way at all. Theophrastus\' formula ἢ
+ταὐτὸν ἢ παραπαλήσιον…'). Distance to claim level is ONE level, not two — and for the
+Aristotle axis it is effectively ZERO: phx-aristotle-loci-concordance.json holds 288 canonical
+Bekker loci resolved to page+column with 463 per-unit theme annotations attached, which is
+clause-granular on the primary-text side. Crucially, ONE UNIT ALREADY DOES CLAIM-LEVEL EDGES:
+phx-03-frede-edges.csv is the only per-unit file in the batch whose sources are concept IDs
+rather than the unit — 18 distinct sources including PHX-03-FREDE:C10, :C11, :R1, :R2, :T1,
+:T3. The other seven files are stars from the unit. So the format demonstrably CAN carry
+claim-level structure and one unit proves it; the gap is uniformity, not capability. Already-
+present unstructured claim material: 66 `readings` objects each with a full thesis statement
+plus key_anchors (phx-04-caston readings[1] states the causal-powers thesis in 60 words with
+three Bekker anchors and a subjunctive formalisation), 46 `tensions` each stated as a claim-
+pair with Bekker citations, 235 `concepts` with glosses, and 181 outline clusters — roughly
+528 claim-shaped objects already authored, plus 66k words of unit prose and 28k of synthesis
+prose. Reaching clause level would additionally require sentence-offset anchoring, which
+nothing in the entry has.
+
+================================================================================================
+Aristotle - Complete Works
+------------------------------------------------------------------------------------------------
+The finest STRUCTURED unit is the analysis unit — a Metaphysics book, a Physics book, or a De
+Anima chapter-group (34 units over 553 PDF pages, i.e. ~16 pages per unit; the analyses run
+1,147-5,332 words each). That is two levels above the target. BUT claim-level and clause-level
+material is ALREADY AUTHORED, in bulk, inside the prose, and that changes the economics of the
+whole programme. Quantified over the 34 phase2-*.md (158,205 words): 1,539 bullets, of which
+973 carry an explicit Bekker locus (63% — roughly 29 addressable claims per unit); 2,323
+DISTINCT Bekker loci with line numbers (e.g. `429a1–2`, `431a14–17`); 1,594 quoted strings of
+25+ characters; 1,891 markdown table rows; and 129 already-IDed propositions under a `UNIT-NN-
+Pn` convention (156 distinct IDs referenced) in 20 of the 34 files. Add 188 bekker-index loci
+each already bound to a concept list and a unit_id, and 164 Greek lemmas with 1,000+ citation
+strings. Crucially, Bekker line numbers ARE the canonical clause-level address system for
+Aristotle, and this entry already records them at that resolution — so the corpus is not
+missing clause-level ADDRESSES, it is missing (a) IDs on the ~844 unIDed claim bullets, (b)
+any JSON serialization of any of it, (c) trustworthy page/offset anchors (see the CRITICAL
+locator defects — the JSON layer's pdf_pages are wrong by up to 47 pages while the prose
+layer's are verified correct), and (d) character offsets into the extracted text for span-
+level retrieval. What would have to be added: a per-claim record {claim_id, unit_id,
+bekker_locus, verified_pdf_page, char_span, claim_text, quoted_evidence, relation_edges[],
+tension_refs[]}, minted by parsing the existing bullets. The barrier is not authorship — it is
+that 34 analyses use 30+ different section-heading conventions and 6 different metadata key
+spellings, so extraction is 34 bespoke parsers today. Standardising the template retroactively
+is the single highest-leverage move; it converts ~973 existing claims into structure at near-
+zero analytic cost. The entry is EXCELLENT by its own standard (a). It is structurally
+incapable of (b) as it stands, but it is closer to (b) than any layout-family peer, because
+the clause-level anchor system is already in the prose.
+
+================================================================================================
+Boredom Experiment (VR Attention Study)
+------------------------------------------------------------------------------------------------
+Finest structured unit = the DATASET-CHANNEL, 7 of them. That is not claim-level at all — it
+is a level ORTHOGONAL to claims: the entry deliberately holds measurement structure and pushes
+findings to vle-02 (manifest.json:7 'the study's findings are registered as vle nodes 10-14
+there and are NOT duplicated here'). Within its own scope the granularity is actually good:
+manifest.json:24-32 gives each channel 6-7 typed attributes (id, modality, register, n, unit,
+status, o9/o10), which is finer than anything else in the batch encodes. But it means BEX
+contributes essentially ZERO claim-level material by design — bex-01's four load-bearing cases
+(S03/S04/S05/S07) are the only claim-shaped objects, and they are duplicated verbatim from
+vle-02:13-16. The batch's claim-level content is elsewhere. The real question this entry
+raises is different: because it is a channel schema rather than an analysis, 'full treatment'
+on the cluster template is the wrong target. What it needs is a DATASET record type —
+channels, cohorts, gates, processing state, provenance register — which the manifest already
+IS, and which the runtime cannot see. To reach claim level would require lifting bex-01's
+aggregates (16/24 dilation, 6/8 depletion, boredom means 7.0/6.0/4.5) into records; but doing
+that here would violate the entry's own no-duplication rule, so the right move is to make
+vle-02's findings claim-level and leave BEX as the dataset descriptor it correctly is.
+
+================================================================================================
+Boredom Secondary (Part III)
+------------------------------------------------------------------------------------------------
+The finest STRUCTURED unit is the sub-item inside a unit JSON, not the unit itself — and this
+is the single most important correction to make about this entry. It encodes 2,924 sub-items
+across 55 units (463 readings, 425 constructs, 582 concepts, 718 interlocutors, 387 sections,
+211 tensions, 138 measures), of which 2,012 of the 2,258 dict-shaped ones carry a page locus.
+The `readings` array IS claim-level already: each item is a single proposition with a page
+anchor, an argumentative stance, and a provenance tag distinguishing the source's own claim
+(FE) from a close paraphrase (FAITHFUL-<author>) from the project's own interpretive extension
+(P/anticipatory-application). Example from bor-sec-13: {"claim": "Beings' 'telling refusal' in
+profound boredom is itself 'a telling, i.e. a making manifest' — it announces the very
+possibilities it withholds…", "type": "READING/CLAIM", "stance": "restates-FCM (fcm-06)",
+"locus": "p.114-116", "tag": "FAITHFUL-Slaby"}. That is one level below the article and
+roughly at the target. So the distance to claim-level is NOT authorship — it is schema and
+addressing: (1) the readings array has 9 incompatible sub-schemas (claim/text/summary;
+locus/loci/page); (2) reading ids are unqualified local counters that collide across 6 units;
+(3) `stance` has 162 uncontrolled values with 195 nulls; (4) nothing reaches runtime — the
+compiler reads no JSON except tension-edges.json, which this entry does not have. A
+normalization pass over 55 files (unify to {id: 'bor-sec-NN-Rmm', claim, locus, stance∈enum,
+tag∈enum}) would deliver ~460 addressable claims at a fraction of the cost of re-reading the
+sources. Clause-level is genuinely absent: no sub-item is smaller than a proposition, and no
+quoted span carries a character offset or bbox. But the raw material for it is sitting in the
+prose layer — 1,725 quoted spans of ≥40 characters across the 55 .md analyses (1,026,780
+bytes), roughly 31 per unit, the great majority of which sit within 200 characters of a page
+locus. Those are extractable quotation records today; what they lack is a verbatim-
+verification link back to the PDF text, which is exactly what the WRAITH verbatim/bbox work
+exists to supply. Where the entry is structurally incapable of the target: the EDGE layer.
+1,918 rows keyed on (source, relation, target) with locus as a free-text note cannot express a
+claim-to-claim relation, only unit-to-string. And global-edges.csv's dedup key deletes locus
+outright — 21 rows already lost. Any redesign must move edges from unit-level to claim-level
+endpoints, or the finest relational data will keep being collapsed by its own synthesis step.
+
+================================================================================================
+Dissertation
+------------------------------------------------------------------------------------------------
+This entry is the exception in the whole corpus index: it ALREADY encodes claim-level
+granularity, and it does so structurally, not incidentally. 982 distinct claim records (306
+for §1.4 alone) across 56,713 words of source prose = one record per ~58 words, which is
+roughly sentence granularity. 100% carry a line anchor (`ln` string or `location`
+{line_start,line_end}); 76% participate in an explicit supports/supported_by graph; every
+record carries a typed support tier from an 8-level legend (T1 textually-confirmed 277, T2 78,
+T3 interpretive-but-flagged 477, T4 41, T5 71, T6 12, T7 overreach 22, T8 secondary-needed 4);
+38% record the primary citations actually present in the text; 11% record
+`implicit_citations_needed` with a candidate locus, a tier, and a rationale; and nearly all
+carry a `remediation` object naming an action plus corpus-index / ChromaDB / Perplexity
+candidates and an effort estimate. Below claim level, the entry also holds genuinely CLAUSE-
+level material: 841 typed edges whose `target` column is 53% claim-IDs and 47% free-text loci
+(ARISTOTLE-LOCUS:'DA III.7 431a8-12', HEIDEGGER-LOCUS:'SZ §29 H.137', SECONDARY-LOCUS:'Burke
+Grammar pp. 280-28', SECTION:DISS-02-A1A2); 235 cached verbatim quotations each with
+author/year/page, an `insertion_anchor` naming the exact phrase in the target text, a use
+designation (in-text/footnote/epigraph) and a rationale; and 156 citation-fill markdown files
+that pair a verbatim with the exact current sentence it is to attach to, plus a ready-to-paste
+MLA/LaTeX form. Spot-verified: the Christensen 2016 verbatim in cache-Q-CHR-05.md reproduces
+corpus/download/_extra_Aristotle_20on_20Anger_20Justice_20and_20Punishment.pdf exactly. So the
+cost of the claim/clause-level programme for this entry is NOT extraction — it is (a) schema
+unification across six dialects, (b) promoting the 156 citation-fill .md files and the free-
+text LOCUS strings into resolvable IDs, and (c) re-anchoring against the 3 drifted sources.
+The one structural limit: all of it is about the user's OWN prose, not about a source text. To
+serve the stated goal for SOURCES, this schema would have to be re-pointed at corpus documents
+— but it is a working, proven, claim-level schema and the only one in the index.
+
+================================================================================================
+Game-Behavior Analysis Method (Burke × Calleja)
+------------------------------------------------------------------------------------------------
+This entry sits at the OPPOSITE end from the batch's other member: its finest unit of analysis
+is the whole method-document, and there is no unit layer at all — no per-section records, no
+claim records, no edges, no ontology. Its structured content is exactly 11 crosswalk bindings
+in validated-crosswalk.json (4 core bijective + 4 many-to-many cluster + 3 secondary ties, 0
+rejected), each with pentad term, PIM dimension, strength, status, both_directions flag, and a
+per-direction textual warrant. That is 11 records for 82,134 words — roughly 1 structured
+record per 7,500 words, three to four orders of magnitude coarser than the claim/clause
+target. BUT the entry is dense with material that is ALREADY claim-level and merely
+unstructured. Quantifying what a extraction pass would find: 68 quoted strings of 25+
+characters in CANONICAL-METHODOLOGY-v9.md alone, 24 distinct Bekker loci in that one file, and
+a fully-enumerated diagnostic vocabulary that is effectively a claim schema in disguise — R1
+assimilation, R2 embodiment, R3 simultaneity, R4 cornerstone, R5 blending, R6 temporal-apex,
+R7 intrusion-integration appear 68/35/40/26/34/42/78 times respectively across the markdown
+(323 coded assertions), each attached in the VALIDATION files to specific timestamps in one
+game episode. THE-MATRIX.md is literally a claim-extraction form: chain locus x what-happens x
+three-factor-motion x designed-channel x doxa/hexis/affect, with an R1-R7 criterion table
+underneath. So the raw material for a claim-level encoding of THIS method exists and is well-
+disciplined; what is missing is (a) any ID scheme for the propositions, (b) any file that
+holds a filled-in MATRIX (the worksheet in the index is BLANK — every data cell is empty), and
+(c) any edge table linking the 11 crosswalk bindings, the 7 R-criteria, the A0-A4 chain nodes,
+and the sibling entries' units. Critically, this entry is not a source-text index at all — it
+is the INSTRUMENT that would be applied to source texts. Judged by (a) its own standard, it is
+a well-versioned, empirically-checked, cross-validated methodology with an honest changelog
+and mostly-verified quotations. Judged by (b) the claim/clause-level target, it is
+structurally incapable in its current form: there is nothing to encode claims ABOUT, because
+the entry indexes no document. Its correct role in the redesign is as the SCHEMA SOURCE — the
+R1-R7 criteria, the A0-A4 chain loci, the 6x6 Burke×Calleja grid and the four-cause/seven-
+cause frame are exactly the controlled vocabulary a claim-level game-analysis encoding would
+need — not as an entry to be given unit records of its own.
+
+================================================================================================
+Heidegger - Basic Concepts of Aristotelian Philosophy
+------------------------------------------------------------------------------------------------
+The FINEST unit ENCODED in a structured slot is the section (§1-§28, 28 records with heading,
+page and pdf_page ranges, tags, greek_terms_expected, and a genuinely fine subsection list —
+u-fp3c.json alone declares §17a, §17b, §17b-α, §17b-β, §17b-γ, §18a-§18d with full Greek
+headings). That subsection layer is one level finer than BT's and is the closest thing in the
+batch to sub-chapter granularity. Claim-level material is ALREADY AUTHORED in bulk: 150 claim
+records (U-…-Pn) each with a full claim sentence, enumerated premises with an explicit '→
+**Conclusion**' step, an 'Aristotelian texts' locus field (e.g. 'Met. Gamma 2, 1004 b 17--26;
+cf. Plato, Sophist 253 b 10'), and a Status field. On top of that: 189 typed per-unit edges
+with prose labels, ~40 per-unit tension records, 488 inline page-cited quotations, and a
+67-lemma Greek appendix with per-unit translation_status (reinterpreted /
+partially_reinterpreted / standard) — which is itself a claim-level assertion about each term
+in each unit, already machine-readable. Clause-level is absent: no clause is addressed, no
+quotation carries a character span, and the Bekker/page loci are strings not structured
+citations. The conversion cost is HIGHER than BT's despite more material, because BCAP's
+markdown is irregular: two claim formats (### headings vs Field/Value tables), three concept
+naming systems, 79 uncontrolled relation values, one syntactically invalid JSON fence, and 5
+of 13 units with no edge block at all. Normalisation, not authoring, is the bottleneck.
+
+================================================================================================
+Heidegger - Being and Time
+------------------------------------------------------------------------------------------------
+The FINEST unit the entry ENCODES in a structured slot is the section (§1-§83, 83 records in
+bt-structured with heading, H./eng/pdf page ranges, tags, german_terms_expected). Everything
+above section level is well covered; nothing below it is encoded in any machine-readable slot.
+BUT claim-level material is ALREADY AUTHORED and merely trapped in prose: 108 claim records
+exist as markdown table rows with a five-field schema (`| id | claim | premises | targets |
+status |`, ids BT-D1-U2-P1 style, status drawn from a 7-value vocabulary), each averaging one
+full claim sentence plus 3-6 enumerated premises plus an explicit list of what the claim
+argues against. On top of that, 299 typed edge objects sit in fenced JSON, ~86 tension items
+carry [INTERP-low/high] confidence tags AND explicit `Linked to: BT-D1-U2-P2` claim-level
+back-references (84 such links), and ~360 German-term table rows carry per-term h_pages. So
+claim-level is roughly 90% of the way there in content and 0% of the way there in form — the
+conversion is a parse job, not an analysis job. Clause-level is entirely absent: no sentence
+or clause is ever addressed, no quotation carries a span, and 1,230 quoted strings sit inline
+with only 37 locally cited. To reach the stated target one would need (a) a JSON schema for
+the existing 108 claims + 84 claim-to-tension links, (b) a verbatim layer anchoring each of
+the 1,230 quotations to H-page and character span, and (c) a clause decomposition of the
+premises fields, which are already semi-decomposed as numbered '(1)…(2)…(3)' lists and could
+be split mechanically.
+
+================================================================================================
+Heidegger - The Fundamental Concepts of Metaphysics
+------------------------------------------------------------------------------------------------
+The finest unit the entry FORMALLY encodes is the chapter/section unit (fcm-00..fcm-14, one
+per FCM chapter or section group). But claim-level material is already present in bulk,
+unstructured or semi-structured, and this materially changes the cost of the programme.
+Quantified: (a) 182 records in 'claims' arrays across 13 unit JSONs, each with id + a one-
+sentence proposition + a triple locus - e.g. fcm-05 C2 'Depth, not objective span of time,
+decides the extent of boredom; one can be more bored in five minutes of company than in four
+hours at the station.' with locus '(p.108 / GA pp.163-64 / pdf 66)'. That is already claim-
+level with page-precise anchoring. (b) 63 further records in 'objects' arrays in fcm-07/08/09.
+(c) The units' 'sections' arrays go one level finer still - subsection records like §25b
+'Obstructive casualness (Lassigkeit) as the deepening way we are left empty' with book_p 116,
+giving a section-to-subsection tree beneath each unit. (d) 1,083 inline triple-loci across the
+26 markdown files and 2,090 quoted spans in the unit prose - each locus marks a specific
+quotation or claim, so the prose already carries clause-anchored evidence, just as text rather
+than records. So roughly 245 structured claim records + ~1,100 locus-anchored prose claims are
+ALREADY authored. What is missing is (i) stable claim IDs that edges can point at - today
+edges point at free-text concept names, never at C1/C2; (ii) a uniform claims key (fcm-08/09
+use 'objects'); (iii) any clause-level decomposition (no entry file segments a claim into
+subject/predicate/qualifier or marks the specific clause a locus certifies); and (iv) any path
+from claim records to runtime. To reach claim-level the honest work is normalization and
+wiring, not authoring. To reach clause-level, genuinely new work is required across all 15
+units.
+
+================================================================================================
+Heidegger and Rhetoric
+------------------------------------------------------------------------------------------------
+The finest formally-encoded unit is the essay (or half-essay: Gross is split A/B at book
+p.27). That is one level coarser than a chapter in FCM terms. But substantial claim-level
+material already exists inside the phase-2 records: 74 'positions' across the 8 units (each an
+essay-level proposition with an id such as HR-01-GROSS-A-P2 and a page anchor), 146
+key_concepts, 69 tensions/open questions, 233 local edges, and - unusually - two loci
+concordances that are already sub-claim-level: hr-heidegger-loci-concordance.json holds 162
+distinct Heidegger loci and hr-aristotle-loci-concordance.json holds 66 Aristotle loci, each
+with the citing contributor, the essay page and a context field. Several of those context
+fields are already clause-anchored: e.g. the GA 18 262 entry reproduces the full English and
+German block quotation with the note 'This is the volume's most-cited single GA 18 quote'. The
+eight phase-2 markdown analyses (~44,000 words) and the 7 contested-node dossiers plus 11
+disagreement dossiers carry a further dense layer of claim-level argument in prose, each keyed
+to a contributor and a page. So the claim layer is roughly half-built and, unlike FCM, it is
+already ID-bearing (POSITION:HR-NN-AUTHOR-Pn). Three things block it: (1) 14 of those position
+ids were never resolved (TBD/-Pn/-P[...]); (2) positions live only in phase-2 JSON and never
+appear in the ontology, the matrix or compiled-index; (3) the POSITION ids and the CONCEPT
+labels use different, non-joining vocabularies. Clause-level is entirely absent - nothing in
+the entry decomposes a position into its constituent clauses or marks which clause a given
+GA-18 locus certifies. Cost implication: getting HR to claim level is mostly ID hygiene and
+wiring; getting it to clause level is new authoring across 8 essays and ~230 loci.
+
+================================================================================================
+In-Game (Calleja 2011)
+------------------------------------------------------------------------------------------------
+Finest structured unit actually encoded = a named concept or position within a chapter, with a
+book-page (sometimes page-range) anchor. That is one level below chapter, not two: a page is
+not a claim and certainly not a clause. HOWEVER — claim-level material is already present in
+quantity, just unstructured or unreachable. (1) 71 unit-level `positions` across the 13 deep
+JSONs are already true claim records (e.g. ig-10-deep.json positions[0] = {id:'P01',
+label:'Incorporation displaces immersion+presence as primary theoretical frame',
+anchor:'pp.167-169 + 172', summary:'…'}) — they need only a stable ID scheme and a canonical
+slot. (2) 45 unit tensions + 12 volume tensions are claim-vs-claim oppositions with page
+anchors. (3) 18 canonical POSITIONs in book-level-ontology.json carry `claim` +
+`supporting_units` and are the closest thing to a claim ontology in the whole corpus — and
+they reach nothing. (4) 995 line-range anchors are already sub-page, i.e. clause-adjacent —
+this is the single largest latent asset in the entry, and it is worthless only because
+/tmp/calleja-fulltext.txt was deleted; regenerating that file with a recorded, deterministic
+extraction command would resurrect ~1,000 clause-level pointers in one step. (5) 47,443 words
+of deep prose analysis (13 *-deep.md) contain hundreds of further claim-level assertions with
+inline page cites, entirely unstructured. What is structurally MISSING and cannot be
+recovered: verbatim clause text. The entry deliberately suppresses it —
+ig-10-deep.json:434-441 `content_filter_audit` records that every ≥25-word block was
+paraphrased, and ig-00-deep.json:222 / ig-02-deep.json:330 assert 'no ≥25-word verbatim from
+Calleja'. A clause-level index needs the clause. So: claim-level is ~70% of the way there and
+cheap (promote positions/tensions, give them IDs, register them); clause-level requires re-
+extracting from the PDF under a policy change, and the line-anchor scaffolding to hang it on
+must be rebuilt first.
+
+================================================================================================
+Presence Theory (Foundations)
+------------------------------------------------------------------------------------------------
+Finest structured unit = the cluster concept node — 10 of them across 4 sources, one ~45-word
+definition each. That is source-level, i.e. two to three levels above claim/clause. The unit
+.md files sit one notch finer (4 'Key constructs' + 2-3 numbered verbatim loci per source) but
+are prose. Crucially, claim-level material with explicit epistemic status ALREADY EXISTS here
+in unstructured form and is unusually well-formed: bridge-to-part-ii.md §3 is a 6-row
+crosswalk where each row already carries {Lepecq claim, Uexküll anchor, Part II vocabulary,
+mapping status}, and §7 is an 8-row ledger where each row already carries {claim, layer,
+status}. That is 14 rows that are, structurally, claim records — they need a schema, not
+authorship. Add the entry's 8 drafting loci and 15 unit-declared constructs and roughly 37
+claim-sized assertions are already written down. Across the entry: 69 quoted strings ≥25 chars
+and 18 markdown table rows in 6,171 words. What would have to be added to reach the target:
+(a) stable claim IDs (the entry has NO IDs at any level below ptf-NN — nodes are ordinals,
+loci are [L1]/[L2] scoped per-file and colliding across files); (b) a verified/unverified
+field, since the entry already tracks that distinction in prose and gets it wrong once (the
+three Lepecq bridge quotes); (c) claim→quote→locator links, which citations.md already
+supplies at source granularity via verified pagination offsets.
+
+================================================================================================
+Red Dead Redemption 2 (Salvo Playthrough)
+------------------------------------------------------------------------------------------------
+Finest unit ACTUALLY ENCODED is not the clip - it is the frame. The 68 raw-frame-logs address
+1,040 distinct frames by id (e_0001, l_0385, q_101, ...) with 529 t=/t~ timestamps and 1,326
+bullet-level observations, at 24 fps for 02:29-03:45. That is one to two levels BELOW the
+user's clause-level target on the temporal axis. Above it sit 284 timestamped beat rows in 22
+beat-maps, then 32 element rows, then the prose syntheses. So the claim/clause-level material
+is not missing - it is already written, at roughly 69,080 words of it, and it is 100%
+unstructured: zero IDs, 24 header dialects, evidence-grade encoded in free text inside column
+headers ('inferred', 'NO dialogue anchor', '[UNCERTAIN]'), and the whole raw tier orphaned
+from the manifest. What would have to be ADDED is therefore not observation but a schema: a
+stable id per beat and per frame-observation, an explicit evidence-grade enum (frame-observed
+/ subtitle-read / transcript-derived / role-inferred / author-confirmed / refuted), a
+supersedes/superseded-by edge so frame-read-verification.md's 10 verdicts attach to the 284
+beat rows they judge, and a claim->quotation->locator triple so 'Oh, you struggled...'
+resolves to a frame id rather than a stitched paraphrase. Cost is extraction and
+normalisation, not new analysis - which materially lowers the price of the whole programme for
+this entry. The one thing genuinely absent is a claim-level decomposition of the entry's OWN
+argumentative prose (rdr2-tutorial-RODA.md's 5,135 words of sections 0-8 contain perhaps
+80-120 discrete assertions with zero addressing).
+
+================================================================================================
+Red Dead Redemption 2 Secondary (2019-2023)
+------------------------------------------------------------------------------------------------
+Finest unit actually encoded = the ARTICLE, with a per-article inventory beneath it. There is
+no ID for anything below the article: concepts, readings, game_elements, themes, interlocutors
+and tensions are all label-only objects or bare strings. The edge layer is strictly
+article→label (all 12 files are stars from the unit id), so no claim participates in a
+relation. Distance to claim level: two full levels — you would need (1) stable IDs for each of
+the 1,043 sub-unit objects, and (2) edges whose SOURCE is one of those IDs rather than the
+unit. Distance to clause level: three levels — there is no locus anchoring below the section
+(`readings[].locus` is 'General Introduction (pp.6-7); Part 1 sec.1 (p.8)', i.e. section+page,
+never a line or sentence). CRITICALLY, claim-level material IS already present but
+unstructured: the 86 `readings` objects each carry a one-sentence claim plus a page locus, the
+56 `tensions` are stated as claim-pairs ('Procedural rhetoric vs. player freedom: the honor
+system is framed as valorizing the possibility of choice, yet Bagnoli concedes that free will
+is itself biased...'), and the 38 `debate_axis_positions` are per-unit stances. That is
+roughly 180 claim-shaped objects already authored across 12 units, plus 31,501 words of unit
+prose containing many more. Promoting the existing readings/tensions/debate_axis_positions to
+first-class ID'd claim nodes is a re-keying job, not a re-reading job — which materially
+lowers the cost of the programme for this entry.
+
+================================================================================================
+Rhetoric of Interactivity and Virtual Reality (Part III)
+------------------------------------------------------------------------------------------------
+Finest structured unit = the cluster concept node, 7 across 2 sources, one ~35-word definition
+each. That is source-level and, at 2 sources, barely above entry-level. The prose layer holds
+8 unit-declared constructs with centrality+register tags and 6 verified verbatims with loci —
+roughly 14 claim-sized assertions in 2,832 words (40 quoted strings ≥25 chars). The entry is
+unusual in that its ANALYTICAL claims are finer-grained than its structural ones: cluster-
+ontology.md:13-23 argues a two-lever decomposition (Golliher = doing lever, Ulrich = moving
+lever) and riv-01:44-45 states an operational TEST ('a design is "not fully interactive" when
+it "does not demand that visitors" act') that is directly checkable against the VLE corpus's
+A₃→A₄ stall. That test is exactly a claim-level object — it has a source, a verbatim, a locus,
+and a target it can be run against — and it is encoded as a sentence inside a §5 heading. What
+would have to be added: (a) IDs at node and locus level (none exist; [L1] already collides
+across two files); (b) a claim record with {text, source, locus, verification status, target};
+(c) a real edge to vle-01/vle-05, which the entry asserts in prose three times and encodes
+zero times. Being only 2 sources and 7 nodes, this entry is the clearest case in the batch
+where the current unit of analysis is simply too coarse to be worth a separate entry at all.
+
+================================================================================================
+Rickert - Ambient Rhetoric
+------------------------------------------------------------------------------------------------
+Finest STRUCTURED unit: a chapter section (65 sections, each a heading + page range + tag
+list) — nominally the finest structural granularity in the batch, but each section record
+carries zero analytic content, so the finest CONTENTFUL structured unit is the chapter. Claim-
+level material exists but is markedly less structured than in Wendt or Uexküll: '## 4. Main
+Positions' is PROSE with bolded or ### position headers, yielding 75 identifiable discrete
+positions across the 10 files (ch1 8, ch2 6, ch3 8, ch4 5, ch5 10, ch6 8, ch7 7, ch8 7,
+conclusion 8, intro 8) and zero table rows anywhere — versus Uexküll's 107 typed claim rows
+and Wendt's 139 JSON claim objects. '## 5. Tensions and Open Questions' contributes a further
+51 discrete tensions (5 per chapter, 6 in the conclusion). The genuinely machine-readable
+fine-grained layer is the 242 local edges in fenced JSON, but 8 schemas and 189 relation
+values make them unusable without normalisation, and 120 of them carry no locus field at all.
+Concept tables give 146 rows. Distance to claim level: TWO steps here, not one — extraction
+from prose (harder than parsing a table) plus schema unification across 10 divergent file
+shapes. Distance to clause level: unreached; no spans, no offsets, and the page loci that do
+exist inherit the wrong pdf offset. Cost implication: Rickert is the most expensive of the
+three to lift to claim level despite having the most words (43,644).
+
+================================================================================================
+Social Presence in Virtual Worlds (Part III)
+------------------------------------------------------------------------------------------------
+Finest structured unit = the cluster concept node, 10 across 3 sources, one ~40-word
+definition each. That is source-level. The prose layer sits finer but is unaddressable: 15
+unit-declared 'Key constructs' with centrality+register tags, 8 verified verbatims with page
+or PDF-page loci, and — the interesting part — a 4-item numbered 'Suggested disposition'
+(drafting-loci.md:31-40) in which each item is already a claim about how a specific source
+bears on a specific sentence of the dissertation ('1. Keep the "social interior" phrasing —
+svw-01 licenses it ontologically; svw-02 instances it empirically'). That is claim-level
+reasoning already written, keyed to a quoted target passage reproduced verbatim at drafting-
+loci.md:7-10. Across the entry: 86 quoted strings ≥25 chars in 4,936 words — the highest
+quotation density per word in the batch. So roughly 27 claim-sized assertions (15 constructs +
+8 loci + 4 dispositions) are authored and none is addressable. To reach the target: (a) node
+and claim IDs (there are none at any level below svw-NN); (b) a claim→source-passage link,
+which drafting-loci already does in prose; (c) typed edges, since the entry's central
+intellectual move is a disagreement (svw-03 against the draft's multiplayer equation) that
+currently exists as a DEBATE-AXIS node with no edge and no tension-edges.json.
+
+================================================================================================
+Uncomfortable Situations
+------------------------------------------------------------------------------------------------
+Finest structured unit = a named concept or position within a chapter, anchored to a PDF page
+(sometimes a page range or a note number such as 'n.29'). That is roughly one level below
+chapter — a page, not a claim, and not a clause. But claim-level material is already dense
+and, unusually, already well-formed. (1) The 55 unit-level `positions` are textbook claim
+records: us-03-radcliffe.json positions[0] = {position_id:'P-USR-01', claimant:'Gross',
+claim:'J. J. Gibson's affordance theory can and must be extended into a rhetorical-historical-
+cultural theory of negative/hostile affordances, against the prevailing orthodox ecological-
+psychology reading…', support:'Cop-car-roof case (PDF 104-105); Aristotle's Cydias on Samos
+(PDF 102-103); Lewin's Aufforderungscharakter genealogy (PDF 104-105); legal hostile-work-
+environment case (PDF 108)', contested_by:'Orthodox Gibsonian ecological psychology;
+Scarantino's narrower taxonomy (PDF 109)'} — claimant, claim, evidence loci and opposition,
+all in one record. (2) The 18 canonical positions add `canonical_statement` + `support_units`.
+(3) The 45 unit tensions and 15 canonical tensions are claim-vs-claim pairs with per-pole
+statements. (4) The four loci concordances hold 176 records that are ALREADY at or below
+clause level: us-03's radcliffe_loci include {locus:'Radcliffe Romance of the Forest, p.7',
+context:"'Be comforted' — paradiastole/perlocutionary ironic frame; 'these comfortable words
+renewed the terror of La Motte'", us_03_pdf_page:119} — a specific phrase, its rhetorical
+figure, and both source and commentary pages. That is exactly the target granularity, for 176
+loci plus 99 more inside the unit JSONs. (5) 32,251 words of unit prose carry hundreds more
+page-cited assertions unstructured. What blocks the target: the same deliberate suppression of
+verbatim text (us-03-radcliffe.json:110 'NOT to be quoted at length per content-filter
+discipline'; :234 'NO ≥25-word verbatim from primary text per content-filter discipline'), and
+the fact that the loci records store a CONTEXT gloss rather than the clause itself. So this
+entry is closer to claim-level than any In-Game unit and closer to clause-level than the
+granularity headline suggests — the cost of the programme for entries of this shape is far
+lower than a from-scratch estimate, because ~275 claim records and ~275 loci records already
+exist and only need IDs, a canonical slot, and the clause text restored alongside the gloss.
+
+================================================================================================
+VR Pedagogy Secondary (Part III)
+------------------------------------------------------------------------------------------------
+FINEST UNIT ACTUALLY ENCODED: the article, decomposed one level down into (a) 233 `sections`
+records (title + summary + page, avg 6.9/unit) and (b) 233 `readings` records shaped {claim,
+type, stance, locus, tag} (avg 6.9/unit). The `readings` array IS a claim-level slot -- it is
+the only place in the entry where a proposition is a first-class addressable object with a
+page and a provenance tag. It is roughly ONE level below the article and ONE level above
+nothing: at ~7 claims per 20-page article it captures the thesis-bearing claims and discards
+everything else.\n\nDISTANCE TO THE TARGET. Claim-level: the slot exists but the density is
+off by roughly an order of magnitude. Clause-level: entirely absent -- there is no sentence
+id, no character offset, no bbox, no quotation span object anywhere in the entry. Loci are
+page numbers and page RANGES ('p.461-465', 'p.15-16, 24-25'), never sub-page anchors, so even
+the claims that ARE structured cannot be resolved to a sentence in the source.\n\nCRITICALLY:
+a large body of claim-level material IS already present, unstructured, inside the prose
+analyses, and this materially lowers the cost of the programme. Quantified over the 34 unit
+.md files (529,053 bytes, each with an identical 7-section skeleton):\n  - 1,471 page-locus
+mentions of the form p.NN / pp.NN\n  - 522 (FE...) tags = the source's own published claim\n
+- 548 FAITHFUL-<author> tags = close paraphrase of a specific passage\n  - 207
+(P/anticipatory-application) tags = our interpretive link\n  - 394 quoted spans of >=25
+characters\nThat is ~1,277 provenance-tagged assertions in prose against 233 in JSON: roughly
+5.5x more claim-level content already written than is currently structured, and each prose
+assertion already carries the two fields the structured record needs (a locus and a provenance
+tag). The extraction problem is therefore closer to a parsing job than an authoring job. Each
+unit .md also carries a section-6 'Concordance feed' markdown table (construct row | media-
+condition column | locus | note) -- e.g. 14 rows in ped-sec-06 -- which is already a per-claim
+tuple in table form.\n\nWHAT WOULD HAVE TO BE ADDED: (1) a sentence/clause id scheme with
+character offsets into a canonical extracted text (none exists; extraction metadata is only
+{tool: pdftotext, date, ocr_confidence}); (2) sub-page loci -- the corpus already has a
+bbox/verbatim capability elsewhere (WRAITH/Marker), and 33 of 34 units are pdftotext-clean per
+the manifest's own OCR audit, so this is feasible; (3) promotion of the 1,277 prose assertions
+into readings-shaped records; (4) a stable schema for readings (currently 3 item shapes with
+type/stance contamination in 11 items and 5 bare strings); (5) a quotation-span object -- the
+394 quoted spans currently have no identity and no per-quote page, since a single paragraph-
+terminal (FAITHFUL-X, p.461-465) tag frequently covers 4+ distinct verbatim quotations, which
+is exactly how the ped-sec-29 'sense of being in the place' fabrication
+survived.\n\nSTRUCTURAL VERDICT ON (a) vs (b): the entry is excellent by its own cluster-
+template standard -- 34/34 units complete, 0 stubs (smallest unit JSON is 6,756 bytes), 0
+dangling ped-sec ids anywhere in 127 files, concept-matrix perfectly consistent with the
+ontology, anchor-pointers table perfectly consistent with the edges. But it is STRUCTURALLY
+INCAPABLE of the claim/clause-level target as built, for three reasons that no amount of care
+at this layer fixes: the locus vocabulary bottoms out at the page range; there is no id space
+below ped-sec-NN (the 60 ontology nodes and 10 DA-NN axes are the only other identifiers, and
+40/40 debate edges do not even use the DA ids); and the one channel that reaches runtime
+carries 60 concept nodes and nothing else -- no claim, no reading, no edge, no quotation has
+any runtime existence at all.
+
+================================================================================================
+Veri(dis)similitude (Salvo MA)
+------------------------------------------------------------------------------------------------
+This entry is the closest thing in the corpus to the user's target and it should be the
+template. vds-claims-moves.md already IS a claim-level index: 157 rows, each with a stable
+unique id (A-P01..A-C05, B-*, C-*; zero duplicates, verified), a terse statement, a thesis
+page or page-range, a tier, a reuse-disposition from a closed vocabulary (keep-verbatim / re-
+ground / enrich / supersede / drop), and one or more RODA anchors from a declared enum
+(A0-horizon, A1-perception, A2-phantasma, A3-doxa/emotion, A4-action/hexis, A4->A0',
+union(R1-R7), recalcitrance, rupture, hinge, VR<->2D, framing) plus a [V:...] volatility flag.
+Add vds-terminology.md (29 ids with type/origin/thesis_pp/RODA mapping), vds-interlocutor-
+loci.md (22 sources with per-source cited loci at page granularity - the Heidegger BT row
+alone lists ~30 discrete page loci - plus an explicit corpus_index_bridge column naming real
+sibling directories), and gg-element-matrix.md (54 ids across 6 typed blocks). That is 262
+addressable rows over 15,481 words: roughly one structured claim per 59 words. Distance to
+target is therefore ONE step, not two: the unit is already the claim, not the chapter. What is
+missing is (a) clause-level decomposition inside each claim's evidence - the 'th p' column
+gives a page, never a quoted clause or a line locator, so no claim carries its own verbatim;
+(b) serialization - every row is a markdown pipe table, so the ids exist but nothing can
+dereference them; (c) edges - the anchors and the corpus_index_bridge column are latent typed
+relations (claim -> RODA locus, claim -> interlocutor, source -> sibling entry) that are
+stored as comma strings and never materialised. Extraction cost is low and mechanical: five
+tables, four of them single-dialect. The one genuine absence is that vds-claims-moves.md
+indexes the SOURCE thesis's claims, not the entry's own analytical claims - the 3,883 words of
+gg-RODA-matrix.md prose carry perhaps 150-200 further assertions with no addressing at all.
+
+================================================================================================
+Virtual Learning Environments (King–Salvo)
+------------------------------------------------------------------------------------------------
+Finest structured unit = a FINDING-STRUCTURE, i.e. a whole survey finding (F1-F8) or one lab-
+record case, collapsed into a single ~60-word `definition` string. That is one level ABOVE
+chapter granularity in information density, and roughly three levels above clause-level.
+Nothing in the entry is addressable below the node: no claim IDs, no clause spans, no offsets,
+no quote-to-claim links. BUT the claim-level material is already authored, in prose, in
+quantity: vle-04 contains 38 individually numbered, individually page-cited, individually
+provenance-tagged catalog items (`grep -cE '^[0-9]+\. \*\*\[' → 38`) — that is a claim-level
+index in markdown-list clothing and would convert to records almost mechanically. vle-03 holds
+34 verbatim student quotations, each already keyed to respondent+item (W25-R095/Q9,
+S25-R022/Q6, …) — that is clause-level evidence with a stable locator scheme, already present.
+vle-01 holds 8 numbered findings with ~40 embedded statistics. vle-05 holds 6 numbered
+drafting loci plus 9 [FE-STUDENT] verbatims. Across the entry: 124 quoted strings of ≥25 chars
+and 57 numbered items in 8,115 words. So the cost of reaching claim level here is NOT
+authoring — it is schema plus extraction. What would have to be added: (a) a stable per-claim
+ID namespace distinct from `vle-NN`; (b) a claim record carrying {text, register (FE/FE-U/FE-
+STUDENT/P), locator (respondent/item or PDF page), status (verified/unverified),
+supersedes/superseded-by}; (c) exactly the supersession field whose absence causes this
+entry's worst defect — the ontology and the units disagree on 7 findings and no field records
+which is current.
+
+================================================================================================
+Von Uexkull - A Foray into the Worlds of Animals and Humans
+------------------------------------------------------------------------------------------------
+Finest STRUCTURED unit: a chapter-pair (14 units, each covering 2 book chapters, 9–17 pages).
+But the finest AUTHORED unit is already a claim: the 14 phase2 analyses each carry a '## 4.
+Main Positions / Claims' markdown table with columns Claim | Evidence type | Strength | Page
+ref — 107 rows in total (f0 6, f1 6, f2 5, f3 9, f4 6, f5 7, f6 7, f7 8, m1 8, m2 6, m3 9, m4
+9, m5 9, m6 12). Alongside them sit 180 key-concept rows (Concept | German | Definition |
+Centrality | First appearance | Related concepts), 67 tension rows, 73 interlocutor rows, 201
+German-term rows and 206 machine-readable local edges in fenced JSON. So claim-level material
+EXISTS and is even column-typed with evidence-type and strength grading — a richer claim
+schema than Wendt's {text, locus}. It is trapped in markdown tables that nothing parses, and
+the corresponding uex-*.json 'unit records' are 800-byte scaffolds with none of it. Distance
+to claim level: one extraction pass over 14 files with a stable table schema (Section 3, 4, 5,
+7, 8 are identically headed in all 14 — the most uniform prose layer in the batch). Distance
+to CLAUSE level: full step further; page refs are page-granular ('pp. 49–50'), there are no
+sentence spans or character offsets, and quotations appear inline in the Hierarchical Outline
+bullets without any span record. Cost implication: for Uexküll the claim layer is a parse job
+over a genuinely regular format, not an authoring job.
+
+================================================================================================
+Wendt - Design for Dasein
+------------------------------------------------------------------------------------------------
+Finest encoded unit: a CLAIM. This is the only entry in the batch that already encodes claim-
+level structure machine-readably — 139 claim objects across 7 unit JSONs, each {text, locus}
+(48 also carry an id), plus 143 key_terms with loci, 105 interlocutors, 68 design_principles
+with loci, and 21 ro_hooks. Distance to the claim-level target is therefore ONE step, not two:
+the claims exist and are individually page-anchored; what is missing is (a) globally unique
+IDs (91/139 have none, 20 collide), (b) linkage from claim → node and claim → edge (the 307
+edges and the 139 claims share no key), (c) a uniform schema (8 unit JSONs, 8 shapes), and (d)
+any reader. Distance to CLAUSE level is a full step further: nothing in the entry stores a
+sentence span, a character offset, or a quote span; the 38 anchor_phrases in dfd-01/dfd-05 are
+the closest thing and they are bare strings with no offsets. Additional claim-level material
+is ALREADY present but unstructured in the unit .md analyses (~34,100 words of prose that
+restate and expand each claim with fuller loci, e.g. dfd-01-...md:114 gives the Bonsiepe claim
+with the correct quotation and a page range where the JSON gives a single page). Cost
+implication: for Wendt the claim layer is a harvest-and-rekey job, not an authoring job.
+
