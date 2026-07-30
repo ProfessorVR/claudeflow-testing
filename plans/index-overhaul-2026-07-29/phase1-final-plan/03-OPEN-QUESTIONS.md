@@ -1,5 +1,17 @@
 # 03 — Open questions requiring the author before execution
 
+> **RULINGS RECEIVED 2026-07-29 (verbatim: "1) A. 2) A 3) A"):**
+> **Decision 1 = (a)** — the rights-tiered storage/display split replaces the blanket
+> 25-word ban: store the exact span always with `rights_tier` + `redact_on_render`;
+> word ceilings apply to RENDERED output only. **Phase C1 is unblocked.**
+> **Decision 2 = (a)** — the density band is confirmed at 15–35 records per 1,000
+> source words (by profile). **Phase D1 threshold basis is set.**
+> **Decision 3 = (a)** — debates, the intra-cluster citation network and the
+> scholarly-evolution arc move to the optional GROUP layer with
+> `N/A-by-construction` semantics; single-article entries pass on the remaining
+> entry-level gates. **Phase D1 is unblocked.**
+> §2's N1–N5 remain open except as noted inline.
+
 Two sections. §1 is the three decisions carried forward from the draft plan's HANDOFF block — unchanged in substance, kept with the phase each blocks. §2 is what this finalizing session adds. Nothing else blocks execution: Phases 0, A and B are fully executable with no decision at all.
 
 **Settled and NOT raised here:** the wraith-infer / reranker question (settled by the retirement directive; the reranker eval win is an accepted loss); target repository (archon-cli); index-before-ingestion; regeneration sanction; transfer-before-work; sandbox promotion, authoritative store, compiler disposition, migrate-vs-re-author (all settled at draft §13); the draft's §13.4 duplicate-copies housekeeping (already done — the `plans/` root copies were deleted before this session, verified).

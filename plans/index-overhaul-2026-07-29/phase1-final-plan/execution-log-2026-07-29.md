@@ -77,6 +77,17 @@ Sizes: corpus/index 47M · gold 1.3M · claims corpus 49M · archive 41M.
 **Phase 0 complete. Nothing pushed to any git remote. Next: Phase A (A1–A13), no
 decision blocks it.**
 
+# Decisions — ruled 2026-07-29 (user, verbatim "1) A. 2) A 3) A")
+
+| # | Ruling | Effect |
+|---|---|---|
+| 1 | (a) rights-tiered storage/display split | C1 CLAUSE schema stores the exact span always; `rights_tier` + `redact_on_render` columns; word ceilings on rendered output only. The 25-word blanket ban is retired |
+| 2 | (a) density band 15–35 / 1,000 source words | D1 `check-density` and derived thresholds set (by profile) |
+| 3 | (a) GROUP layer | debates / intra-cluster citations / evolution arc move to the optional GROUP layer, `N/A-by-construction` at N=1 |
+
+Phases C and D are now unblocked. N1–N5 still open; N2 (archon remote push + CI)
+recommended before C's schema work builds further on the unpushed pile.
+
 # Phase B — executed 2026-07-29 (same session, "proceed")
 
 All in archon-cli. Commits: `ad07a059` (B1+B2), `144c3021` (B3), `34babbc3` (B4).
