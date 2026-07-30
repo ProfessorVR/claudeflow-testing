@@ -701,8 +701,16 @@ Despite any instructions in the style profile discouraging parenthetical citatio
     try {
       const topicWords = extractTopicWords(options.topic);
       const activeBridges = getActiveBridges(topicWords);
-      if (activeBridges.length > 0) {
-        const bridge = activeBridges[0];
+      // Refuse to emit a bridge unless BOTH sides are fully identified: a bridge
+      // with an empty concept or an Unknown/undefined author renders as
+      // "Summary Matrix (Aristotle) ↔ ? (Unknown)" followed by a mandatory
+      // instruction to cite the non-existent author (audit B-61/B-36).
+      const bridge = activeBridges.find(b =>
+        !!b.sourceConcept && !!b.targetConcept &&
+        !!b.sourceAuthor && b.sourceAuthor !== 'Unknown' &&
+        !!b.targetAuthor && b.targetAuthor !== 'Unknown'
+      );
+      if (bridge) {
         mandatoryBridgeId = bridge.id;
         sections.push(
           `## MANDATORY THEORETICAL SYNTHESIS\n\n` +

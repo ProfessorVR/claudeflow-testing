@@ -52,9 +52,6 @@ interface CompiledIndex {
 
 // ---- Compiled index (delegates to shared loader in jsonl-loaders.ts) ----
 
-// Track whether hooks have been author-derived for this cache generation
-let _hooksDerivationDone = false;
-
 // ---- Manifest-derived canonical tables (H-05) ----
 
 interface ManifestCanonicalTables {
@@ -338,17 +335,18 @@ export function getCompiledIndex(projectRoot?: string): CompiledIndex | null {
   const parsed = loadCompiledIndexShared(projectRoot) as CompiledIndex | null;
   if (!parsed) return null;
 
-  // Derive author names from sourceText/targetText (one-time, idempotent)
-  if (!_hooksDerivationDone) {
-    for (const hook of (parsed.crossPipelineHooks || [])) {
-      if (!hook.sourceAuthor || hook.sourceAuthor === 'Unknown') {
-        hook.sourceAuthor = deriveAuthor(hook.sourceText);
-      }
-      if (!hook.targetAuthor || hook.targetAuthor === 'Unknown') {
-        hook.targetAuthor = deriveAuthor(hook.targetText);
-      }
+  // Derive author names from sourceText/targetText. Runs on every fresh parse:
+  // the old module-global one-shot guard had no reset, so any mtime recompile
+  // replaced the object while the guard stayed true, leaving authors undefined
+  // in the prompt after logging "Bridge activated" (audit B-59). The loop is
+  // idempotent per object, so unconditional derivation is safe.
+  for (const hook of (parsed.crossPipelineHooks || [])) {
+    if (!hook.sourceAuthor || hook.sourceAuthor === 'Unknown') {
+      hook.sourceAuthor = deriveAuthor(hook.sourceText);
     }
-    _hooksDerivationDone = true;
+    if (!hook.targetAuthor || hook.targetAuthor === 'Unknown') {
+      hook.targetAuthor = deriveAuthor(hook.targetText);
+    }
   }
 
   return parsed;
@@ -469,9 +467,11 @@ export function getActiveBridges(
     const sourceLower = (hook.sourceConcept || '').toLowerCase();
     const targetLower = (hook.targetConcept || '').toLowerCase();
 
-    // Bounded OR: fire if facet touches source OR target
-    const matchesSource = normalizedTopics.some(t => sourceLower.includes(t) || t.includes(sourceLower));
-    const matchesTarget = normalizedTopics.some(t => targetLower.includes(t) || t.includes(targetLower));
+    // Bounded OR: fire if facet touches source OR target.
+    // Empty concepts never match: ''.includes(t) is false but t.includes('') is ALWAYS
+    // true in JS, which made 31 of 72 hooks fire for every topic (audit B-58).
+    const matchesSource = sourceLower.length > 0 && normalizedTopics.some(t => sourceLower.includes(t) || t.includes(sourceLower));
+    const matchesTarget = targetLower.length > 0 && normalizedTopics.some(t => targetLower.includes(t) || t.includes(targetLower));
 
     if (matchesSource || matchesTarget) {
       activeBridges.push(hook);
