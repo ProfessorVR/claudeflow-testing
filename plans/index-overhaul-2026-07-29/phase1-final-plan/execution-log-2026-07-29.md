@@ -77,6 +77,30 @@ Sizes: corpus/index 47M · gold 1.3M · claims corpus 49M · archive 41M.
 **Phase 0 complete. Nothing pushed to any git remote. Next: Phase A (A1–A13), no
 decision blocks it.**
 
+# Phase E — executed 2026-07-29 (same session, "proceed"); commits `2c16fa8b` + probes-v2 (ar, pushed). **Gate G-E: PARTIAL.**
+
+| Step | Result |
+|---|---|
+| E0 | `archon corpus-index probes`: per-document table (227 docs/17,824 chunks) — spatial 63.5% overall, 87 full, 39 docs <50% (worst 2%: Bitzer/Kolko/Mark/**Ars Rhetorica Greek**/Lombard); 6 ligature-affected docs; **0 duplicate-page-hash docs store-wide** (the audited identical-11-pages case was the incumbent manifest world) |
+| E1 | pypdfium2 4.30.0→5.12.1 in ~/.venv-marker. Dropout REPRODUCED first (`benefcial` pp.9/10/13 vs poppler `beneficial`), then fixed; pdftext 0.6.3 runs against 5.12.1 (its ==4.30.0 pin deliberately overridden; pre-bump freeze saved); full sidecar smoke test → valid Marker JSON, bboxes, intact ligatures |
+| E2 | `check_source_admissibility.py` (page-hash distinctness/words-floor/ligature/diacritics); red-on-bad proven (synthetic identical-pages fixture exit 1); clean sources pass |
+| E3 | Worst-small-doc reprocess (Charoenpit 22% spatial) running detached under fixed pypdfium2; coverage delta measured on completion (OPEN). Live observation: tesseract+RapidOCR image-OCR failure logged but not recorded — → analysis defect #6 |
+| E4 | Five requirement tests (e4_*) in archon-docs pin the incumbent's audited ingest failures as regressions — **5/5 pass** (archon already behaves correctly on all five) |
+
+**C8 breakthrough during E:** not-founds clustered by source (Chalmers 221/Barnes
+145/Audi 89) → root cause isolated: **needle normalization** (sandbox spans carry
+`-\n` hyphenation + head truncations); de-hyphenated variant verified EXACT. Runner
+fixed, 694 non-exacts requeued; early post-fix rate 28/30 exact (was ~55%).
+
+**User-requested deliverable:** `05-INGESTION-ANALYSIS-SENTENCE-GRANULARITY.md` —
+the extensive ingestion analysis: measured state, 10-item defect register, the gap
+to sentence-level granularity, the `doc_chunk_sentences` design + three contracts
+(text-of-record / normalization / degradation), and the S1–S7 sequence to land
+before F1 so the re-ingested corpus is sentence-addressable from day one.
+
+**G-E open items:** E3 coverage delta (reprocess in flight); C8 completion; S1–S5
+implementation (scheduled F0.5).
+
 # D5 pilot — executed 2026-07-29 (same session, "proceed"); commit `165e59a7` (ar, pushed). **Gate G-D CLOSED.**
 
 N4 resolved by default recommendation: single-source Part III-relevant ARTICLE →
