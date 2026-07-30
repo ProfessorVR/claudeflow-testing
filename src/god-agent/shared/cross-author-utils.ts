@@ -308,14 +308,19 @@ export function buildCorpusCatalog(projectRoot?: string): string {
   const primary: string[] = [];
   const secondary: string[] = [];
   const tertiary: string[] = [];
+  const unclassified: string[] = [];
 
   for (const [author, titles] of manifest.authorTitles.entries()) {
     for (const title of titles) {
-      const tier = manifest.titleAuthority.get(title) || 'secondary';
+      // A missing authority_tier is UNCLASSIFIED, never silently 'secondary':
+      // the old default mislabelled 71 of 117 works — including the Greek
+      // critical editions and FCM — as secondary scholarship (audit B-60).
+      const tier = manifest.titleAuthority.get(title) || 'unclassified';
       const line = `- ${author}: ${title}`;
       if (tier === 'primary') primary.push(line);
       else if (tier === 'tertiary') tertiary.push(line);
-      else secondary.push(line);
+      else if (tier === 'secondary') secondary.push(line);
+      else unclassified.push(line);
     }
   }
 
@@ -323,6 +328,7 @@ export function buildCorpusCatalog(projectRoot?: string): string {
   if (primary.length > 0) sections.push('PRIMARY TEXTS:', ...primary);
   if (secondary.length > 0) sections.push('SECONDARY SCHOLARSHIP:', ...secondary);
   if (tertiary.length > 0) sections.push('TERTIARY/ANTHOLOGIES:', ...tertiary);
+  if (unclassified.length > 0) sections.push('UNCLASSIFIED (authority tier not recorded — do not assume secondary):', ...unclassified);
 
   return sections.join('\n');
 }
