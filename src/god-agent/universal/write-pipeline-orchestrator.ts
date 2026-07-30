@@ -933,10 +933,10 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
     for (let i = 0; i < subsections.length; i++) {
       const current = sectionChunks.get(i) || [];
       if (current.length < 3) {
-        const usedIds = new Set(current.map(c => c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`));
+        const usedIds = new Set(current.map(c => c.chunkId || c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`));
         for (const chunk of remaining) {
           if (current.length >= 3) break;
-          const id = chunk.metadata.chunk_id || `${chunk.metadata.source_id}:${chunk.metadata.page_start}`;
+          const id = chunk.chunkId || chunk.metadata.chunk_id || `${chunk.metadata.source_id}:${chunk.metadata.page_start}`;
           if (!usedIds.has(id)) {
             current.push(chunk);
             usedIds.add(id);
@@ -1123,7 +1123,7 @@ ${isStrict ? '**Citations without page numbers will be flagged and may result in
       const mergedIds = new Set<string>();
       const mergedChunks: ContextChunk[] = [];
       for (const chunk of [...sectionSpecific, ...filteredSharedPool]) {
-        const id = chunk.metadata.chunk_id || `${chunk.metadata.source_id}:${chunk.metadata.page_start}`;
+        const id = chunk.chunkId || chunk.metadata.chunk_id || `${chunk.metadata.source_id}:${chunk.metadata.page_start}`;
         if (!mergedIds.has(id)) {
           mergedIds.add(id);
           mergedChunks.push(chunk);
@@ -1380,10 +1380,10 @@ ${sectionContent}`;
     }
 
     // Use native fetch instead of @anthropic-ai/sdk (Fix 27: SDK fails in WSL2)
-    const model = options?.model || 'claude-sonnet-4-20250514';
+    const model = options?.model || 'claude-opus-4-8';
     const body: Record<string, unknown> = {
       model,
-      max_tokens: options?.maxTokens || 8192,
+      max_tokens: options?.maxTokens || 16384,
       messages: [{ role: 'user', content: prompt }],
     };
     if (options?.systemPrompt) {
@@ -1806,7 +1806,7 @@ ${sectionContent}`;
 
           const addChunks = (chunks: ContextChunk[]) => {
             for (const c of chunks) {
-              const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
+              const id = c.chunkId || c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
               if (!seenIds.has(id)) {
                 seenIds.add(id);
                 allChunks.push(c);
@@ -2004,7 +2004,7 @@ ${sectionContent}`;
                 );
                 let added = 0;
                 for (const c of authorChunks) {
-                  const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
+                  const id = c.chunkId || c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
                   if (!seenIds.has(id)) {
                     seenIds.add(id);
                     if (c.content) c.content = this.trimChunkContent(c.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
@@ -2022,7 +2022,7 @@ ${sectionContent}`;
                     (c.metadata.author || '').toLowerCase().includes(author.toLowerCase())
                   );
                   for (const c of filtered) {
-                    const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
+                    const id = c.chunkId || c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
                     if (!seenIds.has(id)) {
                       seenIds.add(id);
                       if (c.content) c.content = this.trimChunkContent(c.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
@@ -2309,7 +2309,7 @@ ${sectionContent}`;
               goldLog(`Step 4b+: Supplemental retrieval for ${investigation.preventionPlan.underCitedSources.length} under-cited source(s)...`);
               // Build seen set from existing chunks (seenIds from Phase 1a may be out of scope)
               const existingIds = new Set(corpusChunks.map(c =>
-                c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`
+                c.chunkId || c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`
               ));
               for (const author of investigation.preventionPlan.underCitedSources.slice(0, 3)) {
                 try {
@@ -2322,7 +2322,7 @@ ${sectionContent}`;
                   );
                   let added = 0;
                   for (const c of filtered) {
-                    const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
+                    const id = c.chunkId || c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
                     if (!existingIds.has(id)) {
                       existingIds.add(id);
                       if (c.content) c.content = this.trimChunkContent(c.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
@@ -2526,7 +2526,7 @@ ${sectionContent}`;
               maxChunks: perQueryMax,
             });
             for (const c of chunks) {
-              const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
+              const id = c.chunkId || c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
               if (!seenIds.has(id)) {
                 seenIds.add(id);
                 allChunks.push(c);
@@ -2708,7 +2708,7 @@ ${sectionContent}`;
         // Create inline validation orchestrator — use Anthropic API directly
         // (claude CLI subprocess hangs inside existing Claude Code sessions)
         const inlineGenerateFn = async (prompt: string, systemPrompt: string) => {
-          return this.generateViaAnthropicAPI(prompt, { model: 'claude-sonnet-4-20250514', systemPrompt, maxTokens: 4096 });
+          return this.generateViaAnthropicAPI(prompt, { model: 'claude-opus-4-8', systemPrompt, maxTokens: 4096 });
         };
         const orchestrator = createInlineValidationOrchestrator(
           inlineGenerateFn,
@@ -2721,7 +2721,7 @@ ${sectionContent}`;
             enableCitationLookupTool: options.inlineEnableCitationLookup ?? true,
             // CCV Tier 1 enabled by default in orchestrator constructor;
             // env var CCV_TIER1_ACTIVE=false|0 can override
-            model: 'claude-sonnet-4-20250514',
+            model: 'claude-opus-4-8',
             temperature: 0.7,
             maxTokensPerUnit: 1500,
             stylePrompt,
@@ -2814,8 +2814,8 @@ ${sectionContent}`;
           this.deps.log( '[write() pipeline] Claude Code execution: starting...');
 
           content = await this.generateViaClaudeCode(agentSelection.prompt, {
-            model: options.whitelistMode ? 'claude-opus-4-6' : 'claude-sonnet-4-20250514',
-            maxTokens: options.whitelistMode ? GOLD_STANDARD_CONFIG.opusMaxTokens : undefined, // Gold standard needs more tokens (~6K words + appendix)
+            model: options.whitelistMode ? 'claude-opus-4-6' : 'claude-opus-4-8',
+            maxTokens: GOLD_STANDARD_CONFIG.opusMaxTokens, // patched: full token budget on both branches (was undefined for the no-corpus path, which truncated)
           });
 
           goldLog(`Generation complete: ${content.split(/\s+/).length} words`);
@@ -3675,7 +3675,7 @@ ${sectionContent}`;
           // Supplemental retrieval for under-cited sources
           if (investigation.preventionPlan.underCitedSources.length > 0 && this.deps.smartRetrieval) {
             const existingIds = new Set(corpusChunks.map(c =>
-              c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`
+              c.chunkId || c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`
             ));
             for (const author of investigation.preventionPlan.underCitedSources.slice(0, 3)) {
               try {
@@ -3683,7 +3683,7 @@ ${sectionContent}`;
                   `${author} ${topic.substring(0, 100)}`, { maxChunks: 6 }
                 );
                 for (const c of supplemental.filter(c => (c.metadata.author || '').toLowerCase().includes(author.toLowerCase()))) {
-                  const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
+                  const id = c.chunkId || c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
                   if (!existingIds.has(id)) {
                     existingIds.add(id);
                     if (c.content) c.content = this.trimChunkContent(c.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);

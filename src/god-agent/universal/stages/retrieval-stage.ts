@@ -223,7 +223,7 @@ export async function runRetrievalStage(
       const allChunks: ContextChunk[] = [];
       const addChunks = (chunks: ContextChunk[]) => {
         for (const c of chunks) {
-          const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
+          const id = c.chunkId || c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
           if (!seenIds.has(id)) { seenIds.add(id); allChunks.push(c); }
         }
       };
@@ -300,7 +300,7 @@ export async function runRetrievalStage(
               ...retrievalOpts, maxChunks: 3,
             });
             kwChunks.forEach(c => {
-              const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
+              const id = c.chunkId || c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
               if (!seenIds.has(id)) {
                 c.relevanceScore = 0.85;
               }
@@ -340,7 +340,7 @@ export async function runRetrievalStage(
               { ...retrievalOpts, maxChunks: 8, whereFilter: { author_raw: { $eq: author } } }
             );
             for (const c of authorChunks) {
-              const id = c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
+              const id = c.chunkId || c.metadata.chunk_id || `${c.metadata.source_id}:${c.metadata.page_start}`;
               if (!seenIds.has(id)) {
                 seenIds.add(id);
                 if (c.content) c.content = trimChunkContent(c.content, GOLD_STANDARD_CONFIG.chunkTrimTarget);
