@@ -77,6 +77,37 @@ Sizes: corpus/index 47M · gold 1.3M · claims corpus 49M · archive 41M.
 **Phase 0 complete. Nothing pushed to any git remote. Next: Phase A (A1–A13), no
 decision blocks it.**
 
+# Phase A — executed 2026-07-29 (same session, user instruction "proceed with phase a")
+
+| Step | Commit(s) | Gate result |
+|---|---|---|
+| A1 SKIP_DIRS+="index" (3 walker sites) | `4c6f376b2` (cf) | predicate simulation: index path skipped, corpus path not ✓ |
+| A2 compiler elif reorder :718-721 | `41fbc3885` (cf) | Preparatory Rhetoric 10,009-char tier → 'peripheral'/2 units; Temporalität units now match source (Intro-U2, D2-U6); artifact −38 KB; no node >120 units ✓. NOTE: two >40-char tier strings remain — AUTHORED source annotations (VR Ped 'Debate axis 8', Social Presence hub note) → F2 checklist, not spill |
+| A3 bridge-fabrication trio | `82b6da1d7` (cf) | fake topics → 0 bridges (was 31); 'befindlichkeit' → exactly hook-de-anima-03 with real authors; 'φαντασία' → hook-de-anima-02; no Unknown/empty bridge selectable; tsc 0 errors ✓ |
+| A4 ig-10 `],`→`},` (line 155) | `766241ac1` (cf) | parses, 42 keys; tree-wide sweep 494/494 JSON parse ✓ |
+| A5 WRAITH removal (archon) | `95939871` (ar) | G-A5: binary contains 0 host-string occurrences; model-status fastembed-onnx/768; hybrid evidence find returns candidates; verify-quote exact; grep clean outside archon-coder ✓. **wraith-infer still physically ONLINE — shutdown remains with the user.** Orphaned 1536 namespace rows found in RocksDB store — purge deferred to Phase F store rebuild (deleting without tooling risks corruption) |
+| A6 WRAITH removal (incumbent) | `fb8bd0ebd` (cf) | services.rerank disabled/endpoint removed; smart-retrieval + cross-encoder fallbacks emptied; WRAITH Marker defaults retired (.env, run_ingest_phase2, parallel_ingest); test-rerank-wiring.ts deleted; sweep clean (manifest provenance data + 'retired' annotations only); py+tsc clean ✓ |
+| A7 transfer → archon | `acb282fad` (cf) + `270a8d4a`,`83988485` (ar) | TRANSFER-VERIFIED (1,892/1,892 SHA-256 match, empty diff); three previously-missing entries present; INDEX-OWNERSHIP.md in both trees; replica 100% git-tracked (134 .backups files force-added). Refreshed + TRANSFER-REVERIFIED after the post-A4 recompile |
+| A8 ARCHON_INDEX_PATH + staleness | `53851f67` (ar) | wrong path → loud 'No such file'; corrupt → loud parse error w/ position; valid explicit path loads 701/1,722/64; backdated fixture → STALE warning; **the check caught a real gap during acceptance** (A4 postdated the A2 recompile) → recompiled (cf `…`) + transfer refreshed; clean replica now silent ✓ |
+| A9 loud index loads (4 .ok() sites) | same commit | absent/corrupt distinguished and logged at evidence/curate/draft sites ✓ |
+| A10 truncation guards | `0058a9103` (cf) | scratch isolation tests: refuse rc=2 + timestamped .bak without force; proceeds with --force/env; empty passthrough. NOTE: god-learn update Phase 7 now stops at the guard unless GOD_REASON_FORCE=1 — intentional |
+| A11 vle-05 PDF restored | `e9667fe65` (cf) | found under archon-cli/corpus/virtual_learning_environments/ (per A-80 refutation); copied to corpus/Virtual Learning Environments/; sha256 identical (48328f882539…) ✓ |
+| A12 chunkId dedupe (14 sites) | `95ad1bb28` (cf) | tsc clean; **live-retrieval confirmation DEFERRED** — embedding/ChromaDB services stopped; run scratchpad a12_live_test.ts at next drafting session (OPEN GATE ITEM) |
+| A13 authority_tier UNCLASSIFIED | `1cde56321` (cf) | exactly 71 works → UNCLASSIFIED (the audit's count); explicit tiers unchanged ✓ |
+
+(cf = claudeflow-testing, ar = archon-cli. Plus recompile-hygiene commits after A4.)
+
+## Gate G-A — PASSED (with two carried items)
+1. G-A5 logged ✓ (semantics: removal-by-code proven at binary level; physical shutdown pending with user)
+2. G-A7 TRANSFER-VERIFIED + three entries + ownership ✓
+3. A2 artifact assertion on fresh recompile ✓
+4. A3 two-topic bridge check ✓
+5. JSON sweep 0 unparseable ✓
+6. All commits local, sign-off = user's phase authorization; nothing pushed ✓
+
+**Carried items:** (i) A12 live-retrieval check when services are up; (ii) wraith-infer physical shutdown (user's call).
+**Discovered defects filed for later phases:** exact-mode + --index feeds the canonical-expanded query to Cozo FTS and fails to parse (pre-existing; Phase C); `archon docs model-status` panics on exit dropping a tokio runtime (cosmetic, pre-existing).
+
 ## P0.5 addendum — deep completeness verification on the Mac (user-requested)
 
 Ran a full per-file verification ON the Mac (script preserved at
