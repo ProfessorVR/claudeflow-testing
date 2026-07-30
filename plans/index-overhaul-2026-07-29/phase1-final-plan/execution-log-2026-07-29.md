@@ -18,3 +18,61 @@ its commits and the P0.5 cold-storage copy per 03-OPEN-QUESTIONS N1's recommenda
 Sizes: corpus/index 47M · gold 1.3M · claims corpus 49M · archive 41M.
 
 ## Steps
+
+### P0.1 — Fresh backup ✅
+- `.backups/corpus-index-full-20260730T000050Z/` (tree + relative-path manifests).
+- **Gate:** `BACKUP-VERIFIED` (empty manifest diff); 1,891 files hashed.
+
+### P0.2 — Commit corpus/index + compiler ✅
+- Commit `3665b485a` — 1,564 files (1,554 adds + 9 repair-modified + compiler +15),
+  434,635 insertions. Message marks it a deliberate mixed-state preservation snapshot.
+- Follow-up `998d0de8b` (P0.2b): force-added 2 files inside
+  `VR Pedagogy…/.backups/phase1-edge-deletion-…/docs/` that the `docs/` gitignore rule
+  caught. corpus/index now **1,891/1,891 tracked, 0 untracked of any kind**.
+- Note: a `comm` discrepancy during acceptance was a `core.quotepath` artifact (the `×`
+  in "Burke × Calleja"); resolved with `-c core.quotepath=false`.
+- **Gate:** porcelain 0; tracked 1,891 ≥ 1,800 floor.
+
+### P0.3 — Commit gold set + claim corpus ✅
+- Commit `7ed74b426` — 106 files, 750,267 insertions; 24 claims.jsonl; the 2 relative
+  symlinks stored as symlinks (mode 120000 confirmed in the commit).
+- Follow-up `47316650c` (P0.3b): `data/prompts/` (canonical-suite.json — the extraction
+  prompts) added so the whole `data/` tree is clean per the written acceptance.
+- **Gate:** porcelain 0; claims.jsonl count 24.
+
+### P0.4 — Commit the audit archive ✅
+- Commit `d1cc588c1` — 122 files incl. raw journals, workflow scripts, task outputs,
+  and the phase1-final-plan deliverables. (This log is updated and committed after P0.5
+  as the final Phase-0 commit.)
+- **Gate:** porcelain 0.
+
+### P0.5 — Off-machine copy ✅ (ADAPTED — deviation logged)
+- **Deviation from plan text:** the plan specified a full-branch `git bundle`. Discovered
+  at execution: `.git` pack is **27.2 GiB** (node_modules and large binaries are tracked
+  in history), making a full bundle impractical. Preservation intent (irreplaceable
+  assets off-machine) satisfied instead by:
+  1. Self-contained tarball `claudeflow-preserve-20260730T000050Z.tar.gz` (29 MB gz,
+     2,474 entries: corpus/index + sandbox data/ + the audit archive; created WITHOUT
+     `-h`, symlinks preserved), and
+  2. Incremental bundle `claudeflow-preserve-commits-20260730T000050Z.bundle` (26 MB,
+     verifies OK; contains the five Phase-0 commits, prerequisite `6cb0f563b`).
+  A FULL-history off-machine copy remains outstanding and is folded into open question
+  N2 (remote push) — flagged for the user.
+- **Destination:** MacBook Air `daltonsalvo@192.168.50.10:~/claudeflow-preserve/`
+  (03-N1's recommended destination). Mac SSH was intermittent (timed out on first
+  attempts — probed CHIMERA .243 [unreachable] and PROTEUS tailscale [ping ok, no SSH]
+  per the abort path, then the Mac answered on retry loops).
+- **Gate:** `OFFMACHINE-VERIFIED` — remote SHA-256 of both artifacts identical to local
+  (70e1304e… tar.gz / 1747f239… bundle); remote `tar -tzf | wc -l` = 2,474.
+
+## Gate G0 — PASSED
+1. BACKUP-VERIFIED logged ✓
+2. Porcelain 0 across corpus/index, compiler, sandbox data, archive ✓ (this log's own
+   final update is the last Phase-0 commit)
+3. `git ls-files corpus/index` = 1,891 ≥ 1,800 ✓
+4. Off-machine digest match logged ✓
+5. Four first actions of 16-SESSION-CLOSE §16.7 mapped: preserve = DONE (Phase 0);
+   transfer → step A7; bridge-fabrication stop → A3; ig-10 fix → A4 ✓
+
+**Phase 0 complete. Nothing pushed to any git remote. Next: Phase A (A1–A13), no
+decision blocks it.**
