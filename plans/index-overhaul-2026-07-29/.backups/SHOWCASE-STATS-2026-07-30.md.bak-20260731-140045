@@ -1,39 +1,15 @@
 # Showcase: the new ingestion + index system, by the numbers
-**As of 2026-07-31, post-F1 full re-ingest** (before = the incumbent system / first archon probes, 2026-07-29)
-
-## F1 — the full-corpus re-ingest (2026-07-31, measured)
-
-All 226 documents re-ingested through the hardened pipeline in one resumable overnight run
-(serial, worst-first, ~14 h wall-clock incl. the two big-scan redos), zero failed rows:
-
-| Corpus-wide metric | Before F1 (E0 probes) | After F1 |
-|---|---|---|
-| Ligature-affected documents | 6 (citation-fatal, invisible) | **0** |
-| Chunk spatial coverage | 63.5% | **77.1%** (95 docs at 100%) |
-| Sentences (byte-spanned, sha-verified) | 420,926 | **440,219** (+19K — recovered footnotes/apparatus) |
-| Sentence-bbox coverage | 95.6% | **96.5%** (only 2 docs below 50%) |
-| Clause re-anchor: exact | 65.3% | **66.6% (3,231)** |
-| Clause re-anchor: near-verbatim | 20.4% | **24.8% (1,203)** |
-| Clause re-anchor: not-found | 10.7% (518) | **3.4% (165)** — F2 triage burden cut 68% |
-| Anchors written into `corpus_clauses` | 3,181 exact + 993 near-verbatim | **3,231 exact + 1,203 near-verbatim, 0 quarantined** |
-
-Highlights: Being and Time re-ingested at 99.5% spatial with **13,581 sentences (+2,772 — the
-Macquarrie & Robinson apparatus captured for the first time)**; Fundamental Concepts of
-Metaphysics at 100% spatial / 9,201 sentences; both required page-windowed Marker
-(`marker_memory_budget_mb`) after their whole-doc GPU passes hit resolution-driven OOMs — the
-window ladder ran 11/11 windows on CUDA with zero fallbacks. Post-F1 gate sweep: no new
-failures; every red gate is a known pre-F1 item (6 unimplemented checkers, DISS-03-C001,
-quote-verification's honest 100%-exact bar, two NEEDS-DATA word counts).
+**As of 2026-07-30** (before = the incumbent system / first archon probes, 2026-07-29)
 
 ## Addressability — the headline transformation
 
 | Metric | Before | After |
 |---|---|---|
 | Claim-shaped records addressable at runtime | ~2.3% (gold-standard entry, incumbent compiler) | **100% of imported records queryable in the store** (32,186 rows) |
-| Character/byte spans in index files | **0** across 1,758 files | **3,231 clauses with exact byte-span anchors** (chunk + UTF-8 byte range + page + locator) |
-| Machine-verified quote anchoring | none (quotes lived as prose) | **91.4% of 4,850 clauses** (66.6% exact @ sim 1.0 + 24.8% near-verbatim ≥0.9), each verdict recorded with document, page, and similarity |
+| Character/byte spans in index files | **0** across 1,758 files | **3,181 clauses with exact byte-span anchors** (chunk + UTF-8 byte range + page + locator) |
+| Machine-verified quote anchoring | none (quotes lived as prose) | **85.7% of 4,872 clauses** (65.3% exact @ sim 1.0 + 20.4% near-verbatim ≥0.9), each verdict recorded with document, page, and similarity |
 | Bekker-line addressing (Aristotle) | absent from runtime | exact anchors carry `Bekker:427a1`-class locators (352 preserved on the Rhetorica alone) |
-| Sentence-level granularity | did not exist | **440,219 sentences** across 226 docs, byte-spanned + sha-verified, **96.5% with tight bboxes**, ~100% with page |
+| Sentence-level granularity | did not exist | **420,926 sentences** across 227 docs, byte-spanned + sha-verified, **95.6% with tight bboxes**, 99.4% with page |
 
 ## Extraction quality — the A/B and stress cases (single bare `docs ingest`, zero flags)
 
@@ -42,7 +18,7 @@ quote-verification's honest 100%-exact bar, two NEEDS-DATA word counts).
 | King & Salvo (born-digital) | 49 ligature corruptions; key quote NOT FOUND | **0 corruptions; same quote EXACT @ 1.000, page 8, bbox, byte-addressed** |
 | Aristotle *Rhetorica* (Kassel, 279-pp Greek scan) | 2,006 junk chunks; 5.9% spatial | **120 clean chunks; 100% spatial; 5,633 sentences all bbox'd; 261 page-scans auto-detected, enrichment auto-skipped** |
 | White 1985 (copier scan + OCR layer) | 10% spatial; 38% sentence-bbox; 71 footnote blocks silently lost; 105 duplicate chunks | **100% spatial; 100% sentence-bbox; footnotes captured; 16 clean chunks; its 280 unanchorable clauses flipped to exact/near-verbatim** |
-| Corpus ligature damage | 6 documents citation-fatally corrupted (invisible to every existing check) | root cause fixed at source (pypdfium2) AND the corpus now measures **0 affected documents** (F1); admissibility gate makes recurrence an ingest FAILURE, not a silent pass |
+| Corpus ligature damage | 6 documents citation-fatally corrupted (invisible to every existing check) | root cause fixed at source (pypdfium2); admissibility gate makes recurrence an ingest FAILURE, not a silent pass |
 
 ## What now runs automatically on EVERY ingest (was: nothing)
 
@@ -76,8 +52,8 @@ quote-verification's honest 100%-exact bar, two NEEDS-DATA word counts).
 ## Scale of the verified evidence base
 
 - 32,186 index rows: 6,304 claims · 4,872 clauses (incl. 235 dissertation verbatims) · 20,817 edges · 119 tensions · 49 groups · 25 sources
-- 226 source documents; 15,204 chunks; **440,219 addressable sentences**; 3,798 machine-resolved locators
+- 227 source documents; 15,900+ chunks; 420,926 addressable sentences
 - Every anchor traceable: quote → clause → chunk → byte span → page/bbox → source PDF, with per-stage provenance and tamper-evident hashes
 - Quality gates as executable checkers (density bands, loci resolution, quote fidelity) with machine-readable `gates.json`
 
-*Data sources: audit archive (280 agents / 239 verified findings), `corpus-probes.json` E0 vs post-F1 (2026-07-31), `f1-report.jsonl` (228 rows, all ok), `reanchor-ledger.jsonl`, `06-AB-INGESTION-COMPARISON.md`, session commits `5d70a0e0`…`7faa18ba`.*
+*Data sources: audit archive (280 agents / 239 verified findings), `corpus-probes.json` E0 vs current, `reanchor-ledger.jsonl`, `06-AB-INGESTION-COMPARISON.md`, session commits `5d70a0e0`…`670c5477`.*
