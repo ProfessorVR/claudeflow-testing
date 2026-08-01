@@ -1,0 +1,416 @@
+% ============================================================
+% Part III — Desktop Section — ASSEMBLED DRAFT v1 (2026-07-29)
+% Assembly pass per HANDOFF-DESKTOP-SECTION-DRAFTING-COMPLETE-2026-07-28.md
+% §5 items 1–5 (user-approved 2026-07-29). Backup .backups/20260729T075642/.
+%
+% STRUCTURE: \input of the canonical per-module files (they remain the
+%   source of record; edit THEM, not copies here). M0–M3 carry their own
+%   \section commands; M4–M7 do not — the ASSEMBLY-PROVISIONAL heads below
+%   supply them, subject to user approval and the arc decision (Open
+%   decision #1). M4's outline title contained "Stalled Chain" (no-stall
+%   doctrine) — a neutral head is used pending user ruling.
+%
+% CARRIED MARKERS (do not resolve here):
+%   - M4.4 REVISION-PASS: blocked on Part II closing differential.
+%   - M7.2 O-11 EXPANSION MARKER: section-scale close only.
+%   - M7.1 ↔ III-5 three-state HARMONIZATION: blocked on arc decision.
+%   - M2.3 not drafted (arc decision). M2.1 flag-1 procedure list OPEN.
+%   - M0: class name/number (******) + Berkeley/Merced enrollment follow-up.
+%
+% ASSEMBLY-PASS RULINGS — ALL APPLIED 2026-07-29 (user-ordered):
+%   (a) M0 "stall" x4 fixed (thesis -> "the world falls silent at the
+%       passage"; close -> "the act was withheld"; frame/resolution ->
+%       "fall(s) silent"). (b) M3.3 "priced/price" -> "weighed / the
+%       effort it asked was too great". (c) M3.4 bare "incorporation" x2
+%       -> "rhetorical incorporation" (third flagged hit was already
+%       "Rhetorical incorporation" across a line break). (d) M3 title ->
+%       "The Deployment Findings". (e) M5 \textit{Rhetoric} x2 ->
+%       \textit{Rhetorica}. (f) M7.1 serial comma fixed.
+%   M2.1 PROCEDURE LIST INTEGRATED (author-supplied 2026-07-29; flag 1
+%   resolved — see M2 header for the confirm-at-review notes).
+% ASSEMBLY TOUCHES MADE (banked conditionals): M5.1 first D&L cite →
+%   ("Learning Affordances" 25) [short-title conditional fired: 2012
+%   follow-up is in Works Cited]; M1 Parong & Mayer 2021 short title
+%   normalized → "Cognitive and Affective Processes" (per M7 header).
+%   Coding-methods appendix A-family total corrected 155 → 194 (verified
+%   vs t3-stats). W26-R037 fidelity sweep: all rendered uses correct.
+% ============================================================
+\documentclass{article}
+% >>> COMPILE WITH XeLaTeX <<<
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{amssymb}
+\usepackage{newunicodechar}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{english}
+\setotherlanguage{greek}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{csquotes}
+\usepackage{enumitem}
+\usepackage{setspace}
+
+\newfontfamily\greekfont{Gentium Plus}
+\newcommand{\gk}[1]{{\greekfont #1}}
+
+\newunicodechar{₀}{\ensuremath{_0}}
+\newunicodechar{₁}{\ensuremath{_1}}
+\newunicodechar{₂}{\ensuremath{_2}}
+\newunicodechar{₃}{\ensuremath{_3}}
+\newunicodechar{₄}{\ensuremath{_4}}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=blue]{hyperref}
+
+% Works Cited hanging indent
+\newenvironment{workscited}
+  {\section*{Works Cited}\begin{list}{}
+    {\setlength{\itemindent}{-0.5in}\setlength{\leftmargin}{0.5in}
+     \setlength{\itemsep}{0pt}\setlength{\parsep}{6pt}}}
+  {\end{list}}
+
+\title{Part III --- The Desktop Deployment \\
+  \large ASSEMBLED SECTION DRAFT v1 (M0--M7, 2026-07-29) ---
+  section title provisional pending arc decision}
+\author{}
+\date{2026-07-29}
+
+\begin{document}
+\maketitle
+
+% ============================================================
+% REMAINING USER-GATED ITEMS after the 2026-07-31 full readthrough
+% (all eight subsections revised batch-by-batch; intro/thesis/close
+% alignment pass EXECUTED; committed on user order 2026-07-31):
+%   1. USER MANUAL REWRITES (markers in the module files):
+%      - M2 coding paragraph ("Responses were anonymized...") + its
+%        coding-passes footnote (DESKTOP-M2-DRAFT-v1.tex).
+%      - M3.6 keyword-sweep footnote ("The counts come from a keyword
+%        sweep...") (DESKTOP-M3-DRAFT-v1.tex).
+%   2. FIGURE PENDING (rendered placeholder at M3.5): screenshot of
+%      multiple students meeting inside the VLE.
+%   3. WORKS CITED verification pins: Boellstorff 2023 final vol/no/
+%      pages (****** markers kept per user order); Mark publisher/
+%      subtitle; Tu venue; Parong & Mayer 2018 pagination; Aristotle/
+%      Heidegger entries harmonize vs Part I at dissertation assembly.
+%   4. BLOCKED (do not start): M4.4 revision pass <- Part II closing
+%      differential; M2.3 + O-11 + three-state harmonization <- arc
+%      decision <- lab boredom section.
+% ============================================================
+% ===== M0 Introduction (carries \section{From the Pilot to the Deployment})
+\input{DESKTOP-M0-DRAFT-v2}
+
+% ===== M1 (carries \section{The Two Literatures})
+\input{DESKTOP-M1-DRAFT-v1}
+
+% ===== M2 (carries \section{The World and Its Deployment})
+% NB M2.3 (method of reading) intentionally absent — blocked on arc decision.
+\input{DESKTOP-M2-DRAFT-v1}
+
+% ===== M3 (carries \section{The Deployment Record} — title flagged, see (d))
+\input{DESKTOP-M3-DRAFT-v1}
+
+% ===== M4 — ASSEMBLY-PROVISIONAL head (outline title de-stalled; user to rule)
+\section{The Analysis: Boredom, Justification, and the WE}
+\input{DESKTOP-M4-DRAFT-v1}
+
+% ===== M5 — ASSEMBLY-PROVISIONAL head (outline's own title)
+\section{Design: The Levers as \textit{Archai}}
+\input{DESKTOP-M5-DRAFT-v1}
+
+% ===== M6 — ASSEMBLY-PROVISIONAL head
+\section{Limitations}
+\input{DESKTOP-M6-DRAFT-v1}
+
+% ===== M7 — ASSEMBLY-PROVISIONAL head (outline's own title)
+\section{Implications and Close}
+\input{DESKTOP-M7-DRAFT-v1}
+
+\clearpage
+
+% ===== Appendices =====
+% Appendix A — the reproduced pilot article (placeholder: the article PDF is
+% bound in at dissertation assembly; the label resolves M0's \ref).
+\section*{Appendix A: The Published Pilot Study}\label{app:vr-pilot}
+\textit{[The pilot article --- King and Salvo, ``Phenomenological Evaluation
+of an Undergraduate Clinical Needs Finding Skills Through a Virtual Reality
+Clinical Immersion Platform,'' Biomedical Engineering Education, vol.~4,
+2024, pp.~381--97 --- is reproduced here in the final dissertation
+assembly.]}
+
+\clearpage
+\input{DESKTOP-APPENDIX-FRICTION-CATALOG-DRAFT-v1}
+
+\clearpage
+\input{DESKTOP-APPENDIX-CODING-METHODS-DRAFT-v1}
+
+\clearpage
+
+% ===== Works Cited =====
+% Compiled + verified at assembly 2026-07-29. Sources of verification:
+%   [IDX] = corpus/index entry citation JSON (VR Pedagogy Secondary units)
+%   [PDF] = verified against the source PDF this session
+%   [M1]  = M1 draft header bank (its PDF-verified ledger)
+%   [REF] = pilot article's own reference list (PDF)
+% Author-name format follows the M1 bank (all authors listed where banked).
+% ****** UNVERIFIED markers per standing missing-source protocol.
+% NOTE (harmonize at dissertation assembly): the Aristotle and Heidegger
+%   entries must match Part I's canonical Works Cited entries — the forms
+%   below are drafted from the corpus PDFs and flagged for that check.
+% YEAR DECISIONS carried: Chalmers = 2017 (Disputatio VoR; PDF marked 2016)
+%   [PDF]; Mayer/Makransky/Parong = 2022 (online VoR; print issue 2023)
+%   [M1+IDX]; De Back = 2021 (online; print issue 2023) [IDX].
+
+\begin{workscited}
+
+\item Aristotle. \textit{The Complete Works of Aristotle: The Revised
+Oxford Translation}. Edited by Jonathan Barnes, 2 vols., Princeton UP,
+1984. % [PDF — corpus (2014) digital ed. of Barnes; HARMONIZE with Part I]
+
+\item Barrett, Robin C.\ A., et al. ``Comparing Virtual Reality,
+Desktop-Based 3D, and 2D Versions of a Category Learning Experiment.''
+\textit{PLOS ONE}, vol.~17, no.~10, 2022, e0275119. % [M1+IDX]
+
+\item Biocca, Frank, Judee K.\ Burgoon, and Chad Harms. ``Toward a More
+Robust Theory and Measure of Social Presence: Review and Suggested
+Criteria.'' \textit{Presence: Teleoperators and Virtual Environments},
+vol.~12, no.~5, 2003, pp.~456--80. % [M1+IDX — Harms initials pin resolved]
+
+% ****** PAGINATION VERIFICATION REQUIRED on both Boellstorff entries ******
+% (user directive 2026-07-31): 2023 = online version-of-record, paginated
+% 1-10, vol/issue not yet assigned in the PDF ("15481425, 0" footer = vol 0);
+% 2009 = page range read from the eScholarship PDF's printed "Page N"
+% footers — confirm against the printed AnthroNotes 30.1 issue.
+\item Boellstorff, Tom. ``Toward Anthropologies of the Metaverse.''
+\textit{American Ethnologist}, 2023, pp.~1--10,
+https://doi.org/10.1111/amet.13228. (****** UNVERIFIED: online
+version-of-record pagination; confirm final vol./no./pages.)
+
+\item ---. ``Virtual Worlds and Futures of Anthropology.''
+\textit{AnthroNotes}, vol.~30, no.~1, 2009, pp.~1--5. (****** verify page
+range against the printed issue.)
+
+\item Burke, Kenneth. \textit{A Rhetoric of Motives}. 1950. U of
+California P, 1969. % [PDF imprint page]
+
+\item Calleja, Gordon. \textit{In-Game: From Immersion to Incorporation}.
+MIT P, 2011. % [M1]
+
+\item Chalmers, David J. ``The Virtual and the Real.''
+\textit{Disputatio}, vol.~9, no.~46, 2017, pp.~309--52.
+% [PDF BIBLID — year settled 2017; corpus PDF filename says 2016]
+
+\item Chow, Meyrick. ``Determinants of Presence in 3D Virtual Worlds: A
+Structural Equation Modelling Analysis.'' \textit{Australasian Journal of
+Educational Technology}, vol.~32, no.~1, 2016, pp.~1--18.
+% [IDX — venue pin resolved]
+
+\item Cook, David A., et al. ``Technology-Enhanced Simulation for Health
+Professions Education: A Systematic Review and Meta-Analysis.''
+\textit{JAMA}, vol.~306, no.~9, 2011, pp.~978--88. % [M1+IDX]
+
+\item Cossio, Samantha, et al. ``Cybersickness and Discomfort from
+Head-Mounted Displays Delivering Fully Immersive Virtual Reality: A
+Systematic Review.'' \textit{Nurse Education in Practice}, vol.~85, 2025,
+104376. % [PDF byline — first-name pin resolved]
+
+\item Dalgarno, Barney, and Mark J.\ W.\ Lee. ``What Are the Learning
+Affordances of 3-D Virtual Environments?'' \textit{British Journal of
+Educational Technology}, vol.~41, no.~1, 2010, pp.~10--32. % [M1+IDX]
+
+\item ---. ``Exploring the Relationship between Afforded Learning Tasks
+and Learning Benefits in 3D Virtual Learning Environments.''
+\textit{Future Challenges, Sustainable Futures: Proceedings ascilite
+Wellington 2012}, ascilite, 2012, pp.~236--45.
+% [M1 — pages inferred from proceedings range, per M1 header note]
+
+\item De Back, Tycho T., Angelica M.\ Tinga, and Max M.\ Louwerse.
+``Learning in Immersed Collaborative Virtual Environments: Design and
+Implementation.'' \textit{Interactive Learning Environments}, vol.~31,
+no.~8, 2021, pp.~5364--82. % [IDX — online 2021; print issue 2023]
+
+\item Dubovi, Ilana, Sharona T.\ Levy, and Efrat Dagan. ``Now I Know How!
+The Learning Process of Medication Administration among Nursing Students
+with Non-Immersive Desktop Virtual Reality Simulation.''
+\textit{Computers \& Education}, vol.~113, 2017, pp.~16--27.
+% [PDF byline — first names verified]
+
+\item Fowler, Chris. ``Virtual Reality and Learning: Where Is the
+Pedagogy?'' \textit{British Journal of Educational Technology}, vol.~46,
+no.~2, 2015, pp.~412--22. % [M1+IDX]
+
+\item Garrison, D.\ Randy, Terry Anderson, and Walter Archer. ``Critical
+Inquiry in a Text-Based Environment: Computer Conferencing in Higher
+Education.'' \textit{The Internet and Higher Education}, vol.~2,
+no.~2--3, 1999, pp.~87--105. % [M1+IDX]
+
+\item Guilford, W.\ H., M.\ Kotche, and R.\ H.\ Schmedlen. ``A Survey of
+Clinical Immersion Experiences in Biomedical Engineering.''
+\textit{Biomedical Engineering Education}, vol.~3, 2023, pp.~113--22.
+% [REF — pilot article ref 4; initials as printed there]
+
+\item Gunawardena, Charlotte N., and Frank J.\ Zittle. ``Social Presence
+as a Predictor of Satisfaction within a Computer-Mediated Conferencing
+Environment.'' \textit{American Journal of Distance Education}, vol.~11,
+no.~3, 1997, pp.~8--26. % [M1+IDX]
+
+\item Heidegger, Martin. \textit{Basic Concepts of Aristotelian Philosophy}.
+Translated by Robert D. Metcalf and Mark B. Tanzer, Indiana UP, 2009.
+% [M1 2.12 footnote; harmonize vs Part I at dissertation assembly]
+
+\item ---. \textit{Being and Time}. Translated by John Macquarrie and Edward
+Robinson, Blackwell, 1962.
+% [M1 2.12 footnote; harmonize vs Part I at dissertation assembly]
+
+\item ---. \textit{The Fundamental Concepts of Metaphysics:
+World, Finitude, Solitude}. Translated by William McNeill and Nicholas
+Walker, Indiana UP, 1995. % [queued add; trans./press per M4 ledger]
+
+\item Heim, Michael. \textit{Virtual Realism}. Oxford UP, 1998.
+% [PDF title page]
+
+\item King, Christine E., Kadin Diec, and Dalton Salvo. ``Scalable
+Virtual Reality Global Clinical Immersion for Culturally Responsive
+Engineering Design Skills.'' \textit{2025 ASEE Annual Conference \&
+Exposition}, ASEE, 2025, paper 49715.
+% [queued add; year verified vs title-page copyright line, conference
+%  name inferred from Paper ID + copyright — per M2 header note]
+
+\item King, Christine E., and Dalton Salvo. ``Phenomenological Evaluation
+of an Undergraduate Clinical Needs Finding Skills Through a Virtual
+Reality Clinical Immersion Platform.'' \textit{Biomedical Engineering
+Education}, vol.~4, 2024, pp.~381--97,
+https://doi.org/10.1007/s43683-024-00139-5. % [M0 footnote cite]
+
+\item Kononowicz, Andrzej A., et al. ``Virtual Patient Simulations in
+Health Professions Education: Systematic Review and Meta-Analysis by the
+Digital Health Education Collaboration.'' \textit{Journal of Medical
+Internet Research}, vol.~21, no.~7, 2019, e14676. % [M1+IDX]
+
+\item Kreijns, Karel, Paul A.\ Kirschner, and Wim Jochems. ``Identifying
+the Pitfalls for Social Interaction in Computer-Supported Collaborative
+Learning Environments: A Review of the Research.'' \textit{Computers in
+Human Behavior}, vol.~19, no.~3, 2003, pp.~335--53. % [M1; issue no. IDX]
+
+\item Lombard, Matthew, and Theresa Ditton. ``At the Heart of It All: The
+Concept of Presence.'' \textit{Journal of Computer-Mediated
+Communication}, vol.~3, no.~2, 1997. % [M1+IDX — unpaginated journal]
+
+\item Makransky, Guido, and Lasse Lilleholt. ``A Structural Equation
+Modeling Investigation of the Emotional Value of Immersive Virtual
+Reality in Education.'' \textit{Educational Technology Research and
+Development}, vol.~66, no.~5, 2018, pp.~1141--64.
+% [IDX — named in M0 presence-definition footnote; OPTIONAL entry, user
+%  may cut if name-mentions are not to enter Works Cited]
+
+\item Makransky, Guido, and Gustav B{\o}g Petersen. ``Investigating the
+Process of Learning with Desktop Virtual Reality: A Structural Equation
+Modeling Approach.'' \textit{Computers \& Education}, vol.~134, 2019,
+pp.~15--30. % [M1+IDX]
+
+\item Makransky, Guido, Richard E.\ Mayer, Nicola Veitch, Michelle Hood,
+Karl B.\ Christensen, and Helle Gadegaard. ``Equivalence of Using a
+Desktop Virtual Reality Science Simulation at Home and in Class.''
+\textit{PLOS ONE}, vol.~14, no.~4, 2019, e0214944.
+% [IDX initials; first names ****** UNVERIFIED beyond Makransky/Mayer —
+%  confirm against PDF byline at final typeset]
+
+\item Makransky, Guido, Thomas S.\ Terkildsen, and Richard E.\ Mayer.
+``Adding Immersive Virtual Reality to a Science Lab Simulation Causes
+More Presence but Less Learning.'' \textit{Learning and Instruction},
+vol.~60, 2019, pp.~225--36. % [M1+IDX]
+
+\item Mark, Gloria. \textit{Attention Span: ****** UNVERIFIED subtitle}.
+****** UNVERIFIED publisher, 2023.
+% [corpus holds quotation-notes PDF only, no imprint page; commonly
+%  reported as Hanover Square Press with subtitle "A Groundbreaking Way
+%  to Restore Balance, Happiness and Productivity" — VERIFY against the
+%  physical book before final typeset]
+
+\item Mayer, Richard E., Guido Makransky, and Jocelyn Parong. ``The
+Promise and Pitfalls of Learning in Immersive Virtual Reality.''
+\textit{International Journal of Human-Computer Interaction}, vol.~39,
+no.~11, 2022, pp.~2229--38. % [M1+IDX — online VoR 2022; print 2023]
+
+\item Merchant, Zahira, et al. ``The Learner Characteristics, Features of
+Desktop 3D Virtual Reality Environments, and College Chemistry
+Instruction: A Structural Equation Modeling Analysis.''
+\textit{Computers \& Education}, vol.~59, no.~2, 2012, pp.~551--68.
+% [M1; issue no. IDX]
+
+\item Merleau-Ponty, Maurice. \textit{Phenomenology of Perception}. 1945.
+Translated by Donald A.\ Landes, Routledge, 2014.
+% [queued add; edition per M3.4 ledger — user's own edition]
+
+\item Mikropoulos, T.\ A., and A.\ Natsis. ``Educational Virtual
+Environments: A Ten-Year Review of Empirical Research (1999--2009).''
+\textit{Computers \& Education}, vol.~56, 2011, pp.~769--80.
+% [M1 — initials kept until verified; cited qtd.-in-Fowler, so this
+%  entry is OPTIONAL under strict MLA indirect-source practice]
+
+\item Moravec, K.\ R., E.\ L.\ Lothamer, A.\ Hoene, P.\ M.\ Wagoner,
+D.\ J.\ Beckman, and C.\ J.\ Goergen. ``Clinical Immersion of
+Undergraduate Biomedical Engineering Students: Best Practices for
+Short-Term Programs.'' \textit{Biomedical Engineering Education},
+vol.~3, 2023, pp.~217--23. % [REF — pilot article ref 6]
+
+\item Parong, Jocelyn, and Richard E.\ Mayer. ``Cognitive and Affective
+Processes for Learning Science in Immersive Virtual Reality.''
+\textit{Journal of Computer Assisted Learning}, vol.~37, no.~1, 2021,
+pp.~226--41. % [IDX — pages pin resolved; VoR year 2021]
+
+\item ---. ``Learning Science in Immersive Virtual Reality.''
+\textit{Journal of Educational Psychology}, vol.~110, no.~6, 2018,
+pp.~785--97.
+% [M1 bank values; ****** UNVERIFIED: corpus PDF is the advance-online
+%  version without final pagination — confirm 110(6):785–97 against the
+%  version of record before final typeset]
+
+\item Radianti, Jaziar, et al. ``A Systematic Review of Immersive Virtual
+Reality Applications for Higher Education: Design Elements, Lessons
+Learned, and Research Agenda.'' \textit{Computers \& Education},
+vol.~147, 2020, 103778. % [M1; subtitle pin resolved IDX]
+
+\item Richardson, Jennifer C., and Karen Swan. ``Examining Social
+Presence in Online Courses in Relation to Students' Perceived Learning
+and Satisfaction.'' \textit{Journal of Asynchronous Learning Networks},
+vol.~7, no.~1, 2003, pp.~68--88. % [IDX — venue pin resolved]
+
+\item Richardson, Jennifer C., Yukiko Maeda, Jing Lv, and Secil Caskurlu.
+``Social Presence in Relation to Students' Satisfaction and Learning in
+the Online Environment: A Meta-Analysis.'' \textit{Computers in Human
+Behavior}, vol.~71, 2017, pp.~402--17. % [IDX — venue pin resolved]
+
+\item Short, John, Ederyn Williams, and Bruce Christie. \textit{The
+Social Psychology of Telecommunications}. Wiley, 1976. % [M1]
+
+\item Terry, Krista P., and Peter E.\ Doolittle. ``Re-examining Social
+Presence: Implications for Digital Pedagogies.'' \textit{Technology,
+Instruction, Cognition and Learning}, vol.~11, 2019, pp.~121--39.
+% [M1+IDX]
+
+\item Tu, Chih-Hsiung. ``The Measurement of Social Presence in an Online
+Learning Environment.'' \textit{International Journal on E-Learning},
+****** UNVERIFIED volume/issue, 2002, pp.~34--45.
+% [IDX carries the same UNVERIFIED marker; commonly vol. 1, no. 2 —
+%  confirm against the article PDF before final typeset]
+
+\item van der Meer, Nesse, Vivian van der Werf, Willem-Paul Brinkman,
+and Marcus Specht. ``Virtual Reality and Collaborative Learning: A
+Systematic Literature Review.'' \textit{Frontiers in Virtual Reality},
+vol.~4, 2023, 1159905. % [IDX — names/title pin resolved]
+
+\item Wendt, Thomas. \textit{Design for Dasein: Understanding the Design
+of Experiences}. Self-published, 2015.
+% [PDF title/imprint pages — subtitle plural "Experiences" per title
+%  page; ISBN 978-1506166537, © 2015 Thomas Wendt, no press named]
+
+\item Witmer, Bob G., and Michael J.\ Singer. ``Measuring Presence in
+Virtual Environments: A Presence Questionnaire.'' \textit{Presence:
+Teleoperators and Virtual Environments}, vol.~7, no.~3, 1998,
+pp.~225--40. % [M1+IDX]
+
+\end{workscited}
+
+\end{document}
