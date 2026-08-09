@@ -82,8 +82,13 @@ The analysis tree is current: D-39, D-40 and D-41 are applied and re-run, all ei
 pass, the D-11 equivalence proof holds at 1.8e-15, and 72 figures regenerate. matplotlib and
 scipy are installed. Backups of every pre-change state are in `Part_III/.backups/`.
 
-**Nothing has been committed across any session of this work, and nothing should be without
-explicit sign-off.**
+**This session's work IS committed** — `b752f5135` on `feat/wraith-retrieval`, local only,
+**not pushed**. Pushing needs separate author permission, and commits happen from WSL only,
+never from the Mac. Everything you will read was committed at that hash, so `git show
+b752f5135 --stat` tells you exactly what the previous session produced.
+
+Nothing else in the repository was committed, and the working tree carries roughly 1,750
+unrelated changes that were deliberately left alone. **Do not `git add -A`.**
 
 ## Open items to carry, not to resolve unasked
 

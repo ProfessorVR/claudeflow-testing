@@ -5,6 +5,15 @@
 **Status at close:** L1, L2 and L3 drafted and author-approved paragraph by paragraph. L0, L4,
 L5, L6, L7 NOT begun. Appendices deferred by author order until the section body is finished.
 
+**★ COMMITTED 2026-08-09 as `b752f5135`** on branch `feat/wraith-retrieval`. **LOCAL ONLY — NOT
+PUSHED**; pushing requires separate author permission. This is the first commit of any
+dissertation work across these sessions. Exactly five paths were committed — the `Section 2/`
+tree, outline v8, the file audit, the gaze-video plan, and `boredom-analysis-v5/analysis/`
+(source only; `__pycache__` deliberately excluded). The repository's other ~1,750 working-tree
+changes — unrelated modifications, 366 deletions including the author-ordered removal of
+`corpus/index/Dissertation/`, live `.god-agent/` databases mid-write, and `.claude/settings.json`
+— were **deliberately left uncommitted**. Do not sweep them in later without a fresh decision.
+
 > **Read `01-LAWS.md` before writing a single word.** It is short and it is binding. This log is
 > the evidence behind it. `02-HANDOFF-PROMPT.md` is the boot prompt for the next session.
 
