@@ -1,0 +1,778 @@
+% LAB BOREDOM — module L1, The Three Literatures. GUIDED DRAFTING (desktop recipe), Section 2 run.
+% Session 2026-08-06. Author rulings: pack v2 is the bank; r1 ¶1 carried as working base.
+% Pack: lab-boredom-L1-pack-v2 (+ -v2-quotes.json)  |  Spec: outline v7 §L1  |  Rulings: register v8.
+% Protocol: Stage-3 guided batches (1–3 ¶¶, approval gate each batch); «Qnn» markers, mechanical
+%   substitution; rendered copy = L1-DRAFT-v1-rendered.tex. MASTER FILE — edit this, re-render after.
+%
+% STANDING RULINGS ADDED THIS SESSION (author notes on batch 1):
+%   (i) voice must match Part III Section 1 (desktop register, its cadence);
+%   (ii) FIRST + LAST NAME at an author's first mention in the section, surname after;
+%   (ii-b) ★ STANDING (2026-08-06): DO NOT USE "instrument"/"instruments" AS A VAGUE COVER.
+%        Name the thing: the eye tracker, the scalp electrodes, gaze deviation, eye closure,
+%        pupil diameter, the seven-item survey, "the physiological measurements." The word is
+%        permissible only where the source itself uses it (Holmqvist's reporting factors) or
+%        where the referent was named in the same breath. AUDIT THIS BEFORE EVERY BATCH.
+%        Related: EEG and eye trackers are general-purpose recording equipment — WE DID NOT
+%        BUILD THEM FOR BOREDOM. Never write "instruments built to detect boredom." The
+%        correct form: physiological measurements scored against self-reports of boredom
+%        collected under Eastwood's definition.
+%   (ii-e) ★ STANDING (author, 2026-08-07): REFER TO A SPECIFIC SUBJECT BY NUMBER, NOT BY
+%        PRONOUN. Write "S04 fought sleep at six against one", never "they fought sleep".
+%        Pronouns for a named subject are avoided entirely so the reader never has to track an
+%        antecedent across sentences. Everything is anonymized, so the number IS the name.
+%   (ii-d) ★★ STANDING RULE (author, 2026-08-07) — COMPLETE-COHORT ANALYSIS BEFORE ANY
+%        RESULTS CLAIM. Never draft a claim about results from one participant unless the
+%        passage is explicitly about that participant. Run EVERY subject, EVERY time, and
+%        review the full breakdown before writing. Origin: the S04 case paragraph was drafted
+%        from S04 alone and badly understated the cohort — the full table showed each measure
+%        agreeing with participants own reports in 10 or 11 of 12 cases, and showed that two of
+%        the three apparent exceptions dissolve on inspection.
+%   (ii-c) ★ PUPIL DEMOTED IN L1 BY AUTHOR RULING 2026-08-06: pupil dilation yields nothing
+%        L1's argument builds on. It does not track self-report (-0.172 vs boredom, ns), and
+%        its BOR-vs-CLC separation admits several uncontrolled explanations at once (luminance
+%        unmatched; arousal; effort). Measured means: CLC 3.51 mm > INT 3.40 > BOR 3.32 — the
+%        OPPOSITE of what a pure brightness account predicts if clinical is the brightest
+%        sample, which is itself the evidence that no single factor governs it.
+%        ★ TENSION TO RESOLVE AT L3: register v8 R-05 lists pupil among the LOAD-BEARING
+%        channels, and L3.1 records that nine Holm-surviving contrasts fall on eye closure,
+%        pupil, or excursion frequency. L1 now says the argument does not rest on pupil.
+%        These are compatible only if L3 reports pupil's separation WITHOUT building on it.
+%        Decide explicitly at L3 rather than letting the two modules drift apart.
+%   (iii) pack first, but the rebuilt archon-cli-v3 index is an encouraged evidence surface —
+%        used this revision for: self-citing author (citation-network §2), DA-03 roster (debate-map),
+%        Quaranta claims (bor-sec-10), regulatory-paper theses (bor-sec-25/26), P1/P2 citations
+%        (king-salvo-physio-2023 + grp-program-lineage), Freeman/Withy/McManus first names.
+%
+% BATCH 2 = ¶¶4–5 (drafted 2026-08-06, awaiting author review).
+%   ¶4 (education): Mansikka three-way typology 262–66, second form + das Man 264 (bor-sec-18);
+%     Gibbs datable-time/concealment 601–02 (bor-sec-07); Feldges & Pieczenko + Mertel +
+%     Aroles & Küpers compactly in a footnote (bor-sec-16 and units); THOMSON GUARD APPLIED
+%     per A-02 — cited for paideia/enframing/letting-learn frame, stated NOT a boredom source.
+%   ¶5 (EEG): Kim/Seo/Laine null at 13 participants (A-06, bor-sec-28) — framed as the study
+%     that sought agreement and documented disagreement; Barry et al. baselines 2765–66,
+%     2771–72 (A-07, bor-sec-27); Yuvaraj et al. «Q16» at printed p. 11 (A-08, bor-sec-33)
+%     with the no-resting-baseline gap; Miyauchi & Kawasaki, Perone, Yakobi, Seo compactly.
+%   Names verified from index citations: Jan-Erik Mansikka, Paul Gibbs, Tom Feldges + Sonia
+%     Pieczenko, Kevin Mertel [FIRST NAME ****** — index has "Mertel, K." only], Jeremy Aroles,
+%     Wendelin Küpers, Iain Thomson, Joochan Kim, Jungryul Seo, Teemu H. Laine, Robert J. Barry,
+%     Rajamanickam Yuvaraj, Eri Miyauchi, Masahiro Kawasaki, Sammy Perone, Ofir Yakobi.
+%   Q16 is the batch's only rendered quotation. A-10 respected: no Miyauchi quotation exists.
+%   Kim's null PARAPHRASED from the unit digest (no gated verbatim in bank) — E05 CONFIRMED.
+% BATCH 2 REV 1 (2026-08-06, author notes):
+%   ¶4a: the two-channel point EXPANDED — names the actual apparatus (continuous eye tracking +
+%     EEG through the film; 7-item self-report after each episode per R-07), states Mansikka's
+%     evidentiary limit, and lands the compatibility claim as a measured divergence on the
+%     clinical footage (keystone structure per pack P6; NO numbers quoted here — L3/L4 carry them).
+%   ¶4b: Thomson correction MOVED into the compact-citations footnote (author: not pertinent to
+%     the body's argument). A-02 guard preserved verbatim in the footnote.
+%   ¶5a: "instrumented literature" -> the field NAMED (psychophysiology and affective computing,
+%     per the unit disciplines: Kim biomedical signal processing/affective computing; Barry
+%     clinical neurophysiology; Yuvaraj cognitive neuroscience/educational psychology).
+%   ¶5b: "arrives carrying its nulls" REPLACED with the concrete result (Kim's hypothesis and
+%     its failure, stated before it is characterized).
+%   ¶5c: CHANNEL now GLOSSED at first use in this module (pack P6's locked definition rendered
+%     in prose) so later modules can use the term as defined.
+%   ¶5d: "fill out the strand" REPLACED — each of the four compact studies now states its own
+%     contribution (Miyauchi key-press onset marking; Perone FEA as dynamic regulation not trait;
+%     Yakobi state/trait dissociation; Seo 86.73% k-NN on two electrodes -> rendered "86.7").
+%
+% BATCH 2 REV 2 (2026-08-06, author notes): Thomson guard sentence DELETED from fn d (frame
+%   attribution retained); "(EEG)" added at first use of electroencephalographic; the
+%   four-compact-studies sentence MOVED to a footnote.
+%
+% BATCH 3 = ¶¶6–7 (drafted 2026-08-06, awaiting author review).
+%   ¶6 (eye tracking): Holmqvist et al. 2023 minimal reporting guideline, 47 authors, 207-study
+%     comparison (bor-sec-36) — L2 is measured against it; van den Brink/Murphy/Nieuwenhuis
+%     pupil-tracks-lapses + inverted-U adaptive gain (D-18 entry) = what pupil indexes;
+%     SCHARINGER A-04 oppositional-ranking precedent with r = -.16/-.14 ns, alpha alone tracking
+%     comprehension; YEAR CORRECTION 2015-not-2019 carried in a footnote (A-03); VanderWerf
+%     gaze-position dependency + «Q19» at printed 2785 + unknown-mixture caution (E13);
+%     Charoenpit, Jaques, Sharma, GazeMotive, Cheval, Skaramagkas review in a compact footnote.
+%   ¶7 (negative through-line): Kim null; Perone's FIRST hypothesis unsupported (distinct from
+%     the batch-2 footnote's second-hypothesis fact); Yakobi state/trait dissociation + «Q17»;
+%     Lindley & Nacke GEQ 2-of-7 with flow/immersion failing to separate + «Q21» in footnote;
+%     Miyauchi appraisal-not-boredom; closing = this section's EEG negative is characteristic.
+%
+% BATCH 4 = ¶¶8–9 territory, ¶8 split into TWO paragraphs (drafted 2026-08-06, awaiting review).
+%   Spec: outline v7 §L1 ¶8. O-06 SETTLED = cite rather than re-present, so neither published
+%   study is summarized at length; both are characterized and their two moves named.
+%   ¶8a (the lineage): Group B `grp-program-lineage` — trajectory 2024 applicability/satisfaction
+%     -> 2023 physiological -> 2025 scaling; warrant identical across five years (hospital space,
+%     safety protocols, cohort limits = scarcity of clinical access); published position =
+%     viability settled + experience favorable WHILE the attention/engagement question stays
+%     open in the program's own record (E15). Extension rather than resolution.
+%   ¶8b (the two moves): definitional adoption Eastwood -> Fahlman -> P1 -> this data (E16/P6
+%     spine; Q05's content PARAPHRASED here since ¶1 already carries the adoption — the verbatim
+%     definition is held for ¶10 per D-23); then the redemptive half — «Q30» + refs [13-15]
+%     rendered as VR-PHEN records it (E14: one undifferentiated gesture, invoked but inert).
+%   D-20 applied: the one-of-fifty-five observation (E18 neighborhood) stated in a footnote as
+%     DESCRIPTION not indictment, explicitly labeled as such.
+%   First names verified from Group A entry: Jacquelyn Morie; Heinzel & Heinzel (Sibylle and
+%     Stephan — ****** VERIFY at assembly); Jason Tham (****** VERIFY).
+%   NEW BANK ENTRY Q30 (P1's framing sentence) — verified EXACT this session, and verified to
+%     sit at the END OF THE INTRODUCTION (before Methods), so the no-abstract lock is satisfied.
+%   P1 stays quoted rather than characterized (E16) — Group B deliberately excludes it.
+%
+% BATCH 3 REV 4 (2026-08-06, author challenge — CHECKED AGAINST THE v5 TREE, author correct):
+%   "its measures lean the same way as every other measure in the study" was WRONG twice over.
+%   Checked in boredom-analysis-v5 FINDINGS.md + APPENDIX-CRITERION-VALIDITY.md:
+%   (a) The eye measures DID reach significance. Criterion validity, n=36, permutation p:
+%       gaze deviation (per-participant) +0.590 (0.0024) vs boredom, -0.585 (0.0022) vs
+%       engagement; per-file +0.524 (0.0074) / -0.527 (0.0075); eye closure +0.460 (0.0212) /
+%       -0.416 (0.0370). So "every other measure" only leaning is false.
+%   (b) EEG IS ABSENT FROM THE CRITERION TABLE ENTIRELY — it is R1-only N=8 while the criterion
+%       analysis pools 36 episodes across rounds, so EEG cannot enter it. Any sentence
+%       comparing EEG's agreement to the other channels' agreement is comparing to nothing.
+%   EEG's actual best showing (FINDINGS.md): DMN power (alpha+theta), Friedman p=0.1969;
+%       BORvCLC and BORvINT both Wilcoxon 0.078 / Holm 0.2344, rb +0.722, direction 6/8;
+%       CLCvINT 0.5469. Frontal alpha p=0.4169, frontal theta p=0.8825, parietal alpha p=0.2231.
+%   Prose now: eye measures separated AND agreed (findings); EEG gave a 6-of-8 direction on the
+%   boring-film contrasts = a possible relationship, reported as one, not a result; plus the
+%   R1-only thinness. NO per-channel significance claimed (register v8 standing rule).
+%
+% BATCH 3 REV 3 (2026-08-06, author notes — TWO SUBSTANTIVE CORRECTIONS):
+%   ¶6: CLINICAL FOOTAGE DE-EMPHASIZED. The divergence example naming the clinical film is
+%     removed; the point is now stated for any film. AUTHOR RULING: this section analyzes
+%     boredom vs engagement writ large with all three samples treated equally — the clinical
+%     stimulus does NOT hold the prominent position it held in the published study. Conclusions
+%     about the clinical film remain permissible; foregrounding it does not.
+%     ★ CARRY THIS INTO L3/L4 — it bears on how the keystone is presented.
+%   ¶7: "The EEG half of that design returned nothing" WAS FACTUALLY WRONG (author). Corrected:
+%     the EEG leans the same way as every other measure — a possible relationship worth
+%     reporting — but reaches significance nowhere. Grounded in the O-9 reprocessing at N=8
+%     (DMN p=0.20, parietal alpha p=0.22; report as convergent DIRECTION, never as a
+%     per-channel result) plus outline v7 §L3.8 (0 of 5 surfaces; 0 of 15 contrasts through
+%     Holm). Permitted form now used: "a direction, not a finding."
+%     The 4-of-8 concordance figure is left to L3 rather than stated here.
+%
+% BATCH 3 REV 1 (2026-08-06, author notes):
+%   ¶6a: "inverted U" REPLACED with a plain-language statement of the curve (best at
+%     intermediate diameter; both extremes degrade attention).
+%   ¶6b: fn e reduced to the citation + why it is cited; the year is simply given as 2015.
+%   ¶6c: «Q19» REMOVED from prose. Reason: its span begins with a capital T and runs as a
+%     sentence fragment, so the bracket-lowercase rule requires "[t]o...", which mechanical
+%     substitution cannot produce. Per the pack's own recommendation for VanderWerf
+%     (report, do not quote), the paragraph now REPORTS the blink measurement (334 ± 67 ms,
+%     Q18's content, rendered with \pm not U+2AFE) and EXPLAINS the attention control in
+%     prose. Locus widened to 2785--86 (Q19 at 2785, Q18 at 2786).
+%   ¶6d: GAZE literature MOVED INTO THE BODY at author's direction — Jaques, GazeMotive
+%     (Wang/Xu/Chen), Sharma/Giannakos/Dillenbourg, Charoenpit & Ohkura, Cheval, Skaramagkas
+%     review; compact footnote deleted. The added analytic point: all are classifier designs
+%     validated AGAINST self-report, so the report is their arbiter — the arrangement this
+%     study cannot adopt, since its question is what happens when eyes and report disagree.
+%   ¶7a: the EEG negative STATED SPECIFICALLY (0 of 5 surfaces, 0 of 15 contrasts through
+%     Holm, concordance 4 of 8 = chance) from outline v7 §L3.8. Numbers only; L3 carries detail.
+%   ¶7b: STATE/TRAIT now DEFINED at first load-bearing use, in a footnote, with «Q29»
+%     (Raffaelli 2452, verified EXACT this session). ¶5's footnote reworded to plain language
+%     so the technical terms are defined where they carry weight.
+%   ¶7c: fn g stripped of the metatextual correction note — it now cites Lindley and Nacke
+%     correctly and says nothing else. The correction is recorded HERE and in the errata file.
+%   ¶7d: EEG-DROP added per author — first person, our own decision, noise + scalability,
+%     with «Q26»/«Q27»/«Q28» from P2's INTRODUCTION (not the abstract), all verified EXACT
+%     this session. D-16 rendered as: dropped for scaling, before the reprocessing established
+%     what the measurements could have carried.
+%
+% ★ SESSION BANK: substitution now consumes `L1-bank-session.json` = pack v2 bank + the
+%   four in-session additions in `L1-addendum-quotes.json` (Q26-Q29). Pack v2 remains
+%   untouched; fold the addendum into a pack v3 before another module reuses Q26-Q29.
+%
+% ★ CITATION-FORM CORRECTION FOUND THIS BATCH (index-verified, pack is wrong):
+%   Q21's cite string reads "Csikszentmihalyi, qtd. in Nacke and Craig" and the corpus directory
+%   is named "Nacke & Craig". CRAIG IS A GIVEN NAME. The index citation field reads
+%   "Lindley, Craig A., and Lennart Nacke" — bor-sec-44. Prose renders LINDLEY AND NACKE and the
+%   error is stated in a footnote. SAME CLASS OF TRAP as the Colin/Barrett case. Pack v2 errata
+%   item; fix the cite string before any later module reuses Q21.
+%   NB Q21 rendered with "(qtd. in Lindley and Nacke 1--2)" — the bare «Q21» form is used, NOT
+%   «Q21+», because the bank's cite string carries the wrong surname.
+%
+% BATCH 1 = ¶¶1–3. REV 1 (2026-08-06, per author notes):
+%   ¶1: Elpidorou NAMED as the self-citing author (citation-network.md §2: 7 of 8 A→C links are
+%       Elpidorou citing Elpidorou; 8th = Hughes's critical footnote) + fn with both regulatory works
+%       summarized; first "we" now names Christine King + fn listing P1/P2 and the appendix; ending
+%       rebuilt around the Fahlman→Eastwood adoption and the design it governed.
+%   ¶2: ****** resolved into DA-03 footnote (O'Brien/Hadjioannou/McManus + SZ 310 vs Withy + FCM
+%       143/165; E&F periodizing at Affectivity I 662n2); Slaby point expanded via the disposedness
+%       (Befindlichkeit) argument (link to Part I rendered through shared vocabulary, not explicit
+%       back-reference; BT 172–75 locus carried from Part I draft); first-mention names applied.
+%   ¶3: "VR headset"; conclusion rebuilt on Quaranta's actual apparatus (Loht's viewing-Dasein,
+%       Drive My Car dead-time aesthetics, mood as neither work-alone nor viewer-alone, 31–32, 38).
+%
+% Batch-1 verification ledger:
+%   Q14 printed p. 117 PINNED (folio-read: running head "The Other Side of Existence 117"; Slaby
+%     fn 18 = Pessoa, Book of Disquiet, fragment 219). Q07 vol. pp. 207–08; Q12 printed p. 101.
+%   P1 full citation from king-salvo-physio-2023-00-overview (ASEE 2023 #37129, 5 authors).
+%   P2 from VLE manifest: "King et al., Assessment of Student Engagement in VR Clinical Immersion
+%     Environments through Eye Tracking, ASEE 2024 #44685" — FULL AUTHOR LIST PENDING at assembly.
+%   Elpidorou regulatory theses from bor-sec-25/26 digests (PhenomCogSci 17: 455–84; PhilPsych
+%     31.3: 323–51). DA-03 roster from debate-map.md. Quaranta from bor-sec-10 (Film-Philosophy
+%     28.1: 31–46); "neither subjective nor objective" p. 38 PARAPHRASED (quote not gated).
+% PENDING VERIFICATION (assembly): first names for O'Brien, Hadjioannou (ed./ch. author), Hughes;
+%   McManus chapter title as printed; Slaby 2010 venue for WC; SZ-vs-BT page convention harmonize.
+% OPEN: Appendix designation for P1/P2 reprints (****** in fn A). E01 open item CLOSED this rev
+%   (author = Elpidorou, index-verified).
+% Selection decisions carried: Q01 barred; Q08 held for ¶10 (paraphrased here); Q09 paraphrased;
+%   Q10 unused (optional); Q11 skipped; Q13 avoided (hazard); O-06 = cite-not-re-present.
+%
+% WORKS CITED introduced by this batch (for assembly; ****** = verify there):
+%   Eastwood, John D., et al. "The Unengaged Mind: Defining Boredom in Terms of Attention."
+%     Perspectives on Psychological Science, 2012. [vol/no/pp ****** at assembly]
+%   Elpidorou, Andreas. "The Bored Mind Is a Guiding Mind: Toward a Regulatory Theory of Boredom."
+%     Phenomenology and the Cognitive Sciences, vol. 17, 2018, pp. 455-84.
+%   ---. "The Good of Boredom." Philosophical Psychology, vol. 31, no. 3, 2018, pp. 323-51.
+%   Elpidorou, Andreas, and Lauren Freeman. "Affectivity in Heidegger I: Moods and Emotions in
+%     Being and Time." Philosophy Compass, 2015. [vol/pp ******]
+%   ---. "Is Profound Boredom Boredom?" Heidegger on Affect, ed. Hadjioannou, 2019, pp. 207-[**].
+%   Fahlman, Shelley, et al. "Development and Validation of the Multidimensional State Boredom
+%     Scale." 2013. [journal details ******]
+%   Hughes [first name ******]. "Meaninglessness and Monotony in Pandemic Boredom." 2023.
+%   King, Christine E., Kit Roy Feeney, Quangminh Tang, Milan Das, and Dalton Salvo. "Work in
+%     Progress: Physiological Assessment of Learning in a Virtual Reality Clinical Immersion
+%     Environment." ASEE, 2023. Paper #37129.
+%   King, Christine E., et al. [****** full list] "Assessment of Student Engagement in VR Clinical
+%     Immersion Environments through Eye Tracking." ASEE, 2024. Paper #44685.
+%   O'Brien [******]. "Being, Nothingness and Anxiety." Heidegger on Affect, 2019.
+%   Hadjioannou [******], ed. Heidegger on Affect. Rowman?, 2019. [publisher ******] — also ch. 4,
+%     "Angst as Evidence: Shifting Phenomenology's Measure."
+%   McManus, Denis. [ch. 6 title per index: "Affect and Authenticity"] Heidegger on Affect, 2019.
+%   Withy, Katherine. "Finding Oneself, Called." Heidegger on Affect, 2019.
+%   Quaranta, Chiara. "In the Mood for Heideggerian Boredom? Film Viewership as
+%     Being-in-the-World." Film-Philosophy, vol. 28, no. 1, 2024, pp. 31-46.
+%   Slaby, Jan. "The Other Side of Existence: Heidegger on Boredom." 2010, pp. 101-20. [venue ******]
+% --- introduced by batch 2 ---
+%   Aroles, Jeremy, and Wendelin Küpers. "Towards an Integral Pedagogy in the Age of 'Digital
+%     Gestell'." 2022. [venue/pp ******]
+%   Barry, Robert J., Adam R. Clarke, Stuart J. Johnstone, Christopher A. Magee, and Jacqueline
+%     A. Rushby. "EEG Differences Between Eyes-Closed and Eyes-Open Resting Conditions."
+%     Clinical Neurophysiology, vol. 118, 2007, pp. 2765-73.
+%   Feldges, Tom, and Sonia Pieczenko. "Boredom in Educational Contexts: A Critical Review."
+%     Encyclopaideia, vol. 24, no. 57, 2020, pp. 1-15.
+%   Gibbs, Paul. "The Concept of Profound Boredom: Learning from Moments of Vision." Studies in
+%     Philosophy and Education, vol. 30, 2011, pp. 601-13.
+%   Kim, Joochan, Jungryul Seo, and Teemu H. Laine. "Detecting Boredom from Eye Gaze and EEG."
+%     Biomedical Signal Processing and Control, vol. 46, 2018, pp. 302-13.
+%   Mansikka, Jan-Erik. "Can Boredom Educate Us? Tracing a Mood in Heidegger's Fundamental
+%     Ontology from an Educational Point of View." Studies in Philosophy and Education, vol. 28,
+%     2009, pp. 255-68.  [2008/2009 — confirm year at assembly ******]
+%   Mertel, K[****** first name]. "Heidegger, Technology and Education." Journal of Philosophy
+%     of Education, vol. 54, no. 2, 2020, pp. 467-86.
+%   Miyauchi, Eri, and Masahiro Kawasaki. "Electroencephalogram Oscillations Support the
+%     Involvement of Task-Unrelated Thoughts in the Mechanism of Boredom: A Pilot Study." 2018.
+%     [venue/pp ******]
+%   Perone, Sammy, Elizabeth H. Weybright, and Alana J. Anderson. "Over and Over Again: Changes
+%     in Frontal EEG Asymmetry Across a Boring Task." 2019. [venue/pp ******]
+%   Seo, Jungryul, Teemu H. Laine, and Kyung-Ah Sohn. "Machine Learning Approaches for Boredom
+%     Classification Using EEG." 2019. [venue/pp ******]
+%   Thomson, Iain. "Heidegger on Ontological Education, or: How We Become What We Are."
+%     Inquiry, vol. 44, 2001. [pp ******]
+%   Yakobi, Ofir, James Boylan, and James Danckert. "Behavioral and Electroencephalographic
+%     Evidence for Reduced Attentional Control and Performance Monitoring in Boredom." 2021.
+%     [venue/pp ******]
+%   Yuvaraj, Rajamanickam, et al. "EEG-Based Functional Connectivity Patterns During Boredom in
+%     an Educational Context." Scientific Reports, vol. 15, 2025, article 35439.
+
+Boredom has been academically pursued across two rather different fields of study. One asks
+what boredom discloses about the person who suffers it, treats the experience as a disclosure
+of how things stand for someone rather than as a state to be relieved, and reaches for Martin
+Heidegger and the phenomenological tradition that follows him; the other asks what boredom
+looks like in a signal, and reaches for electrodes, eye trackers, and self-report scales
+validated against one another. Across the works surveyed here, the connection between them
+amounts to one philosopher, Andreas Elpidorou, citing his own work across his own two research
+programs, together with one critical footnote written by someone else.\footnote{Elpidorou
+publishes in both literatures, and the phenomenological essays---several written with Lauren
+Freeman---cite two papers of Elpidorou's own regulatory-theory program. ``The Bored Mind Is a
+Guiding Mind: Toward a Regulatory Theory of Boredom'' (\textit{Phenomenology and the Cognitive
+Sciences}, 2018) argues that boredom is a functional emotion, at once informing a person that
+the present situation has stopped satisfying and motivating the pursuit of a new goal. ``The
+Good of Boredom'' (\textit{Philosophical Psychology}, 2018) argues that transitory state
+boredom serves well-being precisely by keeping a person in motion toward goals worth having.
+The one bridge not of Elpidorou's making runs the opposite direction and is a critique:
+Emily Hughes, ``Meaninglessness and Monotony in Pandemic Boredom'' (2023), objects in a footnote
+that Elpidorou's normative-psychological turn departs from Heidegger's project.} The first
+literature counts a reading of experience
+as evidence; the second counts a number extracted from a sensor. Neither treats what the
+other counts as bearing on its own question, and the absence is not an oversight either could
+have corrected by wider reading. The two studies Christine King and I published stand in
+neither literature:\footnote{The two studies: King, Christine E., Kit Roy Feeney, Quangminh
+Tang, Milan Das, and Dalton Salvo, ``Work in Progress: Physiological Assessment of Learning
+in a Virtual Reality Clinical Immersion Environment'' (ASEE 2023, Paper \#37129), the
+three-participant pilot that first instrumented the platform's videos---EEG, cardiac, and
+gaze---against boring and interesting control films; and King, Christine E., Matthew Lo, Milan Das, and
+Dalton Salvo, ``Assessment of Student Engagement in Virtual Reality Clinical Immersion
+Environments through Eye Tracking'' (ASEE 2024, Paper \#44685), the eye-tracking study of
+student engagement on the same platform. Both papers are reproduced in
+full in Appendix ******.} they belong to a third lineage, clinical immersion in engineering
+education, where a headset substitutes for clinical access that no program can secure in
+sufficient quantity, and that lineage arrives with its own question, its own warrant, its own
+reference list, and no commitment about what boredom is. From the second literature we took
+one thing, deliberately and by name: the definition of boredom under which we collected the
+data. Our first paper adopts Shelley Fahlman's formulation of it---the definition
+underwriting the Multidimensional State Boredom Scale, which carried John Eastwood's
+attentional account of boredom into measurement---and the adoption governed the design end to
+end.\footnote{Fahlman and colleagues state it thus: ``«Q31»'' (69). They offer it
+transtheoretically, as the common core of the existing theories rather than as one theory
+among them, and that framing is what licensed its adoption elsewhere as a neutral starting
+point. Eastwood is a co-author, and the attentional account arrives with the definition.} Because the definition fixes boredom as an aversive episode, an unfulfilled desire for
+engagement that would satisfy, the experiment treats boredom as something a film can induce
+and relieve: it sets a film selected to starve engagement beside a film selected to feed it
+and beside the clinical footage the platform exists to deliver, and it points its
+instruments---EEG, eye tracking, and a per-episode self-report---at what each film does to
+the person watching. What the definition does not contemplate is a boredom that is not about
+the film at all. The data collected under it contains exactly that.
+
+% ****** AUTHOR ACTION PENDING (¶1 footnote b) — rendered so it cannot be lost in a compile.
+% ****** Remove this box once the appendix exists and the footnote's ****** is filled.
+\begin{center}
+\fbox{\parbox{0.9\linewidth}{\centering\textbf{****** AUTHOR ACTION PENDING ******}\\
+Add the appendix containing the two published articles (P1, ASEE 2023 \#37129; P2, ASEE 2024
+\#44685), then fill the appendix designation in the footnote above. Also pending: P2's full
+author list for the works cited.}}
+\end{center}
+
+The phenomenological literature's liveliest quarrel concerns whether the experience Heidegger
+analyzes is boredom at all. Elpidorou and Lauren Freeman set profound boredom against the
+construct the empirical programs measure---a brief, situation-bound, many-sided response to
+unsatisfying circumstances---and conclude of profound boredom that ``«Q07»'' (207--08). The
+verdict protects both parties to the comparison: it spares the psychological construct a
+metaphysics it never claimed, and it cautions every instrumented study, this one included,
+against announcing that a sensor has caught what Heidegger meant. Nor is it settled which
+mood holds the ground position in Heidegger's own architecture: the case for anxiety
+(\textit{Angst}) as the fundamental attunement (\textit{Grundstimmung}) rests on
+\textit{Being and Time}'s near-unique designation, the case for profound boredom on
+\textit{The Fundamental Concepts of Metaphysics}, and Elpidorou and Freeman observe that the
+question is partly one of period, since the term appears only once in \textit{Being and Time}
+and becomes load-bearing only after 1929.\footnote{The anxiety side is argued across three
+chapters of \textit{Heidegger on Affect} (ed. Christos Hadjioannou, 2019): Mahon O'Brien,
+``Being, Nothingness and Anxiety''; Hadjioannou's own ``Angst as Evidence: Shifting
+Phenomenology's Measure''; and Denis McManus on affect and authenticity---with \textit{Being and Time}
+itself giving anxiety the designation nearly alone (SZ 310). Katherine Withy's chapter in the
+same volume, ``Finding Oneself, Called,'' makes the affirmative case that profound boredom
+can occupy the role, with support at \textit{FCM} 143 and 165. For the periodizing
+observation: Elpidorou and Freeman, ``Affectivity in Heidegger I: Moods and Emotions in
+\textit{Being and Time}'' (2015), 662n2.} Jan Slaby reads the whole affective register as
+``«Q12»'' (101): mood is not noise laid over thinking but the way a person's standing in the
+world shows itself at all. Slaby's formula names what \textit{Being and Time} calls
+disposedness (\textit{Befindlichkeit})---one does not first register a neutral scene and
+afterward color it with feeling; one finds oneself already attuned, affected by what one
+encounters before any reflective act of judgment arrives (\textit{BT} 172--75)---and the
+formula carries a consequence. If attunement is disclosure rather than coloration, then a
+person can remain occupied---attentive, compliant, even performing well---while what the
+attunement discloses is emptiness. Fernando Pessoa's words, as Slaby borrows them, give that
+depth its starkest formula---``«Q14»'' (qtd. in Slaby 117). An occupied surface over a hollow
+depth is, under this reading, a structure open to description, not a contradiction in terms.
+
+Film is the point where the phenomenological literature reaches this experiment's own medium.
+Chiara Quaranta, building on Shawn Loht's account of film viewing as a genuine mode of
+being-in-the-world---a two-way disclosure in which the viewer opens onto the film and the
+film discloses to the viewer---argues that Heidegger's three forms of boredom, the profound
+form above all, name what certain films do to the people watching them. The case study is
+Ryusuke Hamaguchi's \textit{Drive My Car}, whose fixed shots, silences, repetitions, and dead
+time Quaranta reads as an aesthetics composed to arouse profound boredom---with the standing
+qualification that no film accomplishes this alone, since a mood arises neither from the work
+by itself nor from the viewer by itself but between the two (31--32, 38). Within the works
+surveyed here this is the one sustained reading of film through the boredom analysis, and the
+arrangement it describes is the arrangement this experiment builds and instruments: a film
+selected for monotony, watched under mandate rather than by choice, in a VR headset that
+holds the footage before the eyes, while EEG, eye tracking, and a per-episode self-report
+record what the arrangement does to the person inside it. Quaranta reads the arrangement off
+a finished film; the laboratory assembles it on purpose and asks every channel to report.
+
+Education is where this analysis has been put to work longest, and where its most useful
+precedent for the present study is found. Jan-Erik Mansikka fits Heidegger's three forms to
+three ways of learning: the first to technical instruction that reduces phenomena to
+abstractions and leaves the student confronting dull matter; the second to a learning that is
+meaningful and still leaves the student empty; the third to boredom as a possible rupture,
+which Mansikka is careful not to prescribe as method (262--66). The second is the one that
+matters here. A student, on his account, can be outwardly exemplary---fully occupied,
+participating, even high-achieving---while what governs the performance is the anonymous
+``they'' (\textit{das Man}) rather than any self-relation to the material (264). The
+diagnostic consequence follows directly: engagement and this hollow boredom are compatible
+rather than opposed, so a metric that counts engagement---time on task, submissions,
+participation---cannot detect the second form, because everything such a metric registers is
+precisely what the second form leaves intact. Mansikka argues this in a classroom register
+more than a decade before this experiment, and argues it from the phenomenology alone: he has
+the student's outward performance and Heidegger's analysis, and nothing that would let him
+exhibit the emptiness underneath. The laboratory supplies what his argument lacks. Each
+participant here watched under two kinds of observation at once---eye tracking and EEG running
+continuously through the film, and a seven-item self-report administered after each
+episode---so every episode yields both a measurement of the person's outward comportment and
+that same person's account of what watching was like. Mansikka's compatibility claim predicts
+that these two can come apart: a viewer whose eyes and body register occupation while the
+account given afterward reports emptiness. That is what these recordings contain, and because
+both sides of the divergence are captured on the same episode, the compatibility of engagement
+with hollow boredom stops being an interpretation of a student's behavior and becomes a
+measured result. Paul Gibbs pursues the same third form toward pedagogy, reading modern datable time---the
+semester, the credit hour, the examination date---as the very thing that conceals boredom's
+disclosive work, so that busyness is not boredom's opposite but the mechanism of its
+concealment (601--02). Tom Feldges and Sonia Pieczenko press a different objection, that the
+field's dominant taxonomy of academic boredom conflates what precedes boredom with boredom
+itself, and that classroom boredom may be an artifact of frontal instruction rather than
+anything intrinsic to learning; Kurt Mertel, Jeremy Aroles, and Wendelin Küpers extend the
+enframing critique to educational technology.\footnote{Feldges and Pieczenko, ``Boredom in
+Educational Contexts: A Critical Review,'' \textit{Encyclopaideia} 24.57 (2020); Kurt C. M. Mertel, ``Heidegger, Technology and Education,''
+\textit{Journal of Philosophy of Education} 54.2 (2020); Aroles and K\"upers, ``Towards an Integral Pedagogy in the Age of `Digital
+\textit{Gestell},''' 2022. The enframing argument these three extend is Iain Thomson's, whose
+account of ontological education supplies the frame---\textit{paideia} against enframing,
+teaching as letting learn, the university's crisis as ontohistorical rather than
+institutional.}
+
+Psychophysiology and affective computing supply the second literature's electroencephalographic
+(EEG) work, and its most instructive results are those that failed. Joochan Kim, Jungryul Seo,
+and Teemu Laine ran the closest precursor to this study's design: a monotonous video, a
+consumer EEG headband and a screen-based eye tracker recording together, and a boredom rating
+collected afterward. Their governing hypothesis was that the brain signal and the gaze signal
+would agree with each other during boredom. Regions of temporally coincident change did appear
+in both recordings across all thirteen analyzed participants, and the rating confirmed that
+boredom had been elicited---but that rating correlated significantly with no extracted
+physiological feature whatsoever. A study designed to demonstrate that the two recordings and the
+person's own report converge instead documented their divergence, and that divergence is what
+this section inherits and extends. Each such independent way of showing---what a person says
+about an episode, what behavior displays during it, what an instrument records through it---is
+a channel in what follows, and the point of Kim's result is that two channels trained on the
+same episode can answer differently. Robert Barry and colleagues supply the methodological
+floor beneath every EEG claim made here: eyes-closed and eyes-open rest are not interchangeable
+baselines, since alpha power indexes global arousal while the focal bands index activation, so
+a study must choose its baseline and defend the choice (2765--66, 2771--72). That bears on
+this experiment twice, once on its EEG result and once on eye closure as a surface in its own
+right. Rajamanickam Yuvaraj and colleagues are the nearest neighbor in both stimulus and
+setting---university students, a boring lecture video, whole-scalp connectivity---and their
+finding is that boredom is not a network-idle state: gamma-band connectivity grew more locally
+clustered and less globally efficient, which they read as ``«Q16»'' rather than mere
+disengagement (11). Their design also carries the gap this section must not repeat, since both
+of their conditions are active eyes-open video-viewing with no resting baseline of any
+kind.\footnote{Four further studies mark out what this work has and has not settled. Eri
+Miyauchi and Masahiro Kawasaki timestamp the onset of boredom by having participants press a
+key at the moment they first feel it, isolating becoming-bored from being-bored. Sammy Perone
+and colleagues track frontal alpha asymmetry across a repetitive task and find it shifts as
+the task wears on, making it a signature of ongoing emotional self-regulation rather than a
+fixed trait marker. Ofir Yakobi and colleagues separate the routes by which state and trait
+boredom show themselves, the boredom a task induces registering in task-evoked potentials and
+the disposition to become bored only in resting oscillatory power. Jungryul Seo and colleagues classify boredom from a
+two-electrode consumer headband at 86.7 percent accuracy, establishing that detection does not
+require a dense montage.}
+
+Eye tracking is the second measurement literature this study draws on, and it arrives with a
+reporting standard, a warning about what the pupil actually indexes, and a warning about
+blinks. Kenneth Holmqvist and forty-six co-authors set the standard: after reviewing what
+instrument, environment, and participant factors demonstrably affect data quality, and
+comparing that evidence against 207 published eye-tracking studies, they find reporting
+practice governed largely by trust in the manufacturer's defaults, and derive a minimal
+guideline of what a study must disclose for its numbers to be interpretable. This section's
+apparatus and analysis are reported against that guideline. What the pupil indexes is the
+second matter, and it is not boredom. Ruud van den Brink, Peter Murphy, and Sander Nieuwenhuis
+tracked tonic pupil diameter against sustained-attention performance and found that attentional
+lapses tended to occur when pupil diameter was small---but the finding did not survive in that
+form. The apparent straight-line relation reflected the joint drift of pupil and performance
+over time on task, and once that drift was statistically removed the relation became curved:
+the most false alarms and the slowest, most variable responses occurred when the pupil was
+both relatively small and relatively large, with performance best in between (9, 12). Too
+little arousal and too much degrade attention alike. What the pupil indexes, then, is arousal
+and attentional state, not what a person would say about being bored, which is why a pupil
+result that fails to track self-reported boredom is an answer about the measure rather than a
+failure of the experiment.
+Mathias Scharinger, Yvonne Kammerer, and Peter Gerjets supply the sharper precedent, and it
+concerns two measures rather than one.\footnote{Scharinger, Kammerer, and Gerjets, ``Pupil
+Dilation and EEG Alpha Frequency Band Power Reveal Load on Executive Functions for
+Link-Selection Processes during Text Reading'' (2015). The study asks what mental effort a
+reader spends choosing which hyperlink to follow, and measures that effort two ways at once
+across three experiments, the second and third built to rule out perceptual and motor
+explanations of the first. It is not a study of boredom, and neither are Holmqvist's reporting
+review or van den Brink's pupil work. All three enter this section as evidence about
+measurement rather than about boredom itself: what an eye measure can be trusted to report,
+and what follows when two measures of the same thing disagree.} Studying the load imposed by hyperlink selection during reading, they
+recorded pupil dilation and EEG alpha power simultaneously. Both measures registered the load
+increase as predicted. The two did not correlate with each other---$r$ = $-$.16 and $-$.14,
+neither significant---and only alpha tracked reading comprehension. Two instruments can
+therefore register the same manipulation, each validly, and still disagree with each other,
+which makes the oppositional ranking this section reports a documented pattern in the
+literature rather than an anomaly in this dataset. Gaze is the third measure and the one this
+study leans on hardest, and the applied literature that uses it is almost uniformly
+detection-oriented: Natasha Jaques and colleagues predict affective states from gaze features
+during intelligent tutoring; Ruijie Wang, Yuanchen Xu, and Liming Chen's GazeMotive infers
+motivation from gaze for students with learning difficulties; Kshitij Sharma, Michail
+Giannakos, and Pierre Dillenbourg pair gaze with machine learning to raise motivation;
+Saromporn Charoenpit and Michiko Ohkura read emotion from gaze in an e-learning system; Boris
+Cheval and colleagues use it to measure attentional bias; and Vasileios Skaramagkas and
+colleagues catalog the measures the whole enterprise runs on---how long and how often the eyes
+fixate, how far and how fast they saccade, how widely gaze disperses across a scene, how often
+and how long the lids close, and how the pupil changes---sorting each by whether it indexes
+visual attention, emotional arousal, or mental workload, and concluding that no single measure
+separates the three cleanly. What each of the applied studies builds from these measures is a
+classifier: gaze features go in, an affective label comes out, and the label counts as correct
+when it matches what the participant reported. That architecture installs self-report as the
+arbiter of what gaze means, and it is the one commitment this study does not make. The
+distinction is worth stating precisely, because the analysis reported below finds strong
+agreement between gaze and self-report---close enough that a classifier built on this data
+would likely work. That agreement is a measured result rather than an assumption, and keeping
+it in the category of result is what allows the two to be read apart wherever they part
+company. A design that has already installed self-report as the criterion cannot register a
+divergence at all, on any film: it can only score the eye measure as having failed.
+Blinks carry their own caution. Frans VanderWerf and colleagues measured spontaneous blinking
+directly---a complete blink lasting 334 $\pm$ 67 ms, with the closing phase far quicker than
+the reopening---and showed that duration and amplitude vary systematically with vertical gaze
+position, so that where a person is looking changes what a blink measurement returns. Their
+procedure records something more consequential still: the experimenters deliberately drew
+participants' attention away from the experimental setting in order to sample blinks that were
+genuinely spontaneous, which concedes that blinking is sensitive enough to attention that
+attending to one's own situation alters it (2785--86). Any blink corpus recorded while a
+stimulus is playing is consequently an unknown mixture of elicitation classes whose
+composition depends on the stimulus itself.
+
+Christine King and I designed this first experiment to identify and track boredom and
+engagement by cross-validating three sources of evidence against one another: a survey
+administered after each film, EEG recorded throughout, and eye tracking recorded throughout.
+Beyond that stated aim, the study asked a further question---whether boredom, engagement,
+attention, and immersion could be quantified at all, and whether the relations among them
+could be measured rather than assumed. The expectation was that what a viewer reported, what
+the brain signal showed, and what the eyes did would converge. Two of the three delivered. The eye measures separated the films and
+tracked what viewers reported closely enough to be treated as findings in their own right. The
+EEG did neither, though it did not come back empty: its most suggestive surface, default-mode
+power, moved the same way in six of eight participants on both contrasts where the boring film
+was involved, which is a possible relationship and is reported as one. It is not a result. No
+EEG measure distinguishes the three films at conventional significance, and every pairwise
+comparison falls well short once the arithmetic accounts for how many comparisons are being
+made. The channel is also the study's thinnest, recorded in the first round only and never
+repeated. What the EEG offers is a direction worth noting and nothing that can carry weight.
+Set against the literature just surveyed, that outcome is characteristic rather than
+exceptional. Kim's self-report correlated with no
+physiological feature. Sammy
+Perone and colleagues predicted that resting frontal asymmetry would differ according to which
+kind of trait boredom a participant carried, and found no such relation at baseline.\footnote{
+State boredom is the transient episode a situation occasions; trait boredom, or boredom
+proneness, is an enduring disposition of the person to fall into it. Raffaelli and colleagues
+scope their review of the empirical work to ``«Q29»'' (2452), the same division this section
+observes: everything reported here concerns episodes occasioned by particular films, and no
+claim is made about any participant's disposition.} Ofir Yakobi and colleagues expected boredom
+to reveal itself twice over, in how well participants performed a sustained-attention task and
+in the brain's response to each stimulus. Their account of why held that a bored person
+withdraws attention rather than acting carelessly, so the errors should be failures to respond
+to a target: the prediction was of ``«Q17».'' What they found instead was that the two kinds of
+boredom took separate routes. The boredom the task induced showed up in the brain's responses
+to stimuli. The standing disposition to become bored showed up only in resting brain activity,
+recorded before the task began, and left task performance and the stimulus responses
+untouched. The two never met. Craig Lindley and Lennart Nacke, inducing boredom,
+immersion, and flow through the level design of a first-person shooter, found that the Game
+Experience Questionnaire discriminated only two of its seven subscales, challenge and tension,
+while the flow and immersion subscales---the very constructs the study was built
+around---failed to separate the conditions the level design had demonstrably
+produced.\footnote{The flow construct under test is Mihaly Csikszentmihalyi's, the ``«Q21»''
+(qtd. in Lindley and Nacke 1--2).} Miyauchi and Kawasaki's oscillatory signature indexes the
+appraisal a person makes of a task-unrelated thought rather than boredom itself. King and I
+reached the same judgment about our own instrumentation and acted on it: after the pilot study
+with eight participants we dropped EEG from the platform's assessment entirely, and our
+reasons were those this literature keeps running into. On the signal itself we wrote that
+``«Q26»,'' and the comparison with the alternative was decisive, since ``«Q27».'' Eye tracking
+proved both the more accurate measure of whether a student was bored or engaged and the more
+scalable one, because ``«Q28»'' (King and Salvo)---a laptop or tablet already has the camera,
+where EEG needs an electrode array and a trained operator for every participant. That decision
+was made on grounds of accuracy and scale, and made before the reprocessing reported in this
+section had shown what the EEG measurements would and would not support.
+
+% ★ BATCH 4 PARAGRAPHS DELETED BY AUTHOR RULING 2026-08-06. Both the lineage paragraph and
+% the two-moves paragraph are cut: they do not bear on using Heideggerian phenomenology to
+% analyze the physiological data, which is what this section does. Consequences recorded:
+%   - Outline v7 §L1 ¶8 is DROPPED from the module. O-06 (how much to re-present vs cite) is
+%     therefore MOOT for L1.
+%   - The machine-indexed group entries no longer surface in prose: `grp-program-lineage`
+%     (E15, extension-rather-than-resolution) and `grp-vr-phenomenology-framing` (E14, the
+%     refs [13-15] gesture, invoked but inert). Q30 is now UNUSED.
+%   - D-20's one-of-fifty-five observation is dropped with its host footnote.
+%   - ★ CHECK AT L5: outline §B lists the desktop M7.1 hand-forward as REDEEMED partly by
+%     "the unbuilt FCM-phenomenology x instrumentation combination (L1 supplies the warrant,
+%     now definitional as well as bibliographic)". The BIBLIOGRAPHIC half survives in ¶9 and
+%     the DEFINITIONAL half in ¶10, so the warrant still stands; only the program-lineage
+%     narration is gone. No repair needed unless L5 wants the inert-framing point back.
+%   - The study-design sentence the author asked for is folded into ¶7's opening instead.
+%     (Q30 retained in the session bank though now unused; see errata.)
+%   - The Fahlman definition now appears as a footnote at ¶1, cited to Fahlman (69) rather
+%     than to the paper that adopted it, per author ruling.
+%
+% BATCH 5 = the two warrant paragraphs (outline v7 §L1 ¶¶9-10), drafted 2026-08-06.
+%   ★ E02/E03 RE-PINNED against the regenerated synthesis layer this session, as the pack
+%     required. Source: index/Boredom Secondary (Part III)/_synthesis/
+%     boredom-construct-measure-concordance.md §2. Both routes CONFIRM UNCHANGED:
+%       Route 1 (construct-based): 22 units treat profound boredom; 19 carry a hard
+%         instrument (EEG / pupillometry / gaze / blink / ML); intersection EMPTY.
+%       Route 2 (bridge-based): 21 units carry a bridges-to-fcm edge; 19 carry a
+%         hard-instrument operationalizes-measure edge; intersection EMPTY.
+%       ID ranges: FCM-bridging = bor-sec-01-18 (plus 23, 48, 51, 54, 55);
+%         hard-instrumented = bor-sec-21-41. "Barely touch" is accurate.
+%     Grid: 91 of 132 cells populated; the three FCM forms are reachable by SELF-REPORT ONLY
+%       (every hard-instrument column empty across all three rows); the most important
+%       populated cell (profound boredom x self-report, 5 units) is a NEGATIVE — bor-sec-04
+%       argues the Boredom Proneness and Zuckerman scales do not measure profound boredom.
+%   ¶10 renders the two definitional quotations TOGETHER AND ONCE per D-23: Eastwood's
+%     condition (Q02, printed 484 — the body occurrence, not the barred abstract one) beside
+%     the FCM's "nothing at all to be found" (Q03, printed 109). Q04 supplies the ontological
+%     counter. Q22 is DISPLAYED per 0b. Q01 stays barred.
+%   ★ FCM 109/110 RESOLVED — AUTHOR RULING 2026-08-07: the passage is on PAGE 109, and L1 is
+%     correct as drafted. ★ DESKTOP DEBT: desktop M4.1 ¶6 cites 110 for the same passage and
+%     must be corrected to 109 when that section is next opened.
+
+% ★ BATCH 5 ¶8 (bibliographic warrant) DELETED BY AUTHOR RULING 2026-08-06: too metatextual,
+% and the two fields and the gap between them are already established in ¶1. Outline v7 §L1 ¶9
+% is therefore dropped as a paragraph; E02/E03's re-pinned counts are retained in this header
+% for the works-cited and for L5 if the bibliographic half of the warrant is ever wanted.
+
+Fifty-five works on boredom were surveyed for this section, and each was recorded twice over:
+once for which conception of boredom it treats, and once for how, if at all, it measures
+anything. Sorting them that way answers a question that decides what this laboratory data can
+be asked. Of the fifty-five, nineteen measure with a physiological or computational
+instrument---scalp electrodes, pupil diameter, gaze position, blink, or a trained
+classifier---and every one of those nineteen studies a boredom that a person can notice, report,
+and attribute to something. Not one of them studies the boredom Heidegger analyzes. The works
+that do take up his analysis, twenty-two of them, measure nothing at all. The only way anyone
+has reached Heidegger's forms empirically is by asking people, and asking is the one approach
+that two separate bodies of work independently disqualify.
+
+The phenomenological objection to asking is the more fundamental, and it is Heidegger's own. He
+raises it about his own lecture course, which set out to awaken a fundamental attunement in his
+listeners rather than to describe one. ``«Q32»'' (65), he writes, and then states the
+prohibition:
+
+\begin{quote}
+«Q22». (65)
+\end{quote}
+
+\noindent The reason follows in his next sentence, and it is what makes the prohibition more
+than a preference: ``«Q33»'' (65). To ascertain something is to bring it into awareness as an
+object, to make it the thing one is now considering. An attunement, however, is not an object
+within a situation but the way the whole situation is disclosed to the person in it, so
+bringing it forward as an object changes what it was. That is the force of Heidegger's claim
+that ``«Q23»'' (65). The alteration is ordinary enough to recognize: a person absorbed in an
+afternoon, asked how they are finding it, must step out of the absorption to answer, and the
+answer describes the stepping out as much as the absorption. Applied to this experiment the
+consequence is exact. Each participant was asked, after each film, to rate boredom and
+engagement on a seven-item survey. That survey is a legitimate measurement of what the
+participant could recognize and report about the episode. It is not, and on Heidegger's account
+cannot be, a measurement of an attunement, because the asking is itself an
+intervention on what is being asked about.
+
+The empirical objection to asking arrives from the opposite direction and needs no philosophy
+at all. Kim, Seo, and Laine's participants rated their own boredom, and those ratings matched
+none of the physiological measurements taken at the same time. Whatever the ratings recorded,
+it was not what the electrodes and the eye tracker were recording. The survey is therefore the
+only approach that reaches Heidegger's forms, and it is the approach that phenomenology says
+cannot reach an attunement and that the measurement literature shows does not agree with the
+physiological measures. It is worth being exact about what does and does not follow. The claim
+is not that the surveyed works measured profound boredom badly. Nothing in the fifty-five
+measured it. Where profound boredom and self-report appear together, they appear in works that
+discuss both, and the most developed of those is Elpidorou and Freeman's argument that the
+standard boredom scales, the Boredom Proneness Scale and the Boredom Susceptibility Scale among
+them, do not measure Heidegger's boredom at all.
+
+The reason these measures miss these forms is not technical, and it is worth following
+carefully, because the reading this section performs depends on it. Every measure in that
+survey was built to detect boredom as Eastwood defines it, and Eastwood's definition has three
+conditions: a person is bored when they cannot engage attention in satisfying activity, when
+they are aware of that failure, and, third, when they ``«Q02»'' (484). His own examples of the
+third condition are ``this task is boring'' and ``there is nothing to do'' (484). Boredom, so
+defined, always has an address. Something out there is responsible, and the bored person can
+say what. Every measure built on that definition inherits the assumption, because each was
+validated against people reporting exactly that kind of boredom.
+
+Two of Heidegger's three forms withhold that address, and withhold it by construction rather
+than by accident. As I articulated in the preceding section, the first form is boredom
+\textit{by} something nameable: his scene is a four-hour wait at a small railway station, where
+the station is what refuses, where the fight against the wait is visible in every glance at the
+watch, and where the bored person could name the culprit if asked. That form satisfies
+Eastwood's third condition exactly, and a measure calibrated on it will work. The second form
+is different. Heidegger's scene is a dinner party where the food was good, the conversation
+lively, the evening in no way unpleasant, and where only afterward does one realize one was
+bored throughout. Asked at the table, the guest would have denied boredom and been telling the
+truth. Nothing in the evening was responsible, and the guest could not attribute the state to
+anything, precisely because there is ``«Q03»'' (109). Eastwood's third condition is not merely
+unsatisfied here; it is refused on the definition's own terms, since no feature of the
+surroundings is available to carry the cause. The third form withdraws further still.
+Heidegger's phrase for it is that ``«Q04»'' (128): the boredom is occasioned by nothing in the
+situation whatsoever, arising instead from the person's own being. A measure that asks what in
+the surroundings is responsible has nothing to register in either case, not because the measure
+is coarse, but because it puts a question these two forms give no answer to.
+
+Two objections follow from all this, and they are different objections doing different work.
+The first is about measurement. The only evidence that registers boredom as boredom is the
+person's own statement that they were bored; nothing in a gaze trace or a band of scalp
+activity announces itself as boredom, and every physiological pattern reported in this section
+was identified by asking which measurements moved with those statements. The survey is
+therefore the ground the rest of the analysis stands on, and the measurement question is what
+follows from that dependence. The second objection is about definition, and it asks whether the
+boredom those statements report---boredom as Eastwood's three conditions specify it, which is
+what our survey items were written to elicit---is the boredom Heidegger analyzes at all. The
+order matters, because the definitional question is settled before the measurement question can
+be raised. If the forms this section reads were never within reach of a survey built on
+environmental attribution, then no degree of agreement between that survey and any physiological
+measurement bears on whether those forms were present. They were ruled out when the definition
+was chosen, long before anything was recorded.
+
+That dependence is worth stating precisely rather than apologizing for, because the analysis
+below turns on how far it extends. Our original validation logic scored the physiological
+measurements against what participants reported, and this section computes that agreement for
+the first time. It is substantial. Gaze deviation tracks reported boredom at a rank correlation
+of +0.590 and reported engagement at $-$0.585, both at permutation probabilities below 0.005;
+eye closure follows at +0.460 and $-$0.416. The relationships are close to linear---the rank and
+linear coefficients differ by a median of 0.032 across the whole family---so the more a
+participant's gaze wandered from center, and the more of an episode their eyes spent closed, the
+more bored that participant said they had been. Kim, Seo, and Laine, at thirteen participants,
+found no such agreement with any measurement they took. At twelve participants here, several
+associations hold. Where the earlier study could not connect what people said to what its
+recordings showed, this one can.
+
+What does not follow is that either kind of evidence certifies the other, and the pattern of
+results shows why. Put two different questions to the same measurements and they answer in
+different orders. Asked which measurement best matches what participants reported, gaze
+deviation wins decisively. Asked which measurement best separates the three films from one
+another, gaze deviation fails---its differences across films do not approach significance.
+That combination is not a defect, and it is worth saying why, because the second question was
+never this study's question. We did not set out to tell the three films apart by their
+recordings; we set out to find what in the recordings moved with the felt response to them. A
+measurement that tracks the felt response closely and sorts the films poorly is behaving
+exactly as it should, because boredom is not a property of a film. It is what a particular
+person makes of a particular seventeen minutes. S04 is the case that makes this concrete. She
+rated the boring film 1 for boredom and 7 for engagement---the only participant to invert that
+film so completely---while rating the clinical footage 9 and 1. Any measurement keyed to the
+film would score her wrongly twice. A measurement keyed to what she reported follows her
+inversion without difficulty, which is the whole point of scoring against reports rather than
+against the schedule of what was shown.
+
+Pupil dilation is the measurement that yields nothing this section builds on, and saying so
+plainly is better than working around it. It does not track what participants reported---a rank
+correlation of $-$0.172 against reported boredom, nowhere near significance---and while it does
+distinguish the boring tutorial from the clinical footage, several uncontrolled factors could
+produce that difference on their own. The samples were never matched for luminance, and pupils
+respond to light before they respond to anything else. Mean dilation is in fact largest on the
+clinical footage, at 3.51 mm against 3.40 for the interesting film and 3.32 for the boring
+tutorial, which is the opposite of what the brightest sample should produce and suggests that
+whatever is moving these pupils, it is not one thing. A measurement pulled by light, by arousal,
+and by mental effort at once, and pulled by none of them decidedly here, is a measurement to
+report and set aside. The argument that follows rests on the two measurements that did behave
+consistently.
+
+Eye closure is the measurement that answers both questions, and here too the separation is not
+really about the films. It separates the boring tutorial from each of the other two at corrected
+probabilities below 0.002, moving the same way for eleven of twelve participants against the
+clinical footage and for all twelve against the interesting film; participants' eyes were closed
+for roughly a quarter of the boring episodes on average and under a tenth of the others. It also
+tracks what participants said, at +0.460 against reported boredom. Those two facts are one fact.
+The boring tutorial drew the most closure because it drew the most boredom---mean reported
+boredom of 6.9 against 5.4 for the clinical footage and 4.3 for the interesting film---so what
+looks like a measurement sorting three videos is a measurement following the response those
+videos happened to provoke in most people. Measurements that agreed on what boredom is would not
+reorder like this depending on which question is asked. That they do is a finding about what each
+is sensitive to, and it is reported as such rather than resolved by promoting one of them to the
+truth of the matter.
+
+The published corrective to the deficit reading of boredom comes from Elpidorou, who argues
+that boredom does useful work: it informs a person that the present situation has stopped
+satisfying, and it moves them toward one that might. ``«Q20»'' is his formulation, credited to
+Fahlman and colleagues for the underlying claim (330).\footnote{Elpidorou's sentence carries
+``(Fahlman et al., 2013, p. 68)''. The wording is his own---the word ``unstuck'' does not appear
+in Fahlman's paper---and what he credits to Fahlman is the account of what boredom does, which
+matters here because Fahlman is also the source of the definition our study adopted.} That
+corrective is persuasive within its scope, and its scope is the whole of the point. It describes
+a boredom that has an object, announces itself, and can be acted on, which is the first form.
+Extending it to the second and third would be a mistake this section is careful not to make: a
+boredom with no culprit gives nothing to move away from, and a boredom arising from one's own
+being gives nowhere to move. The distinction drawn earlier between the episode a situation
+occasions and the disposition a person carries guards the same ground from the other side.
+Nothing reported here concerns anyone's disposition. Every measurement is of particular people
+watching particular films on particular afternoons, and whether any of them is a person prone
+to boredom is neither asked nor answerable from this data.

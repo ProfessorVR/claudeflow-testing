@@ -1,0 +1,494 @@
+% LAB BOREDOM — module L3, The Findings. GUIDED DRAFTING (desktop recipe), Section 2 run.
+% Session 2026-08-07. Spec: outline v8 §L3 — v7's L3 is VOID (it was organized around film
+% separation from L3.1 onward). This module is built on the criterion analysis instead.
+%
+% ★ GOVERNING RULING (author, 2026-08-07), restated because it determines this module's shape:
+%   film-separation statistics are EXCLUDED ENTIRELY — no 99 contrasts, no Friedman/Wilcoxon
+%   across films, no Holm-surviving contrast list, no "this measure distinguishes the boring
+%   film from the clinical one". The criterion analysis IS the results. Gaze deviation
+%   (per-participant baseline) is the principal finding. The Spearman/Pearson comparison chart
+%   goes in the BODY as an image; the fuller table for non-load-bearing measures to the appendix.
+%   All three films treated equally; the clinical stimulus is not foregrounded.
+%
+% All figures below read from boredom-analysis-v5 out/criterion-validity.csv AFTER the D-39 and
+% D-40 re-runs (2026-08-07). Pooled, n=36 episodes, 12 participants, within-subject z, 20,000
+% within-subject permutations.
+%   gaze deviation (per-participant)  boredom +0.590 (0.0024) | r +0.623 (0.0016)
+%                                     engagement -0.585 (0.0022) | r -0.609 (0.0021)
+%   gaze deviation (per-file)         boredom +0.524 (0.0074) | r +0.574 (0.0036)
+%                                     engagement -0.527 (0.0075) | r -0.590 (0.0030)
+%   eye closure                       boredom +0.475 (0.0173) | r +0.580 (0.0038)
+%                                     engagement -0.435 (0.0279) | r -0.535 (0.0073)
+%   gaze deviation (device-forward)   boredom +0.359 (0.0751) | engagement -0.391 (0.0515) — neither holds
+%   pupil dilation                    boredom -0.172 (0.4037) | engagement +0.036 (0.8608)
+%   cognitive load                    boredom -0.092 (0.6516) | engagement +0.107 (0.5954)
+%   HR                                boredom +0.088 (0.6774) | engagement +0.036 (0.8647)
+% Leave-one-out leverage (2026-08-07): every influential episode SUPPRESSES the Pearson
+%   coefficient. Dropping S06/INT raises gaze r from +0.623 to +0.707; dropping S06/BOR raises
+%   eye closure r from +0.577 to +0.655. No point props either coefficient up.
+%
+% BATCH 1 = the principal finding (gaze deviation). Awaiting author review.
+% ★ FIGURE PENDING: the Spearman/Pearson comparison chart is called for in this batch.
+
+Christine King and I built this experiment to determine whether boredom, engagement, and
+attention span could be identified and tracked in physiological data, using participants' own
+reports of those states as the reference each physiological measure would be judged against.
+The question has an answer, and the answer is yes: eye tracking accomplishes it. Of the measures considered across the
+thirty-six episodes---EEG, pupil diameter, how much of an episode the eyes spent closed, and
+where the eye was pointing---the measures taken by the eye tracker are those that move with what
+participants reported, and the strongest of them is gaze deviation.
+
+How far a participant's gaze wandered from their own habitual direction rises with the boredom
+they reported, at a rank correlation of $+$0.590, and falls with the engagement they reported,
+at $-$0.585.\footnote{A correlation summarizes how closely two quantities move together in a
+single number between $-$1 and $+$1. A value of 0 means they are unrelated: knowing one tells
+nothing about the other. A value of $+$1 means they move together perfectly, so that every
+increase in one is matched by a proportionate increase in the other, and $-$1 means they move
+perfectly in opposite directions. The sign gives the direction of the relationship and the size
+gives its strength, so $+$0.590 and $-$0.585 describe relationships of almost identical
+strength running in opposite directions---gaze wandering further as reported boredom rises, and
+less far as reported engagement rises.} Neither figure could plausibly have arisen by chance: across twenty thousand
+rearrangements in which each participant's ratings were shuffled among their own episodes, an
+association this strong appeared in fewer than one run in four hundred for boredom and fewer
+than one in four hundred and fifty for engagement. The relationship is also close to a straight
+line rather than merely a consistent ordering. Measured as a linear correlation the same
+association reaches $+$0.623 and $-$0.609, slightly stronger than the rank figures rather than
+weaker, which is what happens when the underlying relationship really is proportional and the
+ranking is discarding information rather than protecting against a distortion.
+
+% ****** FIGURE PENDING: Spearman/Pearson comparison chart, body placement.
+\begin{center}
+\fbox{\parbox{0.9\linewidth}{\centering\textbf{****** FIGURE PENDING ******}\\
+The Spearman and Pearson coefficients for every measure, side by side, against both reported
+boredom and reported engagement. Generated from
+\texttt{out/criterion-validity.csv}; the figure pass requires matplotlib, which was absent from
+the environment in which the analysis was last run.}}
+\end{center}
+
+That the two coefficients agree matters more than either does alone. A rank correlation
+establishes only that a participant's episodes fall in the same order on both measures---that
+the film they found dullest is also the film their eye wandered furthest during. A linear
+correlation of the same size establishes something stronger: that the wandering scales with the
+boredom, so that a participant reporting two additional points of boredom shows roughly twice
+the additional deviation of one reporting a single point. Across the whole family of measures
+the two coefficients differ by a median of 0.032, and where they differ at all the linear
+figure is generally the larger. One further check answers the objection that would otherwise be
+obvious---that one or two unusual participants are producing the whole effect. Each participant
+was removed in turn, the remaining eleven were standardized again from the beginning, and the
+correlation recomputed on them alone.\footnote{Removing a whole participant rather than a single
+episode is what the design requires. Each participant's three values are scored against their own
+average, so the three are bound together---remove one episode and the two left behind are still
+centered on a figure that included it. Removing all three of someone's episodes takes out a
+self-contained unit and leaves nothing behind that depends on them.} Had the relationship
+depended on a few people, dropping one of them would have collapsed it. It never does. Across
+all twelve recomputations the correlation stays between $+$0.589 and $+$0.755 against reported
+boredom, and between $-$0.574 and $-$0.728 against reported engagement. The two largest movements
+are upward---removing either of two participants raises the correlation rather than lowering
+it---which means those participants were holding the relationship down rather than creating it.
+The association does not rest on anyone in particular.
+
+Two properties of this measure are worth stating before anything is built on it. It is measured
+against each participant's own habitual gaze direction across their three films, which is what
+allows it to register that someone held their eye differently during one film than another
+without also registering how the headset happened to sit on their face. It is also silent about
+what any particular film does: a participant who found the tutorial absorbing and the clinical
+footage tedious contributes to this association exactly as strongly as one who found the
+reverse, because the measure is scored against what that person reported and not against which
+film they were watching.
+
+% ============================================================================
+% BATCH 2 = eye closure as the second measure, then the sleep-fight results.
+% Drafted 2026-08-07. Verified figures (out/criterion-validity.csv, post D-39/D-40):
+%   eye closure vs boredom    rho +0.475 (perm 0.0173) | r +0.580 (perm 0.0038)
+%   eye closure vs engagement rho -0.435 (perm 0.0279) | r -0.535 (perm 0.0073)
+%   pupil dilation vs boredom -0.172 (0.4037) | vs engagement +0.036 (0.8608)
+% Sleep-fight (computed 2026-08-07, NOT in outline v7; recorded in outline v8):
+%   vs boredom    rho +0.771 | r +0.823, within-subject permutation p < 0.0001
+%   vs engagement rho -0.752 | r -0.782, within-subject permutation p < 0.0001
+%   leave-one-out: every influential episode SUPPRESSES r (drop S06/BOR -> +0.873)
+%   ★ WITHIN-PARTICIPANT PAIRED CONTRAST: each participant's OWN most-boring episode vs their
+%     OWN most-engaging episode. 11 of 12 fought sleep harder on their most-boring episode,
+%     0 the other way, 1 tied (S06, 6/6). Exact sign test two-sided p = 0.0010 = THE FLOOR at
+%     11 pairs. Exact sign-flip permutation agrees at 0.0010.
+%   ★ MANDATORY SHARED-METHOD CAVEAT (outline v8): sleep-fight is a survey item correlated with
+%     other survey items -- same person, same instrument, same moment. It evidences the survey's
+%     internal coherence, NOT independent corroboration from outside the survey. State it every
+%     time the figure appears.
+%   S04 detail: their most-boring episode was CLC (bored 9), most-engaging was BOR (engaged 7);
+%     sleep-fight 6 against 1. Follows the pattern by one of the larger margins in the set.
+% ============================================================================
+
+The second measure to move with what participants reported is how much of an episode they spent
+with their eyes closed. It rises with reported boredom at a rank correlation of $+$0.475 and
+falls with reported engagement at $-$0.435, and as a linear correlation it reaches $+$0.580 and
+$-$0.535. Both hold up against the same shuffling test, appearing by chance in fewer than two
+runs in a hundred for boredom and fewer than three in a hundred for engagement. The measure is
+cruder than gaze deviation and it behaves accordingly: closing the eyes is an all-or-nothing act
+that happens intermittently, where gaze wanders continuously, so a single measure of closure
+compresses a whole episode into one proportion. That it nonetheless tracks what participants
+said, and does so on both questions, is the point. Two independent things the eye does---where
+it points and whether it is open---move together with the same reports.
+
+A third measure of the same experience comes from the survey itself. Participants were asked
+after each film how hard they had fought to stay awake, and the answers track their reported
+boredom closely---a rank correlation of $+$0.771, and $-$0.752 against engagement, both so far
+beyond chance that no rearrangement in twenty thousand came near them. That is a stronger
+association than either eye measure produces, and the reason it is stronger is also the reason
+it counts for less. The sleep question and the boredom question were answered by the same person,
+about the same film, in the same breath, on the same sheet. An association between two items on
+one questionnaire shows that the questionnaire is internally coherent. It cannot show that
+anything outside the questionnaire agrees with it, which is what the eye measures show and what
+this measure, by construction, cannot.
+
+What the sleep item can do is answer an objection to itself, and the answer is the more useful
+result. Drowsiness is not only a response to a film. A participant who slept badly the night
+before will fight sleep through all three episodes, and that has nothing to do with boredom. The
+way to remove it is to let each participant serve as their own control: take the episode that
+participant rated most boring, take the episode the same participant rated most engaging, and
+compare the drowsiness they reported in each. Whatever tiredness they carried into the room is
+present on both sides and cancels. Eleven of the twelve participants fought sleep harder during
+their own most-boring episode than during their own most-engaging one. No participant reported
+the reverse---not one person in the study fought sleep harder during the episode they had called
+their most engaging. The twelfth gave the same figure for both. The probability of that can be worked out without
+any apparatus. If drowsiness had nothing to do with which episode a participant found boring,
+each of the eleven would be a coin toss, and eleven tosses landing the same way happens once in
+2,048 times; doubling that to allow the run to have gone either direction gives about one chance
+in a thousand. With twelve participants that is also the strongest result the sample size can
+express, since a perfect split is the most lopsided outcome available.
+
+% ---------------------------------------------------------------------------
+% FATIGUE-AFTER INTEGRATION (computed 2026-08-07; author: "great finding, integrate it with
+% the rest of the results and clearly link it to the other data sets").
+% The seventh survey item WAS collected and IS in the tree, but had only ever been tested for
+% film separation. Scored against what participants reported for the first time here:
+%   fatigue AFTER  vs boredom    rho +0.640 (perm 0.0010) | r +0.709 (0.0004)
+%                  vs engagement rho -0.616 (perm 0.0019) | r -0.670 (0.0007)
+%   depletion      vs boredom    rho +0.516 (0.0088)      | r +0.549 (0.0055)
+%                  vs engagement rho -0.420 (0.0355)      | r -0.458 (0.0234)
+%   ★ fatigue BEFORE vs boredom  rho +0.071 (0.7229)      -- THE CONTROL, a clean null
+%                  vs engagement rho -0.208 (0.3031)
+%   within-participant (own most-boring vs own most-engaging): fatigue after 10 higher /
+%     1 lower / 1 tied, exact sign test p = 0.0117. Depletion 9/2/1, p = 0.0654 (n.s.).
+% ★ THE INTEGRATIVE ARGUMENT this passage exists to make: the fatigue-BEFORE null is what
+%   defends the survey items against the shared-method objection. If participants were simply
+%   telling a consistent story across one questionnaire, the before-item would correlate too.
+%   It does not. The survey discriminates between what a participant brought into the room and
+%   what the film did to them, which is a discrimination a mere response-style artifact cannot
+%   produce. Link forward to the eye measures, which supply the same conclusion from outside
+%   the survey entirely.
+% ---------------------------------------------------------------------------
+
+The survey's last item completes the picture. Participants were asked how tired they felt after each film as well as
+before it. Fatigue reported afterward tracks reported boredom at $+$0.640 and reported
+engagement at $-$0.616, which makes it the strongest single correlate of boredom anywhere in
+this study---ahead of gaze deviation, ahead of eye closure, ahead of the sleep item. The
+within-participant test agrees: ten of the twelve were more tired after their own most-boring
+episode than after their own most-engaging one, one reported the reverse, and one gave the same
+figure for both.\footnote{The test is an exact sign test: of the eleven participants who did not give
+identical figures for both episodes, count how many went each way, then calculate directly how
+often a split that lopsided would occur if the direction were decided by chance. It occurs
+about once in eighty-five times, a two-sided probability of 0.0117. The same comparison run on
+depletion---the difference between the fatigue reported before a film and after it---points the
+same way but less sharply, at $+$0.516 against reported boredom, with nine of twelve in the
+expected direction and a probability of 0.065, which falls short of the 0.05 conventionally
+treated as the threshold for a result. That is what should be expected. Depletion is built by
+subtracting one reported number from another, and subtracting two imprecise figures yields a
+figure less precise than either, so the same underlying relationship shows through it more
+faintly.}
+
+The item asked before each film is what turns this from a fourth correlation into an argument.
+Fatigue reported \textit{before} watching has no relationship to how boring that film was
+subsequently rated---$+$0.071 against boredom, and $-$0.208 against engagement, neither
+remotely distinguishable from chance. Someone constructing a consistent account of a tedious
+afternoon has no reason to exempt the question about how they felt walking in. It is exempted.
+The survey distinguishes what a participant carried into the room from what the film did to
+them.
+
+Read together, the four measures converge from two directions that do not share a source. From
+inside the survey, three separate questions---how bored, how hard the fight against sleep, how
+tired afterward---move together, while a fourth question about the state preceding the film
+stays flat. From outside it, two measurements taken by an eye tracker that has no access to any
+of those answers move with them: gaze wandering further from its own center as reported boredom
+rises, and eyes spending more of the episode closed. The survey establishes that participants
+are reporting something coherent and specific to the episode rather than a
+standing frame of mind they arrived with. The eye
+measures establish that whatever they are reporting also has a bodily expression that can be
+recorded without asking. Neither alone would carry the claim. Together they describe boredom as
+something that shows itself in what a person says, in how long they can hold their gaze, and in
+how tired they are when it ends.
+
+% ---------------------------------------------------------------------------
+% CASE PARAGRAPHS REBUILT 2026-08-07 against a COMPLETE per-participant breakdown.
+% ★ STANDING RULE (author, 2026-08-07): NEVER draft a results claim from one participant
+%   unless the passage is explicitly about that participant (as the S01 paragraph is). Run
+%   every subject, every time, before writing anything about results. This paragraph was
+%   first drafted from S04 alone and understated the cohort badly as a result.
+%
+% COMPLETE TABLE — each participant's own most-boring vs own most-engaging episode.
+% "+" = the measure moves as the participant's report predicts.
+%   subj   most-boring   most-engaging   gaze     closure    sleep   fatigue-after
+%   R2-01  BOR(8)        INT(6)          +2.58    +0.101     +5      +2
+%   R2-02  BOR(9)        INT(6)          +2.64    +0.223     +3      +2
+%   R2-03  BOR(3)        CLC(8)          +3.75    +0.053     +2      +1
+%   R2-04  BOR(7)        INT(7)          +1.53    +0.007     +2       0 tied
+%   S01    BOR(6)        INT(7)          +2.65    +0.020     +1      +1
+%   S02    BOR(9)        INT(6)          +1.27    +0.127     +6      +3
+%   S03    BOR(9)        CLC(7)          +0.20    +0.105     +6      +5
+%   S04    CLC(9)        BOR(7)          +3.29    -0.033 X   +5      +8
+%   S05    BOR(9)        CLC(5)          -3.40 X  +0.662     +8      +3
+%   S06    INT(8)        BOR(5)          -7.75 X  -0.056 X    0 tied -2 X
+%   S07    BOR(9)        CLC(7)          +4.65    +0.360     +6      +4
+%   S08    BOR(9)        INT(4)          +3.19    +0.471     +3      +2
+% TALLY: gaze 10 agree / 2 contra. closure 10 / 2. sleep 11 / 1 tied / 0 contra.
+%        fatigue-after 10 / 1 tied / 1 contra.
+% S05's gaze figure is computed from the 22% of their episode where their eyes were open (closure
+%   0.7782), which is why it is unreliable rather than contrary.
+% S04's closure miss is 3.3 percentage points with BOTH episodes under 9% -- inside the range
+%   where both count as attentive watching.
+% S06 is the only participant contradicted by more than one measure.
+% ---------------------------------------------------------------------------
+
+Taken one participant at a time, the measures follow what each person said about their own
+episodes with few exceptions. Setting each participant's self-rated most boring episode against
+their self-rated most engaging one, gaze deviation runs in the predicted direction for ten of
+the twelve, eye closure for ten, the sleep item for eleven with one tie and no contradiction,
+and fatigue afterward for ten with one tie. No measure is carried by a handful of participants
+while failing on the rest.
+
+The three exceptions are worth examining rather than counting, because two of them have
+explanations that do not depend on the result and one does not. The first is S04, whose ratings
+ran opposite to the rest of the cohort: S04 rated the tutorial the most engaging of their three
+episodes and the clinical footage the most boring, where ten of the other eleven rated the
+tutorial their most boring. Sorted by what S04 reported, three of the four measures follow.
+S04's gaze wandered 3.29 degrees further during the episode S04 called boring, S04 fought sleep
+at six against one, and S04 finished the episode called boring at nine out of nine for fatigue
+against one out of nine for the episode called engaging, the widest fatigue margin recorded in
+the study. Only eye closure runs the other way, and the size of that difference is what
+matters: 4.8% of the clinical episode against 8.2% of the tutorial, a gap of 3.3 percentage
+points. Both figures sit near the bottom of the cohort, whose median is 9.5%, so S04 kept their
+eyes open through both films and the measure had almost nothing to separate. One measure with
+little room to move runs against S04; three with room to move run with S04.
+
+The second is S05, who spent 78% of the boring film with their eyes shut. S05's closure margin
+is by far the largest in the study, and S05's sleep and fatigue scores follow S05's reports.
+Only gaze runs contrary, and gaze is the measure S05's own data disqualifies: where the eyes are
+closed there is no gaze to record, so S05's figure is computed from the remaining 22% of the
+episode. A number built from a fifth of an episode and a number built from a whole one are not
+the same measurement, and the disagreement is between those two things rather than between S05
+and their eyes.
+
+The third exception is S06, the true anomaly of the study: the one participant whose data does
+not track the subjective reports on any measure. S06 rated the film selected to interest
+as the most boring of the three, at eight out of nine, and rated the tutorial the most engaging.
+Set S06's own most-boring episode against S06's own most-engaging one and every measurement
+either contradicts S06 or says nothing. S06's gaze was 7.75 degrees tighter during the episode
+S06 called boring, where the cohort's gaze widens. S06's eyes were closed less during it. S06
+reported being less tired afterward, not more, and gave the same sleep score for both. Nothing
+here is offered as an explanation, because the data does not supply one; S06 is reported as an
+exception and left standing as one.
+
+S06 has a consequence for every other number in this section, and it is worth stating openly
+rather than leaving for a reader to discover. Every association reported here reaches
+significance with S06 included---that is the finding, and it stands on the full cohort of
+twelve. What changes when S06 is set aside is not whether the results hold but how emphatically.
+The correlation between gaze deviation and reported boredom rises from $+$0.595 to $+$0.706, and
+between fatigue afterward and reported boredom from $+$0.640 to $+$0.767; every other
+association rises comparably and every probability falls.\footnote{The full comparison, with and
+without S06, is set out in the appendix: all eight correlations, the four within-participant
+tallies, and what each looks like at twelve participants and at eleven. It makes an interesting
+demonstration of how much a single case can hold down a result at this sample size.} S06 is
+retained regardless. Nothing depends on the removal, since every association already clears the
+threshold at twelve, and the only thing that would have marked S06 for exclusion is that S06's
+data disagrees---which is a preference rather than a criterion. The figures reported in this
+section are therefore the conservative figures, and the relationships described are stronger
+than they appear.
+
+What these cases confirm is the choice of organizing variable, and it is worth stating plainly
+rather than leaving implied. Sorted by which film was playing, three of the twelve participants
+contradict the cohort, and a film-by-film analysis would record them as noise diminishing an
+effect, since their episodes would be averaged in against reports that ran the other way. Sorted by what each participant reported, two of those three cease to be
+exceptions at all and take their place among the confirming cases, while the third becomes
+something more useful than noise: a single identifiable participant whose measurements do not
+follow their own account, available to be examined rather than averaged into the result. The
+organizing variable is not a presentational preference. It determines whether the study's most
+interesting participants are evidence or interference.
+
+% ---------------------------------------------------------------------------
+% BATCH 3 = the S01 case (author-approved 2026-08-07 after verification).
+% Figures verified this session against out/features-pooled-wide.csv, out/survey-episodes.csv,
+% and a per-sample pass over the Round 1 crop files using the layout-aware reader:
+%   S01 BOR self-report: boredom 6/9, engagement 3/9, sleep-fight 2, minutes-until-bored 5.
+%   S01 BOR eye closure 0.0895 -- 17th percentile of the cohort's self-rated MOST-BORING
+%     episodes, 67th percentile of their MOST-ENGAGING ones.
+%   Sleep-fight 2 is the LOWEST of the nine participants reporting boredom >= 6 on that film
+%     (others 6,7,7,8,8,9,9,9). Rank 1 of 9; probability by chance 1/9 = 0.111 -- NOT significant,
+%     and the prose must not imply otherwise.
+%   Minutes-until-bored 5 is the longest of that group (others 0.42, 0.5, 0.5, 2, 2, 3, 4, 4).
+%   ★ PER-SAMPLE GAZE CONCENTRATION on the boring film, all 8 R1 participants verified
+%     (each cell's closure fraction reproduces the analysis exactly):
+%       S08 5.615 deg | S01 8.788 | S05 9.510 | S02 10.619 | S07 10.855 | S03 11.302 |
+%       S04 11.741 | S06 14.181   (median offset from that participant's own centre)
+%     S05 and S08 are EXCLUDED from the comparison: their eyes were shut for 78% and 58% of
+%     the episode, so concentration computed on the fragments left over is an artifact.
+%     Among the six with eyes substantially open, S01 is the tightest.
+%   S01 held gaze within 10 deg of their own centre 55.8% of the time; S04 40.4%.
+% ★ NOT CLAIMED: that S01 and S04 looked at the SAME screen locations. Their eye-in-head
+%   directions sit 18.2 deg apart with 24% distributional overlap, but head pose was never
+%   instrumented, so eye-in-head cannot be converted to screen position. The author's own
+%   observation of the overlay recordings is the basis for any same-location claim, and is
+%   attributed as such. Plan for the video analysis that WOULD settle it, should it ever be
+%   wanted: PLAN-S01-S04-GAZE-VIDEO-2026-08-07.md.
+% ---------------------------------------------------------------------------
+
+S01 complicates the account in the opposite direction, and the complication is
+instructive. S01 reported the tutorial as genuinely boring---six of nine, with engagement at
+three---and then behaved throughout as though it were not. S01's eyes were shut for 9% of the
+episode, which places that episode among the cohort's engaged episodes rather than its bored episodes. S01 reported the least fighting of sleep of any participant who called that film boring,
+scoring two where the other eight in that group scored between six and nine, and S01 took five
+minutes to become bored, the longest of that group, where several others reported boredom
+setting in within a minute.
+
+What separates S01 from everyone else is the gaze. Measured frame by frame across the
+episode, S01's eye stayed closer to its own habitual direction than that of any other
+participant who watched the film with the eyes meaningfully open, holding within ten degrees of
+that direction for 56% of the episode.\footnote{S05 and S08 show tighter figures still and are
+set aside rather than counted, having spent 78% and 58% of the episode with the eyes shut. The
+concentration measure is then computed on whatever fragments remain open, and brief openings
+cluster tightly by construction, so concentration is interpretable only for a participant who
+actually watched. Among the six who did, the ordering runs from S01's 8.8 degrees to the widest
+at 14.2.} That is tighter than S04, who rated the same film the most engaging of the three and
+who held within ten degrees for 40% of it. S04, enjoying the tutorial, looked around it more
+than S01, who was bored by it.
+
+Read against the definition the study was built on, this is anomalous. Boredom there is a
+failure to engage attention, so a bored viewer should show attention going somewhere else. This
+participant's attention went nowhere else. What the case suggests instead is that the capacity to
+hold attention is separable from whether the material rewards it---that a person can find
+something dull and continue to attend to it closely, and that the two facts can be measured
+independently and can disagree. Neither the self-report nor the eye measures can be called wrong
+here. They are reporting different things, and the divergence is the finding.
+
+The case will not carry statistical weight and is not offered as though it could. Being the
+lowest of nine on the sleep item establishes nothing on its own. What the case does is mark a
+possibility the cohort-level results cannot address, and identify the participant in whom it
+could be examined further: namely, the power of attention span, and the possibility, if not the
+likelihood, that eye tracking can be used to identify and measure it.
+
+% ---------------------------------------------------------------------------
+% BATCH: the order control (outline §L3.10 / D-24) and the EEG statement (§L3.8).
+% Drafted 2026-08-07 while the D-41 composite re-run was in progress. Neither depends on
+% the composite, so neither is affected by that change.
+%
+% ORDER CONTROL, verified against the pre-D-41 outputs (these figures do not move with the
+% composite change since they are raw per-cell values):
+%   S01 saw BORING second and INTERESTING last: closure BOR 0.0895 > INT 0.0698.
+%   S05 saw the same order:                     closure BOR 0.7782 > INT 0.1394.
+%   In both, the LAST-VIEWED film carries the LOWER closure, which is the opposite of what a
+%   fatigue-accumulation account predicts.
+%   Cohort: boring sits above interesting on closure in 12 of 12.
+%   ★ AT n = 2 THIS IS A CHECK, NOT AN ARGUMENT, AND THE PROSE SAYS SO (D-24).
+%
+% EEG: 0 of 5 surfaces reach significance; no pairwise comparison survives correction; the
+%   best surface is default-mode power at Friedman p = 0.1969 with 6 of 8 moving the same way
+%   on the two contrasts involving the boring film. R1-only, N=8, never repeated.
+%   Framing must match L1: a direction worth noting, not a result. Never per-channel
+%   significance for a channel that does not reach it (register v8 standing rule).
+% ---------------------------------------------------------------------------
+
+Ten of the twelve participants watched the boring film last, which raises an obvious question
+about whether the eye measures are tracking boredom or simply tiredness accumulating across an
+afternoon. Two participants happen to answer it. They were the first two through the protocol,
+before the viewing order was fixed, and they saw the boring film second and the interesting
+film last. If the pattern were an artifact of sequence, their last-viewed film should show the
+most eye closure. It does not. In both cases the film they watched last carries the lower
+figure, and the boring film watched earlier carries the higher one---0.09 against 0.07 for the
+first participant, and 0.78 against 0.14 for the second, a difference of a kind no ordering
+effect would produce. Across the whole cohort the boring film sits above the interesting one on
+eye closure in twelve cases out of twelve, so the pattern does not depend on the two who saw a
+different sequence. At two participants this is a check rather than an argument, and it is
+offered as one: it cannot rule out an order effect, only demonstrate that the effect is not
+manufactured by the order in the only two cases where the two can be told apart.
+
+The EEG produced nothing this section can use, and the shape of the failure is worth recording
+because it is not a failure of equipment. Five measures were derived from the recordings, and
+none distinguishes what participants reported at conventional significance. The channel is also the study's thinnest: it was recorded in the
+first round only, at eight participants, and was not carried into the second.
+
+% ---------------------------------------------------------------------------
+% THE DIVERGENCE DECOMPOSITION (the rebuilt keystone). Drafted 2026-08-07 on the D-41
+% composite: eye closure + gaze deviation (per-participant baseline). Pupil is OUT.
+%
+% Verified against out/keystone-decomposition.csv after the D-41 run:
+%   BOR  9 concordant-bored, 3 reverse                       (0 divergent, 0 concordant-engaged)
+%   CLC  5 divergent, 4 concordant-engaged, 3 concordant-bored
+%   INT  4 divergent, 7 concordant-engaged, 1 concordant-bored
+%   ALL 36: divergent 9 | concordant-engaged 11 | concordant-bored 13 | reverse 3
+%   ★ Every one of the 12 tutorial composites is NEGATIVE -- no participant's eye measures read
+%     as engaged on that film, including the three who did not report boredom (S04, S06, R2-03,
+%     who are the 3 'reverse' cells).
+% Sensitivity sweep on the clinical film (out/keystone-composite-sensitivity.csv):
+%   eye closure alone  -> 7 divergent
+%   gaze alone         -> 3 divergent
+%   both (baseline)    -> 5 divergent
+%   Both measures independently produce divergence in the same direction; no weighting choice
+%   creates it.
+% ★ FILM-NEUTRAL FRAMING per the governing ruling: the count across all 36 episodes leads;
+%   the concentration on clinical and interest films is an observation, not the frame.
+% ---------------------------------------------------------------------------
+
+Everything so far has treated the two kinds of evidence separately. Setting them against each
+other episode by episode gives the section its central result. For each of the thirty-six
+episodes the two eye measures are combined into a single figure, positive where the eyes behaved
+as they did during that participant's more engaged episodes and negative where they behaved as
+during the less engaged episodes, and that figure is placed beside what the participant said. Four
+outcomes are possible: both say engaged, both say bored, or they disagree in one of two
+directions.
+
+Twenty-four of the thirty-six episodes agree. Thirteen have both the eyes and the participant
+reporting boredom; eleven have both reporting engagement. In nine episodes the eyes read as
+engaged while the participant reported boredom. In the remaining three the eyes read as
+disengaged while the participant reported no boredom.
+
+The nine matter most, because they are the shape this section set out to look for.
+A participant whose eyes hold steady and stay open through an episode they afterward describe as
+boring is not producing a contradiction that one measure has to win. The eyes report what the
+body did; the participant reports how the episode was to live through; and the two can differ
+without either being wrong.
+
+Whether the divergence depends on how the two measures were combined can be tested directly, and
+it does not. Taking eye closure by itself produces the divergence in seven cases on the clinical
+footage; taking gaze deviation by itself produces it in three; the two combined produce five.
+Each measure yields the pattern on its own, and the combination sits between them rather than
+manufacturing something neither contains. No weighting decision creates this result, which is
+the objection any composite invites.
+
+% ★ P27 CUT 2026-08-09 (author approved). The deleted paragraph claimed that all twelve
+% tutorial composites being negative was a finding. VERIFICATION SHOWED IT IS NEARLY AN
+% ARTIFACT: the composite is a within-subject z, so each participant's three values sum to
+% EXACTLY zero (verified: +0.000000 for all twelve), which makes a participant's worst episode
+% negative BY CONSTRUCTION. The tutorial was the worst episode for 11 of 12 participants, so
+% "all twelve negative" follows almost automatically. It is also a film-ranking claim, which
+% the governing ruling excludes.
+%   What survived verification: R2-03 alone is a clean body-versus-report case on that film --
+%   closure z -1.40 AND gaze z -1.40, both measures agreeing the episode was the worst of the
+%   three, against a reported boredom of 3 and engagement of 6. S06 adds nothing beyond the
+%   anomaly already discussed. S04 is NOT a body-versus-report case at all: closure z -1.41
+%   against gaze z +0.31, so the two measures disagree with EACH OTHER and the composite is
+%   negative only because closure outweighs gaze.
+%   If R2-03 is ever wanted, it belongs with the case paragraphs, not in a paragraph about a film.
+%
+% ★★ FIGURES — AUTHOR INSTRUCTION 2026-08-09: THIS IS THE HEART OF THE RESULTS AND NEEDS
+%    MULTIPLE FIGURES PLACED THROUGH IT, not one summary chart at the end. Insert figures in
+%    and around these paragraphs so a reader can see the results rather than only read them.
+%    Candidates, in the order the prose introduces them:
+%      1. Spearman/Pearson comparison chart for every measure against both criteria
+%         (already flagged as PENDING earlier in this module).
+%      2. Per-participant scatter of gaze deviation against reported boredom, 36 episodes,
+%         within-subject z, so the individual points and the fitted relationship are visible.
+%      3. The same for eye closure.
+%      4. The within-participant paired plots -- own most-boring vs own most-engaging -- for
+%         gaze, closure, sleep-fight and fatigue-after, showing the 10/10/11/10 tallies as
+%         connected pairs rather than as counts.
+%      5. The four-category decomposition across all 36 episodes.
+%      6. The with/without-S06 comparison (or hold this one for the appendix).
+%    matplotlib is now installed and the 72 tree figures regenerate, so these can be produced.
