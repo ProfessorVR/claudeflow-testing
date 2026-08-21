@@ -60,3 +60,19 @@ A colon-introduced quotation keeps its capital **only when the quoted span is a 
 sentence**. A fragment introduced by a colon is bracket-lowercased like any other
 mid-sentence quotation. This tightens the desktop-section rule, which had treated
 colon-introduction alone as sufficient warrant for keeping the capital.
+
+## 6. Locus errata found 2026-08-12→15 (L4 drafting session) — PDF-page-vs-folio trap, four instances
+
+The archon verify-quote page field is PDF/chunk-based, NOT the printed folio. Every locus
+below was corrected by folio read (running head or page numeral on the rendered page).
+
+| where | wrong pin | folio-read correction | status |
+|---|---|---|---|
+| bor-sec-10 digest + L1 ¶3 cite | Quaranta mood sentence "p. 38" | **p. 37** | L1 FIXED 2026-08-13 (author-approved); index entry correction owed |
+| Q07 bank locus + L1 ¶2 cite + WC stub | "VOLUME pp. 207–208" | **p. 178** (chapter folios 177–203-region) | L1 FIXED 2026-08-15 (author-approved); bor-sec-04 loci are chapter-internal (+176 to volume) |
+| outline v8 §G ledger | FCM "holds us in limbo…" "pp. 84–85" | **p. 87** (desktop prose already correct) | outline pin superseded; L4 renders (87) |
+| (tool output only) | FCM attunement-ascertainment "pp. 62–63" | **p. 64** | L4 renders (64) |
+
+**Standing rule reaffirmed:** never cite from the verify tool's page field; folio-read every
+locus. The standalone E&F PDF is an **uncorrected proof** paginated 1–27 — the published
+volume (Hadjioannou ed.) governs wording and pagination for MLA.
