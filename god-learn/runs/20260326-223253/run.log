@@ -1,0 +1,524 @@
+[god-learn] $ python3 scripts/retrieval/query_chunks.py hexis and habituated phantasia --k 8 --overfetch 30 --include_docs --print_json
+{
+  "query": "hexis and habituated phantasia",
+  "config": {
+    "chroma_dir": "vector_db_1536",
+    "collection": "knowledge_chunks",
+    "k": 8,
+    "overfetch": 30,
+    "where": null,
+    "filters": {
+      "require_my_copy": false,
+      "collection_filter": null,
+      "keep_biblio": false
+    },
+    "include_docs": true,
+    "use_highlights": false,
+    "highlights_index": "scripts/highlights/highlight_index.json",
+    "highlight_alpha": 0.02,
+    "highlight_cap": 5
+  },
+  "results": [
+    {
+      "raw_rank": 1,
+      "chunk_id": "03e0139db7ac3f52:00010",
+      "distance": 0.6676811575889587,
+      "path_rel": "rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf",
+      "page_start": 16,
+      "page_end": 18,
+      "text": "62 Ibid., III, 11, 434 a 5-7: «Sensitive phantasia, then, as it has been said, exists also in the other animals».\n\nJ. anc. philos. (Engl. ed.), São Paulo, v.7, n.1. p. 19-48, 2013. DOI: http://dx.doi.org/10.11606/issn.1981-9471.v7i1p19-48\n\nJournal of Ancient Philosophy ISSN 1981-9471 - FFLCH/USP www.revistas.usp.br/filosofiaantiga\n\nIn order to fully understand what the Stageirite philosopher is saying about\n\nsensitive phantasia (αἰσθητικὴ φαντασία) and as we shall examine later about\n\ncalculative or deliberative phantasia (λογιστικὴ ἢ βουλευτικὴ φαντασία), it is\n\nnecessary first to explain some of his views related to desire (ἐπιθυμία) and animal\n\nmovement (κίνησις). Aristotle identifies two kinds of desire (ἐπιθυμία). David Ross\n\nsays that «desire, however, is of two kinds, wish [βούλησις] or rational desire, which\n\ndesires the good, and appetite [ὄρεξις] or irrational desire, which desires the apparent\n\ngood. Or, to put the antithesis otherwise, wish is for future good, appetite for present\n\npleasure mistaken for absolute pleasure and absolute good»63:\n\n«ἡ γὰρ βούλησις ὄρεξις·...ἡ γὰρ ἐπιθυμία ὄρεξίς τίς ἐστιν»64.\n\nThe Stageirite philosopher stresses that appetite is the cause of movement or the\n\nmoving power in animals:\n\n«(κινεῖται γὰρ τὸ κινούμενον ᾗ ὀρέγεται, καὶ ἡ ὄρεξις κίνησίς τίς ἐστιν ἢ ἐνέργεια), τὸ δὲ κινούμενον τὸ ζῷον· ᾧ δὲ κινεῖ ὀργάνῳ ἡ ὄρεξις, ἤδη τοῦτο σωματικόν ἐστιν·»65\n\nAlso, in another perhaps important remark Aristotle specifically notes that\n\nanimals cannot be appetitive without phantasia («ὀρεκτικὸν δὲ οὐκ ἄνευ\n\nφαντασίας·»)66. Appetite moves the animal but not without the mediation of\n\nphantasia. And this kind of phantasia is what the philosopher calls sensitive\n\nphantasia.\n\nVery slight traces of sensitive phantasia are found in indefinite animals, since\n\nthese creatures have the capacity to perceive objects that are in contact with them and\n\nin this way they can discriminate which objects are pleasant or unpleasant to them.\n\nBut they cannot sense objects at a distance, and as Aquinas says «the motion of\n\n63 Sir David Ross, op. cit., p. 91.\n\n64 Aristotle, op. cit., III, 10, 433 a 23-26: «For wish is appetite;…for desire is a form of appetite».\n\n65 Ibid., III, 10, 433 b 17-19: «(for the animal which is set in motion is set in motion in so far as it desires, and desire is a kind of motion or actuality), and that which is set in motion is the animal; and the instrument by which desire moves it is something bodily».\n\n66 Ibid., III, 10, 433 b 28-29.\n\nJ. anc. philos. (Engl. ed.), São Paulo, v.7, n.1. p. 19-48, 2013. DOI: http://dx.doi.org/10.11606/issn.1981-9471.v7i1p19-48\n\nJournal of Ancient Philosophy ISSN 1981-9471 - FFLCH/USP www.revistas.usp.br/filosofiaantiga\n\nphantasy does not remain in them after the apprehension of the sense»67. However in\n\nanimals other than indefinite creatures, in other words in animals that possess more\n\nthan one sense (normal animals), and for this reason they can discriminate even the\n\nobjects at a distance, the product of phantasia or phantasma remains in them even\n\nafter the sense object is gone. Therefore, the difference between the indefinite and\n\nsensitive kind or grade of phantasia is based on their capacity to perceive and retain a\n\nsense object (see table 3).\n\nIrrational Animals\n\nSenses of Taste, Touch, Smell, Sight and Hearing = they can sense: (a) objects in\n\ncontact with them, and (b) objects at a non contact-distance with them\n\nSensitive Phantasia\n\nPhantasmata (Images/Representations of Taste, Touch, Smell, Sight and Hearing) =\n\nthese animals have the ability to retain phantasmata after the sense object is gone\n\nTable 3\n\nFinally there is a passage in De Anima that has puzzled many ancient\n\ncommentators and contemporary scholars. Aristotle in Book III, Chapter 3, says that\n\nthe ant, the bee and the scolex do not have phantasia:\n\n«εἶτα αἴσθησις μὲν ἀεὶ πάρεστι, φαντασία δ᾽ οὔ. εἰ δὲ τῇ ἐνεργείᾳ τὸ αὐτό, πᾶσιν ἂν ἐνδέχοιτο τοῖς θηρίοις φαντασίαν ὑπάρχειν· δοκεῖ δ᾽ οὔ, οἷον μύρμηκι ἢ μελίττῃ ἢ σκώληκι»68.\n\nDavid W. Hamlyn says that this passage «is puzzling since it is doubtful whether\n\nAristotle would have denied imagination to ants and bees»69. I agree with Hamlyn’s\n\n67 St. Thomas Aquinas, The Commentary of St. Thomas Aquinas on Aristotle’s Treatise On the Soul, translated by R. A. Kocourek (St. Paul, Minnesota: College of St. Thomas, 1946), p. 19.\n\n68 Aristotle, op. cit., III, 3, 428 a 8-11: «And then sense is always present, but not phantasia. But if [phantasia] was the same in actuality [with sense], it would be possible for all beasts to have phantasia; but it seems not to be the case; as the ant, the bee and the scolex».\n\nJ. anc. philos. (Engl. ed.), São Paulo, v.7, n.1. p. 19-48, 2013. DOI: http://dx.doi.org/10.11606/issn.1981-9471.v7i1p19-48\n\nJournal of Ancient Philosophy ISSN 1981-9471 - FFLCH/USP www.revistas.usp.br/filosofiaantiga\n\nremark and I argue that it is not possible for Aristotle to deny some kind of phantasia",
+      "meta": {
+        "path_rel": "rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf",
+        "is_notes": false,
+        "content_type": "text",
+        "author_raw": "Papachristou, Christina",
+        "mtime": 1771101203,
+        "has_bboxes": true,
+        "cleaning_version": "clean_v1",
+        "is_my_copy": false,
+        "pdftotext_version": "24.02.0",
+        "doc_id": "03e0139db7ac3f52",
+        "is_clean_copy": true,
+        "page_end": 18,
+        "chunk_index": 10,
+        "source_method": "pymupdf+bbox+marker_tables(2)",
+        "bboxes": "[{\"page_num\": 16, \"coords\": [88.99850463867188, 529.656005859375, 506.44573974609375, 766.7169189453125], \"blocks\": [[88.99850463867188, 529.656005859375, 506.4151611328125, 666.1569213867188], [89.00251770019531, 671.8017578125, 506.44573974609375, 708.7568969726562], [89.00550842285156, 714.2817993164062, 506.35162353515625, 749.1968994140625], [89.00851440429688, 754.841796875, 389.7008056640625, 766.7169189453125]]}, {\"page_num\": 17, \"coords\": [50.3997802734375, 35.61199951171875, 545.1142578125, 766.6531372070312], \"blocks\": [[292.6342468261719, 35.61199951171875, 545.1142578125, 60.9119987487793], [50.3997802734375, 35.61199951171875, 192.92977905273438, 72.91199493408203], [252.2405548095703, 137.3874053955078, 345.54443359375, 149.38380432128906], [234.83990478515625, 158.14735412597656, 363.0428771972656, 170.1437530517578], [92.03949737548828, 200.86732482910156, 505.5509948730469, 212.8637237548828], [116.63999938964844, 221.50733947753906, 481.1009216308594, 233.5037384033203], [213.23989868164062, 262.981201171875, 384.5690002441406, 276.34375], [101.04000091552734, 305.70111083984375, 496.6822204589844, 319.06365966796875], [108.0, 327.8272399902344, 492.6087951660156, 339.8236389160156], [279.2398986816406, 356.3410949707031, 318.5762634277344, 369.3251037597656], [90.00050354003906, 395.5810852050781, 322.7687683105469, 409.2697448730469], [111.60055541992188, 429.30108642578125, 507.8295593261719, 442.66363525390625], [89.99952697753906, 449.94110107421875, 507.8498840332031, 463.30364990234375], [89.99996185302734, 471.30108642578125, 507.9210205078125, 484.98974609375], [89.99996948242188, 492.9010925292969, 507.9320068359375, 506.2636413574219], [89.99996948242188, 515.0272216796875, 236.55198669433594, 527.0236206054688], [89.99996948242188, 541.0534057617188, 320.27667236328125, 554.5897216796875], [90.00151062011719, 575.8760375976562, 507.7732849121094, 602.3496704101562], [111.60054779052734, 620.8209838867188, 507.88201904296875, 634.1835327148438], [90.00103759765625, 642.9471435546875, 507.7099914550781, 654.9435424804688], [90.00103759765625, 662.8209838867188, 507.9110412597656, 676.5096435546875], [90.00003051757812, 685.9071044921875, 181.26524353027344, 697.9035034179688], [89.99903106689453, 704.73583984375, 507.44293212890625, 737.6127319335938], [89.99932861328125, 743.257568359375, 507.398193359375, 766.6531372070312]]}, {\"page_num\": 18, \"coords\": [50.3997802734375, 35.61199951171875, 545.1142578125, 513.1898193359375], \"blocks\": [[292.6342468261719, 35.61199951171875, 545.1142578125, 60.9119987487793], [50.3997802734375, 35.61199951171875, 192.92977905273438, 72.91199493408203], [111.60098266601562, 134.1474151611328, 507.7230224609375, 146.14381408691406], [90.00094604492188, 152.9808349609375, 507.84686279296875, 168.18988037109375], [90.00094604492188, 175.78082275390625, 507.9379577636719, 190.9898681640625], [90.00094604492188, 200.9873809814453, 507.91796875, 213.30987548828125], [90.00091552734375, 223.30738830566406, 507.91497802734375, 235.6298828125], [90.00088500976562, 245.5074005126953, 507.8808288574219, 257.82989501953125], [90.00088500976562, 267.827392578125, 507.81768798828125, 280.14990234375], [90.00090026855469, 289.4273681640625, 507.70989990234375, 301.42376708984375], [90.00090026855469, 307.6736145019531, 390.1167297363281, 322.18377685546875], [90.0029296875, 336.2135009765625, 396.1170959472656, 349.7498779296875], [111.6029052734375, 369.7073669433594, 507.72491455078125, 381.7037658691406], [90.00387573242188, 390.34735107421875, 218.5666961669922, 402.34375], [90.00287628173828, 418.4361267089844, 507.732177734375, 459.66986083984375], [111.60192108154297, 479.6273498535156, 507.72369384765625, 491.6237487792969], [90.00189208984375, 499.5011901855469, 507.676513671875, 513.1898193359375]]}]",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf",
+        "page_start": 16,
+        "clean_sha256": "878783bfe82e8afb516252b559636cdb628be32f4c08154e440bc9b0b9d94f72",
+        "year": 2013,
+        "sha256": "f9beb484b6dd0be4e41787a0bd3adc5a43b174be936173809e01f37e1ec70c5e",
+        "collection": "rhetorical_ontology",
+        "title_raw": "Three Kinds or Grades of Phantasia in Aristotle's De Anima",
+        "is_table": false,
+        "is_image": false,
+        "qualifier": "Clean Copy"
+      },
+      "rank": 1
+    },
+    {
+      "raw_rank": 2,
+      "chunk_id": "0950ef01880ad8ae:00085",
+      "distance": 0.6916685104370117,
+      "path_rel": "rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+      "page_start": 167,
+      "page_end": 169,
+      "text": "Before closing our remarks on Spinoza, we should comment on the fact that, after all these pages, we have hardly mentioned what people seem to note most of all in Spinoza; namely: his relation to the Cartesian dualism, as shown in the distinction between thought and extension. According to Spinoza, God has infinite attributes; but only two of them are mentioned, the Cartesian mind-body pair. But Spinoza's position at a watershed moment is to be interpreted not merely in terms of the historical streams that have followed him. Admittedly, if we look only at this latter side of the watershed, his reconversion of Des-\n\nSCENE 147\n\ncartes' dualism into a monism of one Substance looks central. Leibniz has said: \"No substance without action, no body without motion,\" a formula made to order for our purposes. And the Cartesian dualism was certainly the future in the sense that it led eventually into the subject-object pair of German idealism, and so finally to Hegel's programmatic replacement of \"substance\" by \"Subject.\" But in its actual proportions his Ethics, just as this work is in itself, considered without reference to subsequent developments in history, is as much a theology as it is an instance of naturalism; and herein resides its dramatistic stress upon problems of action and passion, rather than the scientist stress upon knower and known (subject and object).\n\nIndeed, if you start trying to trace the alignments in Spinoza's philosophy from the scientist point of view, rather than from the dramatist point of view, thus starting from the mind-body pair rather than the action-passion pair, you will find yourself quickly involved in confusion. Later in the history of philosophy, the problem becomes simple, as mind is flatly equated with the active and body flatly equated with the passive. But Spinoza's philosophic enterprise (in equating idea with ideatum, the \"order and connection of ideas\" with the \"order and connection of things,\" and in treating both thought and extension as attributes of God) cuts across this on the bias. The mind, he tells us at the beginning of Book III, is more passive in proportion as it possesses inadequate ideas, and more active in proportion as it possesses adequate ideas. There is in us exaedy as much mental activity as there is bodily activity, and exactly as much mental passivity as bodily passivity. Desire is simply the consciousness of bodily appetite. It is man's essence to desire, hence the striving for self-preservation is simultaneously physical and mental. Pleasure is as truly a passive in his system as is pain, the difference being that pleasure accompanies a transition towards greater perfection (it is in the direction of greater reality, or power of action) and pain accompanies a transition towards less perfection. Intellect and will are both passive.\n\nConsequently, there can be no alignment of terms constructed by derivation from the quasi-scientific Cartesian pair (thought and extension). But the alignment constructed about the pre-scientific (or \"extra-scientific\") pair, the alignment sought in accordance with dramatistic admonitions, is almost pat. For instance:\n\nself-caused infinite (positive) God (Substance) natura naturans freedom\n\n(that is free which exists solely by the necessity of its own nature; its actions are determined by itself alone)\n\nexistence in itself (eternity) conceived through itself * indivisibility (the whole, One) intrinsic reason and intuition\n\nperfection\n\nvirtue (= power) good (in harmony with our useful to man determined to actions by reason adequate ideas**\n\nA Passive ctive\n\nexternally caused finite (negative) modes natura naturata bondage\n\n(that is constrained which is determined by something external to itself to a fixed and definite kind of existence or action) existence in something else conceived through something else\n\ndivision (the parts) extrinsic intellect (except the absolute intellect)j will, opinion, imagination\n\nimperfection (but see qualifying remarks in preface to Book IV) infirmity nature) bad (contrary to our nature)\n\nhurtful to man determined to actions by emotion inadequate ideas\n\nThe list is not exhaustive. And it fails to indicate the third element in the design, the bridging devices for translating us from the bondage of the passions to the sovereignty of action. For such a function there is necessarily an ambiguous term that pontificates by leading into both realms. This function is performed in human agents by the conatus, the endeavor (and its corresponding desires) of each man to survive. Since men are necessarily but parts of the total divine Substance, the human essence is limited, and our desires are beset by confused and inadequate ideas. To this extent, the desires that characterize our nature",
+      "meta": {
+        "path_rel": "rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+        "mtime": 1774299079,
+        "bboxes": "[{\"page_num\": 164, \"coords\": [52.685546875, 77.0859375, 357.1727600097656, 531.1337890625], \"blocks\": [[69.70703125, 77.0859375, 338.80859375, 111.59450048953295], [53.49609375, 119.1328125, 354.09002685546875, 198.9241513684392], [52.685546875, 197.38671875, 357.1727600097656, 489.37890625000006], [71.328125, 496.67871093750006, 341.19000244140625, 531.1337890625]]}, {\"page_num\": 165, \"coords\": [54.0546875, 40.3623046875, 350.5527648925781, 430.8090733643621], \"blocks\": [[69.953125, 40.3623046875, 333.9796447753906, 176.02487841807306], [54.0546875, 184.84765625, 350.5527648925781, 430.8090733643621]]}]",
+        "sha256": "4b3bc749bfd2f6e0252a84c899e4e66d99329aa4481d7c13a92ba5f24dde39b5",
+        "author_raw": "Burke, Kenneth",
+        "is_image": false,
+        "chunk_index": 85,
+        "is_notes": false,
+        "page_start": 167,
+        "is_clean_copy": false,
+        "has_bboxes": true,
+        "source_method": "marker+bbox",
+        "content_type": "text",
+        "year": 1945,
+        "doc_id": "0950ef01880ad8ae",
+        "qualifier": "My Copy",
+        "is_table": false,
+        "pdftotext_version": "24.02.0",
+        "clean_sha256": "b605d2130824d4f053766a03c0227baa9de7da5c40a845fb585b668ef74a927c",
+        "cleaning_version": "clean_v1",
+        "page_end": 169,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+        "title_raw": "A Grammar of Motives",
+        "collection": "rhetorical_ontology",
+        "is_my_copy": true
+      },
+      "rank": 2
+    },
+    {
+      "raw_rank": 3,
+      "chunk_id": "c2cb9cd00b7724ed:00143",
+      "distance": 0.7095811367034912,
+      "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+      "page_start": 279,
+      "page_end": 281,
+      "text": "common\n\ncommon.\n\nson are\n\nORDER notable, or solemn experience. Thus, wc participation in a .... , , . once saw the history of a human society m miniature, grounded in a rhetoric of primitive magic. Some boys, about ten years of age, had been playing in a vacant lot. They stirred up a rattlesnake, which the father of one boy killed with a hoe. Then they had their pictures taken, dangling the dead snake. Immediately after, they organized the Rattle- snake Club. Their members were made consubstantial by the sacrifice of this victim, representing dangers and triumphs they had shared in The snake was a sacred offering; by its death it provided the spirit for this magically united band. (We said that the incident was a human society in miniature. We had in mind the fact that there was also an electing of officers and the collecting of dues. The matter of offices and dues promptly gave rise to quarrels and cliques—thus quickly was the solemnizing spirit of the snake god sacrificed a second time, as there emerged the rhetoric of the Scramble, the discordancies of Babel.) All told, there is the self-abnegation of “sacrifice.” And sacrifice is the essence of religion. Symbolically, it is a kind of suicide, a willed variant of dying, dying to this or that particular thing (“mortification”), not because of those things in themselves, but because the yielding of them represents the principle of sacrifice in the absolute. So, the reli­ gious injunctions against suicide in the literal sense are matched by the many religious disciplines for attaining transcendence by dying “dialec­ tically.” And where there must thus be simultaneously a dying and a not-dying, what is more plausible than for the paradox of substance to figure here, in providing symbolic devices whereby a man can “substan­ tially slay himself through the sacrifice of another who is consubstantial with him ? Indeed, among the psychological appeals of the Christian sacrifice, wherein the ultimate father sacrifices the ultimate son, may be the fact that in this myth there is the perfect paradigm for such simul­ taneous losing-and-having, since the two persons of father and consubstantial, and the ultimate father sacrifices the ultimate son for the sake of human betterment (as the principle of individual sacrifice itself is ultimately motivated by such social objectives, a sacrificial restraining of individual divisiveness in accordance with “virtues” designed for the advantage of mankind in general). And when our friend, standing with his son in that high place, felt \n“infanticidal” impulses, perhaps he was but manifesting roundabout the\n\nORDER\n\nfact that he felt exalted, as though he and his son shared the attributes of the Ultimate Father and the Ultimate Son in heaven. Even though he may not have got to such feelings by true religious reverence, he could have got to them by the temptations of social reverence. For here was the principle of hierarchy materialized, as he stood atop a high building, while that building itself represented nothing less than the straining social hierarchy of the great modern Babylon. “And upon her forehead was a name written, mystery, babylon the great, the mother OF HARLOTS AND ABOMINATIONS OF THE EARTH.” (Revelation 17:5.)\n\nPure Persuasion",
+      "meta": {
+        "year": 1950,
+        "qualifier": "My Copy",
+        "title_raw": "A Rhetoric of Motives",
+        "collection": "rhetorical_ontology",
+        "sha256": "2bc45e16e5f679eab0bdfefda2b220eefcf276c0ac208b260c0f5669f25b1af0",
+        "cleaning_version": "clean_v1",
+        "is_my_copy": true,
+        "is_image": false,
+        "page_end": 281,
+        "page_start": 279,
+        "is_clean_copy": false,
+        "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "source_method": "pymupdf+bbox",
+        "is_notes": false,
+        "content_type": "text",
+        "doc_id": "c2cb9cd00b7724ed",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "is_table": false,
+        "pdftotext_version": "24.02.0",
+        "clean_sha256": "26c3cbd1ed54425ab3b753e3a2d0024fda298b65ff25207407e8f6e730ba8c3e",
+        "has_bboxes": true,
+        "mtime": 1771101202,
+        "bboxes": "[{\"page_num\": 290, \"coords\": [40.150001525878906, 30.761320114135742, 344.04998779296875, 526.7275390625], \"blocks\": [[40.150001525878906, 30.761320114135742, 344.04998779296875, 526.7275390625]]}, {\"page_num\": 291, \"coords\": [39.25, 23.634666442871094, 342.54998779296875, 537.861083984375], \"blocks\": [[41.650001525878906, 23.634666442871094, 204.1272735595703, 34.8348274230957], [39.25, 35.11219787597656, 342.54998779296875, 483.7030334472656], [39.54899978637695, 493.6082763671875, 341.95001220703125, 537.861083984375]]}, {\"page_num\": 292, \"coords\": [38.70000076293945, 22.465442657470703, 334.5714416503906, 221.83114624023438], \"blocks\": [[169.60000610351562, 22.465442657470703, 203.5519561767578, 31.6784725189209], [38.70000076293945, 37.340999603271484, 334.5714416503906, 151.7689971923828], [308.25, 210.9688262939453, 332.38934326171875, 221.83114624023438]]}]",
+        "chunk_index": 143,
+        "author_raw": "Burke, Kenneth"
+      },
+      "rank": 3
+    },
+    {
+      "raw_rank": 4,
+      "chunk_id": "ff34260f396f650d:00016",
+      "distance": 0.7152937650680542,
+      "path_rel": "rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf",
+      "page_start": 13,
+      "page_end": 14,
+      "text": "basic than the intellectual powers, extending throughout the animal king-\n\ndom, while also being capable of error. In this way, it is ideally suited to\n\nexplain the errors that are manifest in the behavior of even nonrational\n\nindirect effects as well. In this case, he claims, the \"change brought about by the functioning of sensation\" (xWqtvIlv { Tn0 tVc?Q7yEcg Tu1; alk oEwg, 428b 13) will \"necessarily be similar to the sensation\" (TacUxT 6[Lo(Ctv kviyxrj EviaV Til Tcdk01aor, 428b14); and from this it follows th the second change can be false as well as true, making varied animal behav-\n\nanimals. Since it does not require conviction, it bears content in a more\n\nior possible (428bl4-17). Later, Aristotle explicitly identifies the \"change\n\nneutral way and so provide the basis for the content of a wide variety of\n\nbrought about by the functioning of sensation\" as phantasia (428b25-26,\n\nmental states.\n\n429al; De insomn. 1, 459al7-18) and repeats that such residual effects will\n\nbe similar to sensations (To t[ttVELV xctL 6[oiag EIvacL Tc(Lt Ctto0o 429a4-5). Phantasia is thus derivative from sensation in two respects. In a\n\nVII. Phantasia and Error\n\ngiven instance,\n\nAll this presupposes, of course, that phantasia can be false as well as true.\n\n(i) phantasia causally derives from a certain sensation, and\n\nAristotle turns to this question in the third and final section of De anima 3.3\n\n(ii) its character derives from the character of that sensation.\n\n(428blO-429a9). Once again, causal factors are used to explain the content\n\nIt is surely for these reasons that Aristotle describes phantasia elsewhere as\n\nof a mental state. But differences in aetiology suggest the content of phanta-\n\nsia is grounded differently than sensation, and Aristotle exploits this to\n\n\"a weak sort of sensation\" (cC'tro0 L TLg do0-v ';, Rhet. 1.1 1, 1370a28) Phantasia is, in effect, an echoing of the initial stimulation in the sense\n\naccount for falsehood and the consequent plasticity of animal behavior\n\norgans: a side-effect, like the original stimulation in character, but unable to\n\n(428blO-17). He then proceeds to detail several conditions under which a\n\ncompete with fresh, incoming stimulations (De insomn. 2, 459a23-b23; 3\n\ngiven phantasia will be false or true, specifically in relation to perception\n\npassim).\n\n(428bl7-30), before reaffirming the key elements of his earlier account\n\nIt may help to reflect more closely on the analogy of an echo. When I\n\n(428b20-429a8). The section ends on a conclusive note: \"regarding what\n\nshout in a canyon, I produce an initial disturbance of air which then causes\n\nphantasia is, and why there is phantasia, let this suffice\" (429a8-9).\n\nyou to hear me (Diagram 1). But this disturbance also produces a second\n\ndisturbance of air, reflected off the canyon wall, which in turn causes you to\n\nThe aetiology is roughly as follows. In sensation, an object produces an initial stimulation (aftfaRict) in the peripheral sense organs; this change\n\nhear me a second time.57\n\nthen travels to the central sense organ and acts upon it, producing a sensory\n\nexperience.56 But in general, Aristotle argues, a change can give rise to\n\nReflected disturbance * Hearing\n\n(echo)\n\ns I thus disagree with Modrak, \"'avTauCa Reconsidered\" (see n. I above), pp. 61-62,\n\nwhen she speaks of the \"belief-like character\" of phantasia. Aristotle clearly thinks that\n\nYell - Inial disturbance - Heanng\n\nsome cases of phantasia occur without acceptance or rejection, unlike belief; and he does\n\nnot think that the content of phantasia is propositional in every case either (cf. De an.\n\nAir Ear\n\n3.8, 432al 1-14). The grounds Modrak adduces for the propositional character of phanta- sia in Aristotle: The Power of Perception (see n. 1 above), pp. 100-07, are largely\n\nundermined by the differences she develops between the character of \"sensory repre-\n\nDiagram I\n\nsentation\" (which she attributes to phantasia) and symbolic representation. 56 It is sometimes assumed that on Aristotle's view any change that travels from the\n\nperipheral organs to the central organs is eo ipso phantasia, sensation proper being\n\nsomething that occurs only in the peripheral organs. But there is no textual basis for this.\n\nIt is true, of course, that phantasia and other mental states will often occur in conjunction\n\n57 As Aristotle points out, echoes probably always occur, even if not clearly: De an. 2.8,\n\nwith sensation on Aristotle's view - \"pure\" sensation surely occurs rarely, if ever. But\n\n4 19b27-33.\n\nthese other states do not causally mediate sensation.\n\nPhantasia works in much the same way (Diagram 2), the reproduced pattern\n\nessential at all. What determines the content of a phantasma is not its causal\n\nof change being called a \"phantasma\" (De an. 3.3, 428a1-2).8\n\nantecedents, but its causal powers; and sometimes this \"echo\" is modified\n\non its way to the central organ in a way that alters these causal powers.62\n\nPhantasma - * Experience",
+      "meta": {
+        "page_end": 14,
+        "is_table": false,
+        "qualifier": "Clean Copy",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf",
+        "mtime": 1771101202,
+        "pdftotext_version": "24.02.0",
+        "path_rel": "rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf",
+        "chunk_index": 16,
+        "has_bboxes": true,
+        "is_my_copy": false,
+        "content_type": "text",
+        "clean_sha256": "932fe8672dff544dcc5aa563570111477f71d73bddfabb6fd191d520e0c90945",
+        "doc_id": "ff34260f396f650d",
+        "year": 1995,
+        "collection": "rhetorical_ontology",
+        "is_notes": false,
+        "cleaning_version": "clean_v1",
+        "bboxes": "[{\"page_num\": 13, \"coords\": [70.47441101074219, 304.4405212402344, 756.7906494140625, 546.6244506835938], \"blocks\": [[430.7252197265625, 304.4405212402344, 721.3047485351562, 313.23297119140625], [70.47441101074219, 305.6417236328125, 359.5265197753906, 314.4341735839844], [430.7252197265625, 315.96099853515625, 721.0950317382812, 324.7534484863281], [70.69281005859375, 317.216796875, 359.4134826660156, 326.0092468261719], [430.943603515625, 327.6794738769531, 721.6600341796875, 336.3565673828125], [70.47441101074219, 328.44549560546875, 361.7218017578125, 337.6879577636719], [430.83441162109375, 339.3295593261719, 721.6297607421875, 348.12200927734375], [70.5836181640625, 340.71331787109375, 129.96231079101562, 349.0557861328125], [431.1620178222656, 350.959228515625, 721.8482055664062, 359.7516784667969], [79.97471618652344, 351.9966125488281, 359.95599365234375, 360.7890625], [431.4896240234375, 362.5343017578125, 721.8514404296875, 371.3267517089844], [70.47441101074219, 363.17071533203125, 374.3575439453125, 372.4131774902344], [431.3804016113281, 374.109375, 722.296142578125, 382.9018249511719], [70.5836181640625, 375.310546875, 360.2601013183594, 384.1029968261719], [431.4896240234375, 385.6538391113281, 721.9361572265625, 394.2732238769531], [431.59881591796875, 397.259521484375, 722.0628662109375, 406.0519714355469], [431.43499755859375, 408.7799987792969, 722.6201782226562, 417.57244873046875], [70.52900695800781, 403.7552490234375, 398.08587646484375, 421.409423828125], [431.9263916015625, 420.1912841796875, 722.4005126953125, 428.9837341308594], [431.81719970703125, 431.8209228515625, 722.1696166992188, 440.6133728027344], [70.5836181640625, 422.8725891113281, 388.63909912109375, 450.2565002441406], [431.98101806640625, 443.3108215332031, 722.4702758789062, 451.9302062988281], [70.63821411132812, 452.36907958984375, 378.89239501953125, 469.28924560546875], [432.2539978027344, 489.3312683105469, 723.6572265625, 506.7444152832031], [432.19940185546875, 508.55023193359375, 756.7906494140625, 544.8204956054688], [70.5836181640625, 471.115478515625, 384.5192565917969, 546.6244506835938]]}, {\"page_num\": 14, \"coords\": [71.67559814453125, 71.06226348876953, 761.5454711914062, 224.1435089111328], \"blocks\": [[71.89399719238281, 71.06226348876953, 361.0623474121094, 79.73934173583984], [428.86883544921875, 72.35723876953125, 719.5918579101562, 80.69969940185547], [71.89399719238281, 82.88108825683594, 251.21337890625, 91.4543228149414], [81.50349426269531, 94.61504364013672, 361.0461120605469, 103.40751647949219], [71.73020935058594, 106.48709869384766, 360.81072998046875, 115.10649108886719], [71.73020935058594, 118.1167984008789, 360.927734375, 126.73619079589844], [71.83940124511719, 129.66781616210938, 360.8247375488281, 138.4602813720703], [428.9234313964844, 83.932373046875, 761.5454711914062, 138.84664916992188], [71.83940124511719, 141.35211181640625, 361.05706787109375, 150.1445770263672], [429.68780517578125, 142.02609252929688, 720.5657348632812, 150.36854553222656], [71.73020935058594, 152.92715454101562, 361.8053283691406, 161.71961975097656], [429.63323974609375, 153.69654846191406, 720.1510620117188, 162.269775390625], [71.89399719238281, 164.50721740722656, 123.02455139160156, 173.0804443359375], [429.68780517578125, 165.39462280273438, 720.5724487304688, 173.73707580566406], [429.9062194824219, 177.91159057617188, 757.8519287109375, 197.21337890625], [72.27619934082031, 193.73171997070312, 169.0161895751953, 202.0741729736328], [430.343017578125, 200.39285278320312, 487.2094421386719, 208.7353057861328], [71.67559814453125, 211.15419006347656, 360.3757629394531, 219.77357482910156], [448.0332336425781, 216.7010498046875, 649.6996459960938, 224.1435089111328]]}]",
+        "title_raw": "Why Aristotle Needs Imagination",
+        "source_method": "pymupdf+bbox",
+        "sha256": "c3f0a013a7f0822e2dfb8f09db96d409779941244f41f72ab0a7b0ebab6b9db8",
+        "is_clean_copy": true,
+        "author_raw": "Caston, Victor",
+        "page_start": 13,
+        "is_image": false
+      },
+      "rank": 4
+    },
+    {
+      "raw_rank": 5,
+      "chunk_id": "c2cb9cd00b7724ed:00150",
+      "distance": 0.7439066767692566,
+      "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+      "page_start": 294,
+      "page_end": 294,
+      "text": "of institutions. The relative value of institute Darwinistically, on their fitness to cope wit^dcP<*ds pragmatically, tion, distribution, and consumption that g0 w- l C Problems of produc- time and place. Thus, one particular order (or C°nditions peculiar to its brands of “mystery,” may be better suited th ^r°^ert^ structure), with ing circumstances. Hence, to say that hierarch f0r the prevailargue categorically against a new order on the^ ^ mcv^ta^^e ls not to but replace under one label what had been remold** wou^d is merely to say that, in any order, there will be th ^ ^ anotllcr‘\n\nc mysteries of hier-\n\narchy, since such a principle is grounded in the very nan,r, nf i and reenforced by the resultant diversity of occupational chsIes^That\n\nclaim is the important thing, as regards the ultimate reaches of rhetoric The intensities, morbidities, or particularities of mystery come from in­ stitutional sources, but the aptitude comes from the nature of man, ge- nerically, as a symbol-using animal. b Similarly, noting how the Prussian officer had his cultural counterpart in the academic drillmaster whose teaching was like an imperial threat we might want to deduce all scholastic discrimination from social di crimination. But such a view would slight the principle of ordinatic essential to the educational process, which inevitably requires a laddei of grading and instruction. The purely “dialectical” motive is real enough here, though forever being burlesqued in the academic “posi­ tions of pantomime.”\n\nAs exclusively institutional explanations mislead us in one respect, so exclusively psychoanalytic explanations can mislead in another. First a dialectical motive implicit in the nature of language is treated psycho- analytically as a mere derivative of psychological motives. Hence, the principle of “self-interference” would be explained wholly as a “sublima­ tion” of psychological drives, whereas these themselves are strongly af­ fected by a purely “formal” situation, the fact that language makes for transcendence, and transcendence imposes distance (a generally dialecti­ cal consideration, rather than an exclusively psychological one). Second, psychoanalysis too often conceals the nature of social relations behind the terms for sexual relations. On the first point, what we have said about the way in which institutional explanations ignore the “priority” of the formal element could be applied mutatis mutandis to psycho­ analytic theories. So let us turn now to the second point, noting how\n\nORDER\n\nI choanalysis,unless properly discounted, can lead us even farther afield, ^concealing the nature of exclusive social relations behind inclusive\n\nterms for sexual relations. The sheer dialectics of “justice” strongly invites this error. For justice is the universalization of a standard. Hence, if one is made neurotic by social discriminations (by the hierarchy of class), translation of the disorders into terms of the universally sexual and the universally familial may, by such speciously universal terms, appeal by speaking in the ac­ cents of “truth” and “justice.” Instead of saying, “My class is the victim of a social problem,” one can say, in terms of the universalizing required by justice, “We are all victims of a sexual problem.” Since the social problem will have its counterpart in sexual disorders, much “evidence” will be found for such deflection. And the deflected universalization",
+      "meta": {
+        "page_start": 294,
+        "doc_id": "c2cb9cd00b7724ed",
+        "qualifier": "My Copy",
+        "is_table": false,
+        "pdftotext_version": "24.02.0",
+        "collection": "rhetorical_ontology",
+        "is_my_copy": true,
+        "page_end": 294,
+        "is_clean_copy": false,
+        "bboxes": "[{\"page_num\": 303, \"coords\": [40.1500244140625, 32.12198257446289, 343.45001220703125, 535.827392578125], \"blocks\": [[40.1500244140625, 32.12198257446289, 343.45001220703125, 535.827392578125]]}, {\"page_num\": 304, \"coords\": [38.400001525878906, 24.893156051635742, 341.6400146484375, 534.531982421875], \"blocks\": [[171.64999389648438, 24.893156051635742, 337.99847412109375, 35.87017059326172], [38.400001525878906, 40.95793151855469, 341.6400146484375, 534.531982421875]]}, {\"page_num\": 305, \"coords\": [40.150001525878906, 18.221193313598633, 337.20001220703125, 116.54615020751953], \"blocks\": [[40.150001525878906, 18.221193313598633, 337.20001220703125, 83.15147399902344], [40.75, 95.69014739990234, 56.31528091430664, 116.54615020751953]]}]",
+        "has_bboxes": true,
+        "mtime": 1771101202,
+        "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "is_image": false,
+        "year": 1950,
+        "chunk_index": 150,
+        "is_notes": false,
+        "title_raw": "A Rhetoric of Motives",
+        "sha256": "2bc45e16e5f679eab0bdfefda2b220eefcf276c0ac208b260c0f5669f25b1af0",
+        "content_type": "text",
+        "cleaning_version": "clean_v1",
+        "clean_sha256": "b2862351e79739bfc5874fd1b5bc459f96b006c246933e8b24d5716af2b3a228",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "source_method": "pymupdf+bbox",
+        "author_raw": "Burke, Kenneth"
+      },
+      "rank": 5
+    },
+    {
+      "raw_rank": 6,
+      "chunk_id": "b811388f4f1d7863:00011",
+      "distance": 0.7448990941047668,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 15,
+      "page_end": 17,
+      "text": "*l.e. Plato.\n\nBOOK II\n\nexist by nature\n\nother causes\n\naccidentally\n\nex. doctor\n\nthings themselves Subject / nature\n\n193*1\n\n. Of things that exist, some exist by nature, some from other causes. By nature the animals and their parts exist, and the plants and the simple bodies (earth, fire, air, water)—for we say that these and the like exist by nature. All the things mentioned plainly differ from things which are not constituted by nature. For each of them has within itself a principle of motion and of stationariness (in respect of place, or of growth and decrease, or by way of alteration). On the other hand, a bed and a coat and anything else of that sort, qua receiving these designations—i.e. in so far as they are products of art—have no innate impulse to change. But in so far as they happen to be composed of stone or of earth or of a mixture of the two, they do have such an impulse, and just to that extent—which seems to indicate that nature is a principle or cause of being moved and of being at rest in that to which it belongs primarily, in virtue of itself and not accidentally. I say ‘not accidentally1, because (for instance) a man who is a doctor might himself be a cause of health to himself. Nevertheless it is not in so far as he is a patient that he possesses the art of medicine: it merely has happened that the same man is doctor and patient—and that is why these attributes are not always found together. So it is with all other artificial products. None of them has in itself the principle of its own production. But while in some cases (for instance houses and the other products of manual labour) that principle is in something else external to the thing, in others—those which may cause a change in themselves accidentally—it lies in the things themselves (but not in virtue of what they are). Nature then is what has been stated. Things have a nature which have a principle of this kind. Each of them is a substance; for it is a subject, and nature is always in a subject. The term ‘according to nature1 is applied to all these things and also to the attributes which belong to them in virtue of what they are, for instance the property of fire to be carried upwards—which is not a nature nor has a nature but is by nature or according to nature. What nature is, then, and the meaning of the terms ‘by nature1 and ‘according to nature1, has been stated. That nature exists, it would be absurd to try to prove; for it is obvious that there are many things of this kind, and to prove what is obvious by what is not is the mark of a man who is unable to distinguish what is self-evident from what is not. (This state of mind is clearly possible. A man blind from birth might reason about colours.) Presumably therefore such persons must be talking about words without any thought to correspond. Some identify the nature or substance of a natural object with that immediate constituent of it which taken by itself is without arrangement, e.g. the wood is the nature of the bed, and the bronze the nature of the statue. As an indication of this Antiphon points out that if you planted a bed and the rotting wood acquired the power of sending up a shoot, it would not be a bed that would come up, but wood which shows that the arrangement in accordance with the\n\nPHYSICS\n\nform - nature\n\nnature / coming-to- be\n\nshape - nature",
+      "meta": {
+        "is_image": false,
+        "is_table": false,
+        "is_notes": false,
+        "clean_sha256": "2e3af01f83b8ae662496d6eeb8ef22b12224b7451e3b049dc5aa1f8616662685",
+        "bboxes": "[{\"page_num\": 17, \"coords\": [30.64900016784668, 55.41254806518555, 389.4169921875, 516.5533447265625], \"blocks\": [[151.44000244140625, 55.41254806518555, 205.40414428710938, 68.1850814819336], [328.5050048828125, 81.56102752685547, 387.3819885253906, 95.0310287475586], [323.87799072265625, 141.09304809570312, 373.0250244140625, 154.56304931640625], [327.88800048828125, 214.81402587890625, 376.2080078125, 228.28402709960938], [327.88800048828125, 243.81402587890625, 367.8759765625, 257.2840270996094], [326.65399169921875, 275.27203369140625, 389.4169921875, 317.7420349121094], [332.95001220703125, 364.2889099121094, 346.219970703125, 370.40283203125], [30.64900016784668, 80.37545776367188, 323.7484130859375, 516.5533447265625]]}, {\"page_num\": 18, \"coords\": [4.317999839782715, 27.877429962158203, 231.20094299316406, 439.2680358886719], \"blocks\": [[69.0, 27.877429962158203, 231.20094299316406, 41.62484359741211], [5.552000045776367, 304.2660217285156, 58.311004638671875, 317.73602294921875], [4.317999839782715, 364.1070251464844, 84.02200317382812, 392.0770263671875], [6.478000164031982, 425.79803466796875, 62.56700134277344, 439.2680358886719]]}]",
+        "pdftotext_version": "24.02.0",
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "content_type": "text",
+        "is_clean_copy": false,
+        "is_my_copy": true,
+        "collection": "rhetorical_ontology",
+        "title_raw": "Physics",
+        "page_start": 15,
+        "has_bboxes": true,
+        "doc_id": "b811388f4f1d7863",
+        "author_raw": "Aristotle",
+        "source_method": "pymupdf+bbox",
+        "page_end": 17,
+        "cleaning_version": "clean_v1",
+        "qualifier": "My Copy",
+        "year": 2014,
+        "chunk_index": 11,
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "mtime": 1771101202
+      },
+      "rank": 6
+    },
+    {
+      "raw_rank": 7,
+      "chunk_id": "f6041c1a815c83f1:00312",
+      "distance": 0.744957447052002,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 494,
+      "page_end": 494,
+      "text": "Being and Time vm. (H. 201) Cf. H. 8g ff. and H. 100. ix. (H. 203) Cf. Kant, Critique of Pure Reason,2 pp. 274 ff., and further the corrections added in the preface to the second edition, p. xxix, note : see also 'On the Paralogisms of the Pure Reason', ibid., pp. 3gg ff., especially p. 412. x. (H. 203) Ibid., Preface, note. xi. (H. 203) Ibid., p. 275· xii. (H. 203) Ibid., p. 275· xiii. (H. 204) Ibid., p. 275· xiv. (H. 205) Ibid., Preface, note. xv. (H. 205) Cf. W. Dilthey, 'Beitriige zur L&ung der Frage vom Ursprung unseres Glaubens an die Realitiit der Aussenwelt und seinem Recht' (18go), Gesammelte Schriften, Vol. V, 1, pp. go ff. At the very beginning of this article Dilthey says in no uncertain terms: 'For if there is to be a truth which is universally valid for man, then in accordance with the method first proposed by Descartes, thought must make its way from the facts of consciousness rather than from external actuality.' (Ibid., p. go.) xvi. (H. 208) Following Scheler's procedure, Nicolai Hartmann has recently based his ontologically oriented epistemology upon the thesis that knowing is a 'relationship of Being'. Cf. his Grundziige einer Metaphysik der Erkenntnis, second enlarged edition, 1g25. Both Scheler and Hartman, however, in spite of all the differences in the phenomeno­ logical bases from which they start, fail to recognize that in its traditional basic orienta­ tion as regards Dasein, 'ontology' has been a failure, and that the very 'relationship of Being' which knowing includes (see above, H. 59 ff.), compels such 'ontology' to be revised in its principles, not just critically corrected. Because Hartmann underestimates the unexpressed consequences of positing a relationship-of-Being without providing an ontological clarification for it, he is forced into a 'critical realism' which is at bottom quite foreign to the level of the problematic he has expounded. On Hartman's way of taking ontology, cf. his 'Wie ist kritische Ontologie iiberhaupt moglich ?', Festschrift fiir Paul Natorp, 1g24, pp. 124 ff. xvii. (H. 2og) Cf. especially Section 16, H. 72 ff. ('How the Worldly Character of the Environment Announces itself in Entities Within-the-world'); Section 181 H. 83 ff. ('Involvement and Significance; the Worldhood of the World') ; Section 2g, H. 1 34 ff. ('Dasein as State-of-Mind'). On the Being-in-itself of entities within-the-world, cf. H. 75 f. xvii. (H. 209) Dilthey, op. cit., p. 134· xix. (H. 210) cr. Scheler's lecture, 'Die Formen des Wissens und die Bildung', 1g25, notes 24 and 25. In reading our proofs we notice that in the collection of Scheler's treatises which has just appeared (Die Wissensformen und die Gesellschaft, 1g26) he has published his long-promised study 'Erkenntnis und Arbeit' (pp. 233 ff.). Division VI of this treatise (p. 455) brings a more detailed exposition of his 'voluntative theory of Dasein', in connection with an evaluation and critique of Dilthey. xx. (H. 212) Diels, Fragment 5· (This pasage may be translated in more than one way: \ne.g., 'for thought and being are the same thing' (Fairbanks} ; 'it is the same thing that can be thought and that can be' (Burnet).-Tr.] xxi. (H. 212) Aristotle, Metaphysica A. xxii. (H. 213) Ibid., A, g8¥ 18 ff. [' . . . the very fact showed them the way and joined in forcing them to investigate the subject.' (Ros)-Tr.] xxiii. (H. 2 13) Ibid., A, g86b 3 1 . xxiv. (H. 213) Ibid., A, g84b 10. xxv. (H. 213) Ibid., A, g83b 2. cr. g88a 20. xxvi. (H. 213) Ibid., a!, gg3b 1 7. xxvii. (H. 213) Ibid., al, 993b 20. xxviii. (H. 213) Ibid., T 1, 1003a 21. xxix. (H. 214) Aristotle, De interpretationǓ 1, 16a. 6. [This is not an exact quotation.-Tr.] xx. (H. 214) Cf. Thomas Aquinas, Quaestiones disputatae de veritate, qu. 1, art. 1. xxi. (H. 215) Kant, Critique of Pure Reason,2 p. 82. xxi. (H. 2 15) Ibid., p. 83. [Two trivial misprints in this quotation which appear in the earlier editions have been corrected in the later editions.-Tr.] xxiii. (H. 215) Ibid., p. 350. [Another trivial misprint has been corrected in the later editions.-Tr.] xxiv. (H. 2 18) On the idea of demonstration as 'identification' cf. Husser!, Logische Untersuchungen,2 vol. II, part 2, Untersuchung VI. On 'evidence and truth' see ibid., Sections 36-3g, pp. 1 1 5 ff. The usual presentations of the phenomenological theory\n\nBeing and Time",
+      "meta": {
+        "bboxes": "[{\"page_num\": 508, \"coords\": [24.228670120239258, 210.008056640625, 306.5830078125, 474.83673095703125], \"blocks\": [[169.26300048828125, 294.68621826171875, 306.5830078125, 409.04449462890625], [24.393598556518555, 210.008056640625, 161.70530700683594, 423.2038269042969], [169.308349609375, 424.0882263183594, 306.3291931152344, 473.28955078125], [24.228670120239258, 423.807373046875, 159.94256591796875, 474.83673095703125]]}, {\"page_num\": 509, \"coords\": [23.78997039794922, 9.832084655761719, 308.4379577636719, 474.5272216796875], \"blocks\": [[24.8700008392334, 9.832084655761719, 194.67384338378906, 21.902530670166016], [169.29995727539062, 24.972576141357422, 308.4379577636719, 116.24433898925781], [169.5199737548828, 127.68260192871094, 308.3523864746094, 442.0067138671875], [23.78997039794922, 24.923791885375977, 161.9827117919922, 473.6368103027344], [187.02984619140625, 439.5158996582031, 308.3795166015625, 474.5272216796875]]}, {\"page_num\": 510, \"coords\": [110.70999908447266, 10.358602523803711, 308.44622802734375, 22.77080726623535], \"blocks\": [[110.70999908447266, 10.358602523803711, 308.44622802734375, 22.77080726623535]]}]",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "is_clean_copy": false,
+        "qualifier": "My Copy",
+        "page_start": 494,
+        "is_my_copy": true,
+        "author_raw": "Heidegger, Martin",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "is_notes": false,
+        "pdftotext_version": "24.02.0",
+        "collection": "rhetorical_ontology",
+        "doc_id": "f6041c1a815c83f1",
+        "page_end": 494,
+        "title_raw": "Being and Time",
+        "cleaning_version": "clean_v1",
+        "mtime": 1771101202,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "content_type": "text",
+        "is_table": false,
+        "source_method": "pymupdf+bbox",
+        "chunk_index": 312,
+        "year": 1962,
+        "has_bboxes": true,
+        "is_image": false,
+        "clean_sha256": "29033a435eb4e77d29c37e5abb6b57389d9d262c8f3aa1d5db22821053053240"
+      },
+      "rank": 7
+    },
+    {
+      "raw_rank": 9,
+      "chunk_id": "aa8be200a619c624:00000",
+      "distance": 0.7450564503669739,
+      "path_rel": "metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf",
+      "page_start": 1,
+      "page_end": 3,
+      "text": "The Transition into Virtual Reality\n\nMark Silcox University of Central Oklahoma\n\nDOI: 10.2478/disp-2019-0007\n\nAbstract\n\nIn \"The Virtual and the Real,\" David Chalmers argues that there is an epistemic and ontological parity between VR and ordinary reality. My argument here is that, whatever the plausibility of these claims, they provide no basis for supposing that there is a similar parity of value. Careful reflection upon certain aspects of the transition that individuals make from interacting with real-world, physical environments to interacting with VR provides a basis for thinking that, to the extent that there are good reasons to deny the reality of virtual objects, there are also reasons to place a correspondingly higher value upon the experience of interacting with a VR environment. Chalmers' assumption to the contrary arises from a subtle misrepresentation of how the phenomenon of cognitive penetration works in the perception of virtual objects, and from an unwillingness to acknowledge how our attitudes toward virtual environments are conditioned by the values we adopt when engaged in gameplay.\n\nKeywords\n\nVirtual reality, David Chalmers, games, cognitive penetration, experience machine.\n\nIn \"The Virtual and the Real,\" David Chalmers make the startling contention that \"in the long term, and in principle, virtual reality may well be on a par with physical reality.\"1 My aim in this paper will be to examine some of the implications of this claim. I shall say nothing to directly challenge Chalmers' proposal that objects, events, and experiences that take place in virtual reality (hereafter VR) are real and non-illusory, nor shall I raise any objections to the broader program of metaphysical structuralism out of which this claim arises. But I do want to articulate some reasons to be skeptical about\n\nChalmers's suggestion near the end of his paper that whatever case can be made for an epistemic and ontological parity between VR and ordinary reality also provides support for a similar parity of value. I shall argue that careful reflection upon certain aspects of the transition that individuals make from interacting with their real-world, physical environments to interacting with a virtual environment in fact provides powerful reasons to believe the contrary. For at least a very wide range of cases, to the extent that there are good reasons to deny the reality of virtual objects, there are also reasons to place a correspondingly higher value upon the experience of interacting with a VR environment. To the extent that this represents a robust correlation, the plausibility of the first three propositions of Chalmers' formulation of what he calls \"digitalism\"2 about VR will turn out to undermine the plausibility of proposition (4), thereby threatening the overall coherence of his position.\n\nI shall restrict my attention for the most part to the sorts of temporary and \"imperfect\" virtual environments that can already be accessed via widely available VR interface technologies such as the Oculus Rift, the Icaros, Senso Gloves, etcetera. It is easier to draw axiological conclusions about types of VR experiences that are already available to consumers than it is to speculate about the sorts of experiences that technologies of the far future might or might not be able to provide. For such imaginative exercises require one to build in an awful lot of ceteris paribus considerations—for example, that our on-board organic sensoria will continue to operate more or less as they do now as new VR technologies develop, or that the physical environment human beings inhabit will not itself in the meantime become radically more or less hospitable to us. At the end of the present paper, however, I shall also very briefly raise some concerns about what Chalmers has to say about one purely hypothetical example of what he describes as a \"perfect and permanent\"3 virtual environment: Robert Nozick's famous experience machine.\n\n1 Naïve and sophisticated perceivers",
+      "meta": {
+        "path_rel": "metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf",
+        "year": 2019,
+        "clean_sha256": "286c39151c31031dbc3461dc8c9737b318d681e99c17947776b7ad7303b2ce5c",
+        "is_clean_copy": true,
+        "mtime": 1771101202,
+        "sha256": "f7e7b1abe44c7aa42b703c7fc09c48a62aa52d7a90e2341dbb74b6170e938416",
+        "collection": "metaphysics",
+        "page_start": 1,
+        "content_type": "text",
+        "pdftotext_version": "24.02.0",
+        "is_my_copy": false,
+        "cleaning_version": "clean_v1",
+        "bboxes": "[{\"page_num\": 1, \"coords\": [149.58203125, 173.38409423828125, 447.75225830078125, 640.544921875], \"blocks\": [[169.37109375, 173.38409423828125, 424.30078125, 193.38409423828125], [303.529296875, 219.9560546875, 446.126953125, 244.57830810546875], [150.23619079589844, 254.4912109375, 245.03515625, 264.0887451171875], [162.38671875, 286.7169189453125, 204.5483856201172, 297.71697998046875], [163.55078125, 297.676513671875, 447.51641845703125, 462.6763610839844], [163.55078125, 475.6806640625, 211.35739135742188, 487.055419921875], [164.1328125, 486.3701171875, 447.49432373046875, 509.01495361328125], [149.58203125, 523.2633056640625, 447.75225830078125, 640.544921875]]}, {\"page_num\": 2, \"coords\": [149.0, 174.373779296875, 447.7882080078125, 589.3737335205078], \"blocks\": [[149.0, 174.373779296875, 447.740234375, 368.3736877441406], [149.0, 367.552734375, 447.7882080078125, 589.3737335205078]]}]",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf",
+        "is_image": false,
+        "source_method": "marker+bbox",
+        "page_end": 3,
+        "qualifier": "Clean Copy",
+        "author_raw": "Silcox, Mark",
+        "is_notes": false,
+        "has_bboxes": true,
+        "is_table": false,
+        "chunk_index": 0,
+        "title_raw": "The Transition into Virtual Reality",
+        "doc_id": "aa8be200a619c624"
+      },
+      "rank": 8
+    }
+  ]
+}
+[god-learn] $ python3 scripts/retrieval/verify_phase4.py hexis and habituated phantasia
+[PHASE4_VERIFY_OK]
+- query='hexis and habituated phantasia'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[god-learn] $ bash scripts/highlights/phase5check.sh
+
+--- AUDIT REPORT ---
+root: /home/dalton/projects/claudeflow-testing/corpus
+manifest: /home/dalton/projects/claudeflow-testing/scripts/ingest/manifest.jsonl
+total_pdfs: 50
+
+[PHASE2_COMPLETE] (50)
+  - dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf :: phase=2 ok
+  - dissertation/in_progress/rhetorical phantasia test.pdf :: phase=2 ok
+  - metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf :: phase=2 ok
+  - metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf :: phase=2 ok
+  - metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf :: phase=2 ok
+  - new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf :: phase=2 ok
+
+[OK] dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf
+[OK] dissertation/in_progress/rhetorical phantasia test.pdf
+[OK] metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf
+[OK] metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf
+[OK] metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf
+[OK] metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf
+[OK] metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf
+[OK] metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf
+[OK] metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf
+[OK] metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf
+[OK] new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf
+[OK] new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf
+[OK] rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf
+[OK] rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf
+
+--- VERIFY REPORT (OK) ---
+OK=50 FAIL=0 TOTAL=50
+[PHASE4_VERIFY_OK]
+- query='phantasia and action'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[OK] Wrote:
+  /tmp/no_hl.txt
+  /tmp/with_hl.txt
+Diff (first 120 lines):
+--- /tmp/no_hl.txt	2026-03-26 22:32:59.367799945 -0700
++++ /tmp/with_hl.txt	2026-03-26 22:33:00.691949764 -0700
+@@ -6,51 +6,51 @@
+ 
+ [RESULTS]
+ 
+-01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  (raw_rank=1)
++01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  final_score=0.7484066486358643  hl_count=0  boost=0.0000  (raw_rank=1)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=303-305
+ 
+-02. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  (raw_rank=2)
++02. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  final_score=0.8132696557044983  hl_count=1  boost=0.0200  (raw_rank=4)
++    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
++    pages=22-24
++
++03. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  final_score=0.8133007287979126  hl_count=0  boost=0.0000  (raw_rank=2)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+     pages=167-169
+ 
+-03. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  (raw_rank=3)
++04. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  final_score=0.8137480616569519  hl_count=0  boost=0.0000  (raw_rank=3)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=279-281
+ 
+-04. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  (raw_rank=4)
+-    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+-    pages=22-24
+-
+-05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  (raw_rank=6)
++05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  final_score=0.851164698600769  hl_count=0  boost=0.0000  (raw_rank=6)
+     path_rel=rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+     pages=292-292
+ 
+-06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  (raw_rank=7)
++06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  final_score=0.8536148071289062  hl_count=0  boost=0.0000  (raw_rank=7)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=294-294
+ 
+-07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  (raw_rank=8)
++07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  final_score=0.864859938621521  hl_count=0  boost=0.0000  (raw_rank=8)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+     pages=18-18
+ 
+-08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  (raw_rank=9)
++08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  final_score=0.8705873489379883  hl_count=0  boost=0.0000  (raw_rank=9)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+     pages=215-215
+ 
+-09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  (raw_rank=10)
++09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  final_score=0.8722628355026245  hl_count=0  boost=0.0000  (raw_rank=10)
+     path_rel=rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+     pages=13-14
+ 
+-10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  (raw_rank=11)
++10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  final_score=0.8786800503730774  hl_count=0  boost=0.0000  (raw_rank=11)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=162-164
+ 
+-11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  (raw_rank=12)
++11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  final_score=0.8806346654891968  hl_count=0  boost=0.0000  (raw_rank=12)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=24-26
+ 
+-12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  (raw_rank=13)
++12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  final_score=0.8811410665512085  hl_count=0  boost=0.0000  (raw_rank=13)
+     path_rel=rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+     pages=252-254
+ 
+[god-learn] $ python3 scripts/learn/promote_hits.py --hits_json /tmp/phase4_hits.json --query hexis and habituated phantasia
+22:33:01 [INFO    ] god-learn.phase6.promote: Starting promotion [hits_json=/tmp/phase4_hits.json, query=hexis and habituated phantasia, min_chars=40, max_units=0, dry_run=False]
+22:33:01 [INFO    ] god-learn.phase6.promote: Promotion complete [promoted=4, total_indexed=96, knowledge_file=god-learn/knowledge.jsonl, index_file=god-learn/index.json]
+[Phase6:promote_hits] promoted=4 total_indexed=96
+[Phase6:promote_hits] wrote: god-learn/knowledge.jsonl
+[Phase6:promote_hits] index: god-learn/index.json
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 11
+[god-learn] normalize: sorted 96 KUs and rebuilt index (96 offsets)
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 12

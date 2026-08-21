@@ -1,0 +1,86 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Archon video policy — DRAFT for RDR2 / game-behavior close-reading on a MacBook Air
+# Drop into:  <workspace>/.archon/policy.toml   (project-local)   — preferred
+#         or  ~/.archon/policy.toml             (user-global)
+# Drafted 2026-06-24 against archon-cli v1.3.11 docs/video.md defaults.
+# Comments mark every delta from the stock default and WHY. Items tagged [VERIFY]
+# need a 30-second check against `archon`'s real schema once it's installed.
+# ─────────────────────────────────────────────────────────────────────────────
+
+[policy.video]
+enabled = true
+
+# Acquisition. We mostly ingest LOCAL 4K recordings, but also want reference clips
+# (other RDR2 analyses, G&G footage) from YouTube. Enable downloads; keep browser
+# automation off. If you will ONLY ever ingest local files, set these three to false.
+allow_youtube              = true     # default false
+allow_direct_urls          = true     # default false
+allow_external_downloaders = true     # default false — required for yt-dlp to run
+allow_browser_automation   = false    # keep off (not needed; attack surface)
+allow_caption_capture      = true     # default false — grab YouTube captions when present (cheaper/cleaner than ASR for reference clips)
+
+# Inference routing. Keep ASR LOCAL (whisper.cpp on Metal) — private, free, no
+# dependency on a cloud key. VLM stays off in this default (see [policy.video.frames]
+# + the VLM overlay at the bottom of this file).
+allow_cloud_asr = false               # keep local transcription
+allow_cloud_vlm = false               # flip to true ONLY for the Gemini VLM overlay
+
+require_user_confirmation_for_download = true   # safety on downloads (no-op for local files)
+
+# Guardrails. Caps are mostly for downloads; ingest anchored CLIPS, not whole 8h sessions.
+max_duration_minutes = 240            # default 120 — headroom for a long session file
+max_download_mb      = 2048           # default 2048 — download-only; reference clips at 1080p, not 4K
+max_frames           = 500            # default 500 — a hard reading-budget guard (~600K vision tokens at 1.2K/frame). See note.
+
+# FRAME DENSITY — the key knob. Tiering is OFF (determined not to work); use a fixed
+# interval. 1 frame / 5 s suits game-behavior (more visual action than a lecture) while
+# staying readable: ~96 frames for an 8-min clip, ~480 for a 40-min clip.
+#   Lever: drop to 3 for dense action scenes; raise to 10 for traversal-heavy stretches
+#   (re-extract a single video with `archon video reprocess <id> --frames`).
+frame_interval_secs = 5               # default 10
+
+scene_change_threshold = 0.35         # UNUSED in interval mode (scene-detect is useless on continuous-camera gameplay); left at default
+dedupe_threshold       = 0.94         # perceptual-hash dedupe of near-identical frames — helps trim static/traversal dead-frames. [VERIFY] direction: lower = dedupe more aggressively.
+
+[policy.video.asr]
+provider = "whisper-cpp"              # default "whisper-rs" (reports UNAVAILABLE). whisper-cpp = native, Metal, no Python, installed via brew per the setup guide.
+                                      #   Optional upgrade: "faster-whisper" (CTranslate2) — faster + fewer hallucinations, but pulls a Python dependency.
+model    = "large-v3"                 # default "base". large-v3 = citation-quality on game dialogue. [VERIFY] exact form: model id "large-v3" vs ggml filename "ggml-large-v3.bin" (docs example used "ggml-small.en.bin").
+device   = "auto"                     # should resolve to Metal on Apple Silicon; set explicitly to "metal" if `auto` picks cpu. [VERIFY] via `archon video inspect`.
+vad_stable_timestamps = true          # default false — IMPORTANT: VAD kills the silence/music/gunfire hallucinations (the "I got it ×5" repetition) we hit on ambient RDR2 audio.
+model_cache_dir = ""                  # set to where you download the ggml model (e.g. "~/.archon/models/whisper"); "" = Archon default. [VERIFY]
+model_source    = ""                  # optional model URL/path for auto-fetch; "" = default. [VERIFY]
+diarization     = false               # default false. Worth an experiment on dialogue-heavy missions: speaker labels (Arthur/Dutch/…) aid RODA attribution — but adds complexity. Leave off until needed.
+
+[policy.video.frames]
+mode = "interval"                     # default "scene" — CHANGED. Pure fixed interval; scene/hybrid are unreliable on continuous-camera gameplay.
+ocr  = true                           # local OCR (Tesseract/RapidOCR) — captures on-screen text: mission objectives, item/location names, button prompts, burned-in subtitles. Useful UI-affordance evidence.
+vlm  = false                          # default true — OFF here (no cloud VLM in the local default). You read frames yourself with Claude vision. Turn on via the overlay below.
+
+[policy.video.summary]
+enabled            = false            # keep auto-summary off — you do the close reading; avoids cloud cost/noise. Enable allow_llm_summary later only if you want a quick per-clip index.
+allow_llm_summary  = false
+allow_cloud_summary = false
+provider           = "disabled"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# OPTIONAL OVERLAY — enable VLM frame description (auto-described, searchable frames)
+# Requires a cloud VLM provider (Google Gemini per the setup guide) + `archon auth`.
+# Trade-off: a new cloud key/cost + frames leave the machine. Only worth it if you want
+# frames as searchable/citable text evidence rather than reading them all yourself.
+#   [policy.video]        allow_cloud_vlm = true
+#   [policy.video.frames] vlm = true
+# CAVEAT: Archon's stock video-frame VLM prompt is tuned for CHARTS/SLIDES/DIAGRAMS
+# ("identify chart axes, units, legends, slide bullets…") — wrong for game scenes.
+# [VERIFY] whether the frame prompt is overridable via config; if it's baked into the
+# archon-video crate, swapping it for a game-behavior prompt is a small Rust change.
+# [VERIFY] whether the "docs VLM provider" can be Claude (Anthropic) instead of Gemini,
+# which would avoid adding a second provider.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Ingest commands (CLI flags override policy per-run):
+#   archon video ingest "/path/RDR2 - 10 - Bar Fight.mp4" --frames interval --asr whisper-cpp --kb rdr2 --yes
+#   archon video transcript <video-id> --format vtt          # export the transcript
+#   archon video frames <video-id>                           # list extracted frames
+#   archon video reprocess <video-id> --frames               # re-extract at a different interval
+# First run: download a whisper.cpp ggml model (e.g. ggml-large-v3) — see setup guide §6.

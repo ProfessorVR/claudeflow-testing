@@ -1,0 +1,425 @@
+# Index System — Phased Implementation Plan
+
+**Date:** 2026-07-28
+**Companion report:** `plans/index-system-report-2026-07-28.md` (evidence citations)
+**Status:** v4 — decisions ratified, Phase 0 backup complete. No source file has been modified.
+
+**v3 supersedes v1/v2 ordering.** Directive received: wire the original index first and repair weak or broken entries; single-source entries next, **including short articles**; sandbox last.
+
+### Ratified decisions (2026-07-28)
+
+| # | Decision |
+|---|---|
+| D1 | **Backup taken and verified.** `.backups/corpus-index-full-20260728T230859Z/` — 1,848 files, 41,711,698 bytes, SHA-256 manifests identical, archive restores bit-identical |
+| D2 | **Tracking policy approved** — gitignore `.backups/`, track everything else under the index |
+| D3 | **The 5 ontology-only entries get structured unit records and edges, and the FULL treatment.** No lite profile is ratified |
+| D4 | **RDR2 Playthrough and Veri(dis)similitude are `analysis-artifact` entries** — no synthesis layer, excluded from source-entry gates, still reachable by entry-scoped retrieval |
+| D5 | **In-Game ch.10 is a repair, not a choice.** All 13 chapters carry a topical + deep pair by design; `ig-10-incorporation.json` is simply corrupt (one unclosed object, lines 107–155) |
+| D6 | **Aristotle - Complete Works is not broken.** It contributes 199 of 701 nodes plus all 72 hooks via `ARISTOTLE_WORK_MAP`. Removed from the repair list — the earlier zero-node flag was a census artifact |
+
+---
+
+## Priority basis
+
+| Rank | Goal |
+|---|---|
+| **1** | Get the original index completely wired; resolve weak and broken entries |
+| **2** | Single-source entries for every source, short articles included |
+| **3** | Analysis-upgrade sandbox (cross-author concept integration) |
+
+One note, recorded once and then set aside: I flagged that short articles don't decompose into the multi-unit structure the cluster gates assume. You've reaffirmed that articles get standalone entries, so that's the decision and the plan builds for it. The consequence is handled in Phase 6 with an article-scale entry profile rather than by relaxing the monograph gates.
+
+Infrastructure phases (0–3) are not a competing priority. They are the wiring: nothing can be "completely wired" through a compiler that cannot fail, over seven incompatible layouts, at a path that is still being ingested.
+
+---
+
+## Where the index actually stands
+
+Per-entry census, run 2026-07-28. `nodes` = ontology nodes reaching `compiled-index.json`; `units` = structured unit records on disk; `edges` = edge-CSV rows on disk.
+
+### Healthy (11)
+
+| Entry | Nodes | Units | Edges |
+|---|---|---|---|
+| Boredom Secondary (Part III) | 68 | 55 | 3,815 |
+| A Grammar of Motives (Burke 1945) | 56 | 28 | 1,754 |
+| VR Pedagogy Secondary (Part III) | 60 | 34 | 2,260 |
+| Heidegger - Being and Time | 37 | 18 | 284 |
+| Heidegger - Basic Concepts of Aristotelian Philosophy | 37 | 14 | 93 |
+| Uncomfortable Situations | 36 | 6 | 744 |
+| Heidegger and Rhetoric | 36 | 16 | 204 |
+| Von Uexkull - A Foray | 35 | 15 | 152 |
+| Heidegger - The Fundamental Concepts of Metaphysics | 32 | 15 | 880 |
+| Rickert - Ambient Rhetoric | 25 | 10 | 56 |
+| Wendt - Design for Dasein | 15 | 7 | 614 |
+
+### Weak — registered but structurally thin (7)
+
+| Entry | Nodes | Units | Edges | Missing |
+|---|---|---|---|---|
+| Virtual Learning Environments (King–Salvo) | 18 | **0** | **0** | units, edges, concept-matrix |
+| Presence Theory (Foundations) | 10 | **0** | **0** | units, edges, manifest |
+| Social Presence in Virtual Worlds (Part III) | 10 | **0** | **0** | units, edges, manifest |
+| Rhetoric of Interactivity and VR (Part III) | 7 | **0** | **0** | units, edges, manifest |
+| Boredom Experiment (VR Attention Study) | 7 | **0** | **0** | units, edges, concept-matrix |
+| A Rhetoric of Motives (Burke 1950) | 39 | 8 | 420 | concept-matrix, manifest |
+| In-Game (Calleja 2011) | 44 | 26 | 1,472 | **malformed `ig-10-incorporation.json`** |
+
+The first five are ontology-only: they contribute concept names and nothing else. No unit records, no edges, no analytical substance.
+
+### Broken or unregistered (9)
+
+| Entry | Nodes | Units | Edges | Problem |
+|---|---|---|---|---|
+| Aristotle - Complete Works | via work-map | 45 | 402 | Registered `table` format, **no ontology file**; nodes arrive only through `ARISTOTLE_WORK_MAP` |
+| Aristotelian Phantasia Secondary | **0** | 8 | 1,414 | Unregistered; ships `cluster-ontology.json` (41 concepts) the compiler never opens; no manifest |
+| RDR2 Secondary (2019-2023) | **0** | 12 | 1,012 | Unregistered; ships JSON (21 concepts) |
+| Aristotelian Emotion Secondary | **0** | 5 | 420 | Unregistered; ships JSON (40 concepts) |
+| Aristotelian Motion and Time Secondary | **0** | 1 | 58 | Unregistered; **no ontology at all**; 5 files total — abandoned mid-creation |
+| Dissertation | **0** | 33 | 1,682 | Not a source-text entry — pipeline run-history store |
+| Game-Behavior Analysis Method | **0** | 1 | 0 | Methodology document store, 9 versions of one file |
+| RDR2 (Salvo Playthrough) | **0** | 0 | 0 | Primary-analysis artifact; no synthesis layer |
+| Veri(dis)similitude (Salvo MA) | **0** | 0 | 0 | Primary-analysis artifact; no synthesis layer |
+
+### The headline number
+
+**357 unit records · 691 unit analyses · 17,736 edge rows on disk. Zero of them reach runtime.**
+
+Only ontology nodes compile. Everything else — every unit breakdown, every relationship, every concept matrix, every debate map — is authored and unreachable. That is what "completely wired" has to fix.
+
+---
+
+## Phase map
+
+| Phase | Name | Effort | Gate |
+|---|---|---|---|
+| **0** | Preservation | 0.5 d | P0 |
+| **1** | Compiler hardening + registry triage | 3–4 d | C1 |
+| **2** | Index relocation | 3–4 d | R1 |
+| **3** | Normalization layer | 5–8 d | N1 |
+| **4** | Entry repair | 6–10 d | Q1 |
+| **5** | **Wiring** — unit/edge/apparatus reach runtime; entry-scoped + index-first retrieval | 8–12 d | W1 |
+| **6** | Single-source entries at scale | large — scoped at gate | E1 |
+| **7** | Cross-cutting groups | 8–12 d + compute | G1 |
+| **8** | Analysis-upgrade sandbox | 6–10 d + ~$15 | S1–S5 |
+
+Phases 1 and 2 can overlap. Phase 4 (repair) and Phase 5 (wiring) interleave — the 11 healthy entries can be wired while the weak ones are repaired.
+
+---
+
+## Phase 0 — Preservation
+
+Unchanged from v2, and still first. 82% of `corpus/index` is untracked but not gitignored, so `git clean -fd` deletes Aristotle (131 files), Dissertation (358), Burke, Heidegger, Calleja, RDR2. `writing-pipeline-v3` has no upstream and the `pre-promotion-20260419` tag is local-only.
+
+| # | Item | Status |
+|---|---|---|
+| P0.1 | Full verified backup of `corpus/index` | **DONE** — see D1 |
+| P0.2 | Apply tracking policy: gitignore `.backups/`, track the rest | approved, not yet applied |
+| P0.3 | Push `writing-pipeline-v3` + `pre-promotion-20260419` tag to origin | approved, not yet run |
+| P0.4 | Back up `production-sandbox/data/` off-machine (~$25 claims + ~40 h annotation, irrecoverable) | pending |
+
+**Gate P0:** backup verified (done); tracking policy applied; branch and tag resolve on origin; sandbox data byte-verified in a second location.
+
+**Constraint:** WSL only, and I ask before each push.
+
+---
+
+## Phase 1 — Compiler hardening and registry triage
+
+The compiler cannot fail. Seven silent-skip sites mean a clean run proves nothing, so no repair in Phase 4 can be verified until this lands.
+
+### 1A — Make it fail loudly
+
+| # | Item | Evidence |
+|---|---|---|
+| C1.1 | `--check` flag and non-zero exit | No argparse at all today |
+| C1.2 | Warn on entry directories absent from the registry | 8 of 27 invisible, silently |
+| C1.3 | Warn on registered entries yielding zero nodes | Aristotle - Complete Works is registered with no ontology file |
+| C1.4 | Warn on `tension-edges.json` files yielding zero edges | 4 of 11 drop 55 records at `:1128-1129` |
+| C1.5 | Error, not empty list, on unparseable ontology input | `parse_ontology_md` returns `[]` |
+| C1.6 | Self-check against manifest-declared counts | None exists |
+| C1.7 | Deterministic `canonicalTerms` sort | 101 case-duplicate pairs flip per run |
+| C1.8 | Strip parse pollution | One `centralityTier` holds 10,009 chars of a dumped edge table |
+
+### 1B — Read the JSON ontologies
+
+The compiler reads **zero** JSON ontologies; the string `ontology.json` appears nowhere in its 1,412 lines. It already dispatches on `ontology_format` with two handlers (`header` ×17, `table` ×2), so a third is an established pattern.
+
+Three unregistered clusters already ship structured ontologies it never opens:
+
+| Cluster | Concepts | Fields |
+|---|---|---|
+| Phantasia Secondary | **41** | id, canonical_name, definition, centrality_tier, synonyms_merged, appears_in_units, first_pdf_page, domain |
+| Emotion Secondary | **40** | label, units *(thin)* |
+| RDR2 Secondary | **21** | concept, units, tier *(thin)* |
+
+Add an `ontology_format: "json"` branch plus three shape adapters. **~1 day, +102 concepts.**
+
+Target state: **JSON is the machine-readable ontology for every entry; markdown is the human prose.** Boredom Secondary already proves the `.md → .json` generation path and stamps it drift-proof; the prose clusters already have authoritative JSON. Generate where missing, read where present.
+
+### 1C — Registry triage
+
+Introduce an explicit **entry class** field. Four classes:
+
+| Class | Members | Treatment |
+|---|---|---|
+| `source-entry` | the 21 real index entries | Full gates; compiled; retrievable |
+| `analysis-artifact` | **Dissertation · Game-Behavior Analysis Method · RDR2 (Salvo Playthrough) · Veri(dis)similitude (Salvo MA)** | **No synthesis layer** (D4). Excluded from source-entry gates and from the ontology compile. **Still reachable by entry-scoped retrieval** — they are useful when drafting Part II |
+| `incomplete` | Motion and Time Secondary | Queued for Phase 4 entry creation |
+| `excluded` | — | Reserved |
+
+The `analysis-artifact` class is what stops these four reading as defects forever. Veri(dis)similitude's own `phase0-overview.md` states the rationale: *"the other `corpus/index/` folders index external sources to be cited across the dissertation. This thesis is the author's own prior work being rewritten into Part II."*
+
+Also replace registry-keyed-by-directory-name with explicit entry IDs. Today a rename silently drops an entry, and five entry paths are hardcoded in `scripts/normalize-edges.py:37-41`.
+
+**Gate C1:** two consecutive runs byte-identical; `--check` fails on a corrupted fixture; warnings fire for every unregistered entry, every zero-node registered entry, and all 4 zero-yield tension files; the 3 JSON clusters register with non-zero nodes.
+
+---
+
+## Phase 2 — Relocate the index out of `corpus/`
+
+Sequenced here so that Phase 3 normalization and Phase 5 wiring target final paths rather than being rewritten afterwards.
+
+The index is being ingested **now**: 772 of 1,182 manifest records are under `index/`, and 25 chunks are live in ChromaDB with `collection="index"`.
+
+| # | Item |
+|---|---|
+| R2.1 | Move the tree; preserve `.backups/` |
+| R2.2 | Update ~7 literal-string sites (~12 lines) |
+| R2.3 | Update 4 string-free sites that join corpus root to manifest `path_rel` — `endnote-generator.ts:31`, `missing_link_detector.py:439`, `coverage_analyzer.py:470`, `orphan_identifier.py:335`. These survive any grep-driven migration |
+| R2.4 | Rewrite 772 manifest `path_rel` values, or R2.3's sites resolve to nothing |
+| R2.5 | Purge the 25 ingested index chunks from ChromaDB **before** the move (`doc_id` is path-derived; relocation mints a new namespace with no dedup) |
+| R2.6 | Add `index` to `SKIP_DIRS` in every walker |
+| R2.7 | Give `audit_ingest.py` / `verify_ingest.py` a `SKIP_DIRS` and a relative default root — they have neither (`:60`, `:67`, `:97`, `:166`) |
+| R2.8 | Handle `god_learn.py:755`, which defaults `--root` to `<repo>/corpus` and is the primary user-facing driver via `/god-learn-compile`, `/god-learn-update`, `/god-learn-verify` |
+| R2.9 | Update `scripts/normalize-edges.py:37-41` |
+| R2.10 | Prose sweep — **297 self-referential files inside the index itself**, 47 live plans, 389 tmp files, 3 under `reports/` |
+
+**Known residue:** `strings vector_db_1536/chroma.sqlite3 | grep -c corpus/index` = 458, of which **39 are embedded prompt/memory text and cannot be fixed by re-ingestion.** Accept as stale or re-embed deliberately.
+
+**Gate R1:** ingest dry-run produces zero manifest records under the new path; fresh Chroma build has zero path hits outside the 39; `/god-learn-verify` passes.
+
+---
+
+## Phase 3 — Normalization layer
+
+The pivot for everything after it. Today: 4 incompatible unit-JSON schemas, 4 `global-edges.csv` layouts, 4 `concept-matrix.csv` orientations, **42 edge-CSV header dialects**, **633 distinct relation values**, 31 unenforced ID prefixes, no schema file, no validator.
+
+| # | Item |
+|---|---|
+| N3.1 | Define a canonical **unit record** — id, entry, title, locus range, concepts, arguments, claims, edges, provenance |
+| N3.2 | Define a canonical **edge record**; collapse 633 relation values to a controlled vocabulary with an explicit long tail |
+| N3.3 | One adapter per schema family. `plans/archon-corpus-index-migration-spec.md:45-58` already names 8 families — reuse that inventory |
+| N3.4 | Validator + schema file + ID-prefix registry |
+| N3.5 | Extend `scripts/normalize-edges.py` past its 5 hardcoded paths, which cover **none** of the five secondary clusters |
+
+**Gate N1:** all 27 entries load through the adapter layer into the canonical type; validator passes; all 494 JSON files parse.
+
+---
+
+## Phase 4 — Entry repair
+
+Concrete work list from the census. Runs concurrently with Phase 5 wiring of the healthy entries.
+
+### 4A — Hard breakage (do first)
+
+| # | Item |
+|---|---|
+| Q4.1 | **Repair** `ig-10-incorporation.json` — one unclosed object between lines 107–155; all 241 lines of content intact. Validate against the sibling schema (`ig-09-ludic.json`, 27 top-level keys). Pre-repair original preserved in the D1 backup |
+| Q4.2 | `Virtual Learning Environments/units/vle-05-…md:3` declares `corpus/virtual_learning_environments/` — does not exist; real directory is capitalized |
+| Q4.3 | The 4 `tension-edges.json` files dropping 55 records silently |
+
+*(Aristotle - Complete Works removed — see D6, it is healthy.)*
+
+### 4B — Structural thinness: the 5 ontology-only entries → FULL treatment (D3)
+
+VLE, Presence Theory, Social Presence, Rhetoric of Interactivity, and Boredom Experiment each have per-source analyses in markdown but **0 structured unit records and 0 edges**.
+
+**Decision D3: all five get structured unit records, edges, and the full profile.** No lite profile is ratified.
+
+Current state:
+
+| Entry | Sources | Per-source analysis | Has | Needs |
+|---|---|---|---|---|
+| Presence Theory (Foundations) | 4 | 3.7–5.6 KB each | cluster-ontology, concept-matrix (4×10), citations, drafting-loci, bridge-to-part-ii | unit records, edges, full synthesis apparatus |
+| Social Presence in Virtual Worlds | 3 | 5.7–6.1 KB each | same set | same |
+| Rhetoric of Interactivity and VR | 2 | 4.6–4.9 KB each | same set | same |
+| Virtual Learning Environments | 5 | incl. a 20 KB unit | manifest, book-level-ontology, paper-digest-pointers | unit records, edges, full synthesis apparatus |
+| Boredom Experiment | 5 channels | self-report, EEG, gaze, stimulus corpus | manifest, book-level-ontology, graph-channel-map | unit records, edges, full synthesis apparatus |
+
+**Scoping consequence to resolve during execution.** Three of these clusters hold only 2–4 sources, and the cluster-level gates (8–12 debates, ≥50 lemmas, ≥max(10, N/4) intra-cluster citations) do not have enough material to bind at N=2. Under the Phase 6 direction this resolves cleanly: **each source becomes its own standalone entry carrying the full single-source profile, and the cluster survives as a group** whose relational gates scale with membership. Where a group is genuinely too small to support debates, either additional sources are added or the group's relational artifacts are deferred until it grows — a scoping call per cluster, not a weakening of the standard.
+
+**Also required:** the Part III presence units carry a self-declared defect — *"Candidate quotations — ALL UNVERIFIED (OCR-only; re-verify against a clean PDF)."* These are cited in Part III, so verification is part of the full treatment, not optional polish.
+
+### 4C — Missing apparatus
+
+| Entry | Missing |
+|---|---|
+| A Rhetoric of Motives | concept-matrix, manifest |
+| Phantasia Secondary | manifest |
+| Motion and Time Secondary | everything — 5 files; needs full entry creation |
+
+### 4D — Quality floor
+
+| # | Item |
+|---|---|
+| Q4.5 | Build the verbatim-quote detector — the mandatory G1 copyright gate, currently satisfied by agent self-attestation |
+| Q4.6 | Install `mmdc`; Mermaid render validation has **never** been performed |
+| Q4.7 | Backfill `quality-gates-report.md` — only 2 of 27 entries have one; only 1 has machine-readable `metrics` |
+| Q4.8 | Re-derive provenance for the **9 entries with no machine-readable source path** |
+
+**Gate Q1:** every entry either passes its profile's gates or is explicitly classified with a lighter profile; zero unparseable files; zero silent-drop warnings from the Phase 1 compiler.
+
+---
+
+## Phase 5 — Wiring
+
+The core of the directive. Make the 357 unit records, 691 analyses, and 17,736 edges reachable, and make "point the system at one work" a real operation.
+
+### 5A — Get the content into runtime
+
+| # | Item |
+|---|---|
+| W5.1 | Emit **unit records** into the compiled output — id, entry, title, locus range, concepts, arguments, claims |
+| W5.2 | Emit **edges** — 17,736 rows, normalized per Phase 3 |
+| W5.3 | Emit the **apparatus** — concept matrices, debate maps, citation networks, contested nodes, terminology appendices |
+| W5.4 | Decide the storage shape. The artifact is already 664 KB from ontology nodes alone; unit records and 17.7k edges will not fit one JSON blob loaded per process. Likely a queryable store (SQLite) with the compiled JSON retained as a summary |
+
+### 5B — Entry-scoped retrieval
+
+| # | Item |
+|---|---|
+| W5.5 | Entry registry with stable IDs (from Phase 1C) |
+| W5.6 | `scope: {entry: 'von-uexkull-foray'}` primitive — resolves to that entry's units, edges, and concepts with no vector search |
+| W5.7 | Fix the paths that block scoping: `RetrievalOptions.collections` (accepted everywhere, read nowhere), the `FacetedRetrieval` arity bug (TS2554 — the ICP path silently never reranks), `_hooksDerivationDone` one-shot global |
+
+Today the nearest capability is an `author_raw` ChromaDB filter (`retrieval-stage.ts:261, :340`) that scopes **raw PDF chunks**, not index entries. It searches the book, not your analysis of it.
+
+### 5C — Index-first ordering
+
+`corpus/index FIRST → embeddings → source PDFs` currently has **zero code**. It lives in `REVISION-PROTOCOL.md` as a workflow rule you follow by hand; the live order is inverted, with ChromaDB queried unconditionally and the index only expanding queries and adding a +0.10 boost.
+
+| # | Item |
+|---|---|
+| W5.8 | Implement the three-tier order as an actual retrieval path |
+| W5.9 | A/B before default-on |
+
+The A/B is not ceremony. Recorded history in this system: raw 1536 embeddings were a **regression** (MRR 0.285 vs 0.493); only the reranker was a win. Retrieval changes here have not been reliably improvements, and index-first is a large behavioural change.
+
+**Gate W1:** a query scoped to Uexküll returns his 14 units and their concepts, arguments, and 152 edges without a vector search; the drafting prompt contains unit-level content rather than 35 concept names; index-first A/B'd with a recorded keep/rollback decision.
+
+---
+
+## Phase 6 — Single-source entries at scale
+
+Every source gets a standalone entry, articles included.
+
+### Scale
+
+| Quantity | Count |
+|---|---|
+| Corpus PDFs | 288 |
+| Unique after dedup (23 duplicate groups, 20 cross-domain) | ~265 |
+| PDFs referenced by any entry today | 168 (58%) |
+| Entries today | 27 |
+| Units inside secondary clusters that become standalone article entries | **114** (Boredom 55, VR Pedagogy 34, RDR2 Sec 12, Phantasia 8, Emotion 5) |
+| Net new entries to author | **~140** |
+
+Widest coverage gaps: `new_media` 2/43, `metaphysics` 2/19, `AD(H)D` 0/17, `textual_analysis` 0/1.
+
+This is by far the largest spend in the plan. At the current hand-driven rate — one cluster of 8 articles is a long agentic session — ~250 entries is not feasible manually. Phase 6 is therefore mostly an automation build.
+
+### 6A — Two entry profiles
+
+The monograph gates cannot apply to a 20-page article, so define a second profile rather than weakening the first:
+
+| Profile | Applies to | Units | Gates |
+|---|---|---|---|
+| **Monograph** | Books, edited volumes | one per chapter (14–28 observed) | Full existing gates |
+| **Article** | Journal articles, chapters | one per section, or single-unit with section-level structure | Concept extraction, argument structure, claims, edges, loci, provenance. **No** debates, citation networks, or evolution arcs — those are group-level |
+
+The article profile is what makes the directive coherent: an article entry stands on its own as a complete breakdown of *that source*, and the relational apparatus lives at the group level where it has something to relate.
+
+### 6B — Automation
+
+| # | Item |
+|---|---|
+| E6.1 | Genre classifier (monograph vs article), validated against all 27 existing entries |
+| E6.2 | Article-profile authoring pipeline — the largest build in this plan |
+| E6.3 | Promote the 114 cluster units to standalone entries, retaining clusters as groups over them |
+| E6.4 | Ingest hook: new source → classify → scaffold → queue for authoring |
+| E6.5 | Opt-out list — AD(H)D's 17 PDFs and any other deliberately-unindexed material |
+| E6.6 | Canonical-domain rule for the 20 cross-domain duplicate groups; a representation for one-document-to-many-entries (3 PDFs today) |
+
+### 6C — On mirroring corpus organization
+
+Document→domain is many-to-many, so a literal mirror is not implementable. Under this design the mirroring lands where it is well-defined: **entries mirror `corpus/` one-to-one** (each single-source entry has exactly one source document, so the mapping is a function), while **groups** stay organized analytically. That preserves the distinction between "Aristotle primary" and "scholarship about Aristotle," both of which live in `rhetorical_ontology`.
+
+**Gate E1:** classifier validated; article profile ratified against 3 hand-built exemplars; per-domain priority order agreed; opt-out list written.
+
+---
+
+## Phase 7 — Cross-cutting groups
+
+Unchanged in substance from v2, but now cleaner: with every source a standalone entry, groups become **selections over entries** rather than containers of units.
+
+| # | Item |
+|---|---|
+| G7.1 | Construct per-entry embedding documents (title, abstract-equivalent, concepts, Greek terms) |
+| G7.2 | Re-embed via wraith-infer `:8100`, `kind:'document'`. The existing 278-record artifact is a valid subset — 277 present in the live 701-node ontology, ~39.5% coverage. Re-embed the 423 newer nodes; ~4 s at the measured rate |
+| G7.3 | Member selection: embed-recall → `bge-reranker-v2-m3` precision. **Not pure cosine** — recorded eval says raw 1536 regresses, rerank wins |
+| G7.4 | Deterministic evidence assembly |
+| G7.5 | LLM authoring of group-level artifacts — debates, citation networks, contested readings, evolution arcs |
+| G7.6 | Build the eval harness. `corpus/eval/` does not exist; `scripts/eval-retrieval.ts` was never written |
+
+**Gate G1:** "secondary literature on Aristotle's phantasia" recovers ≥90% of the hand-built cluster with ≤2 false positives. Baseline today: 10 nodes, all primary Aristotle/Heidegger, **zero** from the 8-unit phantasia cluster.
+
+---
+
+## Phase 8 — Analysis-upgrade sandbox
+
+Now last, per directive. The horizontal layer: claims → concept resolution → cross-author bridges.
+
+State: Phases 0–3b complete (4,961 claims, 23 papers, ~$25), R1/R1.3 kept, Phase 4 gold set **25 of 50** dev items, Phase 5 E-ladder **never run** (`run-experiment.sh` and `run-ab.sh` are `exit 1` stubs), Phase 6 promotion not started.
+
+**Moving this last is arguably a benefit.** The gold set's labels resolve 100% against the sandbox's 278-node ontology and only 25–36% against the live 701-node one. Running Phases 1–7 first means there will be exactly one settled ontology to rebase onto, instead of rebasing now and drifting again.
+
+| # | Item |
+|---|---|
+| S8.1 | Rebase gold-set labels onto the post-Phase-7 ontology; preserve claim texts, genres, locked ordering, SHA lineage |
+| S8.2 | Finish dev 26–50 under a **frozen** `CONVENTIONS.md`, deferred triggers disarmed, new patterns to a flat observations file, time-boxed |
+| S8.3 | Build the experiment harness (both runners are stubs); build `corpus/eval/` if Phase 7 has not |
+| S8.4 | Resolve the noise floor — Δ F1 ≥ 0.02 on 50 items is single-item resolution. Widen to ~0.06 and demote F1 to a tripwire, with the prose-side A/B as the decision signal |
+| S8.5 | Run E0–E8; merge (one real conflict, `write-pipeline-orchestrator.ts`; 4 of 9 files merge clean); promote behind a default-off flag |
+
+**Note on drift:** the worktree forked at `54c2ba1fe`; live is 22 commits ahead. Deferring further increases the merge cost. Phase 0 preservation is what makes that acceptable — the code is safe, just increasingly stale.
+
+**Gate S1–S5:** as v2, unchanged.
+
+---
+
+## Risk register
+
+| Risk | Phase | Mitigation |
+|---|---|---|
+| Compiled artifact outgrows a JSON blob | 5A | Decide storage shape before emitting; SQLite with JSON summary retained |
+| Index-first ordering regresses retrieval | 5C | A/B before default-on; recorded history says retrieval changes here are not reliably wins |
+| Normalization balloons | 3 | Time-box per adapter family; ship the 5 secondary clusters first |
+| Article profile becomes a weaker second standard | 6A | Profile is explicit and machine-readable; entries declare which profile they were built to |
+| ~140 new entries at hand-driven cost | 6 | Phase 6 is an automation build, not an authoring campaign; do not start authoring at scale before E6.2 works |
+| Thin JSON ontologies under-deliver | 1B | Emotion and RDR2 carry no definitions; expect less retrieval contribution than Phantasia's 41 |
+| Sandbox merge cost grows while deferred | 8 | Phase 0 secures the code; accept staleness as the price of one settled ontology |
+| `doc_id` churn orphans chunks | 2 | Purge before move |
+| Repair unverifiable | 4 | Phase 1 must land first — a clean compiler run currently proves nothing |
+
+---
+
+## Open decisions
+
+All five prior blockers are resolved (D1–D6). Remaining calls, none of which block Phases 0–3:
+
+1. **Per-cluster scoping for the three small presence clusters** (2–4 sources each) — add sources, or defer group-level relational artifacts until membership grows? Decide during Phase 4B, per cluster.
+2. **Per-domain priority order for Phase 6** — `new_media` (2/43) and `metaphysics` (2/19) are the widest coverage gaps; `AD(H)D` (0/17) is presumed opt-out.
+3. **Storage shape for the wired index** (Phase 5A, W5.4) — SQLite versus a growing JSON artifact. Recommend deciding at the start of Phase 5, not the end.
+
+Execution handoff: `plans/index-system-HANDOFF-2026-07-28.md`.

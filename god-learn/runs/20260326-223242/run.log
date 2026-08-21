@@ -1,0 +1,524 @@
+[god-learn] $ python3 scripts/retrieval/query_chunks.py hermeneutical-As and apophantical-As Heidegger --k 8 --overfetch 30 --include_docs --print_json
+{
+  "query": "hermeneutical-As and apophantical-As Heidegger",
+  "config": {
+    "chroma_dir": "vector_db_1536",
+    "collection": "knowledge_chunks",
+    "k": 8,
+    "overfetch": 30,
+    "where": null,
+    "filters": {
+      "require_my_copy": false,
+      "collection_filter": null,
+      "keep_biblio": false
+    },
+    "include_docs": true,
+    "use_highlights": false,
+    "highlights_index": "scripts/highlights/highlight_index.json",
+    "highlight_alpha": 0.02,
+    "highlight_cap": 5
+  },
+  "results": [
+    {
+      "raw_rank": 1,
+      "chunk_id": "ab2442b48417ead0:00108",
+      "distance": 0.42176562547683716,
+      "path_rel": "rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf",
+      "page_start": 185,
+      "page_end": 185,
+      "text": "This all gathers to a point in Burke's church spire example, where we see not only that meaning is ascendant for Burke but that this valuation emerges from a world/human, nomos/physis dichotomy. Heidegger, however, is useful for understanding language without relying on or reinscribing such a binary. And so that we do not lose our way, note this is also the goal of an ambient rhetoric: to theorize rhetoric in ways that dissolve such problematic binary distinctions and bring the world and its processes back into what we mean by rhetoric. Yet I think we need to grant that in his own way, Burke too wrestled with this problem, even ifhe often slips back into an overemphasis on meaning that confounds his attempts to give the material and bodily their due. And certainly he has the rhetorical tradition overwhelmingly on his side, even if, as I attempt to show in my earlier discussions of the chora and kairos (see chaps. 1 and 2). there are other ways of understanding the relation of some of rhetoric's basic concepts to materiality. But once the human is defined as the \"symbol-using animal,\" it is nearly programmatic to assert that \"the logic of symbols must be 'prior' to the effects of any 'productive forces' in the socioeconomic meaning of the expression\" (Burke, RM 177). Still, we should treat this carefully, for it is tempting to read Burke as courting idealism here, although the presence of distancing quotation marks perhaps suggests some reservations on his part, some sense that there is material he has not yet quite adequately covered. If, however, symbolicity is prior to the generative effects of intuition, raw sense data, and immediate action, then the world shows up only through the nets of meaning. There is no unmediated access to the world. Riffing on Judith Butler, we might say that there is no symbolic action in the world that is not a further formation of that world (Bodies 10).5Thus a church spire is certainly a physical thing, but as Burke goes on to argue, \"we have once again come upon an area where nonverbal things, in their capacities as 'meanings; also take on the nature of words[;] ... the dialectical realm of ideas is seen to permeate the positive realm of concepts\" (RM 186). The ironizing quotation marks appear yet again, and more than that,\n\nii\n\nwe can see real consistency in the way Burke will play this deck of cards. Burke's world matters because it verbs, even if verbs matter because they are bound to bodies.\n\nBurke is wonderfully rich and forward thinking here. While we could wish for more precision and greater detail, he nevertheless intimates that to be a human being in the world necessarily involves intuiting that the world gives rise to meaning, since meaning emerges via the accretion of layers of abstraction over bodily emoting and gesture (Hawhee, Moving 109). Insofar as the world is meaningful, ideas and the tincture of persuasion they carry are inseparable from human affairs. But a few reservations or at least critical questions may be in order here. Thus I next look at some of Heidegger's work on these same issues-the questions of meaning, language, and language's relation to world-to clarify exactly how word relates to and evokes world and where we should then locate and describe the work ofrhetoric. I will argue for a further appreciation of the transformative effect oflanguage and its integration into the overt as well as tacit world of human meaning and activity. To get at such ideas, though, we must turn to Heidegger; I will begin with the earlier Heidegger of Being and Time, since he bears a greater affinity to Burke than the later Heidegger does.\n\n\"Oh, Baby, Baby, It's a Wild World\": Coping with Early Heidegger",
+      "meta": {
+        "sha256": "44d401951ee1933f730599ecf0d5be699c4d3891d7c12b7b09115137a8c78564",
+        "source_method": "marker+bbox",
+        "collection": "rhetorical_ontology",
+        "page_start": 185,
+        "is_table": false,
+        "mtime": 1771101203,
+        "has_bboxes": true,
+        "is_clean_copy": false,
+        "doc_id": "ab2442b48417ead0",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf",
+        "path_rel": "rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf",
+        "page_end": 185,
+        "content_type": "text",
+        "title_raw": "Ambient Rhetoric- The Attunements of Rhetorical Being",
+        "chunk_index": 108,
+        "year": 2013,
+        "qualifier": "My Copy",
+        "author_raw": "Rickert, Thomas",
+        "is_my_copy": true,
+        "cleaning_version": "clean_v1",
+        "pdftotext_version": "24.02.0",
+        "is_image": false,
+        "is_notes": false,
+        "clean_sha256": "2e66366a95ec1e83c97ae6782e831961074871ab943aa5f85d3130aa2d8eacb3",
+        "bboxes": "[{\"page_num\": 185, \"coords\": [42.328125, 132.48046875, 336.39892578125, 509.2216791381361], \"blocks\": [[42.328125, 132.48046875, 336.39892578125, 509.2216791381361]]}, {\"page_num\": 186, \"coords\": [-0.17830000817775726, 51.42333984375, 346.252685546875, 426.56727270502597], \"blocks\": [[-0.17830000817775726, 418.1672788085416, 6.113300323486328, 426.56727270502597], [55.95703125, 51.42333984375, 345.0221252441406, 88.83875708002597], [55.95703125, 89.63026098627597, 346.252685546875, 281.8115234375], [82.81640625, 290.81787109375, 341.99200439453125, 301.85791015625]]}]"
+      },
+      "rank": 1
+    },
+    {
+      "raw_rank": 2,
+      "chunk_id": "527bac6664a1cf16:00030",
+      "distance": 0.477819561958313,
+      "path_rel": "rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf",
+      "page_start": 51,
+      "page_end": 55,
+      "text": "Lommatzsch had given me Cicero to read so that I could practice my Latin. I diligently did so; after all, we spoke Latin in the seminars! Yes, it was a small seminar, perhaps five people. That I then delved further into rhetoric was my own decision-because rhetoric was closest to philosophi At that time Friedlander\" also began to concern himself with topics from the time of Hellenism and to ask what was slowly developing between Latin and Greek. The history of rhetoric belonged to my preparations that permitted me to continue at all. The late rhetoric, especially Qiintilian, and an important part was played by Plato's Symposium, particularly the last phase where Socrates is told, \"You will not understand what I will now say.\" Isn't it the truth? [laughs]-Well, that's the origin of my hermeneutics! ;','arurally, while I was srudying classical philology, I always participated in Heidegger's seminars and even heard many lectures-not all. Of course, this took place only between 1924 and 1927. So, I am also not in the strict sense a completely well-educated classical philologist in every respect. However, the topic that chiefly interested Heidegger at that time, the pathe doctrine, this aspect of Aristotle's rhetoric-that you correctly remark Heidegger especially emphasized then-that topic I did not understand at the time. I was still too immature for that. After the lecture we, the students, seldom discussed it. The development that Heidegger himself achieved is something other than what I slowly accumulated, coming from my completely different starting point.\n\nn. o~ THE STATus oF RHEToruc\n\nIn two recent and published conversations you have again referred to rhetoric and pleaded for the broad concept of rhetoric. To Gudrun Kuhne-Bertram and Frithjof Rodi you located historically \"the very broad concept of rhetoric\" as the post-Aristotelian concept of rhetoric \"that contained all the humanities until modern times. •s In a similar manner you told Jean Grondin, \"There.fare it\n\nHeidegger as Rhetor \n\nwould actually bring greater honor to the study of the humanities to place it under the old concept of rhetoric, where one deals with believable statements and not with conclusive proofi. \"6\n\nYour teacher, Martin Heidegger, to the contrary, referred directly to Aristotle and already established rhetoric as the dynamis of humans. \"What does rhetoric really mean? What sense of rhetoric relates to legein? Aristotle defined rhetoric (1.2) as dynamis. This definition is to be retained even though Aristotle often designates it as techne. This designation is incorrect, whereas dynamis is the correct definition. \"7\n\nWhat is at stake in this alternative (techne/dynamis)?\n\nThat is a very important question. Techne was a very general expression, if one did not mean mathematics specifically. So the special character of Heidegger's statement is that it is a probing attempt. Concerning this one must see that Heidegger was still using techne, until he began emphatically using the concept of energeia. And so he associated the concept of dynamis with the concept of energeia, and missed the other one. That is the reason.\n\nNaturally how Heidegger had ordered these concepts was quite correct. In general, I can only say that it was at least as much of a revelation for me as it can be for younger students today. Although Hartmann carefully read Aristotle, it did not actually transfer to his own thinking; whereas Heidegger accomplished this and fascinated me right away. Even from today's perspective, I would want, like Heidegger, to characterize rhetoric as more a dynamis. That should indicate that rhetoric belongs to being human and is not just an occasional ability. Actually, everyone is a speaker.\n\nIII. THE RHETORIC OF PHILOSOPHY: \nUSING THE EXAN1PLE OF MARTIN HEIDEGGER\n\nConcerning rheton·c Martin Heidegger remarks in his lecture of SS 1924, •1 only wish to point out that it might be more appropriate if philosophers could decide to consider what speaking to others really means. us\n\nWho are the \"philosophersu and what led to their losing sight of speaking to someone and conversation?\n\nThat is a very general critique. Heidegger was always a rowdy, and this somewhat influenced what he said. In such a case he was referring to, for example, Richard Kroner in Freiburg and Nicolai Hartmann in Marburg and people like them, naturally also Edmund Husserl-although he actually never tried to hide his admiration for Husserl, at least not at that\n\nHans-Georg Gadamer",
+      "meta": {
+        "page_end": 55,
+        "doc_id": "527bac6664a1cf16",
+        "chunk_index": 30,
+        "is_my_copy": true,
+        "has_bboxes": true,
+        "year": 2005,
+        "title_raw": "Heidegger and Rhetoric",
+        "clean_sha256": "cf60bcb6bc8511de6c337d4e2091e300002f2ebb05b4b9c1d769db2122e78d53",
+        "author_raw": "Multiple Authors",
+        "is_notes": false,
+        "source_method": "pymupdf+bbox",
+        "sha256": "565b5cbb7dd1de51c03875847b8d127327ee9412f0dea56717daac751fb98ffb",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf",
+        "cleaning_version": "clean_v1",
+        "path_rel": "rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf",
+        "is_clean_copy": false,
+        "collection": "rhetorical_ontology",
+        "bboxes": "[{\"page_num\": 56, \"coords\": [102.65899658203125, 440.9244689941406, 443.9111633300781, 578.778076171875], \"blocks\": [[102.6989974975586, 440.9244689941406, 442.8443603515625, 516.6381225585938], [102.65899658203125, 515.0145263671875, 443.9111633300781, 578.778076171875]]}, {\"page_num\": 57, \"coords\": [34.097412109375, 19.013317108154297, 377.97406005859375, 578.8118896484375], \"blocks\": [[153.35459899902344, 19.013317108154297, 372.3629150390625, 33.581871032714844], [37.674598693847656, 48.421512603759766, 374.4046936035156, 123.21187591552734], [36.78459930419922, 121.918701171875, 373.8992614746094, 233.451904296875], [35.842803955078125, 232.1614990234375, 374.164794921875, 307.2455139160156], [36.81460189819336, 320.9118957519531, 314.13287353515625, 334.831298828125], [35.084598541259766, 348.3714904785156, 374.6067810058594, 399.26190185546875], [34.404598236083984, 397.3714904785156, 374.5797119140625, 472.7519226074219], [34.719482421875, 482.24127197265625, 375.5980224609375, 514.2496948242188], [34.097412109375, 527.031494140625, 377.97406005859375, 578.8118896484375]]}, {\"page_num\": 58, \"coords\": [94.56951904296875, 21.45431900024414, 432.9765625, 332.3385314941406], \"blocks\": [[95.16590118408203, 21.45431900024414, 311.0311584472656, 35.327919006347656], [95.16590118408203, 50.72433853149414, 430.4303283691406, 173.94790649414062], [94.56951904296875, 172.02389526367188, 432.9765625, 308.0906982421875], [95.24590301513672, 320.2506408691406, 209.11451721191406, 332.3385314941406]]}]",
+        "content_type": "text",
+        "qualifier": "My Copy",
+        "is_table": false,
+        "pdftotext_version": "24.02.0",
+        "is_image": false,
+        "page_start": 51,
+        "mtime": 1771101203
+      },
+      "rank": 2
+    },
+    {
+      "raw_rank": 3,
+      "chunk_id": "0950ef01880ad8ae:00164",
+      "distance": 0.570867121219635,
+      "path_rel": "rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+      "page_start": 311,
+      "page_end": 313,
+      "text": "commercial advertising) could be called pragmatic. But a pragmatist doctrine of art in a deeper sense would be one that applied in the esthetic field the same form of thought as had been applied to other activities. Hence, if specialization in the industrial field is considered pragmatic, then by the same token artistic specialization would be pragmatic. Yet such stress upon the medium for its own sake might have no \"use-value,\" except when (as with the ars gratia artis of the Hollywood movies) it serves to attract paying customers, and is indirectly \"useful\" in \"making work\" for a vast army of performers, producers, promoters, distributors, and the like. This last of die term would bring us before the dilemma we have been so sense considering: whether to call Art for Art's Sake a pragmatist featuring of Agency or a mysdc featuring of Purpose.\n\nIn any case, we should be on guard against taking the formula itself too seriously. When we look to see how it \"behaves\" in particular art products, we shall find that it involves the solution, on the Symbolic level, of many complex problems that could not profitably be discussed in terms so broad as either Agency or Purpose. And on the other hand, even when one adopts a rudimentary pragmatist view of art, as in adverdsing or propaganda, he has but moved the Agency-Purpose ambiguity a step farther along: for we then have to decide whether the financial or polidcal structure which such applied art serves is to be classed as Agency or Purpose. Thus with the Hitlerite cult of the State: was it crass pragmatism (in using the philosophy of the State purely as a rhetoric for inducing the people to acquiesce in the designs of an £lite) or crude mysticism (in genuinely looking upon the power and domination of the State as the ultimate end of social life)?\n\nPerhaps, in view of the fact that the term Purpose is so especially susceptible to dissolution, we should be particularly on the look-out for its covert retention even on occasions where it is overtly eliminated. Thus, I once heard a child of five ask: \"What are the hills for?\" Hearing such a question today, we spontaneously translate it from teleological to evolutionary terms, so that the child is taught to ask instead . How do the hills come to be ?\" But may the teleological intent vestigially, beneath the evolutionary style of expression? We ave heard much of repression\" in recent decades. May there also survive\n\nbe a kind of \"Grammatical repression,\" as we learn to express ourselves in non-teleological forms, while the experience of purpose is at the very roots of knowledge: for the first sort of thing a child learns is that way (indeterminately knowledge and action) whereby its random sounds and random motions are transformed into the purposive. And as we later learn to superimpose non-purposive forms of thought, to what extent might the purposive survive?\n\nIt is a difficult problem. On the Rhetorical level, we can discount language behavioristically by comparing what is said with what is done. But where we are analyzing language intrinsically, we have only its own appearances to go by. Hence, we must take an expression at its face value, until its own operations give us cause to do otherwise, by revealing some \"perturbation\" that can only be explained on the assumption of some hidden gravitational pull. Meanwhile, we may recall that we surprised teleological expressions in Darwin, forcing their way through his evolutionism, when he was discussing beauty as sexual incitement. This indicates at least that the evolutionary thinking was not quite perfected in this high priest of evolutionism, so that its symmetry could be impaired when he was on a subject so essentially purposive as the erotic.\n\nAt least, even when we would take terms at their face value, we may at least be admonished always to be on the look-out for those points in a writer's system at which he fails in his pretensions to oudaw the purposive. When the pentadic functions are so essentially ambiguous, there is always the possibility that one term may be doing service for another.\n\nWe have noted, for instance, how there is a point at which Mysticism and Materialism become indistinguishable. Both involve a narrowing of motivational circumference. Materialism accomplishes this by a deliberate elimination of purpose as a term (except for the fact that the materialist is quite willing to tell you his purpose for eliminating purpose). Mysticism arrives at somewhat the same result unintentionally, in making purpose absolute, and thereby in effect transforming it into a fatality. Ironically, motivational schemes that would feature it less may allow it more.\n\nI\n\nModifications of Purpose\n\nPurpose in Aristotle",
+      "meta": {
+        "page_end": 313,
+        "page_start": 311,
+        "is_notes": false,
+        "chunk_index": 164,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+        "year": 1945,
+        "path_rel": "rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+        "title_raw": "A Grammar of Motives",
+        "has_bboxes": true,
+        "content_type": "text",
+        "is_my_copy": true,
+        "is_clean_copy": false,
+        "pdftotext_version": "24.02.0",
+        "collection": "rhetorical_ontology",
+        "mtime": 1774299079,
+        "clean_sha256": "c3b499f1b7c1b6e7dec41a7c173e74be0d073e62d5c78a13fa726566e7d9192d",
+        "qualifier": "My Copy",
+        "is_table": false,
+        "author_raw": "Burke, Kenneth",
+        "is_image": false,
+        "bboxes": "[{\"page_num\": 306, \"coords\": [47.89453125, 40.87890625, 354.890625, 542.5979440622032], \"blocks\": [[47.89453125, 40.87890625, 354.10546875, 227.59485034272075], [48.6796875, 228.0458984375, 353.6099853515625, 346.5947265625], [65.16796875, 357.3984375, 336.83203125, 415.15764025971293], [50.25, 425.140625, 354.890625, 490.546875], [50.25, 490.546875, 354.890625, 542.5979440622032]]}, {\"page_num\": 307, \"coords\": [55.60742187499999, 42.26806640625, 357.923828125, 251.45924584940076], \"blocks\": [[55.60742187499999, 42.26806640625, 355.0562744140625, 94.36781518533826], [55.60742187499999, 93.57275390625, 357.923828125, 185.96782128885388], [57.17382812499999, 185.68798828125, 356.357421875, 251.45924584940076]]}]",
+        "sha256": "4b3bc749bfd2f6e0252a84c899e4e66d99329aa4481d7c13a92ba5f24dde39b5",
+        "doc_id": "0950ef01880ad8ae",
+        "source_method": "marker+bbox",
+        "cleaning_version": "clean_v1"
+      },
+      "rank": 3
+    },
+    {
+      "raw_rank": 4,
+      "chunk_id": "527bac6664a1cf16:00083",
+      "distance": 0.6390957236289978,
+      "path_rel": "rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf",
+      "page_start": 138,
+      "page_end": 140,
+      "text": "The everyday speech situation generates practical judgments that are far more varied and richer than the incipient theoretical judgment of declarative sentences. I ts prejudicative possibilities, not always reducible to mere preludes to judgment, include requests, wishes, questions, imperatives, exclamatories, pregnant pauses, and other such punctuations,\n\nTheodore Kisiel\n\nnone of which are immediately subject to che hyperjudgment: true or false. Or better, they point to a much more original, comprehensive, and tacit sense of what it means to be true. On the ordinary everyday level, logos does not mean judgment, concept, or even reason, but simply speech, which includes every form of discursivity and articulation, even the nonverbal kinds, in actions that \"speak louder than words\" (for example, passive versus active resistance, or a general strike). The basic aim of everyday narural discourse, speaking to and with one another, accordingly listening to one another, is not knowledge but understanding, hermeneia, simply put: getting along together, living in accord, the understanding ( Verstandigzmg) of concord. The investigation of this spectrum of phenomena of speaking co one another belongs to rhetoric, which, as the study of logos in its very first fundaments, could also be called the very first logic. The speech in question is public, not private; its judgments are not scientific but practical; its discursivity is not just linguistic but extends to the nonverbal articulations of action and of passion; its truth does not reside in the clear and distinct logic of statements, but in the chiaroscuro logos of doxa, the partial truth of prejudgments and opinions. Understood as the hermeneutics of everyday life of the G reek polis, classical rhetoric has classified three peak moments of discourse, which have generated three genres of civic speech making. H eidegger's matterof-fact summary of the three clearly bore immediate relevance to the German polis of 1923-24. For his Ruhr audience had repeatedly been, and continued to be, addressed by all three forms of public discourse over the course of the previous two years of crisis:\n\n1. The properly political speech seeks to persuade or dissuade a popular assembly or deliberative body toward a certain decision or resolution of a crisis, say, in matters of war and peace. T he speaker does not seek to educate his audience about a state of affairs, but wishes rather to talk his audience into a certain mood which will bring it in tune with the speaker's own opinions and convictions on the present condition of the state (Lage des Staates) and counsel on its furure course of action. (Germany at this time continued to be inundated by propaganda from factions both right and left about the \"November betrayal\" of the 1918 armistice and the call to overthrow the \"November criminals\" of a Weimar Republic inept in its handling of a continuing series of state crises brought on by the generally hated Versailles Treaty.) \n2. The judicial speech before a court of law in prosecution or defense is addressed to the audience of a judge or jury. (On trial for treason for his instigation of the Munich putsch, Adolf Hitler had in the past year successfully made the entire nation the audience and jury of the speech in his own defence. Having dictated the rhetorically charged Mein Kampf during the brief incarceration following sentencing, he was about to be released back into German public life before Christmas of 1924.)\n\nRhetorical Protopolitics in Heidegger and Arendt",
+      "meta": {
+        "has_bboxes": true,
+        "is_my_copy": true,
+        "author_raw": "Multiple Authors",
+        "page_end": 140,
+        "is_clean_copy": false,
+        "page_start": 138,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf",
+        "pdftotext_version": "24.02.0",
+        "content_type": "text",
+        "is_table": false,
+        "cleaning_version": "clean_v1",
+        "doc_id": "527bac6664a1cf16",
+        "is_notes": false,
+        "mtime": 1771101203,
+        "chunk_index": 83,
+        "title_raw": "Heidegger and Rhetoric",
+        "is_image": false,
+        "collection": "rhetorical_ontology",
+        "year": 2005,
+        "sha256": "565b5cbb7dd1de51c03875847b8d127327ee9412f0dea56717daac751fb98ffb",
+        "clean_sha256": "281dfb459caf1ecb396b260e43fc995bcec5e29e7e18d5ce56c3b1fbfccf8368",
+        "bboxes": "[{\"page_num\": 141, \"coords\": [34.646026611328125, 283.007568359375, 379.5549011230469, 592.6539916992188], \"blocks\": [[60.674800872802734, 283.007568359375, 365.0751953125, 444.4723815917969], [34.646026611328125, 455.08758544921875, 379.5549011230469, 592.6539916992188]]}, {\"page_num\": 142, \"coords\": [79.3510971069336, 20.772998809814453, 420.7660827636719, 577.2657470703125], \"blocks\": [[79.45110321044922, 20.772998809814453, 284.3391418457031, 34.100799560546875], [79.3510971069336, 50.12930679321289, 417.3507080078125, 88.20279693603516], [79.94390869140625, 85.43692779541016, 417.77227783203125, 112.69535064697266], [80.54708862304688, 110.76931762695312, 417.8467102050781, 124.64493560791016], [80.63711547851562, 122.71890258789062, 418.5235290527344, 210.095703125], [82.05389404296875, 207.86929321289062, 420.7117614746094, 282.9827880859375], [82.659912109375, 281.35919189453125, 418.9730529785156, 356.18408203125], [79.42828369140625, 354.5592956542969, 420.7660827636719, 577.2657470703125]]}, {\"page_num\": 143, \"coords\": [88.08300018310547, 21.74930191040039, 377.2955627441406, 35.622901916503906], \"blocks\": [[88.08300018310547, 21.74930191040039, 377.2955627441406, 35.622901916503906]]}]",
+        "source_method": "pymupdf+bbox",
+        "path_rel": "rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf",
+        "qualifier": "My Copy"
+      },
+      "rank": 4
+    },
+    {
+      "raw_rank": 5,
+      "chunk_id": "527bac6664a1cf16:00110",
+      "distance": 0.6621001362800598,
+      "path_rel": "rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf",
+      "page_start": 180,
+      "page_end": 181,
+      "text": "ton: Beacon, 1988). On what follows see Otto Poggeler, \"Erklaren-Verstehen- Erortem,\" in Tran.sundentalpragmatik: eitz Symposion for Karl-Otto Apel, ed. Andreas Dorschel et. al. (Frankfurt: Suhrkamp, 1993), 41ff.\n\n17. Karl-Ono Apel, \"Szienristik, Hermeneurik, Ideologiekritik: Emwurf einer Wissenschafrslehre in erkenntnisanthropologischer Sicht/ Wiener Jahrbuch fiir Philosophie 1 (1968): 15-45.\n\n18. Hans-Georg Gadamer, \"Rhetorik, Hermeneutik und Ideologiekritik: \nMetakrirische Erorterungen zu Wahrheit und Methode,\" in Gesammelte Werke vol. 2 (Tubingen: Mohr Siebeck, 1993), 232-250; \"On the Scope and Function of Hermeneutic Reflection,\" in Philosophical Hermeneutics, ed. and trans. David E. Linge (Berkeley: University of California Press, 1976).\n\n19. Hans Georg Gadamer, Wahrheit rmd Methode: Grundzuge einer philosophischen Hermeneutik, Gesammelte Werke vol. 1 (Tubingen: Mohr Siebeck\n\n1990), esp. 24-29; Truth and Method, 2nd revised edition, trans. Joel Weinsheimer and Donald G. Marshall (New York Crossroad, 1989).\n\n20. See Otto Poggeler, \"Vico und die humanistische Tradition,\" in Humaniliit und Bi/dung: Festschrift for Clemens Menze zum 60. Geburlstag, ed. Johannes Schurr et. al. (Hildesheim: Olms, 1988), 46ff. On what follows see\n\nGiambattista Vico, Liber metaphysicus, trans. Stephan Otto and Helmut Viechtbauer {Munich: Fink, 1979).\n\n21. For details see Theodore Kisiel, The Genesis of Heidegger's Being and Time (Berkeley: University of California Press, 1993).\n\n22. Franz Overbeck, Christen/um und Kultur: Gedanken und Anmerk1111gen zur modernen Theologie, ed. Carl AJbrecht Bernoulli (Basel: Schwabe, 1919).\n\n23. Martin Heidegger, \"Einleirung in die Phanomenologie der Religion (Wintersemester 1920/21),\" in Phiinomenologie des religiosen Lebens, GA 60 (Frankfurt: Klostermann, 1995); translated in The Phenomenology of Religious Lift, trans. Matthias Fritsch and Jennifer Anna Gosetci-Ferencei (Bloomington, Indiana University Press, 2004).\n\n24. Martin Heidegger, \"Die Idee der Philosophie und das Weltanschauungsproblem (Kriegsnotsemester 1919),\" in Zur Bestimmung der Philosophie, GA 56/57 (Frankfurt: Klostermann, 1999); translated in Towards the Definition of Philosljphy, trans. Ted Sadler (London: Continuum, 2002).\n\nHeidegger's Restricted Conception of Rhetoric \n\n. 25 • See Martin Heidegger, \"Phanomenologische Interpretationcn zu Anstoteles\" [the so-called Natorp-Bericht], Dilthey-Jahrbuch 6 (1989): 235ff.\n\n. \n26. !he correspondence between Heidegger and Ebbinghaus is still unpublished. Citations are from a transcript communicated to me by Manfred Baum.\n\n27. Martin Heidegger, Einfiihrung in die phtinomenologische Forichung, GA 17 (Frankfurt: Klostermann, 1994).\n\n28. Martin Heidegger, Grundbegriffe de,· aristotelischen Philosophie, GA 18 (Frankfurt: Klostermann, 2002); Basic Concepts of Aristotelian Philosophy (Bloomington: Indiana University Press, forthcoming).\n\n29. Martin Heidegger, Platon: Sophistes, GA 19 (Frankfurt: Klostermann, 1992); Plato's Sophist, trans. Richard Rojcewicz and Andre Schuwer (Bloomington: \nIndiana University Press, 1997).\n\n30. Martin Heidegger, Sein und Zeit, 7th edition (Tubingen: Niemeyer, 1953), §30; Being and Time, trans. John Macquarrie and Edward Robinson (New York: \nHarper & Row, 1962); Being and Time, trans. Joan Stambaugh (Albany: State University of New York Press, 1996).\n\n31. On this topic see Otto Poggeler, Neut Wege mil Heidegger (Freiburg: \nAlber, 1992), 142ff; The Paths of Heidegger's Lift and Thought, trans. John Bailiff (Atlantic Highlands: Humanities Press, 1997), 92ff.\n\n32. Martin Heidegger, Sein und Zeit, 32, 165; for what follows, 54, 166, 383, 138; Being and Time, trans. Joan Stambaugh, 28-29, 50-51, 130, 154-155, 155- 156, 350-351.\n\n33. Martin Heidegger, Sein und Zeit, §29.\n\n34. Otto Poggeler, \"Ressentiment und Tugend bei Max Scheler,\" in Vom Umsturz der Werte in der Modernen Gesellschajt, ed. Gerhard Pfafferoth (Bonn: \nBouvier, 1997), 7ff. For what follows see my reference to Chaim Perelman in: \nTopik: Beitriige zur interdisziplindren Dislamion, ed. Dieter Breuer and Helmut Schanze (Munich: Fink, 1981), 112f.\n\n35. Chaim Perelman and Lucie Olbrechts-Tyteca, La nouve& rhlton\"que. Traitt de /'argumentation (Paris: Presses Universitaires de France, 1958); The New Rhetoric: A Treatise on Argumentation, trans. John Wilkinson and Purcell Weaver (Notre Dame: University of Notre Dame Press, 1969).\n\n36. Wilhelm Dilthey, Weltamcha111mg und Analyse des Menschen seit Renaissance und Reformation, Gesammelte Schriften, vol. 2 (Gottingen: Vandcnhoeck und Ruprecht, 1914), 416ff.\n\n37. Otto Poggeler, Heidegger in seiner Zeit (Munich: Fink, 1999), 54£.\n\n38. Martin Heidegger addresses this reproach in Aristotle, Metaphysics Thtta 1-J, GA 33 (Frankfurt: Klostermann, 1981), 137f. For what follows, see Die\n\nOtto Poggeler",
+      "meta": {
+        "is_my_copy": true,
+        "year": 2005,
+        "clean_sha256": "84e0dc854a2f530abd111ff0e063cbd0090384bcd3b5269bc22325d41dcf0a7e",
+        "doc_id": "527bac6664a1cf16",
+        "is_table": false,
+        "is_clean_copy": false,
+        "sha256": "565b5cbb7dd1de51c03875847b8d127327ee9412f0dea56717daac751fb98ffb",
+        "author_raw": "Multiple Authors",
+        "has_bboxes": true,
+        "qualifier": "My Copy",
+        "collection": "rhetorical_ontology",
+        "content_type": "text",
+        "chunk_index": 110,
+        "source_method": "pymupdf+bbox",
+        "title_raw": "Heidegger and Rhetoric",
+        "cleaning_version": "clean_v1",
+        "pdftotext_version": "24.02.0",
+        "is_notes": false,
+        "path_rel": "rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf",
+        "page_start": 180,
+        "bboxes": "[{\"page_num\": 181, \"coords\": [28.4158992767334, 344.8421630859375, 374.960693359375, 558.8425903320312], \"blocks\": [[52.6322021484375, 344.8421630859375, 236.6044464111328, 358.10247802734375], [32.84590148925781, 362.4727783203125, 374.960693359375, 419.6225891113281], [31.12091064453125, 424.91278076171875, 373.1526184082031, 471.31256103515625], [30.065900802612305, 476.58935546875, 371.0868225097656, 511.3398742675781], [48.149627685546875, 516.9173583984375, 349.767578125, 529.94482421875], [28.4158992767334, 534.852783203125, 368.8638916015625, 558.8425903320312]]}, {\"page_num\": 182, \"coords\": [72.23419952392578, 25.65215492248535, 413.73468017578125, 425.07171630859375], \"blocks\": [[72.23419952392578, 25.65215492248535, 273.6007385253906, 38.897308349609375], [72.49420166015625, 56.42211151123047, 411.1319580078125, 80.31175231933594], [73.13919067382812, 85.10210418701172, 409.9957275390625, 108.39530944824219], [73.7763671875, 107.50212860107422, 181.18409729003906, 120.04173278808594], [74.51419830322266, 124.53209686279297, 411.0377197265625, 148.7217254638672], [74.6287841796875, 152.922119140625, 411.3577575683594, 177.1117401123047], [74.79419708251953, 181.3021240234375, 411.6042175292969, 205.1917266845703], [75.37419891357422, 202.9650115966797, 411.0118408203125, 227.60630798339844], [75.26419830322266, 232.09213256835938, 411.6993713378906, 267.0317077636719], [75.642578125, 271.5249328613281, 413.73468017578125, 306.4717102050781], [74.9093017578125, 310.9621276855469, 413.2455139160156, 368.31170654296875], [74.57000732421875, 372.8021240234375, 413.1260070800781, 407.7555236816406], [93.76419830322266, 412.5321350097656, 183.84561157226562, 425.07171630859375]]}, {\"page_num\": 183, \"coords\": [31.180892944335938, 107.91278839111328, 372.46734619140625, 574.5601806640625], \"blocks\": [[109.41609954833984, 107.91278839111328, 314.9353332519531, 151.677978515625], [101.61609649658203, 188.678466796875, 317.0171203613281, 203.21905517578125], [142.3061065673828, 259.77838134765625, 270.2425842285156, 276.5867614746094], [36.756099700927734, 285.3061828613281, 354.80908203125, 309.2568054199219], [35.846099853515625, 313.51678466796875, 146.2271728515625, 326.5899963378906], [35.373504638671875, 331.14678955078125, 140.81045532226562, 344.2201843261719], [85.55609893798828, 368.186767578125, 321.58331298828125, 381.2640075683594], [32.03609848022461, 391.49676513671875, 372.46734619140625, 460.72998046875], [31.180892944335938, 471.25518798828125, 368.7449035644531, 574.5601806640625]]}, {\"page_num\": 184, \"coords\": [68.65660095214844, 21.359088897705078, 285.0030517578125, 35.87762451171875], \"blocks\": [[68.65660095214844, 21.359088897705078, 285.0030517578125, 35.87762451171875]]}]",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf",
+        "mtime": 1771101203,
+        "page_end": 181,
+        "is_image": false
+      },
+      "rank": 5
+    },
+    {
+      "raw_rank": 6,
+      "chunk_id": "527bac6664a1cf16:00091",
+      "distance": 0.6839325428009033,
+      "path_rel": "rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf",
+      "page_start": 152,
+      "page_end": 152,
+      "text": "and what one stands for, the conviction of a person with regard to polity and policy. In the deliberative speech, the speaker projects a deliberate choice, or better, prechoice, prohairesis, a fundamental option in polity and policy that constitutes the very purpose of the speech. In Heidegger's ontological framework, ethos in its display of conviction translates into the particular resolve (Entschlossensein) manifested by the speaker in speech, and the way the speaker attempts to bring others to the same resolution regarding the current siruation of action, the kairos, chis moment of decision in polity and policy (171). And resoluteness is the receptive response to the call of conscience in the Heideggerian framework. To follow up in th.is framework, then, the politician projects him or herself as the authentic conscience for the other, through prescient insight leaping ahead in order to liberate the particular other. More inauthentically, at the other extreme of how one is for the other, the politician leaps in and dominates the other (SZ 122, 298). Heidegger's choice of words for these options suggests a peculiar combination of politics and pedagogy. The domination and control that comes from \"leaping in'' for the other comes from taking over the other's proper responsibility to provide for h.is or her own cares, making the other dependent on such \"welfare\" (Fursorge), say, in a welfare state. And what is rhetoric itself, in this framework of resolute response to the call of conscience? It is first of all not an art but a power, dynamis. Not immediately the power of persuasion, as the sophists would have it, but rather the cultivated power of situational insight, phronesis, of being able to see, hear, and feel, in a temporally particular situation of action, what speaks for the matter at issue, \"je nach dem\" (114). Ethos translated as personal character thus finds deeper roots in the interpersonally shared situation of action to which it must be receptive. Only the later Heidegger will perform the middle-voiced turn on this mode of persuasion, from having to being-had by the situation, that he had earlier performed on logos and pathos. It is the later Heidegger's turn from human being to the situation of being itself. Here, Heidegger can appeal to the older Heraclitean sense of ethos as (1) haunt, abode, and accustomed place, therefore as (2) custom, usage (Brauch), the habit of a habitat, the tradition which articulates, restrains, sustains, and guides the character of a speaker as well as the behaving of a people (\"German Da-sein\") and nourishes its resolve. Accordingly, ethos is (3) the history and destiny of a people in its shared actional topoi, which prefigure and prescribe patterns of behavior, its ways of having and holding and taking possession of itself. If the human being is distinguished from the animal by being the shaper and cultivator of worlds for dwelling, this cultivation is achieved by being responsive to the aura of usage, the ways and mores that belong to a particular place and come to us in the logoi of fables and myths developed over time and history. This is not as archconservative as it sounds, when\n\nRhetorical Protopolitics in Heidegger and Arendt",
+      "meta": {
+        "is_table": false,
+        "sha256": "565b5cbb7dd1de51c03875847b8d127327ee9412f0dea56717daac751fb98ffb",
+        "collection": "rhetorical_ontology",
+        "mtime": 1771101203,
+        "content_type": "text",
+        "clean_sha256": "04be6108a6dcc9f3139da5a73a718a2b11597f952169440e1a4009ec1c5ab691",
+        "is_image": false,
+        "is_clean_copy": false,
+        "page_end": 152,
+        "bboxes": "[{\"page_num\": 153, \"coords\": [34.17530059814453, 52.21194839477539, 378.2456359863281, 579.6455688476562], \"blocks\": [[34.17530059814453, 52.21194839477539, 378.2456359863281, 579.6455688476562]]}, {\"page_num\": 154, \"coords\": [73.33419799804688, 19.97702407836914, 411.96014404296875, 162.01181030273438], \"blocks\": [[73.58419799804688, 19.97702407836914, 277.3222351074219, 34.51823806762695], [73.33419799804688, 50.44705581665039, 411.96014404296875, 125.5706558227539], [74.51419830322266, 123.93704223632812, 410.98583984375, 162.01181030273438]]}]",
+        "is_notes": false,
+        "doc_id": "527bac6664a1cf16",
+        "author_raw": "Multiple Authors",
+        "source_method": "pymupdf+bbox",
+        "has_bboxes": true,
+        "title_raw": "Heidegger and Rhetoric",
+        "pdftotext_version": "24.02.0",
+        "qualifier": "My Copy",
+        "chunk_index": 91,
+        "page_start": 152,
+        "cleaning_version": "clean_v1",
+        "path_rel": "rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf",
+        "is_my_copy": true,
+        "year": 2005
+      },
+      "rank": 6
+    },
+    {
+      "raw_rank": 7,
+      "chunk_id": "f6041c1a815c83f1:00313",
+      "distance": 0.6982640624046326,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 495,
+      "page_end": 495,
+      "text": "of truth confine themselves to what has been said in the critical prolegomena (vol. 1), and mention that this is connected with Bolzano's theory of the proposition. But the positive phenomenological Interpretations, which differ basically from Bolzano's theory, have been neglected. The only person who has taken up these investigations positively from outside the main stream of phenomenological research, has been E. Lask, whose Logik der Philosophie ( 191 1) was as strongly influenced by the sixth Untersuchung (Dber sinnliche und kategoriale Anschauungen', pp. 128 ff.) as his Lehre vom Urteil (1912) was influenced by the above-mentioned sections on evidence and truth. xxxv. (H. 219) Cf. Diels, Die Fragmente der Vorsokratiker, Heracleitus fragment B 1. xxvi. (H. 220) Cf. H. 32 ff. xxxvii. (H. 22 1) Cf. H. 134 ff. xxviii. (H. 22 1) Cf. H. 166 ff. xxxix. (H. 223) Karl Reinhardt (Cf. his Parmenides und die Geschichte der grieschischen Philosophie, 1916) was the first to conceptualize and solve the hackneyed problem of how the two parts of Parmenides' poem are connected, though he did not explicitly point out the ontological foundation for the connection between .U·Bn« and Mֻ«, or its necesity. xi. (H. 223) Cf. Section 33 above, H. 153 ff. ('Assertion as a derivative mode of inter­ pretation.') xli. (H. 223) Cf. Section 34, H. 160 ff. xlii. (H. 225) Cf. Aristotle, Ethica Nicomachea Z and Metaphvsica B 10.\n\nDivision Two, Section 45 i. (H. 23 1) Cf. Section 9, H. 41 ff. ii. (H. 231) Cf. Section 6, H. 19 ff. ; Section 21, H. 95 ff. ; Section 43, H. 201. iii. (H. 232) Cf. Section 32, H. 148 ff. iv. (H. 232) Cf. Section 9, H. 41 ff. v. (H. 233) Cf. Section 41, H. 191 ff. vi. (H. 235) In the nineteenth century, S0ren Kierkegaard explicitly seized upon the problem of existence as an existentiell problem, and thought it through in a penetrating fashion. But the existential problematic was so alien to him that, as regards his ontology, he remained completely dominated by Hegel and by ancient philosophy as Hegel saw it.l Thus, there is more to be learned philosophically from his 'edifying' writings than from his theoretical ones-with the exception of his treatise on the concept of anxiety. [Here Heidegger is referring to the work generally known in English as The Concept of Dread.-Tr.] Division Two, Chapter One i. (H. 240) Cf. Section 9, H. 41 ff. ii. (H. 241 ) Cf. Section 10, H. 45 ff. iii. (H. 244) The distinction between a whole and a sum, oֺov and 1riiv, totum and compositum, has been familiar since the time of Plato and Aristotle. But admittedly no one as yet knows anything about the systematics of the categorial variations which this division already embraces, nor have these been conceptualized. As an approach to a thorough analysis of the structures in question, cf. Edmund Husserl, Logische Unter­ suchungen, vol. II, Untersuchung III : 'Zur Lehre von den Ganzen und Teilen'. iv. (H. 245) Der Ackermann aus B iihmen, edited by A. Bernt and K. Burdach. ( Vom Mittelalter zur Reformation. Forschungen zur Geschichte der deutschen Bildung, edited by K. Burdach, vol. III, 2. Teil) 191 7, chapter 20, p. 46. v. (H. 246) On this topic, cf. the comprehensive presentation in E. Korschelt'sLebensdauer, Altern und Tod, 3rd Edition, 1924. Note especially the full bibliography, pp. 414 ff. vi. (H. 249) In its Interpretation of 'life', the anthropology worked out in Christian theology-from Paul right up to Calvin's meditatio futurae vitae-has always kept death in view. Wilhelm Dilthey, whose real philosophical tendencies were ainted at an ontology of 'life', could not fail to recognize how life is connected with death: ' . . . and finally, that relationship which most deeply and universally determines the feeling of our Dasein-the relationship of life to death; for the bounding of our existence by death is always decisive for our understanding and assessment of life.' (Das Erlebnis und die Dichtung, 5th Edition, p. 230.) Recently, G. Sinlmel has also explicitly included the 1 Here we follow the older editions in reading '. \n• . und der durch diesen gesehenen antiken Philosophie • • .' In the new editions 'gesehenen' has been changed to 'ges­ chehenen'.\n\nBeing and Time",
+      "meta": {
+        "cleaning_version": "clean_v1",
+        "bboxes": "[{\"page_num\": 510, \"coords\": [23.56999969482422, 24.79751205444336, 308.66290283203125, 474.5060119628906], \"blocks\": [[23.56999969482422, 24.79751205444336, 161.7826385498047, 474.16400146484375], [169.08001708984375, 25.10381507873535, 308.66290283203125, 474.5060119628906]]}, {\"page_num\": 511, \"coords\": [24.220008850097656, 9.395788192749023, 307.8516845703125, 320.1038513183594], \"blocks\": [[26.600000381469727, 9.395788192749023, 195.4508514404297, 20.277088165283203], [24.220008850097656, 24.2559814453125, 132.21800231933594, 82.38397216796875], [169.9500732421875, 24.275848388671875, 307.8516845703125, 320.1038513183594]]}]",
+        "author_raw": "Heidegger, Martin",
+        "clean_sha256": "6344c00ce01984dd765aa6366f394dfe49a8f3790d0accbd0d6148550ea11468",
+        "mtime": 1771101202,
+        "chunk_index": 313,
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "collection": "rhetorical_ontology",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "year": 1962,
+        "page_end": 495,
+        "doc_id": "f6041c1a815c83f1",
+        "page_start": 495,
+        "has_bboxes": true,
+        "content_type": "text",
+        "is_clean_copy": false,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "title_raw": "Being and Time",
+        "is_table": false,
+        "source_method": "pymupdf+bbox",
+        "qualifier": "My Copy",
+        "is_image": false,
+        "is_my_copy": true,
+        "pdftotext_version": "24.02.0",
+        "is_notes": false
+      },
+      "rank": 7
+    },
+    {
+      "raw_rank": 8,
+      "chunk_id": "0950ef01880ad8ae:00084",
+      "distance": 0.7004099488258362,
+      "path_rel": "rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+      "page_start": 165,
+      "page_end": 167,
+      "text": "Thus, we have observed the scene function modified first to account for the functions of act (in being treated in terms of action and passion), and next to account for the functions of agent. Shifting the stress, as a rough approximate we could say that individual things would go on forever in their capacity as parts of the whole, but they are restricted in their capacity as parts of the whole. The essay On the Improvement of the Understanding perhaps, best brings out the conversion of scenic resources to cover the functions of agency, as it is concerned with the ways in which the intellect, influenced by external causes, \"makes for itself intellectual instruments\"—and the essay treats of methods for improving these instruments. Also, his treatment of good and evil in terms of utility and hindrance respectively has a strongly pragmatist possibility. In the preface to Book IV, he calls good an agency (;medium); and elsewhere he says that nothing is more \"useful\" to a man who would live rationally than his fellow-men who are guided by reason. The non-pragmatist nature of the philosophy as a whole, however, is seen in the closing proposition, which defines blessedness (beatitudo) not as the reward of virtue (virtutis praemium), but as virtue itself. As for purpose: it is apparent that the endeavor towards self-preservation provides at least for a stimulus in the purely biological sense, and we shall see thatthe equating of self-preservation with action and the development of adequate ideas gives us purpose in the rational sense, though the concept of a cosmic purpose is dissolved in the concept of rational necessity (as against its reduction to mechanical necessity in Hobbes).\n\nLeibniz, confronting this same embarrassment whereby the notion of a completely rational relation between Creator and Creation dissolves purpose into rational necessity, solved the problem by introducing, along with his principe de nScessitS, a principe de convenance, postulating ideas of fitness on the part of God which made God more of a creative agent than a necessary scene, and hence would move us into the areas of idealism proper. But in the preface and seventh definition of Book IV, Spinoza explains how he would reduce even individual human purpose to purely necessitarian terms: for he treats human ends, or final causes, simply as necessary human desires. This formulation, you will note, leads quite readily into the pragmatist interpretation of purpose in terms of agency, the recognition of ends being in pragmatism but a means for man's social and biological adjustment to his needs.\n\nAs the concept of the conatus is modified by the other aspects of Spinoza's terminology, it has in it something of Stoic grandeur, a high ethical quality that stresses the moral value of endurance. Indeed. \"endurance\" is quite an apt synonym for the Spinozistic conatus or \"endeavor\"; for it possesses both biological and moral meanings, as a term typical of the God-Nature equation should. The Stoics brought out more the idea of sufferance, Spinoza suggests rather the will to survive one's sufferings, the Stoics thus stressing the passive aspect of endurance while Spinoza stresses its nature as activity.\n\nAgain, we may see how Spinoza's term stands at a watershed moment, for in keeping with his emphasis, \"virtue\" in Spinoza is equated with power of action. His usage does not take us back as far as its original reference (previously discussed) to the power of the warrior: but he does sufficiently redefine the term to conclude from his definition that neither humility nor repentance are virtues, since neither of them is rational, for both involve situations wherein our power of activity is checked. Deprived of its modifiers, such a concept of virtue might be successively transformed until we come to extreme transvaluations of value, as with cults of naturalist expansion, or the characteristically modern impatience with \"frustration.\" But, as modified by all the other key terms in Spinoza's philosophy, the concept leads to the very opposite of the militant: a philosophy of exceptional tolerance, peace, and moderation. And our concern with circumferences of placement should admonish us always to watch, in a given writer, the full orbit of his terms.\n\nAlignment of Terms in Spinoza",
+      "meta": {
+        "sha256": "4b3bc749bfd2f6e0252a84c899e4e66d99329aa4481d7c13a92ba5f24dde39b5",
+        "title_raw": "A Grammar of Motives",
+        "page_start": 165,
+        "is_notes": false,
+        "bboxes": "[{\"page_num\": 162, \"coords\": [44.953125, 123.4267578125, 349.9921875, 546.605205597356], \"blocks\": [[44.953125, 123.4267578125, 348.38671875, 389.1462479252368], [45.755859375, 389.29150390625, 349.189453125, 520.477218689397], [46.55859375, 520.90771484375, 349.9921875, 546.605205597356]]}, {\"page_num\": 163, \"coords\": [52.59375, 40.294921875, 352.4449768066406, 524.6798657849431], \"blocks\": [[52.59375, 40.294921875, 349.92999267578125, 198.61381811648607], [53.3671875, 198.5546875, 352.4449768066406, 433.2995480969548], [53.3671875, 434.1923828125, 351.9140625, 524.6798657849431]]}, {\"page_num\": 164, \"coords\": [52.685546875, 3.5007504895329475, 417.81201171875, 228.3997373059392], \"blocks\": [[187.6416015625, 25.6953125, 353.8037109375, 38.0614804700017], [396.6000061035156, 3.5007504895329475, 414.1982727050781, 19.681536622345448], [411.1400146484375, 223.52763647586107, 417.81201171875, 228.3997373059392], [52.685546875, 41.1708984375, 354.208984375, 69.2664365246892]]}]",
+        "has_bboxes": true,
+        "mtime": 1774299079,
+        "is_my_copy": true,
+        "pdftotext_version": "24.02.0",
+        "chunk_index": 84,
+        "author_raw": "Burke, Kenneth",
+        "is_clean_copy": false,
+        "cleaning_version": "clean_v1",
+        "qualifier": "My Copy",
+        "is_image": false,
+        "path_rel": "rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+        "clean_sha256": "81f0dacd8aba33e38dcbfeb73e16ee70b31f5de5ac7a8aebba0aa8a1928fa8cd",
+        "is_table": false,
+        "collection": "rhetorical_ontology",
+        "page_end": 167,
+        "content_type": "text",
+        "source_method": "marker+bbox",
+        "year": 1945,
+        "doc_id": "0950ef01880ad8ae",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf"
+      },
+      "rank": 8
+    }
+  ]
+}
+[god-learn] $ python3 scripts/retrieval/verify_phase4.py hermeneutical-As and apophantical-As Heidegger
+[PHASE4_VERIFY_OK]
+- query='hermeneutical-As and apophantical-As Heidegger'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[god-learn] $ bash scripts/highlights/phase5check.sh
+
+--- AUDIT REPORT ---
+root: /home/dalton/projects/claudeflow-testing/corpus
+manifest: /home/dalton/projects/claudeflow-testing/scripts/ingest/manifest.jsonl
+total_pdfs: 50
+
+[PHASE2_COMPLETE] (50)
+  - dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf :: phase=2 ok
+  - dissertation/in_progress/rhetorical phantasia test.pdf :: phase=2 ok
+  - metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf :: phase=2 ok
+  - metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf :: phase=2 ok
+  - metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf :: phase=2 ok
+  - new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf :: phase=2 ok
+
+[OK] dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf
+[OK] dissertation/in_progress/rhetorical phantasia test.pdf
+[OK] metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf
+[OK] metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf
+[OK] metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf
+[OK] metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf
+[OK] metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf
+[OK] metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf
+[OK] metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf
+[OK] metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf
+[OK] new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf
+[OK] new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf
+[OK] rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf
+[OK] rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf
+
+--- VERIFY REPORT (OK) ---
+OK=50 FAIL=0 TOTAL=50
+[PHASE4_VERIFY_OK]
+- query='phantasia and action'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[OK] Wrote:
+  /tmp/no_hl.txt
+  /tmp/with_hl.txt
+Diff (first 120 lines):
+--- /tmp/no_hl.txt	2026-03-26 22:32:48.693739599 -0700
++++ /tmp/with_hl.txt	2026-03-26 22:32:50.064159580 -0700
+@@ -6,51 +6,51 @@
+ 
+ [RESULTS]
+ 
+-01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  (raw_rank=1)
++01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  final_score=0.7484066486358643  hl_count=0  boost=0.0000  (raw_rank=1)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=303-305
+ 
+-02. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  (raw_rank=2)
++02. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  final_score=0.8132696557044983  hl_count=1  boost=0.0200  (raw_rank=4)
++    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
++    pages=22-24
++
++03. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  final_score=0.8133007287979126  hl_count=0  boost=0.0000  (raw_rank=2)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+     pages=167-169
+ 
+-03. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  (raw_rank=3)
++04. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  final_score=0.8137480616569519  hl_count=0  boost=0.0000  (raw_rank=3)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=279-281
+ 
+-04. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  (raw_rank=4)
+-    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+-    pages=22-24
+-
+-05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  (raw_rank=6)
++05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  final_score=0.851164698600769  hl_count=0  boost=0.0000  (raw_rank=6)
+     path_rel=rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+     pages=292-292
+ 
+-06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  (raw_rank=7)
++06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  final_score=0.8536148071289062  hl_count=0  boost=0.0000  (raw_rank=7)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=294-294
+ 
+-07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  (raw_rank=8)
++07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  final_score=0.864859938621521  hl_count=0  boost=0.0000  (raw_rank=8)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+     pages=18-18
+ 
+-08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  (raw_rank=9)
++08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  final_score=0.8705873489379883  hl_count=0  boost=0.0000  (raw_rank=9)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+     pages=215-215
+ 
+-09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  (raw_rank=10)
++09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  final_score=0.8722628355026245  hl_count=0  boost=0.0000  (raw_rank=10)
+     path_rel=rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+     pages=13-14
+ 
+-10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  (raw_rank=11)
++10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  final_score=0.8786800503730774  hl_count=0  boost=0.0000  (raw_rank=11)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=162-164
+ 
+-11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  (raw_rank=12)
++11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  final_score=0.8806346654891968  hl_count=0  boost=0.0000  (raw_rank=12)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=24-26
+ 
+-12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  (raw_rank=13)
++12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  final_score=0.8811410665512085  hl_count=0  boost=0.0000  (raw_rank=13)
+     path_rel=rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+     pages=252-254
+ 
+[god-learn] $ python3 scripts/learn/promote_hits.py --hits_json /tmp/phase4_hits.json --query hermeneutical-As and apophantical-As Heidegger
+22:32:50 [INFO    ] god-learn.phase6.promote: Starting promotion [hits_json=/tmp/phase4_hits.json, query=hermeneutical-As and apophantical-As Heidegger, min_chars=40, max_units=0, dry_run=False]
+22:32:50 [INFO    ] god-learn.phase6.promote: Promotion complete [promoted=3, total_indexed=92, knowledge_file=god-learn/knowledge.jsonl, index_file=god-learn/index.json]
+[Phase6:promote_hits] promoted=3 total_indexed=92
+[Phase6:promote_hits] wrote: god-learn/knowledge.jsonl
+[Phase6:promote_hits] index: god-learn/index.json
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 10
+[god-learn] normalize: sorted 92 KUs and rebuilt index (92 offsets)
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 11

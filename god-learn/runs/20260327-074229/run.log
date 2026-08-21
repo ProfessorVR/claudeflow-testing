@@ -1,0 +1,551 @@
+[god-learn] $ python3 scripts/retrieval/query_chunks.py Aristotle whether time exists without soul counting enumeration Physics IV.14 223a25 conditional dependency --k 8 --overfetch 30 --include_docs --print_json --where {"collection":"rhetorical_ontology"}
+{
+  "query": "Aristotle whether time exists without soul counting enumeration Physics IV.14 223a25 conditional dependency",
+  "config": {
+    "chroma_dir": "vector_db_1536",
+    "collection": "knowledge_chunks",
+    "k": 8,
+    "overfetch": 30,
+    "where": {
+      "collection": "rhetorical_ontology"
+    },
+    "filters": {
+      "require_my_copy": false,
+      "collection_filter": null,
+      "keep_biblio": false
+    },
+    "include_docs": true,
+    "use_highlights": false,
+    "highlights_index": "scripts/highlights/highlight_index.json",
+    "highlight_alpha": 0.02,
+    "highlight_cap": 5
+  },
+  "results": [
+    {
+      "raw_rank": 1,
+      "chunk_id": "b811388f4f1d7863:00007",
+      "distance": 0.742387056350708,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 11,
+      "page_end": 11,
+      "text": "• The next question is whether the principles are two or three or more in number. One they cannot be; for there cannot be one contrary. Nor can they be innumerable, because, if so, what is will not be knowable; and in any one genus there is only one contrariety, and substance is one genus; also a finite number is sufficient, and a finite number, such as the principles of Empedocles, is better than an infinite multitude; for Empedocles professes to obtain all that Anaxagoras obtains from his innumerable principles. Again, some contraries are prior to others, and some arise from others—for example sweet and bitter, white and black— whereas the principles must always remain principles. This will suffice to show that the principles are neither one nor innumerable. Granted, then, that they are a limited number, it is plausible to suppose them more than two. For it is difficult to see how either density should be of such a nature as to act in any way on rarity or rarity on density. The same is true ofany other pair ofcontraries; for Love does not gather Strife together and make things out of it, nor does Strife make anything out of Love, but both act on a third thing different from both. Some indeed assume more than one such thing from which they construct the world of nature. Other objections to the view that it is not necessary to posit some other nature under the contraries may be added. We do not find that the contraries constitute the substance of any thing. But what is a first principle ought not to be predicated of any subject. If it were, there would be a principle of the supposed principle; for the subject is a principle, and prior presumably to what is predicated of it. Again, we hold that a substance is not contrary to another substance. How then can substance be derived from what are not substances? Or how can non-substance be prior to substance? If then we accept both the former argument and this one, we must, to preserve both, posit some third thing, such as is spoken of by those who describe the universe I89bi as one nature—water or fire or what is intermediate between them. What is intermediate seems preferable; for fire, earth, air, and water are already involved with pairs of contraries. There is, therefore, much to be said for those who make the underlying substance different from these four; of the rest, the next best choice is air, as presenting sensible differences in a less degree than the others; and after air, water. All, however, agree in this, that they differentiate their One by means of the contraries, such as density and rarity and more and less, which may of course be generalized, as has already been said, into excess and defect. Indeed this doctrine too (that the One and excess and defect are the principles ofthings) would appear to be ofold standing, though in different forms; for the early thinkers made the two the active and the one the passive principle, whereas some of the more recent maintain the reverse. To suppose then that the elements are three in number would seem, from these and similar considerations, a plausible view, as 1 said before. On the other hand, the view that they are more than three in number would seem to be untenable.\n\nPHYSICS\n\nFor one thing is sufficient to be acted on; but if we have four contraries, there will be two contrarieties, and we shall have to suppose an intermediate nature for each pair separately. If, on the other hand, the contrarieties, being two, can generate from each other, the second contrariety will be superfluous. oreover, it is impossible that there should be more than oneprimary contrariety. For substance is a single genus of being, so that the principles can differ only as prior and posterior, not in genus; for in a single genus there is always a single contrariety, all the other contrarieties in it being held to be reducible to one. It is clear then that the number ofelements is neither one nor more than two or three; but whether two or three is, as I said, a question of considerable difficulty.\n\nsimple thing",
+      "meta": {
+        "is_table": false,
+        "chunk_index": 7,
+        "cleaning_version": "clean_v1",
+        "is_clean_copy": false,
+        "is_notes": false,
+        "has_bboxes": true,
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "doc_id": "b811388f4f1d7863",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "content_type": "text",
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "year": 2014,
+        "source_method": "pymupdf+bbox",
+        "collection": "rhetorical_ontology",
+        "author_raw": "Aristotle",
+        "pdftotext_version": "24.02.0",
+        "page_end": 11,
+        "is_my_copy": true,
+        "page_start": 11,
+        "mtime": 1771101202,
+        "qualifier": "My Copy",
+        "clean_sha256": "8e4a74a0c4cccbc3d98f29eb55a4561c7437b75f7e4d61afe1367c9c6a690a61",
+        "bboxes": "[{\"page_num\": 11, \"coords\": [33.900001525878906, 47.78151321411133, 349.90093994140625, 504.40631103515625], \"blocks\": [[33.900001525878906, 47.78151321411133, 349.90093994140625, 504.40631103515625]]}, {\"page_num\": 12, \"coords\": [3.7009999752044678, 27.228557586669922, 349.6431579589844, 332.85101318359375], \"blocks\": [[65.1500015258789, 27.228557586669922, 227.80624389648438, 40.75293731689453], [48.79899978637695, 48.66420364379883, 349.6431579589844, 151.18862915039062], [3.7009999752044678, 319.3810119628906, 53.42599868774414, 332.85101318359375]]}]",
+        "title_raw": "Physics",
+        "is_image": false
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 11, \"coords\": [33.900001525878906, 47.78151321411133, 349.90093994140625, 504.40631103515625], \"blocks\": [[33.900001525878906, 47.78151321411133, 349.90093994140625, 504.40631103515625]]}, {\"page_num\": 12, \"coords\": [3.7009999752044678, 27.228557586669922, 349.6431579589844, 332.85101318359375], \"blocks\": [[65.1500015258789, 27.228557586669922, 227.80624389648438, 40.75293731689453], [48.79899978637695, 48.66420364379883, 349.6431579589844, 151.18862915039062], [3.7009999752044678, 319.3810119628906, 53.42599868774414, 332.85101318359375]]}]",
+      "rank": 1
+    },
+    {
+      "raw_rank": 2,
+      "chunk_id": "b811388f4f1d7863:00006",
+      "distance": 0.7486514449119568,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 8,
+      "page_end": 10,
+      "text": "Retaining the S text; Ross reads: mx^piopivcr ptmoi Ax’ AXAf/Xwv (oil) (‘not, however, separated from one another’).\n\nPHYSICS\n\nwhite\n\n188*1\n\n189*1\n\norder, explana- tion, universal/ particular.\n\nhappened to be an attribute of the not-white or of the black? No, white comes from not-white—and not from any not-white, but from black or some intermediate. Similarly, musical comes to be from non-musical, but not from any thing other than musical, but from unmusical or any intermediate state there may be. Nor again do things pass away into the first chance thing; white does not pass into musical (except, it may be, accidentally), but into not-white—and not into any chance thing which is not white, but into black or an intermediate; musical passes into not-musical—and not into any chance thing other than musical, but into unmusical or any intermediate state there may be. The same holds of other things also: even things which are not simple but complex follow the same principle, but the opposite state has not received a name, so we fail to notice the fact. For what is in tune must come from what is not in tune, and vice versa; the tuned passes into untunedness—and not into any untunedness, but into the corresponding opposite. It does not matter whether we take attunement, order, or composition for our illustration; the principle is obviously the same in all, and in fact applies equally to the production ofa house, a statue, or anything else. A house comes from certain things in a certain state of separation instead of conjunction, a statue (or any other thing that has been shaped) from shapelessness—each of these objects being partly order and partly composition. If then this is true, everything that comes to be or passes away comes from, or passes into, its contrary or an intermediate state. But the intermediates are derived from the contraries—colours, for instance, from black and white. Everything, therefore, that comes to be by a natural process is either a contrary or a product of contraries. Up to this point we have practically had most of the other writers on the subject with us, as I have said already; for all of them identify their elements, and what they call their principles, with the contraries, giving no reason indeed for the theory, but constrained as it were by the truth itself. They differ, however, from one another in that some assume contraries which are prior, others contraries which are posterior; some those more knowable in the order of explanation, others those more familiar to sense. For some make hot and cold, or again moist and dry, the causes of becoming; while others make odd and even, or again Love and Strife; and these differ from each other in the way mentioned. Hence their principles are in one sense the same, in another different; different certainly, as indeed most people think, but the same inasmuch as they are analogous; for all are taken from the same table ofcolumns, some of the pairs being wider, others narrower in extent. In this way then their theories are both the same and different, some better, some worse; some, as I have said, take as their contraries what is more knowable in the order of explanation, others what is more familiar to sense. (The universal is knowable in the order of explanation, the particular in the order of sense; for explanation has to do with the universal, sense with the particular.) The great and the small, for example, belong to the former class, the dense and the rare to the latter. It is clear then that our principles must be contraries.\n\nB O O K I\n\nsubstance",
+      "meta": {
+        "pdftotext_version": "24.02.0",
+        "title_raw": "Physics",
+        "is_notes": false,
+        "is_clean_copy": false,
+        "is_my_copy": true,
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "chunk_index": 6,
+        "author_raw": "Aristotle",
+        "is_image": false,
+        "page_end": 10,
+        "cleaning_version": "clean_v1",
+        "year": 2014,
+        "page_start": 8,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "doc_id": "b811388f4f1d7863",
+        "bboxes": "[{\"page_num\": 10, \"coords\": [47.599998474121094, 54.387393951416016, 348.4450988769531, 507.9256896972656], \"blocks\": [[47.599998474121094, 54.387393951416016, 348.4450988769531, 507.9256896972656]]}, {\"page_num\": 11, \"coords\": [163.35000610351562, 28.658016204833984, 370.47003173828125, 264.0650329589844], \"blocks\": [[163.35000610351562, 28.658016204833984, 327.0267639160156, 38.11787796020508], [331.5899963378906, 250.59503173828125, 370.47003173828125, 264.0650329589844]]}]",
+        "is_table": false,
+        "content_type": "text",
+        "clean_sha256": "ecd858a99cc55ae5e1851cc43b5c089e7e726f56081221b9f2c6b28f240b258e",
+        "qualifier": "My Copy",
+        "collection": "rhetorical_ontology",
+        "source_method": "pymupdf+bbox",
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "mtime": 1771101202,
+        "has_bboxes": true
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 10, \"coords\": [47.599998474121094, 54.387393951416016, 348.4450988769531, 507.9256896972656], \"blocks\": [[47.599998474121094, 54.387393951416016, 348.4450988769531, 507.9256896972656]]}, {\"page_num\": 11, \"coords\": [163.35000610351562, 28.658016204833984, 370.47003173828125, 264.0650329589844], \"blocks\": [[163.35000610351562, 28.658016204833984, 327.0267639160156, 38.11787796020508], [331.5899963378906, 250.59503173828125, 370.47003173828125, 264.0650329589844]]}]",
+      "rank": 2
+    },
+    {
+      "raw_rank": 3,
+      "chunk_id": "746585ac7140c19c:00179",
+      "distance": 0.7510294914245605,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+      "page_start": 276,
+      "page_end": 277,
+      "text": "Θεῖναι ἐν ἄλλῳ γένει167—εἰς ταῦτα: ἑτερότης, ἀνισότης, μὴ ὄν. Descent, not to otherwise determine this how of being-there. What is determined in its being-there by the propounded characteristics needs no beings to be that are moved. Are the above characteristics sufficient to determine a being in its there as a being in movement? If not, then is an ontology that is entirely dependent upon encountering beings externally, to be sure—what is here only meant as—λογία—as self-expressing conceals it, misplaced. With this veiling of λόγος, the analysis of being-there is hindered, movement turns into what—tradition!! And in its effort to be radical, halfmeasures. If a being is thus determined in its there, as Aristotle determines κίνησις, then it is in movement. In what is this τιθέναι168 grounded? Κίνησις an ἀόριστον.169 Why? Because\n\n158. Phys. Γ 2, 202 a 2: ἰδεῖν.\n    159. Phys. Γ 2, 202 a 9: εἶδος δὲ ἀεὶ οἴσεται τὸ κινοῦν.\n    160. Ibid.\n    161. Phys. Γ 3, 202 a 22 sq.\n    162. Phys. Γ 3, 202 b 17 sq.\n    163. Phys. Γ 3, 202 b 21 sq.\n    164. Editor’s note.\n    165. Phys. Γ 1, 201 a 12 sqq.\n    166. Themistii in Aristotelis Physica paraphrases 211, 12.\n    167. Phys. Γ 2, 201 b 18 sq.: οὔτε γὰρ τὴν κίνησιν καὶ τὴν μεταβολὴν ἐν ἄλλῳ γένει θεῖναι δύναιτ’ ἄν τις.\n    168. Phys. Γ 2, 201 b 24.\n    169. Ibid.\n\nPreserved Parts of the Handwritten Manuscript [386–388]\n\nnot ἁπλῶς θεῖναι εἰς δύναμιν and not εἰς ἐνέργειαν.170 Not ἁπλῶς, but σύνθεσις of the being-character. How is ἕν as there, the being-present of that which changes? Therefore,\n    1. generally, δύναμις and ἐνέργεια (from being-being-there as constitutive for the being-there of beings in motion);\n    2. not simply, in itself: beings, what is moved in another, is something like that, but how? Transition—the ‘from . . . to . . .’ Κίνησις: ἐνέργεια but τοιαύτη,171 i.e., δυνάμει ὄντος, and as such ἀτελής,172 ἐνδεχομένη δὲ εἶναι, “but something that is extant,” even if “difficult to see.”173\n\nRest: a how of being-there, there of the type of thing that can be in move­ ment. Ἀκινησία (cf. οὐσία!) furthermore: “unmovedness.” a) being-not-nowin-movement, b) unencounterable from being-in-movement. The ἐνεργεῖν πρὸς τὸ δυνάμει ὄν, ᾗ τοιοῦτον, αὐτὸ τὸ κινεῖν ἐστιν.174 “Mov­ ing is bringing-this-being-possible-in-this-way-into-the-there.” That which is moving through θίξις—simple, direct, having, taking an influence—i.e., some­ thing occurs with itself (cf. Prantl, notes).175 Bringing-something-about; be­ coming-brought-about and bringing, cf. ποίησις, πάθησις. Being-in-movement a how of the there.\n\nΚίνησις a How of the There\n\nPresence, that is a determinate one. As presence, and as this determinate one, it makes time, the now, explicitly: there now. Κινησία and ἀκινησία. With κίνησις, precisely the how-possibilities of being in movement. Cf. meaningfulness—rest. Rest makes the impression of presence beforehand, to such an extent that we thereby forget that it is ἀκινησία, that it is ungenuine movement, i.e., πρότερον—ὕστερον concealed as now, specifically as duration, i.e., πρότερον—ὕστερον there, but set in the now. Implicitly, I need, unconcealed to me, to leap into the now, but concealedly.\n\nAristotle inquires into the to what extent. How did it happen? You have seen the moved in a certain mode. What in itself requires this becoming-addressed\n\n170. Phys. Γ 2, 201 b 28 sq.: οὔτε εἰς δύναμιν τῶν ὄντων οὔτε εἰς ἐνέργειαν ἔστι θεῖναι αὐτήν.\n    171. Phys. Δ 2, 202 a 1 sq.: ἐνέργειαν μὲν τινα εἶναι, τοιαύτην δ’ ἐνέργειαν οἵαν εἴπομεν.\n    172. Phys. Δ 2, 201 b 32.\n    173. Phys. Δ 2, 202 a 2 sq.: χαλεπὴν μὲν ἰδεῖν, ἐνδεχομένην δ’ εἶναι.\n    174. Phys. Γ 2, 202 a 5 sq.: τὸ γὰρ πρὸς τοῦτο [τὸ δυνάμει ὄν] ἐνεργεῖν, ᾗ τοιοῦτον, αὐτὸ τὸ κινεῖν ἐστί.\n    175. Phys. Δ 2, 202 a 8 sq.: συμβαίνει δὲ τοῦτο θίξει τοῦ κινητικοῦ, ὥσθ’ ἅμα καὶ πάσχει. Edi­ tor’s note: These words were bracketed by Von Prantl.\n\nOn §28b [388–389]\n\nin how it shows itself? This inquiring-back, positive criticism, makes an insuf­ ficiency newly evident. Χαλεπὴν ἰδεῖν, “but something that can be!”176 What is primary is what shows itself: the moved is there. How do I catch sight of it? Not in the fore­ going way. Therefore: to see the there, the presence of that which is not yet produced. Only possible if presence is seen, i.e., if the ontological problem­ atic is made explicit with regard to its genuine ground: presence (abiding— presence). Being-there itself seen as being-in and viewed according to basic possibilities.\n\nOn §28a\n\n[Physics]177 Γ 3—Disposition",
+      "meta": {
+        "collection": "rhetorical_ontology",
+        "sha256": "80a304982c233cbf5737bf85145685b7df9034e595439b94c9c3ec740736d563",
+        "year": 2009,
+        "mtime": 1774309798,
+        "is_image": false,
+        "chunk_index": 179,
+        "page_start": 276,
+        "author_raw": "Heidegger, Martin",
+        "is_my_copy": false,
+        "pdftotext_version": "24.02.0",
+        "cleaning_version": "clean_v1",
+        "is_table": false,
+        "qualifier": "Clean Copy",
+        "source_method": "pymupdf+bbox+marker_tables(4)",
+        "is_notes": false,
+        "clean_sha256": "5283f120519bb92c3ac08b3e4c684383509bd91b16e6fa872500d28f4ccbc7b9",
+        "has_bboxes": true,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "page_end": 277,
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "bboxes": "[{\"page_num\": 290, \"coords\": [42.380001068115234, 63.22998809814453, 356.9100036621094, 592.3699951171875], \"blocks\": [[42.380001068115234, 63.22998809814453, 356.9100036621094, 592.3699951171875]]}, {\"page_num\": 291, \"coords\": [42.2599983215332, 39.23698806762695, 231.66098022460938, 51.4630126953125], \"blocks\": [[42.2599983215332, 39.23698806762695, 231.66098022460938, 51.4630126953125]]}]",
+        "doc_id": "746585ac7140c19c",
+        "title_raw": "Basic Concepts of Aristotelian Philosophy",
+        "content_type": "text",
+        "is_clean_copy": true
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox+marker_tables(4)",
+      "bboxes": "[{\"page_num\": 290, \"coords\": [42.380001068115234, 63.22998809814453, 356.9100036621094, 592.3699951171875], \"blocks\": [[42.380001068115234, 63.22998809814453, 356.9100036621094, 592.3699951171875]]}, {\"page_num\": 291, \"coords\": [42.2599983215332, 39.23698806762695, 231.66098022460938, 51.4630126953125], \"blocks\": [[42.2599983215332, 39.23698806762695, 231.66098022460938, 51.4630126953125]]}]",
+      "rank": 3
+    },
+    {
+      "raw_rank": 4,
+      "chunk_id": "746585ac7140c19c:00181",
+      "distance": 0.7609218955039978,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+      "page_start": 277,
+      "page_end": 280,
+      "text": "ness, i.e., there for . . . and to perceive it as one, πάσχειν, affected by be­ ings as world; πάσχειν as δέχεσθαι, “to perceive” and that primarily as πάθος, \n“becoming-affected,” “disposition,” being related to the world as in it, being in dealings with it. Being-there as living, a being as being toward the world. Human being-there determined by νοῦς; discoveredness is in this being-supposing. This supposing as basic mode of human being-in-the-world is ultimately also a perceivingit, having-it-there-thus-and-so, i.e., of the world, not only determinate beings in determinate kinds of encounters, but becoming-affected by all possible be­ ings of the world (cf. ἡδονή—καταφάναι, ἀποφάναι—διά). This νοεῖν has the being-character of becoming-affected by what is discovered, what, for its part, is only possible in such a way that this becoming-affected by what is discov­ ered is grounded in a generally-being-discovered and a being-discovered, i.e., in a discovering, a giving-sight-of as such. νοῦς τῆς ψυχῆς is παθητικός191 (which was said later, Aristotle did not have this term), and it is that as νοῦς of beings on the basis of the ποιητικός, which makes perceivability in general, discoveredness, possible, i.e., that which lets the discovered be seen, makes seeing—νοῦς ποιητικός.192\n\nAs modes of the explication of beings, ποίησις and πάθησις point in this way into the being of being-there as such, which means, however, that they prevail as the guiding clue of the interpretation of beings that clarifies what was always already claimed in our pedagogical propositions: being means being-produced—sense of being as ποίησις and, at the same time, interpreted on the basis of being-present. Why is νοῦς simply being? Because the ποίησις makes presence at all possible, ποίησις in a distinctive sense such that νοῦς ἀμιγής193 as uncovering, sight giving. What is in this way is “a being as such” (cf. ὂν ᾗ ὄν)! Aristotle concludes the characterization of the πρός τι, reference to the type of relation, with: καὶ ὅλως, “and on the whole, what can move and the move­ able.”194 With that it becomes evident that the being in movement is, as a being, there in being-there-with with others, the there-with determined by the relation of one to the other, of the other to the one.\n\nOn §28c\n\nAnd κίνησις explicated already as determinate mode of the being-present of δυνάμει ὄν as such. Κίνησις the type of presence of beings that are in the aforementioned being-there-with of one to another. But insofar as this being-\n\n191. De an. Γ 5, 430 a 24 sq.\n    192. Cf. De an. Γ 5, 430 a 10 sqq.\n    193. De an. Γ 5, 430 a 18.\n    194. Phys. Γ 1, 200 b 30 sq.: καὶ ὅλως κινητικόν τε καὶ κινητόν.\n\nPreserved Parts of the Handwritten Manuscript [392–393]\n\ncharacter extends to beings in their universality, κίνησις becomes a distinctive mode of the being-there of beings. Said in terms of the task of the interpretation of Greek ontology, that means: \nThe showing of the sense of being, which prevails in Greek ontology and its genuine culmination in Aristotle, prevails because it is already experienced in the implicit experience of the being-there of the world and of living—the showing focuses on the interpretation of movement! But insofar as κίνησις is posited in the names of ἐνέργεια, ἐντελέχεια, these are the primary beingcategories of Greek ontology! The being in movement was determined as presence of beings in their abil­ ity-to-be. Therefore, κίνησις constitutes the there of beings in movement, of what is moved. But something moved is (cf. πρός τι) being in relation to what is moving, in the being-there-with of a κινοῦν, or a κινητικόν. How is the there of this being that is with beings in movement to be determined as moved be­ ings that are there with? Is this there also determined by presence in the sense of the present of δυνάμει ὄν, ᾗ τοιοῦτον, and therefore ἐνέργεια? Is this present another such that the κινοῦν and the κινούμενον would be determined by vari­ ous ἐνέργειαι? Or is this one and the same, and, only when apprehended in this way, the properly understood there of beings in movement, the self-moving (φύσει ὄντα, moving itself from itself)? Aristotle poses this question in Chap­ ter 3. The explication of movement first comes to an end when this question is answered. Κίνησις ἕν in that which is mobile: being-present in the there—in bringing the there, moving. That which is moving and that which is moved are in the same there. Ἐνεργεῖν: to take into work, to being into the underway, the underway of the there, the determinate presence of the δυνάμει as such. What can bring is that which has the ability to bring into the underway of a κινητόν. To bring into the underway, to set out—to be in the same there. The same there: like διάστημα. Being-moved is being in the being-there-with of what is moving. There-with = ἐνέργεια. Κινοῦν—κινούμενον: its being-there is the same be­ ing-present. The same—but λόγος and taking a point of view are different. Ἀπορία λογική 195",
+      "meta": {
+        "source_method": "pymupdf+bbox+marker_tables(4)",
+        "page_start": 277,
+        "clean_sha256": "6d1a7e7e11b11b68c7b15e1b8e5cdf3d5f460ced89341bf0c998781c60136029",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "doc_id": "746585ac7140c19c",
+        "cleaning_version": "clean_v1",
+        "is_image": false,
+        "year": 2009,
+        "sha256": "80a304982c233cbf5737bf85145685b7df9034e595439b94c9c3ec740736d563",
+        "qualifier": "Clean Copy",
+        "title_raw": "Basic Concepts of Aristotelian Philosophy",
+        "mtime": 1774309798,
+        "is_notes": false,
+        "is_table": false,
+        "author_raw": "Heidegger, Martin",
+        "bboxes": "[{\"page_num\": 293, \"coords\": [42.25, 75.03998565673828, 356.7999572753906, 592.3699951171875], \"blocks\": [[170.8000030517578, 75.03998565673828, 225.8000030517578, 88.36998748779297], [42.25, 99.22998809814453, 356.7999572753906, 376.3699951171875], [170.8000030517578, 387.22998046875, 225.8000030517578, 400.3699951171875], [42.2599983215332, 411.22998046875, 356.7800598144531, 592.3699951171875]]}, {\"page_num\": 294, \"coords\": [42.380001068115234, 39.5369758605957, 356.88995361328125, 124.36998748779297], \"blocks\": [[164.89999389648438, 39.5369758605957, 354.3999938964844, 51.86297607421875], [42.380001068115234, 63.22998809814453, 356.88995361328125, 124.36998748779297]]}]",
+        "content_type": "text",
+        "is_my_copy": false,
+        "pdftotext_version": "24.02.0",
+        "chunk_index": 181,
+        "page_end": 280,
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "collection": "rhetorical_ontology",
+        "has_bboxes": true,
+        "is_clean_copy": true
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox+marker_tables(4)",
+      "bboxes": "[{\"page_num\": 293, \"coords\": [42.25, 75.03998565673828, 356.7999572753906, 592.3699951171875], \"blocks\": [[170.8000030517578, 75.03998565673828, 225.8000030517578, 88.36998748779297], [42.25, 99.22998809814453, 356.7999572753906, 376.3699951171875], [170.8000030517578, 387.22998046875, 225.8000030517578, 400.3699951171875], [42.2599983215332, 411.22998046875, 356.7800598144531, 592.3699951171875]]}, {\"page_num\": 294, \"coords\": [42.380001068115234, 39.5369758605957, 356.88995361328125, 124.36998748779297], \"blocks\": [[164.89999389648438, 39.5369758605957, 354.3999938964844, 51.86297607421875], [42.380001068115234, 63.22998809814453, 356.88995361328125, 124.36998748779297]]}]",
+      "rank": 4
+    },
+    {
+      "raw_rank": 5,
+      "chunk_id": "b811388f4f1d7863:00002",
+      "distance": 0.761310875415802,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 5,
+      "page_end": 5,
+      "text": "Again, ‘one’ itself, no less than ‘is’, is used in many ways, so we must consider in what way the word is used when it is said that the universe is one. Now we say that the continuous is one or that the indivisible is one, or things said to be one, when the account of their essence is one and the same, as liquor are and drink. If their One is one in the sense of continuous, it is many; for the continuous is divisible ad infinitum. There is, indeed, a difficulty about part and whole, perhaps not relevant to the present argument, yet deserving consideration on its own account-^-namely, whether the part and the whole are one or more than one, and in what way they can be one or many, and, if they are more than one, in what way they are more than one. (Similarly with the parts of wholes which are not continuous.) Further, if each of the two parts is indivisibly one with the whole, the difficulty arises that they will be indivisibly one with each other also. But to proceed: If their One is one as indivisible, nothing will have quantity or quality, and so what exists will not be infinite, as elissus says—nor, indeed, limited, as Parmenides says; for though the limit is indivisible, the limited is not. But if all things are one in the sense of having the same definition, like raiment and dress, then it turns out that they are maintaining the Heraclitean doctrine, for it will be the same thing to be good and to be bad, and to be good and to be not good, and so the same thing will be good and not good, and man and horse; in fact, their view will be, not that all things are one, but that they are nothing; and that to be of such-and-such a quality is the same as to be of such-and-such a quantity. Even the more recent of the ancient thinkers were in a pother lest the same thing should turn out in their hands both one and many. So some, like Lycophron, were led to omit ‘is’, others to change the mode of expression and say ‘the man has been whitened’ instead of‘is white’, and ‘walks’ instead of‘is walking’, for fear that if they added the word ‘is’ they should be making the one to e many—as if ‘one’ and ‘is’ were always used in one and the same way. What is may be many either in definition (for example to be white is one thing, to be musical another, yet the same thing may be both, so the one is many) or by division, as the whole and its parts. On this point, indeed, they were already getting into difficulties and admitted that the one was many—as if there was any difficulty about the same thing being both one and many, provided that these are not opposites; for what is one may be either potentially one or actually one.\n\ncontentiously—I mean both elissus reason\n\n• If, then, we approach the thesis in this way it seems impossible for all things to be one. Further, the arguments they use to prove their position are not difficult to expose. For both of them and Parmenides. [Their premisses are false and their conclusions do not follow. Or rather the argument of elissus is gross and offers no difficulty at all: admit one ridiculous proposition and the rest follows—a simple enough proceeding.]1\n\nThe bracketed words are probably wrongly inserted from 185*9-12.\n\nPHYSICS\n\nBeginning Change\n\nquality\n\n*Subj. / Being",
+      "meta": {
+        "cleaning_version": "clean_v1",
+        "content_type": "text",
+        "has_bboxes": true,
+        "source_method": "pymupdf+bbox",
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "is_notes": false,
+        "bboxes": "[{\"page_num\": 5, \"coords\": [28.25, 53.46154022216797, 337.04998779296875, 522.0548095703125], \"blocks\": [[28.25, 53.46154022216797, 337.04998779296875, 417.2092590332031], [163.64999389648438, 447.86285400390625, 332.64996337890625, 466.53997802734375], [29.75, 435.4314880371094, 320.1921691894531, 496.5914306640625], [83.0, 514.8720703125, 268.07745361328125, 522.0548095703125]]}, {\"page_num\": 6, \"coords\": [4.317999839782715, 34.37852096557617, 221.85623168945312, 358.7640075683594], \"blocks\": [[57.70000076293945, 34.37852096557617, 221.85623168945312, 47.35771942138672], [4.317999839782715, 92.04900360107422, 48.487998962402344, 120.01900482177734], [16.040000915527344, 219.75, 43.81999969482422, 233.22000122070312], [6.785999298095703, 330.79400634765625, 40.40599822998047, 358.7640075683594]]}]",
+        "collection": "rhetorical_ontology",
+        "pdftotext_version": "24.02.0",
+        "page_end": 5,
+        "page_start": 5,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "is_my_copy": true,
+        "title_raw": "Physics",
+        "author_raw": "Aristotle",
+        "chunk_index": 2,
+        "is_clean_copy": false,
+        "qualifier": "My Copy",
+        "clean_sha256": "fc3e4235226e2b60c43e17e65ad7dc2996244f9443c1024c3eefdb404ec6979c",
+        "mtime": 1771101202,
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "is_image": false,
+        "year": 2014,
+        "doc_id": "b811388f4f1d7863",
+        "is_table": false
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 5, \"coords\": [28.25, 53.46154022216797, 337.04998779296875, 522.0548095703125], \"blocks\": [[28.25, 53.46154022216797, 337.04998779296875, 417.2092590332031], [163.64999389648438, 447.86285400390625, 332.64996337890625, 466.53997802734375], [29.75, 435.4314880371094, 320.1921691894531, 496.5914306640625], [83.0, 514.8720703125, 268.07745361328125, 522.0548095703125]]}, {\"page_num\": 6, \"coords\": [4.317999839782715, 34.37852096557617, 221.85623168945312, 358.7640075683594], \"blocks\": [[57.70000076293945, 34.37852096557617, 221.85623168945312, 47.35771942138672], [4.317999839782715, 92.04900360107422, 48.487998962402344, 120.01900482177734], [16.040000915527344, 219.75, 43.81999969482422, 233.22000122070312], [6.785999298095703, 330.79400634765625, 40.40599822998047, 358.7640075683594]]}]",
+      "rank": 5
+    },
+    {
+      "raw_rank": 6,
+      "chunk_id": "b811388f4f1d7863:00009",
+      "distance": 0.7683900594711304,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 12,
+      "page_end": 14,
+      "text": "‘Ross excises ‘time’.\n\nPHYSICS\n\n191*1\n\nexistent nature -> subs.\n\nfor the contraries to be acted on by each other. But this difficulty also is solved by the fact that what underlies is different from the contraries; for it is itself not a 3S contrary. The principles therefore are, in a way, not more in number than the contraries, but as it were two; nor yet precisely two, since there is a difference of being, but three. For to be man is different from to be unmusical, and to be unformed from to be bronze. We have now stated the number of the principles of natural objects which are subject to generation, and how the number is reached; and it is clear that there must be something underlying the contraries, and that the contraries must be two. (Yet in another way of putting it this is not necessary, as one of the contraries will serve to effect the change by its absence and presence.) The underlying nature can be known by analogy. For as the bronze is to the statue, the wood to the bed, or the matter ands the formless before receiving form to any thing which has form, so is the underlying nature to substance, i.e. the ‘this’ or existent.\n\nThis then is one principle (though not one or existent in the same sense as the\n‘this’); one is the form or definition;6 then further there is its contrary, the privation, is In what sense these are two, and in what sense more, has been stated above. We explained first that only the contraries were principles, and later that something else underlay them, and that the principles were three; our last statement has elucidated the difference between the contraries, the mutual relation of the principles, and the nature of what underlies. Whether the form or what underlies is the substance is not yet clear. But that the principles are three, and in what sense, and the way in which each is a principle, is clear. So much then for the question of the number and the nature of the principles.\n\n• We will now proceed to show that the difficulty of the early thinkers, as well as our own, is solved in this way alone. The first of those who studied philosophy were misled in their search for truth and the nature of things by their inexperience, which as it were thrust them into another path. So they say that none of the things that are either comes to be or passes out of existence, because what comes to be must do so either from what is or from what is not, both of which are impossible. For what is cannot come to be (because it is already), and from what is not nothing could have come to be (because something must be underlying). So too they exaggerated the consequence of this, and went so far\n\nas to deny even the existence of a plurality of things maintaining that only what is itself is. Such then was their opinion, and such the reason for its adoption. Our explanation on the other hand is that for something to come to be from what is or from what is not, or what is not or what is to do something or have something done to it or become some particular thing.\n\nin one way no different are\n\nsRoss omits ‘the matter and’.\n‘Reading fua r tt os'ij oXoyos (Bonitz).\n\nBOOK I\n\n191bI\n\nfrom a doctor doing something or having something done to him, or being or becoming something from being a doctor. These expressions may be taken in two and so too, clearly, may ‘from what is’, and ‘what is acts or is acted on’. A\n\nwhat is not / accidentally\n\nwhat is / accidentally",
+      "meta": {
+        "source_method": "pymupdf+bbox",
+        "collection": "rhetorical_ontology",
+        "mtime": 1771101202,
+        "is_my_copy": true,
+        "has_bboxes": true,
+        "doc_id": "b811388f4f1d7863",
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "is_notes": false,
+        "author_raw": "Aristotle",
+        "page_start": 12,
+        "cleaning_version": "clean_v1",
+        "is_image": false,
+        "qualifier": "My Copy",
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "pdftotext_version": "24.02.0",
+        "title_raw": "Physics",
+        "clean_sha256": "a40683c8b94e2372548d5fc7477afe28c23133e29284840f5b81c4e9059b75b4",
+        "content_type": "text",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "is_clean_copy": false,
+        "year": 2014,
+        "bboxes": "[{\"page_num\": 14, \"coords\": [66.6500015258789, 205.48004150390625, 364.8017883300781, 499.1460876464844], \"blocks\": [[66.6500015258789, 205.48004150390625, 364.8017883300781, 308.0661315917969], [67.55000305175781, 319.7246398925781, 364.4931640625, 420.6507263183594], [82.0989990234375, 412.96783447265625, 364.1955261230469, 473.1103210449219], [266.29998779296875, 464.728515625, 363.97601318359375, 474.3033447265625], [167.19000244140625, 484.63800048828125, 271.8251953125, 499.1460876464844]]}, {\"page_num\": 15, \"coords\": [33.29899978637695, 27.494895935058594, 382.33099365234375, 359.8050842285156], \"blocks\": [[162.44000244140625, 27.494895935058594, 326.12677001953125, 37.81789016723633], [337.3900146484375, 49.40638732910156, 350.80633544921875, 56.80903244018555], [35.099998474121094, 47.588626861572266, 326.7450866699219, 77.38861083984375], [330.66400146484375, 181.80902099609375, 382.33099365234375, 209.77902221679688], [328.1969909667969, 254.60501098632812, 376.5169982910156, 282.57501220703125], [33.29899978637695, 70.45983123779297, 326.4481201171875, 359.8050842285156]]}]",
+        "is_table": false,
+        "chunk_index": 9,
+        "page_end": 14
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 14, \"coords\": [66.6500015258789, 205.48004150390625, 364.8017883300781, 499.1460876464844], \"blocks\": [[66.6500015258789, 205.48004150390625, 364.8017883300781, 308.0661315917969], [67.55000305175781, 319.7246398925781, 364.4931640625, 420.6507263183594], [82.0989990234375, 412.96783447265625, 364.1955261230469, 473.1103210449219], [266.29998779296875, 464.728515625, 363.97601318359375, 474.3033447265625], [167.19000244140625, 484.63800048828125, 271.8251953125, 499.1460876464844]]}, {\"page_num\": 15, \"coords\": [33.29899978637695, 27.494895935058594, 382.33099365234375, 359.8050842285156], \"blocks\": [[162.44000244140625, 27.494895935058594, 326.12677001953125, 37.81789016723633], [337.3900146484375, 49.40638732910156, 350.80633544921875, 56.80903244018555], [35.099998474121094, 47.588626861572266, 326.7450866699219, 77.38861083984375], [330.66400146484375, 181.80902099609375, 382.33099365234375, 209.77902221679688], [328.1969909667969, 254.60501098632812, 376.5169982910156, 282.57501220703125], [33.29899978637695, 70.45983123779297, 326.4481201171875, 359.8050842285156]]}]",
+      "rank": 6
+    },
+    {
+      "raw_rank": 7,
+      "chunk_id": "b811388f4f1d7863:00003",
+      "distance": 0.7844403386116028,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 6,
+      "page_end": 6,
+      "text": "The fallacy of elissus is obvious. For he supposes that the assumption ‘what has come into being always has a beginning’ justifies the assumption ‘what has not into being has no beginning’. Then this also is absurd, that in every case there come should be a beginning of the thin —not of the time and not only in the case of coming to be simpliciter but also in the case of qualitative change—as if change took place all at once. Again, does it follow that what is, if one, is motionless? never Why should it not move, the whole of it within itself, as parts of it do which are unities, e.g. this water? Again, why is qualitative change impossible? But, further, what is cannot be one in form, though it may be in what it is made of. (Even some of the physicists hold it to be one in the latter way, though not in the former.) an obviously differs from horse in form, and contraries from each other. The same kind of argument holds good against Parmenides also, besides any that may apply specially to his view: the answer to him being that this is not true and that does not follow. His assumption that ‘is’ is used in a single way only is false, because it is used in several. His conclusion does not follow, because if we take only white things, and if ‘white’ has a single meaning, none the less what is white will be many and not one. For what is white will not be one either in the sense that it is continuous or in the sense that it must be defined in only one way. Whiteness will be different from what has whiteness. Nor does this mean that there is anything that can exist separately, over and above what is white. For whiteness and that which is white differ in definition, not in the sense that they are things which can exist apart from each other. But Parmenides had not come in sight of this distinction. It is necessary for him, then, to assume not only that ‘is’ has the same meaning, of whatever it is predicated, but further that it means whatjust is and what isjust one. For an attribute is predicated ofsome subject, so that the subject to which ‘is’ is attributed will not be, as it is something different from being. Something, therefore, which is not will be. Hence what just is will not belong to anything else. For the subject cannot be a eing, unless ‘is’ means several things, in such a way that each is something. But ex hypothesi ‘is’ means only one thing. If, then, what just is is not attributed to anything, but other things are attributed to it, how does what just is mean what is rather than what is not? For suppose that what just is is also white, and that being white is not what just is (for being cannot even be attributed to white, since nothing is which is not what just is), it follows that what is white is not—and that not in the sense of not being something or other, but in the sense that it is not at all. Hence what just is is not; for it is true to say that it is white, and we found this to mean what is not. So ‘white’ must also mean what just is; and then ‘is’ has more than one meaning. In particular, then, what is will not have magnitude, if it is what just is. For each of the two parts must e in a different way. What just is is plainly divisible into other things which just are, if we consider .15 the mere nature of a definition. For instance, if man is, what just is, animal and biped must also be what just is. For if not, they must be attributes—and if attributes, attributes either of man or of some other subject. But neither is possible.\n\nB 0 O K I\n\nattribute\n\nBeing",
+      "meta": {
+        "is_table": false,
+        "collection": "rhetorical_ontology",
+        "is_notes": false,
+        "year": 2014,
+        "mtime": 1771101202,
+        "bboxes": "[{\"page_num\": 6, \"coords\": [37.5, 55.275447845458984, 345.45025634765625, 504.2275695800781], \"blocks\": [[37.5, 55.275447845458984, 345.45025634765625, 504.2275695800781]]}, {\"page_num\": 7, \"coords\": [158.60000610351562, 31.24695587158203, 377.6880187988281, 219.031005859375], \"blocks\": [[158.60000610351562, 31.24695587158203, 321.5999755859375, 42.95466232299805], [325.11199951171875, 49.174034118652344, 358.4419860839844, 62.64403533935547], [353.7980041503906, 205.56100463867188, 377.6880187988281, 219.031005859375]]}]",
+        "qualifier": "My Copy",
+        "chunk_index": 3,
+        "clean_sha256": "179a02476e403a35d8c7ccc3c05fed546b0e32b0853bdf63ae61b89a51d63843",
+        "source_method": "pymupdf+bbox",
+        "is_image": false,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "pdftotext_version": "24.02.0",
+        "doc_id": "b811388f4f1d7863",
+        "has_bboxes": true,
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "author_raw": "Aristotle",
+        "page_end": 6,
+        "is_clean_copy": false,
+        "content_type": "text",
+        "title_raw": "Physics",
+        "page_start": 6,
+        "cleaning_version": "clean_v1",
+        "is_my_copy": true
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 6, \"coords\": [37.5, 55.275447845458984, 345.45025634765625, 504.2275695800781], \"blocks\": [[37.5, 55.275447845458984, 345.45025634765625, 504.2275695800781]]}, {\"page_num\": 7, \"coords\": [158.60000610351562, 31.24695587158203, 377.6880187988281, 219.031005859375], \"blocks\": [[158.60000610351562, 31.24695587158203, 321.5999755859375, 42.95466232299805], [325.11199951171875, 49.174034118652344, 358.4419860839844, 62.64403533935547], [353.7980041503906, 205.56100463867188, 377.6880187988281, 219.031005859375]]}]",
+      "rank": 7
+    },
+    {
+      "raw_rank": 8,
+      "chunk_id": "f6041c1a815c83f1:00115",
+      "distance": 0.7867695689201355,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 191,
+      "page_end": 191,
+      "text": "Being and Time I. s That which is understood gets Articulated when the entity to be under­ stood is brought close interpretatively by taking as our clue the 'some­ thing as something' ; and this Articulation lies before [liegt vor] our making any thematic assertion about it. In such an assertion the 'as' does not turn up for the first time ; it just gets expressed for the first time, and this is possible only in that it lies before us as something expressible.1 The fact that when we look at something, the explicitness of assertion can be absent, does not justify our denying that there is any Articulative interpretation in such mere seeing, and hence that there is any as-structure in it. When we have to do with anything, the mere seeing of the Things which are closest to us bears in itself the structure of interpretation, and in so primor­ dial a manner that just to grasp something free, as it were, of the \"as\", requires a certain readjustment. When we merely stare at something, our just-having-it-before-us lies before us as a failure to understand it any more. This grasping which is free of the \"as\", is a privation ofthe kind of seeing in which one merelJ understands. It is not more primordial than that kind of seeing, but is derived from it. If the 'as' is ontically unexpressed, this must not seduce us into overlooking it as a constitutive state for under­ standing, existential and a priori. But if we never perceive equipment that is ready-to-hand without already understanding and interpreting it, and if such perception lets us I 50 circumspectively encounter something as something, does this not mean that in the first instance we have experienced something purely present­ at-hand, and then taken it as a door, as a house ? This would be a misunderstanding of the specific way in which interpretation functions as disclosure. In interpreting, we do not, so to speak, throw a 'signification' over some naked thing which is present-at-hand, we do not stick a value on it; but when something within-the-world is encountered as such, the\n\n1 ' • . . was allein so moglich ist, dass es als Aussprechbares vor-Iiegt.' Here we follow the reading of the earlier editions. The hyphen in 'vor-liegt' comes at the end of the line in the later editions, but is undoubtedly meant to suggest (like the italicization of the 'vor' in the previous sentence) that this verb is to be interpreted with unusual literalness. This paragraph is noteworthy for an exploitation of the prefix 'aus' ('out'), which fails to Ƥhow up in our translation. Literally an 'Aussage' ('assertion') is something which is \n'srud out' ; an 'Auslegung' ('interpretation'} is a 'laying-out' ; that which is 'ausdriicklich' ('explicit') is something that has been 'pressed out' ; that which is 'aussprechbar' (our \n'expressible') is something that can be 'spoken out'. The verbs 'ausdriicken' and 'aussprechen' are roughly synonymous; but 'aussprechen' often has the more specific connotations of 'pronunciation', 'pronouncing oneself', 'speak­ ing one's mind', 'finishing what one has to say', etc. While it would be possible to reserve \n'express' for 'ausdricken' and translate 'aussprechen' by some such phrase as 'speak out', it is more convenient to use 'express' for both verbs, especially since 'aussprechen' and its derivatives have occurred very seldom before the present chapter, in which 'ausdriicken' rarely appears. On the other hand, we can easily distinguish between the more frequent \n'ausdriicklich' and 'ausgesprochen' by translating the latter as 'expressed' or 'expressly', and reserving 'explicit' for both 'ausdriicklich' and 'explizit'.\n\nBeing and Time",
+      "meta": {
+        "mtime": 1771101202,
+        "cleaning_version": "clean_v1",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "page_end": 191,
+        "pdftotext_version": "24.02.0",
+        "qualifier": "My Copy",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "title_raw": "Being and Time",
+        "collection": "rhetorical_ontology",
+        "clean_sha256": "58da47cfab5aa492e97618dc95a78e5c12c83f8fdfc43ba83d55185419528af3",
+        "year": 1962,
+        "has_bboxes": true,
+        "is_image": false,
+        "is_table": false,
+        "is_notes": false,
+        "doc_id": "f6041c1a815c83f1",
+        "author_raw": "Heidegger, Martin",
+        "is_clean_copy": false,
+        "source_method": "pymupdf+bbox",
+        "page_start": 191,
+        "chunk_index": 115,
+        "bboxes": "[{\"page_num\": 197, \"coords\": [4.330078125, 296.0543212890625, 309.6891784667969, 468.4828796386719], \"blocks\": [[26.14007568359375, 296.0543212890625, 308.1793212890625, 305.67291259765625], [27.03009033203125, 307.0343017578125, 308.9283752441406, 316.92340087890625], [27.03009033203125, 317.92431640625, 308.2450866699219, 327.54290771484375], [27.03009033203125, 328.7843017578125, 306.87091064453125, 338.40289306640625], [27.4600830078125, 339.87432861328125, 308.3038635253906, 349.492919921875], [27.030075073242188, 350.46429443359375, 186.34918212890625, 360.0828857421875], [36.76007080078125, 361.5285949707031, 308.41790771484375, 371.5025329589844], [27.680084228515625, 370.4832763671875, 309.16217041015625, 384.5105285644531], [27.6800537109375, 383.1943054199219, 308.9113464355469, 392.8128967285156], [27.680084228515625, 394.0443115234375, 308.9100341796875, 403.66290283203125], [27.900054931640625, 404.620849609375, 309.16656494140625, 414.54290771484375], [27.900054931640625, 415.654296875, 309.1573181152344, 425.27288818359375], [28.490081787109375, 426.48431396484375, 309.1579284667969, 436.1029052734375], [27.90008544921875, 436.8518981933594, 309.6891784667969, 446.90289306640625], [4.330078125, 448.09429931640625, 309.35400390625, 459.5238952636719], [28.330078125, 458.8642883300781, 308.8988037109375, 468.4828796386719]]}, {\"page_num\": 198, \"coords\": [33.95001220703125, 10.138601303100586, 318.0885314941406, 469.8183288574219], \"blocks\": [[33.95001220703125, 10.138601303100586, 317.08721923828125, 196.1127471923828], [34.38006591796875, 197.1543426513672, 318.0885314941406, 414.4859313964844], [42.17010498046875, 421.77130126953125, 246.35751342773438, 430.1067199707031], [34.17010498046875, 429.4407653808594, 318.0789794921875, 453.5807189941406], [34.380126953125, 453.05078125, 316.39422607421875, 469.8183288574219]]}, {\"page_num\": 199, \"coords\": [28.979999542236328, 10.048604965209961, 197.02894592285156, 22.50223159790039], \"blocks\": [[28.979999542236328, 10.048604965209961, 197.02894592285156, 22.50223159790039]]}]",
+        "content_type": "text",
+        "is_my_copy": true
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 197, \"coords\": [4.330078125, 296.0543212890625, 309.6891784667969, 468.4828796386719], \"blocks\": [[26.14007568359375, 296.0543212890625, 308.1793212890625, 305.67291259765625], [27.03009033203125, 307.0343017578125, 308.9283752441406, 316.92340087890625], [27.03009033203125, 317.92431640625, 308.2450866699219, 327.54290771484375], [27.03009033203125, 328.7843017578125, 306.87091064453125, 338.40289306640625], [27.4600830078125, 339.87432861328125, 308.3038635253906, 349.492919921875], [27.030075073242188, 350.46429443359375, 186.34918212890625, 360.0828857421875], [36.76007080078125, 361.5285949707031, 308.41790771484375, 371.5025329589844], [27.680084228515625, 370.4832763671875, 309.16217041015625, 384.5105285644531], [27.6800537109375, 383.1943054199219, 308.9113464355469, 392.8128967285156], [27.680084228515625, 394.0443115234375, 308.9100341796875, 403.66290283203125], [27.900054931640625, 404.620849609375, 309.16656494140625, 414.54290771484375], [27.900054931640625, 415.654296875, 309.1573181152344, 425.27288818359375], [28.490081787109375, 426.48431396484375, 309.1579284667969, 436.1029052734375], [27.90008544921875, 436.8518981933594, 309.6891784667969, 446.90289306640625], [4.330078125, 448.09429931640625, 309.35400390625, 459.5238952636719], [28.330078125, 458.8642883300781, 308.8988037109375, 468.4828796386719]]}, {\"page_num\": 198, \"coords\": [33.95001220703125, 10.138601303100586, 318.0885314941406, 469.8183288574219], \"blocks\": [[33.95001220703125, 10.138601303100586, 317.08721923828125, 196.1127471923828], [34.38006591796875, 197.1543426513672, 318.0885314941406, 414.4859313964844], [42.17010498046875, 421.77130126953125, 246.35751342773438, 430.1067199707031], [34.17010498046875, 429.4407653808594, 318.0789794921875, 453.5807189941406], [34.380126953125, 453.05078125, 316.39422607421875, 469.8183288574219]]}, {\"page_num\": 199, \"coords\": [28.979999542236328, 10.048604965209961, 197.02894592285156, 22.50223159790039], \"blocks\": [[28.979999542236328, 10.048604965209961, 197.02894592285156, 22.50223159790039]]}]",
+      "rank": 8
+    }
+  ]
+}
+[god-learn] $ python3 scripts/retrieval/verify_phase4.py Aristotle whether time exists without soul counting enumeration Physics IV.14 223a25 conditional dependency
+[PHASE4_VERIFY_OK]
+- query='Aristotle whether time exists without soul counting enumeration Physics IV.14 223a25 conditional dependency'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[god-learn] $ bash scripts/highlights/phase5check.sh
+
+--- AUDIT REPORT ---
+root: /home/dalton/projects/claudeflow-testing/corpus
+manifest: /home/dalton/projects/claudeflow-testing/scripts/ingest/manifest.jsonl
+total_pdfs: 50
+
+[PHASE2_COMPLETE] (50)
+  - dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf :: phase=2 ok
+  - dissertation/in_progress/rhetorical phantasia test.pdf :: phase=2 ok
+  - metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf :: phase=2 ok
+  - metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf :: phase=2 ok
+  - metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf :: phase=2 ok
+  - new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf :: phase=2 ok
+
+[OK] dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf
+[OK] dissertation/in_progress/rhetorical phantasia test.pdf
+[OK] metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf
+[OK] metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf
+[OK] metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf
+[OK] metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf
+[OK] metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf
+[OK] metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf
+[OK] metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf
+[OK] metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf
+[OK] new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf
+[OK] new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf
+[OK] rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf
+[OK] rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf
+
+--- VERIFY REPORT (OK) ---
+OK=50 FAIL=0 TOTAL=50
+[PHASE4_VERIFY_OK]
+- query='phantasia and action'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[OK] Wrote:
+  /tmp/no_hl.txt
+  /tmp/with_hl.txt
+Diff (first 120 lines):
+--- /tmp/no_hl.txt	2026-03-27 07:42:35.480488974 -0700
++++ /tmp/with_hl.txt	2026-03-27 07:42:36.771696682 -0700
+@@ -6,51 +6,51 @@
+ 
+ [RESULTS]
+ 
+-01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  (raw_rank=1)
++01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  final_score=0.7484066486358643  hl_count=0  boost=0.0000  (raw_rank=1)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=303-305
+ 
+-02. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  (raw_rank=2)
++02. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  final_score=0.8132696557044983  hl_count=1  boost=0.0200  (raw_rank=4)
++    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
++    pages=22-24
++
++03. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  final_score=0.8133007287979126  hl_count=0  boost=0.0000  (raw_rank=2)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+     pages=167-169
+ 
+-03. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  (raw_rank=3)
++04. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  final_score=0.8137480616569519  hl_count=0  boost=0.0000  (raw_rank=3)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=279-281
+ 
+-04. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  (raw_rank=4)
+-    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+-    pages=22-24
+-
+-05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  (raw_rank=6)
++05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  final_score=0.851164698600769  hl_count=0  boost=0.0000  (raw_rank=6)
+     path_rel=rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+     pages=292-292
+ 
+-06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  (raw_rank=7)
++06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  final_score=0.8536148071289062  hl_count=0  boost=0.0000  (raw_rank=7)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=294-294
+ 
+-07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  (raw_rank=8)
++07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  final_score=0.864859938621521  hl_count=0  boost=0.0000  (raw_rank=8)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+     pages=18-18
+ 
+-08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  (raw_rank=9)
++08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  final_score=0.8705873489379883  hl_count=0  boost=0.0000  (raw_rank=9)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+     pages=215-215
+ 
+-09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  (raw_rank=10)
++09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  final_score=0.8722628355026245  hl_count=0  boost=0.0000  (raw_rank=10)
+     path_rel=rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+     pages=13-14
+ 
+-10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  (raw_rank=11)
++10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  final_score=0.8786800503730774  hl_count=0  boost=0.0000  (raw_rank=11)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=162-164
+ 
+-11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  (raw_rank=12)
++11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  final_score=0.8806346654891968  hl_count=0  boost=0.0000  (raw_rank=12)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=24-26
+ 
+-12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  (raw_rank=13)
++12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  final_score=0.8811410665512085  hl_count=0  boost=0.0000  (raw_rank=13)
+     path_rel=rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+     pages=252-254
+ 
+[god-learn] $ python3 scripts/learn/promote_hits.py --hits_json /tmp/phase4_hits.json --query Aristotle whether time exists without soul counting enumeration Physics IV.14 223a25 conditional dependency
+07:42:37 [INFO    ] god-learn.phase6.promote: Starting promotion [hits_json=/tmp/phase4_hits.json, query=Aristotle whether time exists without soul counting enumeration Physics IV.14 223a25 conditional dependency, min_chars=40, max_units=0, dry_run=False]
+07:42:37 [INFO    ] god-learn.phase6.promote: Promotion complete [promoted=6, total_indexed=157, knowledge_file=god-learn/knowledge.jsonl, index_file=god-learn/index.json]
+[Phase6:promote_hits] promoted=6 total_indexed=157
+[Phase6:promote_hits] wrote: god-learn/knowledge.jsonl
+[Phase6:promote_hits] index: god-learn/index.json
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[ORDER_FAIL] IDs in knowledge.jsonl are not sorted
+[Phase6:verify] ERROR: Soft failures: 1
+[god-learn] normalize: sorted 157 KUs and rebuilt index (157 offsets)
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] OK units=157

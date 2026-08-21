@@ -1,0 +1,325 @@
+# Index System Programme — Execution Handoff
+
+**Created:** 2026-07-28
+**For:** a clean session picking up execution with no prior context
+**Repo:** `/home/dalton/projects/claudeflow-testing` · branch `feat/wraith-retrieval`
+
+## The three documents
+
+| Document | Use it for |
+|---|---|
+| `plans/index-system-report-2026-07-28.md` | Evidence base — how the index works, every `path:line` citation |
+| `plans/index-system-implementation-plan-2026-07-28.md` | The phased plan, gates, risk register |
+| **this file** | What to actually do next, in order, with commands and traps |
+
+Read this file first. Consult the plan for phase detail and the report when you need the evidence behind a claim.
+
+---
+
+## 1. What this programme is
+
+The corpus index is 27 hand-authored entry directories, 1,848 files, encoding cross-author and per-source analytical knowledge that vector search cannot reproduce. It is the system's differentiator.
+
+Almost none of it is reachable by code. The compiler reads **four filename patterns** out of 1,848 files and emits one 664 KB JSON artifact with four arrays. **357 unit records, 691 unit analyses, and 17,736 edge-CSV rows sit on disk and never reach runtime.**
+
+The programme, in the user's stated priority order:
+
+1. Wire the original index completely; repair weak and broken entries
+2. Single-source entries for every source, **short articles included**
+3. The analysis-upgrade sandbox (cross-author concept integration) — last
+
+---
+
+## 2. Already done
+
+### Full verified backup — do not skip reading this
+
+```
+.backups/corpus-index-full-20260728T230859Z/
+  tree/                      full rsync -a mirror
+  MANIFEST-source.sha256     SHA-256 of every source file
+  MANIFEST-copy.sha256       SHA-256 of every mirrored file
+  README.md                  provenance + restore recipes
+.backups/corpus-index-full-20260728T230859Z.tar.gz         13 MB, 1,848 files
+.backups/corpus-index-full-20260728T230859Z.tar.gz.sha256  878a8192...1ea3fe
+```
+
+Verified at capture: hash manifests identical · files 1848 = 1848 · bytes 41,711,698 = 41,711,698 · archive restores bit-identical.
+
+Restore whole tree:
+```bash
+cd /home/dalton/projects/claudeflow-testing
+rsync -a --delete .backups/corpus-index-full-20260728T230859Z/tree/ corpus/index/
+```
+
+Re-verify the backup at any time:
+```bash
+cd .backups/corpus-index-full-20260728T230859Z/tree
+find . -type f -print0 | sort -z | xargs -0 sha256sum | diff - ../MANIFEST-copy.sha256 && echo INTACT
+```
+
+**Take a fresh timestamped backup before each destructive phase.** The script used is reproducible; see §7.
+
+### Nothing else has been changed
+
+No source file has been modified. No code written. No pushes made.
+
+---
+
+## 3. Ratified decisions — do not relitigate
+
+| # | Decision |
+|---|---|
+| **D1** | Backup taken and verified (above) |
+| **D2** | Tracking policy approved: **gitignore `.backups/`, track everything else** under the index |
+| **D3** | The 5 ontology-only entries get structured unit records, edges, **and the full treatment**. No lite profile |
+| **D4** | **RDR2 (Salvo Playthrough)** and **Veri(dis)similitude (Salvo MA)** are `analysis-artifact` entries — no synthesis layer, excluded from source-entry gates, **still reachable by entry-scoped retrieval** |
+| **D5** | In-Game ch.10 is a **repair, not a choice**. All 13 chapters carry a topical + deep pair by design |
+| **D6** | **Aristotle - Complete Works is healthy** — 199 of 701 nodes + all 72 hooks via `ARISTOTLE_WORK_MAP` |
+| **D7** | Articles get standalone entries. Concern raised and overruled; build for it |
+
+---
+
+## 4. Verified state of the index
+
+Census run 2026-07-28. `nodes` = reaching `compiled-index.json`; `units` = structured unit records; `edges` = edge-CSV rows.
+
+### Healthy — 11
+
+| Entry | Nodes | Units | Edges |
+|---|---|---|---|
+| Boredom Secondary (Part III) | 68 | 55 | 3,815 |
+| VR Pedagogy Secondary (Part III) | 60 | 34 | 2,260 |
+| A Grammar of Motives (Burke 1945) | 56 | 28 | 1,754 |
+| In-Game (Calleja 2011) | 44 | 26 | 1,472 |
+| A Rhetoric of Motives (Burke 1950) | 39 | 8 | 420 |
+| Heidegger - Being and Time | 37 | 18 | 284 |
+| Heidegger - Basic Concepts of Aristotelian Philosophy | 37 | 14 | 93 |
+| Uncomfortable Situations | 36 | 6 | 744 |
+| Heidegger and Rhetoric | 36 | 16 | 204 |
+| Von Uexkull - A Foray | 35 | 15 | 152 |
+| Heidegger - The Fundamental Concepts of Metaphysics | 32 | 15 | 880 |
+| Rickert - Ambient Rhetoric | 25 | 10 | 56 |
+| Wendt - Design for Dasein | 15 | 7 | 614 |
+
+Plus **Aristotle - Complete Works** — 199 nodes across 10 work labels, 45 units, 402 edges, all 72 hooks.
+
+### Ontology-only — 5, all → full treatment per D3
+
+| Entry | Sources | Nodes | Units | Edges |
+|---|---|---|---|---|
+| Virtual Learning Environments (King–Salvo) | 5 | 18 | 0 | 0 |
+| Presence Theory (Foundations) | 4 | 10 | 0 | 0 |
+| Social Presence in Virtual Worlds (Part III) | 3 | 10 | 0 | 0 |
+| Rhetoric of Interactivity and VR (Part III) | 2 | 7 | 0 | 0 |
+| Boredom Experiment (VR Attention Study) | 5 ch | 7 | 0 | 0 |
+
+They have per-source analyses in markdown and a concept matrix; they lack structured unit records and edges.
+
+### Unregistered but real — 4
+
+| Entry | Units | Edges | Fix |
+|---|---|---|---|
+| Aristotelian Phantasia Secondary (1985-2017) | 8 | 1,414 | Ships `cluster-ontology.json` with **41 concepts**; compiler never opens JSON |
+| RDR2 Secondary (2019-2023) | 12 | 1,012 | Ships JSON, **21 concepts** (thin: concept, units, tier) |
+| Aristotelian Emotion Secondary (1975-2015) | 5 | 420 | Ships JSON, **40 concepts** (thin: label, units) |
+| Aristotelian Motion and Time Secondary | 1 | 58 | **5 files total** — abandoned mid-creation; needs full entry creation |
+
+### `analysis-artifact` class — 4, per D4
+
+Dissertation · Game-Behavior Analysis Method · RDR2 (Salvo Playthrough) · Veri(dis)similitude (Salvo MA)
+
+---
+
+## 5. Traps — read before touching anything
+
+### 5.1 A clean compiler run proves nothing
+
+`scripts/compile-corpus-index.py` (1,412 lines, **zero arguments**) has seven silent-skip sites. Malformed input is indistinguishable from absent input:
+
+- 8 of 27 entries absent from `TEXT_DIRS` → invisible, no warning (collection iterates the registry, not the filesystem)
+- 4 of 11 `tension-edges.json` files yield **zero** edges silently, dropping 55 records (`:1128-1129`)
+- `parse_ontology_md` returns `[]` rather than erroring
+- No `--check`, no non-zero exit, no self-check against manifest counts
+
+**Never verify a repair by "the compiler ran clean."** Phase 1 exists to fix this and must land before Phase 4.
+
+### 5.2 The output is not byte-reproducible
+
+`canonicalTerms` sorts on `(-len, lower())`; 101 case-duplicate pairs tie and flip per run under Python's randomized set iteration. Every recompile dirties a git-tracked file with meaningless reordering.
+
+### 5.3 The compiler reads no JSON ontologies
+
+`ontology.json` appears **nowhere** in its 1,412 lines. It dispatches on `ontology_format` with two handlers (`header` ×17, `table` ×2). A third (`json`) is an established pattern, ~1 day, +102 concepts.
+
+### 5.4 Renaming an entry directory silently drops it
+
+`TEXT_DIRS` is keyed by directory name. Five entry paths are also hardcoded in `scripts/normalize-edges.py:37-41`. `deriveAuthor` parses the display label by splitting on `' - '` and the result becomes a ChromaDB `author_raw` filter — renaming breaks author-scoped retrieval.
+
+### 5.5 `doc_id` is path-derived
+
+`doc_id = sha256(f'{path_rel}:{sha256_file}')[:16]`, chunk ids `{doc_id}:{idx:05d}` (`run_ingest_phase2.py:220-222, :659, :699`). **Relocating any document mints a new namespace with no dedup against old chunks.** In Phase 2, purge before moving.
+
+### 5.6 The index is being ingested right now
+
+772 of 1,182 manifest records are under `index/`; 25 chunks are live in ChromaDB with `collection="index"`. No walker excludes `index` — `SKIP_DIRS = {".extracted_media", "__pycache__", "node_modules", ".git", ".ingest_cache"}`.
+
+### 5.7 Stale facts in memory files — correct these
+
+| Recorded | Actual |
+|---|---|
+| "ChromaDB collections metaphysics/new_media/rhetorical_ontology" | **One collection, `knowledge_chunks`.** Those are values of a per-chunk metadata field, filtered by `where` |
+| "QuotationFidelityValidator (70%+)" | Threshold is **0.90** (`quotation-fidelity-stage.ts:60-61`) |
+| "QualityGauntlet (7 stages)" | **10 default stages** (`quality-gauntlet.ts:574-589`); comments still say 7 |
+| "Secondary clusters NOT registered, by design" | **Reversed in practice** — Boredom Secondary (68) and VR Pedagogy (60) are the two largest contributors |
+| "corpus/index FIRST, ChromaDB fallback" | **A human workflow rule only.** Zero code implements it; live order is inverted |
+
+### 5.8 Service state
+
+Local `:8000` (embedder), `:8001` (Chroma), `:8002` (vLLM) were **down** at audit time with stale pid files (`.run/chroma.pid` 5972, `.run/embedder.pid` 6008, `.run/marker.pid` 6555). `wraith-infer` on WRAITH `:8100` (GPU 1) was live serving gte-Qwen2-1.5B + `bge-reranker-v2-m3`. **Re-check before relying on any of them** — start with `/god-launch`.
+
+### 5.9 Retrieval changes here are not reliably improvements
+
+Recorded eval: raw 1536 gte-Qwen2 was a **regression** vs 768 fastembed (MRR 0.285 vs 0.493); the cross-encoder reranker was the win (768+rerank MRR 0.547). **A/B any retrieval change before default-on**, especially index-first ordering in Phase 5C.
+
+---
+
+## 6. Execution order
+
+### Phase 0 — finish preservation *(next action)*
+
+```bash
+cd /home/dalton/projects/claudeflow-testing
+```
+
+1. **Apply tracking policy (D2).** Add `corpus/index/**/.backups/` and `corpus/index/.backups/` to `.gitignore`, then stage the remaining ~1,500 untracked index files (35 MB, mostly text).
+   Verify: `git status --short corpus/index | wc -l` and `git ls-files corpus/index | wc -l`.
+2. **Push** `writing-pipeline-v3` and tag `pre-promotion-20260419` to origin. Currently `git ls-remote --heads origin` lists only `writing-pipeline-v2` and the branch has no upstream.
+3. **Back up `production-sandbox/data/`** off-machine — ~$25 of extracted claims and ~40 h of gold annotation, untracked and irrecoverable.
+
+**Gate P0:** tracking applied · branch and tag resolve on origin · sandbox data byte-verified in a second location.
+
+> **Ask before each push.** Standing rule: commits and pushes from WSL only, never from the Mac.
+
+### Phase 1 — compiler hardening + registry triage (3–4 d)
+
+1A: `--check` + non-zero exit · warn on unregistered entries · warn on registered-but-zero-node · warn on zero-yield tension files · error on unparseable ontology · self-check vs manifest counts · deterministic `canonicalTerms` sort · strip parse pollution (one `centralityTier` holds 10,009 chars of a dumped edge table).
+
+1B: add `ontology_format: "json"` + three shape adapters → **+102 concepts** from Phantasia (41), Emotion (40), RDR2 Secondary (21). Target state: JSON is the machine-readable ontology everywhere, markdown is the prose.
+
+1C: entry registry with stable IDs and an **entry class** field (`source-entry` / `analysis-artifact` / `incomplete` / `excluded`). Classify the four D4/D6 artifacts.
+
+**Gate C1:** two consecutive runs byte-identical · `--check` fails on a corrupted fixture · warnings fire for every unregistered entry and all 4 zero-yield tension files · the 3 JSON clusters register with non-zero nodes.
+
+### Phase 2 — relocate the index out of `corpus/` (3–4 d)
+
+Sequenced before normalization and wiring so those target final paths. Full item list in the plan (R2.1–R2.10). The four traps: string-free path-join sites (`endnote-generator.ts:31`, `missing_link_detector.py:439`, `coverage_analyzer.py:470`, `orphan_identifier.py:335`), 772 manifest `path_rel` rewrites, purge-before-move for `doc_id`, and `god_learn.py:755` which defaults `--root` to `<repo>/corpus` and is the primary user-facing driver.
+
+Irreducible residue: 458 `corpus/index` string hits in `vector_db_1536/chroma.sqlite3`, of which **39 are embedded prompt/memory text not fixable by re-ingestion**.
+
+**Gate R1:** ingest dry-run yields zero manifest records under the new path · fresh Chroma build has zero hits outside the 39 · `/god-learn-verify` passes.
+
+### Phase 3 — normalization layer (5–8 d)
+
+One canonical unit record, one canonical edge record, one adapter per schema family (8 named in `plans/archon-corpus-index-migration-spec.md:45-58`), a validator, a schema file, an ID-prefix registry. Today: 42 edge-CSV header dialects, 633 relation values, 31 unenforced ID prefixes, no validator anywhere.
+
+**Gate N1:** all 27 entries load into the canonical type · validator passes · all 494 JSON files parse.
+
+### Phase 4 — entry repair (6–10 d)
+
+4A: repair `ig-10-incorporation.json` (one unclosed object, lines 107–155; validate against `ig-09-ludic.json`'s 27-key shape) · fix the VLE broken path (`vle-05-…md:3` → lowercase dir that doesn't exist) · the 4 zero-yield tension files.
+
+4B: the 5 ontology-only entries → structured unit records, edges, full profile (D3). Includes verifying the Part III presence units' **OCR-only unverified quotations** — they are cited in Part III.
+
+4C: missing apparatus — *A Rhetoric of Motives* (concept-matrix, manifest), Phantasia (manifest), Motion & Time (full creation).
+
+4D: quality floor — verbatim-quote detector (the G1 copyright gate, currently self-attestation only) · install `mmdc` (render validation has **never** run) · backfill `quality-gates-report.md` (2 of 27 have one) · re-derive provenance for the 9 entries with no machine-readable source path.
+
+**Gate Q1:** every entry passes its class's gates or is explicitly classified · zero unparseable files · zero silent-drop warnings.
+
+### Phase 5 — wiring (8–12 d)
+
+The core deliverable. Emit unit records, 17,736 edges, and the apparatus into runtime. **Decide storage shape first** (W5.4) — the artifact is already 664 KB from ontology nodes alone; SQLite is the likely answer.
+
+Then: entry registry with stable IDs · `scope: {entry: 'von-uexkull-foray'}` primitive · fix `RetrievalOptions.collections` (accepted everywhere, read nowhere), the `FacetedRetrieval` arity bug (TS2554 — the ICP path silently never reranks), `_hooksDerivationDone` one-shot global · implement index-first ordering and **A/B it before default-on**.
+
+**Gate W1:** a Uexküll-scoped query returns his 15 units, concepts, arguments, and 152 edges without a vector search · the drafting prompt carries unit-level content, not 35 concept names · index-first A/B'd with a recorded decision.
+
+### Phase 6 — single-source entries at scale
+
+288 PDFs → ~265 unique after dedup (23 duplicate groups, 20 cross-domain). 27 entries today. **114 cluster units promote to standalone entries; ~140 net new to author.**
+
+This is an **automation build**, not an authoring campaign. Do not start authoring at scale before the article-profile pipeline works. Two profiles: monograph (one unit per chapter, full gates) and article (concepts, arguments, claims, edges, loci, provenance — relational apparatus lives at group level).
+
+### Phase 7 — cross-cutting groups
+
+With every source a standalone entry, groups become selections over entries. Embed-recall → `bge-reranker-v2-m3` precision; **not pure cosine**. Validate on "secondary literature on Aristotle's phantasia" — baseline today is 10 nodes, all primary Aristotle/Heidegger, **zero** from the 8-unit phantasia cluster.
+
+### Phase 8 — analysis-upgrade sandbox
+
+Last, per directive. State: Phases 0–3b complete (4,961 claims, 23 papers, ~$25), Phase 4 gold set **25 of 50** dev items, Phase 5 E-ladder **never run** (both runners are `exit 1` stubs), no promotion.
+
+The gold set resolves 100% against the sandbox's 278-node ontology and **25–36% against live**. Deferring is a benefit: rebase once, onto a settled ontology, rather than twice.
+
+---
+
+## 7. Reproducing the backup
+
+```bash
+STAMP=$(date -u +%Y%m%dT%H%M%SZ)
+SRC=/home/dalton/projects/claudeflow-testing/corpus/index
+DEST=/home/dalton/projects/claudeflow-testing/.backups/corpus-index-full-$STAMP
+mkdir -p "$DEST" && rsync -a --numeric-ids "$SRC/" "$DEST/tree/"
+( cd "$SRC" && find . -type f -print0 | sort -z | xargs -0 sha256sum ) > "$DEST/MANIFEST-source.sha256"
+( cd "$DEST/tree" && find . -type f -print0 | sort -z | xargs -0 sha256sum ) > "$DEST/MANIFEST-copy.sha256"
+diff -q "$DEST/MANIFEST-source.sha256" "$DEST/MANIFEST-copy.sha256" && echo "VERIFIED"
+( cd /home/dalton/projects/claudeflow-testing/corpus && tar -czf "$DEST.tar.gz" index )
+sha256sum "$DEST.tar.gz" > "$DEST.tar.gz.sha256"
+```
+
+---
+
+## 8. Standing constraints
+
+- **Verification-gated.** Show evidence and wait for sign-off before committing.
+- **Backup before changes**, timestamped under `.backups/`.
+- **Commits and pushes from WSL only**, never the Mac. Ask before each push.
+- **Do not edit** the user's global `~/.claude/settings.json`.
+- **Present proposed edits as flowing prose**, not code blocks, when discussing content.
+- **Plans go in `plans/`** and get multi-round review.
+- Bash heredocs are blocked by a hook — use the Write tool for file creation.
+- Ultracode is off; do not use Workflow orchestration unless the user re-enables it.
+
+---
+
+## 9. Quick verification recipes
+
+```bash
+# entry count (27 dirs + compiled-index.json)
+find corpus/index -maxdepth 1 -mindepth 1 -type d -not -name '.backups' | wc -l
+
+# registered entries (19)
+python3 -c "import re;s=open('scripts/compile-corpus-index.py').read();b=s[s.index('TEXT_DIRS: dict[str, dict] = {'):s.index('\n}\n',s.index('TEXT_DIRS'))];print(len(re.findall(r'^    \"([^\"]+)\":',b,re.M)))"
+
+# nodes per label in the compiled artifact
+python3 -c "
+import json;from collections import Counter
+d=json.load(open('corpus/index/compiled-index.json'));c=Counter()
+for n in d['ontologyNodes']:
+    for p in str(n.get('text','?')).split(';'): c[p.strip()]+=1
+[print(f'{v:5d}  {k}') for k,v in c.most_common()]"
+
+# every JSON under the index parses (expect exactly 1 failure pre-Phase-4A)
+python3 -c "
+import json,pathlib
+bad=[]
+for p in pathlib.Path('corpus/index').rglob('*.json'):
+    if '.backups' in p.parts: continue
+    try: json.loads(p.read_text())
+    except Exception as e: bad.append((str(p.relative_to('corpus/index')),str(e)[:50]))
+print(len(bad),'unparseable')
+for b in bad: print('  ',b[0],'|',b[1])"
+
+# index still being ingested?
+grep -rn 'SKIP_DIRS' scripts/ingest/*.py | head
+```

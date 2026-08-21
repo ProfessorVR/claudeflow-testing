@@ -1,0 +1,522 @@
+[god-learn] $ python3 scripts/retrieval/query_chunks.py phantasia as distinct faculty in De Anima III --k 8 --overfetch 30 --include_docs --print_json
+{
+  "query": "phantasia as distinct faculty in De Anima III",
+  "config": {
+    "chroma_dir": "vector_db_1536",
+    "collection": "knowledge_chunks",
+    "k": 8,
+    "overfetch": 30,
+    "where": null,
+    "filters": {
+      "require_my_copy": false,
+      "collection_filter": null,
+      "keep_biblio": false
+    },
+    "include_docs": true,
+    "use_highlights": false,
+    "highlights_index": "scripts/highlights/highlight_index.json",
+    "highlight_alpha": 0.02,
+    "highlight_cap": 5
+  },
+  "results": [
+    {
+      "raw_rank": 1,
+      "chunk_id": "b811388f4f1d7863:00016",
+      "distance": 0.5364845395088196,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 23,
+      "page_end": 23,
+      "text": "• First then we observe that some things always come to pass in the same io way, and others for the most part. It is clearly of neither of these that chance, or the result of chance, is said to be the cause—neither of that which is by necessity and always, nor of that which is for the most part. But as there is a third class of events besides these two—events which all say are by chance—it is plain that there is such a thing as chance and spontaneity; for we know that things of this kind are due to chance and that things due to chance are of this kind. Of things that come to be, some come to be for the sake of something, others not. Again, some of the former class are in accordance with intention, others not, but both are in the class of things which are for the sake of something. Hence it is clear that even among the things which are outside what is necessary and what is for the most part, there are some in connexion with which the phrase ‘for the sake of something’ is applicable. (Things that are for the sake of something include whatever may be done as a result of thought or of nature.) Things of this kind, then, when they come to pass accidentally are said to be by chance. For just as a thing is something either in virtue of itself or accidentally, so may it be a cause. For\n\nIJFrag. 53 Diels-Kranz.\n\nPHYSICS\n\ninstance, the housebuilding faculty is in virtue of itself a cause ofa house, whereas the pale or the musical is an accidental cause. That which is per se cause is determinate, but the accidental cause is indeterminable; for the possible attributes ofan individual are innumerable. As we said, then, when a thing of this kind comes to pass among events which are for the sake of something, it is said to be spontaneous or by chance. (The distinction between the two must be made later-—for the present it is sufficient if it is plain that both are in the sphere of things done for the sake ofsomething.) Example: A man is engaged in collecting14 subscriptions for a feast. He would have gone to such and such a place for the purpose of getting the money, if he had known. He actually went there for another purpose, and it was only accidentally that he got his money by going there;15 and this was not due to the fact that he went I97 there as a rule or necessarily, nor is the end effected (getting the money) a cause present in himself—it belongs to the class of things that are objects of choice and the result of thought. It is when these conditions are satisfied that the man is said to have gone by chance. If he had chosen and gone for the sake of this—if he always or normally went there when he was collecting payments—he would not be said to have gone by chance. It is clear then that chance is an accidental cause in the sphere of those actions for the sake of something which involve choice. Thought, then, and chance are in the same sphere, for choice implies thought. It is necessary, no doubt, that the causes of what comes to pass by chance be indefinite; and that is why chance is supposed to belong to the class of the indefinite and to be inscrutable to man, and why it might be thought that, in a way, nothing occurs by chance. For all these statements are correct, as might be expected. Things do, in a way, occur by chance, for they occur accidentally and chance is an accidental cause. But it is not the cause without qualification of anything; for instance, a housebuilder is the cause of a house; accidentally, a fluteplayer may be o. And the causes of the man’s coming and getting the money (when he did not come for the sake of that) are innumerable. He may have wished to see somebody or been following somebody or avoiding somebody, or may have gone to see a spectacle. Thus to say that chance is unaccountable is correct. For an account is of what holds always or for the most part, whereas chance belongs to a third type of event. Hence, since causes of this kind are indefinite, chance too is indefinite. (Yet in some cases one might raise the question whether any chance fact might be the cause of the chance occurrence, e.g. of health the fresh air or the sun’s heat may be the cause, but having had one’s hair cut cannot; for some accidental causes are more relevant to the effect than others.) Chance is called good when the result is good, evil when it is evil. The terms good fortune and ‘ill fortune’ are used when either result is of considerable magnitude. Thus one who comes within an ace of some great evil or great good is said to be fortunate or unfortunate. The mind affirms the presence of the attribute,\n\n“Reading Mfuftiuvos, with one S, for Ross’s Konifruivov 5Omitting t D Koniaaadai tutna (Bonitz).\n\nBOOK II",
+      "meta": {
+        "page_end": 23,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "is_image": false,
+        "is_my_copy": true,
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "content_type": "text",
+        "collection": "rhetorical_ontology",
+        "year": 2014,
+        "doc_id": "b811388f4f1d7863",
+        "cleaning_version": "clean_v1",
+        "mtime": 1771101202,
+        "author_raw": "Aristotle",
+        "qualifier": "My Copy",
+        "bboxes": "[{\"page_num\": 25, \"coords\": [32.150001525878906, 48.94004440307617, 348.1190490722656, 522.6474609375], \"blocks\": [[33.0, 48.94004440307617, 324.88702392578125, 121.39327239990234], [334.70001220703125, 161.31085205078125, 348.1190490722656, 168.23544311523438], [32.150001525878906, 127.71542358398438, 324.63702392578125, 490.41412353515625], [62.5, 507.3138732910156, 297.5322570800781, 522.6474609375]]}, {\"page_num\": 26, \"coords\": [66.05000305175781, 30.180803298950195, 230.7471160888672, 42.80292510986328], \"blocks\": [[66.05000305175781, 30.180803298950195, 230.7471160888672, 42.80292510986328]]}]",
+        "clean_sha256": "f7df21e55f1a8b3b1dab44637e4163633caf477ea0a72efc8cbb717b821a4f7b",
+        "is_table": false,
+        "title_raw": "Physics",
+        "chunk_index": 16,
+        "page_start": 23,
+        "pdftotext_version": "24.02.0",
+        "has_bboxes": true,
+        "is_clean_copy": false,
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "is_notes": false,
+        "source_method": "pymupdf+bbox"
+      },
+      "rank": 1
+    },
+    {
+      "raw_rank": 2,
+      "chunk_id": "b811388f4f1d7863:00022",
+      "distance": 0.6017776131629944,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 31,
+      "page_end": 31,
+      "text": "It is evident that this is motion, and that motion occursjust when the fulfilment itselfoccurs, and neither before nor after. For each thing is capable of being at one time actual, at another not. Take for instance the buildable: the actuality of the buildable as buildable is the process of building. For the actuality must be either this or the house. But when there is a house, the buildable is no longer there. On the other hand, it is the buildable which is eing built. Necessarily, then, the actuality is the process of building. But building is a kind of motion, and the same account will apply to the other kinds also.\n\n“See VIII 1-6.\n\nPHYSICS\n\n202*1\n\n• The soundness of this definition is evident both when we consider the accounts of motion that the others have given, and also from the difficulty of defining it otherwise. One could not easily put motion and change in another genus—this is plain if we consider where some people put it: they identify motion with difference or inequality or not being; but such things are not necessarily moved, whether they are different or unequal or non-existent. Nor is change either to or from these rather than to or from their opposites. The reason why they put motion into these genera is that it is thought to be something indefinite, and the principles in the second column21 are indefinite because they are privative: none ofthem is either a ‘this’ or such or comes under any of the other categories. The reason why motion is thought to be indefinite is that is cannot be classed as a potentiality or as an actuality—a thing that is merely capa le of having a certain size is not necessarily undergoing change, nor yet a thing that is actually of a certain size, and motion is thought to be a sort of actuality, but incomplete, the reason for this view being that the potential whose actuality it is is incomplete. This is why it is hard to grasp what motion is. It is necessary to class it with privation or with potentiality or with simple actuality, yet none of these seems possible. There remains then the suggested mode of definition, namely that it is a sort of actuality, or actuality of the kind described, hard to grasp, but not incapable of existing. Every mover too is moved, as has been said—every mover, that is, which is capable of motion, and whose immobility is rest (for when a thing is subject to motion its immobility is rest). For to act on the movable as such is just to move it. But this it does by contact, so that at the same time it is also acted on. Hence motion is the fulfilment of the movable as movable, the cause being contact with what can move, so that the mover is also acted on. The mover will always transmit a form, either a ‘this’ or such or so much, which, when it moves, will be the principle and cause of the motion, e.g. the actual man begets man from what is potentially man.\n\n• The solution of the difficulty is plain: motion is in the movable. It is the fulfilment of this potentiality by the action of that which has the power of causing motion; and the actuality of that which has the power of causing motion is not other than the actuality of the movable; for it must be the fulfilment of oth. A thing is capable of causing motion because it can do this, it is a mover because it actually does it. But it is on the movable that it is capable of acting. Hence there is a single actuality of both alike, just as one to two and two to one are the same interval, and the steep ascent and the steep descent are one—for these are one and the same, although their definitions are not one. So it is with the mover and the moved. This view has a dialectical difficulty. Perhaps it is necessary that there should be an actuality of the agent and of the patient. The one is agency and the other patiency; and the outcome and end of the one is an action, that of the other a passion. Since then they are both motions, we may ask: in what are they, if they are different?\n\n’‘Compare the Pythagorean columns at Metaphysics A 5, 986*25.\n\nBOOK III",
+      "meta": {
+        "is_my_copy": true,
+        "is_clean_copy": false,
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "is_notes": false,
+        "year": 2014,
+        "bboxes": "[{\"page_num\": 33, \"coords\": [44.650001525878906, 49.548072814941406, 361.5011901855469, 517.1761474609375], \"blocks\": [[44.650001525878906, 49.548072814941406, 361.5011901855469, 484.0611267089844], [44.95000076293945, 497.06390380859375, 352.54998779296875, 517.1761474609375]]}, {\"page_num\": 34, \"coords\": [54.75, 31.152782440185547, 364.7831726074219, 135.05081176757812], \"blocks\": [[79.1500015258789, 31.152782440185547, 243.68165588378906, 44.40454864501953], [63.04899978637695, 52.36421203613281, 364.15350341796875, 81.92424774169922], [54.75, 97.62823486328125, 68.44974517822266, 103.82172393798828], [79.1500015258789, 86.71739196777344, 364.7831726074219, 135.05081176757812]]}]",
+        "chunk_index": 22,
+        "is_image": false,
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "mtime": 1771101202,
+        "has_bboxes": true,
+        "collection": "rhetorical_ontology",
+        "source_method": "pymupdf+bbox",
+        "is_table": false,
+        "doc_id": "b811388f4f1d7863",
+        "author_raw": "Aristotle",
+        "page_end": 31,
+        "clean_sha256": "e23dd3a94ba8a4be5bb45052be46d3354fe29897bca164e7a4170599476e7a85",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "content_type": "text",
+        "title_raw": "Physics",
+        "pdftotext_version": "24.02.0",
+        "qualifier": "My Copy",
+        "cleaning_version": "clean_v1",
+        "page_start": 31
+      },
+      "rank": 2
+    },
+    {
+      "raw_rank": 3,
+      "chunk_id": "49fa185fb6e11943:00085",
+      "distance": 0.6079266667366028,
+      "path_rel": "rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+      "page_start": 108,
+      "page_end": 108,
+      "text": "which they were produced. For from the potential the actual is always produced by an actual thing, e.g. man by man, musician by musician; there is always a first mover, and the mover already exists actually. We have said in our account of substance that everything that is produced is something produced from something and by something, and is the same in species as it. This is why it is thought impossible to be a builder if one has built nothing or a harpist if one has never played the harp; for he who learns to play the harp learns to play it by playing it, and all other learners do similarly. And thence arose the sophistical quibble, that one who does not know a science will be doing that which is the object of the science; for he who is learning it does not know it. But since, of that which is coming to be, some part must have come to be, and, of that which, in general, is changing, some part must have changed (this is shown in the treatise on movement), he who is learning must, it would seem, know some part of the science. It is surely clear, then, in this way, that the actuality is in this sense also, viz. in order of becoming and of time, prior to the potentiality. But it is also prior in substance; firstly, because the things that are posterior in becoming are prior in form and in substance, e.g. man is prior to boy and human being to seed; for the one already has its form, and the other has not. Secondly, because everything that comes to be moves towards a principle, i.e. an end. For that for the sake of which a thing is, is its principle, and the becoming is for the sake of the end; and the actuality is the end, and it is for the sake of this that the potentiality is acquired. For animals do not see in order that they may have sight, but they have sight that they may see. And similarly men have the art of building that they may build, and theoretical science that they may theorize; but they do not theorize that they may have theoretical science, except those who are learning by practice; and these do not theorize except in a limited sense, or else they have no need to theorize.3 Further, matter exists in a potential stale, just because it may attain to its form; and when it exists actually, then it is in its form. And the same holds good in cases in which the end is a movement, as well as in all others. Therefore as teachers think they have achieved their end when they have exhibited the pupil at work, so also does nature. For if this is not the case, we shall have Pauson’s Hermes over again; for it will be hard to say about the knowledge, as about the statue, whether it is within or without. For the action is the end, and the actuality is the action. Therefore even the word ‘actuality’ is derived from ‘action’, and points to the fulfillment. And while in some cases the exercise is the ultimate thing (e.g. in sight the ultimate thing is seeing, and no other product besides this results from sight), but from some things a product follows (e.g. from the art of building there results a house as well as the act of building), yet none the less the act is in the former case the end and in the latter more of an end than the mere potentiality is. For the act of building is the thing that is being built, and comes to be—and is—at the same time as the house.\n\n’Omitting on.\n\nBOOK IX\n\n1050bI",
+      "meta": {
+        "bboxes": "[{\"page_num\": 113, \"coords\": [56.25, 44.83934783935547, 374.3900146484375, 497.50177001953125], \"blocks\": [[190.10000610351562, 44.83934783935547, 261.6655578613281, 62.102020263671875], [56.25, 299.5063781738281, 73.22903442382812, 307.8272399902344], [82.69999694824219, 64.75727081298828, 374.3900146484375, 483.8301086425781], [197.25, 488.4464416503906, 252.98558044433594, 497.50177001953125]]}, {\"page_num\": 114, \"coords\": [164.85000610351562, 29.64411163330078, 330.84979248046875, 45.88230895996094], \"blocks\": [[164.85000610351562, 29.64411163330078, 330.84979248046875, 45.88230895996094]]}]",
+        "title_raw": "Metaphysics",
+        "author_raw": "Aristotle",
+        "is_image": false,
+        "has_bboxes": true,
+        "clean_sha256": "67ae501544552b8b58438efd35ba9343cddf72d634b86d777a2cb21e1e1e936f",
+        "mtime": 1771101202,
+        "path_rel": "rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "year": 2014,
+        "sha256": "22c796d388307296cfdab5806f8af990778fb9f0242aed67d4dd240cebcd5df1",
+        "chunk_index": 85,
+        "is_table": false,
+        "source_method": "pymupdf+bbox",
+        "content_type": "text",
+        "is_my_copy": true,
+        "qualifier": "My Copy",
+        "page_start": 108,
+        "doc_id": "49fa185fb6e11943",
+        "page_end": 108,
+        "collection": "rhetorical_ontology",
+        "cleaning_version": "clean_v1",
+        "pdftotext_version": "24.02.0",
+        "is_clean_copy": false,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "is_notes": false
+      },
+      "rank": 3
+    },
+    {
+      "raw_rank": 4,
+      "chunk_id": "68e5873d3593fbea:00085",
+      "distance": 0.6079270839691162,
+      "path_rel": "metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+      "page_start": 108,
+      "page_end": 108,
+      "text": "which they were produced. For from the potential the actual is always produced by an actual thing, e.g. man by man, musician by musician; there is always a first mover, and the mover already exists actually. We have said in our account of substance that everything that is produced is something produced from something and by something, and is the same in species as it. This is why it is thought impossible to be a builder if one has built nothing or a harpist if one has never played the harp; for he who learns to play the harp learns to play it by playing it, and all other learners do similarly. And thence arose the sophistical quibble, that one who does not know a science will be doing that which is the object of the science; for he who is learning it does not know it. But since, of that which is coming to be, some part must have come to be, and, of that which, in general, is changing, some part must have changed (this is shown in the treatise on movement), he who is learning must, it would seem, know some part of the science. It is surely clear, then, in this way, that the actuality is in this sense also, viz. in order of becoming and of time, prior to the potentiality. But it is also prior in substance; firstly, because the things that are posterior in becoming are prior in form and in substance, e.g. man is prior to boy and human being to seed; for the one already has its form, and the other has not. Secondly, because everything that comes to be moves towards a principle, i.e. an end. For that for the sake of which a thing is, is its principle, and the becoming is for the sake of the end; and the actuality is the end, and it is for the sake of this that the potentiality is acquired. For animals do not see in order that they may have sight, but they have sight that they may see. And similarly men have the art of building that they may build, and theoretical science that they may theorize; but they do not theorize that they may have theoretical science, except those who are learning by practice; and these do not theorize except in a limited sense, or else they have no need to theorize.3 Further, matter exists in a potential stale, just because it may attain to its form; and when it exists actually, then it is in its form. And the same holds good in cases in which the end is a movement, as well as in all others. Therefore as teachers think they have achieved their end when they have exhibited the pupil at work, so also does nature. For if this is not the case, we shall have Pauson’s Hermes over again; for it will be hard to say about the knowledge, as about the statue, whether it is within or without. For the action is the end, and the actuality is the action. Therefore even the word ‘actuality’ is derived from ‘action’, and points to the fulfillment. And while in some cases the exercise is the ultimate thing (e.g. in sight the ultimate thing is seeing, and no other product besides this results from sight), but from some things a product follows (e.g. from the art of building there results a house as well as the act of building), yet none the less the act is in the former case the end and in the latter more of an end than the mere potentiality is. For the act of building is the thing that is being built, and comes to be—and is—at the same time as the house.\n\n’Omitting on.\n\nBOOK IX\n\n1050bI",
+      "meta": {
+        "collection": "metaphysics",
+        "clean_sha256": "67ae501544552b8b58438efd35ba9343cddf72d634b86d777a2cb21e1e1e936f",
+        "path_rel": "metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "bboxes": "[{\"page_num\": 113, \"coords\": [56.25, 44.83934783935547, 374.3900146484375, 497.50177001953125], \"blocks\": [[190.10000610351562, 44.83934783935547, 261.6655578613281, 62.102020263671875], [56.25, 299.5063781738281, 73.22903442382812, 307.8272399902344], [82.69999694824219, 64.75727081298828, 374.3900146484375, 483.8301086425781], [197.25, 488.4464416503906, 252.98558044433594, 497.50177001953125]]}, {\"page_num\": 114, \"coords\": [164.85000610351562, 29.64411163330078, 330.84979248046875, 45.88230895996094], \"blocks\": [[164.85000610351562, 29.64411163330078, 330.84979248046875, 45.88230895996094]]}]",
+        "pdftotext_version": "24.02.0",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "sha256": "25df8182d7073842d023dcd326987d75707b4c4411b2e96c27a8753ea6b368dd",
+        "page_start": 108,
+        "is_table": false,
+        "page_end": 108,
+        "year": 2014,
+        "cleaning_version": "clean_v1",
+        "qualifier": "My Copy",
+        "is_clean_copy": false,
+        "is_notes": false,
+        "doc_id": "68e5873d3593fbea",
+        "title_raw": "Metaphysics",
+        "mtime": 1774299864,
+        "has_bboxes": true,
+        "chunk_index": 85,
+        "content_type": "text",
+        "is_image": false,
+        "author_raw": "Aristotle",
+        "source_method": "pymupdf+bbox",
+        "is_my_copy": true
+      },
+      "rank": 4
+    },
+    {
+      "raw_rank": 5,
+      "chunk_id": "68e5873d3593fbea:00063",
+      "distance": 0.6383066177368164,
+      "path_rel": "metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+      "page_start": 83,
+      "page_end": 83,
+      "text": "10 particular matter, and the result is a bronze sphere. But if the essence of sphere in general is produced, something must be produced out of something. For the product will always have to be divisible, and one part must be this and another that, I mean the one must be matter and the other form. If then a sphere is the figure whose circumference is at all points equidistant from the centre, part of this will be the 15 medium in which the thing made will be, and part will be in that medium, and the whole will be the thing produced, which corresponds to the bronze sphere. It is obvious then from what has been said that the thing, in the sense of form or substance, is not produced, but the concrete thing which gets its name from this is produced, and that in everything which comes to be matter is present, and one part of the thing is matter and the other form. Is there then a sphere apart from the individual spheres or a house apart from the bricks? Rather we may say that no ‘this’ would ever have been coming to be, if this had been so. The ‘form' however means the ‘such’, and is not a ‘this’—a definite thing; but the artist makes, or the father generates, a ‘such’ out of a ‘this’; and when it has been generated, it is a ‘this such’. And the whole ‘this’, Callias or Socrates, is 25 analogous to this bronze sphere, but man and animal to bronze sphere in general. Obviously then the cause which consists of the Forms (taken in the sense in which some maintain the existence of the Forms, i.e. if they are something apart from the individuals) is useless with regard both to comings-to-be and to substances; and the Forms need not, for this reason at least, be self-subsistent substances. In some cases 30 it is even obvious that the producer is of the same kind as the produced (not, however, the same nor one in number, but in form), e.g. in the case of natural products (for man produces man), unless something happens contrary to nature, e.g. the production of a mule by a horse. And even these cases are similar; for that which would be found to be common to horse and ass, the genus next above them, 1034M has not received a name, but it would doubtless be both, as the mule is both. Obviously, therefore, it is quite unnecessary to set up a Form as a pattern (for we should have looked for Forms in these cases if any; for these are substances if anything is so); the begetter is adequate to the making of the product and to the 5 causing of the form in the matter. And when we have the whole, such and such a form in this flesh and in these bones, this is Callias or Socrates; and they are different in virtue of their matter (for that is different), but the same in form; for their form is indivisible.\n\n9 • The question might be raised, why some things are produced sponta- 10 neously as well as by art, e.g. health, while others are not, e.g. a house. The reason is that in some cases the matter which determines the production in the making and producing of any work of art, and in which a part of the product is present, is such as to be set in motion by itself and in some cases is not of this nature, and of the former kind some can move itself in the particular way required, while other matter is\n\nBOOK VII",
+      "meta": {
+        "source_method": "pymupdf+bbox",
+        "chunk_index": 63,
+        "is_clean_copy": false,
+        "page_start": 83,
+        "qualifier": "My Copy",
+        "is_my_copy": true,
+        "doc_id": "68e5873d3593fbea",
+        "cleaning_version": "clean_v1",
+        "mtime": 1774299864,
+        "is_table": false,
+        "bboxes": "[{\"page_num\": 85, \"coords\": [40.150001525878906, 57.46882629394531, 359.79998779296875, 524.18408203125], \"blocks\": [[40.150001525878906, 57.46882629394531, 359.79998779296875, 524.18408203125]]}, {\"page_num\": 86, \"coords\": [155.89999389648438, 28.130428314208984, 355.3475646972656, 387.4075622558594], \"blocks\": [[155.89999389648438, 28.130428314208984, 329.04986572265625, 44.683372497558594], [338.0, 381.0633239746094, 355.3475646972656, 387.4075622558594]]}]",
+        "is_image": false,
+        "is_notes": false,
+        "has_bboxes": true,
+        "year": 2014,
+        "collection": "metaphysics",
+        "pdftotext_version": "24.02.0",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "content_type": "text",
+        "sha256": "25df8182d7073842d023dcd326987d75707b4c4411b2e96c27a8753ea6b368dd",
+        "path_rel": "metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "clean_sha256": "42883f32fec2978eea667b716fd0027728d0bb0310407a8a831358a90b0d12d6",
+        "page_end": 83,
+        "title_raw": "Metaphysics",
+        "author_raw": "Aristotle"
+      },
+      "rank": 5
+    },
+    {
+      "raw_rank": 6,
+      "chunk_id": "49fa185fb6e11943:00063",
+      "distance": 0.6383066773414612,
+      "path_rel": "rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+      "page_start": 83,
+      "page_end": 83,
+      "text": "10 particular matter, and the result is a bronze sphere. But if the essence of sphere in general is produced, something must be produced out of something. For the product will always have to be divisible, and one part must be this and another that, I mean the one must be matter and the other form. If then a sphere is the figure whose circumference is at all points equidistant from the centre, part of this will be the 15 medium in which the thing made will be, and part will be in that medium, and the whole will be the thing produced, which corresponds to the bronze sphere. It is obvious then from what has been said that the thing, in the sense of form or substance, is not produced, but the concrete thing which gets its name from this is produced, and that in everything which comes to be matter is present, and one part of the thing is matter and the other form. Is there then a sphere apart from the individual spheres or a house apart from the bricks? Rather we may say that no ‘this’ would ever have been coming to be, if this had been so. The ‘form' however means the ‘such’, and is not a ‘this’—a definite thing; but the artist makes, or the father generates, a ‘such’ out of a ‘this’; and when it has been generated, it is a ‘this such’. And the whole ‘this’, Callias or Socrates, is 25 analogous to this bronze sphere, but man and animal to bronze sphere in general. Obviously then the cause which consists of the Forms (taken in the sense in which some maintain the existence of the Forms, i.e. if they are something apart from the individuals) is useless with regard both to comings-to-be and to substances; and the Forms need not, for this reason at least, be self-subsistent substances. In some cases 30 it is even obvious that the producer is of the same kind as the produced (not, however, the same nor one in number, but in form), e.g. in the case of natural products (for man produces man), unless something happens contrary to nature, e.g. the production of a mule by a horse. And even these cases are similar; for that which would be found to be common to horse and ass, the genus next above them, 1034M has not received a name, but it would doubtless be both, as the mule is both. Obviously, therefore, it is quite unnecessary to set up a Form as a pattern (for we should have looked for Forms in these cases if any; for these are substances if anything is so); the begetter is adequate to the making of the product and to the 5 causing of the form in the matter. And when we have the whole, such and such a form in this flesh and in these bones, this is Callias or Socrates; and they are different in virtue of their matter (for that is different), but the same in form; for their form is indivisible.\n\n9 • The question might be raised, why some things are produced sponta- 10 neously as well as by art, e.g. health, while others are not, e.g. a house. The reason is that in some cases the matter which determines the production in the making and producing of any work of art, and in which a part of the product is present, is such as to be set in motion by itself and in some cases is not of this nature, and of the former kind some can move itself in the particular way required, while other matter is\n\nBOOK VII",
+      "meta": {
+        "content_type": "text",
+        "mtime": 1771101202,
+        "pdftotext_version": "24.02.0",
+        "page_end": 83,
+        "qualifier": "My Copy",
+        "is_clean_copy": false,
+        "doc_id": "49fa185fb6e11943",
+        "sha256": "22c796d388307296cfdab5806f8af990778fb9f0242aed67d4dd240cebcd5df1",
+        "is_image": false,
+        "source_method": "pymupdf+bbox",
+        "author_raw": "Aristotle",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "is_my_copy": true,
+        "chunk_index": 63,
+        "year": 2014,
+        "path_rel": "rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "clean_sha256": "42883f32fec2978eea667b716fd0027728d0bb0310407a8a831358a90b0d12d6",
+        "page_start": 83,
+        "cleaning_version": "clean_v1",
+        "collection": "rhetorical_ontology",
+        "title_raw": "Metaphysics",
+        "is_table": false,
+        "has_bboxes": true,
+        "bboxes": "[{\"page_num\": 85, \"coords\": [40.150001525878906, 57.46882629394531, 359.79998779296875, 524.18408203125], \"blocks\": [[40.150001525878906, 57.46882629394531, 359.79998779296875, 524.18408203125]]}, {\"page_num\": 86, \"coords\": [155.89999389648438, 28.130428314208984, 355.3475646972656, 387.4075622558594], \"blocks\": [[155.89999389648438, 28.130428314208984, 329.04986572265625, 44.683372497558594], [338.0, 381.0633239746094, 355.3475646972656, 387.4075622558594]]}]",
+        "is_notes": false
+      },
+      "rank": 6
+    },
+    {
+      "raw_rank": 7,
+      "chunk_id": "49fa185fb6e11943:00140",
+      "distance": 0.6406472325325012,
+      "path_rel": "rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+      "page_start": 173,
+      "page_end": 175,
+      "text": "’Reading c£ aXAou rivos■\n\nMETAPHYSICS\n\n1091*1\n\nwe seem\n\nproduce magnitudes?) And if he names some other element, he will be making his elements rather many. And if the principle of each of the two kinds of number is a 1, ity will be something common to these. And we must inquire how the one is these many things, while at the same time number, according to him, cannot be generated 5 except from one and the indefinite dyad. All this is absurd, and conflicts both with itself and with the probabilities, and to see in it Simonides' ‘long story'; for the long story comes into play, like those which slaves tell, when men have nothing sound to say. And the very 10 elements—the great and the small—seem to cry out against the violence that is done to them; for they cannot in any way generate numbers other than those got from 1 by doubling. It is strange also to attribute generation to eternal things, or rather this is one of the things that are impossible. There need be no doubt whether the Pythagoreans 15 attribute generation to them or not; for they obviously say that when the one had been constructed, whether out of planes or of surface or of seed or of elements which they cannot express, immediately the nearest part of the unlimited began to be drawn in and limited by the limit. But since they are constructing a world and wish to speak the language of natural science, it is fair to make some explanation of their 20 account of nature, but to let them off from the present inquiry; for we are investigating the principles at work in unchangeable things, so that it is numbers of this kind whose genesis we must study.\n\n4 • These thinkers say there is no generation of the odd number, which evidently implies that there is generation of the even; and some say the even is 25 produced first from unequals—the great and the small—when these are equalized. The inequality, then, must belong to them before they are equalized. If they had always been equalized, they would not have been unequal before; for there is nothing before that which is always. Therefore evidently they are not giving their account of the generation of numbers merely as a theoretical account. A difficulty, and a reproach to any one who finds it no difficulty, are contained in the question how the elements and the principles are related to the good and the beautiful; the difficulty is this, whether any of the elements is such a thing as we mean by the good itself and the best, or this is not so, but these are later in origin. The mythologists seem to agree with some thinkers of the present day, who answer the question in the negative, and say that both the good and the beautiful appear 35 only when nature has made some progress. This they do to avoid a real objection which confronts those who say, as some do, that the one is a first principle. I09ibi (The objection arises not from their ascribing goodness to the first principle as an attribute, but from their making the one a principle—and a principle in the sense of an element—and generating number from the one.) And the old poets agree with 5 this inasmuch as they say that not those who are first in time, e.g. Night and Heaven or Chaos or Ocean, reign and rule, but Zeus. These poets, however, speak thus only because they think of the rulers of the world as changing; for those of them who combine two characters in that they do not use mythical language throughout,\n\nBOOK XIV",
+      "meta": {
+        "collection": "rhetorical_ontology",
+        "has_bboxes": false,
+        "chunk_index": 140,
+        "source_method": "pymupdf+bbox",
+        "doc_id": "49fa185fb6e11943",
+        "title_raw": "Metaphysics",
+        "is_my_copy": true,
+        "is_image": false,
+        "mtime": 1771101202,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "path_rel": "rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "author_raw": "Aristotle",
+        "page_start": 173,
+        "clean_sha256": "0a06608fe9c198ad52442f7ce0c9787aa8713fd366010f289f54331f1ba86660",
+        "pdftotext_version": "24.02.0",
+        "qualifier": "My Copy",
+        "sha256": "22c796d388307296cfdab5806f8af990778fb9f0242aed67d4dd240cebcd5df1",
+        "is_table": false,
+        "cleaning_version": "clean_v1",
+        "is_clean_copy": false,
+        "page_end": 175,
+        "year": 2014,
+        "content_type": "text",
+        "is_notes": false
+      },
+      "rank": 7
+    },
+    {
+      "raw_rank": 8,
+      "chunk_id": "68e5873d3593fbea:00140",
+      "distance": 0.6406472325325012,
+      "path_rel": "metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+      "page_start": 173,
+      "page_end": 175,
+      "text": "’Reading c£ aXAou rivos■\n\nMETAPHYSICS\n\n1091*1\n\nwe seem\n\nproduce magnitudes?) And if he names some other element, he will be making his elements rather many. And if the principle of each of the two kinds of number is a 1, ity will be something common to these. And we must inquire how the one is these many things, while at the same time number, according to him, cannot be generated 5 except from one and the indefinite dyad. All this is absurd, and conflicts both with itself and with the probabilities, and to see in it Simonides' ‘long story'; for the long story comes into play, like those which slaves tell, when men have nothing sound to say. And the very 10 elements—the great and the small—seem to cry out against the violence that is done to them; for they cannot in any way generate numbers other than those got from 1 by doubling. It is strange also to attribute generation to eternal things, or rather this is one of the things that are impossible. There need be no doubt whether the Pythagoreans 15 attribute generation to them or not; for they obviously say that when the one had been constructed, whether out of planes or of surface or of seed or of elements which they cannot express, immediately the nearest part of the unlimited began to be drawn in and limited by the limit. But since they are constructing a world and wish to speak the language of natural science, it is fair to make some explanation of their 20 account of nature, but to let them off from the present inquiry; for we are investigating the principles at work in unchangeable things, so that it is numbers of this kind whose genesis we must study.\n\n4 • These thinkers say there is no generation of the odd number, which evidently implies that there is generation of the even; and some say the even is 25 produced first from unequals—the great and the small—when these are equalized. The inequality, then, must belong to them before they are equalized. If they had always been equalized, they would not have been unequal before; for there is nothing before that which is always. Therefore evidently they are not giving their account of the generation of numbers merely as a theoretical account. A difficulty, and a reproach to any one who finds it no difficulty, are contained in the question how the elements and the principles are related to the good and the beautiful; the difficulty is this, whether any of the elements is such a thing as we mean by the good itself and the best, or this is not so, but these are later in origin. The mythologists seem to agree with some thinkers of the present day, who answer the question in the negative, and say that both the good and the beautiful appear 35 only when nature has made some progress. This they do to avoid a real objection which confronts those who say, as some do, that the one is a first principle. I09ibi (The objection arises not from their ascribing goodness to the first principle as an attribute, but from their making the one a principle—and a principle in the sense of an element—and generating number from the one.) And the old poets agree with 5 this inasmuch as they say that not those who are first in time, e.g. Night and Heaven or Chaos or Ocean, reign and rule, but Zeus. These poets, however, speak thus only because they think of the rulers of the world as changing; for those of them who combine two characters in that they do not use mythical language throughout,\n\nBOOK XIV",
+      "meta": {
+        "is_clean_copy": false,
+        "has_bboxes": false,
+        "is_table": false,
+        "clean_sha256": "0a06608fe9c198ad52442f7ce0c9787aa8713fd366010f289f54331f1ba86660",
+        "is_my_copy": true,
+        "page_start": 173,
+        "author_raw": "Aristotle",
+        "chunk_index": 140,
+        "is_image": false,
+        "sha256": "25df8182d7073842d023dcd326987d75707b4c4411b2e96c27a8753ea6b368dd",
+        "source_method": "pymupdf+bbox",
+        "mtime": 1774299864,
+        "qualifier": "My Copy",
+        "cleaning_version": "clean_v1",
+        "title_raw": "Metaphysics",
+        "pdftotext_version": "24.02.0",
+        "doc_id": "68e5873d3593fbea",
+        "is_notes": false,
+        "year": 2014,
+        "path_rel": "metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "content_type": "text",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "page_end": 175,
+        "collection": "metaphysics"
+      },
+      "rank": 8
+    }
+  ]
+}
+[god-learn] $ python3 scripts/retrieval/verify_phase4.py phantasia as distinct faculty in De Anima III
+[PHASE4_VERIFY_OK]
+- query='phantasia as distinct faculty in De Anima III'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[god-learn] $ bash scripts/highlights/phase5check.sh
+
+--- AUDIT REPORT ---
+root: /home/dalton/projects/claudeflow-testing/corpus
+manifest: /home/dalton/projects/claudeflow-testing/scripts/ingest/manifest.jsonl
+total_pdfs: 50
+
+[PHASE2_COMPLETE] (50)
+  - dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf :: phase=2 ok
+  - dissertation/in_progress/rhetorical phantasia test.pdf :: phase=2 ok
+  - metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf :: phase=2 ok
+  - metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf :: phase=2 ok
+  - metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf :: phase=2 ok
+  - new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf :: phase=2 ok
+
+[OK] dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf
+[OK] dissertation/in_progress/rhetorical phantasia test.pdf
+[OK] metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf
+[OK] metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf
+[OK] metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf
+[OK] metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf
+[OK] metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf
+[OK] metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf
+[OK] metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf
+[OK] metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf
+[OK] new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf
+[OK] new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf
+[OK] rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf
+[OK] rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf
+
+--- VERIFY REPORT (OK) ---
+OK=50 FAIL=0 TOTAL=50
+[PHASE4_VERIFY_OK]
+- query='phantasia and action'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[OK] Wrote:
+  /tmp/no_hl.txt
+  /tmp/with_hl.txt
+Diff (first 120 lines):
+--- /tmp/no_hl.txt	2026-03-26 22:33:21.162835071 -0700
++++ /tmp/with_hl.txt	2026-03-26 22:33:22.629270006 -0700
+@@ -6,51 +6,51 @@
+ 
+ [RESULTS]
+ 
+-01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  (raw_rank=1)
++01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  final_score=0.7484066486358643  hl_count=0  boost=0.0000  (raw_rank=1)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=303-305
+ 
+-02. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  (raw_rank=2)
++02. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  final_score=0.8132696557044983  hl_count=1  boost=0.0200  (raw_rank=4)
++    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
++    pages=22-24
++
++03. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  final_score=0.8133007287979126  hl_count=0  boost=0.0000  (raw_rank=2)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+     pages=167-169
+ 
+-03. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  (raw_rank=3)
++04. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  final_score=0.8137480616569519  hl_count=0  boost=0.0000  (raw_rank=3)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=279-281
+ 
+-04. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  (raw_rank=4)
+-    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+-    pages=22-24
+-
+-05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  (raw_rank=6)
++05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  final_score=0.851164698600769  hl_count=0  boost=0.0000  (raw_rank=6)
+     path_rel=rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+     pages=292-292
+ 
+-06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  (raw_rank=7)
++06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  final_score=0.8536148071289062  hl_count=0  boost=0.0000  (raw_rank=7)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=294-294
+ 
+-07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  (raw_rank=8)
++07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  final_score=0.864859938621521  hl_count=0  boost=0.0000  (raw_rank=8)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+     pages=18-18
+ 
+-08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  (raw_rank=9)
++08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  final_score=0.8705873489379883  hl_count=0  boost=0.0000  (raw_rank=9)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+     pages=215-215
+ 
+-09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  (raw_rank=10)
++09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  final_score=0.8722628355026245  hl_count=0  boost=0.0000  (raw_rank=10)
+     path_rel=rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+     pages=13-14
+ 
+-10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  (raw_rank=11)
++10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  final_score=0.8786800503730774  hl_count=0  boost=0.0000  (raw_rank=11)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=162-164
+ 
+-11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  (raw_rank=12)
++11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  final_score=0.8806346654891968  hl_count=0  boost=0.0000  (raw_rank=12)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=24-26
+ 
+-12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  (raw_rank=13)
++12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  final_score=0.8811410665512085  hl_count=0  boost=0.0000  (raw_rank=13)
+     path_rel=rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+     pages=252-254
+ 
+[god-learn] $ python3 scripts/learn/promote_hits.py --hits_json /tmp/phase4_hits.json --query phantasia as distinct faculty in De Anima III
+22:33:23 [INFO    ] god-learn.phase6.promote: Starting promotion [hits_json=/tmp/phase4_hits.json, query=phantasia as distinct faculty in De Anima III, min_chars=40, max_units=0, dry_run=False]
+22:33:23 [INFO    ] god-learn.phase6.promote: Promotion complete [promoted=8, total_indexed=112, knowledge_file=god-learn/knowledge.jsonl, index_file=god-learn/index.json]
+[Phase6:promote_hits] promoted=8 total_indexed=112
+[Phase6:promote_hits] wrote: god-learn/knowledge.jsonl
+[Phase6:promote_hits] index: god-learn/index.json
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 12
+[god-learn] normalize: sorted 112 KUs and rebuilt index (112 offsets)
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 13

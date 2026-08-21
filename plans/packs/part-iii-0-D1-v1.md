@@ -1,0 +1,17 @@
+# D1 — Movement Plan, §III.0 (v1; pack part-iii-0-pack-v1)
+
+Gate G-P: PASSED — all fields present or N/A; P4a/P4b keys match (Q1–Q6); JSON parses; P5 graded; P2 = refreshed Part-I fingerprint; Q5 carries its unverified-page flag into any use.
+
+| M | Claim (one sentence) | Evidence | Quotes | Words | Style targets |
+|---|---|---|---|---|---|
+| M1 From mechanism to cases | Part II gave the mechanism of incorporation; Part III returns it to the author's own experiments as a reanalysis — no new experiments, a re-reading in which the data yield the conclusions and the frame explains how they arose — toward the threefold goal (boredom explained; engagement assessed; better VLEs designed). | E1, E2 | — | ~420 | intro-hot: avg 36–41, long .48–.55, voice .50–.65, periodic ~.62, heavy suspension openers |
+| M2 The habitat of attention | Analyzing engagement with digital artifacts is analyzing attention as such, because attention constitutes experience (James) and now lives on screens that hold it for forty-seven seconds at a stretch. | E7 | Q1, Q2, Q3 | ~520 | Band G body: avg 29–33, short .18–.25, periodic .58–.68 |
+| M3 The instrumented turn and its mirror | The field's own move from surveys to sensors licenses the physiological program — and the same instrumentation, industrially deployed, captures stalled attention rather than restoring it, which is why an account of WHY elements bore is owed. | E5 | Q4, Q5 | ~380 | Band G body: avg 28–32; one short punch at the mirror turn |
+| M4 Not conditioning | The designed-environment thesis is not behaviorism: the designer furnishes matter and form and occasions the act, while efficient and final causes remain the participant's own — occasioning, never causing — so cognition is no fallacy here but the very site of the analysis. | — (P6 hinge) | Q6 | ~280 | Band G body: avg 29–33, periodic-forward (concession→turn architecture) |
+| M5 The corpus and the stance | The corpus stands at two poles — the laboratory and pilot VR studies (2022–24) and the 2D-PC deployment at scale (2025–26) — and the program's own arc (heart-rate dropped, EEG demoted, gaze elevated, phenomenology adopted) already walks toward the frame this Part completes. | E1–E6 | — | ~450 | closes intro-hot: avg 34–40, voice rising, climax figures; forward map in one breath, no back-references |
+
+**Foundation disposition:** N/A (greenfield).
+**Ledger:** Q1–Q6 ASSIGNED (Q5 with unverified-page flag carried into citation); E1–E7 ASSIGNED; E8 UNUSED (pages unverified → omitted per grade rule).
+**Counterargument seeds for D1.5:** (M2) attention-constitutes-experience proves too much — any medium would qualify → answer via Q3's empirical concentration (the screen is where attention now factually lives); (M3) sensors-replace-surveys cuts against the dissertation's own survey use → CONCEDE-AND-LIMIT (the two-channel rule requires both; surveys are one channel, never the verdict); (M4) if environments condition (Skinner), the design program is manipulation → answer via the hinge (occasioning ≠ causing) + Wendt-principle norm held for §III.5; (M5) reanalysis adds nothing to published results → answer: the published record itself contains an unresolved contradiction (E6) only the frame dissolves.
+
+**Gate G-1:** PASSED — no orphan claims; ledger closed; no foundation beats to map. **User approval: deferred to post-run review per full-run mode; D2 proceeds on the model-policy flip.**

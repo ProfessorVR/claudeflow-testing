@@ -1,0 +1,351 @@
+[god-learn] $ python3 scripts/retrieval/query_chunks.py emotions all feelings that change men affect judgments attended by pain or pleasure Rhetoric II.1 1378a21 Aristotle pathos --k 3 --overfetch 10 --include_docs --print_json --where {"collection":"rhetorical_ontology"}
+{
+  "query": "emotions all feelings that change men affect judgments attended by pain or pleasure Rhetoric II.1 1378a21 Aristotle pathos",
+  "config": {
+    "chroma_dir": "vector_db_1536",
+    "collection": "knowledge_chunks",
+    "k": 3,
+    "overfetch": 10,
+    "where": {
+      "collection": "rhetorical_ontology"
+    },
+    "filters": {
+      "require_my_copy": false,
+      "collection_filter": null,
+      "keep_biblio": false
+    },
+    "include_docs": true,
+    "use_highlights": false,
+    "highlights_index": "scripts/highlights/highlight_index.json",
+    "highlight_alpha": 0.02,
+    "highlight_cap": 5
+  },
+  "results": [
+    {
+      "raw_rank": 1,
+      "chunk_id": "746585ac7140c19c:00076",
+      "distance": 0.757330596446991,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+      "page_start": 124,
+      "page_end": 124,
+      "text": "161. Rhet. Α 2, 1356 b 37 sq.: ἡ δὲ ῥητορικὴ ἐκ τῶν ἤδη βουλεύεσθαι εἰωθότων.\n\nThe Interpretation of the Being-There of Human Beings [162–164]\n\nfalls to scientific investigation must have the character of an ἀπορίαν ἔχον, must have difficulties. This is the basic condition for something being a λόγου δεόμενον—and then πρότασις and πρόβλημα. The second mode of what is spoken of is the sort of thing that one is ac­ customed to deliberate about, that is brought to language in a definite beingcontext of life, that cannot be carried through once and for all by way of con­ crete deliberations but rather always recurs according to circumstances and situations. The topic here is not an identical fact of the matter that would be transmitted within a science. It is something which itself differs according to the circumstances of being-there, affairs specific to the circumstances of beingthere itself, change in mood, and accordingly, change of view. It is what is treated in the Rhetoric. It is not a theoretical fact of the matter, but rather some­ thing that differs according to views. The situation, at each moment, of things and humans speaks also. Accordingly, “accepting the premises,” λαμβάνειν τὰς προτάσεις,162 is something different here. Alongside the premise, some­ thing else must be placed in view—calculation must be carried out as to the mood of those spoken to, the situation at each moment of things, the manner and mode in which one stands toward the matter. For this reason, we must con­ cretely consider the following: (1) ἦθος, the “comportment” of the speaker; (2) πάθος, the “disposition” of the hearers. In Chapter 1 of the second Book of the Rhetoric, the content of Book 2 is summarized and the topic of Book 2 is given. Rhetoric’s manner of treating speaking takes conversation in such a way that it aims in itself at constructinga-view: a δόξα is to be cultivated. “But since, ultimately, rhetoric has its sight on κρίσις, view-construction, a definite decision in the sense of a δόξα, not only must attention be necessarily directed to discourse as such, to the function of discourse as δεικνύναι, δηλοῦν, but the speaker must bring himself, and those with whom the decision will lie, into a corresponding frame of mind [specifi­ cally, bring them into a frame of mind through discourse itself]. For it makes a great difference in the conveying of what speaks for something, especially in deliberations, but also in the judicial court, how the speaker appears and accordingly how the hearers consider his disposition, and also whether they themselves [the hearers] acquire, at that time, the right disposition [i.e., attitude toward the discussed matter]. The manner and mode in which the speaker ap­ pears is weightier in deliberation, and the disposition of the hearer at that mo­ ment is weightier above all in the judicial court. The matter at issue in discourse at each moment appears not to be the same for those who have a preference for the speaker—the φιλοῦσιν—and for those who have an aversion to him— the μισοῦσιν. That the matter shows itself in various modes holds also for the ὀργιζόμενος, the one who is infuriated about something, or for the πράως ἔχων,\n\n162. Cf. Top. Α 13, 105 a 22 sq.: ἓν μὲν τὸ προτάσεις λαβεῖν.\n\n§16. ἦθος and πάθος as πίστεις [164–165]\n\nthe one who is calmly attuned to something.”163 ἀλλ’ ἢ τὸ παράπαν ἕτερα ἢ κατὰ μέγεθος ἕτερα [φαίνεται].164 “The matter appears either completely dif­ ferently or differently to a great extent.” τῷ μὲν γὰρ φιλοῦντι, περὶ οὗ ποιεῖται τὴν κρίσιν, ἢ οὐκ ἀδικεῖν ἢ μικρὰ δοκεῖ ἀδικεῖν, τῷ δὲ μισοῦντι τοὐναντίον.165 To the one who is already well-disposed toward another, this other person will appear either to be not at all at fault or only at fault in an insignificant way; con­ versely when someone has something against another, this other person will appear in just the opposite way.” To him it will be obvious that the person in question committed an offense. καὶ τῷ μὲν ἐπιθυμοῦντι καὶ εὐέλπιδι ὄντι, ἐὰν ᾖ τὸ ἐσόμενον ἡδύ, καὶ ἔσεσθαι καὶ ἀγθὸν ἔσεσθαι φαίνεται, τῷ δ’ ἀπαθεῖ καὶ δυσχεραίνοντι τοὐναντίον.166 “And whoever is, from the outset, for a matter that is up for negotiation, who sympathizes with it, will take what should hap­ pen as what, in fact, will happen, and at the same time what is conducive [the optimist, as we say]. On the other hand, to the one who is indifferent and to the ill-humored pessimist, things appear, from the outset, in a different light”; and correspondingly he will also stand very differently in relation to deliberation.\n\nb) ἦθος as πίστις",
+      "meta": {
+        "is_image": false,
+        "mtime": 1774309798,
+        "is_notes": false,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "author_raw": "Heidegger, Martin",
+        "clean_sha256": "dbccdefe9e10cae670f3e008a29b392fdd311699fa9afc60d6f8babe5c4e9373",
+        "cleaning_version": "clean_v1",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "source_method": "pymupdf+bbox+marker_tables(4)",
+        "chunk_index": 76,
+        "content_type": "text",
+        "doc_id": "746585ac7140c19c",
+        "qualifier": "Clean Copy",
+        "sha256": "80a304982c233cbf5737bf85145685b7df9034e595439b94c9c3ec740736d563",
+        "pdftotext_version": "24.02.0",
+        "is_clean_copy": true,
+        "is_table": false,
+        "page_end": 124,
+        "year": 2009,
+        "is_my_copy": false,
+        "collection": "rhetorical_ontology",
+        "title_raw": "Basic Concepts of Aristotelian Philosophy",
+        "has_bboxes": true,
+        "page_start": 124,
+        "bboxes": "[{\"page_num\": 130, \"coords\": [42.380001068115234, 63.22998809814453, 356.9199523925781, 591.3759765625], \"blocks\": [[42.380001068115234, 63.22998809814453, 356.9199523925781, 556.3699951171875], [42.380001068115234, 571.864013671875, 147.49200439453125, 591.3759765625]]}, {\"page_num\": 131, \"coords\": [42.2599983215332, 39.23698806762695, 356.8000183105469, 591.8759765625], \"blocks\": [[42.2599983215332, 39.23698806762695, 319.0020446777344, 51.36297607421875], [42.2599983215332, 63.22998809814453, 356.8000183105469, 340.3699951171875], [68.44000244140625, 363.0699768066406, 328.0799560546875, 376.3699951171875], [165.39999389648438, 390.22998046875, 231.1400146484375, 403.3699951171875], [42.2599983215332, 408.22998046875, 356.7800598144531, 529.3699951171875], [42.2599983215332, 563.364013671875, 150.4119873046875, 591.8759765625]]}, {\"page_num\": 132, \"coords\": [160.89999389648438, 39.392974853515625, 354.36700439453125, 51.86297607421875], \"blocks\": [[160.89999389648438, 39.392974853515625, 354.36700439453125, 51.86297607421875]]}]"
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox+marker_tables(4)",
+      "bboxes": "[{\"page_num\": 130, \"coords\": [42.380001068115234, 63.22998809814453, 356.9199523925781, 591.3759765625], \"blocks\": [[42.380001068115234, 63.22998809814453, 356.9199523925781, 556.3699951171875], [42.380001068115234, 571.864013671875, 147.49200439453125, 591.3759765625]]}, {\"page_num\": 131, \"coords\": [42.2599983215332, 39.23698806762695, 356.8000183105469, 591.8759765625], \"blocks\": [[42.2599983215332, 39.23698806762695, 319.0020446777344, 51.36297607421875], [42.2599983215332, 63.22998809814453, 356.8000183105469, 340.3699951171875], [68.44000244140625, 363.0699768066406, 328.0799560546875, 376.3699951171875], [165.39999389648438, 390.22998046875, 231.1400146484375, 403.3699951171875], [42.2599983215332, 408.22998046875, 356.7800598144531, 529.3699951171875], [42.2599983215332, 563.364013671875, 150.4119873046875, 591.8759765625]]}, {\"page_num\": 132, \"coords\": [160.89999389648438, 39.392974853515625, 354.36700439453125, 51.86297607421875], \"blocks\": [[160.89999389648438, 39.392974853515625, 354.36700439453125, 51.86297607421875]]}]",
+      "rank": 1
+    },
+    {
+      "raw_rank": 2,
+      "chunk_id": "c2cb9cd00b7724ed:00080",
+      "distance": 0.7903659343719482,
+      "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+      "page_start": 160,
+      "page_end": 162,
+      "text": "traditional principles of rhetoric 147\n\nLa Rochefoucauld’s lore on the relations between the sexes, which are discussed almost entirely in terms of coquetry and gallantry, which is to say persuasion and advantage. Note particularly his statement that our devotion to princes is a second self-love {la dSvotion quon donnc aux princes est un second amourpropre). Here is an aspect of such reversal as Marx sees in “ideology.” For if the ways which Rochefoucauld has been describing are strongly affected by the motives of the courtier, then the “self-love” would derive much of its nature from the “devotion paid to princes.” That is, the social motive would be “prior” to the individual one, insofar as the court itself is a social institution. But La Rochefoucauld, beginning with self-love as his primary term for the motives of man in society, and scrutinizing it closely enough to discern the element of courtship responsible for its formation, then states the matter the other way round. He says not that the self-love is derived from the courting of princes, but that the courting of princes is a second self-love. However, we may appear to be contradicting ourselves here. For though we located the rhetorical situation in an individual divisiveness prior to all class cohesion, we are now saying that La Rochefoucauld gets things backwards in deriving a social motive (the honoring of princes) from an individualistic one (self-love). But the self-love La Rochefou­ cauld describes is not to be confused with man’s original biological divisiveness (the “centrality of the nervous system”). Rather, La Rochefoucauld is describing a courtly morality—and the “self-love” he is discussing is the individual consciousness that is epitomized in the honoring of princes. Thus, following a Marxist kind of analysis, we would contend that La Rochefoucauld has the two motives “ideologi­ cally” reversed. But at the same time, we would interpret the indi­ vidualist term as justified by an individual divisiveness prior to the social. The irony is that “self-love” is a social term for this divisiveness. La Rochefoucauld’s maxims are a courtly rhetoric, with the individual defined by his place in an institution. Perhaps we could break down the process into six distinct moments, thus:\n(1) There are the incentives to individual advantage (and its corre­ sponding rhetoric) indigenous to the “centrality of the nervous system,” and to the ambiguously divisive and unitary conditions that go with it.\n\nI48 TRADITIONAL PRINCIPLES OF RHETORIC\n\n(2) There is implanted in individuals the thinking local to their social class (their place in a community restricted by traditions of property which emerged with the division of labor). (3) Such local thinking is reducible to a principle or idea. In this case it is the idea of courting. It is summed up in the image or topic of “the devotion paid to princes.” (4) Then one’s own individual identity is conceived in terms of this same principle. (Incidentally, note the pun on “prince” and “principle.” It is more than a mere accident. Here again is an instance of what we have called the “entelechial” mode of thought, the feeling that the prin­ ciple of a genus is represented by its “highest” potentialities. When such a mode of thought is translated into terms of social rank, it makes the prince, or highest rung of the social ladder, represent the general principle of such hierarchic order.) Then, if one conceives his own mo­ tives in terms of the devotion paid to princes, it follows that one conceives of oneself rhetorically, in terms of courting and being courted. Tele­ scope the two, as the ultimate principle should, and you get self-love. (5) At this point, La Rochefoucauld begins his book. He has reduced the motives of man in society to “self-love” (which equals “pride” and \n“interest”). And he proceeds to view all passions, sentiments, pretenses and self-deceptions in the light of this term. (6) In the course of scruti­ nizing his key term, he comes upon the princely principle that lies be­ hind it. But since he has already chosen a “first” term, self-love, he calls this genus of his terminology a “second.” Had Rochefoucauld stated this discovery in terms of an Hegelian ideologist, he would probably have given the second self-love some such title as Ur-H6flich\\eit, to designate an innate, “pre-historic” tendency towards courtship, an “idea” which, in its evolution towards self-consciousness, at one stage of its historical unfolding manifested itself both as a devotion to princes and as amour-propre. But “self’ and “king” do not quite round out the design. Where is God, and the ultimate scene, the ground of all possibility ? By our in­ terpretation, the term for God should apply to the conditions at the first of the six moments into which we divided La Rochefoucauld’s maxim. It should deal with the rhetorical motive indigenous to all men, not local to their social position, but characteristic of the human situation univer­ sally. Stated theologically, the divisive condition in which all men share is called “original sin.” And approaching the problem of God (or ulti­ mate community) in such terms, La Rochefoucauld says that self-love",
+      "meta": {
+        "mtime": 1771101202,
+        "clean_sha256": "7808a27933b1546a4e03358d524757cf1da755b52b29d8ced59899d7362925cc",
+        "pdftotext_version": "24.02.0",
+        "content_type": "text",
+        "sha256": "2bc45e16e5f679eab0bdfefda2b220eefcf276c0ac208b260c0f5669f25b1af0",
+        "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "year": 1950,
+        "collection": "rhetorical_ontology",
+        "source_method": "pymupdf+bbox",
+        "is_table": false,
+        "author_raw": "Burke, Kenneth",
+        "is_image": false,
+        "cleaning_version": "clean_v1",
+        "chunk_index": 80,
+        "has_bboxes": true,
+        "page_start": 160,
+        "doc_id": "c2cb9cd00b7724ed",
+        "qualifier": "My Copy",
+        "title_raw": "A Rhetoric of Motives",
+        "bboxes": "[{\"page_num\": 168, \"coords\": [40.45000076293945, 35.58934783935547, 343.1397399902344, 537.169189453125], \"blocks\": [[40.45000076293945, 35.58934783935547, 343.1397399902344, 537.169189453125]]}, {\"page_num\": 169, \"coords\": [50.599998474121094, 11.109071731567383, 349.12445068359375, 221.11146545410156], \"blocks\": [[51.45000076293945, 11.109071731567383, 313.3111267089844, 34.77317810058594], [50.599998474121094, 32.20903015136719, 349.12445068359375, 192.8463592529297], [115.44999694824219, 208.22775268554688, 278.4991455078125, 221.11146545410156]]}]",
+        "page_end": 162,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "is_clean_copy": false,
+        "is_notes": false,
+        "is_my_copy": true
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 168, \"coords\": [40.45000076293945, 35.58934783935547, 343.1397399902344, 537.169189453125], \"blocks\": [[40.45000076293945, 35.58934783935547, 343.1397399902344, 537.169189453125]]}, {\"page_num\": 169, \"coords\": [50.599998474121094, 11.109071731567383, 349.12445068359375, 221.11146545410156], \"blocks\": [[51.45000076293945, 11.109071731567383, 313.3111267089844, 34.77317810058594], [50.599998474121094, 32.20903015136719, 349.12445068359375, 192.8463592529297], [115.44999694824219, 208.22775268554688, 278.4991455078125, 221.11146545410156]]}]",
+      "rank": 2
+    },
+    {
+      "raw_rank": 3,
+      "chunk_id": "746585ac7140c19c:00119",
+      "distance": 0.8099051713943481,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+      "page_start": 181,
+      "page_end": 181,
+      "text": "to understand the primitive mode of disposition. The affective as such already has the character of having-itself. Ἡδονή reaches into the being of being-there so originarily that it can be identified with ζῆν. Ἡδονή belongs to being-there itself. This disposition, expressed through ἡδονή, has a dual possibility: (1) inso­ far as this finding-itself has the character of αἵρεσις, (2) insofar as it is φυγή.342 The disposition is characterized, at the same time, as “going toward,” “seiz­ ing,” going toward being-there itself; or a disposition whose character “recoils from” being-there, “flees” from it in a certain respect. This is given in ἡδονή vis-à-vis λύπη. Αἵρεσις and φυγή are the characteristics that characterize the basic possibility of living as a way of being with itself. Αἵρεσις and φυγή are the basic motivations of being-there. It is no accident that αἵρεσις and φυγή appear where it is a question of the ultimate ontological interpretation of beingthere.343 Since ἡδονή vis-à-vis λύπη is apprehended originarily with the beingthere of living things, and constitutes the basic disposition—the mode in which being-there to a certain extent affects itself—ἡδονή can be characterized as πάθος, a πάθος of the sort that Aristotle says is ἐγκεχρωσμένον,344 “colored through and through,” the sort of πάθος that completely colors, or permeates, βίος, “being-there.” βίος, not ζωή: βίος as “existence,” “living” in the emphatic sense of human beings taking hold of themselves in προαίρεσις. Another closer form is seen when Aristotle constantly says that with every concern, ἡδονή and λύπη are co-given; with every πάθος, but equally with every perceiving, every thinking, considering, with θεωρία, to the extent that they are basic modes of living, ἡδονή is an inseparable companion.345\n\nI will succinctly summarize the determinations of πάθος. The disgression that we have pursued (with consideration of De Partibus Animalium) showed that πάθος, insofar as one characterizes it according to its εἶδος, is determined as being-in-the-world: determination of the πρὸς ἄλληλα. Insofar as ἡδονή is co-given with every πάθος, being-in is itself possessed, possessed in the two possibilities of αἵρεσις and φυγή. The being of living things as πάθος is a being that has the character of coming-to-be-taken and of being-taken. Therein lies the aspect of μεταβολή, of losing-composure and being-out-of-composure— change from . . . to . . . A further determination of πάθος in Rhetoric, Book 2, Chapter 1, the aspect of the changing of κρίνειν: in this losing-composure, κρίνειν,346 “distinguishing,” “taking a position,” is undergone as well; the manner and mode of being oriented toward the world or in the world is also\n\n342. Eth. Nic. Β 2, 1104 b 30 sq.: τριῶν γὰρ ὄντων τῶν εἰς τὰς αἱρέσεις καὶ τριῶν τῶν εἰς τὰς φυγάς. Κ 2, 1172 b 19 sqq.: τὴν γὰρ λύπην καθ’ αὑτὸ πᾶσιν φευκτὸν εἶναι, ὁμοίως δὴ τὸ ἐναντίον αἱρετόν. [ . . . ] τοιοῦτο δ’ ὁμολογουμένως εἶναι τὴν ἡδονήν.\n    343. De an. Γ 7, 431 a 9 sqq.\n    344. Eth. Nic. Β 2, 1105 a 3.\n    345. Cf. Eth. Nic. Κ 4, 1174 b 20 sqq.\n    346. Rhet. Β 1, 1378 a 20 sq.: ἔστι δὲ τὰ πάθη δι’ ὅσα μεταβάλλοντες διαφέρουσι πρὸς τὰς κρίσεις.\n\n§21. Φόβος [248–250]\n\nlaid claim to in this being befallen by a πάθος. Thereby, the inner connec­ tion between πάθος and λόγος is set forth—λόγος as a mode of fulfillment of κρίνειν.\n\n§21. Φόβος (Rhetoric Β 5)\n\nWe are transitioning to the characteristic of fear, which Aristotle treats along two directions in Rhetoric, Book 2, Chapter 5:\n    1. φόβος as πάθος: the way that “being-afraid” represents a fully determi­ nate concretion of “being-out-of-composure.”\n    2. φόβος as πίστις—genuine clue to the interpretation of the Rhetoric: to what extent “being-afraid,” as a basic determination of the being-there of the other, of the hearer, co- speaks in deliberating, becoming-conclusive about an affair that is to be settled.\n\na) Schematic Outline of the Characterization of Fear",
+      "meta": {
+        "collection": "rhetorical_ontology",
+        "year": 2009,
+        "clean_sha256": "05d44dfda321e9bdadacf46c9728cfcd12523f1e846ee18e01c270a64d3bf821",
+        "source_method": "pymupdf+bbox+marker_tables(4)",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "page_start": 181,
+        "is_my_copy": false,
+        "is_table": false,
+        "title_raw": "Basic Concepts of Aristotelian Philosophy",
+        "author_raw": "Heidegger, Martin",
+        "doc_id": "746585ac7140c19c",
+        "bboxes": "[{\"page_num\": 189, \"coords\": [42.2599983215332, 63.06998825073242, 356.8100280761719, 579.8759765625], \"blocks\": [[42.2599983215332, 63.06998825073242, 356.8100280761719, 472.3699951171875], [42.2599983215332, 506.3440246582031, 356.29193115234375, 579.8759765625]]}, {\"page_num\": 190, \"coords\": [67.9000015258789, 39.392974853515625, 354.3999938964844, 94.36998748779297], \"blocks\": [[157.60000610351562, 39.392974853515625, 354.3999938964844, 51.86297607421875], [67.9000015258789, 69.22998809814453, 333.8999938964844, 82.36998748779297], [104.0, 81.22998809814453, 292.760009765625, 94.36998748779297]]}]",
+        "has_bboxes": true,
+        "content_type": "text",
+        "is_clean_copy": true,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "pdftotext_version": "24.02.0",
+        "chunk_index": 119,
+        "mtime": 1774309798,
+        "page_end": 181,
+        "qualifier": "Clean Copy",
+        "is_image": false,
+        "sha256": "80a304982c233cbf5737bf85145685b7df9034e595439b94c9c3ec740736d563",
+        "is_notes": false,
+        "cleaning_version": "clean_v1"
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox+marker_tables(4)",
+      "bboxes": "[{\"page_num\": 189, \"coords\": [42.2599983215332, 63.06998825073242, 356.8100280761719, 579.8759765625], \"blocks\": [[42.2599983215332, 63.06998825073242, 356.8100280761719, 472.3699951171875], [42.2599983215332, 506.3440246582031, 356.29193115234375, 579.8759765625]]}, {\"page_num\": 190, \"coords\": [67.9000015258789, 39.392974853515625, 354.3999938964844, 94.36998748779297], \"blocks\": [[157.60000610351562, 39.392974853515625, 354.3999938964844, 51.86297607421875], [67.9000015258789, 69.22998809814453, 333.8999938964844, 82.36998748779297], [104.0, 81.22998809814453, 292.760009765625, 94.36998748779297]]}]",
+      "rank": 3
+    }
+  ]
+}
+[god-learn] $ python3 scripts/retrieval/verify_phase4.py emotions all feelings that change men affect judgments attended by pain or pleasure Rhetoric II.1 1378a21 Aristotle pathos
+[PHASE4_VERIFY_OK]
+- query='emotions all feelings that change men affect judgments attended by pain or pleasure Rhetoric II.1 1378a21 Aristotle pathos'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[god-learn] $ bash scripts/highlights/phase5check.sh
+
+--- AUDIT REPORT ---
+root: /home/dalton/projects/claudeflow-testing/corpus
+manifest: /home/dalton/projects/claudeflow-testing/scripts/ingest/manifest.jsonl
+total_pdfs: 50
+
+[PHASE2_COMPLETE] (50)
+  - dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf :: phase=2 ok
+  - dissertation/in_progress/rhetorical phantasia test.pdf :: phase=2 ok
+  - metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf :: phase=2 ok
+  - metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf :: phase=2 ok
+  - metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf :: phase=2 ok
+  - new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf :: phase=2 ok
+
+[OK] dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf
+[OK] dissertation/in_progress/rhetorical phantasia test.pdf
+[OK] metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf
+[OK] metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf
+[OK] metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf
+[OK] metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf
+[OK] metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf
+[OK] metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf
+[OK] metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf
+[OK] metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf
+[OK] new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf
+[OK] new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf
+[OK] rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf
+[OK] rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf
+
+--- VERIFY REPORT (OK) ---
+OK=50 FAIL=0 TOTAL=50
+[PHASE4_VERIFY_OK]
+- query='phantasia and action'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[OK] Wrote:
+  /tmp/no_hl.txt
+  /tmp/with_hl.txt
+Diff (first 120 lines):
+--- /tmp/no_hl.txt	2026-03-27 08:24:41.955763352 -0700
++++ /tmp/with_hl.txt	2026-03-27 08:24:43.297671257 -0700
+@@ -6,51 +6,51 @@
+ 
+ [RESULTS]
+ 
+-01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  (raw_rank=1)
++01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  final_score=0.7484066486358643  hl_count=0  boost=0.0000  (raw_rank=1)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=303-305
+ 
+-02. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  (raw_rank=2)
++02. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  final_score=0.8132696557044983  hl_count=1  boost=0.0200  (raw_rank=4)
++    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
++    pages=22-24
++
++03. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  final_score=0.8133007287979126  hl_count=0  boost=0.0000  (raw_rank=2)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+     pages=167-169
+ 
+-03. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  (raw_rank=3)
++04. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  final_score=0.8137480616569519  hl_count=0  boost=0.0000  (raw_rank=3)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=279-281
+ 
+-04. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  (raw_rank=4)
+-    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+-    pages=22-24
+-
+-05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  (raw_rank=6)
++05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  final_score=0.851164698600769  hl_count=0  boost=0.0000  (raw_rank=6)
+     path_rel=rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+     pages=292-292
+ 
+-06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  (raw_rank=7)
++06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  final_score=0.8536148071289062  hl_count=0  boost=0.0000  (raw_rank=7)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=294-294
+ 
+-07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  (raw_rank=8)
++07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  final_score=0.864859938621521  hl_count=0  boost=0.0000  (raw_rank=8)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+     pages=18-18
+ 
+-08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  (raw_rank=9)
++08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  final_score=0.8705873489379883  hl_count=0  boost=0.0000  (raw_rank=9)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+     pages=215-215
+ 
+-09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  (raw_rank=10)
++09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  final_score=0.8722628355026245  hl_count=0  boost=0.0000  (raw_rank=10)
+     path_rel=rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+     pages=13-14
+ 
+-10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  (raw_rank=11)
++10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  final_score=0.8786800503730774  hl_count=0  boost=0.0000  (raw_rank=11)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=162-164
+ 
+-11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  (raw_rank=12)
++11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  final_score=0.8806346654891968  hl_count=0  boost=0.0000  (raw_rank=12)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=24-26
+ 
+-12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  (raw_rank=13)
++12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  final_score=0.8811410665512085  hl_count=0  boost=0.0000  (raw_rank=13)
+     path_rel=rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+     pages=252-254
+ 
+[god-learn] $ python3 scripts/learn/promote_hits.py --hits_json /tmp/phase4_hits.json --query emotions all feelings that change men affect judgments attended by pain or pleasure Rhetoric II.1 1378a21 Aristotle pathos
+08:24:44 [INFO    ] god-learn.phase6.promote: Starting promotion [hits_json=/tmp/phase4_hits.json, query=emotions all feelings that change men affect judgments attended by pain or pleasure Rhetoric II.1 1378a21 Aristotle pathos, min_chars=40, max_units=0, dry_run=False]
+08:24:44 [INFO    ] god-learn.phase6.promote: Promotion complete [promoted=3, total_indexed=397, knowledge_file=god-learn/knowledge.jsonl, index_file=god-learn/index.json]
+[Phase6:promote_hits] promoted=3 total_indexed=397
+[Phase6:promote_hits] wrote: god-learn/knowledge.jsonl
+[Phase6:promote_hits] index: god-learn/index.json
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[ORDER_FAIL] IDs in knowledge.jsonl are not sorted
+[Phase6:verify] ERROR: Soft failures: 1
+[god-learn] normalize: sorted 397 KUs and rebuilt index (397 offsets)
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] OK units=397

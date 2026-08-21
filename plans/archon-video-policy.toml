@@ -1,0 +1,63 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Archon video policy — FINALIZED recommendation (Port #4)
+#
+# Verdict (eval 2026-06-24): ADOPT Archon's built-in `archon-video` crate; do NOT
+# port the god-agent video pipeline. Archon's acquire→whisper ASR→ffmpeg frames→
+# OCR/VLM→relational-provenance chain is better on the fanless Mac (no CUDA).
+#
+# User determination (2026-06-24): DROP "frames tiered by moment-importance" — it
+# does not work well — use FIXED INTERVAL sampling. That is the single substantive
+# change here: `[policy.video.frames] mode = "interval"`.
+#
+# The RODA/DIA game-behaviour analysis METHOD is NOT a video-pipeline feature; it
+# rides on top of Archon's video chunks and belongs to the corpus/index port (#3).
+#
+# HOW TO APPLY: paste the blocks below into ~/.archon/config.toml (global) or the
+# project's .archon/config.toml. Schema verified against archon-policy/src/video.rs.
+#
+# NETWORK / CLOUD TOGGLES ARE LEFT OFF — these are your privacy/cost/connectivity
+# decisions, so they are NOT auto-enabled:
+#   allow_youtube / allow_direct_urls / allow_external_downloaders → remote fetch
+#   allow_cloud_asr / allow_cloud_vlm / summary.allow_cloud_summary → cloud models
+# Offline-standalone (travel): keep cloud OFF — whisper-rs ASR + local OCR run
+# on-device (Metal). For VLM frame description you need either a reachable cloud
+# VLM (set allow_cloud_vlm = true) or local OCR alone (frames.vlm = false).
+# ─────────────────────────────────────────────────────────────────────────────
+
+[policy.video]
+enabled = true
+# acquisition — local files always allowed; remote fetch OFF until you choose
+allow_youtube = false
+allow_direct_urls = false
+allow_external_downloaders = false
+allow_browser_automation = false
+allow_caption_capture = true
+allow_cloud_asr = false
+allow_cloud_vlm = false
+require_user_confirmation_for_download = true
+max_duration_minutes = 180
+max_download_mb = 4096
+# frame sampling — FIXED INTERVAL (moment-importance tiering dropped)
+max_frames = 600
+frame_interval_secs = 10
+scene_change_threshold = 0.35   # unused in interval mode; left at default
+dedupe_threshold = 0.94
+
+[policy.video.frames]
+mode = "interval"   # <-- THE change: fixed interval, not "scene"/"hybrid"
+ocr = true          # local Tesseract/RapidOCR — works offline
+vlm = true          # frame description; needs a reachable VLM (see allow_cloud_vlm)
+
+# ASR — local whisper-rs, offline, Metal on Apple Silicon
+[policy.video.asr]
+provider = "whisper-rs"
+model = "base"               # bump to "small"/"medium" for accuracy if the Mac handles it
+device = "auto"              # Metal on Apple Silicon
+vad_stable_timestamps = true
+diarization = false
+
+[policy.video.summary]
+enabled = true
+allow_llm_summary = true
+allow_cloud_summary = false
+provider = "disabled"

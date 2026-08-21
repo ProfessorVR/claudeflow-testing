@@ -1,0 +1,524 @@
+[god-learn] $ python3 scripts/retrieval/query_chunks.py Aristotle on time perception and discrimination --k 8 --overfetch 30 --include_docs --print_json
+{
+  "query": "Aristotle on time perception and discrimination",
+  "config": {
+    "chroma_dir": "vector_db_1536",
+    "collection": "knowledge_chunks",
+    "k": 8,
+    "overfetch": 30,
+    "where": null,
+    "filters": {
+      "require_my_copy": false,
+      "collection_filter": null,
+      "keep_biblio": false
+    },
+    "include_docs": true,
+    "use_highlights": false,
+    "highlights_index": "scripts/highlights/highlight_index.json",
+    "highlight_alpha": 0.02,
+    "highlight_cap": 5
+  },
+  "results": [
+    {
+      "raw_rank": 2,
+      "chunk_id": "39640bbbf94c2700:00126",
+      "distance": 0.7746790647506714,
+      "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+      "page_start": 223,
+      "page_end": 224,
+      "text": "Neither is adequate. Way-finding is surely not a sequence of turning responses conditioned to stimuli. But neither is it the consulting of an internal map of the maze, for who is the internal perceiver to look at the map? The theory of reversible occlusion can provide a better explanation. An alley in a maze, a room in a house, a street in a town, and a valley in a countryside each constitutes a place, and a place often constitutes a vista (Gibson, 19666, p. 206), a semienclosure, a set of unhidden surfaces. A vista is what is seen from here, with the proviso that “here” is not a point but an extended region. Vistas are serially connected since at the end of an alley the next alley opens up; at the edge of the doorway the next room opens up; at the corner of the street the next street opens up; at the brow of the hill the next valley opens up. To go from one place to another involves the opening up of the vista ahead and closing in of the vista behind. A maze or a cluttered environment provides a choice of vistas. And thus, to find the way to a hidden place, one needs to see which vista has to be opened up next, or which occluding edge hides the goal. One vista leads to another in a continuous set of reversible transitions. Note that in a terrestrial environment of semienclosed places each vista is unique, unlike the featureless passageways of a maze. Each vista is thus its own “land­ mark” inasmuch as the habitat never duplicates itself. When the vistas have been put in order by exploratory locomotion, the invariant structure of the house, the town, or the whole habitat will be appre­ hended. The hidden and the unhidden become one environment. One can then perceive the ground below the clutter out to the horizon, and at the same time perceive the clutter. One is oriented to the environment. It is not so much having a bird’s-eye view of the terrain as it is being everywhere at once. The getting of a bird’s-eye view is helpful in becoming oriented, and the explorer will look down from a high place if possible. Homing pigeons are better at orientation than we are. But orientation to goals behind the walls, beyond the trees, and over the hill is not just a looking-down-on, and it is certainly not the having of a map, not even a “cognitive” map supposed to exist in the mind instead of on paper. A map is a useful artifact when the hiker is lost, but it is a mistake to confuse the artifact with the psychological state the artifact promotes. Note that the perception of places and the perception of detached objects are quite different. Places cannot be displaced, whereas objects can be, and animate objects displace themselves. Places merge into adjacent places, whereas objects have boundaries. Orientation to hidden places with their attached objects can be learned once and for all, whereas orientation to movable objects has to be relearned continually. I know where the kitchen sink is, I think I know where the ski boots are stored, but I don’t always know where my child is. One can only go to the last known locus of a detached object. Hidden objects can be moved without that event being perceived, and the unhappy state of the man whose car keys are seldom where he left them is notorious.\n\n190 The Ecological Approach to Visual Perception\n\nj—----- *rTJ*TJT?r.'!‘T:?'rr'*i—ii--------\n\n! ^------- ‘-------.^i4& \\ f ;. :-T-\n\n[ ---------------------------— - i ?—\n\n„^gSlH nr w K~t\n\nFIGURE 11.2 The opening up of a vista at an occluding edge, as seen from above.\n\nThis is a plan view of a passageway that opens on a courtyard from which another passageway leads. As an observer moves along the corridor, the surfaces behind his head progressively go out of sight, and surfaces in front progessively come into sight at one occluding edge and then the other. The hidden portions of the ground are indicated by hatching. The hidden portions of the walls are indicated by dashed lines. The position of the observer is indicated by a black dot.\n\nIn the pages above I have formulated a theory of orientation to the places of the habitat. The perceiving of the world entails the coperceiving of where one is in the world and of being in the world at that place. This is a neglected fact that is neither subjective nor objective. To the extent that one has moved from place to place, from vista to vista, one can stand still in one place and see where one is, which means where one is relative to where one might be. One does not need a map with a circle on it labeled, “You are here.” I suggest that this consti­ tutes the state of being oriented.\n\nThe Problem of Public Knowledge",
+      "meta": {
+        "year": 2015,
+        "is_image": false,
+        "pdftotext_version": "24.02.0",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+        "cleaning_version": "clean_v1",
+        "is_my_copy": false,
+        "chunk_index": 126,
+        "page_end": 224,
+        "clean_sha256": "02616a884998b188cdafdc5c68c933e511531e528e207c9982fe1a8b94c24f61",
+        "sha256": "325df1b4fe5d195315df7cb1daeb433b73812b03c3c348aea60bb2700b84131e",
+        "content_type": "text",
+        "is_notes": false,
+        "qualifier": "Clean Copy",
+        "mtime": 1771101202,
+        "author_raw": "Gibson, James J.",
+        "collection": "rhetorical_ontology",
+        "is_table": false,
+        "bboxes": "[{\"page_num\": 224, \"coords\": [62.75, 70.90840911865234, 389.70001220703125, 606.683349609375], \"blocks\": [[216.60000610351562, 70.90840911865234, 386.10675048828125, 102.16443634033203], [217.19000244140625, 126.99105072021484, 380.37286376953125, 171.83384704589844], [217.8000030517578, 203.87445068359375, 386.3765563964844, 251.32791137695312], [63.04899978637695, 280.44097900390625, 378.04998779296875, 291.93011474609375], [62.75, 295.0909729003906, 388.5, 365.1300964355469], [63.650001525878906, 389.4014587402344, 389.70001220703125, 490.28009033203125], [63.04899978637695, 510.3282165527344, 231.71153259277344, 522.8178100585938], [63.04899978637695, 530.8985595703125, 388.20001220703125, 606.683349609375]]}, {\"page_num\": 225, \"coords\": [29.5999755859375, 32.23542404174805, 364.29998779296875, 578.8612670898438], \"blocks\": [[75.30000305175781, 32.23542404174805, 359.5390930175781, 51.47080993652344], [32.849998474121094, 62.777801513671875, 364.29998779296875, 278.6014709472656], [31.950000762939453, 297.5777587890625, 211.05003356933594, 310.4614562988281], [29.5999755859375, 316.7282409667969, 359.5, 546.4801025390625], [29.89900016784668, 565.5199584960938, 173.10316467285156, 578.8612670898438]]}]",
+        "has_bboxes": true,
+        "doc_id": "39640bbbf94c2700",
+        "source_method": "pymupdf+bbox",
+        "is_clean_copy": true,
+        "title_raw": "The Ecological Approach to Visual Perception.",
+        "page_start": 223,
+        "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf"
+      },
+      "rank": 1
+    },
+    {
+      "raw_rank": 3,
+      "chunk_id": "39640bbbf94c2700:00114",
+      "distance": 0.7781444787979126,
+      "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+      "page_start": 205,
+      "page_end": 207,
+      "text": "was that although this separation was “in depth” the difference in depth was equivocal. The faster motion was not necessarily seen in front of the other, as the law of motion parallax would predict. The surface in front had to appear semitransparent, of course, but every now and then the front-back relation between the two surfaces would spontaneously be reversed. Wherein lay the information for this splitting? One half of the interspersed elements of texture all moved with one velocity, and the other half all moved with another velocity. Hence, there was a permutation of the adjacent order of the texture elements. When some caught up with and passed others, the adjacent order was destroyed. The permutation was not complete, to be sure, for each set of elements preserved adjacent order, but the original connectivity had been destroyed. Hence, the phenomenal continuity of the original surface gave way to the perception of two continuous surfaces, the nearest being transparent (E. J. Gibson, Gibson, Smith, and Flock, 1959, pp. 45 ff.). Thus, the available information in an optic array for continuity could be described as the preserva­ tion of adjacent order, which is to say, the absence of its permutation.\n\nExperiments on the Perception of Motion in the World and Movement of the Self 173\n\nA permutation of adjacent order is a more radical change than a transformation that leaves adjacent order invariant. A size transformation and the rigid trans­ formation of foreshortening, as well as the nonrigid transformation of stretching, leave order invariant. A still more radical change than permutation is possible, however, and this was suggested by another experiment. It is a change that subtracts elements of the array on one side of a contour or adds them on. I have called this change progressive deletion or accretion of structure. But this belongs in the next chapter.\n\nExperiments on the Perception of Collision\n\nIn Chapter 6 the kind of mechanical event called a collision was described. In the simplest case, a collision may be one elastic object such as a billiard ball bumping another and causing it to move. Michotte (1963) used the disk-and-slot appar­ atus to study the optical and temporal conditions for this perception. He found, contrary to the assertion of David Hume, that the actual “launching” of one object by another can be seen, not just the succession of two discrete motions. In other words, one gets a direct causal perception over and above the kinetic sensations when the time intervals fall within certain limits. Michotte was concerned with the phenomenology of the causal impression. He did not consider the hypothesis that there could be a display of optical inform­ ation for the perception of one object launching another. His results are consistent with that hypothesis, however. S. Runeson (1977) has based a series of experi­ ments on it. He has studied the perception of two-body linear collisions that vary from elastic to damped. In a real collision, the relative velocity difference between the motions before and after contact is invariant and specifies the nature of the substances. This is what he varied. In his experiments, not only was the collision perceived as such, but the hardness or softness of the objects themselves were also. Yet, all the observer could ever “see” was a pair of moving patches on the screen of an oscilloscope. Runeson had studied ecological dynamics. He had discovered an inform­ ative invariant and had controlled it in his display. We shall begin to understand event perception if we follow this lead.\n\nThe Coperception of One's Own Movement\n\nSo far we have been considering the perception ot motion in the world. We now come to the problem of the perceiver’s awareness of liis own motion in the world, that is, the awareness of locomotion.\n\nThe Discovery of Visual Kinesthesis\n\nIn the 1940s, great numbers of students were being trained to tty military airplanes, and considerable numbers were failing. It seemed sensible to try and\n\n174 The Ecological Approach to Visual Perception",
+      "meta": {
+        "is_image": false,
+        "is_notes": false,
+        "mtime": 1771101202,
+        "page_end": 207,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+        "has_bboxes": true,
+        "sha256": "325df1b4fe5d195315df7cb1daeb433b73812b03c3c348aea60bb2700b84131e",
+        "content_type": "text",
+        "collection": "rhetorical_ontology",
+        "clean_sha256": "4d89ef7afee8a4254023c64780f6a8815e25ea03c7cf902152719aa44888c498",
+        "year": 2015,
+        "title_raw": "The Ecological Approach to Visual Perception.",
+        "is_my_copy": false,
+        "chunk_index": 114,
+        "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+        "cleaning_version": "clean_v1",
+        "bboxes": "[{\"page_num\": 207, \"coords\": [30.14900016784668, 189.50148010253906, 364.0, 610.6554565429688], \"blocks\": [[32.54899978637695, 189.50148010253906, 364.0, 469.25299072265625], [31.64900016784668, 488.41876220703125, 250.03610229492188, 501.3798522949219], [31.350000381469727, 506.94158935546875, 359.20001220703125, 546.3014526367188], [31.950000762939453, 566.2511596679688, 191.86241149902344, 578.0062255859375], [30.14900016784668, 582.9826049804688, 359.5, 610.6554565429688]]}, {\"page_num\": 208, \"coords\": [64.8489990234375, 31.933990478515625, 393.25, 607.843505859375], \"blocks\": [[64.8489990234375, 31.933990478515625, 248.30946350097656, 49.59722900390625], [64.8499755859375, 62.44857406616211, 393.25, 607.843505859375]]}, {\"page_num\": 209, \"coords\": [44.79899978637695, 31.767284393310547, 362.25921630859375, 50.04267883300781], \"blocks\": [[44.79899978637695, 31.767284393310547, 362.25921630859375, 50.04267883300781]]}]",
+        "is_clean_copy": true,
+        "doc_id": "39640bbbf94c2700",
+        "author_raw": "Gibson, James J.",
+        "page_start": 205,
+        "is_table": false,
+        "pdftotext_version": "24.02.0",
+        "qualifier": "Clean Copy",
+        "source_method": "pymupdf+bbox"
+      },
+      "rank": 2
+    },
+    {
+      "raw_rank": 4,
+      "chunk_id": "39640bbbf94c2700:00124",
+      "distance": 0.7825385332107544,
+      "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+      "page_start": 220,
+      "page_end": 222,
+      "text": "The old approach to perception took the central problem to be how one could see into the distance and never asked how one could see into the past and the future. These were not problems for perception. The past was remembered, and the future was imagined. Perception was of the present. But this theory has never worked. No one could decide how long the present lasted, or what distin­ guished memory from imagination, or when percepts began to be stored, or which got stored, or any other question to which this doctrine led. The new approach to perception, admitting the coperception of the self to equal status with the perception of the environment, suggests that the latter is timeless and that present-past-future distinctions are relevant only to the awareness of the self. The environment seen-at-this-moment does not constitute the environ­ ment that is seen. Neither does the environment seen-from-this-point consti­ tute the environment that is seen. The seen-now and the seen-from-here specify the self, not the environment. Consider them separately. What is seen now is a very restricted sample of the surfaces of the world, limited to those that are inside the boundaries of the field of view at this head- posture. It is even limited to that surface being fixated at this eye-posture, if by seen one means clearly seen. This is at most less than half of the world and perhaps only a detail of that. What is seen from here is at most the optically uncovered surfaces of the world at this point of observation, that is, the near sides of objects, the unhidden portions of the ground, the walls, and the bits that project through windows and doors. The fact is that, although one can become aware of the seen-now and the seen-from-here if one takes the attitude of introspection, what one perceives is an environment that surrounds one, that is everywhere equally clear, that is in-the-round or solid, and that is all-of-a-piece. This is the experience of what\n\nI once called the visual world (Gibson, 19506, Ch. 3). It has vistas that are connected and places that adjoin, with a continuous ground beneath every­ thing, below the clutter, receding into the distance, out to the horizon. The surface being fixated now at this momentary eye-posture is not a depth­ less patch of color, and the surfaces inside the field of view seen now at this head-posture are not a depthless patchwork of colors, for they have the quality that I called slant in the last chapter. The seen-at-this-moment is not the same, therefore, as the supposedly flat visual field analogous to the colors laid canvas by a painter that the old theory of color sensations asserted. I once believed that you could with training come to see the world as a picture, or almost do so, but I now have doubts about it. That comes close to saying that you can almost see your retinal image, which is a ridiculous assertion.\n\nThe Discovery of the Occluding Edge and its Implications for Perception 187\n\nFIGURE 11.1 The surfaces viewed now from here by an observer seated in a room.\n\nAt this temporary eye posture and this temporary head posture, the surfaces projected into the retinal image are indicated by solid lines and the remaining surfaces by dashed lines. The awareness of the here-and-now surfaces might be called mewing the room as distinguished from seeing the room. This is a vertical section of the observer and his monocular field of view.\n\nThe seen-from-here, from this stationary point of observation, is also not the supposedly flat visual field of tradition, for it is ambient. But it might justly be called viewing the world in perspective, or noticing the perspectives of things. This means the natural perspective of ancient optics, not the artificial perspective of the Renaissance; it refers to the set of surfaces that create visual solid angles in a frozen ambient optic array. This is a very small sample of the whole world, however, and what we perceive is the world.\n\nPerception Over Time from Paths of Observation\n\nIt is obvious that a motionless observer can see the world from a single fixed point of observation and can thus notice the perspectives ot things. It is not so obvious but it is true that an observer who is moving about sees the world at no point of observation and thus, strictly speaking, cannot notice the perspectives of things. The implications are radical. Seeing the world at a traveling point ot observation, over a long enough time for a sufficiently extended set of paths,\n\n188 The Ecological Approach to Visual Perception",
+      "meta": {
+        "page_end": 222,
+        "is_image": false,
+        "qualifier": "Clean Copy",
+        "is_my_copy": false,
+        "mtime": 1771101202,
+        "chunk_index": 124,
+        "source_method": "pymupdf+bbox",
+        "year": 2015,
+        "cleaning_version": "clean_v1",
+        "doc_id": "39640bbbf94c2700",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+        "title_raw": "The Ecological Approach to Visual Perception.",
+        "is_clean_copy": true,
+        "is_notes": false,
+        "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+        "bboxes": "[{\"page_num\": 222, \"coords\": [66.5989990234375, 32.833953857421875, 396.8500061035156, 608.392822265625], \"blocks\": [[66.5989990234375, 32.833953857421875, 250.65440368652344, 50.4971923828125], [66.5989990234375, 63.00785827636719, 395.3500061035156, 390.40301513671875], [70.5, 409.92822265625, 206.8565673828125, 422.4178161621094], [70.5, 430.56878662109375, 396.8500061035156, 608.392822265625]]}]",
+        "is_table": false,
+        "author_raw": "Gibson, James J.",
+        "clean_sha256": "e05fa5581d20fb770241f8cd4a2015ec791c357541342cce9153bdef2c650e7f",
+        "pdftotext_version": "24.02.0",
+        "sha256": "325df1b4fe5d195315df7cb1daeb433b73812b03c3c348aea60bb2700b84131e",
+        "has_bboxes": true,
+        "collection": "rhetorical_ontology",
+        "content_type": "text",
+        "page_start": 220
+      },
+      "rank": 3
+    },
+    {
+      "raw_rank": 5,
+      "chunk_id": "39640bbbf94c2700:00132",
+      "distance": 0.7919039130210876,
+      "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+      "page_start": 231,
+      "page_end": 233,
+      "text": "The perceiving of the persistence of the environment is not, of course, an achievement of the visual system alone. It is a nonmodal form of perception, cutting across the perceptual systems and transcending the \"senses.\" Touching and listening accompany looking. The young child who goes for a walk and looks around at the strange wide world can cling to the mother's hand, confirming her persistence while she is temporarily out of sight. Similarly, the persistence of the mother when she goes around the corner, or goes out of sight in the dark, is confirmed by hearing her voice. The information to specify the continued existence of something may be carried by touch or sound as well as by light. Incessant stimulation is not necessary for the perceiving of persistence.\n\nLooking with the Head and Eyes 199\n\nTo perceive the persistence of surfaces that are out of sight is also to perceive their coexistence with those that are in sight. In short, the hidden is continuous with the unhidden; they are connected. Separated places and objects are perceived to coexist. This means that separ­ ated events at these places are perceived to be concurrent. What happens at one end of a corridor is seen to co-occur with what happens at the other end, even though one must look back and forth between the two. Different concurrent events, thus, can be sampled in succession without destroying their concur­ rence, just as different coexisting places can be sampled in succession without destroying their coexistence.\n\nHow Does the Eye-Head System Work? Outline of a New Theory\n\nLooking-around and looking-at are acts that naturally go together, but they can be studied separately. In fact, looking-at has been studied almost exclusively by visual physiologists. What they have recorded and measured are so-called eye movements, that is, movements of the eyes relative to the head. The head is usually fixed in an apparatus. The eyes are then allowed to scan a display of some sort within the field of view of the stationary head, a pattern of luminous points in the dark, or a line of print on a page, or a picture. The eyes rotate in rapid jumps from one fixation to another, and these are called saccadic movements. In terms of the retinal image theory, the fovea of each retina is moved so that an image of the particular “object of interest” falls on the retinal point of highest acuity where the photoreceptors, the cones, are most densely packed together. The anatomical fovea corresponds to the psychological “center of clearest vision.” The fine details of the optical image are said to be best “resolved” at the fovea. All this is implied in the quotation from Helmholtz, above.\n\nThe Recognized Types of Eye Movement\n\nThere are other kinds of ocular movements besides scanning, however, and the accepted classification goes back to R. Dodge (1903), who was the first invest­ igator to record and measure them by photography. They have since been studied with ever-increasing ingenuity and precision, but Dodge’s list has never been challenged by physiologists. He never doubted the eye-camera analogy; he only forced us to consider that the eyes were movable cameras at the ends of flexible cables leading to the brain. The list is approximately as given below.\n\n1. Fixation: Not strictly a “movement,” fixation is nevertheless an important kind of ocular behavior. It should be called a posture of the eye, a pointing at.\n2. Saccadic movement: A saccadic movement is a rapid rotation of the eyeball from one fixation to another. It has long been taken for granted that the move­ ment is a response of the eye muscles to a stimulus at the periphery of the retina\n\n200 The Ecological Approach to Visual Perception",
+      "meta": {
+        "is_table": false,
+        "is_clean_copy": true,
+        "mtime": 1771101202,
+        "doc_id": "39640bbbf94c2700",
+        "author_raw": "Gibson, James J.",
+        "pdftotext_version": "24.02.0",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+        "cleaning_version": "clean_v1",
+        "bboxes": "[{\"page_num\": 235, \"coords\": [31.049999237060547, 33.01899337768555, 363.71392822265625, 610.73486328125], \"blocks\": [[219.89999389648438, 33.01899337768555, 360.15203857421875, 51.62007141113281], [33.150001525878906, 64.1409912109375, 363.71392822265625, 303.7530212402344], [33.45000076293945, 323.3394775390625, 204.58241271972656, 335.7487487792969], [33.150001525878906, 342.50146484375, 361.0, 392.3301086425781], [33.150001525878906, 413.2001647949219, 67.90898132324219, 423.16424560546875], [31.049999237060547, 429.4974365234375, 362.20001220703125, 610.73486328125]]}, {\"page_num\": 236, \"coords\": [71.69999694824219, 29.367259979248047, 397.76776123046875, 304.93115234375], \"blocks\": [[71.69999694824219, 29.367259979248047, 254.95005798339844, 47.64265441894531], [71.69999694824219, 58.771934509277344, 397.76776123046875, 273.1988830566406], [74.0989990234375, 294.0688171386719, 161.739013671875, 304.93115234375]]}]",
+        "is_my_copy": false,
+        "page_end": 233,
+        "qualifier": "Clean Copy",
+        "content_type": "text",
+        "sha256": "325df1b4fe5d195315df7cb1daeb433b73812b03c3c348aea60bb2700b84131e",
+        "year": 2015,
+        "collection": "rhetorical_ontology",
+        "is_image": false,
+        "clean_sha256": "5ed5d5389da6e6e25d372c4f6565ce18a459c34a8ad0660065b72e09c8e03540",
+        "is_notes": false,
+        "title_raw": "The Ecological Approach to Visual Perception.",
+        "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+        "has_bboxes": true,
+        "page_start": 231,
+        "source_method": "pymupdf+bbox",
+        "chunk_index": 132
+      },
+      "rank": 4
+    },
+    {
+      "raw_rank": 6,
+      "chunk_id": "39640bbbf94c2700:00175",
+      "distance": 0.7927713394165039,
+      "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+      "page_start": 303,
+      "page_end": 304,
+      "text": "believe the stories about birds and painters being fooled, any more than I believe that Pygmalion really fell in love with his statue. The illusion of reality is a myth. The same automatic tests for reality that distinguish between a percep­ tion and a mental image, as described in the last chapter, will also distinguish between a perception and a physical image. We go on believing the myth only because it fits with what the authorities tell us about perception, with retinal image optics. A picture, photographic or chirographic, is always a treated surface, and it is always seen in a context of other nonpictorial surfaces. Along with the invari­ ants for the depicted layout of surfaces, there are invariants for the surface as such. It is a plaster wall, or a sheet of canvas, a panel, a screen, or a piece of paper. The glass, texture, edges, or frame of the picture surface are given in the array, and they are perceived. The information displayed is dual. The picture is both a scene and a surface, and the scene is paradoxically behind the surface. This duality of the information is the reason the observer is never quite sure how to answer the question, “What do you see?” For he can perfectly well answer that he sees a wall or a piece of paper. It is this duality in the optic array from a picture that makes the drawing a bad way to begin the study of perception. I have in my time, like many perceptionists, arranged for a display of inform­ ation to be seen through a peephole, that is, to be viewed through an aperture close to the eye. This is supposed to minimize the information for the surface as such and enhance the illusion of reality. I find, however, that, far from being a simple expedient, it complicates the act of perception. Keeping the observer from making tests for reality does not increase the impression of reality. No painter and no photographer should ever strive to give viewers the feeling that they are looking at a real place, object, person, or event. There is no need to do so. In any case, the effort is bound to be a failure. A picture is both a surface in its own right and a display of information about something else. The viewer cannot help but see both, yet this is a paradox, for the two kinds of awareness are discrepant. We distinguish between the surface of the picture and the surfaces in the picture. In such paintings as those of the impressionists, we can see the difference between the illumination of the picture and the illumination in the picture. The two sets of surfaces are not comparable, and the two kinds of illumination are not commensurable.\n\nI once took a good, sharp photograph of a lawn with trees and a paved walk and had it enlarged about twenty times so that it could be mounted on a six- foot panel. The observer stood at a point where the visual angle of the picture at his eye was the same as the visual angle of the array admitted to the camera. He was told to estimate distances in terms of the number of paces needed. To the question, “How far away from you is the elm tree?” he would visualize himself walking up to it and reply, “Thirty paces,” But to the question, “How far away from you is the picture?” he would pause and reply, “Oh, that’s four paces.” For the latter estimate he hat! to shift the operation ot his visual system\n\n270 The Ecological Approach to Visual Perception",
+      "meta": {
+        "mtime": 1771101202,
+        "is_table": false,
+        "author_raw": "Gibson, James J.",
+        "page_start": 303,
+        "is_notes": false,
+        "has_bboxes": true,
+        "content_type": "text",
+        "title_raw": "The Ecological Approach to Visual Perception.",
+        "is_image": false,
+        "source_method": "pymupdf+bbox",
+        "year": 2015,
+        "is_clean_copy": true,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+        "collection": "rhetorical_ontology",
+        "bboxes": "[{\"page_num\": 306, \"coords\": [61.849998474121094, 31.1196346282959, 390.29998779296875, 601.7221069335938], \"blocks\": [[61.849998474121094, 31.1196346282959, 246.2672576904297, 49.063995361328125], [62.45000076293945, 61.27821731567383, 234.91697692871094, 73.76781463623047], [62.150001525878906, 81.47232055664062, 390.29998779296875, 511.830078125], [63.349998474121094, 531.5277709960938, 246.76483154296875, 544.4114379882812], [63.649993896484375, 550.560791015625, 388.8907165527344, 601.7221069335938]]}, {\"page_num\": 307, \"coords\": [22.39900016784668, 29.97806739807129, 359.20001220703125, 607.843505859375], \"blocks\": [[224.35000610351562, 29.97806739807129, 355.21685791015625, 48.63282775878906], [26.6099853515625, 59.09162139892578, 359.20001220703125, 325.85302734375], [23.299999237060547, 327.7740478515625, 354.45001220703125, 530.8678588867188], [22.700000762939453, 549.6607666015625, 314.9074401855469, 575.7718505859375], [22.39900016784668, 582.6934814453125, 352.6400146484375, 607.843505859375]]}, {\"page_num\": 308, \"coords\": [61.54899978637695, 32.31964874267578, 246.54901123046875, 50.264007568359375], \"blocks\": [[61.54899978637695, 32.31964874267578, 246.54901123046875, 50.264007568359375]]}]",
+        "chunk_index": 175,
+        "clean_sha256": "bc92e0236fd4fe242218c9369244cf20d7c286cd0e6078897c3c6ca34a232b83",
+        "cleaning_version": "clean_v1",
+        "doc_id": "39640bbbf94c2700",
+        "is_my_copy": false,
+        "qualifier": "Clean Copy",
+        "page_end": 304,
+        "pdftotext_version": "24.02.0",
+        "sha256": "325df1b4fe5d195315df7cb1daeb433b73812b03c3c348aea60bb2700b84131e",
+        "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf"
+      },
+      "rank": 5
+    },
+    {
+      "raw_rank": 7,
+      "chunk_id": "746585ac7140c19c:00127",
+      "distance": 0.7950657606124878,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+      "page_start": 193,
+      "page_end": 196,
+      "text": "Previously, we characterized the being-there of human beings as being-in-theworld, and defined the world, initially, by the encounter-aspects of the ἀγαθόν. The being-character of the world with which we have to do is determined as ἐνδεχόμενον ἄλλως; it is more or less the way that change assigns it. In this environing world, the world with which we have to do in our concerns ap­ pears unified with the world as nature. Nature is not a being-region standing alongside this world, but rather is the world itself such as it shows itself in the environing world in a definite way, characterized by the fact that the world is, as nature, that way of being showing itself for our being-in-the-world in daily dealings as being-there-always-already: sailing in the sea, fish are caught in the stream. The everydayness of producing is always producing from some­ thing that is related, for example, from the mine, from the forest, and so on Everything that everydayness needs, it has and is there in nature. It is important to see that nature is primarily not something like an object of scientific con­ sideration. Nature is the always-already-being-there of the world. As it is seen primarily, world is an aspect of the environing world itself. The change from day to night is always repeated, as is the course of the sun and of the stars. In the environing world that I possess, there is the ground on which I stand, air whose presence waits on me in a certain respect. The world must be under­ stood in this way if one defines being-in-the-world as dealing with the world. The world is seen, in this experience of being-there, as that which always is and also can be otherwise. What genuinely-is-always, what need not be sought long for natural ori­\n\n388. Eth. Nic. Δ 13, 1127 a 23 sq.: ὁ δὲ μέσος αὐθέκαστός τις ὢν ἀληθευτικὸς καὶ τῷ βίῳ καὶ τῷ λόγῳ.\n\n§22. Supplements to the Explication of Being-There [266–267]\n\nentation in the world, is the heavens. The Greek heavens and the world must be understood as a vault on which the sun rises and descends. The practical concern of human beings occurs in the middle, in the μέσον. The earth is the center of orientation for orientation in the world, an orientation that need not be at all theoretical nor natural-scientific. This system of orientation is absolute. There is nothing in terms of which my being-there would be relative. There is only a being-there, being-there upon the earth as the absolute center of orienta­ tion. For Aristotle, there are three basic movements: (1) away from the mid­ dle, ἄνω; (2) toward the middle, κάτω; (3) around the middle, κύκλος—three movements in which being-there stands as being-in-the-world. Everything that is in the world itself is the κόσμος. Beings as κόσμος are characterized by the presence of what is always already there, παρουσία. Every being is determined in its being by the fact that it is πέρας, the having-become-complete that has its limits. “Limit” is not somehow determined by the relation of one being to another, but rather the limit is itself a being-aspect in beings; πέρας is its site, its place, its being-produced, being-in-its-place. In this way, beings that move themselves in the κόσμος always have a determinate limit of their movement— their site. Site is a positive determination of being. The site belongs to beings as such. Contemporary physics has returned to this standpoint with the concept of “field.” To the degree that the character of the world is considered, it is con­ sidered as the world of nature. This nature is not somehow alongside, not first of all nature and then a good deal in addition; instead, if one wants to see the things of nature with respect to their being-there, one must see them through the environing world, vis-à-vis how it is there as environing world. Only then does one have a proper basis for grasping the mode of being-there of the be­ ings of nature.\n\nThis page intentionally left blank\n\nSECOND PART\n\nRetrieving Interpretation of\n\nAristotelian Basic Concepts on the Basis of\n\nthe Understanding of the Indigenous\n\nCharacter of Conceptuality\n\nThis page intentionally left blank\n\nCHAPTER ONE\n\nThe Being-There of Human Beings as the Indigenous\n\nCharacter of Conceptuality\n\n§23. Showing of the Possibility of Conceptuality in Being-There\n\naccording to Concretely Giving Basic Experience,\n\nGuiding Claim, and Prevailing Intelligibility",
+      "meta": {
+        "mtime": 1774309798,
+        "clean_sha256": "b1a2d75b5fdecd8a8a6f4aaae0ce7c41aebcf6587a13aeeefd9ca2fc54194902",
+        "is_my_copy": false,
+        "year": 2009,
+        "has_bboxes": true,
+        "sha256": "80a304982c233cbf5737bf85145685b7df9034e595439b94c9c3ec740736d563",
+        "is_image": false,
+        "author_raw": "Heidegger, Martin",
+        "collection": "rhetorical_ontology",
+        "page_end": 196,
+        "is_table": false,
+        "qualifier": "Clean Copy",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "is_clean_copy": true,
+        "pdftotext_version": "24.02.0",
+        "chunk_index": 127,
+        "content_type": "text",
+        "cleaning_version": "clean_v1",
+        "page_start": 193,
+        "bboxes": "[{\"page_num\": 204, \"coords\": [42.369998931884766, 63.06998825073242, 356.9100341796875, 592.8759765625], \"blocks\": [[42.369998931884766, 63.06998825073242, 356.9100341796875, 532.3699951171875], [42.380001068115234, 555.364013671875, 313.7079772949219, 592.8759765625]]}, {\"page_num\": 205, \"coords\": [42.2599983215332, 39.23698806762695, 281.91998291015625, 51.36297607421875], \"blocks\": [[42.2599983215332, 39.23698806762695, 281.91998291015625, 51.36297607421875]]}]",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "title_raw": "Basic Concepts of Aristotelian Philosophy",
+        "is_notes": false,
+        "doc_id": "746585ac7140c19c",
+        "source_method": "pymupdf+bbox+marker_tables(4)"
+      },
+      "rank": 6
+    },
+    {
+      "raw_rank": 8,
+      "chunk_id": "f6041c1a815c83f1:00055",
+      "distance": 0.7979320883750916,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 99,
+      "page_end": 101,
+      "text": "the extent to which circumspection in the narrower sense occurs in our every-day living. (The distinction between 'sight' (Sicht') and 'seeing' ('Sehen') will be developed further in Sections 3 1 and 36 below.) 1 ' • • • im Sinne der Sichtlosigkeit . . . ' The point of this sentence will be clear to the reader who recalls that the Greek verb 8£wp£<v, from which the words 'theoretical' and \n'atheoretical' are derived, originally meant 'to see'. Heidegger is pointing out that this is not what we have in mind in the traditional contrast between the 'theoretical' and the \n'practical'. 2 'Das Werk triigt die Verweisungsganzheit, innerhalb derer das Zeug begegnet.' In this chapter the word 'Werk' ('work') usually refers to the product achieved by working rather than to the process of working as such. We shall as a rule translate 'Verweisungs­ ganzheit' as 'referential totality', though sometimes the clumsier 'totality of assignments' may convey the idea more effectively. (The older editiom read 'deren' rather than \n'derer'.)\n\nBeing and Time\n\nproduction itself is a using qf something for something. In the work there is also a reference or assignment to 'materials' : the work is dependent on [angewiesen auf] leather, thread, needles, and the like. Leather, more­ over is produced from hides. These are taken from animals, which someone else has raised. Animals also occur within the world without having been raised at all ; and, in a way, these entities still produce themselves even when they have been raised. So in the environment certain entities become accessible which are always ready-to-hand, but which, in themselves, do not need to be produced. Hammer, tongs, and needle, refer in themselves to steel, iron, metal, mineral, wood, in that they consist of these. In equip­ ment that is used, 'Nature' is discovered along with it by that use-the \n'Nature' we find in natural products.\n\nHere, however, \"Nature\" is not to be understood as that which is just present-at-hand, nor as the power qf Nature. The wood is a forest of timber, the mountain a quarry of rock; the river is water-power, the wind is wind \n'in the sails'. As the 'environment' is discovered, the 'Nature' thus dis­ covered is encountered too. If its kind of Being as ready-to-hand is dis­ regarded, this 'Nature' itself can be discovered and defined simply in its pure presence-at-hand. But when this happens, the Nature which 'stirs and strives', which assails us and enthralls us as landscape, remains\n\nhidden. The botanist's plants are not the flowers of the hedgerow; the \n'source' which the geographer establishes for a river is not the 'springhead\n\nin the dale'. The work produced refers not only to the \"towards-which\" of its usability and the \"whereof\" of which it consists : under simple craft conditions it also has an assignment to the person who is to use it or wear it. The work is cut to his figure; he 'is' there along with it as the work emerges. Even when goods are produced by the dozen, this constitutive asignment is by no means lacking; it is merely indefinite, and points to the random, the average. Thus along with the work, we encounter not only entities ready-to-hand but also entities with Dasein's kind of Being­ entities for which, in their concern, the product becomes ready-to-hand ; and together with these we encounter the world in which wearers and users live, which is at the same time ours. Any work with which one concerns oneself is ready-to-hand not only in the domestic world of the workshop but also in the public world. Along with the public world, the environing Nature [die Umweltnatur] is discovered and is accessible to everyone. In roads, streets, bridges, buildings, our concern discovers Nature as having some definite direction. A covered railway platform takes account of bad weather; an installation for public lighting takes account of the darkness, or rather of specific changes in the presence or absence of daylight-the\n\nI. 3 Being and Time",
+      "meta": {
+        "author_raw": "Heidegger, Martin",
+        "is_notes": false,
+        "pdftotext_version": "24.02.0",
+        "doc_id": "f6041c1a815c83f1",
+        "is_table": false,
+        "clean_sha256": "5b2fa951493d200842a0ef6d2b8ca00265dd119d9dfa09615881809a6f6ede77",
+        "year": 1962,
+        "title_raw": "Being and Time",
+        "has_bboxes": true,
+        "cleaning_version": "clean_v1",
+        "is_image": false,
+        "mtime": 1771101202,
+        "is_my_copy": true,
+        "content_type": "text",
+        "is_clean_copy": false,
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "qualifier": "My Copy",
+        "page_end": 101,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "source_method": "pymupdf+bbox",
+        "collection": "rhetorical_ontology",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "bboxes": "[{\"page_num\": 103, \"coords\": [5.6400146484375, 98.94071197509766, 308.7869873046875, 469.72467041015625], \"blocks\": [[25.569976806640625, 98.94071197509766, 307.5596923828125, 240.0191192626953], [25.440032958984375, 240.96852111816406, 307.2967834472656, 338.589111328125], [5.6400146484375, 339.04071044921875, 308.7869873046875, 457.91485595703125], [58.81999206542969, 460.1210632324219, 275.97998046875, 469.72467041015625]]}, {\"page_num\": 104, \"coords\": [22.979949951171875, 9.588197708129883, 327.3464660644531, 469.43597412109375], \"blocks\": [[24.81999969482422, 9.588197708129883, 305.1889953613281, 21.5734806060791], [23.35986328125, 23.504501342773438, 327.3464660644531, 447.79534912109375], [22.979949951171875, 453.07830810546875, 305.26092529296875, 469.43597412109375]]}, {\"page_num\": 105, \"coords\": [15.630218505859375, 9.592094421386719, 299.5567626953125, 304.9679260253906], \"blocks\": [[18.3799991607666, 9.592094421386719, 298.7550964355469, 21.402095794677734], [15.630218505859375, 23.926010131835938, 299.5567626953125, 304.9679260253906]]}]",
+        "chunk_index": 55,
+        "page_start": 99
+      },
+      "rank": 7
+    },
+    {
+      "raw_rank": 9,
+      "chunk_id": "39640bbbf94c2700:00092",
+      "distance": 0.7986363172531128,
+      "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+      "page_start": 172,
+      "page_end": 173,
+      "text": "The theory of depth perception assumes that the third dimension of space is lost in the two-dimensional retinal image. Perception must begin with form perception, the flat patchwork of colors in the visual field. But there are suppos­ edly cues for depth, which, if they are utilized, will add a third dimension to the flat visual field. A list of the cues for depth is given in most psychology textbooks: \nlinear perspective, apparent size, superposition, light and shade, relative motion, aerial perspective, accommodation (the monocular cues), along with binocular disparity and convergence (the binocular cues). You might suppose that adequate tests could be made of a prospective flier s ability to use these cues and that exper­ iments could be devised to find out whether or not they were learned. The trouble was that none of the tests based on the cues for depth predicted the success or failure of a student pilot, and none of the proposals for improving depth perception by training made it any easier to learn to fly. I was deeply puzzled by this fact. The accepted theory of depth perception did not work. It did not apply to problems where one might expect it to apply. 1 began to suspect that the traditional list of cues for depth was inadequate. And in the end I came to believe that the whole theory of depth perception was false. I suggested a new theory in a book on what I called the visual world (Gibson, 19506). I considered *‘the possibility that there is literally no such thing as a perception of space without the perception of a continuous background surface” (p. 6). I called this a ground theory of space perception to distinguish it from the air theory that seemed to underlie the old approach. The idea was that the world consisted of a basic surface with adjoining surfaces, not of bodies in empty air. The character of the visual world was given not by objects but by the back­ ground of the objects. Even the space of the airplane pilot, I said, was determ­ ined by the ground and the horizon of the earth, not by the air through which he flies. The notion of space of three dimensions with three axes for Cartesian coordinates was a great convenience for mathematics, I suggested, but an abstraction that had very little to do with actual perception. I would now describe the ground theory as a theory of the layout of surfaces. By layout, I mean the relations of surfaces to the ground and to one another, their arrangement. The layout includes both places and objects, together with other features. The theory asserts that the perception of surface layout is direct. This means that perception does not begin with two-dimensional form perception. Hence, there is no special kind of perception called depth perception, and the third dimension is not lost in the retinal image since it was never in the environ­ ment to begin with. It is a loose term. If depth means the dimension of an object that goes with height and width, there is nothing special about it. Height becomes depth when the object is seen from the top, and width becomes depth when the object is seen from the side. If depth means distance from here, then it involves self-perception and is continually changing as the observer moves about. The theory of depth perception is based on confusion and perpetuated by the fallacy of the retinal picture.\n\nExperimental Evidence for Direct Perception 141\n\nI now say that there is information in ambient light for the perception of the layout of surfaces but not that there are cues or clues for the perception of depth. The traditional list of cues is worthless if perception does not begin with a flat picture. I tried to reformulate the list in 1950 as “gradients and steps of retinal stimulation” (Gibson, 1950b, pp. 137 ff.). The hypothesis of gradients was a good beginning, but the reformulation failed. It had the great handicap of being based on physiological optics and the retinal image instead of ecological optics and the ambient array. Such is the hypothesis of the direct perception of surface layout. What is the evidence to support it? Some experiments had been carried out even before 1950, outdoor experiments in the open air instead of laboratory experiments with spots of light in a darkroom, but they were only a beginning (Gibson, 1947). Much more experimental evidence has accumulated in the last twenty- five years.\n\nThe Psychophysics of Space and Form Perception",
+      "meta": {
+        "bboxes": "[{\"page_num\": 172, \"coords\": [99.80000305175781, 61.65147399902344, 426.1598205566406, 606.0504760742188], \"blocks\": [[99.80000305175781, 61.65147399902344, 426.1598205566406, 606.0504760742188]]}]",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+        "collection": "rhetorical_ontology",
+        "is_image": false,
+        "is_notes": false,
+        "is_my_copy": false,
+        "is_clean_copy": true,
+        "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+        "page_start": 172,
+        "chunk_index": 92,
+        "doc_id": "39640bbbf94c2700",
+        "title_raw": "The Ecological Approach to Visual Perception.",
+        "mtime": 1771101202,
+        "content_type": "text",
+        "pdftotext_version": "24.02.0",
+        "author_raw": "Gibson, James J.",
+        "is_table": false,
+        "has_bboxes": true,
+        "qualifier": "Clean Copy",
+        "cleaning_version": "clean_v1",
+        "sha256": "325df1b4fe5d195315df7cb1daeb433b73812b03c3c348aea60bb2700b84131e",
+        "clean_sha256": "3834e7134cb9ffd49108f913ed2ac77003e2ef48182a77937e5460c2c58fedc1",
+        "source_method": "pymupdf+bbox",
+        "year": 2015,
+        "page_end": 173
+      },
+      "rank": 8
+    }
+  ]
+}
+[god-learn] $ python3 scripts/retrieval/verify_phase4.py Aristotle on time perception and discrimination
+[PHASE4_VERIFY_OK]
+- query='Aristotle on time perception and discrimination'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[god-learn] $ bash scripts/highlights/phase5check.sh
+
+--- AUDIT REPORT ---
+root: /home/dalton/projects/claudeflow-testing/corpus
+manifest: /home/dalton/projects/claudeflow-testing/scripts/ingest/manifest.jsonl
+total_pdfs: 50
+
+[PHASE2_COMPLETE] (50)
+  - dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf :: phase=2 ok
+  - dissertation/in_progress/rhetorical phantasia test.pdf :: phase=2 ok
+  - metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf :: phase=2 ok
+  - metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf :: phase=2 ok
+  - metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf :: phase=2 ok
+  - new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf :: phase=2 ok
+
+[OK] dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf
+[OK] dissertation/in_progress/rhetorical phantasia test.pdf
+[OK] metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf
+[OK] metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf
+[OK] metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf
+[OK] metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf
+[OK] metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf
+[OK] metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf
+[OK] metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf
+[OK] metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf
+[OK] new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf
+[OK] new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf
+[OK] rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf
+[OK] rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf
+
+--- VERIFY REPORT (OK) ---
+OK=50 FAIL=0 TOTAL=50
+[PHASE4_VERIFY_OK]
+- query='phantasia and action'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[OK] Wrote:
+  /tmp/no_hl.txt
+  /tmp/with_hl.txt
+Diff (first 120 lines):
+--- /tmp/no_hl.txt	2026-03-26 22:31:00.790679240 -0700
++++ /tmp/with_hl.txt	2026-03-26 22:31:02.112611018 -0700
+@@ -6,51 +6,51 @@
+ 
+ [RESULTS]
+ 
+-01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  (raw_rank=1)
++01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  final_score=0.7484066486358643  hl_count=0  boost=0.0000  (raw_rank=1)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=303-305
+ 
+-02. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  (raw_rank=2)
++02. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  final_score=0.8132696557044983  hl_count=1  boost=0.0200  (raw_rank=4)
++    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
++    pages=22-24
++
++03. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  final_score=0.8133007287979126  hl_count=0  boost=0.0000  (raw_rank=2)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+     pages=167-169
+ 
+-03. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  (raw_rank=3)
++04. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  final_score=0.8137480616569519  hl_count=0  boost=0.0000  (raw_rank=3)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=279-281
+ 
+-04. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  (raw_rank=4)
+-    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+-    pages=22-24
+-
+-05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  (raw_rank=6)
++05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  final_score=0.851164698600769  hl_count=0  boost=0.0000  (raw_rank=6)
+     path_rel=rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+     pages=292-292
+ 
+-06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  (raw_rank=7)
++06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  final_score=0.8536148071289062  hl_count=0  boost=0.0000  (raw_rank=7)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=294-294
+ 
+-07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  (raw_rank=8)
++07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  final_score=0.864859938621521  hl_count=0  boost=0.0000  (raw_rank=8)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+     pages=18-18
+ 
+-08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  (raw_rank=9)
++08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  final_score=0.8705873489379883  hl_count=0  boost=0.0000  (raw_rank=9)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+     pages=215-215
+ 
+-09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  (raw_rank=10)
++09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  final_score=0.8722628355026245  hl_count=0  boost=0.0000  (raw_rank=10)
+     path_rel=rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+     pages=13-14
+ 
+-10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  (raw_rank=11)
++10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  final_score=0.8786800503730774  hl_count=0  boost=0.0000  (raw_rank=11)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=162-164
+ 
+-11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  (raw_rank=12)
++11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  final_score=0.8806346654891968  hl_count=0  boost=0.0000  (raw_rank=12)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=24-26
+ 
+-12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  (raw_rank=13)
++12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  final_score=0.8811410665512085  hl_count=0  boost=0.0000  (raw_rank=13)
+     path_rel=rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+     pages=252-254
+ 
+[god-learn] $ python3 scripts/learn/promote_hits.py --hits_json /tmp/phase4_hits.json --query Aristotle on time perception and discrimination
+22:31:02 [INFO    ] god-learn.phase6.promote: Starting promotion [hits_json=/tmp/phase4_hits.json, query=Aristotle on time perception and discrimination, min_chars=40, max_units=0, dry_run=False]
+22:31:02 [INFO    ] god-learn.phase6.promote: Promotion complete [promoted=8, total_indexed=23, knowledge_file=god-learn/knowledge.jsonl, index_file=god-learn/index.json]
+[Phase6:promote_hits] promoted=8 total_indexed=23
+[Phase6:promote_hits] wrote: god-learn/knowledge.jsonl
+[Phase6:promote_hits] index: god-learn/index.json
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 2
+[god-learn] normalize: sorted 23 KUs and rebuilt index (23 offsets)
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 3

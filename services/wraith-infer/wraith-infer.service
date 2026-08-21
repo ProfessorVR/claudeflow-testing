@@ -1,0 +1,19 @@
+[Unit]
+Description=wraith-infer — GPU inference (gte-Qwen2 embeddings + bge-reranker) on :8100
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=dalton
+WorkingDirectory=/home/dalton/wraith-infer
+# Pin to GPU 1: GPU 0 is the display/nouveau GPU and faults (cudaErrorLaunchFailure) under
+# sustained CUDA compute. Override only after GPU 0 is confirmed headless/healthy.
+Environment=CUDA_VISIBLE_DEVICES=1
+Environment=WRAITH_INFER_PORT=8100
+ExecStart=/home/dalton/wraith-infer/.venv/bin/python /home/dalton/wraith-infer/server.py
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

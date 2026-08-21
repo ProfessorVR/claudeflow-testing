@@ -1,0 +1,551 @@
+[god-learn] $ python3 scripts/retrieval/query_chunks.py Heidegger ecstatic temporality Dasein stretched along Gewesenheit Gegenwart Zukunft towards-oneself back-to alongside Being and Time H.329 --k 8 --overfetch 30 --include_docs --print_json --where {"collection":"rhetorical_ontology"}
+{
+  "query": "Heidegger ecstatic temporality Dasein stretched along Gewesenheit Gegenwart Zukunft towards-oneself back-to alongside Being and Time H.329",
+  "config": {
+    "chroma_dir": "vector_db_1536",
+    "collection": "knowledge_chunks",
+    "k": 8,
+    "overfetch": 30,
+    "where": {
+      "collection": "rhetorical_ontology"
+    },
+    "filters": {
+      "require_my_copy": false,
+      "collection_filter": null,
+      "keep_biblio": false
+    },
+    "include_docs": true,
+    "use_highlights": false,
+    "highlights_index": "scripts/highlights/highlight_index.json",
+    "highlight_alpha": 0.02,
+    "highlight_cap": 5
+  },
+  "results": [
+    {
+      "raw_rank": 1,
+      "chunk_id": "f6041c1a815c83f1:00168",
+      "distance": 0.5667663216590881,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 272,
+      "page_end": 275,
+      "text": "1. 6 Being and Tiw ǹ73\n\ntruth, the kind of research in which entities are uncovered, and its accom­ panying truth, must be defined ontologically. The answer to the question of the meaning of Being has yet to be given (steht . . . aus]. What has our fundamental analysis ofDasein, as we have carried it out so far, contributed to working out this question ? By laying bare the phenomenon of care, we have clarified the state of Being of that entity to whose Being something like an understanding of Being belongs. At the same time the Being of Dasein has thus been distinguished from modes of Being (readiness-to-hand, presence-at-hand, Reality) which characterize entities with a character other than that of Dasein. Under­ standing has itself been elucidated ; and at the same time the method-' ological transparency of the procedure of Interpreting Being by under­ standing it and interpreting it, has thus been guaranteed. If in care we have arrived at Dasein's primordial state of Being, then\n\nthis must also be the basis for conceptualizing that understanding of Being which lies in care; that is to say, it must be possible to define the meaning of Being. But is the phenomenon of care one in which the most primordial existential-ontological state of Dasein is disclosed ? And has the structural manifoldness which lies in this phenomenon, presented us with the most primordial totality of factical Dasein's Being ? Has our\n\ninvestigation up to this point ever brought Dasein into view as a whole?\n\nDIVISION TWO\n\nDASEIN AND TEMPORALITY1\n\nĞ 45· The Outcome of the Preparatory Fundamental Ana!Jsis of Dasein, and the Task of a Primordial Existential Interpretation of this Entiry\n\nWHAT have we gained by our preparatory analysis of Dasein, and what are we seeking? In Being-in-the-world, whose essential structures centre\n\nin disclosedness, we have found the basic state of the entity we have taken as our theme. The totality of Being-in-the-world as a structural whole has revealed itself as care. In care the Being of Dasein is included. When we came to analyse this Being, we took as our clue existence!, which, in anti­ cipation, we had designated as the essence of Dasein. This term \"exist­ ence\" formally indicates that Dasein is as an understanding potentiality­ for-Being, which, in its Being, makes an issue of that Being itself. In every case, I myself am the entity which is in such a manner [dergestalt seiend]. By working out the phenomenon of care, we have given ourselves an insight into the concrete constitution of existence-that is, an insight into its equiprimordial connection with Dasein's facticity and its falling. What we are seeking is the answer to the question about the meaning of Being in general, and, prior to that, the possibility of working out in a\n\nradical manner this basic question of all ontology. But to lay bare the horizon within which something like Being in general becomes intelligible, is tantamount to clarifying the possibility of having any understanding of Being at all-an understanding which itself belongs to the constitution of the entity called Dasein.H The understanding of Being, however, cannot be radical!J clarified as an essential element in Dasein's Being, unless the entity to whose Being it belongs, has been Interpreted primordial!J in itself with regard to its Being. Are we entitled to the claim that in characterizing Dasein ontologically qua care we have given a primordial Interpretation of this entity? By what criterion is the existential analytic of Dasein to be assessed as regards its\n\n1 'Dasein und Zeitlichkeit'. In this heading and in others which follow in this Division, we have capitalized such words as 'temporal' and 'constitution' in accordance with normal practice in titles, even when this violates the orthographic conventions of our translation.\n\nII Being and Time 2 7 5",
+      "meta": {
+        "author_raw": "Heidegger, Martin",
+        "title_raw": "Being and Time",
+        "collection": "rhetorical_ontology",
+        "qualifier": "My Copy",
+        "cleaning_version": "clean_v1",
+        "is_image": false,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "chunk_index": 168,
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "is_table": false,
+        "mtime": 1771101202,
+        "year": 1962,
+        "is_notes": false,
+        "source_method": "pymupdf+bbox",
+        "is_clean_copy": false,
+        "clean_sha256": "c5c1e7857ce3c5f4a9e51473b780ada06bb596caf69e1cb2ff0812100c350363",
+        "bboxes": "[{\"page_num\": 286, \"coords\": [21.629913330078125, 139.28819274902344, 329.353759765625, 468.7344055175781], \"blocks\": [[21.629913330078125, 139.28819274902344, 329.353759765625, 468.7344055175781]]}, {\"page_num\": 287, \"coords\": [15.269927978515625, 9.490848541259766, 298.8346862792969, 404.4625549316406], \"blocks\": [[16.0, 9.490848541259766, 296.819091796875, 21.061372756958008], [15.839996337890625, 23.67970848083496, 297.5139465332031, 32.939109802246094], [24.8699951171875, 34.801109313964844, 297.95166015625, 43.88840866088867], [15.999969482421875, 45.561119079589844, 297.8294982910156, 54.64841842651367], [15.8599853515625, 56.41112518310547, 297.80450439453125, 65.49842071533203], [16.219970703125, 63.86561965942383, 298.13494873046875, 76.52322387695312], [15.359954833984375, 77.63863372802734, 296.2818908691406, 98.48257446289062], [24.649940490722656, 99.8911361694336, 297.0830383300781, 108.97843170166016], [15.99993896484375, 110.45378112792969, 297.5799255371094, 119.75843048095703], [15.569915771484375, 120.68144226074219, 297.6349792480469, 130.54844665527344], [16.219940185546875, 132.2011260986328, 296.0479431152344, 141.28843688964844], [15.99993896484375, 142.29164123535156, 296.0687255859375, 152.41844177246094], [16.5599365234375, 154.1111297607422, 297.3725280761719, 163.1984405517578], [15.999954223632812, 165.15113830566406, 167.83148193359375, 174.2384490966797], [24.869956970214844, 175.9511260986328, 298.215576171875, 185.03843688964844], [15.569976806640625, 186.77113342285156, 297.26116943359375, 195.8584442138672], [15.99993896484375, 197.10862731933594, 298.5705871582031, 218.0125732421875], [15.7899169921875, 219.53111267089844, 298.19549560546875, 228.61842346191406], [15.269927978515625, 230.50111389160156, 298.13555908203125, 239.5884246826172], [15.5699462890625, 240.19322204589844, 297.79449462890625, 251.27700805664062], [15.999969482421875, 252.99110412597656, 298.19482421875, 262.0783996582031], [15.99993896484375, 263.7311096191406, 297.7190246582031, 272.8183898925781], [15.99993896484375, 274.7011413574219, 296.48443603515625, 283.7884216308594], [15.99993896484375, 285.5511169433594, 298.2283630371094, 294.6383972167969], [15.99993896484375, 296.47113037109375, 298.3694152832031, 305.55841064453125], [15.679946899414062, 306.755615234375, 296.5072937011719, 316.4984130859375], [15.7899169921875, 318.5211486816406, 298.1817321777344, 327.6084289550781], [15.99993896484375, 329.2811279296875, 298.116455078125, 338.368408203125], [15.789947509765625, 340.1711120605469, 298.057373046875, 349.2583923339844], [15.789947509765625, 351.3311462402344, 298.21893310546875, 360.4184265136719], [15.789947509765625, 362.2811279296875, 298.1240539550781, 371.368408203125], [15.569976806640625, 372.9111328125, 296.4700622558594, 381.9984130859375], [15.569976806640625, 383.97113037109375, 298.8346862792969, 404.4625549316406]]}]",
+        "doc_id": "f6041c1a815c83f1",
+        "has_bboxes": true,
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "content_type": "text",
+        "page_start": 272,
+        "is_my_copy": true,
+        "page_end": 275,
+        "pdftotext_version": "24.02.0"
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 286, \"coords\": [21.629913330078125, 139.28819274902344, 329.353759765625, 468.7344055175781], \"blocks\": [[21.629913330078125, 139.28819274902344, 329.353759765625, 468.7344055175781]]}, {\"page_num\": 287, \"coords\": [15.269927978515625, 9.490848541259766, 298.8346862792969, 404.4625549316406], \"blocks\": [[16.0, 9.490848541259766, 296.819091796875, 21.061372756958008], [15.839996337890625, 23.67970848083496, 297.5139465332031, 32.939109802246094], [24.8699951171875, 34.801109313964844, 297.95166015625, 43.88840866088867], [15.999969482421875, 45.561119079589844, 297.8294982910156, 54.64841842651367], [15.8599853515625, 56.41112518310547, 297.80450439453125, 65.49842071533203], [16.219970703125, 63.86561965942383, 298.13494873046875, 76.52322387695312], [15.359954833984375, 77.63863372802734, 296.2818908691406, 98.48257446289062], [24.649940490722656, 99.8911361694336, 297.0830383300781, 108.97843170166016], [15.99993896484375, 110.45378112792969, 297.5799255371094, 119.75843048095703], [15.569915771484375, 120.68144226074219, 297.6349792480469, 130.54844665527344], [16.219940185546875, 132.2011260986328, 296.0479431152344, 141.28843688964844], [15.99993896484375, 142.29164123535156, 296.0687255859375, 152.41844177246094], [16.5599365234375, 154.1111297607422, 297.3725280761719, 163.1984405517578], [15.999954223632812, 165.15113830566406, 167.83148193359375, 174.2384490966797], [24.869956970214844, 175.9511260986328, 298.215576171875, 185.03843688964844], [15.569976806640625, 186.77113342285156, 297.26116943359375, 195.8584442138672], [15.99993896484375, 197.10862731933594, 298.5705871582031, 218.0125732421875], [15.7899169921875, 219.53111267089844, 298.19549560546875, 228.61842346191406], [15.269927978515625, 230.50111389160156, 298.13555908203125, 239.5884246826172], [15.5699462890625, 240.19322204589844, 297.79449462890625, 251.27700805664062], [15.999969482421875, 252.99110412597656, 298.19482421875, 262.0783996582031], [15.99993896484375, 263.7311096191406, 297.7190246582031, 272.8183898925781], [15.99993896484375, 274.7011413574219, 296.48443603515625, 283.7884216308594], [15.99993896484375, 285.5511169433594, 298.2283630371094, 294.6383972167969], [15.99993896484375, 296.47113037109375, 298.3694152832031, 305.55841064453125], [15.679946899414062, 306.755615234375, 296.5072937011719, 316.4984130859375], [15.7899169921875, 318.5211486816406, 298.1817321777344, 327.6084289550781], [15.99993896484375, 329.2811279296875, 298.116455078125, 338.368408203125], [15.789947509765625, 340.1711120605469, 298.057373046875, 349.2583923339844], [15.789947509765625, 351.3311462402344, 298.21893310546875, 360.4184265136719], [15.789947509765625, 362.2811279296875, 298.1240539550781, 371.368408203125], [15.569976806640625, 372.9111328125, 296.4700622558594, 381.9984130859375], [15.569976806640625, 383.97113037109375, 298.8346862792969, 404.4625549316406]]}]",
+      "rank": 1
+    },
+    {
+      "raw_rank": 3,
+      "chunk_id": "f6041c1a815c83f1:00018",
+      "distance": 0.6125965714454651,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 41,
+      "page_end": 43,
+      "text": "1 'weltgeschichtliches Geschehen'. While the verb 'geschehen' ordinarily means to \n'happen', and will often be so translated, Heidegger stresses its etymological kinship to \n'Geschichte' or 'history'. To bring out this connection, we have coined the verb 'historize', which might be paraphrased as to 'happen in a historical way' ; we shall usually translate \n'geschehen' this way in contexts where history is being discussed. We trust that the reader will keep in mind that such 'historizing' is characteristic of all historical entities, and is not the sort of thing that is done primarily by historians (as 'philosophizing', for instance, is done by philosophers). (On 'world-historical' see H. 381 ff.) 2 'Das Dasein \"ist\" seine Vergangenheit in der Weise seines Seins, das, roh gesagt, jeweils a us seiner Zukunft her \"geschieht\" .' , , 3 'Historizitat'. Cf. note 2, p. 3 1 . H. 10 above. \n'\n\nBeing and Time INT. II\n\npossess, only because historicality is a determining characteristic for\n\nDasein in the very basis of its Being. If this historicality remains hidden\n\nfrom Dasein, and as long as it so remains, Dasein is also denied the\n\npossibility of historiological inquiry or the discovery of history. If his­\n\ntoriology is wanting, this is not evidence against Dasein's historicality; on\n\nthe contrary, as a deficient mode1 of this state of Being, it is evidence for\n\nit. Only because it is 'historical' can an era be unhistoriological.\n\nOn the other hand, if Dasein has seized upon its latent possibility not\n\nonly of making its own existence transparent to itself but also of inquiring\n\ninto the meaning of existentiality itself (that is to say, of previously\n\ninquiring into the meaning of Being in general), and if by such inquiry\n\nits eyes have been opened to its own essential historicality, then one cannot\n\nfail to see that the inquiry into Being (the ontico-ontological necessity of\n\nwhich we have already indicated) is itself characterized by historicality.\n\nThe ownmost meaning of Being which belongs to the inquiry into Being a s a n historical inquiry, gives u s the assignment [Anweisung] o f inquiring\n\ninto the history of that inquiry itself, that is, of becoming historiological.\n\nIn working out the question of Being, we must heed this assignment, so\n\nthat by positively making the past our own, we may bring ourselves into\n\nfull possession of the ownmost possibilities of such inquiry. The question\n\nof the meaning of Being must be carried through by explicating Dasein\n\nbeforehand in its temporality and historicality; the question thus brings\n\nitself to the point where it understands itself as historiological.\n\nOur preparatory Interpretation of the fundamental structures of\n\nDasein with regard to the average kind of Being which is closest to it\n\n(a kind of Being -i.Q. which it is therefore proximally historical as well),\n\nwill make manifest, however, not only that Dasein is inclined to fall back\n\nupon its world (the world in which it is) and to interpret itself in terms of\n\nthat world by its reflected light, but also that Dasein simultaneously falls\n\nprey to the tradition of which it has more or less explicitly taken hold.11\n\nThis tradition keeps it from providing its own guidance, whether in\n\n1 'defizienter Modus'. Heidegger likes to think of certain characteristics as occuring in various ways or 'modes', among which may be included certain ways of 'not occurring' or 'occurring only to an inadequate extent' or, in general, occurring 'deficiently'. It is as if zero and the negative integers were to be thought of as representing 'deficient modes of being a positive integer'. 2 ' • • • das Dasein hat nicht nur die Geneigtheit, an seine Welt, in der es ist, zu verfallen and reluzent aus ihr her sich auszulegen, Dasein verfillt in eins damit auch seiner mehr oder minder ausdriicklich ergriffenen Tradition.' The verb 'verfallen' is one which Heidegger will use many times. Though we shall usually translate it simply as 'fall', it has the connotation of deteriorating, collapsing, or falling down. Neither our 'fall back upon' nor our 'falls prey to' is quite right : but 'fall upon' and 'fall on to', which are more literal, would be misleading for 'an • . . zu verfallen'; and though 'falls to the lot of' and 'devolves upon' would do well for 'verfallt' with the dative in other contexts, they will not do so well here.\n\nINT. II Being and Time",
+      "meta": {
+        "title_raw": "Being and Time",
+        "mtime": 1771101202,
+        "is_notes": false,
+        "qualifier": "My Copy",
+        "page_start": 41,
+        "source_method": "pymupdf+bbox",
+        "chunk_index": 18,
+        "is_clean_copy": false,
+        "doc_id": "f6041c1a815c83f1",
+        "page_end": 43,
+        "author_raw": "Heidegger, Martin",
+        "content_type": "text",
+        "bboxes": "[{\"page_num\": 41, \"coords\": [23.999969482421875, 290.7708740234375, 306.45892333984375, 470.35137939453125], \"blocks\": [[24.64996337890625, 290.7708740234375, 305.2943420410156, 305.58160400390625], [25.090011596679688, 306.52899169921875, 305.5475769042969, 316.43157958984375], [25.29998779296875, 317.16900634765625, 305.50946044921875, 327.07159423828125], [25.059967041015625, 328.22900390625, 305.71234130859375, 338.131591796875], [25.0899658203125, 339.0989990234375, 306.45892333984375, 349.4425354003906], [25.019989013671875, 349.968994140625, 305.25274658203125, 359.87158203125], [24.649978637695312, 360.8789978027344, 305.6405334472656, 370.7815856933594], [24.64996337890625, 371.76898193359375, 305.3890380859375, 381.67156982421875], [24.439971923828125, 382.47900390625, 305.50006103515625, 392.381591796875], [24.759979248046875, 392.8689880371094, 55.196678161621094, 402.7715759277344], [33.72998046875, 404.4289855957031, 305.7632751464844, 414.3315734863281], [23.999969482421875, 414.6189880371094, 305.6175537109375, 425.06207275390625], [24.489990234375, 426.27899169921875, 305.4147644042969, 436.18157958984375], [24.219970703125, 436.90899658203125, 305.69317626953125, 446.81158447265625], [23.999969482421875, 447.3489990234375, 105.04256439208984, 457.2515869140625], [56.439964294433594, 459.4700622558594, 271.4973449707031, 470.35137939453125]]}, {\"page_num\": 42, \"coords\": [23.019866943359375, 9.99858283996582, 327.4161071777344, 470.5065612792969], \"blocks\": [[23.56999969482422, 9.99858283996582, 194.0238494873047, 20.17251968383789], [24.009994506835938, 22.14325714111328, 327.4161071777344, 383.7891845703125], [23.019866943359375, 388.3382873535156, 306.3320617675781, 470.5065612792969]]}, {\"page_num\": 43, \"coords\": [25.52001953125, 9.508993148803711, 308.1133117675781, 65.52157592773438], \"blocks\": [[137.72999572753906, 9.508993148803711, 308.0566101074219, 20.232547760009766], [26.3800048828125, 23.088979721069336, 308.1133117675781, 32.9915771484375], [26.3800048828125, 34.0789680480957, 307.84820556640625, 43.9815673828125], [26.170013427734375, 45.10896682739258, 307.7019348144531, 55.011566162109375], [25.52001953125, 55.61897659301758, 306.000244140625, 65.52157592773438]]}]",
+        "cleaning_version": "clean_v1",
+        "year": 1962,
+        "has_bboxes": true,
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "pdftotext_version": "24.02.0",
+        "is_image": false,
+        "is_my_copy": true,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "is_table": false,
+        "collection": "rhetorical_ontology",
+        "clean_sha256": "08e54addeda3b47af0a629fbfcae244c14f8d159cccf43c0eb78fb920473e96b"
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 41, \"coords\": [23.999969482421875, 290.7708740234375, 306.45892333984375, 470.35137939453125], \"blocks\": [[24.64996337890625, 290.7708740234375, 305.2943420410156, 305.58160400390625], [25.090011596679688, 306.52899169921875, 305.5475769042969, 316.43157958984375], [25.29998779296875, 317.16900634765625, 305.50946044921875, 327.07159423828125], [25.059967041015625, 328.22900390625, 305.71234130859375, 338.131591796875], [25.0899658203125, 339.0989990234375, 306.45892333984375, 349.4425354003906], [25.019989013671875, 349.968994140625, 305.25274658203125, 359.87158203125], [24.649978637695312, 360.8789978027344, 305.6405334472656, 370.7815856933594], [24.64996337890625, 371.76898193359375, 305.3890380859375, 381.67156982421875], [24.439971923828125, 382.47900390625, 305.50006103515625, 392.381591796875], [24.759979248046875, 392.8689880371094, 55.196678161621094, 402.7715759277344], [33.72998046875, 404.4289855957031, 305.7632751464844, 414.3315734863281], [23.999969482421875, 414.6189880371094, 305.6175537109375, 425.06207275390625], [24.489990234375, 426.27899169921875, 305.4147644042969, 436.18157958984375], [24.219970703125, 436.90899658203125, 305.69317626953125, 446.81158447265625], [23.999969482421875, 447.3489990234375, 105.04256439208984, 457.2515869140625], [56.439964294433594, 459.4700622558594, 271.4973449707031, 470.35137939453125]]}, {\"page_num\": 42, \"coords\": [23.019866943359375, 9.99858283996582, 327.4161071777344, 470.5065612792969], \"blocks\": [[23.56999969482422, 9.99858283996582, 194.0238494873047, 20.17251968383789], [24.009994506835938, 22.14325714111328, 327.4161071777344, 383.7891845703125], [23.019866943359375, 388.3382873535156, 306.3320617675781, 470.5065612792969]]}, {\"page_num\": 43, \"coords\": [25.52001953125, 9.508993148803711, 308.1133117675781, 65.52157592773438], \"blocks\": [[137.72999572753906, 9.508993148803711, 308.0566101074219, 20.232547760009766], [26.3800048828125, 23.088979721069336, 308.1133117675781, 32.9915771484375], [26.3800048828125, 34.0789680480957, 307.84820556640625, 43.9815673828125], [26.170013427734375, 45.10896682739258, 307.7019348144531, 55.011566162109375], [25.52001953125, 55.61897659301758, 306.000244140625, 65.52157592773438]]}]",
+      "rank": 2
+    },
+    {
+      "raw_rank": 4,
+      "chunk_id": "f6041c1a815c83f1:00276",
+      "distance": 0.6182690262794495,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 439,
+      "page_end": 439,
+      "text": "By repetition, Dasein first has its own history made manifest. Historizing is\n\nitself grounded existentially in the fact that Dasein, as temporal, is open\n\necstatically; so too is the disclosedness which belongs to historizing, or\n\nrather so too is the way in which we make this disclosedness our own.\n\nThat which we have hitherto been characterizing as \"historicality\" to\n\nconform with the kind of historizing which lies in anticipatory resolute­\n\nness, we now designate as Dasein's \"authentic historicality\". From the\n\nphenomena of handing down and repeating, which are rooted in the 1 'Die Wiederholung liisst sich, einem entschlosenen Sichentwerfen entspringend, nicht vom \"Vergangenen\" iiberreden, urn es als das vormals Wirkliche nur wieder­ kehren zu lase.1. Die Wiederholung erwidert vielmehr die Moglichkeit der dagewesenen Existenz. Die Erwiderung der Maglichkeit im Entschluss ist aber zugleich als augenblick­ liche der Widemlf desen, was in Heute sich als \"Vergangenheit\" auswirkt.' The idea seems to be that in resolute repetition one is having, as it were, a conversation with the past, in which the past proposes certain posibilities for adoption, but in which one makes a rejoinder to this proposal by 'reciprocating' with the proposal of other possibilities as a sort of rebuke to the past, which one now disavows. (The punning treatment of 'wieder' and 'wider' is presumably intentional.)\n\nII. 5 Being and Time \n\nfuture, it has become plain why the historizing of authentic history lies preponderantly in having been. But it remains all the more enigmatic in what way this historizing, as fate, is to constitute the whole 'connectedness' ofDasein from its birth to its death. How can recourse to resoluteness bring us any enlightenment? Is not each resolution just one more single \n'Experience' in the sequence of the whole connectedness of our Exper­ iences ? Is the 'connectedness' of authentic historizing to consist, let us say, of an uninterrupted sequence of resolutions ? Why is it that the question of how the 'connectedness of life' is Constituted finds no adequate and satisfying answer? Is not our investigation overhasty ? Does it not, in the end, hang too much on the answer, without first having tested the legi­ timacy of the question? Nothing is so plain from the course of the existential analytic so far, as the Fact that the ontology of Dasein is always falling back upon the allurements of the way in which Being is ordinarily understood. The only way of encountering this fact methodologically is by studying the source of the question of how Dasein's connectedness is Con­ stituted, no matter how 'obvious' this question may be, and by determining within what ontological horizon it moves. If historicality belongs to the Being of Dasein, then even inauthentic existing must be historical. What if it is Dasein's inauthentic historicality that has directed our questioning to the 'connectedness of life' and has blocked off our access to authentic historicality and its own peculiar 'con­ nectedness' ? However this may be treated, we cannot do without a study of Dasein's inauthentic historicality if our exposition of the ontological problem of history is to be adequate and complete.\n\nq 75· Dasein's Historicality, and World-history\n\nProximally and for the most part, Dasein understands itself in terms of that which it encounters in the environment and that with which it is circumspectively concerned. This understanding is not just a bare taking cognizance of itself, such as accompanies all Dasein's ways of behaving. Understanding signifies one's projecting oneself upon one's current possibility of Being-in-the-world; that is to say, it signifies existing as this possibility. Thus understanding, as common sense, constitutes even the inauthentic existence of the \"they\". When we are with one another in public, our everyday concern does not encounter just equipment and work; it likewise encounters what is 'given' along with these : 'affairs', undertakings, incidents, mishaps. The 'world' belongs to everyday trade and traffic as the soil from which they grow and the arena where they are dis­ played. When we are with one another in public, the Others are encountered in activity of such a kind that one is 'in the swim' with it 'oneself'.\n\nBeing and Time II. 5",
+      "meta": {
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "mtime": 1771101202,
+        "is_clean_copy": false,
+        "page_start": 439,
+        "page_end": 439,
+        "bboxes": "[{\"page_num\": 454, \"coords\": [20.86993408203125, 262.21136474609375, 329.7386474609375, 471.11224365234375], \"blocks\": [[20.86993408203125, 262.21136474609375, 329.7386474609375, 471.11224365234375]]}, {\"page_num\": 455, \"coords\": [27.789962768554688, 9.422111511230469, 310.87884521484375, 470.3750915527344], \"blocks\": [[27.899999618530273, 9.422111511230469, 196.00088500976562, 22.4507999420166], [27.789962768554688, 23.696819305419922, 310.87884521484375, 470.3750915527344]]}]",
+        "has_bboxes": true,
+        "doc_id": "f6041c1a815c83f1",
+        "content_type": "text",
+        "is_table": false,
+        "cleaning_version": "clean_v1",
+        "is_my_copy": true,
+        "pdftotext_version": "24.02.0",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "is_image": false,
+        "collection": "rhetorical_ontology",
+        "chunk_index": 276,
+        "title_raw": "Being and Time",
+        "author_raw": "Heidegger, Martin",
+        "source_method": "pymupdf+bbox",
+        "clean_sha256": "60b6c621cc696528f16cfc3297c4ff82b638e5bf6aecbd035eb16d9d89477eb8",
+        "year": 1962,
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "qualifier": "My Copy",
+        "is_notes": false
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 454, \"coords\": [20.86993408203125, 262.21136474609375, 329.7386474609375, 471.11224365234375], \"blocks\": [[20.86993408203125, 262.21136474609375, 329.7386474609375, 471.11224365234375]]}, {\"page_num\": 455, \"coords\": [27.789962768554688, 9.422111511230469, 310.87884521484375, 470.3750915527344], \"blocks\": [[27.899999618530273, 9.422111511230469, 196.00088500976562, 22.4507999420166], [27.789962768554688, 23.696819305419922, 310.87884521484375, 470.3750915527344]]}]",
+      "rank": 3
+    },
+    {
+      "raw_rank": 5,
+      "chunk_id": "0950ef01880ad8ae:00144",
+      "distance": 0.6284118294715881,
+      "path_rel": "rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+      "page_start": 273,
+      "page_end": 275,
+      "text": "Don't forget, however, that Plato equated the divine with the abstract, apparendy because both transcend the realm of the senses. Hence, nearly everything that this greatest of dialecticians says of \"heaven\" can be profitably read as a statement about language. And that man cheats himself who avoids Plato because of a preference for purely secular thought. Even the doctrine of the heavenly \"archetypes\" is sound enough, if read as a statement about the relationship between class names and names for the individuals thus classified by a common essence. And Plato's account of the approach to \"divinity\" by the processes of dialectic generalizing, particularizing, and transcendence reveals in all thoroughness the abstractive nature of language. This is in contrast with the mere fragment of linguistic analysis which Korzybski would expand into a whole universe of discourse. Korzybski's contribution, we have said, resides in his having said \"alas!\" to an aspect of linguistic transcendence that Plato considers edifying. But one may doubt whether even this helpful admonition could survive a serious consideration of the Platonist dialectic as a whole.\n\nIn one sense, we might call Aristotle's metaphysics of motivation more dialectical than Plato's. Plato used dialectic as a method leading towards the discovery of truth. The dialectic was a means; the truth (knowledge of the Good) was its end. Aristotle finally dropped the dramatic form of the Platonic dialogue. He isolated method as a separate field, in his analysis of formal logic. And he dropped the process of conversational give and take about which Plato organized the stages of an exposition (and which, as we shall show in the last section of this book, was designed to produce a form wherein the end transcended the beginning). This way of development through the cooperative competition of divergent voices was dropped by Aristotle; but he attributed a dialectical structure to the very nature of the uni-\n\nverse. He did this by so revising the Platonist conception of the \"forms\" in their relation to \"matter\" that the pair went through a series of transpositions. Thus, the forms were conceived as arranged in a hierarchy of being, with the \"form\" of beings at each level constituting the \"matter\" of beings at the next higher level. This series was thought to ascend until you arrived at \"pure form,\" the motionless prime mover that moves all else not by being itself moved, but by being loved, the object of desire.\n\nWe might state this form-matter relation in terms of the actionmotion pair by saying that each order of being constituted the conditions of motion involved in the action of the next higher order. Human action, for instance, depends upon animal motion; animal action depends upon vegetative motion; vegetative action depends upon physical motion. Ordinarily in these pages, however, we have not used the terms in this particular dialectical way, but have confined \"action\" to the level of human rationality. The inducement to use the terms thus dialectically comes from the need to distinguish animal locomotion from lower orders of motivation, such as physical motion and vegetative growth. Whereupon, we get purely biological action, as with Santayana's \"animal faith.\"\n\nThe Aristotelian concept of the pure act as the final cause of all motion possesses possibilities of reversal. The motions toward it might be interpreted as motions derived from it (that is, final cause might be equated with efficient cause), particularly when Aristotle's God had been taken over by theologians who restored the usual generative principle to the concept of divinity. Subsequently, considering God as both a source and a purpose, mystics distinguished alternate moments, with the creation as an egressus from God followed by a regressus back to God; and then, having thus taken the two motives apart, the mystic could propose that they be conceived as joined together again, the possibilities of reversal in the Aristotelian concept thus being converted explicitly into an oxymoron. Aquinas unites the two directions (God as source and God as purpose) when he says that God is present in things: (1) after the manner of an efficient cause (but \"equivocally,\" as \"in the sun is the likeness of whatever is generated by the sun's power\"); (2) as the object of an operation is in the operator.\n\nOn a purely contextual basis, we could arrive at Aristotle's \"unmoved mover\" simply by the generalizing of \"motion.\" For the \"motion-\n\nACT 255",
+      "meta": {
+        "year": 1945,
+        "is_notes": false,
+        "path_rel": "rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+        "page_end": 275,
+        "pdftotext_version": "24.02.0",
+        "is_table": false,
+        "collection": "rhetorical_ontology",
+        "author_raw": "Burke, Kenneth",
+        "cleaning_version": "clean_v1",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+        "title_raw": "A Grammar of Motives",
+        "doc_id": "0950ef01880ad8ae",
+        "sha256": "4b3bc749bfd2f6e0252a84c899e4e66d99329aa4481d7c13a92ba5f24dde39b5",
+        "bboxes": "[{\"page_num\": 269, \"coords\": [53.259765625, 438.13037109375, 354.4213562011719, 543.0124358218163], \"blocks\": [[53.259765625, 438.13037109375, 354.4213562011719, 543.0124358218163]]}, {\"page_num\": 270, \"coords\": [43.3125, 25.65234375, 350.3671875, 544.3381194155663], \"blocks\": [[187.75, 25.65234375, 347.66015625, 38.65380468778312], [44.0859375, 41.68505859375, 347.8799743652344, 69.14562597684562], [44.0859375, 69.3779296875, 349.739990234375, 255.15911474637687], [43.3125, 254.7744140625, 350.0299987792969, 413.0084647219628], [44.859375, 411.603515625, 349.59375, 517.9120215456933], [45.6328125, 519.16845703125, 350.3671875, 544.3381194155663]]}, {\"page_num\": 271, \"coords\": [53.771484375, 47.2236328125, 355.9949951171875, 389.44921875], \"blocks\": [[53.771484375, 47.2236328125, 355.3799743652344, 126.72875585965812], [56.109375, 126.80419921875, 355.4037780761719, 257.98095703125], [56.109375, 258.85546875, 355.9949951171875, 389.44921875]]}]",
+        "is_my_copy": true,
+        "content_type": "text",
+        "qualifier": "My Copy",
+        "chunk_index": 144,
+        "is_image": false,
+        "is_clean_copy": false,
+        "page_start": 273,
+        "clean_sha256": "00f05331b35074e23ea33715c3724dc003288e1c39cd34dc770d8af5c6c897ea",
+        "mtime": 1774299079,
+        "has_bboxes": true,
+        "source_method": "marker+bbox"
+      },
+      "has_bboxes": true,
+      "source_method": "marker+bbox",
+      "bboxes": "[{\"page_num\": 269, \"coords\": [53.259765625, 438.13037109375, 354.4213562011719, 543.0124358218163], \"blocks\": [[53.259765625, 438.13037109375, 354.4213562011719, 543.0124358218163]]}, {\"page_num\": 270, \"coords\": [43.3125, 25.65234375, 350.3671875, 544.3381194155663], \"blocks\": [[187.75, 25.65234375, 347.66015625, 38.65380468778312], [44.0859375, 41.68505859375, 347.8799743652344, 69.14562597684562], [44.0859375, 69.3779296875, 349.739990234375, 255.15911474637687], [43.3125, 254.7744140625, 350.0299987792969, 413.0084647219628], [44.859375, 411.603515625, 349.59375, 517.9120215456933], [45.6328125, 519.16845703125, 350.3671875, 544.3381194155663]]}, {\"page_num\": 271, \"coords\": [53.771484375, 47.2236328125, 355.9949951171875, 389.44921875], \"blocks\": [[53.771484375, 47.2236328125, 355.3799743652344, 126.72875585965812], [56.109375, 126.80419921875, 355.4037780761719, 257.98095703125], [56.109375, 258.85546875, 355.9949951171875, 389.44921875]]}]",
+      "rank": 4
+    },
+    {
+      "raw_rank": 6,
+      "chunk_id": "0950ef01880ad8ae:00154",
+      "distance": 0.630628228187561,
+      "path_rel": "rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+      "page_start": 290,
+      "page_end": 292,
+      "text": "12 In studying the nature of linguistic action, one must always be on guard for evidence of Rhetorical action embedded in Grammar. A pure scenic approach\n\nACT 271\n\nAs the reason acts, and the body moves, so authorities could act by adopting policies to be carried out by others (who moved as slaves, servants, or assistants). Thus, eventually a \"ruling class\" (in accordwith the properties of its status) could become transformed from a class that \"does\" to a class that \"does not.\" It is the development we considered earlier with relation to the actus-status pair. Acts require properties of status; and the \"substantiality\" of such properties can be inherited independently of the act which was originally their generating principle. ance ?\n\nWe have already seen how Stoicism led into the Christian paradox, the \"revolutionary\" transvaluation whereby suffering (the passive) could be treated as an act (accounts of martyrdom, for instance, being termed either \"passionals\" or \"acts\"). We find this change emerging in Stoicism, with its emphasis upon the moral value of sufferance, and its great humanitarian sympathy with slavery—indeed, its tendency to dwell upon the ways in which all men are slaves and servants (to their appetites, emotions, errors, or to natural or political necessities). Christianity offered a doctrine whereby the subjects were persons, and in their passion were capable not merely of motion, but of action. It permitted one in a way to \"will\" his subjection—and in so doing it gave him a \"substantial\" freedom, a \"pure\" freedom. By the ambiguity of substance, or the paradox of purity, it could call a man free precisely because he was enslaved. And in calling him \"substantially\" free, in effect it invited him to make himself so in actuality (inviting him to translate his \"essential\" freedom into its \"existential\" counterpart, or to proceed from the \"form\" of freedom to its \"materialization\"). And by universalizing the concept of servitude (so that all\n\n*\n\nmen \"served,\" all men \"obeyed,\" all were \"patient,\" as Christians doing the work of the Lord), it could also include the realistic, Aristotelian concept of the free person. For if all men are slaves, or better, servants, it would be as true to say that no men are slaves, \"substantially.\" Hence all would merit a respect for themselves as persons; and it would be wrong to treat men merely as objects of use. Men's servitude to God, law, and other men would be dependent upon a voluntary submission to their divinely appointed status. jJuch a way would make of submission an act and not a mere sufferance. Or better, it made submission an act because sufferance itself was considered an act\n\nIn proportion as the servitude took the form of private enterprise, it endowed the \"servants\" with material powers. The \"passivity\" thus did, in the most obvious sense, become active, since ambitions netted results. The \"freedom\" of universal Christian \"servitude,\" thus in time became transformed into a condition of action, even revolutionary action, particularly since the ideals of private wealth could be Rhetorically stated as the ideal of a Christlike poor Church.\n\nAll told we have, as motivational patterns which psychologies more or less patendy realistic might exemplify: the action-passion and actusstatus pairs, the action-motion ambiguity, and the potential. These can be variously individuated in specific terminologies (as with different schools of psychology, religious or secular, or in the one-time motivational structures of particular biographies, histories, reports, poems, plays, and narrative fictions). Obviously the Grammatical principles here considered can merely suggest the broad categories by reference to which any particular vocabulary of motives would be classed. Such realistic reclamation would enable us to class \"ethical\" and \"scientifically neutral\" psychologies together with terms that can be applied to all such terminologies of motives. In brief, all psychologies can, without violence to their subject matter, be approached dramatistically, as vocabularies concerned with the kinds and conditions of action and passion.\n\nEven the most extreme behaviorism would belong here. We refer not only to its dramatistic placement in terms of a narrowed circumference that reduces action to motion. We refer also to the behaviorist concept of \"transference.\" According to this concept, the conditioned response to an object or situation of a certain quality may be trans-\n\nACT 273",
+      "meta": {
+        "path_rel": "rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+        "is_clean_copy": false,
+        "doc_id": "0950ef01880ad8ae",
+        "page_end": 292,
+        "is_my_copy": true,
+        "chunk_index": 154,
+        "author_raw": "Burke, Kenneth",
+        "content_type": "text",
+        "has_bboxes": true,
+        "is_table": false,
+        "pdftotext_version": "24.02.0",
+        "bboxes": "[{\"page_num\": 287, \"coords\": [51.03515625, 77.3779296875, 353.3203125, 539.1772058717906], \"blocks\": [[51.03515625, 77.3779296875, 349.39453125, 145.21040136739612], [67.5234375, 156.5078125, 333.5799865722656, 213.88364965841174], [52.60546875, 225.7099609375, 350.8299865722656, 330.657148193568], [118.166015625, 343.3828125, 284.2037353515625, 422.8046875], [51.8203125, 433.0244140625, 353.3203125, 539.1772058717906]]}, {\"page_num\": 288, \"coords\": [46.5234375, 25.9873046875, 353.578125, 545.1494140625], \"blocks\": [[190.10000610351562, 25.9873046875, 348.99951171875, 39.106824707239866], [48.849609375, 41.7548828125, 351.251953125, 97.44657690450549], [112.81933593749999, 101.61328125, 282.6298828125, 127.33024389669299], [46.5234375, 135.7763671875, 351.2067565917969, 215.901777099818], [48.849609375, 215.1982421875, 351.251953125, 348.01344091817737], [48.07421875, 348.0546875, 352.02734375, 492.88281250000006], [49.625, 492.00683593750006, 353.578125, 545.1494140625]]}]",
+        "source_method": "marker+bbox",
+        "is_notes": false,
+        "page_start": 290,
+        "clean_sha256": "ff4586f31951e9b593f04f0b6c3f15408839e325cc4597f15540734e1077fb41",
+        "is_image": false,
+        "collection": "rhetorical_ontology",
+        "title_raw": "A Grammar of Motives",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf",
+        "cleaning_version": "clean_v1",
+        "mtime": 1774299079,
+        "sha256": "4b3bc749bfd2f6e0252a84c899e4e66d99329aa4481d7c13a92ba5f24dde39b5",
+        "year": 1945,
+        "qualifier": "My Copy"
+      },
+      "has_bboxes": true,
+      "source_method": "marker+bbox",
+      "bboxes": "[{\"page_num\": 287, \"coords\": [51.03515625, 77.3779296875, 353.3203125, 539.1772058717906], \"blocks\": [[51.03515625, 77.3779296875, 349.39453125, 145.21040136739612], [67.5234375, 156.5078125, 333.5799865722656, 213.88364965841174], [52.60546875, 225.7099609375, 350.8299865722656, 330.657148193568], [118.166015625, 343.3828125, 284.2037353515625, 422.8046875], [51.8203125, 433.0244140625, 353.3203125, 539.1772058717906]]}, {\"page_num\": 288, \"coords\": [46.5234375, 25.9873046875, 353.578125, 545.1494140625], \"blocks\": [[190.10000610351562, 25.9873046875, 348.99951171875, 39.106824707239866], [48.849609375, 41.7548828125, 351.251953125, 97.44657690450549], [112.81933593749999, 101.61328125, 282.6298828125, 127.33024389669299], [46.5234375, 135.7763671875, 351.2067565917969, 215.901777099818], [48.849609375, 215.1982421875, 351.251953125, 348.01344091817737], [48.07421875, 348.0546875, 352.02734375, 492.88281250000006], [49.625, 492.00683593750006, 353.578125, 545.1494140625]]}]",
+      "rank": 5
+    },
+    {
+      "raw_rank": 7,
+      "chunk_id": "f6041c1a815c83f1:00042",
+      "distance": 0.6330286264419556,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 79,
+      "page_end": 81,
+      "text": "1 Here we follow the older editions in reading, 'Ausweisung'. The newer editions have \n'Aufweisung' ('exhibition'). 2 ' • • • Verfassung des Daseins . . .' The earliest editions read 'Wesens' instead \n'Daseins'. Correction is made in a list of erata.\n\n8o Being and Time \n1. 2\n\na spatial 'in-one-another-ness' of things present-at-hand, any more than the word 'in' primordially signifies a spatial relationship of this kind.t 'In' is derived from \"innan\"-\"to reside'? \"habitare\", \"to dwell\" (sich auf hal­ ten]. 'An' signifies \"I am accustomed\", \"I am familiar with\", \"I look after something\". 2 It has the signification of\"colo\" in the senses of \"habito\" and \"diligo\". The entity to which Being-in in this signification belongs is one which we have characterized as that entity which in each case I myself am (bin]. The expression 'bin' is connected with 'bei', and so 'ich bin' ['I am'] means in its turn \"I reside\" or \"dwell alongside\" the world, as that which is familiar to me in such and such a way. 3 \n\"Being\" [Sein], as the infinitive of 'ich bin' (that is to say, when it is understood as an existentiale), signifies \"to reside alongside . . . \", \"to be familiar with . . . \". \"Being-in\" is thus the formal existential expressionfor the Being of Dasein, which has Being-in-the-world as its essential state. \n'Being alongside' the world in the sense of being absorbed in the world'\n\n1 Reading 'innan-wohnen'. As Heidegger points out in his footnote, this puzzling passage has its source in Grimm's Kleinere Schrijten, Vol. VII, pp. 247 ff., where we find two short articles, the first entitled 'IN' and the second 'IN UND BEl'. The first article begins by comparing a number of archaic German words meaning 'domus', all having a form similar to our English 'inn', which Grimm mentions. He goes on ·to postulate 'a strong verb \"innan\", which must have meant either \"habitare\", \"domi esse\", or \"recipere in domum\" 1 {though only a weak derivative form 'innian' is actually found), with a surviving strong preterite written either as 'an' or as 'ann'. Grimm goes on to argue that the preposition 'in' is derived from the verb, rather than the verb from the preposition. 2 ' • • • \"an\" bedeutet: ich bin gewohnt, vertraut mit, ich pflege etwas • . .' In Grimm's second article he adds: 'there was also an anomalous \"ann\" with the plural \n\"unum\", which expressed \"amo\", \"diligo\", ''faveo\", and to which our \"gonnen\" and \n\"Gunst\" are immediately related, as has long been recognized. \"Ann\" really means \"ich bin eingewohnt\", \"pflege zu bauen\"; this conceptual transition may be shown with minimal complication in the Latin \"colo\", which stands for \"habito\" as well as \"diligo\".' It is not entirely clear whether Heidegger's discussion of 'an' is aimed to elucidate the preposition 'an' ( which corresponds in some of its usages to the English 'at', and which he has just used in remarking that the water and the glass are both at a location), or rather to explain the preterite 'an' of 'innan'. The reader should note that while the verb 'wohnen' normally means 'to reside' or 'to dwell', the expression 'ich bin gewohnt' means 'I am accustomed to', and 'ich bin einge­ wohnt' means 'I have become accustomed to the place where I reside--to my surround­ ings'. Similarly 'ich pf!ege etwas' may mean either 'I am accustomed to do something' or 'I take care of something' or 'I devote myself to it'. ( Grimm's 'pf!ege zu bauen' pre­ sumably means 'I am accustomed to putting my trust in something', 'I can build on it'.) The Latin, 'colo' has the parallel meanings of 'I take care of something' or 'cherish' it ('diligo') and 'I dwell' or 'I inhabit' ('habito'). a ' • . • ich wohne, halte mich auf bei . . . der Welt, als dem so und so Vertrauten.' The preposition 'bei', like 'an', does not have quite the semantical range of any English pre­ position. Our 'alongside', with which we shall translate it when other devices seem less satisfactory, especially in the phrase 'Being alongside' ('Sein bei'), is often quite mis­ leading; the sense here is closer to that of 'at' in such expressions as 'at home' or 'at my father's', or that of the French 'che;r.'. Here again Heidegger seems to be relying upon Grimm, who proceeds (loc. cit.) to connect 'bei' with 'bauen' ('build') and 'bin'.  ' . . • in dem . . • Sinne des Aufgehens in der Welt . . .' 'Aufgehen' means literally 'to go up', or 'to rise' in the sense that the sun 'rises' or the dough 'rises'. But when followed by the preposition 'in', it takes on other meanings. Thus 5 'geht auf' into go in the sense that\n\n1. 2 Being and Time",
+      "meta": {
+        "title_raw": "Being and Time",
+        "doc_id": "f6041c1a815c83f1",
+        "is_clean_copy": false,
+        "bboxes": "[{\"page_num\": 81, \"coords\": [15.3802490234375, 193.8683319091797, 298.6534118652344, 472.2040100097656], \"blocks\": [[15.3802490234375, 193.8683319091797, 298.6534118652344, 472.2040100097656]]}, {\"page_num\": 82, \"coords\": [23.360000610351562, 9.6213960647583, 307.9638366699219, 20.800899505615234], \"blocks\": [[23.360000610351562, 9.6213960647583, 307.9638366699219, 20.800899505615234]]}]",
+        "is_table": false,
+        "source_method": "pymupdf+bbox",
+        "is_my_copy": true,
+        "year": 1962,
+        "mtime": 1771101202,
+        "cleaning_version": "clean_v1",
+        "page_start": 79,
+        "collection": "rhetorical_ontology",
+        "pdftotext_version": "24.02.0",
+        "author_raw": "Heidegger, Martin",
+        "clean_sha256": "84c37122136d0432c2ed950bdfc6f0cde1acc56f240b6dca5e6033c39af28fa8",
+        "chunk_index": 42,
+        "is_notes": false,
+        "content_type": "text",
+        "qualifier": "My Copy",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "is_image": false,
+        "has_bboxes": true,
+        "page_end": 81
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 81, \"coords\": [15.3802490234375, 193.8683319091797, 298.6534118652344, 472.2040100097656], \"blocks\": [[15.3802490234375, 193.8683319091797, 298.6534118652344, 472.2040100097656]]}, {\"page_num\": 82, \"coords\": [23.360000610351562, 9.6213960647583, 307.9638366699219, 20.800899505615234], \"blocks\": [[23.360000610351562, 9.6213960647583, 307.9638366699219, 20.800899505615234]]}]",
+      "rank": 6
+    },
+    {
+      "raw_rank": 8,
+      "chunk_id": "f6041c1a815c83f1:00148",
+      "distance": 0.6349356174468994,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 241,
+      "page_end": 243,
+      "text": "must look back and appropriate with greater precision what we have\n\nhitherto Interpreted in aiming at the question of fundamental ontology\n\nas to the meaning of Being in general. First, however, we must show that\n\nwhat is ontologically 'new' in this Interpretation is ontically quite old.\n\nIn explicating Dasein's Being as care, we are not forcing it under an idea\n\nof our own contriving, but we are conceptualizing existentially what has\n\nalready been disclosed in an ontico-existentiell manner.\n\n-,r 42. Confirmation of the Existential Interpretation of Dasein as Care in terms of Dasein's Pre-ontological Way of Interpreting ltseljl\n\nIn our foregoing Interpretations, which have finally led to exhibiting\n\ncare as the Being of Dasein, everything depended on our arriving at the\n\nright ontological foundations for that entity which in each case we ourselves are, and which we call 'man'. To do this it was necessary from the outset\n\nto change the direction of our analysis from the approach presented by the\n\ntraditional definition of \"man\"-an approach which has not been\n\nclarified ontologically and is in principle questionable. In comparison\n\nwith this definition, the existential-ontological Interpretation may seem\n\nstrange, especially if 'care' is understood just ontically as 'worry' or 'grief'\n\n[als \"Besorgnis\" und \"Bekiimmernis\"] . Accordingly we shall now cite a\n\ndocument which is pre-ontological in character, even though its demon­ strative force is 'merely historical'.\n\nWe must bear in mind, however, that in this document Dasein is expres­\n\nsing itself 'primordially', unaffected by any theoretical Interpretation and\n\nwithout aiming to propose any. We must also note that Dasein's Being is\n\ncharacterized by historicality, though this must first be demonstrated ontologically . .lf Dasein is 'historical' in the very depths of its Being, then\n\na deposition [ Aussage] which comes from its history and goes back to it,\n\n1 'Die Bewiihrung der existmzialen Interpretation des Daseins als Sorge aus der vorontologischen S.lbstauskgung des Daseins.'\n\nBeing and Time \n1. 6\n\nand which, moreover, is prior to any scientific knowledge, will have especial weight, even though its importance is never purely ontological. That\n\nunderstanding of Being which lies in Dasein itself, expresses itself pre­\n\nontologically. The document which we are about to cite should make plain\n\nthat our existential Interpretation is not a mere fabrication, but that as\n\nan ontological 'construction' it is well grounded and has been sketched out beforehand in elemental ways.\n\nThere is an ancient fable in which Dasein's interpretation of itself as\n\n'care' has been embedded : v\n\nCur a cum jluvium transiret, vidit cretosum lutum sustulitque cogitabunda atque coepit fingere. dum deliberat quid iam fecisset, Jovis intervenit. rogat eum Cura ut det illi spiritum, et facile impetrat. cui cum vellet Cura nomen ex sese ipsa imponere, Jovis prohibuit suumque nomen ei dandum esse dictitat. dum Cura et Jovis disceptant, Tel/us surrexit simul suumque nomen esse volt cui corpus praebuerit suum. sumpserunt Satumum iudicem, is sic aecus iudicat: \n'tu Jovis quia spiritum dedisti, in morte spiritum, tuque Tellus, quia dedisti corpus, corpus recipito, Cura eum quia prima finxit, teneat quamdiu vixerit. sed quae nunc de nomine eius vobis controversia est, homo vocetur, quia videtur esse factus ex humo.'\n\n'Once when 'Care' was crossing a river, she saw some clay ; she thought­\n\nfully took up a piece and began to shape it. While she was meditating on\n\nwhat she had made, Jupiter came by. 'Care' asked him to give it spirit,\n\nand this he gladly granted. But when she wanted her name to be bestowed\n\nupon it, he forbade this, and demanded that it be given his name instead.\n\nWhile 'Care' and Jupiter were disputing, Earth arose and desired that\n\nher own name be conferred on the creature, since she had furnished it with part of her body. They asked Saturn to be their arbiter, and he made\n\nthe following decision, which seemed a just one : 'Since you, Jupiter, have\n\ngiven its spirit, you shall receive that spirit at its death ; and since you,\n\nEarth, have given its body, you shall receive its body. But since 'Care'\n\nfirst shaped this creature, she shall possess it as long as it lives. And because\n\nthere is now a dispute among you as to its name, let it be called 'homo',\n\nfor it is made out of humus (earth).'l 1 In both the earlier and later editions Heidegger has 'videt' in the first line of the Latin version of the fable, where Biicheler, from whom the text has been taken, has 'vidit'; in the 12th line Heidegger has 'eninl' where Biicheler has 'eum'. The punctuation of the Latin version is as Biicheler gives it. The single quotation marks in the English translation\n\nI. 6 Being and Time",
+      "meta": {
+        "chunk_index": 148,
+        "year": 1962,
+        "mtime": 1771101202,
+        "is_my_copy": true,
+        "pdftotext_version": "24.02.0",
+        "page_start": 241,
+        "title_raw": "Being and Time",
+        "qualifier": "My Copy",
+        "is_image": false,
+        "clean_sha256": "0a342665c0799a08cd46e22d30ae55c1218f5dc68ad70ca81dbf4485f11a626a",
+        "author_raw": "Heidegger, Martin",
+        "is_clean_copy": false,
+        "cleaning_version": "clean_v1",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "is_notes": false,
+        "collection": "rhetorical_ontology",
+        "content_type": "text",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "bboxes": "[{\"page_num\": 251, \"coords\": [3.250152587890625, 140.94241333007812, 311.09796142578125, 470.6858215332031], \"blocks\": [[27.899993896484375, 140.94241333007812, 307.9359436035156, 152.28822326660156], [28.110015869140625, 151.90240478515625, 308.6540222167969, 163.2482147216797], [27.9000244140625, 162.8524169921875, 309.18145751953125, 174.19822692871094], [28.180023193359375, 173.67242431640625, 309.8463134765625, 185.0182342529297], [27.300018310546875, 184.57241821289062, 307.51416015625, 195.91822814941406], [27.900054931640625, 195.3624267578125, 309.3946228027344, 206.70823669433594], [28.380035400390625, 206.3524169921875, 309.47332763671875, 217.69822692871094], [27.680084228515625, 217.222412109375, 310.48028564453125, 228.56822204589844], [27.90008544921875, 228.16241455078125, 309.1509704589844, 239.5082244873047], [27.4600830078125, 239.54241943359375, 308.7972412109375, 250.8882293701172], [28.110092163085938, 250.42242431640625, 307.64178466796875, 261.7682189941406], [28.110107421875, 261.3224182128906, 309.6064147949219, 272.668212890625], [28.110137939453125, 272.2524108886719, 309.2481384277344, 283.59820556640625], [27.900115966796875, 283.2923889160156, 309.7215576171875, 294.63818359375], [27.900115966796875, 294.0124206542969, 170.4783172607422, 305.35821533203125], [37.41011047363281, 305.03240966796875, 309.1816101074219, 316.3782043457031], [28.33013916015625, 315.8724060058594, 309.6080017089844, 327.21820068359375], [3.250152587890625, 326.9823913574219, 309.6887512207031, 349.974853515625], [27.900146484375, 348.7624206542969, 309.64404296875, 360.10821533203125], [28.330169677734375, 359.66241455078125, 309.6463623046875, 371.0082092285156], [27.900146484375, 370.40240478515625, 310.1000061035156, 381.7481994628906], [28.170135498046875, 381.2524108886719, 308.1735534667969, 392.59820556640625], [27.680160522460938, 392.0924072265625, 309.87646484375, 403.4382019042969], [28.11016845703125, 403.16241455078125, 309.9429626464844, 414.5082092285156], [28.110153198242188, 414.0924072265625, 311.09796142578125, 436.0682067871094], [27.680145263671875, 435.7323913574219, 309.8674621582031, 470.6858215332031]]}, {\"page_num\": 252, \"coords\": [19.67999267578125, 9.818978309631348, 325.610107421875, 413.59808349609375], \"blocks\": [[19.68000030517578, 9.818978309631348, 188.7532501220703, 25.130531311035156], [19.67999267578125, 23.168163299560547, 300.6911926269531, 34.99806594848633], [19.899993896484375, 33.83576202392578, 300.6175231933594, 55.10026931762695], [19.899993896484375, 55.57404708862305, 300.8602600097656, 67.01805877685547], [19.899993896484375, 66.45706939697266, 300.6512145996094, 77.68807220458984], [19.9000244140625, 77.3986587524414, 300.87939453125, 88.71705627441406], [19.899993896484375, 88.06354522705078, 299.3697509765625, 98.44805145263672], [19.899978637695312, 99.01355743408203, 300.70404052734375, 109.39806365966797], [19.899993896484375, 110.03485870361328, 300.6220397949219, 120.41947174072266], [20.109970092773438, 120.67578887939453, 300.9892578125, 131.6980743408203], [19.819961547851562, 131.68357849121094, 300.59271240234375, 142.0680694580078], [20.109970092773438, 142.30357360839844, 300.7923889160156, 152.6880645751953], [19.949981689453125, 153.31117248535156, 300.24420166015625, 164.12806701660156], [20.54998779296875, 164.14356994628906, 302.2149353027344, 174.52806091308594], [20.33001708984375, 175.18357849121094, 179.8654327392578, 185.5680694580078], [28.550018310546875, 185.50576782226562, 298.86865234375, 196.39321899414062], [20.33001708984375, 196.68357849121094, 300.7500305175781, 207.2302703857422], [20.330047607421875, 207.8435821533203, 300.78131103515625, 218.2280731201172], [20.550018310546875, 218.61358642578125, 300.7146301269531, 228.99807739257812], [20.240020751953125, 229.46359252929688, 300.9090576171875, 239.84808349609375], [20.550018310546875, 240.78358459472656, 300.91473388671875, 251.16807556152344], [20.010009765625, 251.7335662841797, 301.07470703125, 262.1180725097656], [20.330001831054688, 262.41357421875, 300.86553955078125, 272.798095703125], [20.290008544921875, 273.2835693359375, 300.7332763671875, 283.6680908203125], [20.330047607421875, 284.21356201171875, 300.6507873535156, 294.59808349609375], [20.330032348632812, 294.9535827636719, 301.0398864746094, 305.3381042480469], [20.1600341796875, 305.7635803222656, 300.96795654296875, 316.2232360839844], [20.550018310546875, 316.59356689453125, 299.3055114746094, 326.97808837890625], [20.550018310546875, 327.403564453125, 300.8324279785156, 337.9772644042969], [20.760009765625, 338.3713684082031, 300.8892517089844, 348.9180908203125], [20.550018310546875, 348.82537841796875, 299.27252197265625, 359.6580810546875], [19.97003173828125, 359.91357421875, 300.22576904296875, 370.298095703125], [20.510009765625, 369.8923645019531, 325.610107421875, 381.2381591796875], [20.550018310546875, 381.403564453125, 157.2287139892578, 391.7880859375], [29.190017700195312, 392.4535827636719, 300.60760498046875, 402.8381042480469], [20.33001708984375, 403.21356201171875, 300.8124084472656, 413.59808349609375]]}]",
+        "source_method": "pymupdf+bbox",
+        "has_bboxes": true,
+        "is_table": false,
+        "doc_id": "f6041c1a815c83f1",
+        "page_end": 243,
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf"
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 251, \"coords\": [3.250152587890625, 140.94241333007812, 311.09796142578125, 470.6858215332031], \"blocks\": [[27.899993896484375, 140.94241333007812, 307.9359436035156, 152.28822326660156], [28.110015869140625, 151.90240478515625, 308.6540222167969, 163.2482147216797], [27.9000244140625, 162.8524169921875, 309.18145751953125, 174.19822692871094], [28.180023193359375, 173.67242431640625, 309.8463134765625, 185.0182342529297], [27.300018310546875, 184.57241821289062, 307.51416015625, 195.91822814941406], [27.900054931640625, 195.3624267578125, 309.3946228027344, 206.70823669433594], [28.380035400390625, 206.3524169921875, 309.47332763671875, 217.69822692871094], [27.680084228515625, 217.222412109375, 310.48028564453125, 228.56822204589844], [27.90008544921875, 228.16241455078125, 309.1509704589844, 239.5082244873047], [27.4600830078125, 239.54241943359375, 308.7972412109375, 250.8882293701172], [28.110092163085938, 250.42242431640625, 307.64178466796875, 261.7682189941406], [28.110107421875, 261.3224182128906, 309.6064147949219, 272.668212890625], [28.110137939453125, 272.2524108886719, 309.2481384277344, 283.59820556640625], [27.900115966796875, 283.2923889160156, 309.7215576171875, 294.63818359375], [27.900115966796875, 294.0124206542969, 170.4783172607422, 305.35821533203125], [37.41011047363281, 305.03240966796875, 309.1816101074219, 316.3782043457031], [28.33013916015625, 315.8724060058594, 309.6080017089844, 327.21820068359375], [3.250152587890625, 326.9823913574219, 309.6887512207031, 349.974853515625], [27.900146484375, 348.7624206542969, 309.64404296875, 360.10821533203125], [28.330169677734375, 359.66241455078125, 309.6463623046875, 371.0082092285156], [27.900146484375, 370.40240478515625, 310.1000061035156, 381.7481994628906], [28.170135498046875, 381.2524108886719, 308.1735534667969, 392.59820556640625], [27.680160522460938, 392.0924072265625, 309.87646484375, 403.4382019042969], [28.11016845703125, 403.16241455078125, 309.9429626464844, 414.5082092285156], [28.110153198242188, 414.0924072265625, 311.09796142578125, 436.0682067871094], [27.680145263671875, 435.7323913574219, 309.8674621582031, 470.6858215332031]]}, {\"page_num\": 252, \"coords\": [19.67999267578125, 9.818978309631348, 325.610107421875, 413.59808349609375], \"blocks\": [[19.68000030517578, 9.818978309631348, 188.7532501220703, 25.130531311035156], [19.67999267578125, 23.168163299560547, 300.6911926269531, 34.99806594848633], [19.899993896484375, 33.83576202392578, 300.6175231933594, 55.10026931762695], [19.899993896484375, 55.57404708862305, 300.8602600097656, 67.01805877685547], [19.899993896484375, 66.45706939697266, 300.6512145996094, 77.68807220458984], [19.9000244140625, 77.3986587524414, 300.87939453125, 88.71705627441406], [19.899993896484375, 88.06354522705078, 299.3697509765625, 98.44805145263672], [19.899978637695312, 99.01355743408203, 300.70404052734375, 109.39806365966797], [19.899993896484375, 110.03485870361328, 300.6220397949219, 120.41947174072266], [20.109970092773438, 120.67578887939453, 300.9892578125, 131.6980743408203], [19.819961547851562, 131.68357849121094, 300.59271240234375, 142.0680694580078], [20.109970092773438, 142.30357360839844, 300.7923889160156, 152.6880645751953], [19.949981689453125, 153.31117248535156, 300.24420166015625, 164.12806701660156], [20.54998779296875, 164.14356994628906, 302.2149353027344, 174.52806091308594], [20.33001708984375, 175.18357849121094, 179.8654327392578, 185.5680694580078], [28.550018310546875, 185.50576782226562, 298.86865234375, 196.39321899414062], [20.33001708984375, 196.68357849121094, 300.7500305175781, 207.2302703857422], [20.330047607421875, 207.8435821533203, 300.78131103515625, 218.2280731201172], [20.550018310546875, 218.61358642578125, 300.7146301269531, 228.99807739257812], [20.240020751953125, 229.46359252929688, 300.9090576171875, 239.84808349609375], [20.550018310546875, 240.78358459472656, 300.91473388671875, 251.16807556152344], [20.010009765625, 251.7335662841797, 301.07470703125, 262.1180725097656], [20.330001831054688, 262.41357421875, 300.86553955078125, 272.798095703125], [20.290008544921875, 273.2835693359375, 300.7332763671875, 283.6680908203125], [20.330047607421875, 284.21356201171875, 300.6507873535156, 294.59808349609375], [20.330032348632812, 294.9535827636719, 301.0398864746094, 305.3381042480469], [20.1600341796875, 305.7635803222656, 300.96795654296875, 316.2232360839844], [20.550018310546875, 316.59356689453125, 299.3055114746094, 326.97808837890625], [20.550018310546875, 327.403564453125, 300.8324279785156, 337.9772644042969], [20.760009765625, 338.3713684082031, 300.8892517089844, 348.9180908203125], [20.550018310546875, 348.82537841796875, 299.27252197265625, 359.6580810546875], [19.97003173828125, 359.91357421875, 300.22576904296875, 370.298095703125], [20.510009765625, 369.8923645019531, 325.610107421875, 381.2381591796875], [20.550018310546875, 381.403564453125, 157.2287139892578, 391.7880859375], [29.190017700195312, 392.4535827636719, 300.60760498046875, 402.8381042480469], [20.33001708984375, 403.21356201171875, 300.8124084472656, 413.59808349609375]]}]",
+      "rank": 7
+    },
+    {
+      "raw_rank": 9,
+      "chunk_id": "f6041c1a815c83f1:00145",
+      "distance": 0.6384540796279907,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 237,
+      "page_end": 238,
+      "text": "vorweg] in its Being. Dasein is always 'beyond itself' [\"iiber sich hinaus\"), not as a way of behaving towards other entities which it is not, but as Being towards the potentiality-for-Being which it is itself. This structure of Being, which belongs to the essential 'is an issue', we shall denote as Dasein's \"Being-ahead-of-itself\". But this structure pertains to the whole ofDasein's constitution. \"Being­ ahead-of-itself\" does not signify anything like an isolated tendency in a worldless 'subject', but characterizes Being-in-the-world. To Being-in-the­ world, however, belongs the fact that it has been delivered over to itself­ that it has in each case already been thrown into a world. The abandonment of Dasein to itself is shown with primordial concreteness in anxiety. \n\"Being-ahead-of-itself\" means, if we grasp it more fully, \"ahead-of-itself­ in-already-being-in-a-world\". As soon as this essentially unitary structure is seen as a phenomenon, what we have set forth earlier in our analysis of worldhood also becomes plain. The upshot of that analysis was that the referential totality of significance (which as such is constitutive for world­ hood) has been 'tied up' with a \"for-the-sake-of-which\", The fact that this referential totality of the manifold relations of the 'in-order-to' has been bound up with that which is an issue for Dasein, does not signify that a \n'world' of Objects which is present-at-hand has been welded together with a subject. It is rather the phenomenal expression of the fact that the con­ stitution of Dasein, whose totality is now brought out explicitly as ahead­ of-itself-in-Being-already-in . . . , is primordially a whole. To put it other­ wise, existing is always factical. EXistentiality is essentially determined by facticity. Furthermore, Dasein's factical existing is not only generally and without further differentiation a thrown potentiality-for-Being-in-the-world ; it is\n\nI. 6 Being and Time \n\nalways also absorbed in the world of its concern. In this falling Being­\n\nalongside . . . , fleeing in the face of uncanniness (which for the most part\n\nremains concealed with latent anxiety, since the publicness of the \"they\"\n\nsuppresses everything unfamiliar), announces itself, whether it does so\n\nexplicitly or not, and whether it is understood or not. Ahead-of-itself­\n\nBeing-already-in-a-world essentially includes one's falling and one's Being alongside those things ready-to-hand within-the-world with which\n\none concerns onesel£\n\nThe fĢrmally existential totality ofDasein's ontological structural whole\n\nmust therefore be grasped in the following structure : the Being of Dasein\n\nmeans ahead-of-itself-Being-already-in-(the-world) as Being-alongside\n\n(entities encountered within-the-world) . This Being fills in the significa­\n\ntion of the term \"care\" [Sorge], which is used in a purely ontologico­\n\nexistential manner. From this signification every tendency of Being which\n\none might have in mind ontically, such as worry [Besorgnis] or carefreeness\n\n[Sorglosigkeit], is ruled out.\n\nBecause Being-in-the-world is essentially care, Being-alongside the \n\nģady-to-hand could be taken in our previous analyses as concern, and\n\neing with the Dasein-with of Others as we encounter it within-the-\n\nworld could be taken as solicitude.1 Being-alongside something is concern,\n\n!>ecause it is defined as a way of Being-in by its basic structure-care.\n\n8are does not characterize just existentiality, let us say, as detached from\n\nacticity and falling ; on the contrary, it embraces the unity of these ways\n\nn which Being may be characterized. So neither does \"care\" stand\n\n>rimarily and exclusively for an isolated attitude of the \"I\" towards\n\ntself. If one were to construct the expression 'care for oneself' [\"Selbst­\n\niOrge\"], following the analogy of \"concern\" [Besorgen] and \"solicitude\"\n\n:Fursorge], this would be a tautology. \"Care\" cannot stand for some\n\n1pecial attitude towards the Self; for the Self has already been character-\n\nized ontologically by \"Being-ahead-of-itself\", a characteristic in which the\n\n:>ther two items in the structure of care-Being-already-in . . . and Being­\n\nalongside . . . -have beenjoint{y posited [mitgesetzt].\n\nIn Being-ahead-of-oneself as Being towards one's ownmost potentiality­\n\nfor-Being, lies the existential-ontological condition for the possibility of Being-free for authentic existentiell possibilities. For the sake of its potenti­ ality-for-Being, any Dasein is as it factically is. But to the extent that this Being towards its potentiality-for-Being is itself characterized by freedom, Dasein can comport itself towards its possibilities, even unwilling {)I; it can\n\nbe inauthentically; and factically it is inauthentically, proximally and for\n\nthe most part. The authentic \"for-the-sake-of-which\" has not been taken\n\n1 Cf. H. 1 11 1 and 131 above.\n\nBeing and Time \n1. 6",
+      "meta": {
+        "author_raw": "Heidegger, Martin",
+        "is_image": false,
+        "collection": "rhetorical_ontology",
+        "is_my_copy": true,
+        "mtime": 1771101202,
+        "source_method": "pymupdf+bbox",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "page_end": 238,
+        "chunk_index": 145,
+        "page_start": 237,
+        "doc_id": "f6041c1a815c83f1",
+        "is_table": false,
+        "content_type": "text",
+        "title_raw": "Being and Time",
+        "has_bboxes": true,
+        "qualifier": "My Copy",
+        "bboxes": "[{\"page_num\": 246, \"coords\": [20.48992919921875, 207.40243530273438, 304.7402038574219, 466.9066162109375], \"blocks\": [[21.189895629882812, 207.40243530273438, 304.7402038574219, 218.7482452392578], [21.189849853515625, 218.21243286132812, 304.7141418457031, 229.55824279785156], [21.409835815429688, 228.5324249267578, 302.929443359375, 242.05824279785156], [21.62982177734375, 240.30242919921875, 304.42388916015625, 251.6482391357422], [21.409820556640625, 251.14242553710938, 304.47161865234375, 262.48822021484375], [21.629791259765625, 261.8924255371094, 302.78167724609375, 273.23822021484375], [21.629791259765625, 272.6224060058594, 303.9057922363281, 283.96820068359375], [20.81982421875, 283.482421875, 303.5719909667969, 305.5904235839844], [21.629837036132812, 304.9524230957031, 303.5209655761719, 316.2982177734375], [21.189849853515625, 315.8224182128906, 303.4076232910156, 340.26055908203125], [20.979888916015625, 337.5002136230469, 303.372802734375, 359.42822265625], [21.409912109375, 358.9924011230469, 301.96514892578125, 380.7882080078125], [21.189910888671875, 380.1024169921875, 302.10174560546875, 391.4482116699219], [20.86993408203125, 391.0624084472656, 300.17718505859375, 413.10772705078125], [20.48992919921875, 412.5024108886719, 301.4617614746094, 466.9066162109375]]}, {\"page_num\": 247, \"coords\": [2.82000732421875, 9.992088317871094, 311.1082458496094, 469.20660400390625], \"blocks\": [[26.910018920898438, 9.992088317871094, 309.0856018066406, 44.682193756103516], [2.82000732421875, 44.16238784790039, 309.46441650390625, 88.0081558227539], [28.759979248046875, 87.42237091064453, 241.12628173828125, 98.7681655883789], [28.329986572265625, 108.27205657958984, 310.0115051269531, 129.3448028564453], [38.05998992919922, 118.62796020507812, 309.61846923828125, 144.5279541015625], [28.97998046875, 141.46237182617188, 309.4185791015625, 152.8081817626953], [28.759979248046875, 152.50238037109375, 309.6046447753906, 163.8481903076172], [28.979995727539062, 163.39239501953125, 307.9554138183594, 174.7382049560547], [28.54998779296875, 174.28240966796875, 309.6274719238281, 185.6282196044922], [28.759979248046875, 185.18240356445312, 309.4226989746094, 196.52821350097656], [28.760009765625, 193.6730499267578, 309.4380187988281, 207.3482208251953], [28.33001708984375, 207.05239868164062, 309.5990295410156, 218.39820861816406], [28.550018310546875, 217.84239196777344, 308.10498046875, 229.18820190429688], [28.550033569335938, 228.7523956298828, 311.1082458496094, 240.09820556640625], [28.11004638671875, 240.14239501953125, 310.69781494140625, 251.4882049560547], [28.760040283203125, 250.96240234375, 307.9377746582031, 262.3081970214844], [28.330047607421875, 261.8724060058594, 310.935791015625, 273.21820068359375], [28.550033569335938, 272.7323913574219, 309.72943115234375, 284.07818603515625], [28.760040283203125, 283.7424011230469, 309.7268371582031, 295.08819580078125], [28.550048828125, 294.5724182128906, 309.5843200683594, 316.8081970214844], [28.980010986328125, 316.3424072265625, 309.75531005859375, 327.6882019042969], [28.97998046875, 327.1023864746094, 309.5874938964844, 338.44818115234375], [29.25, 338.03240966796875, 309.70770263671875, 349.3782043457031], [28.760009765625, 348.77239990234375, 86.66071319580078, 360.1181945800781], [29.40997314453125, 359.8724060058594, 309.78076171875, 381.8081970214844], [29.409957885742188, 381.1824035644531, 309.9176940917969, 392.5281982421875], [29.309967041015625, 392.0523986816406, 308.1550598144531, 403.398193359375], [29.40997314453125, 402.9324035644531, 310.0940856933594, 414.2781982421875], [29.410003662109375, 413.7524108886719, 310.09832763671875, 425.09820556640625], [29.6300048828125, 424.472412109375, 309.4322814941406, 435.8182067871094], [29.629974365234375, 435.27239990234375, 211.68218994140625, 446.6181945800781], [38.239990234375, 446.03240966796875, 309.5196228027344, 457.3782043457031], [38.71002197265625, 459.380859375, 301.3568115234375, 469.20660400390625]]}, {\"page_num\": 248, \"coords\": [22.05999755859375, 9.350975036621094, 304.01080322265625, 45.748207092285156], \"blocks\": [[22.489999771118164, 9.350975036621094, 304.01080322265625, 22.070209503173828], [22.05999755859375, 22.222721099853516, 301.9290466308594, 35.09821319580078], [22.279983520507812, 33.056522369384766, 303.79730224609375, 45.748207092285156]]}]",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "year": 1962,
+        "is_notes": false,
+        "is_clean_copy": false,
+        "pdftotext_version": "24.02.0",
+        "clean_sha256": "964c2ba6d705d953760b3b35656bbf674b44f61cbf5b8a664c92865a0ef07c86",
+        "cleaning_version": "clean_v1"
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 246, \"coords\": [20.48992919921875, 207.40243530273438, 304.7402038574219, 466.9066162109375], \"blocks\": [[21.189895629882812, 207.40243530273438, 304.7402038574219, 218.7482452392578], [21.189849853515625, 218.21243286132812, 304.7141418457031, 229.55824279785156], [21.409835815429688, 228.5324249267578, 302.929443359375, 242.05824279785156], [21.62982177734375, 240.30242919921875, 304.42388916015625, 251.6482391357422], [21.409820556640625, 251.14242553710938, 304.47161865234375, 262.48822021484375], [21.629791259765625, 261.8924255371094, 302.78167724609375, 273.23822021484375], [21.629791259765625, 272.6224060058594, 303.9057922363281, 283.96820068359375], [20.81982421875, 283.482421875, 303.5719909667969, 305.5904235839844], [21.629837036132812, 304.9524230957031, 303.5209655761719, 316.2982177734375], [21.189849853515625, 315.8224182128906, 303.4076232910156, 340.26055908203125], [20.979888916015625, 337.5002136230469, 303.372802734375, 359.42822265625], [21.409912109375, 358.9924011230469, 301.96514892578125, 380.7882080078125], [21.189910888671875, 380.1024169921875, 302.10174560546875, 391.4482116699219], [20.86993408203125, 391.0624084472656, 300.17718505859375, 413.10772705078125], [20.48992919921875, 412.5024108886719, 301.4617614746094, 466.9066162109375]]}, {\"page_num\": 247, \"coords\": [2.82000732421875, 9.992088317871094, 311.1082458496094, 469.20660400390625], \"blocks\": [[26.910018920898438, 9.992088317871094, 309.0856018066406, 44.682193756103516], [2.82000732421875, 44.16238784790039, 309.46441650390625, 88.0081558227539], [28.759979248046875, 87.42237091064453, 241.12628173828125, 98.7681655883789], [28.329986572265625, 108.27205657958984, 310.0115051269531, 129.3448028564453], [38.05998992919922, 118.62796020507812, 309.61846923828125, 144.5279541015625], [28.97998046875, 141.46237182617188, 309.4185791015625, 152.8081817626953], [28.759979248046875, 152.50238037109375, 309.6046447753906, 163.8481903076172], [28.979995727539062, 163.39239501953125, 307.9554138183594, 174.7382049560547], [28.54998779296875, 174.28240966796875, 309.6274719238281, 185.6282196044922], [28.759979248046875, 185.18240356445312, 309.4226989746094, 196.52821350097656], [28.760009765625, 193.6730499267578, 309.4380187988281, 207.3482208251953], [28.33001708984375, 207.05239868164062, 309.5990295410156, 218.39820861816406], [28.550018310546875, 217.84239196777344, 308.10498046875, 229.18820190429688], [28.550033569335938, 228.7523956298828, 311.1082458496094, 240.09820556640625], [28.11004638671875, 240.14239501953125, 310.69781494140625, 251.4882049560547], [28.760040283203125, 250.96240234375, 307.9377746582031, 262.3081970214844], [28.330047607421875, 261.8724060058594, 310.935791015625, 273.21820068359375], [28.550033569335938, 272.7323913574219, 309.72943115234375, 284.07818603515625], [28.760040283203125, 283.7424011230469, 309.7268371582031, 295.08819580078125], [28.550048828125, 294.5724182128906, 309.5843200683594, 316.8081970214844], [28.980010986328125, 316.3424072265625, 309.75531005859375, 327.6882019042969], [28.97998046875, 327.1023864746094, 309.5874938964844, 338.44818115234375], [29.25, 338.03240966796875, 309.70770263671875, 349.3782043457031], [28.760009765625, 348.77239990234375, 86.66071319580078, 360.1181945800781], [29.40997314453125, 359.8724060058594, 309.78076171875, 381.8081970214844], [29.409957885742188, 381.1824035644531, 309.9176940917969, 392.5281982421875], [29.309967041015625, 392.0523986816406, 308.1550598144531, 403.398193359375], [29.40997314453125, 402.9324035644531, 310.0940856933594, 414.2781982421875], [29.410003662109375, 413.7524108886719, 310.09832763671875, 425.09820556640625], [29.6300048828125, 424.472412109375, 309.4322814941406, 435.8182067871094], [29.629974365234375, 435.27239990234375, 211.68218994140625, 446.6181945800781], [38.239990234375, 446.03240966796875, 309.5196228027344, 457.3782043457031], [38.71002197265625, 459.380859375, 301.3568115234375, 469.20660400390625]]}, {\"page_num\": 248, \"coords\": [22.05999755859375, 9.350975036621094, 304.01080322265625, 45.748207092285156], \"blocks\": [[22.489999771118164, 9.350975036621094, 304.01080322265625, 22.070209503173828], [22.05999755859375, 22.222721099853516, 301.9290466308594, 35.09821319580078], [22.279983520507812, 33.056522369384766, 303.79730224609375, 45.748207092285156]]}]",
+      "rank": 8
+    }
+  ]
+}
+[god-learn] $ python3 scripts/retrieval/verify_phase4.py Heidegger ecstatic temporality Dasein stretched along Gewesenheit Gegenwart Zukunft towards-oneself back-to alongside Being and Time H.329
+[PHASE4_VERIFY_OK]
+- query='Heidegger ecstatic temporality Dasein stretched along Gewesenheit Gegenwart Zukunft towards-oneself back-to alongside Being and Time H.329'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[god-learn] $ bash scripts/highlights/phase5check.sh
+
+--- AUDIT REPORT ---
+root: /home/dalton/projects/claudeflow-testing/corpus
+manifest: /home/dalton/projects/claudeflow-testing/scripts/ingest/manifest.jsonl
+total_pdfs: 50
+
+[PHASE2_COMPLETE] (50)
+  - dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf :: phase=2 ok
+  - dissertation/in_progress/rhetorical phantasia test.pdf :: phase=2 ok
+  - metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf :: phase=2 ok
+  - metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf :: phase=2 ok
+  - metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf :: phase=2 ok
+  - new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf :: phase=2 ok
+
+[OK] dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf
+[OK] dissertation/in_progress/rhetorical phantasia test.pdf
+[OK] metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf
+[OK] metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf
+[OK] metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf
+[OK] metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf
+[OK] metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf
+[OK] metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf
+[OK] metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf
+[OK] metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf
+[OK] new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf
+[OK] new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf
+[OK] rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf
+[OK] rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf
+
+--- VERIFY REPORT (OK) ---
+OK=50 FAIL=0 TOTAL=50
+[PHASE4_VERIFY_OK]
+- query='phantasia and action'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[OK] Wrote:
+  /tmp/no_hl.txt
+  /tmp/with_hl.txt
+Diff (first 120 lines):
+--- /tmp/no_hl.txt	2026-03-27 07:48:26.096503210 -0700
++++ /tmp/with_hl.txt	2026-03-27 07:48:27.368303730 -0700
+@@ -6,51 +6,51 @@
+ 
+ [RESULTS]
+ 
+-01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  (raw_rank=1)
++01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  final_score=0.7484066486358643  hl_count=0  boost=0.0000  (raw_rank=1)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=303-305
+ 
+-02. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  (raw_rank=2)
++02. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  final_score=0.8132696557044983  hl_count=1  boost=0.0200  (raw_rank=4)
++    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
++    pages=22-24
++
++03. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  final_score=0.8133007287979126  hl_count=0  boost=0.0000  (raw_rank=2)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+     pages=167-169
+ 
+-03. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  (raw_rank=3)
++04. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  final_score=0.8137480616569519  hl_count=0  boost=0.0000  (raw_rank=3)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=279-281
+ 
+-04. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  (raw_rank=4)
+-    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+-    pages=22-24
+-
+-05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  (raw_rank=6)
++05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  final_score=0.851164698600769  hl_count=0  boost=0.0000  (raw_rank=6)
+     path_rel=rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+     pages=292-292
+ 
+-06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  (raw_rank=7)
++06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  final_score=0.8536148071289062  hl_count=0  boost=0.0000  (raw_rank=7)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=294-294
+ 
+-07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  (raw_rank=8)
++07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  final_score=0.864859938621521  hl_count=0  boost=0.0000  (raw_rank=8)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+     pages=18-18
+ 
+-08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  (raw_rank=9)
++08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  final_score=0.8705873489379883  hl_count=0  boost=0.0000  (raw_rank=9)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+     pages=215-215
+ 
+-09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  (raw_rank=10)
++09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  final_score=0.8722628355026245  hl_count=0  boost=0.0000  (raw_rank=10)
+     path_rel=rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+     pages=13-14
+ 
+-10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  (raw_rank=11)
++10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  final_score=0.8786800503730774  hl_count=0  boost=0.0000  (raw_rank=11)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=162-164
+ 
+-11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  (raw_rank=12)
++11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  final_score=0.8806346654891968  hl_count=0  boost=0.0000  (raw_rank=12)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=24-26
+ 
+-12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  (raw_rank=13)
++12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  final_score=0.8811410665512085  hl_count=0  boost=0.0000  (raw_rank=13)
+     path_rel=rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+     pages=252-254
+ 
+[god-learn] $ python3 scripts/learn/promote_hits.py --hits_json /tmp/phase4_hits.json --query Heidegger ecstatic temporality Dasein stretched along Gewesenheit Gegenwart Zukunft towards-oneself back-to alongside Being and Time H.329
+07:48:28 [INFO    ] god-learn.phase6.promote: Starting promotion [hits_json=/tmp/phase4_hits.json, query=Heidegger ecstatic temporality Dasein stretched along Gewesenheit Gegenwart Zukunft towards-oneself back-to alongside Being and Time H.329, min_chars=40, max_units=0, dry_run=False]
+07:48:28 [INFO    ] god-learn.phase6.promote: Promotion complete [promoted=7, total_indexed=341, knowledge_file=god-learn/knowledge.jsonl, index_file=god-learn/index.json]
+[Phase6:promote_hits] promoted=7 total_indexed=341
+[Phase6:promote_hits] wrote: god-learn/knowledge.jsonl
+[Phase6:promote_hits] index: god-learn/index.json
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[ORDER_FAIL] IDs in knowledge.jsonl are not sorted
+[Phase6:verify] ERROR: Soft failures: 1
+[god-learn] normalize: sorted 341 KUs and rebuilt index (341 offsets)
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] OK units=341

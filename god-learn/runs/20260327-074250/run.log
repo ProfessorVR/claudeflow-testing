@@ -1,0 +1,551 @@
+[god-learn] $ python3 scripts/retrieval/query_chunks.py Heidegger kinesis being-present ability-to-be entelechia incomplete actuality being-toward telos dynamis energeia GA18 Aristotle Physics --k 8 --overfetch 30 --include_docs --print_json --where {"collection":"rhetorical_ontology"}
+{
+  "query": "Heidegger kinesis being-present ability-to-be entelechia incomplete actuality being-toward telos dynamis energeia GA18 Aristotle Physics",
+  "config": {
+    "chroma_dir": "vector_db_1536",
+    "collection": "knowledge_chunks",
+    "k": 8,
+    "overfetch": 30,
+    "where": {
+      "collection": "rhetorical_ontology"
+    },
+    "filters": {
+      "require_my_copy": false,
+      "collection_filter": null,
+      "keep_biblio": false
+    },
+    "include_docs": true,
+    "use_highlights": false,
+    "highlights_index": "scripts/highlights/highlight_index.json",
+    "highlight_alpha": 0.02,
+    "highlight_cap": 5
+  },
+  "results": [
+    {
+      "raw_rank": 1,
+      "chunk_id": "49fa185fb6e11943:00071",
+      "distance": 0.5327613353729248,
+      "path_rel": "rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+      "page_start": 92,
+      "page_end": 92,
+      "text": "present in man and horse, it is either one and the same in number, or different. (In formula it is clearly one; for he who states the formula unfolds the same formula in either case.) If there is a man-in-himself who is a ‘this’ and exists apart, the parts of 30 which he consists, e.g. animal and two-footed, must indicate a ‘this’ and be things existing apart and substances; therefore animal too must be of this sort. Now if animal, which is in the horse and in man, is one and the same, as you are one and the same with yourself, how will the one in things that exist apart be I039bi one, and how will this animal escape being divided even from itself? Further, if it is to share in two-footed and many-footed, an impossible conclusion follows; for contrary attributes will belong at the same time to it although it is one and a this. If it does not, what is the relation implied when one says the animal is two-footed or has feet? But perhaps these are put together and 5 are in contact, or are mixed. Yet all these are absurd. But suppose the Form to be different in each species. Then there will be practically an infinite number of things whose substance is animal; for it is not by accident that man has animal for one of its elements. Further, animal-in-itself will be many. For the animal in each species will be the substance of the species; for it is not dependent on anything else; if it were, that other would be an element in man, i.e 10 would be the genus of man. And further all the elements of which man is composed will be Ideas. Now nothing can be the Idea of one thing and the substance of another; this is impossible. Each, then, of the Ideas present in the species of animals will be the ideal animal. Further, from what will these Ideas be derived; how will they be derived from the ideal animal? Or how can an Idea of animal whose essence 15 is simply animal exist apart from the ideal animal? Further, in the case of sensible things both these consequences and others still more absurd follow. If, then, these consequences are impossible, clearly there are not Forms of sensible things in the sense in which some maintain their existence.\n\n1 5 • Since substance is of two kinds, the concrete thing and the formula (I 20 mean that one kind of substance is the formula taken with the matter, while another kind is the formula in its generality), substances in the former sense are capable of destruction (for they are capable also of generation), but there is no destruction of the formula in the sense that it is ever in course of being destroyed; for there is no generation of it (the being of house is not generated, but only the being of this 25 house), but without generation and destruction formulae are and are not; for it has been shown that no one produces nor makes these. For this reason, also, there is neither definition nor demonstration of sensible individual substances, because they have matter whose nature is such that they are capable both of being and of not being; for which reason all the individual instances of them are destructible. If then 30 demonstration is of necessary truths and definition involves knowledge, and if, just as knowledge cannot be sometimes knowledge and sometimes ignorance, but the state which varies thus is opinion, so too demonstration and definition cannot vary thus, but it is opinion that deals with that which can be otherwise than as it is, 1040*1 clearly there can neither be definition nor demonstration of sensible individuals. For\n\nM ETA PHYSICS",
+      "meta": {
+        "title_raw": "Metaphysics",
+        "is_image": false,
+        "bboxes": "[{\"page_num\": 94, \"coords\": [32.75, 47.13859558105469, 358.04998779296875, 511.2944641113281], \"blocks\": [[33.0, 47.13859558105469, 358.04998779296875, 344.15380859375], [32.75, 350.3600769042969, 346.45001220703125, 511.2944641113281]]}, {\"page_num\": 95, \"coords\": [77.6500015258789, 33.20817184448242, 365.75, 125.61945343017578], \"blocks\": [[78.8489990234375, 33.20817184448242, 259.82666015625, 45.920326232910156], [77.6500015258789, 52.64858627319336, 365.75, 125.61945343017578]]}]",
+        "has_bboxes": true,
+        "source_method": "pymupdf+bbox",
+        "page_start": 92,
+        "is_clean_copy": false,
+        "mtime": 1771101202,
+        "chunk_index": 71,
+        "is_table": false,
+        "year": 2014,
+        "cleaning_version": "clean_v1",
+        "is_notes": false,
+        "content_type": "text",
+        "sha256": "22c796d388307296cfdab5806f8af990778fb9f0242aed67d4dd240cebcd5df1",
+        "clean_sha256": "5bdb6f0efd8b5d4487f5168e67d01f40612b4795294f731a91cb7c79a5be96a5",
+        "doc_id": "49fa185fb6e11943",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "qualifier": "My Copy",
+        "author_raw": "Aristotle",
+        "collection": "rhetorical_ontology",
+        "path_rel": "rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf",
+        "pdftotext_version": "24.02.0",
+        "is_my_copy": true,
+        "page_end": 92
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 94, \"coords\": [32.75, 47.13859558105469, 358.04998779296875, 511.2944641113281], \"blocks\": [[33.0, 47.13859558105469, 358.04998779296875, 344.15380859375], [32.75, 350.3600769042969, 346.45001220703125, 511.2944641113281]]}, {\"page_num\": 95, \"coords\": [77.6500015258789, 33.20817184448242, 365.75, 125.61945343017578], \"blocks\": [[78.8489990234375, 33.20817184448242, 259.82666015625, 45.920326232910156], [77.6500015258789, 52.64858627319336, 365.75, 125.61945343017578]]}]",
+      "rank": 1
+    },
+    {
+      "raw_rank": 2,
+      "chunk_id": "b811388f4f1d7863:00088",
+      "distance": 0.5556754469871521,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 115,
+      "page_end": 115,
+      "text": "condition, if something does not prevent him, he actively exercises his knowledge:\notherwise he would be in the contradictory state of not knowing. In regard to natural bodies also the case is similar. Thus what is cold is potentially hot: then a change takes place and it is fire, and it burns, unless something prevents and hinders it. So, too, with heavy and light: light is generated from heavy, e.g. air from water (for water is first such potentially), and air is actually light, and will at once realize its proper activity unless something prevents it. The activity of lightness consists in the light thing being in a certain place, namely high up: when it is in the contrary place, it is being prevented. The case is similar also in regard to quantity and quality. But, be it noted, this is the question we are trying to answer—how can we account for the motion of light things and heavy things to their proper places? The reason for it is that they have a natural tendency towards a certain position; and this is what it is to be light or heavy, the former being determined by an upward, the latter by a downward, tendency. As we have said, a thing may be potentially light or heavy in more ways than one. Thus not only when a thing is water is it in a sense potentially light, but when it has become air it may be still potentially light; for it may be that through some hindrance it does not occupy an upper position, whereas, ifwhat hinders it is removed, it realizes its activity and continues to rise higher. The process whereby what is of a certain quality changes to a condition of actuality is similar: thus the exercise of knowledge follows at once upon the possession of it unless something prevents it. So, too, what is of a certain quantity extends itselfover a certain space unless something prevents it. The thing in a sense is and in a sense is not moved by one who moves what is obstructing and preventing its motion—e.g. one who pulls away a pillar or one who removes the stone from a wineskin in the water is the accidental cause of motion; and in the same way the rebounding ball is moved not by the wall but by the thrower. So it is clear that in all these cases the thing does not move itself, but it contains within itself the source of motion—not of moving something or of causing motion, but of suffering it. If then the motion of all things that are in motion is either natural or unnatural and violent, and all things whose motion is violent and unnatural are moved by something, and something other than themselves, and again all things whose motion is natural are moved by something—both those that are moved by themselves and those that are not moved by themselves (e.g. light things and heavy things, which are moved either by that which brought the thing into existence and made it light and heavy, or by that which released what was hindering and preventing it); then all things that are in motion must be moved by something.\n\n• Now this may come about in either of two ways, either not because of the itself, but because of something else which moves the mover, or because of mover the mover itself. Further, in the latter case, either the mover immediately precedes the last thing in the series, or there may be one or more intermediate links: e.g. the stick moves the stone and is moved by the hand, which again is moved by the man; in the man, however, we have reached a mover that is not so in virtue of being moved by something else. Now we say that the thing is moved both by the last and by the\n\nPHYSICS",
+      "meta": {
+        "bboxes": "[{\"page_num\": 118, \"coords\": [81.5, 49.280033111572266, 368.39691162109375, 499.9317932128906], \"blocks\": [[81.5, 49.280033111572266, 368.39691162109375, 499.9317932128906]]}, {\"page_num\": 119, \"coords\": [28.549999237060547, 28.928712844848633, 342.4497985839844, 173.8517303466797], \"blocks\": [[146.69000244140625, 28.928712844848633, 317.7499694824219, 43.345645904541016], [328.75, 137.17822265625, 342.4497985839844, 143.37171936035156], [28.549999237060547, 50.40000534057617, 335.0, 173.8517303466797]]}]",
+        "collection": "rhetorical_ontology",
+        "is_image": false,
+        "is_notes": false,
+        "clean_sha256": "92e203f5ccaeff7ec32b58c5c5a7f8c78cb27b1b7f517770449c4f31790e0f45",
+        "year": 2014,
+        "is_clean_copy": false,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "has_bboxes": true,
+        "title_raw": "Physics",
+        "author_raw": "Aristotle",
+        "pdftotext_version": "24.02.0",
+        "cleaning_version": "clean_v1",
+        "doc_id": "b811388f4f1d7863",
+        "chunk_index": 88,
+        "is_my_copy": true,
+        "page_start": 115,
+        "page_end": 115,
+        "mtime": 1771101202,
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "qualifier": "My Copy",
+        "source_method": "pymupdf+bbox",
+        "content_type": "text",
+        "is_table": false
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 118, \"coords\": [81.5, 49.280033111572266, 368.39691162109375, 499.9317932128906], \"blocks\": [[81.5, 49.280033111572266, 368.39691162109375, 499.9317932128906]]}, {\"page_num\": 119, \"coords\": [28.549999237060547, 28.928712844848633, 342.4497985839844, 173.8517303466797], \"blocks\": [[146.69000244140625, 28.928712844848633, 317.7499694824219, 43.345645904541016], [328.75, 137.17822265625, 342.4497985839844, 143.37171936035156], [28.549999237060547, 50.40000534057617, 335.0, 173.8517303466797]]}]",
+      "rank": 2
+    },
+    {
+      "raw_rank": 3,
+      "chunk_id": "b811388f4f1d7863:00049",
+      "distance": 0.5582013130187988,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 67,
+      "page_end": 67,
+      "text": "without qualification to change because something belonging to it changes, i.e. in statements which refer to part of the thing in question: thus the body is restored to health because the eye or the chest, that is to say a part of the whole body, is restored to health. And there is the case of a thing which is in motion neither accidentally nor in respect of something else belonging to it, but in virtue of being itselfdirectly in motion. Here we have a thing which is essentially movable: and that which is so is a different thing according to the particular variety of motion: for instance it may be a thing capable ofalteration—and within the sphere ofalteration it is again a different thing according as it is capable of being restored to health or capable of being heated. And there are the same distinctions in the case of the mover: one thing causes motion accidentally, another partially (because something belonging to it causes motion), another of itself directly, as, for instance, the physician heals, the hand strikes. We have, then, the following factors: that which directly causes motion, and that which is in motion; further, that in which motion takes place, namely time, and (distinct from these three) that from which and that to which it proceeds (for every motion proceeds from something and to something, 224bi that which is directly in motion being distinct from that to which it is in motion and that from which it is in motion: for instance, wood, hot, and cold—the first is that which is in motion, the second is that to which the motion proceeds, and the third is that from which it proceeds). This being so, it is clear that the motion is in the wood, not in its form; for the motion is neither caused nor experienced by the form or the place or the quantity. So we are left with a mover, a moved, and that to which the motion proceeds; for it is that to which rather than that from which the motion proceeds that gives its name to the change. Thus perishing is change to not-being, thought it is also true that that which perishes changes from being; and becoming is change to being, though it is also change from not-being. Now a definition of motion has been given above. Every goal of motion, whether it be a form, an affection, or a place, is immovable, as, for instance, knowledge and heat. Here, however, a difficulty may be raised. Affections, it may be said, are motions, and whiteness is an affection: thus there may be change to a motion. To this we may reply that it is not whiteness but whitening that is a motion. Here also things may hold accidentally, or partially and with reference to something other than itself, or directly and with no reference to anything else: for instance, a thing which is becoming white changes accidentally to an object of thought, the colour being only accidentally the object of thought; it changes to colour, because white is a part of colour (or to Europe, because Athens is a part of Europe); but it changes essentially to white colour. It is now clear in what way a thing is in motion essentially or accidentally, and in respect ofsomething other than itselfor itselfdirectly moving—in the case both of the mover and ofthe moved; and it is also clear that the motion is not in the form but in that which is in motion, that is to say the movable in actuality. Now accidental change we may leave out of account; for it is to be found in everything, at any time, and in any subject. Change which is not accidental on the other hand is not to be found in everything, but only in contraries, in things intermediate between contraries, and in contradictories, as may be shown by induction. An intermediate may be a starting-point of change,\n\nPHYSICS",
+      "meta": {
+        "page_end": 67,
+        "is_notes": false,
+        "author_raw": "Aristotle",
+        "bboxes": "[{\"page_num\": 69, \"coords\": [28.25, 185.23146057128906, 336.4999084472656, 512.7957763671875], \"blocks\": [[28.25, 185.23146057128906, 336.4999084472656, 485.0791931152344], [137.75, 498.3613586425781, 212.811279296875, 512.7957763671875]]}, {\"page_num\": 70, \"coords\": [55.650001525878906, 31.680803298950195, 365.99700927734375, 473.33868408203125], \"blocks\": [[80.05000305175781, 31.680803298950195, 244.69711303710938, 43.12115478515625], [55.650001525878906, 55.84229278564453, 69.30000305175781, 62.214107513427734], [79.44999694824219, 52.07019805908203, 365.99700927734375, 308.44354248046875], [63.650001525878906, 453.96844482421875, 364.75189208984375, 473.33868408203125]]}]",
+        "collection": "rhetorical_ontology",
+        "clean_sha256": "649535af255cfde535bbc0f44703a4a678fcb57cf0af9181ddc60bf3233a8b0a",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "is_table": false,
+        "is_clean_copy": false,
+        "year": 2014,
+        "title_raw": "Physics",
+        "cleaning_version": "clean_v1",
+        "page_start": 67,
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "doc_id": "b811388f4f1d7863",
+        "has_bboxes": true,
+        "pdftotext_version": "24.02.0",
+        "source_method": "pymupdf+bbox",
+        "mtime": 1771101202,
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "qualifier": "My Copy",
+        "chunk_index": 49,
+        "is_my_copy": true,
+        "is_image": false,
+        "content_type": "text"
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 69, \"coords\": [28.25, 185.23146057128906, 336.4999084472656, 512.7957763671875], \"blocks\": [[28.25, 185.23146057128906, 336.4999084472656, 485.0791931152344], [137.75, 498.3613586425781, 212.811279296875, 512.7957763671875]]}, {\"page_num\": 70, \"coords\": [55.650001525878906, 31.680803298950195, 365.99700927734375, 473.33868408203125], \"blocks\": [[80.05000305175781, 31.680803298950195, 244.69711303710938, 43.12115478515625], [55.650001525878906, 55.84229278564453, 69.30000305175781, 62.214107513427734], [79.44999694824219, 52.07019805908203, 365.99700927734375, 308.44354248046875], [63.650001525878906, 453.96844482421875, 364.75189208984375, 473.33868408203125]]}]",
+      "rank": 3
+    },
+    {
+      "raw_rank": 4,
+      "chunk_id": "b811388f4f1d7863:00097",
+      "distance": 0.5889875292778015,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 125,
+      "page_end": 125,
+      "text": "sites: therefore provided it is impossible for a thing to undergo opposite changes at the same time, the change will not be continuous, but a period of time will intervene between the opposite processes. The question whether these contradictory changes are contraries or not makes no difference, provided only it is impossible for them both to be present to the same thing at the same time: the point is of no importance to the argument. Nor does it matter if the thing need not rest in the contradictory state, or if there is no change contrary to rest: it may be true that what is not is not at rest, and that perishing is a process to what is not. All that matters is the intervention of a time: it is this that prevents the change from being continuous; so, too, in our previous instances the important thing was not the relation of contrariety but the impossibility of the two processes being present at the same time. And there is no need to be disturbed by the fact that there may be more than one contrary to the same thing, that motion will be contrary both to rest and to motion in the contrary direction. We have only to grasp the fact that motion is in a sense the opposite both of a state of rest and of the contrary motion, in the same way as the equal and the mean is the opposite both of that which surpasses it and of that which it surpasses, and that it is impossible for the opposite motions or changes to be present to a thing at the same time. Furthermore, in the case of becoming and perishing it would seem to be an utterly absurd thing if as soon as anything has become it must necessarily perish and cannot continue to exist for any time; and this might generate a similar belief in the other cases, since it is natural that they should all be uniform.\n\n262*1\n\n• Let us now proceed to maintain that it is possible that there should be an infinite motion that is single and continuous, and that this motion is rotatory motion. The motion of everything that is in process of locomotion is either rotatory or rectilinear or a compound of the two: consequently, ifone ofthe former two is not continuous, that which is composed of them both cannot be continuous either. Now it is plain that if the locomotion of a thing is rectilinear and finite it is not continuous locomotion; for the thing must turn back, and that which turns back in a straight line undergoes two contrary locomotions, since, so far as place is concerned, upward motion is the contrary of downward motion, forward motion of backward, and motion to the left of motion to the right, these being the pairs of contraries in the sphere of place. But we have already defined single and continuous motion to be motion of a single thing in a single period of time and operating within a sphere admitting of no further specific differentiation (for we have three things to consider, first that which is in motion, e.g. a man or a god, secondly the ‘when’, that is to say, the time, and thirdly the sphere within which it operates, which may be either place or affection or form or magnitude). Now contraries are specifically different and not one; and within the sphere of place we have the above-mentioned distinctions. oreover we have an indication that motion from A to B is the contrary of motion from B to A in the fact that, if they occur at the same time, they arrest and stop each other. And the same is true in the case of a circle: the motion from A towards B is the contrary of the motion from A towards C; for even if they are continuous and there is no turning back they arrest each other, because contraries annihilate or\n\nPHYSICS",
+      "meta": {
+        "doc_id": "b811388f4f1d7863",
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "chunk_index": 97,
+        "is_my_copy": true,
+        "qualifier": "My Copy",
+        "collection": "rhetorical_ontology",
+        "is_notes": false,
+        "is_clean_copy": false,
+        "mtime": 1771101202,
+        "is_image": false,
+        "content_type": "text",
+        "pdftotext_version": "24.02.0",
+        "year": 2014,
+        "clean_sha256": "01d85eb2c474d3bbbc5df9fee87f83f3ce2aabc34da4bf3f889873f99f5580eb",
+        "page_end": 125,
+        "is_table": false,
+        "author_raw": "Aristotle",
+        "source_method": "pymupdf+bbox",
+        "has_bboxes": true,
+        "title_raw": "Physics",
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "cleaning_version": "clean_v1",
+        "page_start": 125,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "bboxes": "[{\"page_num\": 128, \"coords\": [73.5, 50.70207214355469, 361.2944030761719, 502.30364990234375], \"blocks\": [[73.5, 50.70207214355469, 361.2944030761719, 480.8372497558594], [92.25, 494.5028076171875, 341.8500061035156, 502.30364990234375]]}, {\"page_num\": 129, \"coords\": [146.10000610351562, 27.172306060791016, 342.1523132324219, 368.6191101074219], \"blocks\": [[146.10000610351562, 27.172306060791016, 318.3756103515625, 38.37478256225586], [328.1400146484375, 362.05706787109375, 342.1523132324219, 368.6191101074219]]}]"
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 128, \"coords\": [73.5, 50.70207214355469, 361.2944030761719, 502.30364990234375], \"blocks\": [[73.5, 50.70207214355469, 361.2944030761719, 480.8372497558594], [92.25, 494.5028076171875, 341.8500061035156, 502.30364990234375]]}, {\"page_num\": 129, \"coords\": [146.10000610351562, 27.172306060791016, 342.1523132324219, 368.6191101074219], \"blocks\": [[146.10000610351562, 27.172306060791016, 318.3756103515625, 38.37478256225586], [328.1400146484375, 362.05706787109375, 342.1523132324219, 368.6191101074219]]}]",
+      "rank": 4
+    },
+    {
+      "raw_rank": 5,
+      "chunk_id": "b811388f4f1d7863:00032",
+      "distance": 0.5950764417648315,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 44,
+      "page_end": 45,
+      "text": "BOOK IV ! teaching. Nevertheless, he did identify place and space.) I mention Plato because, while all hold place to be something, he alone tried to say what it is. In view of these facts we should naturally expect to find difficulty in determining what place is, if indeed it is one of these two things, matter or form. They demand a very close scrutiny, especially as it is not easy to recognize them apart. But it is at any rate not difficult to see that place cannot be either of them. The form and the matter are not separate from the thing, whereas the place can be separated. As we pointed out, where air was, water in turn comes to be, the one replacing the other; and similarly with other bodies. Hence the place of a thing is neither a part nor a state of it, but is separable from it. For place is supposed to be something like a vessel—the vessel being a transportable place. But the vessel is no\n\n210*1\n\npart of the thing. In so far then as it is separable from the thing, it is not the form; and in so far as it contains it, it is different from the matter. Also it is held that what is anywhere is both itselfsomething and that there is a different thing outside it. (Plato of course, if we may digress, ought to tell us why the form and the numbers are not in place, if‘what participates’ is place—whether what participates is the Great and the Small or the matter, as he has written in the Timaeus.) Further, how could a body be carried to its own place, if place was the matter or the form? It is impossible that what has no reference to motion or the distinction of up and down can be place. So place must be looked for among things which have these characteristics.\n\nIf the place is in the thing (it must be if it is either shape or matter) place will have a place; for both the form and the indeterminate undergo change and motion along with the thing, and are not always in the same place, but are where the thing is. Hence the place will have a place. Further, when water is produced from air, the place has been destroyed, for the resulting body is not in the same place. What sort of destruction then is that? This concludes my statement of the reasons why place must be something, and again of the difficulties that may be raised about is essential nature.\n\n• The next step we must take is to see in how many ways one thing is said to be in another. In one way, as a finger is in a hand, and generally a part in a whole. In another way, as a whole is in its parts; for there is no whole over and above the parts. Again, as man is in animal, and in general a species in a genus. Again, as the genus is in the species, and in general a part of the species in its definition. Again, as health is in the hot and the cold, and in general the form in the matter. Again, as the affairs of Greece are in the King, and generally events are in their primary motive agent. Again, as a thing is in its good, and generally in its end, i.e. in that for the sake ofwhich. And most properly ofall, as something is in a vessel, and generally in a place.26\n\n“Aristotle's remarks rest on the use of the Greek preposition 'in', to which (evidently) the English ‘in' does not precisely correspond.\n\nPHYSICS",
+      "meta": {
+        "mtime": 1771101202,
+        "is_my_copy": true,
+        "pdftotext_version": "24.02.0",
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "clean_sha256": "6af9b996e6d1cd6bfaa700a77c2017120b8191572a5fad6d7840c8c64dca0cef",
+        "title_raw": "Physics",
+        "is_clean_copy": false,
+        "author_raw": "Aristotle",
+        "is_image": false,
+        "is_notes": false,
+        "has_bboxes": true,
+        "page_start": 44,
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "year": 2014,
+        "qualifier": "My Copy",
+        "bboxes": "[{\"page_num\": 47, \"coords\": [31.25, 46.0747184753418, 388.2465515136719, 516.084716796875], \"blocks\": [[31.25, 46.0747184753418, 388.2465515136719, 493.995361328125], [78.55000305175781, 508.9949951171875, 274.62689208984375, 516.084716796875]]}, {\"page_num\": 48, \"coords\": [50.0, 27.832660675048828, 237.4524688720703, 365.3190002441406], \"blocks\": [[73.19999694824219, 27.832660675048828, 237.4524688720703, 40.829063415527344], [50.0, 359.1368408203125, 63.73164749145508, 365.3190002441406]]}]",
+        "is_table": false,
+        "cleaning_version": "clean_v1",
+        "source_method": "pymupdf+bbox",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "chunk_index": 32,
+        "collection": "rhetorical_ontology",
+        "doc_id": "b811388f4f1d7863",
+        "content_type": "text",
+        "page_end": 45
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 47, \"coords\": [31.25, 46.0747184753418, 388.2465515136719, 516.084716796875], \"blocks\": [[31.25, 46.0747184753418, 388.2465515136719, 493.995361328125], [78.55000305175781, 508.9949951171875, 274.62689208984375, 516.084716796875]]}, {\"page_num\": 48, \"coords\": [50.0, 27.832660675048828, 237.4524688720703, 365.3190002441406], \"blocks\": [[73.19999694824219, 27.832660675048828, 237.4524688720703, 40.829063415527344], [50.0, 359.1368408203125, 63.73164749145508, 365.3190002441406]]}]",
+      "rank": 5
+    },
+    {
+      "raw_rank": 6,
+      "chunk_id": "b811388f4f1d7863:00083",
+      "distance": 0.5993689298629761,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 107,
+      "page_end": 109,
+      "text": "And much the same may be said of the view that such is how things naturally are and that this must be regarded as a principle, as would seem to be the view of Empedocles when he says that the constitution ofthe world is of necessity such that Love and Strife alternately predominate and cause motion, while in the interme­ diate period of time there is a state of rest. Probably also those who, like\n\nBOOK VIII\n\nAnaxagoras, assert a single principle would hold this view. But that which holds by nature and is natural can never be anything disorderly; for nature is everywhere the of order. oreover, there is no ratio in the relation of the infinite to the cause infinite, whereas order always means ratio. But if we say that there is first a state of rest for an infinite time, and then motion is started at some moment, and that the fact that it is this rather than a previous moment is of no importance, and that it involves no order, then we can no longer say that it is nature’s work; for if anything is of a certain character naturally, it either is so invariably and is not sometimes of this and sometimes of another character (e.g. fire, which travels upwards naturally, does not sometimes do so and sometimes not) or there is a ratio in the variation. It would be better, therefore, to say with Empedocles and anyone else who may have maintained such a theory as his that the universe is alternately at rest and in motion; for in a system of this kind we have at once a certain order. But even here the holder of the theory ought not only to assert the fact: he ought also to explain the cause of it; i.e. he should not make any mere assumption or lay down any unreasoned axiom, but should employ either inductive or demonstrative reasoning. The Love and Strife postulated are not in themselves causes, nor is it of the essence of either that it should be so, the essential function of the former being to unite, of the latter to separate. If he is to go on to explain this alternate predominance, he should adduce cases where such a state of things exists, as he points to the fact that among mankind we have something that unites men, namely Love, while on the other hand enemies avoid one another: thus from the observed fact that this occurs in certain cases comes the assumption that it occurs also in the universe. Then, again, some argument is needed to explain why the predominance of each lasts for an equal period of time. But it is a wrong assumption to suppose universally that we have an adequate first principle in virtue of the fact that something always is so or always happens so. Thus Democritus reduces the causes that explain nature to the fact that things happened in the past in the same way as they happen now; but he does not think fit to seek for a principle to explain this ‘always’: so, while his theory is right in 252bi so far as it is applied to certain individual cases, he is wrong in making it of universal application. Thus, a triangle always has its angles equal to two right angles, but there is nevertheless an ulterior cause of the eternity, whereas principles are external and have no ulterior cause. Let this conclude what we have to say in support of our contention that there never was a time when there was not motion, and never will be a time when there will not be motion.\n\n• The arguments that may be advanced against this position are not difficult to dispose of. The chief considerations that might be thought to indicate that motion may exist though at one time it had not existed at all are the following:\nFirst, it may be said that no change is eternal; for the nature of all change is such that it proceedsfrom something to something, so that every change must be bounded by the contraries that mark its course, and no motion can go on to infinity.\n\nPHYSICS",
+      "meta": {
+        "pdftotext_version": "24.02.0",
+        "clean_sha256": "bb8840f582840ea3d88968359af78578490b9b05772c4703a6c90d5a440bd464",
+        "chunk_index": 83,
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "mtime": 1771101202,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "page_start": 107,
+        "bboxes": "[{\"page_num\": 111, \"coords\": [19.350000381469727, 101.52911376953125, 335.90093994140625, 505.2762145996094], \"blocks\": [[19.350000381469727, 101.52911376953125, 335.90093994140625, 505.2762145996094]]}, {\"page_num\": 112, \"coords\": [53.54899978637695, 28.084089279174805, 364.841796875, 499.8981018066406], \"blocks\": [[78.25, 28.084089279174805, 244.0019073486328, 40.49641036987305], [53.54899978637695, 196.67819213867188, 67.24874877929688, 202.87168884277344], [76.75, 49.33564376831055, 364.841796875, 499.8981018066406]]}, {\"page_num\": 113, \"coords\": [29.14900016784668, 27.2193603515625, 345.4011535644531, 462.3450927734375], \"blocks\": [[148.14999389648438, 27.2193603515625, 321.01678466796875, 38.71430206298828], [30.049999237060547, 48.579071044921875, 345.4011535644531, 120.25509643554688], [29.450000762939453, 113.25032043457031, 333.49993896484375, 183.38241577148438], [81.19999694824219, 424.3320617675781, 319.8516845703125, 433.6029357910156], [29.14900016784668, 453.52813720703125, 47.000701904296875, 462.3450927734375]]}]",
+        "collection": "rhetorical_ontology",
+        "content_type": "text",
+        "doc_id": "b811388f4f1d7863",
+        "page_end": 109,
+        "is_my_copy": true,
+        "qualifier": "My Copy",
+        "has_bboxes": true,
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "is_table": false,
+        "is_clean_copy": false,
+        "year": 2014,
+        "is_image": false,
+        "title_raw": "Physics",
+        "source_method": "pymupdf+bbox",
+        "cleaning_version": "clean_v1",
+        "is_notes": false,
+        "author_raw": "Aristotle"
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 111, \"coords\": [19.350000381469727, 101.52911376953125, 335.90093994140625, 505.2762145996094], \"blocks\": [[19.350000381469727, 101.52911376953125, 335.90093994140625, 505.2762145996094]]}, {\"page_num\": 112, \"coords\": [53.54899978637695, 28.084089279174805, 364.841796875, 499.8981018066406], \"blocks\": [[78.25, 28.084089279174805, 244.0019073486328, 40.49641036987305], [53.54899978637695, 196.67819213867188, 67.24874877929688, 202.87168884277344], [76.75, 49.33564376831055, 364.841796875, 499.8981018066406]]}, {\"page_num\": 113, \"coords\": [29.14900016784668, 27.2193603515625, 345.4011535644531, 462.3450927734375], \"blocks\": [[148.14999389648438, 27.2193603515625, 321.01678466796875, 38.71430206298828], [30.049999237060547, 48.579071044921875, 345.4011535644531, 120.25509643554688], [29.450000762939453, 113.25032043457031, 333.49993896484375, 183.38241577148438], [81.19999694824219, 424.3320617675781, 319.8516845703125, 433.6029357910156], [29.14900016784668, 453.52813720703125, 47.000701904296875, 462.3450927734375]]}]",
+      "rank": 6
+    },
+    {
+      "raw_rank": 7,
+      "chunk_id": "b811388f4f1d7863:00080",
+      "distance": 0.6003057360649109,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 105,
+      "page_end": 105,
+      "text": "question whether, supposing that two alterations are of equal velocity, we ought to look for this equality in the sameness or similarity of the affections, or in the things altered, to see e.g. whether a certain quantity of each has become white. Or ought we not rather to look for it in both? That is to say, the alterations are the same or different according as the affections are the same or different, while they are equal or unequal according as the things altered are equal or unequal. And now we must consider the same question in the case of becoming and perishing: how is one becoming of equal velocity with another? They are of equal velocity if in an equal time there are produced two things that are the same and specifically inseparable, e.g. two men (not two animals). Similarly one is quicker than the other if in an equal time the product is different in the two cases. (For we have no pair of terms that will convey this difference in the way in which dissimilarity functions for qualities.) If substances were numbers, there would be a greater number and a lesser number within the same species; but there is no common term that will include both relations, nor are there terms to express each of them separately in the same way as we indicate a higher degree or preponderance of an affection by ‘more’, of a quantity by ‘greater’.\n\n250*1\n\n• Now since a mover always moves something and is in something, and extends to something (by ‘is in something’ 1 mean that it occupies a time; and by\n‘extends to something’ I mean that it involves a certain amount of distance—for at any moment when a thing is causing motion, it also has caused motion, so that there must always be a certain amount of distance that has been traversed and a certain amount of time that has been occupied). If, then, A is the mover, B the moved, C the distance moved, and D the time, then in the same time the same force A will move\n'/aB twice the distance C, and in '/jD it will move '/& the whole distance C; for thus the rules of proportion will be observed. Again if a given force moves a given object a certain distance in a certain time and half the distance in half the time, half the motive power will move half the object the same distance in the same time. Let E represent half the motive power A and F half B: then they are similarly related, and the motive power is proportioned to the weight, so that each force will cause the same distance to be traversed in the same time. But if E moves F a distance C in a time D, it does not necessarily follow that E can move twice F half the distance C in the same time. If, then, A moves B a distance C in a time D, it does not follow that E, being halfof A, will in the time D or in any fraction of it cause B to traverse a part of C the ratio between which and the whole of C is proportionate to that between A and E—in fact it might well be that it will cause no motion at all; for it does not follow that, if a given motive power causes a certain amount of motion, half that power will cause motion either of any particular amount or in any length of time: otherwise one man might move a ship, since both the motive power of the ship-haulers and the distance that they all cause the ship to traverse are divisible into as many parts as there are men. Hence Zeno’s reasoning is false when he argues that there is no part of the millet that does not make a sound; for there is no reason why any such part should not in any length of\n\nPHYSICS",
+      "meta": {
+        "page_start": 105,
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "content_type": "text",
+        "bboxes": "[{\"page_num\": 107, \"coords\": [26.200000762939453, 143.55003356933594, 341.25091552734375, 511.27490234375], \"blocks\": [[26.200000762939453, 143.55003356933594, 341.25091552734375, 494.5811767578125], [124.6500015258789, 503.17413330078125, 221.2998046875, 511.27490234375]]}, {\"page_num\": 108, \"coords\": [59.20000076293945, 28.35820198059082, 369.546630859375, 499.58660888671875], \"blocks\": [[82.69999694824219, 28.35820198059082, 248.3094024658203, 40.51790237426758], [59.20000076293945, 389.1460266113281, 72.8997573852539, 396.16876220703125], [66.94999694824219, 48.79363250732422, 369.546630859375, 447.79547119140625], [83.0, 449.77545166015625, 368.9931640625, 499.58660888671875]]}, {\"page_num\": 109, \"coords\": [143.10000610351562, 27.228633880615234, 314.7999572753906, 38.981746673583984], \"blocks\": [[143.10000610351562, 27.228633880615234, 314.7999572753906, 38.981746673583984]]}]",
+        "is_image": false,
+        "clean_sha256": "c249d2bb2ac5cb2629e8f30babb8a5efdf34dafc4b3c15e6369a6940786a90b3",
+        "source_method": "pymupdf+bbox",
+        "is_my_copy": true,
+        "page_end": 105,
+        "author_raw": "Aristotle",
+        "pdftotext_version": "24.02.0",
+        "has_bboxes": true,
+        "cleaning_version": "clean_v1",
+        "is_notes": false,
+        "year": 2014,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "chunk_index": 80,
+        "is_table": false,
+        "mtime": 1771101202,
+        "title_raw": "Physics",
+        "is_clean_copy": false,
+        "doc_id": "b811388f4f1d7863",
+        "qualifier": "My Copy",
+        "collection": "rhetorical_ontology"
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 107, \"coords\": [26.200000762939453, 143.55003356933594, 341.25091552734375, 511.27490234375], \"blocks\": [[26.200000762939453, 143.55003356933594, 341.25091552734375, 494.5811767578125], [124.6500015258789, 503.17413330078125, 221.2998046875, 511.27490234375]]}, {\"page_num\": 108, \"coords\": [59.20000076293945, 28.35820198059082, 369.546630859375, 499.58660888671875], \"blocks\": [[82.69999694824219, 28.35820198059082, 248.3094024658203, 40.51790237426758], [59.20000076293945, 389.1460266113281, 72.8997573852539, 396.16876220703125], [66.94999694824219, 48.79363250732422, 369.546630859375, 447.79547119140625], [83.0, 449.77545166015625, 368.9931640625, 499.58660888671875]]}, {\"page_num\": 109, \"coords\": [143.10000610351562, 27.228633880615234, 314.7999572753906, 38.981746673583984], \"blocks\": [[143.10000610351562, 27.228633880615234, 314.7999572753906, 38.981746673583984]]}]",
+      "rank": 7
+    },
+    {
+      "raw_rank": 8,
+      "chunk_id": "b811388f4f1d7863:00101",
+      "distance": 0.6055933237075806,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 129,
+      "page_end": 129,
+      "text": "whose motion is continuous must, on arriving at any point in the course of its locomotion, have been previously also in process of locomotion to that point, if it is not forced out of its path by anything: e.g. on arriving at B a thing must also have been in process of locomotion to B, and that not merely when it was near to B, but from the moment of its starting on its course, since there can be no reason for its being so at any particular stage rather than at an earlier one. So, too, in the case of the other kinds of motion. Now we are to suppose that a thing proceeds in locomotion from A and that when it arrives at C it comes again, moving continuously, to A. Then when it is undergoing locomotion from A to C it is at the time undergoing also its locomotion to A from C: consequently, it is same simultaneously undergoing two contrary motions, since the two motions that follow the same straight line are contrary to each other. At the same time it changes from a state in which it is not: so, inasmuch as this is impossible, the thing must come to a stand at C. Therefore the motion is not a single motion, since motion that is interrupted by stationariness is not single. Further, the following argument will serve better to make this point clear universally in respect of every kind of motion. If the motion undergone by that which is in motion is always one of those already enumerated, and the state of rest that it undergoes is one of those that are the opposites of the motions (for we found no other besides these), and moreover that which is undergoing but does not always undergo a particular motion (by this I mean one of the various specifically distinct motions, not some particular part of the whole motion) must have been previously undergoing the state of rest that is the opposite of the motion, the state ofrest being privation of motion; then, inasmuch as the two motions that follow the same straight line are contrary motions, and it is impossible for a thing to undergo simultaneously two contrary motions, that which is undergoing locomotion from A to C cannot also simultaneously be undergoing locomotion from C to A; and since the latter locomotion is not simultaneous with the former but is still to be undergone, before it is undergone there must occur a state of rest at C; for this, as we found, is the state of rest that is the opposite of the motion from C. The foregoing argument, then, makes it plain that the motion is not continuous. Again, there is the following argument, more appropriate than its predeces­ sors. At the same time something has ceased to be not white and has become white. Then if the alteration to white and from white is continuous and does not persist for any time, at the same time it has ceased to be not white and has become white and has become not white; for the time of the three will be the same. Again, from the continuity of the time in which the motion takes place we cannot infer continuity in the motion, but only successiveness: in fact, how could contraries, e.g. whiteness and blackness, meet in the same extreme point? On the other hand, motion on a circular line will be one and continuous; for here we are met by no impossible consequence: that which is in motion from A will in virtue of the same direction ofenergy be simultaneously in motion to A (since it is in motion to the point at which it will finally arrive), and yet will not be undergoing two contrary or opposite motions; for a motion to a point and a motion from that\n\nPHYSICS",
+      "meta": {
+        "is_my_copy": true,
+        "pdftotext_version": "24.02.0",
+        "qualifier": "My Copy",
+        "collection": "rhetorical_ontology",
+        "author_raw": "Aristotle",
+        "is_notes": false,
+        "source_method": "pymupdf+bbox",
+        "chunk_index": 101,
+        "cleaning_version": "clean_v1",
+        "mtime": 1771101202,
+        "is_clean_copy": false,
+        "title_raw": "Physics",
+        "year": 2014,
+        "is_image": false,
+        "clean_sha256": "105bfd52a2349e81f7d6f24be64d27f8ea6ca3e1acd4c6c0c23bde11d525d642",
+        "page_start": 129,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "page_end": 129,
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "bboxes": "[{\"page_num\": 132, \"coords\": [41.04899978637695, 195.740478515625, 352.8974914550781, 511.8001403808594], \"blocks\": [[41.04899978637695, 195.740478515625, 352.8974914550781, 511.8001403808594]]}, {\"page_num\": 133, \"coords\": [25.89900016784668, 25.128597259521484, 341.2511901855469, 511.8562927246094], \"blocks\": [[145.19000244140625, 25.128597259521484, 318.64996337890625, 36.70878601074219], [25.89900016784668, 46.55002975463867, 341.2511901855469, 511.8562927246094]]}, {\"page_num\": 134, \"coords\": [62.79899978637695, 30.779939651489258, 229.47755432128906, 42.49034881591797], \"blocks\": [[62.79899978637695, 30.779939651489258, 229.47755432128906, 42.49034881591797]]}]",
+        "doc_id": "b811388f4f1d7863",
+        "is_table": false,
+        "has_bboxes": true,
+        "content_type": "text"
+      },
+      "has_bboxes": true,
+      "source_method": "pymupdf+bbox",
+      "bboxes": "[{\"page_num\": 132, \"coords\": [41.04899978637695, 195.740478515625, 352.8974914550781, 511.8001403808594], \"blocks\": [[41.04899978637695, 195.740478515625, 352.8974914550781, 511.8001403808594]]}, {\"page_num\": 133, \"coords\": [25.89900016784668, 25.128597259521484, 341.2511901855469, 511.8562927246094], \"blocks\": [[145.19000244140625, 25.128597259521484, 318.64996337890625, 36.70878601074219], [25.89900016784668, 46.55002975463867, 341.2511901855469, 511.8562927246094]]}, {\"page_num\": 134, \"coords\": [62.79899978637695, 30.779939651489258, 229.47755432128906, 42.49034881591797], \"blocks\": [[62.79899978637695, 30.779939651489258, 229.47755432128906, 42.49034881591797]]}]",
+      "rank": 8
+    }
+  ]
+}
+[god-learn] $ python3 scripts/retrieval/verify_phase4.py Heidegger kinesis being-present ability-to-be entelechia incomplete actuality being-toward telos dynamis energeia GA18 Aristotle Physics
+[PHASE4_VERIFY_OK]
+- query='Heidegger kinesis being-present ability-to-be entelechia incomplete actuality being-toward telos dynamis energeia GA18 Aristotle Physics'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[god-learn] $ bash scripts/highlights/phase5check.sh
+
+--- AUDIT REPORT ---
+root: /home/dalton/projects/claudeflow-testing/corpus
+manifest: /home/dalton/projects/claudeflow-testing/scripts/ingest/manifest.jsonl
+total_pdfs: 50
+
+[PHASE2_COMPLETE] (50)
+  - dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf :: phase=2 ok
+  - dissertation/in_progress/rhetorical phantasia test.pdf :: phase=2 ok
+  - metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf :: phase=2 ok
+  - metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf :: phase=2 ok
+  - metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf :: phase=2 ok
+  - new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf :: phase=2 ok
+
+[OK] dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf
+[OK] dissertation/in_progress/rhetorical phantasia test.pdf
+[OK] metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf
+[OK] metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf
+[OK] metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf
+[OK] metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf
+[OK] metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf
+[OK] metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf
+[OK] metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf
+[OK] metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf
+[OK] new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf
+[OK] new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf
+[OK] rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf
+[OK] rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf
+
+--- VERIFY REPORT (OK) ---
+OK=50 FAIL=0 TOTAL=50
+[PHASE4_VERIFY_OK]
+- query='phantasia and action'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[OK] Wrote:
+  /tmp/no_hl.txt
+  /tmp/with_hl.txt
+Diff (first 120 lines):
+--- /tmp/no_hl.txt	2026-03-27 07:42:56.357175292 -0700
++++ /tmp/with_hl.txt	2026-03-27 07:42:57.633610532 -0700
+@@ -6,51 +6,51 @@
+ 
+ [RESULTS]
+ 
+-01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  (raw_rank=1)
++01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  final_score=0.7484066486358643  hl_count=0  boost=0.0000  (raw_rank=1)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=303-305
+ 
+-02. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  (raw_rank=2)
++02. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  final_score=0.8132696557044983  hl_count=1  boost=0.0200  (raw_rank=4)
++    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
++    pages=22-24
++
++03. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  final_score=0.8133007287979126  hl_count=0  boost=0.0000  (raw_rank=2)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+     pages=167-169
+ 
+-03. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  (raw_rank=3)
++04. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  final_score=0.8137480616569519  hl_count=0  boost=0.0000  (raw_rank=3)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=279-281
+ 
+-04. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  (raw_rank=4)
+-    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+-    pages=22-24
+-
+-05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  (raw_rank=6)
++05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  final_score=0.851164698600769  hl_count=0  boost=0.0000  (raw_rank=6)
+     path_rel=rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+     pages=292-292
+ 
+-06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  (raw_rank=7)
++06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  final_score=0.8536148071289062  hl_count=0  boost=0.0000  (raw_rank=7)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=294-294
+ 
+-07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  (raw_rank=8)
++07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  final_score=0.864859938621521  hl_count=0  boost=0.0000  (raw_rank=8)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+     pages=18-18
+ 
+-08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  (raw_rank=9)
++08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  final_score=0.8705873489379883  hl_count=0  boost=0.0000  (raw_rank=9)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+     pages=215-215
+ 
+-09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  (raw_rank=10)
++09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  final_score=0.8722628355026245  hl_count=0  boost=0.0000  (raw_rank=10)
+     path_rel=rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+     pages=13-14
+ 
+-10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  (raw_rank=11)
++10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  final_score=0.8786800503730774  hl_count=0  boost=0.0000  (raw_rank=11)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=162-164
+ 
+-11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  (raw_rank=12)
++11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  final_score=0.8806346654891968  hl_count=0  boost=0.0000  (raw_rank=12)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=24-26
+ 
+-12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  (raw_rank=13)
++12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  final_score=0.8811410665512085  hl_count=0  boost=0.0000  (raw_rank=13)
+     path_rel=rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+     pages=252-254
+ 
+[god-learn] $ python3 scripts/learn/promote_hits.py --hits_json /tmp/phase4_hits.json --query Heidegger kinesis being-present ability-to-be entelechia incomplete actuality being-toward telos dynamis energeia GA18 Aristotle Physics
+07:42:59 [INFO    ] god-learn.phase6.promote: Starting promotion [hits_json=/tmp/phase4_hits.json, query=Heidegger kinesis being-present ability-to-be entelechia incomplete actuality being-toward telos dynamis energeia GA18 Aristotle Physics, min_chars=40, max_units=0, dry_run=False]
+07:42:59 [INFO    ] god-learn.phase6.promote: Promotion complete [promoted=7, total_indexed=172, knowledge_file=god-learn/knowledge.jsonl, index_file=god-learn/index.json]
+[Phase6:promote_hits] promoted=7 total_indexed=172
+[Phase6:promote_hits] wrote: god-learn/knowledge.jsonl
+[Phase6:promote_hits] index: god-learn/index.json
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[ORDER_FAIL] IDs in knowledge.jsonl are not sorted
+[Phase6:verify] ERROR: Soft failures: 1
+[god-learn] normalize: sorted 172 KUs and rebuilt index (172 offsets)
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] OK units=172

@@ -1,0 +1,236 @@
+{
+  "_meta": {
+    "pack": "lab-boredom-L1-pack-v2",
+    "assembled": "2026-08-06",
+    "store": "archon-cli-v3 @ 75d8c210, binary stamp archon 1.3.11 (75d8c210)",
+    "gate": "every entry verified match_kind == exact IN THIS SESSION; no remembered verifications",
+    "fcm_locus_rule": "printed page read from the running head of the ingested PDF. The FCM scan is a TWO-PAGE SPREAD (813x612 pts), so archon's page index is NOT the printed page. Every 'pp.NNN-NNN' in this project's older FCM records is a PDF-page range, not a citation.",
+    "plusminus_note": "VanderWerf's PDF renders the plus-minus sign as U+2AFE. Q18 stores it verbatim; LaTeX must receive a proper plus-minus.",
+    "revised": "2026-08-06",
+    "revision": "Stage-P locus pass. Eight archon-page-index/RE-PIN loci resolved to printed pages, read from running heads against archon-cli-v3 @ 75d8c210, every span re-verified match_kind == exact. Quotation TEXTS ARE BYTE-IDENTICAL TO v1 and were never retyped.",
+    "archon_page_offset_note": "archon page index is off by one against the physical PDF for King & Salvo, Yuvaraj, Yakobi and Elpidorou, and correct for Eastwood, Slaby, VanderWerf. Every printed page here was folio-read, never offset-computed.",
+    "q01_status": "BARRED - abstract-only occurrence, excluded by the no-abstract-quotations lock."
+  },
+  "Q01": {
+    "text": "the aversive experience of wanting, but being unable, to engage in satisfying activity",
+    "cite": "Eastwood et al.",
+    "source": "Eastwood et al., The Unengaged Mind (2012)",
+    "locus": "printed p. 482 (journal folio; ABSTRACT PAGE)",
+    "verdict": "EXACT",
+    "use": "L1 P10 - the definitional spine, rendered ONCE beside Q03 per D-23",
+    "caveat": "BARRED FROM USE. The span occurs ONLY on the title/abstract page (printed 482) and nowhere in the body (pages 1-6 checked span-exact). The no-abstract-quotations lock therefore excludes it. Eastwood's definition is paraphrased in prose; its verbatim content is carried by Q05 at P8."
+  },
+  "Q02": {
+    "text": "attribute the cause of our aversive state to the environment",
+    "cite": "Eastwood et al.",
+    "source": "Eastwood et al., The Unengaged Mind (2012)",
+    "locus": "printed p. 484 (body occurrence; folio read directly)",
+    "verdict": "EXACT",
+    "claim_anchor": "claim-eastwood-unengaged-2012-002",
+    "use": "L1 P10 - condition (c), the pole of DA-12",
+    "caveat": "Occurs TWICE: printed 482 (abstract) and printed 484 (body). CITE 484 - the abstract occurrence is barred by the no-abstract-quotations lock. This is the DA-12 condition-(c) anchor."
+  },
+  "Q03": {
+    "text": "There is nothing at all to be found that might have been boring about this evening, neither the conversation, nor the people, nor the rooms",
+    "cite": "Fundamental Concepts",
+    "source": "Heidegger, The Fundamental Concepts of Metaphysics",
+    "locus": "printed p. 109 (running head; archon records pp.107-108 = PDF pages)",
+    "verdict": "EXACT (required --doc; unrestricted search returns only Slaby)",
+    "clause_id": "cl-heidegger-fcm-1929-007",
+    "claim_anchor": "claim-heidegger-fcm-1929-077",
+    "use": "L1 P10 - the second form defeating condition (c) ON ITS OWN TERMS; rendered beside Q01/Q02",
+    "caveat": "The desktop draft M4.1 P6 cites 110 for this passage. Running head says 109. Flag, do not silently diverge."
+  },
+  "Q04": {
+    "text": "it arises from out of Dasein itself",
+    "cite": "Fundamental Concepts",
+    "source": "Heidegger, The Fundamental Concepts of Metaphysics",
+    "locus": "printed p. 128 (running head; matches desktop M4.1)",
+    "verdict": "EXACT",
+    "claim_anchor": "claim-heidegger-fcm-1929-085",
+    "use": "L1 P10 - the ontological counter; the OTHER pole of DA-12"
+  },
+  "Q05": {
+    "text": "the aversive experience of having an unfulfilled desire to be engaged in satisfying activity",
+    "cite": "King and Salvo",
+    "source": "King & Salvo (2023), Physiological assessment of learning in VR clinical immersion (P1)",
+    "locus": "no pagination (ASEE conference paper; unpaginated, Paper ID #37129)",
+    "verdict": "EXACT",
+    "claim_anchor": "claim-king-salvo-physio-2023-001",
+    "use": "L1 P8 - the definitional adoption, Eastwood -> Fahlman -> P1",
+    "note": "Own publication: FIRST PERSON when discussed (we adopted...)",
+    "caveat": "NO-FOLIO by nature, not unresolved: MLA cites an unpaginated source without a page. ATTRIBUTION: the identical sentence matches exact inside Fahlman MSBS 2013, so this is Fahlman's definition as P1 adopts it. Prose must name Fahlman; first person governs how our own paper is referred to, not the ownership of the words."
+  },
+  "Q06": {
+    "text": "State boredom often derives from information or environmental stimuli that is monotonous, redundant, and/or meaningless",
+    "cite": "King and Salvo",
+    "source": "King & Salvo (2023) (P1)",
+    "locus": "pp. 2-3 (archon page index)",
+    "verdict": "EXACT",
+    "use": "L2.3 stimulus rationale; L1 P8 may reference without re-quoting",
+    "note": "Own publication: FIRST PERSON"
+  },
+  "Q07": {
+    "text": "it cannot be seamlessly assimilated to any known category of boredom",
+    "cite": "Elpidorou and Freeman",
+    "source": "Elpidorou & Freeman, Is Profound Boredom Boredom? (2019)",
+    "locus": "chapter pp. 1-3; VOLUME pp. 207-208 - MLA cites the chapter IN the volume, so volume pagination is what the works cited needs",
+    "verdict": "EXACT",
+    "use": "L1 P2 - the reception framing"
+  },
+  "Q08": {
+    "text": "It cannot be assumed that Heidegger's (profound) boredom is identical to either our colloquial or scientific understanding of boredom",
+    "cite": "Elpidorou and Freeman",
+    "source": "Elpidorou & Freeman (2019)",
+    "locus": "chapter pp. 1-3",
+    "verdict": "EXACT (was PENDING GATE in the 08-05 ledger; gated and cleared this session)",
+    "use": "L1 P2 or P10 - E&F prohibiting exactly the move this section must avoid"
+  },
+  "Q09": {
+    "text": "a relatively short-lived, flexible, multi-dimensional response",
+    "cite": "Elpidorou and Freeman",
+    "source": "Elpidorou & Freeman (2019)",
+    "locus": "chapter pp. 10-11",
+    "verdict": "EXACT",
+    "use": "L1 P2 - the psychological construct against the phenomenological one"
+  },
+  "Q10": {
+    "text": "it does not shake us up",
+    "cite": "Elpidorou and Freeman",
+    "source": "Elpidorou & Freeman (2019)",
+    "locus": "chapter pp. 12-13; VOLUME pp. 218-219",
+    "verdict": "EXACT (required --doc)",
+    "use": "L1 P2"
+  },
+  "Q11": {
+    "text": "investigating its place within contemporary psychological and philosophical research on boredom",
+    "cite": "Elpidorou and Freeman",
+    "source": "Elpidorou & Freeman (2019)",
+    "locus": "chapter pp. 1-3",
+    "verdict": "EXACT",
+    "use": "L1 P2",
+    "caveat": "The index entry gave this as \"to investigate profound boredom's place within...\" - a PARAPHRASE in quotation marks (A-01). This is the verbatim span."
+  },
+  "Q12": {
+    "text": "the other side of cognition",
+    "cite": "Slaby",
+    "source": "Slaby, The Other Side of Existence (2010)",
+    "locus": "printed p. 101 (chapter opening; folio inferred from pp. 102/103, published range 101-120)",
+    "verdict": "EXACT (required --doc)",
+    "use": "L1 P2 - the surface-over-depth reading"
+  },
+  "Q13": {
+    "text": "each attunement \"is understanding\" and each understanding has its attunement",
+    "cite": "Slaby",
+    "source": "Slaby (2010)",
+    "locus": "PDF pp. 5-6; published pp. 105-106, RE-PIN from running head",
+    "verdict": "EXACT (required --doc)",
+    "use": "L1 P2",
+    "caveat": "TWO hazards. (1) The index entry DROPPED Slaby's internal quotation marks, which is why it scored 0.973 not exact - the inner marks are load-bearing and must survive into LaTeX as nested quotes. (2) This is SLABY's sentence, not Heidegger's, and Slaby cites it to BEING AND TIME, not FCM. Using it as an FCM gloss would misattribute."
+  },
+  "Q14": {
+    "text": "to be no more, have no more, want no more",
+    "cite": "Slaby",
+    "source": "Slaby (2010), quoting Pessoa",
+    "locus": "PDF pp. 17-18; RE-PIN printed page",
+    "verdict": "EXACT (required --doc; NO HIT unrestricted)",
+    "use": "L1 P2",
+    "caveat": "Slaby quoting PESSOA. Attribute accordingly."
+  },
+  "Q15": {
+    "text": "the first is itself presumably still rooted in the possibility of the third",
+    "cite": "Fundamental Concepts",
+    "source": "Heidegger, FCM 156 - quoted by Elpidorou & Freeman",
+    "locus": "E&F chapter pp. 18-20; volume pp. 223-225; ALSO resolves in FCM itself",
+    "verdict": "EXACT",
+    "use": "L1 P2",
+    "caveat": "Resolves in THREE places. If the section wants Heidegger's claim it cites FCM directly; if it wants E&F's USE of it against the sui-generis reading it cites the chapter. Different moves - choose deliberately."
+  },
+  "Q16": {
+    "text": "internally directed attention or mindwandering",
+    "cite": "Yuvaraj et al.",
+    "source": "Yuvaraj et al. (2025), EEG-based functional connectivity patterns during boredom",
+    "locus": "printed p. 11 (footer folio; Scientific Reports per-article pagination)",
+    "verdict": "EXACT",
+    "use": "L1 P5 - the EEG literature",
+    "caveat": "Yuvaraj sets 'mindwandering' as a CLOSED compound. The hyphenated and spaced variants both fail at 98%."
+  },
+  "Q17": {
+    "text": "would predict higher levels of misses, rather than false-alarms",
+    "cite": "Yakobi et al.",
+    "source": "Yakobi et al. (2021)",
+    "locus": "printed p. 10 (article-internal pagination, '10 of 12')",
+    "verdict": "EXACT",
+    "use": "L1 P7 - the negative through-line",
+    "caveat": "SOFT HYPHEN (U+00AD) in the source inside 'false-alarms'; LaTeX must receive a plain hyphen. The document is ingested twice; both copies return the identical exact match. || PRIOR: The PDF carries a SOFT HYPHEN (U+00AD) inside 'false-alarms'. The gate normalizes it; LaTeX must receive a plain hyphen."
+  },
+  "Q18": {
+    "text": "The total duration of spontaneous blinks (Fig. 3A) was 334 ⫾ 67 ms, the down phase duration was 92 ⫾ 17 ms, and the up phase duration lasted 242 ⫾ 55 ms",
+    "cite": "VanderWerf et al.",
+    "source": "VanderWerf et al. (2003), J Neurophysiol 89(5)",
+    "locus": "printed p. 2786 (running head)",
+    "verdict": "EXACT",
+    "use": "L2.5 blink ceiling; L1 P6 may cite without quoting",
+    "caveat": "RECOMMEND NOT QUOTING. The section reports a measurement; MLA form is 'spontaneous blinks last 334 +/- 67 ms (VanderWerf et al. 2786)'. If quoted: the '(Fig. 3A)' parenthetical is INSIDE the sentence and cannot be dropped silently - SOURCES.md in the analysis tree does exactly that and fails the gate for it. The plus-minus renders as U+2AFE."
+  },
+  "Q19": {
+    "text": "To avoid subject's attention from the experimental setting",
+    "cite": "VanderWerf et al.",
+    "source": "VanderWerf et al. (2003)",
+    "locus": "printed p. 2785 (running head)",
+    "verdict": "EXACT",
+    "use": "L1 P6 - spontaneous blinking treated as attention-sensitive enough to require a protocol control",
+    "caveat": "Capital T and a CURLY apostrophe in the source. Needs a bracketed capital if it runs mid-sentence."
+  },
+  "Q20": {
+    "text": "Boredom strives to get us unstuck when we find ourselves stuck",
+    "cite": "Elpidorou",
+    "source": "Elpidorou, The Good of Boredom (2018)",
+    "locus": "printed p. 330 (running head)",
+    "verdict": "EXACT",
+    "use": "L1 P12 - the regulatory corrective",
+    "caveat": "ATTRIBUTION HAZARD. Elpidorou's sentence carries '(Fahlman et al., 2013, p. 68)'. The substance is FAHLMAN's, and Fahlman is the definitional middle term this section's spine already runs through - misattributing it lands INSIDE the argument."
+  },
+  "Q21": {
+    "text": "holistic sensation that people feel when they act with total involvement",
+    "cite": "Csikszentmihalyi, qtd. in Nacke and Craig",
+    "source": "Nacke & Craig, Flow and Immersion in First-Person Shooters",
+    "locus": "pp. 1-2 (archon page index)",
+    "verdict": "EXACT",
+    "use": "L1 P7 - Nacke's non-separating flow subscale",
+    "caveat": "The leading 'the' belongs to Nacke's sentence and sits OUTSIDE the quotation marks - including it is the whole of the 99% miss. And this is CSIKSZENTMIHALYI quoted by Nacke."
+  },
+  "Q22": {
+    "text": "Not only can an attunement not be ascertained, it ought not to be ascertained, even if it were possible to do so",
+    "cite": "Fundamental Concepts",
+    "source": "Heidegger, FCM",
+    "locus": "printed p. 65 (running head)",
+    "verdict": "EXACT",
+    "use": "0b / L1 P10 - the frame's own prohibition, DISPLAYED wherever the third form appears"
+  },
+  "Q23": {
+    "text": "all making conscious means destroying, altering in each case",
+    "cite": "Fundamental Concepts",
+    "source": "Heidegger, FCM",
+    "locus": "printed p. 65 (running head)",
+    "verdict": "EXACT",
+    "use": "0b - paired with Q22"
+  },
+  "Q24": {
+    "text": "that which holds us in limbo and yet leaves us empty",
+    "cite": "Fundamental Concepts",
+    "source": "Heidegger, FCM",
+    "locus": "printed p. 87 (running head; matches desktop M4.1)",
+    "verdict": "EXACT",
+    "use": "INHERITED from desktop M4.1 P4 - do not re-derive; cite only if L1 needs the definition restated"
+  },
+  "Q25": {
+    "text": "Time is passing by slower than usual",
+    "cite": "qtd. in Perone et al.",
+    "source": "Perone et al. (2019), Over and over again",
+    "locus": "pp. 4-5 (archon page index)",
+    "verdict": "EXACT",
+    "use": "L1 P7 - optional",
+    "caveat": "This is a QUESTIONNAIRE ITEM Perone quotes, not Perone's own claim. Cite as an instrument item."
+  }
+}

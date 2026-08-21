@@ -1,0 +1,524 @@
+[god-learn] $ python3 scripts/retrieval/query_chunks.py attunement and ambient persuasion --k 8 --overfetch 30 --include_docs --print_json
+{
+  "query": "attunement and ambient persuasion",
+  "config": {
+    "chroma_dir": "vector_db_1536",
+    "collection": "knowledge_chunks",
+    "k": 8,
+    "overfetch": 30,
+    "where": null,
+    "filters": {
+      "require_my_copy": false,
+      "collection_filter": null,
+      "keep_biblio": false
+    },
+    "include_docs": true,
+    "use_highlights": false,
+    "highlights_index": "scripts/highlights/highlight_index.json",
+    "highlight_alpha": 0.02,
+    "highlight_cap": 5
+  },
+  "results": [
+    {
+      "raw_rank": 1,
+      "chunk_id": "c2cb9cd00b7724ed:00143",
+      "distance": 0.653149425983429,
+      "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+      "page_start": 279,
+      "page_end": 281,
+      "text": "common\n\ncommon.\n\nson are\n\nORDER notable, or solemn experience. Thus, wc participation in a .... , , . once saw the history of a human society m miniature, grounded in a rhetoric of primitive magic. Some boys, about ten years of age, had been playing in a vacant lot. They stirred up a rattlesnake, which the father of one boy killed with a hoe. Then they had their pictures taken, dangling the dead snake. Immediately after, they organized the Rattle- snake Club. Their members were made consubstantial by the sacrifice of this victim, representing dangers and triumphs they had shared in The snake was a sacred offering; by its death it provided the spirit for this magically united band. (We said that the incident was a human society in miniature. We had in mind the fact that there was also an electing of officers and the collecting of dues. The matter of offices and dues promptly gave rise to quarrels and cliques—thus quickly was the solemnizing spirit of the snake god sacrificed a second time, as there emerged the rhetoric of the Scramble, the discordancies of Babel.) All told, there is the self-abnegation of “sacrifice.” And sacrifice is the essence of religion. Symbolically, it is a kind of suicide, a willed variant of dying, dying to this or that particular thing (“mortification”), not because of those things in themselves, but because the yielding of them represents the principle of sacrifice in the absolute. So, the reli­ gious injunctions against suicide in the literal sense are matched by the many religious disciplines for attaining transcendence by dying “dialec­ tically.” And where there must thus be simultaneously a dying and a not-dying, what is more plausible than for the paradox of substance to figure here, in providing symbolic devices whereby a man can “substan­ tially slay himself through the sacrifice of another who is consubstantial with him ? Indeed, among the psychological appeals of the Christian sacrifice, wherein the ultimate father sacrifices the ultimate son, may be the fact that in this myth there is the perfect paradigm for such simul­ taneous losing-and-having, since the two persons of father and consubstantial, and the ultimate father sacrifices the ultimate son for the sake of human betterment (as the principle of individual sacrifice itself is ultimately motivated by such social objectives, a sacrificial restraining of individual divisiveness in accordance with “virtues” designed for the advantage of mankind in general). And when our friend, standing with his son in that high place, felt \n“infanticidal” impulses, perhaps he was but manifesting roundabout the\n\nORDER\n\nfact that he felt exalted, as though he and his son shared the attributes of the Ultimate Father and the Ultimate Son in heaven. Even though he may not have got to such feelings by true religious reverence, he could have got to them by the temptations of social reverence. For here was the principle of hierarchy materialized, as he stood atop a high building, while that building itself represented nothing less than the straining social hierarchy of the great modern Babylon. “And upon her forehead was a name written, mystery, babylon the great, the mother OF HARLOTS AND ABOMINATIONS OF THE EARTH.” (Revelation 17:5.)\n\nPure Persuasion",
+      "meta": {
+        "collection": "rhetorical_ontology",
+        "page_start": 279,
+        "author_raw": "Burke, Kenneth",
+        "chunk_index": 143,
+        "is_clean_copy": false,
+        "has_bboxes": true,
+        "is_table": false,
+        "pdftotext_version": "24.02.0",
+        "cleaning_version": "clean_v1",
+        "page_end": 281,
+        "bboxes": "[{\"page_num\": 290, \"coords\": [40.150001525878906, 30.761320114135742, 344.04998779296875, 526.7275390625], \"blocks\": [[40.150001525878906, 30.761320114135742, 344.04998779296875, 526.7275390625]]}, {\"page_num\": 291, \"coords\": [39.25, 23.634666442871094, 342.54998779296875, 537.861083984375], \"blocks\": [[41.650001525878906, 23.634666442871094, 204.1272735595703, 34.8348274230957], [39.25, 35.11219787597656, 342.54998779296875, 483.7030334472656], [39.54899978637695, 493.6082763671875, 341.95001220703125, 537.861083984375]]}, {\"page_num\": 292, \"coords\": [38.70000076293945, 22.465442657470703, 334.5714416503906, 221.83114624023438], \"blocks\": [[169.60000610351562, 22.465442657470703, 203.5519561767578, 31.6784725189209], [38.70000076293945, 37.340999603271484, 334.5714416503906, 151.7689971923828], [308.25, 210.9688262939453, 332.38934326171875, 221.83114624023438]]}]",
+        "year": 1950,
+        "mtime": 1771101202,
+        "title_raw": "A Rhetoric of Motives",
+        "content_type": "text",
+        "is_image": false,
+        "clean_sha256": "26c3cbd1ed54425ab3b753e3a2d0024fda298b65ff25207407e8f6e730ba8c3e",
+        "is_notes": false,
+        "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "doc_id": "c2cb9cd00b7724ed",
+        "qualifier": "My Copy",
+        "source_method": "pymupdf+bbox",
+        "sha256": "2bc45e16e5f679eab0bdfefda2b220eefcf276c0ac208b260c0f5669f25b1af0",
+        "is_my_copy": true,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf"
+      },
+      "rank": 1
+    },
+    {
+      "raw_rank": 3,
+      "chunk_id": "c2cb9cd00b7724ed:00150",
+      "distance": 0.7000758647918701,
+      "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+      "page_start": 294,
+      "page_end": 294,
+      "text": "of institutions. The relative value of institute Darwinistically, on their fitness to cope wit^dcP<*ds pragmatically, tion, distribution, and consumption that g0 w- l C Problems of produc- time and place. Thus, one particular order (or C°nditions peculiar to its brands of “mystery,” may be better suited th ^r°^ert^ structure), with ing circumstances. Hence, to say that hierarch f0r the prevailargue categorically against a new order on the^ ^ mcv^ta^^e ls not to but replace under one label what had been remold** wou^d is merely to say that, in any order, there will be th ^ ^ anotllcr‘\n\nc mysteries of hier-\n\narchy, since such a principle is grounded in the very nan,r, nf i and reenforced by the resultant diversity of occupational chsIes^That\n\nclaim is the important thing, as regards the ultimate reaches of rhetoric The intensities, morbidities, or particularities of mystery come from in­ stitutional sources, but the aptitude comes from the nature of man, ge- nerically, as a symbol-using animal. b Similarly, noting how the Prussian officer had his cultural counterpart in the academic drillmaster whose teaching was like an imperial threat we might want to deduce all scholastic discrimination from social di crimination. But such a view would slight the principle of ordinatic essential to the educational process, which inevitably requires a laddei of grading and instruction. The purely “dialectical” motive is real enough here, though forever being burlesqued in the academic “posi­ tions of pantomime.”\n\nAs exclusively institutional explanations mislead us in one respect, so exclusively psychoanalytic explanations can mislead in another. First a dialectical motive implicit in the nature of language is treated psycho- analytically as a mere derivative of psychological motives. Hence, the principle of “self-interference” would be explained wholly as a “sublima­ tion” of psychological drives, whereas these themselves are strongly af­ fected by a purely “formal” situation, the fact that language makes for transcendence, and transcendence imposes distance (a generally dialecti­ cal consideration, rather than an exclusively psychological one). Second, psychoanalysis too often conceals the nature of social relations behind the terms for sexual relations. On the first point, what we have said about the way in which institutional explanations ignore the “priority” of the formal element could be applied mutatis mutandis to psycho­ analytic theories. So let us turn now to the second point, noting how\n\nORDER\n\nI choanalysis,unless properly discounted, can lead us even farther afield, ^concealing the nature of exclusive social relations behind inclusive\n\nterms for sexual relations. The sheer dialectics of “justice” strongly invites this error. For justice is the universalization of a standard. Hence, if one is made neurotic by social discriminations (by the hierarchy of class), translation of the disorders into terms of the universally sexual and the universally familial may, by such speciously universal terms, appeal by speaking in the ac­ cents of “truth” and “justice.” Instead of saying, “My class is the victim of a social problem,” one can say, in terms of the universalizing required by justice, “We are all victims of a sexual problem.” Since the social problem will have its counterpart in sexual disorders, much “evidence” will be found for such deflection. And the deflected universalization",
+      "meta": {
+        "page_end": 294,
+        "bboxes": "[{\"page_num\": 303, \"coords\": [40.1500244140625, 32.12198257446289, 343.45001220703125, 535.827392578125], \"blocks\": [[40.1500244140625, 32.12198257446289, 343.45001220703125, 535.827392578125]]}, {\"page_num\": 304, \"coords\": [38.400001525878906, 24.893156051635742, 341.6400146484375, 534.531982421875], \"blocks\": [[171.64999389648438, 24.893156051635742, 337.99847412109375, 35.87017059326172], [38.400001525878906, 40.95793151855469, 341.6400146484375, 534.531982421875]]}, {\"page_num\": 305, \"coords\": [40.150001525878906, 18.221193313598633, 337.20001220703125, 116.54615020751953], \"blocks\": [[40.150001525878906, 18.221193313598633, 337.20001220703125, 83.15147399902344], [40.75, 95.69014739990234, 56.31528091430664, 116.54615020751953]]}]",
+        "page_start": 294,
+        "is_image": false,
+        "title_raw": "A Rhetoric of Motives",
+        "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "pdftotext_version": "24.02.0",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "content_type": "text",
+        "author_raw": "Burke, Kenneth",
+        "chunk_index": 150,
+        "year": 1950,
+        "is_table": false,
+        "mtime": 1771101202,
+        "sha256": "2bc45e16e5f679eab0bdfefda2b220eefcf276c0ac208b260c0f5669f25b1af0",
+        "is_clean_copy": false,
+        "clean_sha256": "b2862351e79739bfc5874fd1b5bc459f96b006c246933e8b24d5716af2b3a228",
+        "doc_id": "c2cb9cd00b7724ed",
+        "is_notes": false,
+        "qualifier": "My Copy",
+        "is_my_copy": true,
+        "cleaning_version": "clean_v1",
+        "collection": "rhetorical_ontology",
+        "has_bboxes": true,
+        "source_method": "pymupdf+bbox"
+      },
+      "rank": 2
+    },
+    {
+      "raw_rank": 4,
+      "chunk_id": "ab2442b48417ead0:00101",
+      "distance": 0.7186412811279297,
+      "path_rel": "rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf",
+      "page_start": 172,
+      "page_end": 172,
+      "text": "In terms of an ambient rhetoric, we must not simply turn our sights to sound and ask how we can now use sound to generate desired affective responses. As I stated earlier, we need more than a sonic semiotic. That would certainly be a possibility, but it obscures the deeper insights that sonics thought ambiently can afford us. We can do more with this insight into the ambience of design than single out and focus on various strands, such as the functional (how usable it is), the cognitive (what it means for us), or the affective (how it makes us feel). Instead, we could build a fresh, cumulative list of things with which we might concern ourselves as teachers, writers, and rhetoricians. I have argued that it is better to see them as complexly generating an overarching ambient environment that cradles, without forcing, particular affective responses or that fosters an attunement (as with \"clear, confident, and connected,\" which is Microsoft's take on a positive, secure feeling that will enable work and play). Such a perspective reflects a fuller, less instrumental view of human beings and their interactions, particularly multimedia rhetorics. It deprivileges dir ectly conscious experience and boosts the importance of indirect, unconscious, auratic, osmotic, and ambient phenomena. Put differently, such rhet orical design\n\norganizes an experience, not so much to persuade in any direct sense, but to attune and inflect our sense of bodily inhabitance and the cradle of intelligibility within which we comport ourselves. It is worth recalling Eno's irony-laden dismissal of the corporate sloganeering Microsoft delivered to him as part of the project. If Microsoft perhaps intended more direct forms of marketing and the shaping of the user's experience, including the service of avant-garde musicians to brand Microsoft products, it is important that Eno's music resists such narrowing. For Eno, ambient music is inherently political, evoking new senses of place and how human beings inhabit it; this includes, more pointedly, a reduced role for human agency reflecting a more distributed, ecological approach to will, action, and consequence. The lengthy video session with Robert Fripp and the Microsoft team suggests that such aesthetics and their politics, however indirect, are nevertheless in play. So, while startup music itself makes up only a small element amid these far larger concerns (not to mention the larger expanse of sonic space and its rhetorical-architectural possibilities), possibly one of little relevance, it nevertheless can open us onto a deeper reflection concerning our relation to technology, space, and sonics, and we lose much ifwe ignore the insights it grants.\n\nPart 2 DWELLING WITH AMBIENCE\n\nRhetoric, Language, Attunement Burke and Heidegger\n\nThat which bears itself toward us has already borne our counterbearing into the gift it bears for us.\n\n-Martin Heidegger, \"A Dialogue on Language,\" On the Way to Language\n\nAnd we reach all this with movements in between the said remark.\n\n-Yes, \"Close to the Edge\"\n\nPerhaps the statement \"language speaks\" is rather obscure but it is certainly no more obscure than the statement \"I speak.\"\n\n-Samuel Ijsseling, Rhetoric and Philosophy in Conflict\n\nI have been arguing that rhetoric must be understood as enmeshed with and within its surroundings, which amounts to saying that rhetoric is ontological, being emergent from and wedded to the world, to the world's being. Affect, or persuadability, already inheres, both materially and meaningfully, and is therefore prior to rhetoric. It is the condition of possibility for rhetoric's emergence. And while world, as I have been using it, includes both matter and meaning, we still must attend to the way the material dimension is not just important but integral for rhetoric, just as discourse, sociality, and human exigence are traditionally held to be integral for it. Thus, ifI say a coffee shop is rhetorical, I do not simply mean that suasion emerges from a coffee shop's design choices concerning colors, layout, lighting, menu, music, and so forth, although such suasion is certainly present. And yet I am not baldly saying that color, layout, lighting, and so on are rhetoric, no more than a font is of itself rhetoric. Nor is the rhetorical simply their assemblage. Rather. to understand how the coffee shop is rhetorical. we have to understand the way in which this ensemble",
+      "meta": {
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf",
+        "is_table": false,
+        "qualifier": "My Copy",
+        "clean_sha256": "d8a45524a89859b64ec40be20d5a5ed5ec79284ac55416471fa138106767b828",
+        "has_bboxes": true,
+        "sha256": "44d401951ee1933f730599ecf0d5be699c4d3891d7c12b7b09115137a8c78564",
+        "chunk_index": 101,
+        "bboxes": "[{\"page_num\": 172, \"coords\": [55.81054687499999, 308.6086708982475, 345.601318359375, 523.0998665769584], \"blocks\": [[55.81054687499999, 308.6086708982475, 345.601318359375, 523.0998665769584]]}, {\"page_num\": 173, \"coords\": [38.44921875, 49.3896484375, 328.8818054199219, 280.07757348613814], \"blocks\": [[38.44921875, 49.3896484375, 328.8818054199219, 280.07757348613814]]}, {\"page_num\": 174, \"coords\": [67.3241958618164, 80.47607421875, 305.9582214355469, 125.09064428706188], \"blocks\": [[67.3241958618164, 80.47607421875, 305.9582214355469, 125.09064428706188]]}, {\"page_num\": 175, \"coords\": [42.902801513671875, 80.90234375, 335.11376953125, 525.199236693792], \"blocks\": [[74.50279998779297, 80.90234375, 307.82244873046875, 123.31357080023736], [73.26189422607422, 139.978515625, 275.5677795410156, 161.79962426703423], [75.33280181884766, 162.677734375, 306.46893310546875, 173.26019555609673], [71.806640625, 180.720703125, 283.0314025878906, 200.90805322211236], [222.6005859375, 204.29296875, 305.5602111816406, 212.5511806635186], [71.806640625, 219.42578125, 305.61883544921875, 241.54296875], [127.3623046875, 242.416015625, 305.644775390625, 251.68487817328423], [42.902801513671875, 332.33984375, 335.11376953125, 525.199236693792]]}]",
+        "is_my_copy": true,
+        "collection": "rhetorical_ontology",
+        "is_notes": false,
+        "path_rel": "rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf",
+        "is_clean_copy": false,
+        "doc_id": "ab2442b48417ead0",
+        "page_end": 172,
+        "title_raw": "Ambient Rhetoric- The Attunements of Rhetorical Being",
+        "year": 2013,
+        "mtime": 1771101203,
+        "is_image": false,
+        "source_method": "marker+bbox",
+        "cleaning_version": "clean_v1",
+        "pdftotext_version": "24.02.0",
+        "content_type": "text",
+        "author_raw": "Rickert, Thomas",
+        "page_start": 172
+      },
+      "rank": 3
+    },
+    {
+      "raw_rank": 5,
+      "chunk_id": "ab2442b48417ead0:00127",
+      "distance": 0.7227947115898132,
+      "path_rel": "rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf",
+      "page_start": 215,
+      "page_end": 215,
+      "text": "Many have read Heidegger's remarks on our relations to things as saying that human beings are immersed in the world through language and everyday practices. This perspective suggests, on the one hand, that we cannot break through or extricate ourselves from our emplacement so as to get at things from the \"outside,\" as it were, and, on the other hand, that the things of the world are never trumped by language or ideas. Our holistic entanglements are material and practical first and foremost. Hubert Dreyfus is a well-known proponent of this position and posits Heidegger as a \"robust realist,\" meaning that Heidegger avoids the Scylla ofnaive realism and the Charybdis of idealism (\"Coping\" n.p.). The world is a participant in the ongoing event of human being-in-the-world, not a stage or backdrop to what human beings do and say. And this is a nuanced participation, with things emerging from and participating in human practices, and human practices in turn requiring things. Such an interpretation is fine as a first take, except that it exhibits a certain skewing: the nexus remains tethered to human being. Human usage and behavior become the privileged means of access to the background, and things, such as tools, light up to our awareness as we use them; then, when our attention shifts elsewhere, they dim back into the shadowy realm of equipment (Zeug) in general, the undifferentiated, always receding backdrop of\"stuff.\"1 Heidegger certainly lends himself to such a reading. Speaking ofa room, he remarks that we encounter it not as a geometrical space but as \"equipment for residingp that we have at least discovered, and that discovery and our activities yield\n\nan arrangement that allows individual items to show themselves (BT 98). I take the steps downstairs into the basement, set out my books, organize my papers, boot the laptop, put some Klaus Schulze on the turntable, sit on the chair at the desk, insert the pen drive, enter words into the chapter file (i.e., write), read, take notes, edit, save the file, put on some Dexter Gordon. adjust the stereo volume, and so forth, with aspects of the room now near and now far from my attentions and activities. In various ways, these things all go together; there is an arrangement from which individual entities already derive their place wherefrom I can weave them through my activities. Entities in turn show up and dim back into the recesses as my attention flows variously through my purposeful activity.\n\nIn Tool-Being Graham Harman argues that such readings, reminiscent of Dreyfus, are not wrong but nevertheless miss something crucial to the nature of equipment and objects. Objects can no more be positioned solely within the horizon of human intention or awareness than language can. My example of the basement illustrates this tendency, since everything has its \"nearness\" and \"farness\" in relation to my attentions and intentions. One could of course add more history here and pile on thick description across the attentions and intentions of other people, social roles, and equipment. But none of this suffices to give us any ultimate grip on the object. Harman argues that \"ifwe could total up all the 'contexts, roles, and social goals' in which a specific bridge or flagpole are currently embedded, this would still not give us the being of these objects\" (TB 124). Any use or meaning that I or anyone else can bring, or even the plenitude of people, uses, contexts, histories, and other objects that could be brought forward, only serves to present some particular qualities out of the object's fulsomeness, or what Harman calls its \"grand, dark abundance\" (TB 125). Indeed. as the new wave of cognitive science (such as the work of Andy Clark, Paul Dourish, Anthony Chemero, and so on) demonstrates, the use of tools and local environmental scaffolding inspires changes in our sense of embodiment, blurring boundaries; to use a computer mouse, for instance, amounts to making that mouse part of one's body, and in so doing, it effectively disappears.8 Thus, predicating ontological distinctions on human attention and its shifting cognitive and bodily boundaries is fruitless; the ontological has to manifest beyond such human-derived loci, and thus withdrawal does not depend on human perception or any other singular interaction.\n\nIn short, Harman seeks above all to provide an ontology that casts the withdrawal of objects in realist terms, making it transcend any direct perception, and in so doing to transform what realism can be. In our activities",
+      "meta": {
+        "collection": "rhetorical_ontology",
+        "qualifier": "My Copy",
+        "is_image": false,
+        "pdftotext_version": "24.02.0",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf",
+        "page_start": 215,
+        "clean_sha256": "dd932d210255378e350da09c316cf442082bc6ff3554ef9e314bbdd024f52c43",
+        "content_type": "text",
+        "is_clean_copy": false,
+        "path_rel": "rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf",
+        "author_raw": "Rickert, Thomas",
+        "is_table": false,
+        "bboxes": "[{\"page_num\": 215, \"coords\": [35.25, 244.04296874999997, 330.12335205078125, 523.7521585692884], \"blocks\": [[35.25, 244.04296874999997, 330.12335205078125, 523.7521585692884]]}, {\"page_num\": 216, \"coords\": [54.1796875, 52.00439453125, 346.4903869628906, 523.1065651853569], \"blocks\": [[57.1484375, 52.00439453125, 346.4903869628906, 184.05169457988814], [55.405601501464844, 185.9375, 346.0758056640625, 488.08593749999994], [54.1796875, 487.21435546874994, 345.00030517578125, 523.1065651853569]]}]",
+        "has_bboxes": true,
+        "is_my_copy": true,
+        "doc_id": "ab2442b48417ead0",
+        "mtime": 1771101203,
+        "sha256": "44d401951ee1933f730599ecf0d5be699c4d3891d7c12b7b09115137a8c78564",
+        "chunk_index": 127,
+        "cleaning_version": "clean_v1",
+        "is_notes": false,
+        "page_end": 215,
+        "title_raw": "Ambient Rhetoric- The Attunements of Rhetorical Being",
+        "year": 2013,
+        "source_method": "marker+bbox"
+      },
+      "rank": 4
+    },
+    {
+      "raw_rank": 6,
+      "chunk_id": "0bc40fe3acd2e3c3:00018",
+      "distance": 0.72324538230896,
+      "path_rel": "rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf",
+      "page_start": 35,
+      "page_end": 35,
+      "text": "Now to summarize the case for fiction across three examples. Barsalou's laboratory anger, Equiano's nonfictional happiness, Adeline's imagined terror: Emotion Studies give us unique access to the very question of fictionality that cuts across all three. Or to put this another way, anyone interested in Emotion Studies-including a scientist-can learn something essential from literary fiction, for it is the very best domain for studying the emotional situation essential to the experience, along with the concrete forms that bring it to bear. There is good reason why subjects in the Barsalou laboratory familiarize themselves with mini-narratives that sound like they fell out of Craft of Fiction 101.\n\nFinally these forms will vary, which is why research in Emotion Studies must transpire in a variety of literatures subsidiary to a generic category like the novel, or a modal category like the sentimental; for example, emotional form in Austen's Sense and Sensibility is \"mixed\" along lines that certainly speak to the traditional literary mode referenced in the title, while forming situations that can be exemplary for Emotion Studies writ large, including, as we will see, a scientific perspective. At the same time, this claim about varieties of emotional situations doesn't posit radical incommensurability (see epilogue). Since the phenomenon at hand, such as happiness, or terror, is manifestly shared across academic disciplines and domains of everyday experience, we are obligated to work carefully across some traditional boundaries. Meanwhile recent scientific work on irrationalism find a subtle advocateperhaps even a sophisticated interlocutor-in the form of literature.\n\nMixed feelings, the topic of Chapter 4, are famously at the heart of Jane Austen's novel Sense and Sensibility (1811) and we think we know what that means, like a recipe: combine two parts a feeling like gratitude, one part happiness, a dash of resentment and you get something like Elinor. But mixed feelings in the novel and beyond are poorly served by this disequilibrium model recalling the long tradition back to Galen; in fact mixed feelings are a matter of negotiated circumstances where feelings may be at odds as they\n\n26 INTRO D U C T ION\n\nconverge on character.~0 Hence the significance of literature and particularly the sentimental novel as a cross-disciplinary research domain, where this kind of rhetorical situation takes shape along lines that can be anchored beyond the novel per se. Referencing the science of situated emotion and hedonic psychology (Kahneman on bias and persuasion), this chapter offers a new way to understand mixed feelings as rhetorically situated. The novel opens with the Dashwood women hopelessly displaced from their Sussex home because in this case and in many others like it, a woman's well-being depends upon the diminishing returns of a man's benevolence: thus Mary Wollstonecraft's \"equivocal beings\" where sisters and then sisters-in-law are structurally at odds around the sentiments of a man. Says Fanny to Mr. Dashwood: \"Do but consider, my dear Mr. Dashwood, how excessively comfortable your mother-in-law and her daughters may live on the interest of seven thousand pounds.\" By what means might 1, the reader, establish what's going on around this \"excessive comfort\" that posits a norm framed by oxymoronic humor? Though fiction, this is once again a question of very real-world rhetoric, as I'll take time to explain further by way of Kahneman and Miller's 1986 work on \"Norm Theory: Comparing Reality to Its Alternatives.\"~ 1This work in psychological science shows how emotions appear in the rhetorical effort to establish norms, like the comfortable living owed Mr. Dashwood's women. What counts as comfortable in this case? Says who? Not o nly will the norm depend upon how different positions are brought to bear, in this case by the characters Fanny, Mr. Dashwood, and then also the Dashwood women, who are absent from the scene diegetically but very present by way of the narrative position that casts doubt upon Fanny's goodwill. The humor in this case depends upon a distribution of sympathies that casts the feeling of the moment-care or charity-outside the frame of the characters who express it, while pointing with someone like Wollstonecraft to a real-world situation that belies the immediate sentiment. As Kahneman and Miller demonstrate in ways that are surprisingly relevant to our literary example, \"reality\" is established with respect to its alternatives. In particular Kahneman and Miller study how sympathy is a function of the perceived abnormality of a victim's fate (What do these women actually deserve? What does anyone deserve?), the availability of counterfactuals (the good life appears just out of reach: not too close and not too distant), and the actions of a focal individual that seem mutable in comparison to background actors (Austen's art depends in part upon the expectation that Elinor bear some responsibility-focal characters map the activity domain disproportionately). Then on top of this baseline sympathy that is established in a network of nonreasonable expectations, Kahneman and Miller posit a correlation between the perceived abnormality",
+      "meta": {
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf",
+        "year": 2017,
+        "is_my_copy": true,
+        "sha256": "5ef53aa535994c3217868c698f86fe2c1deab097c11a4171e8dd331b8464cd83",
+        "bboxes": "[{\"page_num\": 37, \"coords\": [49.95703125, 265.048828125, 396.8143310546875, 510.68394079618156], \"blocks\": [[50.818359375, 265.048828125, 394.82696533203125, 470.701171875], [49.95703125, 470.701171875, 396.8143310546875, 510.68394079618156]]}, {\"page_num\": 38, \"coords\": [-0.5752999782562256, 82.388671875, 427.0859069824219, 672.7312697451562], \"blocks\": [[103.03125, 82.388671875, 409.279052734375, 115.27849951200187], [87.392578125, 235.03125, 424.476806640625, 357.65625], [100.271484375, 369.4716796875, 410.1671142578125, 458.2470703125], [83.712890625, 469.7431640625, 427.0859069824219, 593.0068359375], [-0.5752999782562256, 625.1312712710351, 15.27549934387207, 672.7312697451562]]}, {\"page_num\": 39, \"coords\": [50.0703125, 339.7734375, 399.2061767578125, 594.8047713320702], \"blocks\": [[51.796875, 339.7734375, 393.65625, 371.422817138955], [51.796875, 388.7719687502831, 395.0862121582031, 443.23828125], [50.0703125, 443.5576171875, 399.2061767578125, 594.8047713320702]]}, {\"page_num\": 40, \"coords\": [87.578125, 27.799519043415785, 426.2400207519531, 36.719990234822035], \"blocks\": [[87.578125, 27.799519043415785, 426.2400207519531, 36.719990234822035]]}]",
+        "title_raw": "Uncomfortable Situations",
+        "is_table": false,
+        "content_type": "text",
+        "is_image": false,
+        "chunk_index": 18,
+        "page_start": 35,
+        "cleaning_version": "clean_v1",
+        "mtime": 1771101202,
+        "has_bboxes": true,
+        "source_method": "marker+bbox",
+        "qualifier": "My Copy",
+        "author_raw": "Gross, Daniel M.",
+        "collection": "rhetorical_ontology",
+        "is_clean_copy": false,
+        "is_notes": false,
+        "doc_id": "0bc40fe3acd2e3c3",
+        "pdftotext_version": "24.02.0",
+        "clean_sha256": "dea8c74cb48d52f32a1575ad668a244920143c0e388959ac066c2296c2e2fccc",
+        "page_end": 35,
+        "path_rel": "rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf"
+      },
+      "rank": 5
+    },
+    {
+      "raw_rank": 7,
+      "chunk_id": "c2cb9cd00b7724ed:00013",
+      "distance": 0.7277706861495972,
+      "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+      "page_start": 34,
+      "page_end": 36,
+      "text": "identical with his colleague, B. But fasol „ himself tercsts are joined, A is identified with B. he may assumCS that with B even when their interests are not joined, they arc, or is persuaded to believe\n\nTHE RANGE OF RHETORIC\n\nHere are ambiguities of substance. In being identified with B, A is “substantially one” with a person other than himself. Yet at the same time he remains unique, an individual locus of motives. Thus he is both joined and separate, at once a distinct substance and substantial with another. While consubstandal with its parents, with the “firsts” from which it is derived, the offspring is nonetheless apart from them. In this sense, there is nothing abstruse in the statement that the offspring both is and is not one with its parentage. Similarly, two persons may be identified in terms of some principle they share in common, an “identi­ fication” that does not deny their distinctness. To identify A with B is to make A “consubstandal” with B. Accord­ ingly, since our Grammar of Motives was constructed about “sub­ stance” as key term, the related rhetoric selects its nearest equivalent in the areas of persuasion and dissuasion, communicadon and polemic. And our third volume, Symbolic of Motives, should be built about identity as dtular or ancestral term, the “first” to which all other terms could be reduced and from which they could then be derived or gen­ erated, as from a common spirit. The thing’s identity would here be its uniqueness as an entity in itself and by itself, a demarcated unit having its own pardcular structure. However, “substance” is an abstruse philosophic term, beset by a long history of quandaries and puzzlements. It names so paradoxical a function in men’s systematic terminologies, that thinkers finally tried to abolish it altogether—and in recent years they have often persuaded themselves that they really did abolish it from their terminologies of modves. They abolished the term, but it is doubtful whether they can ever abolish the function of that term, or even whether they should want to. A doctrine of consubstantiality, either explicit or implicit, may be necessary to any way of life. For substance, in the old philoso­ phies, was an act; and a way of life is an acting-together; and in act­ ing together, men have common sensations, concepts, images, ideas, attitudes that make them consubstantied. The Grammar dealt with the universal paradoxes of substance. It considered resources of placement and definition common to all thought. The Symbolic should deal with unique individuals, each its own peculiarly constructed act, or form. These unique “constitu­ tions” being capable of treatment in isolation, the Symbolic should\n\nuniverse\n\nTHE RANGE OF RHETORIC consider them primarily in their capacity as singulars, each a separate of discourse (though there are also respects in which they are consubstantial with others of their kind, since they can be classed with other unique individuals as joint participants in common principles,\n\nor en-\n\npossessors of the same or similar properties). The Rhetoric deals with the possibilities of classification in its par­ tisan aspects; it considers the ways in which individuals are at odds with one another, or become identified with groups more or less at odds with one another. Why “at odds,\" you may ask, when the titular term is “identifica­ tion”? Because, to begin with “identification” is, by the same token, though roundabout, to confront the implications of division. And so, in the end, men are brought to that most tragically ironic of all divi­ sions, or conflicts, wherein millions of cooperative acts go into the preparation for one single destructive act. We refer to that ultimate disease of cooperation: war. (You will understand war much better if you think of it, not simply as strife come to a head, but rather as a disease, or perversion of communion. Modern war characteristically requires a myriad of constructive acts for each destructive one; before each culminating blast there must be a vast network of interlocking operations, directed communally.) Identification is affirmed with earnestness precisely because there is division. Identification is compensatory to division. If men were nor apart from one another, there would be no need for the rhetorician to proclaim their unity. If men were wholly and truly of one sub­ stance, absolute communication would be of man’s very essence. It would not be an ideal, as it now is, partly embodied in material condi­ tions and partly frustrated by these same conditions; rather, it would be as natural, spontaneous, and total as with those ideal prototypes of communication, the theologian’s angels, or “messengers.” The Grammar was at peace insofar as it contemplated the paradoxes common to all men, the universal resources of verbal placement. The Symbolic should be at peace, in that the individual substances, tides, or constituted acts are there considered in their uniqueness, hence outside the realm of conflict. For individual universes, as such, do not compete. Each merely is, being its own self-sufficient realm of dis­ course",
+      "meta": {
+        "chunk_index": 13,
+        "doc_id": "c2cb9cd00b7724ed",
+        "is_table": false,
+        "qualifier": "My Copy",
+        "is_notes": false,
+        "author_raw": "Burke, Kenneth",
+        "content_type": "text",
+        "year": 1950,
+        "cleaning_version": "clean_v1",
+        "page_end": 36,
+        "source_method": "pymupdf+bbox",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "pdftotext_version": "24.02.0",
+        "is_clean_copy": false,
+        "collection": "rhetorical_ontology",
+        "page_start": 34,
+        "has_bboxes": true,
+        "clean_sha256": "f9b6c64d7acc9720ba743e96c7eae56a83c7723f60b194f87a686f69a6299e0f",
+        "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "is_image": false,
+        "title_raw": "A Rhetoric of Motives",
+        "mtime": 1771101202,
+        "is_my_copy": true,
+        "bboxes": "[{\"page_num\": 39, \"coords\": [61.900001525878906, 33.49164581298828, 362.20001220703125, 530.4612426757812], \"blocks\": [[68.75, 33.49164581298828, 361.8900146484375, 86.7530288696289], [61.900001525878906, 90.95790100097656, 362.20001220703125, 530.4612426757812]]}, {\"page_num\": 40, \"coords\": [41.04899978637695, 15.089345932006836, 348.79998779296875, 530.5708618164062], \"blocks\": [[121.08999633789062, 15.089345932006836, 271.8141784667969, 32.352020263671875], [41.04899978637695, 34.611358642578125, 348.79998779296875, 530.5708618164062]]}, {\"page_num\": 41, \"coords\": [141.89999389648438, 16.230403900146484, 283.84552001953125, 32.783348083496094], \"blocks\": [[141.89999389648438, 16.230403900146484, 283.84552001953125, 32.783348083496094]]}]",
+        "sha256": "2bc45e16e5f679eab0bdfefda2b220eefcf276c0ac208b260c0f5669f25b1af0"
+      },
+      "rank": 6
+    },
+    {
+      "raw_rank": 8,
+      "chunk_id": "c2cb9cd00b7724ed:00156",
+      "distance": 0.7313084602355957,
+      "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+      "page_start": 303,
+      "page_end": 305,
+      "text": "ORDER 29O This necessary interposition of the human agent for better or worse. . between scene and agency is what we have in mind when we say that \n“words” are prior to “tools,” that homo dialectics is more funda­ mental than homo fabcr, though the inventions of homo faber provide\n\nso mus\n\noverwhelmingly the distinctions of property and class that give ani- _j to man’s dialectical operations. A Grammar of Substance was needed, at the very basis of human thinking, to shape traditions of living and thinking whereby a man can be induced to identify himself with the cause of some figure whom he has experienced only by hearsay, through the daily word-slinging of the news. But when thus “grammatically” and “symbolically” con­ sidering himself consubstantial with such a figure (a figure that is for him but a purely verbal creation but supposedly represents his interests) he gets the zeal of such identification from conditions of property and social status that were shaped by the economic forces of production. This more recondite development (from words, to tools, to words for social “substance” arising out of tools as property) is responsible for the animus in the logomachy (“cold war,” an expression commend­ ing itself to the frigidity of old men, but unfortunately, with younger men, suggesting ideas of “warm” and “hot” war, and then finally, in accordance with the intermingling of Mars and Venus, a “shooting” war). If you insist, we’ll abandon, for argument’s sake, the notion that nature is “super-personal.” The argument is based on the assumption that there is such a thing as “personality” in the human realm. And when you get through dissolving personality into the stream of con­ sciousness, or into dissociated subpersonalities, or into “conditioned re­ flexes,” or into appearances of substance that derive purely from such extrinsic factors as status and role, there may not seem to be any intrinsic core left. So we’ll retreat to our more easily defendable position: that nature must be more-than-verbal. For in its totality it encompasses ver­ bal and nonverbal both; and its “nonverbal” ground must have con­ tained the “potentiality” of the verbal, otherwise the verbal could not have emerged from it. Arguments about nature as “more than personal” could then be pro­ tectively reframed and still claim enough for our purposes: We could say simply that, since such a view of nature as “super-personal” is a natural conclusion” of dialectic, then it is an important ultimate trend\n\nORDER\n\nprofoundly appealing more\n\nof thought which must figure as a “lure” in rhetoric. An ultimate \n“error” is as important in rhetorical appeal as an ultimate “truth.” So in either case we should consider the “dialectical proof of a super-per­ sonal ground of all action,” because of the relation between rhetoric and dialectic. For no expression can be than a rhetoric which follows in the direction of a perfect dialectical symmetry. Suasion is thus “freest,” most “edifying,” when it embodies \n“the symmetrical necessity for the existence of God,” though lovers of such symmetry may insist that their god be named Atheos.\n\nno more\n\nHowever, though our discussion of “pure persuasion” has brought us to the rhetoric of theology, we must again emphasize that “pure per­ suasion” in itself is not to be equated with “religious” persuasion. Pure persuasion is disembodied and wraithlike; but the benedictions and anathemata of religious persuasion are tremendously sanguine, even bloody. Consider the urgency of the Apocalypse. No bull fight was ever more gory, no Inquisition more eager to terrorize. “In right­ eousness he doth judge and make war.” And punishments are heaped upon punishments for those serving the whore of Babylon, who “glori­ fied herself” and “lived deliciously,” until the “merchants of the earth” had “waxed rich through the abundance of her delicacies.” Does not the whole of Revelation swing about the resonant eight­ eenth chapter, where the voice cries, “Babylon the great is fallen”? And is there not a lovely tone of lamentation here, commingled with the gloating of vengeance? “Alas, alas, that great city Babylon, that mighty city!” Read it carefully, the eighteenth chapter. The prophet is condemning to the “second death” a city that looks surprisingly much like New York at its best. If there were less stench and more fragrance, less noise and more music, you’d have not New York but Babylon the Mysterious, as described in this chapter commemorating its destruction. Surely the saint is visiting these horrors upon persons loathsome, say, than a would-be poet, or ex-poet, now working for an advertising agency, or for some publisher of commercial magazines. (All that is left of his early literary promise is a collection of first and rare editions. Preferably they are books with uncut pages. For here would be a remote variant of virgin-worship, a few secular traces of adolescent religiosity. We should also note, however, a mild renewal",
+      "meta": {
+        "content_type": "text",
+        "is_image": false,
+        "qualifier": "My Copy",
+        "year": 1950,
+        "page_start": 303,
+        "mtime": 1771101202,
+        "clean_sha256": "430b86542c2d3de633f5e1e6e16ff9c0a20e44349c26ffb26c23092249113932",
+        "title_raw": "A Rhetoric of Motives",
+        "bboxes": "[{\"page_num\": 313, \"coords\": [39.849998474121094, 236.58946228027344, 342.25, 536.66064453125], \"blocks\": [[39.849998474121094, 236.58946228027344, 342.25, 536.66064453125]]}, {\"page_num\": 314, \"coords\": [38.099998474121094, 20.463233947753906, 341.95001220703125, 528.4554443359375], \"blocks\": [[174.94000244140625, 20.463233947753906, 208.40264892578125, 29.89006233215332], [38.099998474121094, 34.77821731567383, 341.95001220703125, 528.4554443359375]]}, {\"page_num\": 315, \"coords\": [174.35000610351562, 21.234642028808594, 208.8772735595703, 30.830095291137695], \"blocks\": [[174.35000610351562, 21.234642028808594, 208.8772735595703, 30.830095291137695]]}]",
+        "path_rel": "rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "is_notes": false,
+        "pdftotext_version": "24.02.0",
+        "sha256": "2bc45e16e5f679eab0bdfefda2b220eefcf276c0ac208b260c0f5669f25b1af0",
+        "author_raw": "Burke, Kenneth",
+        "page_end": 305,
+        "chunk_index": 156,
+        "cleaning_version": "clean_v1",
+        "source_method": "pymupdf+bbox",
+        "is_my_copy": true,
+        "has_bboxes": true,
+        "collection": "rhetorical_ontology",
+        "doc_id": "c2cb9cd00b7724ed",
+        "is_table": false,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf",
+        "is_clean_copy": false
+      },
+      "rank": 7
+    },
+    {
+      "raw_rank": 9,
+      "chunk_id": "39640bbbf94c2700:00152",
+      "distance": 0.734003484249115,
+      "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+      "page_start": 264,
+      "page_end": 266,
+      "text": "As I used the term, an event is any change of a substance, place, or object, chem­ ical, mechanical, or biophysical. The change may be slow or fast, reversible or nonreversible, repeating or nonrepeating. Events include what happens to objects in general, plus what the animate objects make happen. Events are nested within superordinate events. The motion of a detached object is not the proto­ type of an event that we have been led to think it was. Events of different sorts are perceived as such and are not, surely, reducible to elementary motions.\n\nThe Information for Perception\n\nInformation, as the term is used in this book (but not in other books), refers to specification of the observer’s environment, not to specification of the observ­ er’s receptors or sense organs. The qualities of objects are specified by inform­ ation; the qualities of the receptors and nerves are specified by sensations. Information about the world cuts right across the qualities of sense. The term information cannot have its familiar dictionary meaning ot know­ ledge communicated to a receiver. This is unfortunate, and I would use another term if I could. The only recourse is to ask the reader to remember that picking up information is not to be thought of as a case of communicating. The world does not speak to the observer. Animals and humans communicate with cries, gestures, speech, pictures, writing, and television, but we cannot hope to understand perception in terms of these channels; it is quite the other way around. Words and pictures convey information, carry it, or transmit it, but the information in the sea of energy around each of us, luminous or mechanical or chemical energy, is not conveyed. It is simply there. The assumption that information can be transmitted and the assumption that it can be stored are appropriate for the theory of communication, not for the theory of perception. The vast area of speculation about the so-called media of communication had a certain discipline imposed on it some years ago by a mathematical theory of communication (Shannon and Weaver, 1949). A useful measure of information\n\n232 The Ecological Approach to Visual Perception\n\ntransmitted was formulated, in terms of “bits.” A sender and receiver, a channel, and a finite number of possible signals were assumed. The result was a genuine discipline of communications engineering. But, although psychologists promptly tried to apply it to the senses and neuropsychologists began thinking of nerve impulses in terms of bits and the brain in terms of a computer, the applications did not work. Shannon’s concept of information applies to telephone hookups and radio broadcasting in elegant ways but not, I think, to the firsthand percep­ tion of being in-the-world, to what the baby gets when first it opens its eyes. The information for perception, unhappily, cannot be defined and measured as Claude Shannon’s information can be. The information in ambient light, along with sound, odor, touches, and natural chemicals, is inexhaustible. A perceiver can keep on noticing facts about the world she lives in to the end of her life without ever reaching a limit. There is no threshold for information comparable to a stimulus threshold. Information is not lost to the environment when gained by the individual; it is not conserved like energy’. Information is not specific to the banks of photoreceptors, mechanore- ceptors, and chemoreceptors that lie within the sense organs. Sensations are specific to receptors and thus, normally, to the kinds of stimulus energy that touch them off. But information is not energy-specific. Stimuli are not always imposed on a passive subject. In life one obtains stimulation in order to extract the information (Gibson, 19666, Ch. 2). The information can be the same, despite a radical change in the stimulation obtained. Finally, a concept of information is required that admits of the possibility of illusion. Illusions are a theoretical perplexity in any approach to the study of perception. Is information always valid and illusion simply a failure to pick it upr Or is the information picked up sometimes impoverished, masked, ambiguous, equivocal, contradictory, even false? The puzzle is especially critical in vision. In Chapter 14 of The Senses Considered as Perceptual Systems (Gibson, 19666) and again in this book I have tried to come to terms with the problem of misperception. I am only sure of this: it is not one problem but a complex of different problems. Consider, first, the mirage of palm trees in the desert sky, or the straight stick that looks bent because it is partly immersed in water. These illusions, together with the illusion of Narcissus, arise from the regular reflection or refraction of light, that is, from exceptions to the ecological optics of the scatter-reflecting surface and the perfectly homogeneous medium. Then consider, second, the misperception in the case of the shark under the calm water or the electric shock hidden in the radio cabinet. Failure to perceive the danger is not then blamed on the perceiver. Consider, third, the sheet of glass mistaken for an open doorway or the horizontal sheet of glass (the optical cliff) mistaken for a void. A fourth case is the room composed of trapezoidal surfaces or the trapezoidal window, which look normally rectangular so long as the observer does not open both eyes and walk around. Optical misinformation",
+      "meta": {
+        "page_start": 264,
+        "page_end": 266,
+        "source_method": "pymupdf+bbox",
+        "bboxes": "[{\"page_num\": 269, \"coords\": [29.0, 392.7719421386719, 359.79998779296875, 612.5248413085938], \"blocks\": [[29.89900016784668, 392.7719421386719, 359.79998779296875, 470.28009033203125], [31.049999237060547, 490.6514587402344, 253.361083984375, 502.6514587402344], [29.0, 508.3864440917969, 358.6000061035156, 612.5248413085938]]}, {\"page_num\": 270, \"coords\": [55.849998474121094, 30.81964683532715, 384.0, 622.1425170898438], \"blocks\": [[55.849998474121094, 30.81964683532715, 239.6494598388672, 48.764007568359375], [56.14862060546875, 60.271934509277344, 384.0, 622.1425170898438]]}, {\"page_num\": 271, \"coords\": [135.0500030517578, 32.1190299987793, 362.7112121582031, 50.72010803222656], \"blocks\": [[135.0500030517578, 32.1190299987793, 362.7112121582031, 50.72010803222656]]}]",
+        "sha256": "325df1b4fe5d195315df7cb1daeb433b73812b03c3c348aea60bb2700b84131e",
+        "is_image": false,
+        "collection": "rhetorical_ontology",
+        "is_notes": false,
+        "cleaning_version": "clean_v1",
+        "is_my_copy": false,
+        "has_bboxes": true,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+        "doc_id": "39640bbbf94c2700",
+        "chunk_index": 152,
+        "mtime": 1771101202,
+        "path_rel": "rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf",
+        "author_raw": "Gibson, James J.",
+        "clean_sha256": "a19cac05da6970447093c613f0604767bda2748bcdc28be3f41b893d1e9ceb52",
+        "qualifier": "Clean Copy",
+        "is_clean_copy": true,
+        "year": 2015,
+        "content_type": "text",
+        "title_raw": "The Ecological Approach to Visual Perception.",
+        "pdftotext_version": "24.02.0",
+        "is_table": false
+      },
+      "rank": 8
+    }
+  ]
+}
+[god-learn] $ python3 scripts/retrieval/verify_phase4.py attunement and ambient persuasion
+[PHASE4_VERIFY_OK]
+- query='attunement and ambient persuasion'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[god-learn] $ bash scripts/highlights/phase5check.sh
+
+--- AUDIT REPORT ---
+root: /home/dalton/projects/claudeflow-testing/corpus
+manifest: /home/dalton/projects/claudeflow-testing/scripts/ingest/manifest.jsonl
+total_pdfs: 50
+
+[PHASE2_COMPLETE] (50)
+  - dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf :: phase=2 ok
+  - dissertation/in_progress/rhetorical phantasia test.pdf :: phase=2 ok
+  - metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf :: phase=2 ok
+  - metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf :: phase=2 ok
+  - metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf :: phase=2 ok
+  - new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf :: phase=2 ok
+
+[OK] dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf
+[OK] dissertation/in_progress/rhetorical phantasia test.pdf
+[OK] metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf
+[OK] metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf
+[OK] metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf
+[OK] metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf
+[OK] metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf
+[OK] metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf
+[OK] metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf
+[OK] metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf
+[OK] new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf
+[OK] new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf
+[OK] rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf
+[OK] rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf
+
+--- VERIFY REPORT (OK) ---
+OK=50 FAIL=0 TOTAL=50
+[PHASE4_VERIFY_OK]
+- query='phantasia and action'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[OK] Wrote:
+  /tmp/no_hl.txt
+  /tmp/with_hl.txt
+Diff (first 120 lines):
+--- /tmp/no_hl.txt	2026-03-26 22:32:05.796610608 -0700
++++ /tmp/with_hl.txt	2026-03-26 22:32:07.102065521 -0700
+@@ -6,51 +6,51 @@
+ 
+ [RESULTS]
+ 
+-01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  (raw_rank=1)
++01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  final_score=0.7484066486358643  hl_count=0  boost=0.0000  (raw_rank=1)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=303-305
+ 
+-02. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  (raw_rank=2)
++02. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  final_score=0.8132696557044983  hl_count=1  boost=0.0200  (raw_rank=4)
++    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
++    pages=22-24
++
++03. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  final_score=0.8133007287979126  hl_count=0  boost=0.0000  (raw_rank=2)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+     pages=167-169
+ 
+-03. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  (raw_rank=3)
++04. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  final_score=0.8137480616569519  hl_count=0  boost=0.0000  (raw_rank=3)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=279-281
+ 
+-04. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  (raw_rank=4)
+-    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+-    pages=22-24
+-
+-05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  (raw_rank=6)
++05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  final_score=0.851164698600769  hl_count=0  boost=0.0000  (raw_rank=6)
+     path_rel=rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+     pages=292-292
+ 
+-06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  (raw_rank=7)
++06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  final_score=0.8536148071289062  hl_count=0  boost=0.0000  (raw_rank=7)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=294-294
+ 
+-07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  (raw_rank=8)
++07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  final_score=0.864859938621521  hl_count=0  boost=0.0000  (raw_rank=8)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+     pages=18-18
+ 
+-08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  (raw_rank=9)
++08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  final_score=0.8705873489379883  hl_count=0  boost=0.0000  (raw_rank=9)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+     pages=215-215
+ 
+-09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  (raw_rank=10)
++09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  final_score=0.8722628355026245  hl_count=0  boost=0.0000  (raw_rank=10)
+     path_rel=rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+     pages=13-14
+ 
+-10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  (raw_rank=11)
++10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  final_score=0.8786800503730774  hl_count=0  boost=0.0000  (raw_rank=11)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=162-164
+ 
+-11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  (raw_rank=12)
++11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  final_score=0.8806346654891968  hl_count=0  boost=0.0000  (raw_rank=12)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=24-26
+ 
+-12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  (raw_rank=13)
++12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  final_score=0.8811410665512085  hl_count=0  boost=0.0000  (raw_rank=13)
+     path_rel=rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+     pages=252-254
+ 
+[god-learn] $ python3 scripts/learn/promote_hits.py --hits_json /tmp/phase4_hits.json --query attunement and ambient persuasion
+22:32:07 [INFO    ] god-learn.phase6.promote: Starting promotion [hits_json=/tmp/phase4_hits.json, query=attunement and ambient persuasion, min_chars=40, max_units=0, dry_run=False]
+22:32:07 [INFO    ] god-learn.phase6.promote: Promotion complete [promoted=8, total_indexed=66, knowledge_file=god-learn/knowledge.jsonl, index_file=god-learn/index.json]
+[Phase6:promote_hits] promoted=8 total_indexed=66
+[Phase6:promote_hits] wrote: god-learn/knowledge.jsonl
+[Phase6:promote_hits] index: god-learn/index.json
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 6
+[god-learn] normalize: sorted 66 KUs and rebuilt index (66 offsets)
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 8

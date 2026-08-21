@@ -1,0 +1,57 @@
+{
+  "phase": 7,
+  "input": "god-learn/knowledge.jsonl",
+  "output": {
+    "reasoning_jsonl": "god-reason/reasoning.jsonl",
+    "index_json": "god-reason/index.json"
+  },
+  "query": null,
+  "stats": {
+    "units_total": 401,
+    "buckets": {
+      "Burke, Kenneth": 79,
+      "Heidegger, Martin": 110,
+      "Aristotle": 102,
+      "Multiple Authors": 35,
+      "Silcox, Mark": 1,
+      "Gross, Daniel M.": 5,
+      "Frede, Dorothea": 6,
+      "Rickert, Thomas": 13,
+      "Gibson, James J.": 14,
+      "Papachristou, Christina": 4,
+      "Caston, Victor": 8,
+      "Hawhee, Debra": 1,
+      "von Uexkull, Jacob": 5,
+      "Gonzalez, Jose M.": 5,
+      "Audi, P.": 2,
+      "Nussbaum, Martha": 5,
+      "Fink, Phillip, Foo, Patrick, Warren, WIlliam": 1,
+      "O'Gorman, Ned": 2,
+      "Bowin, John": 1,
+      "Chalmers, David J.": 1,
+      "O'Connor, Timothy and Wong, Hong": 1
+    },
+    "pairs_considered": 80200,
+    "reasoning_units_emitted": 3707,
+    "reasoning_units_pre_prune": 26559,
+    "reasoning_units_post_prune": 3707,
+    "top_k_per_unit": 12,
+    "author_bucketing": {
+      "enabled": true,
+      "author_count": 21,
+      "cross_author_allowed_relations": [
+        "contrasts_with",
+        "defined_as",
+        "explains",
+        "presupposes",
+        "refines"
+      ]
+    }
+  },
+  "determinism": {
+    "sorted_units_by": "ku_id",
+    "sorted_buckets_by": "topic key",
+    "sorted_outputs_by": "(topic, relation, reason_id)",
+    "hashing": "sha256(canonical_json_sorted_keys)"
+  }
+}

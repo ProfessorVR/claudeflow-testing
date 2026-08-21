@@ -1,0 +1,239 @@
+{
+  "Name": "God Agent v2",
+  "Version": "2.0",
+  "Device": "Stream Deck MK.2",
+  "Keys": 15,
+  "Layout": "5x3",
+  "Description": "God Agent command center for Stream Deck MK.2 — WSL2 compatible",
+  "Pages": {
+    "Page1": "Main Commands",
+    "Page2": "Research & Learning"
+  },
+  "ExecutionModes": {
+    "interactive": "wt.exe -p \"God Agent\" wsl -e <script>",
+    "background": "wsl.exe -e <script>",
+    "weblink": "Native Website action (no WSL)"
+  },
+  "Buttons": [
+    {
+      "Position": { "row": 1, "col": 1, "index": 0 },
+      "Label": "STATUS",
+      "Icon": "status.png",
+      "Color": "#00c8ff",
+      "ExecutionMode": "api-polled",
+      "APIEndpoint": "http://localhost:3847/api/health",
+      "PollInterval": "5s",
+      "IconMapping": {
+        "healthy": "status-green.png",
+        "degraded": "status-yellow.png",
+        "error": "status-red.png"
+      },
+      "StreamDeckAction": "com.barraider.apininja",
+      "Description": "Dynamic health indicator — polls /api/health every 5s. Green=healthy, Yellow=degraded, Red=down/error."
+    },
+    {
+      "Position": { "row": 1, "col": 2, "index": 1 },
+      "Label": "ASK",
+      "Icon": "ask.png",
+      "Color": "#00c8ff",
+      "ExecutionMode": "interactive",
+      "Script": "scripts/god-ask.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "wt.exe",
+      "Arguments": "-p \"God Agent\" wsl -e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/god-ask.sh",
+      "Description": "Ask anything — reads clipboard or prompts for input"
+    },
+    {
+      "Position": { "row": 1, "col": 3, "index": 2 },
+      "Label": "CODE",
+      "Icon": "code.png",
+      "Color": "#00c8ff",
+      "ExecutionMode": "interactive",
+      "Script": "scripts/god-code.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "wt.exe",
+      "Arguments": "-p \"God Agent\" wsl -e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/god-code.sh",
+      "Description": "Generate code via DAI-001 agent selection"
+    },
+    {
+      "Position": { "row": 1, "col": 4, "index": 3 },
+      "Label": "RESEARCH",
+      "Icon": "research.png",
+      "Color": "#00c8ff",
+      "ExecutionMode": "interactive",
+      "Script": "scripts/god-research.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "wt.exe",
+      "Arguments": "-p \"God Agent\" wsl -e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/god-research.sh",
+      "Description": "Deep research via PhD pipeline"
+    },
+    {
+      "Position": { "row": 1, "col": 5, "index": 4 },
+      "Label": "WRITE",
+      "Icon": "write.png",
+      "Color": "#00c8ff",
+      "ExecutionMode": "interactive",
+      "Script": "scripts/god-write.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "wt.exe",
+      "Arguments": "-p \"God Agent\" wsl -e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/god-write.sh",
+      "Description": "Write documents with style injection and corpus grounding"
+    },
+    {
+      "Position": { "row": 2, "col": 1, "index": 5 },
+      "Label": "LEARN",
+      "Icon": "learn.png",
+      "Color": "#7b2fff",
+      "ExecutionMode": "background",
+      "Script": "scripts/god-learn.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "wsl.exe",
+      "Arguments": "-e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/god-learn.sh",
+      "Description": "Store clipboard content as knowledge — background with toast"
+    },
+    {
+      "Position": { "row": 2, "col": 2, "index": 6 },
+      "Label": "QUERY",
+      "Icon": "query.png",
+      "Color": "#7b2fff",
+      "ExecutionMode": "interactive",
+      "Script": "scripts/god-query.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "wt.exe",
+      "Arguments": "-p \"God Agent\" wsl -e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/god-query.sh",
+      "Description": "Search stored knowledge"
+    },
+    {
+      "Position": { "row": 2, "col": 3, "index": 7 },
+      "Label": "PDF SCAN",
+      "Icon": "pdf.png",
+      "Color": "#7b2fff",
+      "ExecutionMode": "interactive",
+      "Script": "scripts/god-pdf-analyze.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "wt.exe",
+      "Arguments": "-p \"God Agent\" wsl -e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/god-pdf-analyze.sh",
+      "Description": "Analyze PDF using auto/manual/hybrid modes"
+    },
+    {
+      "Position": { "row": 2, "col": 4, "index": 8 },
+      "Label": "COMPLETE",
+      "Icon": "complete.png",
+      "Color": "#7b2fff",
+      "ExecutionMode": "interactive",
+      "Script": "scripts/god-complete-section.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "wt.exe",
+      "Arguments": "-p \"God Agent\" wsl -e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/god-complete-section.sh",
+      "Description": "Complete dissertation section with gold standard pipeline"
+    },
+    {
+      "Position": { "row": 2, "col": 5, "index": 9 },
+      "Label": "FEEDBACK",
+      "Icon": "feedback.png",
+      "Color": "#7b2fff",
+      "StreamDeckAction": "com.elgato.streamdeck.system.folder",
+      "FolderContents": [
+        {
+          "Position": { "index": 0 },
+          "Label": "PERFECT\n1.0",
+          "Color": "#00ff88",
+          "Script": "scripts/feedback/feedback-perfect.sh",
+          "Application": "wsl.exe",
+          "Arguments": "-e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/feedback/feedback-perfect.sh"
+        },
+        {
+          "Position": { "index": 1 },
+          "Label": "GOOD\n0.8",
+          "Color": "#00c8ff",
+          "Script": "scripts/feedback/feedback-good.sh",
+          "Application": "wsl.exe",
+          "Arguments": "-e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/feedback/feedback-good.sh"
+        },
+        {
+          "Position": { "index": 2 },
+          "Label": "MEH\n0.5",
+          "Color": "#ffcc00",
+          "Script": "scripts/feedback/feedback-meh.sh",
+          "Application": "wsl.exe",
+          "Arguments": "-e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/feedback/feedback-meh.sh"
+        },
+        {
+          "Position": { "index": 3 },
+          "Label": "POOR\n0.2",
+          "Color": "#ff6b35",
+          "Script": "scripts/feedback/feedback-poor.sh",
+          "Application": "wsl.exe",
+          "Arguments": "-e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/feedback/feedback-poor.sh"
+        },
+        {
+          "Position": { "index": 4 },
+          "Label": "FAIL\n0.0",
+          "Color": "#ff3355",
+          "Script": "scripts/feedback/feedback-fail.sh",
+          "Application": "wsl.exe",
+          "Arguments": "-e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/feedback/feedback-fail.sh"
+        }
+      ],
+      "Description": "Feedback folder — copy trajectory ID to clipboard, press rating button"
+    },
+    {
+      "Position": { "row": 3, "col": 1, "index": 10 },
+      "Label": "START",
+      "Icon": "start.png",
+      "Color": "#00ff88",
+      "ExecutionMode": "background",
+      "StreamDeckAction": "com.elgato.streamdeck.multiaction",
+      "MultiActionSteps": [
+        { "action": "Set STATUS icon to status-yellow.png" },
+        { "action": "Run wsl.exe -e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/god-launch-start.sh" },
+        { "action": "Delay 30000ms" },
+        { "action": "Restore STATUS icon to API-polled default" }
+      ],
+      "Description": "Start all services — forces STATUS yellow for 30s during startup, then API poller takes over"
+    },
+    {
+      "Position": { "row": 3, "col": 2, "index": 11 },
+      "Label": "STOP",
+      "Icon": "stop.png",
+      "Color": "#ff3355",
+      "ExecutionMode": "background",
+      "Script": "scripts/god-launch-stop.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "wsl.exe",
+      "Arguments": "-e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/god-launch-stop.sh",
+      "Description": "Stop all services gracefully"
+    },
+    {
+      "Position": { "row": 3, "col": 3, "index": 12 },
+      "Label": "DASH",
+      "Icon": "dashboard.png",
+      "Color": "#ff6b35",
+      "ExecutionMode": "weblink",
+      "StreamDeckAction": "com.elgato.streamdeck.system.website",
+      "URL": "http://localhost:3847",
+      "Description": "Open observability dashboard in default browser — zero WSL overhead"
+    },
+    {
+      "Position": { "row": 3, "col": 4, "index": 13 },
+      "Label": "ABORT",
+      "Icon": "abort.png",
+      "Color": "#ff3355",
+      "ExecutionMode": "background",
+      "Script": "scripts/god-abort-pipeline.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "wsl.exe",
+      "Arguments": "-e /home/dalton/projects/claudeflow-testing/streamdeck/scripts/god-abort-pipeline.sh",
+      "Description": "EMERGENCY: Instantly abort active pipeline — severs LLM connections via AbortController"
+    },
+    {
+      "Position": { "row": 3, "col": 5, "index": 14 },
+      "Label": "PAGE 2",
+      "Icon": "next.png",
+      "Color": "#ff6b35",
+      "StreamDeckAction": "com.elgato.streamdeck.system.folder",
+      "FolderTarget": "god-agent-page2",
+      "Description": "Navigate to Page 2 (Research & Learning)"
+    }
+  ]
+}

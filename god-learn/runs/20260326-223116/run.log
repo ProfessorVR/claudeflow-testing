@@ -1,0 +1,524 @@
+[god-learn] $ python3 scripts/retrieval/query_chunks.py Dasein and being-in-the-world --k 8 --overfetch 30 --include_docs --print_json
+{
+  "query": "Dasein and being-in-the-world",
+  "config": {
+    "chroma_dir": "vector_db_1536",
+    "collection": "knowledge_chunks",
+    "k": 8,
+    "overfetch": 30,
+    "where": null,
+    "filters": {
+      "require_my_copy": false,
+      "collection_filter": null,
+      "keep_biblio": false
+    },
+    "include_docs": true,
+    "use_highlights": false,
+    "highlights_index": "scripts/highlights/highlight_index.json",
+    "highlight_alpha": 0.02,
+    "highlight_cap": 5
+  },
+  "results": [
+    {
+      "raw_rank": 1,
+      "chunk_id": "f6041c1a815c83f1:00313",
+      "distance": 0.5544038414955139,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 495,
+      "page_end": 495,
+      "text": "of truth confine themselves to what has been said in the critical prolegomena (vol. 1), and mention that this is connected with Bolzano's theory of the proposition. But the positive phenomenological Interpretations, which differ basically from Bolzano's theory, have been neglected. The only person who has taken up these investigations positively from outside the main stream of phenomenological research, has been E. Lask, whose Logik der Philosophie ( 191 1) was as strongly influenced by the sixth Untersuchung (Dber sinnliche und kategoriale Anschauungen', pp. 128 ff.) as his Lehre vom Urteil (1912) was influenced by the above-mentioned sections on evidence and truth. xxxv. (H. 219) Cf. Diels, Die Fragmente der Vorsokratiker, Heracleitus fragment B 1. xxvi. (H. 220) Cf. H. 32 ff. xxxvii. (H. 22 1) Cf. H. 134 ff. xxviii. (H. 22 1) Cf. H. 166 ff. xxxix. (H. 223) Karl Reinhardt (Cf. his Parmenides und die Geschichte der grieschischen Philosophie, 1916) was the first to conceptualize and solve the hackneyed problem of how the two parts of Parmenides' poem are connected, though he did not explicitly point out the ontological foundation for the connection between .U·Bn« and Mֻ«, or its necesity. xi. (H. 223) Cf. Section 33 above, H. 153 ff. ('Assertion as a derivative mode of inter­ pretation.') xli. (H. 223) Cf. Section 34, H. 160 ff. xlii. (H. 225) Cf. Aristotle, Ethica Nicomachea Z and Metaphvsica B 10.\n\nDivision Two, Section 45 i. (H. 23 1) Cf. Section 9, H. 41 ff. ii. (H. 231) Cf. Section 6, H. 19 ff. ; Section 21, H. 95 ff. ; Section 43, H. 201. iii. (H. 232) Cf. Section 32, H. 148 ff. iv. (H. 232) Cf. Section 9, H. 41 ff. v. (H. 233) Cf. Section 41, H. 191 ff. vi. (H. 235) In the nineteenth century, S0ren Kierkegaard explicitly seized upon the problem of existence as an existentiell problem, and thought it through in a penetrating fashion. But the existential problematic was so alien to him that, as regards his ontology, he remained completely dominated by Hegel and by ancient philosophy as Hegel saw it.l Thus, there is more to be learned philosophically from his 'edifying' writings than from his theoretical ones-with the exception of his treatise on the concept of anxiety. [Here Heidegger is referring to the work generally known in English as The Concept of Dread.-Tr.] Division Two, Chapter One i. (H. 240) Cf. Section 9, H. 41 ff. ii. (H. 241 ) Cf. Section 10, H. 45 ff. iii. (H. 244) The distinction between a whole and a sum, oֺov and 1riiv, totum and compositum, has been familiar since the time of Plato and Aristotle. But admittedly no one as yet knows anything about the systematics of the categorial variations which this division already embraces, nor have these been conceptualized. As an approach to a thorough analysis of the structures in question, cf. Edmund Husserl, Logische Unter­ suchungen, vol. II, Untersuchung III : 'Zur Lehre von den Ganzen und Teilen'. iv. (H. 245) Der Ackermann aus B iihmen, edited by A. Bernt and K. Burdach. ( Vom Mittelalter zur Reformation. Forschungen zur Geschichte der deutschen Bildung, edited by K. Burdach, vol. III, 2. Teil) 191 7, chapter 20, p. 46. v. (H. 246) On this topic, cf. the comprehensive presentation in E. Korschelt'sLebensdauer, Altern und Tod, 3rd Edition, 1924. Note especially the full bibliography, pp. 414 ff. vi. (H. 249) In its Interpretation of 'life', the anthropology worked out in Christian theology-from Paul right up to Calvin's meditatio futurae vitae-has always kept death in view. Wilhelm Dilthey, whose real philosophical tendencies were ainted at an ontology of 'life', could not fail to recognize how life is connected with death: ' . . . and finally, that relationship which most deeply and universally determines the feeling of our Dasein-the relationship of life to death; for the bounding of our existence by death is always decisive for our understanding and assessment of life.' (Das Erlebnis und die Dichtung, 5th Edition, p. 230.) Recently, G. Sinlmel has also explicitly included the 1 Here we follow the older editions in reading '. \n• . und der durch diesen gesehenen antiken Philosophie • • .' In the new editions 'gesehenen' has been changed to 'ges­ chehenen'.\n\nBeing and Time",
+      "meta": {
+        "collection": "rhetorical_ontology",
+        "title_raw": "Being and Time",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "is_image": false,
+        "page_end": 495,
+        "year": 1962,
+        "is_notes": false,
+        "clean_sha256": "6344c00ce01984dd765aa6366f394dfe49a8f3790d0accbd0d6148550ea11468",
+        "chunk_index": 313,
+        "page_start": 495,
+        "author_raw": "Heidegger, Martin",
+        "is_my_copy": true,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "cleaning_version": "clean_v1",
+        "bboxes": "[{\"page_num\": 510, \"coords\": [23.56999969482422, 24.79751205444336, 308.66290283203125, 474.5060119628906], \"blocks\": [[23.56999969482422, 24.79751205444336, 161.7826385498047, 474.16400146484375], [169.08001708984375, 25.10381507873535, 308.66290283203125, 474.5060119628906]]}, {\"page_num\": 511, \"coords\": [24.220008850097656, 9.395788192749023, 307.8516845703125, 320.1038513183594], \"blocks\": [[26.600000381469727, 9.395788192749023, 195.4508514404297, 20.277088165283203], [24.220008850097656, 24.2559814453125, 132.21800231933594, 82.38397216796875], [169.9500732421875, 24.275848388671875, 307.8516845703125, 320.1038513183594]]}]",
+        "doc_id": "f6041c1a815c83f1",
+        "mtime": 1771101202,
+        "content_type": "text",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "has_bboxes": true,
+        "pdftotext_version": "24.02.0",
+        "is_table": false,
+        "source_method": "pymupdf+bbox",
+        "is_clean_copy": false,
+        "qualifier": "My Copy"
+      },
+      "rank": 1
+    },
+    {
+      "raw_rank": 2,
+      "chunk_id": "f6041c1a815c83f1:00049",
+      "distance": 0.5839464664459229,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 90,
+      "page_end": 92,
+      "text": "alongside the entities outside in the world than when I originally grasp them.1 Even the forgetting of something, in which every relationship of Being towards what one formerly knew has seemingly been obliterated, must be conceived as a modification of the primordial Being-in; and this holds for every delusion and for every error. We have now pointed out how those modes of Being-in-the-world which are constitutive for knowing the world are interconnected in their foundations; this makes it plain that in knowing, Dasein achieves a new status of Being [Seinsstand] towards a world which has already been dis­ covered in Dasein itself. This new possibility of Being can develop itself autonomously; it can become a task to be accomplished, and as scientific knowledge it can take over the guidance for Being-in-the-world. But a \n'commercium' of the subject with a world does not get created for the first time by knowing, nor does it arise from some way in which the world acts upon a subject. Knowing is a mode ofDasein founded upon Being-in-the­ world. Thus Being-in-the-world, as a basic state, must be Interpreted hiforehand. 1 ' • • • bei einem originiiren Erfasen.'\n\nI I I\n\nTHE W O RLDHOOD O F THE WORLD\n\n̮ r 4 · The Idea of the Worldlwod of the World1 in General\n\nBEING-IN-THE-WORLD shall first be made visible with regard to that item of its structure which is the 'world' itself. To accomplish this task seems easy and so trivial as to make one keep taking for granted that it may be dispensed with. What can be meant by describing 'the world' as a phenomenon ? It means to let us see what shows itself in 'entities' within the world. Here the first step is to enumerate the things that are 'in' the world : houses, trees, people, mountains, stars. We can depict the way such entities 'look', and we can give an account of occurrences in them and with them. This, however, is obviously a pre-phenomenological 'business' which cannot be at all relevant phenomenologically. Such a description is always confined to entities. It is on tical. But what we are seeking is Being. And we have formally defined 'phenomenon' in the phenomenological sense as that which shows itself as Being and as a structure of Being. Thus, to give a phenomenological description of the 'world' will mean to exhibit the Being of those entities which are present-at-hand within the world, and to fix it in concepts which are categorial. Now the entities within the world are Things-Things of Nature, and Things 'invested with value' [\"wertbehaftete\" Dinge]. Their Thinghood becomes a problem; and to the extent that the Thinghood of Things 'invested with value' is based upon the Thinghood of Nature, our primary theme is the Being of Things of Nature-Nature as such. That characteristic of Being which belongs to Things of Nature (substances), and upon which\n\n1 'Welt', 'weltlich', 'Weltlichkeit', 'Weltmiisigkeit'. We shall usually translate 'Welt' as 'the world' or 'a world', following English idiom, though Heidegger frequently omits the article when he wishes to refer to 'Welt' as a 'characteristic' of Dasein. In ordinary German the adjective 'weltlich' and the derivative noun 'Weltlichkeit' have much the same connotations as the English 'worldly' and 'worldlines' ; but the meanings which Heidegger asigns to them (H. 65) are quite different from those of their English cognates. At the risk of obscuring the etymological connection and occasionally misleading the reader, we shall translate 'weltlich' as 'worldly', 'Weltlichkeit' as 'worldhood', and \n'Weltmisigkeit' as 'worldly character'. The reader must bear in mind, however, that there is no suggestion here of the 'worldlines' of the 'man of the world'.\n\nBeing and Time",
+      "meta": {
+        "source_method": "pymupdf+bbox",
+        "is_clean_copy": false,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "is_image": false,
+        "pdftotext_version": "24.02.0",
+        "collection": "rhetorical_ontology",
+        "year": 1962,
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "page_start": 90,
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "clean_sha256": "8b6d3b55fe15be82415c1d3fbcc40f70c67b4c8090c5e5bc45610c93c8446082",
+        "bboxes": "[{\"page_num\": 92, \"coords\": [23.1400146484375, 114.5857925415039, 308.2595520019531, 435.27703857421875], \"blocks\": [[23.1400146484375, 114.5857925415039, 308.2595520019531, 354.329345703125], [23.4599609375, 360.318115234375, 306.36083984375, 435.27703857421875]]}, {\"page_num\": 93, \"coords\": [4.110015869140625, 10.178579330444336, 310.283447265625, 468.8193664550781], \"blocks\": [[137.72999572753906, 10.178579330444336, 195.52145385742188, 20.152530670166016], [4.110015869140625, 23.078187942504883, 310.283447265625, 468.8193664550781]]}, {\"page_num\": 94, \"coords\": [22.97998046875, 10.488576889038086, 327.2962951660156, 305.1784362792969], \"blocks\": [[135.36000061035156, 10.488576889038086, 305.3039855957031, 22.662540435791016], [32.0, 23.833377838134766, 305.2634582519531, 33.568477630615234], [22.97998046875, 34.66336441040039, 305.44757080078125, 44.39846420288086], [23.3599853515625, 45.34115982055664, 305.1989440917969, 55.238460540771484], [23.359970092773438, 56.21335220336914, 192.91741943359375, 65.94844818115234], [33.299964904785156, 66.19574737548828, 306.5086364746094, 77.07704162597656], [23.569976806640625, 77.8133544921875, 260.0879821777344, 87.54845428466797], [33.13999938964844, 88.3277587890625, 306.1601867675781, 98.55195617675781], [23.570037841796875, 99.60336303710938, 305.6872253417969, 109.33846282958984], [23.46002197265625, 110.24337768554688, 305.3080139160156, 119.97847747802734], [23.7900390625, 117.2632827758789, 327.2962951660156, 131.29052734375], [23.36004638671875, 131.98336791992188, 305.6231689453125, 154.18336486816406], [23.790054321289062, 153.60336303710938, 304.0600280761719, 163.33847045898438], [24.22003173828125, 164.72335815429688, 305.44622802734375, 174.85250854492188], [24.220046997070312, 175.3133544921875, 305.99383544921875, 185.0484619140625], [24.00006103515625, 186.42333984375, 305.74835205078125, 196.158447265625], [23.790069580078125, 197.33114624023438, 306.70098876953125, 229.15249633789062], [23.790069580078125, 229.95333862304688, 307.39166259765625, 239.68844604492188], [24.220062255859375, 240.9633331298828, 305.8520202636719, 251.0924835205078], [23.950042724609375, 252.13333129882812, 305.8281555175781, 261.8684387207031], [23.930023193359375, 262.9533386230469, 306.1316223144531, 272.6884460449219], [24.44000244140625, 273.8433532714844, 115.35310363769531, 283.5784606933594], [33.09000778198242, 284.60333251953125, 306.2748107910156, 294.33843994140625], [24.110015869140625, 295.4433288574219, 306.1903991699219, 305.1784362792969]]}]",
+        "title_raw": "Being and Time",
+        "is_my_copy": true,
+        "qualifier": "My Copy",
+        "content_type": "text",
+        "has_bboxes": true,
+        "chunk_index": 49,
+        "cleaning_version": "clean_v1",
+        "is_table": false,
+        "author_raw": "Heidegger, Martin",
+        "mtime": 1771101202,
+        "doc_id": "f6041c1a815c83f1",
+        "is_notes": false,
+        "page_end": 92
+      },
+      "rank": 2
+    },
+    {
+      "raw_rank": 3,
+      "chunk_id": "f6041c1a815c83f1:00258",
+      "distance": 0.5935381650924683,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 409,
+      "page_end": 411,
+      "text": "looking over the 'operations' [\"Betrieb\"] which are now 'at a standstill'.\n\nHolding back from the use of equipment is so far from sheer 'theory' that\n\nthe kind of circumspection which tarries and 'considers', remains wholly\n\nin the grip of the ready-to-hand equipment with which one is concerned.\n\n'Practical' dealings have their own ways of tarrying. And just as praxis has\n\nits own specific kind of sight ('theory'), theoretical research is not without\n\na praxis of its own. Reading off the measurements which result from an\n\nexperiment often requires a complicated 'technical' set-up for the experi­\n\nmental design. Observation with a microscope is dependent upon the\n\nproduction of 'preparations'. Archaeological excavation, which precedes\n\nany Interpretation of the 'findings', demands manipulations of the grossest\n\nkind. But even in the 'most abstract' way of working out problems and\n\nestablishing what has been obtained, one manipulates equipment for\n\nwriting, for example. However 'uninteresting' and 'obvious' such com­\n\nponents of scientific research may be, they are by no means a matter of\n\nindifference ontologically. The explicit suggestion that scientific behaviour\n\nas a way of Being-in-the-world, is not just a 'purely intellectual activity',\n\nmay seem petty and superfluous. If only it were not plain from this\n\ntriviality that it is by no means patent where the ontological boundary\n\nbetween 'theoretical' and 'atheoretical' behaviour really runs !\n\nSomeone will hold that all manipulation in the sciences is merely in the\n\nBeing and Time\n\nservice of pure observation-the investigative discovery and disclosure of the 'things themselves'. 'Seeing', taken in the widest sense, regulates all \n'procedures' and retains its priority. 'To whatever kind of objects one's knowledge may relate itself, and by whatever means it may do so, still that through which it relates itself to them immediately, and which all thinking as a means has as its goal (author's italics) is intuition.'xxl The idea\n\nof the intuitus has guided all Interpretation of knowledge from the begin­ nings of Greek ontology until today, whether or not that intuitus can be factically reached. If we are to exhibit the existential genesis of science in accordance with the priority of 'seeing', we must set out by characterizing the circumspection which is the guide for 'practical' concern. Circumspection operates in the involvement-relationships of the context\n\nof equipment which is ready-to-hand. Moreover, it is subordinate to the guidance of a more or less explicit survey of the equipmental totality of the current equipment-world and of the public environment which belongs to it. This survey is not just one in which things that are present-at-hand\n\nare subsequently scraped together. What is essential to it is that one should have a primary understanding of the totality of involvements within which factical concern always takes its start. Such a survey illumines one's concern, and receives its 'light' from that potentiality-for-Being on the\n\npart of Dasein for the sake of which concern exists as care. In one's current\n\nusing and manipulating, the concernful circumspection which does this \n'surveying', brings the ready-to-hand closer to Dasein, and does so by interpreting what has been sighted. This specific way of bringing the object of concern close by interpreting it circumspectively, we call \n\"deliberating\" [ llberlegung]. The scheme peculiar to this is the 'if-then' ;\n\nif this or that, for instance, is to be produced, put to use, or averted, then some ways and means, circumstances, or opportunities will be needed. Circumspective deliberation illumines Dasein's current factical situation in the environment with which it concerns itself. Accordingly, such deliberation never merely 'affirms' that some entity is present-at-hand or has such and such properties. Moreover, deliberation can be performed\n\neven when that which is brought close in it circumspectively is not palpably ready-to-hand and does not have presence within the closest\n\nrange. Bringing the environment closer in circumspective deliberation has the existential meaning of a making present; for envisaging1 is only a mode of this. In envisaging, one's deliberation catches sight directly of that which is needed but which is un-ready-to-hand. Circumspection which envisages does not relate itself to 'mere representations'. 1 Here the familiar noun 'Vergegenwiirtigung' ('envisaging') is printed with the first syllable in italics to draw attention to its connection with the special phenomenological verb 'Gegenwlirtigen' ('making present').\n\nBeing and Time",
+      "meta": {
+        "is_image": false,
+        "qualifier": "My Copy",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "clean_sha256": "92d72924458ed2b284c86d5382015fdedf82f0628c86f8075ac7b37f76ac4d2a",
+        "source_method": "pymupdf+bbox",
+        "is_clean_copy": false,
+        "is_table": false,
+        "content_type": "text",
+        "page_end": 411,
+        "page_start": 409,
+        "is_my_copy": true,
+        "title_raw": "Being and Time",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "has_bboxes": true,
+        "year": 1962,
+        "author_raw": "Heidegger, Martin",
+        "mtime": 1771101202,
+        "doc_id": "f6041c1a815c83f1",
+        "bboxes": "[{\"page_num\": 423, \"coords\": [2.5999755859375, 34.05039978027344, 311.3975830078125, 469.0783996582031], \"blocks\": [[29.84002685546875, 34.05039978027344, 311.3852233886719, 43.8484001159668], [29.6300048828125, 45.08039855957031, 310.0058898925781, 54.87839889526367], [29.629989624023438, 55.84040832519531, 311.3975830078125, 65.6384048461914], [30.059967041015625, 66.73042297363281, 309.99810791015625, 76.5284194946289], [29.839950561523438, 77.56040954589844, 193.53335571289062, 87.35840606689453], [38.7099609375, 88.15040588378906, 309.7480773925781, 97.94840240478516], [29.18994140625, 99.35041809082031, 309.4062194824219, 109.1484146118164], [29.18994140625, 110.14042663574219, 309.4742431640625, 119.93842315673828], [28.979965209960938, 120.89042663574219, 307.7314453125, 130.6884307861328], [28.979949951171875, 131.7604217529297, 309.3909606933594, 141.5584259033203], [28.75994873046875, 142.7604217529297, 309.70989990234375, 152.5584259033203], [28.549942016601562, 153.67042541503906, 309.51629638671875, 163.66162109375], [28.759963989257812, 164.6004180908203, 309.820068359375, 174.39842224121094], [28.979949951171875, 175.33042907714844, 309.5352478027344, 185.12843322753906], [28.5499267578125, 186.5004425048828, 309.23223876953125, 196.29844665527344], [28.10992431640625, 197.4004364013672, 309.24072265625, 207.1984405517578], [28.109909057617188, 208.33042907714844, 309.34552001953125, 218.12843322753906], [28.549896240234375, 219.28042602539062, 309.58612060546875, 229.07843017578125], [28.10992431640625, 230.2404327392578, 174.7391357421875, 240.03843688964844], [37.189918518066406, 241.53042602539062, 309.073486328125, 251.32843017578125], [28.329940795898438, 252.40040588378906, 310.55511474609375, 262.1983947753906], [28.10992431640625, 263.46038818359375, 307.74505615234375, 273.2583923339844], [27.679946899414062, 274.2904052734375, 307.295654296875, 284.0884094238281], [2.5999755859375, 283.897705078125, 309.392333984375, 297.7152404785156], [27.679962158203125, 296.150390625, 307.2928161621094, 305.9483947753906], [27.679962158203125, 307.10040283203125, 309.22503662109375, 316.8984069824219], [27.4599609375, 318.0504150390625, 308.504150390625, 327.8484191894531], [27.99993896484375, 328.930419921875, 309.3255615234375, 338.7284240722656], [27.029937744140625, 339.85040283203125, 210.9690399169922, 349.6484069824219], [36.10993957519531, 350.86041259765625, 308.4405517578125, 360.6584167480469], [27.249923706054688, 361.60040283203125, 308.75811767578125, 371.3984069824219], [26.7899169921875, 372.4504089355469, 308.4075012207031, 382.4416198730469], [27.0299072265625, 383.3904113769531, 306.8942565917969, 393.18841552734375], [27.2999267578125, 394.2604064941406, 307.922119140625, 404.05841064453125], [26.819915771484375, 405.12042236328125, 309.47509765625, 414.9184265136719], [26.819915771484375, 416.0404052734375, 307.84991455078125, 425.8384094238281], [27.139923095703125, 426.86041259765625, 307.9814758300781, 436.6584167480469], [26.819931030273438, 437.7904052734375, 307.6653747558594, 447.5884094238281], [26.819931030273438, 448.5404052734375, 308.0643615722656, 458.3384094238281], [26.8199462890625, 459.2803955078125, 208.64035034179688, 469.0783996582031]]}, {\"page_num\": 424, \"coords\": [21.190017700195312, 9.452079772949219, 329.36676025390625, 316.8927917480469], \"blocks\": [[21.84000015258789, 9.452079772949219, 190.84820556640625, 20.96980094909668], [29.630020141601562, 23.112083435058594, 302.1023254394531, 33.56483459472656], [21.310028076171875, 34.184181213378906, 302.2279052734375, 43.68478012084961], [21.560012817382812, 45.044166564941406, 302.07781982421875, 54.54476547241211], [21.190017700195312, 55.26207733154297, 195.28282165527344, 65.71482849121094], [30.170013427734375, 66.87418365478516, 302.24810791015625, 76.3747787475586], [21.190032958984375, 77.63880157470703, 302.4944763183594, 87.54479217529297], [21.4100341796875, 88.27420806884766, 302.6976623535156, 97.7748031616211], [21.410064697265625, 99.41422271728516, 301.3203430175781, 108.9148178100586], [22.030059814453125, 110.33423614501953, 301.2587890625, 119.83483123779297], [21.840072631835938, 120.7342300415039, 302.9457702636719, 130.23483276367188], [21.630096435546875, 131.3213348388672, 304.34722900390625, 152.5648956298828], [21.840057373046875, 153.52423095703125, 302.6969299316406, 163.02484130859375], [21.840057373046875, 164.51422119140625, 303.2720947265625, 174.01483154296875], [22.060073852539062, 174.54580688476562, 193.13278198242188, 185.42710876464844], [30.920074462890625, 186.57421875, 303.58074951171875, 196.0748291015625], [22.06005859375, 197.17422485351562, 303.2744140625, 207.0262451171875], [21.7900390625, 208.47421264648438, 303.37335205078125, 217.97482299804688], [22.060012817382812, 219.42420959472656, 304.7648010253906, 228.92481994628906], [22.060012817382812, 230.4442138671875, 302.15313720703125, 239.94482421875], [22.490005493164062, 241.66421508789062, 304.1247863769531, 251.16482543945312], [21.899993896484375, 252.6741943359375, 303.87005615234375, 262.1748046875], [22.119979858398438, 262.86041259765625, 329.36676025390625, 275.2552185058594], [21.8399658203125, 273.9721374511719, 304.3310241699219, 284.42486572265625], [21.839935302734375, 285.544189453125, 304.3247375488281, 295.0447998046875], [21.62994384765625, 296.4542236328125, 304.33233642578125, 305.954833984375], [21.6299991607666, 307.1341857910156, 164.95510864257812, 316.8927917480469]]}]",
+        "cleaning_version": "clean_v1",
+        "collection": "rhetorical_ontology",
+        "is_notes": false,
+        "pdftotext_version": "24.02.0",
+        "chunk_index": 258,
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35"
+      },
+      "rank": 3
+    },
+    {
+      "raw_rank": 4,
+      "chunk_id": "f6041c1a815c83f1:00273",
+      "distance": 0.6089612245559692,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 434,
+      "page_end": 436,
+      "text": "resolved upon. In the existential analysis we cannot, in principle, discuss what Dasein factically resolves in any particular case. Our investigation excludes even the existential projection of the factical possibilities of existence. Nevertheless, we must ask whence, in general, Dasein can draw those possibilities upon which it factically projects itself. One's anticipa­ tory projection of oneself on that possibility of existence which is not to be outstripped-on death-guarantees only the totality and authenticity of one's resoluteness. But those possibilities of existence which have been factically disclosed are not to be gathered from death. And this is still less the case when one's anticipation of this possibility does not signify that one is speculating about it, but signifies precisely that one is coming back to one's factical \"there\". Will taking over the thrownness of the Self into its world perhaps disclose an horizon from which existence snatches its factical possibilities away ?1 Have we not said in addition that Dasein never comes back behind its thrownness ?vi Before we decide too quickly\n\n1 'Soil etwa die Obemahme der Geworfenheit des Selbst in seine Welt einen Horizont erschliesen, dem die Existenz ihre faktischen Moglichkeiten entreisst?'\n\nII. 5 Being and Time \n\nwhether Dasein draws it authentic possibilities of existence from thrown­\n\nness or not, we must assure ourselves that we have a full conception of\n\nthrownness as a basic attribute of care.\n\nAs thrown, Dasein has indeed been delivered over to itself and to its\n\npotentiality-for-Being, but as Being-in-the-world. As thrown, it has been\n\nsubmitted to a 'world', and exists factically with Others. Proximally and\n\nfor the most part the Self is lost in the \"they\". It understands itself in\n\nterms of those possibilities of existence which 'circulate' in the 'average'\n\npublic way of interpreting Dasein today. These possibilities have mostly\n\nbeen made unrecognizable by ambiguity; yet they are well known to us.\n\nThe authentic existentiell understanding is so far from extricating itself\n\nfrom the way of interpreting Dasein which has come down to us, that in\n\neach case it is in terms of this interpretation, against it, and yet again for\n\nit, that any possibility one has chosen is seized upon in one's resolution.\n\nThe resoluteness in which Dasein comes back to itself, discloses current\n\nfactical possibilities of authentic existing, and discloses them in terms of the heritage which that resoluteness, as thrown, takes over. In one's coming back\n\nresolutely to one's thrownness, there is hidden a handing down to oneself of\n\nthe possibilities that have come down to one, but not necessarily as having\n\nthus come down. 1 If everything 'good' is a heritage, and the character of\n\n'goodness' lies in making authentic existence possible, then the handing\n\ndown of a heritage constitutes itself in resoluteness. The more authentically Dasein resolves-and this means that in anticipating death it understands\n\nitself unambiguously in terms of its ownmost distinctive possibility-the\n\nmore unequivocally does it choose and find the possibility of its existence,\n\nand the less does it do so by accident. Only by the anticipation of death\n\nis every accidental and 'provisional' possibility driven out. Only Being-\n\nfree for death, gives Dasein its goal outright and pushes existence into\n\nits finitude. Once one has grasped the finitude of one's existence, it\n\nsnatches one back from the endless multiplicity of possibilities which offer\n\nthemselves as closest to one-those of comfortableness, shirking, and\n\ntaking things lightly-and brings Dasein into the simplicity of its fate [Schicksals]. This is how we designate Dasein's primordial historizing,\n\nwhich lies in authentic resoluteness and in which Dasein hands itself down to itself, free for death, in a possibility which it has inherited and\n\nyet has chosen. 1 'Die Entschlossenheit, in der das Dasein auf sich selbst zurickkommt, erschliest die jeweiligen faktischen Miiglichkeiten eigentlichen Existierens f!US dem Erbe, .das. sie  geworfene iibemimmt. Das entschlossene Zuriickkommen auf die Geworfenhe1t b1rgt em Sichuberliefem iiberkommener Miiglichkeiten in sich, obzwar nicht notwendig als iiberkommener.' The grammatical structure of both sentences is ambiguous. Notice also the counterpoint of the verbs 'zuriickkommen', 'iiberkommen', 'iiberliefem', 'iibemeh­ men,' which cot be reproduced in translation.\n\nBeing and Time",
+      "meta": {
+        "is_table": false,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "pdftotext_version": "24.02.0",
+        "source_method": "pymupdf+bbox",
+        "year": 1962,
+        "mtime": 1771101202,
+        "bboxes": "[{\"page_num\": 449, \"coords\": [-0.220001220703125, 22.634170532226562, 315.18475341796875, 471.0530090332031], \"blocks\": [[-0.220001220703125, 22.634170532226562, 315.18475341796875, 471.0530090332031]]}, {\"page_num\": 450, \"coords\": [32.22007751464844, 9.592094421386719, 317.7837219238281, 469.6350402832031], \"blocks\": [[32.4400634765625, 9.592094421386719, 317.5926818847656, 327.3834228515625], [32.22007751464844, 336.3357849121094, 317.7837219238281, 469.6350402832031]]}, {\"page_num\": 451, \"coords\": [27.68000030517578, 8.585790634155273, 308.434814453125, 25.11054229736328], \"blocks\": [[27.68000030517578, 8.585790634155273, 308.434814453125, 25.11054229736328]]}]",
+        "title_raw": "Being and Time",
+        "page_start": 434,
+        "page_end": 436,
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "is_my_copy": true,
+        "has_bboxes": true,
+        "chunk_index": 273,
+        "content_type": "text",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "clean_sha256": "c8672f9cb95016cbf31fd3a3b57bab7a9cca71dbc1c1d1e4ab9a0fc339016e23",
+        "doc_id": "f6041c1a815c83f1",
+        "qualifier": "My Copy",
+        "collection": "rhetorical_ontology",
+        "is_notes": false,
+        "is_clean_copy": false,
+        "author_raw": "Heidegger, Martin",
+        "cleaning_version": "clean_v1",
+        "is_image": false
+      },
+      "rank": 4
+    },
+    {
+      "raw_rank": 5,
+      "chunk_id": "f6041c1a815c83f1:00083",
+      "distance": 0.6200098395347595,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 141,
+      "page_end": 141,
+      "text": "which is long 'Objectively' can be much shorter than one which is\n\n'Objectively' shorter still but which is perhaps 'hard going' and comes\n\nI. 3 Being and Time \n\nbefore us1 as interminably long. ret on?;! in thus 'coming before us' 1 is the cu\"ent world authenticalry ready-to-hand. The Objective distances of Things\n\npresent-at-hand do not coincide with the remoteness and closeness of\n\nwhat is ready-to-hand within-the-world. Though we may know these\n\ndistances exactly, this knowledge still remains blind ; it does not have the\n\nfunction of discovering the environment circumspectively and bringing it\n\nclose ; this knowledge is used only in and for a concernful Being which\n\ndoes not measure stretches-a Being towards the world that 'matters' to\n\none [ . . • Sein zu der einen \"angehenden\" Welt].\n\nWhen one is oriented beforehand towards 'Nature' and 'Objectively'\n\nmeasured distances of Things, one is inclined to pass off such estimates\n\nand interpretations of deseverance as 'subjective'. Yet this 'subjectivity'\n\nperhaps uncovers the 'Reality' of the world at its most Real ; it has nothing\n\nto do with 'subjective' arbitrariness or subjectivistic 'ways of taking' an\n\nentity which 'in itself' is otherwise. The circumspective de-severing of Dasein' s everydayness reveals the Being-in-itself of the 'true world'-of that entity which Dasein, as something existing, is already alongside. 2\n\nWhen one is primarily and even exclusively oriented towards remote-\n\nnesses as measured distances, the primordial spatiality of Being-in is\n\nconcealed. That which is presumably 'closest' is by no means that which I07 is at the smallest distance 'from us'. It lies in that which is desevered to an\n\naverage extent when we reach for it, grasp it, or look at it. Because Dasein\n\nis essentially spatial in the way of de-severance, its dealings always keep\n\nwithin an 'environment' which is desevered from it with a certain leeway\n\n[Spielraum] ; accordingly our seeing and hearing always go proximally\n\nbeyond what is distantially 'closest'. Seeing and hearing are distance-\n\nsenses [Fernsinne] not because they are far-reaching, but because it is in\n\nthem that Dasein as deseverant mainly dwells. When, for instance, a man\n\nwears a pair of spectacles which are so close to him distantially that they\n\nare 'sitting on his nose', they are environmentally more remote from hiin\n\nthan the picture on the opposite wall. Such equipment has so little\n\ncloseness that often it is proximally quite impossible to find. Equipment\n\nfor seeing-and likewise for hearing, such as the telephone receiver-has\n\nwhat we have designated as the inconspicuousness of the proximally ready­\n\nto-hand. So too, for instance, does the street, as equipment for walking.\n\nOne feels the touch of it at every step as one walks ; it is seemingly the\n\n· closest and Realest of all that is ready-to-hand, and it slides itself, as it\n\n1 'vorkommt' ; ' \"Vorkommen\" '. In general 'vorkommen' may be translated as \n'occur', and is to be thought of as applicable strictly to the present-at-hand. In this pasage, however, it is applied to the ready-to-hand; and a translation which calls attention to its etymological structure seeilll to be called for.\n\nII 'Das wnsichtige Ent-fernen tkr Alltiiglichkeit rks Daseins enttkckt das An-sich-sein tkr \"wahrm Welt\", des Seientkn, bei dem Dasein als existief'mtks je schon ist.'\n\nBeing and Time",
+      "meta": {
+        "title_raw": "Being and Time",
+        "pdftotext_version": "24.02.0",
+        "is_notes": false,
+        "is_my_copy": true,
+        "is_clean_copy": false,
+        "content_type": "text",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "clean_sha256": "9e5ea52ce0a41c1132cecec6b8b9e7b67d23ce92cbe6eb5b5bb02427785cc13a",
+        "bboxes": "[{\"page_num\": 147, \"coords\": [3.8997802734375, 151.92202758789062, 311.244140625, 468.31829833984375], \"blocks\": [[25.949859619140625, 151.92202758789062, 311.0318298339844, 370.0220031738281], [3.8997802734375, 369.6920166015625, 311.244140625, 434.9020080566406], [26.819793701171875, 436.9908447265625, 310.2417907714844, 468.31829833984375]]}, {\"page_num\": 148, \"coords\": [20.759994506835938, 10.391191482543945, 329.34954833984375, 469.3121032714844], \"blocks\": [[133.83999633789062, 10.391191482543945, 192.54959106445312, 19.97159194946289], [20.759994506835938, 22.36200523376465, 329.34954833984375, 446.6620788574219], [21.84014892578125, 452.2073059082031, 303.042236328125, 469.3121032714844]]}, {\"page_num\": 149, \"coords\": [15.1400146484375, 9.928579330444336, 299.0321960449219, 246.39712524414062], \"blocks\": [[127.13999938964844, 9.928579330444336, 185.74160766601562, 19.902530670166016], [15.1400146484375, 25.24988555908203, 297.1914367675781, 36.36658477783203], [15.360015869140625, 36.229896545410156, 295.630126953125, 47.31169509887695], [15.360015869140625, 47.039894104003906, 297.6334228515625, 58.1216926574707], [15.1400146484375, 57.859901428222656, 297.339111328125, 68.94170379638672], [15.57000732421875, 68.6698989868164, 297.3927917480469, 79.75170135498047], [15.8599853515625, 79.51990509033203, 297.3729248046875, 90.6017074584961], [15.789947509765625, 90.27991485595703, 297.6460266113281, 101.3617172241211], [15.99993896484375, 101.14990997314453, 297.5361633300781, 112.2317123413086], [15.999923706054688, 112.03992462158203, 270.7076110839844, 123.15662384033203], [25.2999267578125, 122.64990997314453, 297.58349609375, 133.73170471191406], [15.99993896484375, 133.44989013671875, 298.18023681640625, 144.5316925048828], [15.99993896484375, 144.29989624023438, 299.0321960449219, 155.38169860839844], [16.21990966796875, 155.23989868164062, 297.7577819824219, 166.3217010498047], [16.439910888671875, 166.0299072265625, 296.5028076171875, 177.11170959472656], [16.439895629882812, 176.94992065429688, 298.0134582519531, 188.03172302246094], [16.219879150390625, 187.84991455078125, 297.919189453125, 199.18711853027344], [16.21990966796875, 198.70989990234375, 296.71881103515625, 209.9539031982422], [16.439910888671875, 209.64990234375, 71.85491180419922, 220.73170471191406], [15.999908447265625, 221.5108642578125, 298.19921875, 246.39712524414062]]}, {\"page_num\": 150, \"coords\": [40.44000244140625, 68.98818969726562, 283.3253173828125, 89.9419937133789], \"blocks\": [[40.44000244140625, 68.98818969726562, 283.3253173828125, 89.9419937133789]]}]",
+        "is_image": false,
+        "source_method": "pymupdf+bbox",
+        "has_bboxes": true,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "author_raw": "Heidegger, Martin",
+        "is_table": false,
+        "page_end": 141,
+        "mtime": 1771101202,
+        "chunk_index": 83,
+        "doc_id": "f6041c1a815c83f1",
+        "cleaning_version": "clean_v1",
+        "collection": "rhetorical_ontology",
+        "year": 1962,
+        "page_start": 141,
+        "qualifier": "My Copy",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35"
+      },
+      "rank": 5
+    },
+    {
+      "raw_rank": 6,
+      "chunk_id": "f6041c1a815c83f1:00312",
+      "distance": 0.6202446818351746,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 494,
+      "page_end": 494,
+      "text": "Being and Time vm. (H. 201) Cf. H. 8g ff. and H. 100. ix. (H. 203) Cf. Kant, Critique of Pure Reason,2 pp. 274 ff., and further the corrections added in the preface to the second edition, p. xxix, note : see also 'On the Paralogisms of the Pure Reason', ibid., pp. 3gg ff., especially p. 412. x. (H. 203) Ibid., Preface, note. xi. (H. 203) Ibid., p. 275· xii. (H. 203) Ibid., p. 275· xiii. (H. 204) Ibid., p. 275· xiv. (H. 205) Ibid., Preface, note. xv. (H. 205) Cf. W. Dilthey, 'Beitriige zur L&ung der Frage vom Ursprung unseres Glaubens an die Realitiit der Aussenwelt und seinem Recht' (18go), Gesammelte Schriften, Vol. V, 1, pp. go ff. At the very beginning of this article Dilthey says in no uncertain terms: 'For if there is to be a truth which is universally valid for man, then in accordance with the method first proposed by Descartes, thought must make its way from the facts of consciousness rather than from external actuality.' (Ibid., p. go.) xvi. (H. 208) Following Scheler's procedure, Nicolai Hartmann has recently based his ontologically oriented epistemology upon the thesis that knowing is a 'relationship of Being'. Cf. his Grundziige einer Metaphysik der Erkenntnis, second enlarged edition, 1g25. Both Scheler and Hartman, however, in spite of all the differences in the phenomeno­ logical bases from which they start, fail to recognize that in its traditional basic orienta­ tion as regards Dasein, 'ontology' has been a failure, and that the very 'relationship of Being' which knowing includes (see above, H. 59 ff.), compels such 'ontology' to be revised in its principles, not just critically corrected. Because Hartmann underestimates the unexpressed consequences of positing a relationship-of-Being without providing an ontological clarification for it, he is forced into a 'critical realism' which is at bottom quite foreign to the level of the problematic he has expounded. On Hartman's way of taking ontology, cf. his 'Wie ist kritische Ontologie iiberhaupt moglich ?', Festschrift fiir Paul Natorp, 1g24, pp. 124 ff. xvii. (H. 2og) Cf. especially Section 16, H. 72 ff. ('How the Worldly Character of the Environment Announces itself in Entities Within-the-world'); Section 181 H. 83 ff. ('Involvement and Significance; the Worldhood of the World') ; Section 2g, H. 1 34 ff. ('Dasein as State-of-Mind'). On the Being-in-itself of entities within-the-world, cf. H. 75 f. xvii. (H. 209) Dilthey, op. cit., p. 134· xix. (H. 210) cr. Scheler's lecture, 'Die Formen des Wissens und die Bildung', 1g25, notes 24 and 25. In reading our proofs we notice that in the collection of Scheler's treatises which has just appeared (Die Wissensformen und die Gesellschaft, 1g26) he has published his long-promised study 'Erkenntnis und Arbeit' (pp. 233 ff.). Division VI of this treatise (p. 455) brings a more detailed exposition of his 'voluntative theory of Dasein', in connection with an evaluation and critique of Dilthey. xx. (H. 212) Diels, Fragment 5· (This pasage may be translated in more than one way: \ne.g., 'for thought and being are the same thing' (Fairbanks} ; 'it is the same thing that can be thought and that can be' (Burnet).-Tr.] xxi. (H. 212) Aristotle, Metaphysica A. xxii. (H. 213) Ibid., A, g8¥ 18 ff. [' . . . the very fact showed them the way and joined in forcing them to investigate the subject.' (Ros)-Tr.] xxiii. (H. 2 13) Ibid., A, g86b 3 1 . xxiv. (H. 213) Ibid., A, g84b 10. xxv. (H. 213) Ibid., A, g83b 2. cr. g88a 20. xxvi. (H. 213) Ibid., a!, gg3b 1 7. xxvii. (H. 213) Ibid., al, 993b 20. xxviii. (H. 213) Ibid., T 1, 1003a 21. xxix. (H. 214) Aristotle, De interpretationǓ 1, 16a. 6. [This is not an exact quotation.-Tr.] xx. (H. 214) Cf. Thomas Aquinas, Quaestiones disputatae de veritate, qu. 1, art. 1. xxi. (H. 215) Kant, Critique of Pure Reason,2 p. 82. xxi. (H. 2 15) Ibid., p. 83. [Two trivial misprints in this quotation which appear in the earlier editions have been corrected in the later editions.-Tr.] xxiii. (H. 215) Ibid., p. 350. [Another trivial misprint has been corrected in the later editions.-Tr.] xxiv. (H. 2 18) On the idea of demonstration as 'identification' cf. Husser!, Logische Untersuchungen,2 vol. II, part 2, Untersuchung VI. On 'evidence and truth' see ibid., Sections 36-3g, pp. 1 1 5 ff. The usual presentations of the phenomenological theory\n\nBeing and Time",
+      "meta": {
+        "page_end": 494,
+        "pdftotext_version": "24.02.0",
+        "page_start": 494,
+        "year": 1962,
+        "bboxes": "[{\"page_num\": 508, \"coords\": [24.228670120239258, 210.008056640625, 306.5830078125, 474.83673095703125], \"blocks\": [[169.26300048828125, 294.68621826171875, 306.5830078125, 409.04449462890625], [24.393598556518555, 210.008056640625, 161.70530700683594, 423.2038269042969], [169.308349609375, 424.0882263183594, 306.3291931152344, 473.28955078125], [24.228670120239258, 423.807373046875, 159.94256591796875, 474.83673095703125]]}, {\"page_num\": 509, \"coords\": [23.78997039794922, 9.832084655761719, 308.4379577636719, 474.5272216796875], \"blocks\": [[24.8700008392334, 9.832084655761719, 194.67384338378906, 21.902530670166016], [169.29995727539062, 24.972576141357422, 308.4379577636719, 116.24433898925781], [169.5199737548828, 127.68260192871094, 308.3523864746094, 442.0067138671875], [23.78997039794922, 24.923791885375977, 161.9827117919922, 473.6368103027344], [187.02984619140625, 439.5158996582031, 308.3795166015625, 474.5272216796875]]}, {\"page_num\": 510, \"coords\": [110.70999908447266, 10.358602523803711, 308.44622802734375, 22.77080726623535], \"blocks\": [[110.70999908447266, 10.358602523803711, 308.44622802734375, 22.77080726623535]]}]",
+        "author_raw": "Heidegger, Martin",
+        "doc_id": "f6041c1a815c83f1",
+        "content_type": "text",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "qualifier": "My Copy",
+        "chunk_index": 312,
+        "clean_sha256": "29033a435eb4e77d29c37e5abb6b57389d9d262c8f3aa1d5db22821053053240",
+        "is_my_copy": true,
+        "is_notes": false,
+        "has_bboxes": true,
+        "mtime": 1771101202,
+        "title_raw": "Being and Time",
+        "source_method": "pymupdf+bbox",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "cleaning_version": "clean_v1",
+        "is_image": false,
+        "is_table": false,
+        "is_clean_copy": false,
+        "collection": "rhetorical_ontology",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35"
+      },
+      "rank": 6
+    },
+    {
+      "raw_rank": 7,
+      "chunk_id": "f6041c1a815c83f1:00362",
+      "distance": 0.6401206254959106,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 565,
+      "page_end": 566,
+      "text": "tsaid-in-the-talk : *das Geredete H. I62, I64, I68, 272f sake (See 'for-the-sake-of-which'.) say: sagen; etc. (rif. H. I6g} saying and discourse: H. 32, I62, I64f s. and keeping silent: H. I65 s. and speaking: H. I 6o s. and understanding: H. I68f, I 73 s. without audible or explicit utterance: H. 406, 408, 4I6, 422 \n'what conscience says' : H. 269, 280 saying \"1\" : H. 318f, 32I-323 saying \"now\", etc. : H. 406, 408, 4I6, 418, 42 If (Note: 'sagen' and its compounds have been translated informally in many other ways, and the verb 'say' has been used no less informally in translating other expressions.)\n\ns. of Nature: H. 404 (Note: see also 'natural science'.) s. of phenomena : H. 3 I s. of the present-at-hand: H. 324 s. of the psychical: H. 398 s. of the ready-to-hand : H. 36I s. of the truth : H. 2I3 s. of man, society, and the state: H. factical s. : H. 392f factual s.: H. 362 humane sciences (Note: see entry above.) natural science (Note: see entry under 'Nature'.) theoretical science: H. 358 existential genesis of s. : H. 17 I' 358 existential conception of s. : H. 357 logical conception of s. : H. 357 Objectivity of science : H. 395 theory of science : H. 45, 375f, 398, 40I ethics as a science: H. 402 ( Torck) scientific attitude (or behaviour): H. 358, 361 scientific projection: H. 363 See also H. 45, 138, 153, 4oo,etpassim\n\nIndex of English Expressions\n\nseize upon: ergreifen (Note: the following list includes the chief passages in which 'ergreifen' has been translated as 'seize upon', \n'take hold of', or 'grasp'.) \n'ergreifen' of possibilities or potential­ ities: H. 20, 38, 86, 144, 153, 195· 268, 299· 302, 342, 344. 347· 383, 369f . , . of one's own Dasein: H. 1 22, 188 . . . of the Self: H. 129 . . . of the disclosedness of Being-inthe-world : H. 146 . . . ofBeing-with: H. 162 . . . of everydayness: H. 179 . . . ofbeing guilty: H. 291 . . . of the finitude of one's existence: \nH. 384 . . . of something not specified: H. 12, 126, 273. 326 . . . of an entity as something to be concerned with: H. 194 . . . of everything: H. 173 . . . of a tradition: H. 20f . . . of the problem of existence: H. 235 n. i . . . of historiology as a science : H. . . . of phenomenology: H. 38 . . . of the \"for-the-sake-of-which\" : \n. H. 193 Self: *Selbst (ftn. H. 1 14, 303, 375.) (See also our entry for 'Selbst' in the Glossary.) (df. H. 1 1 7, 267, 273, 284, 303, 303, 318, 323, 332) Self as a way of Dasein's Being: H. 1 17 existentiality of the S. : H. 267, 318, S. as the \"who\" of Dasein: H. 1 14, S. of everyday Dasein : H. 1291 193, 252, 273 (See also they-self.) S. as a constitutive item in Being-in­ the-world : H. 190, 200, 220, 273, 297 (Cf H. 146.) S. as authentic or inauthentic: H. 129f, 181, 317, 332, 433 (Hegel} Dasein's own or ownmost Self: H. 129, 253, 268, 271, 273, 28o, 288, 295· 339 Being-one's-Self (Se1 entry for this expression above.)\n\ntscribbling: *Geschreibe H. 169 see: sehen; sichtbar; etc. (Jtn. H. 69, 171) (df. H. 147, \n346) seeing Being-in-the-world: H. 58 seeing colours: H. 33 seeing entities in their Being: H. 45 seeing everything: H. 177 seeing Experiences : H. 1 19 seeing the hammer : H. 155 seeing 'ideas' : H. 226 seeing possibilities : H. 148 seeing the ready-tq-hand : H. 149 seeing the Things which are closest: \nH. 149 seeing something wrongly: H. 281 seeing the 'world' merely as it looks: \nH. 172 seeing in which one 'merely' under­ stands: H. 149 seeing as a distance-sense: H. 1 07 \n'seeing' as made possible by cleared­ ness : H. 351 \n'seeing' as determined by the \"they\" : \nH. 170, 126f seeing and curiosity : H. 170-173 (Section 36), 346-348 the care for seeing: H. 171 the desire to see: H. 170 the priority of 'seeing' : H. 358 the mutual sharing which sees : H. St. Augustine on seeing: H. 171 see in advance (See fore-sight.) let be seen (See entry for this expression above.) (See also H. 35 r, et passim. The verb \n'see' has been used informally in translating several expressions. The above list includes only passages in which some form of the verb \n'sehen' occurs, and is confined to those which are of some philosophical interest.) seek: such en (search; try; etc.) ; wollen (want; will; insist; etc.) seem: *scheinen, scheinbar (semblant, H. 29) ; Schein (H. 176) ; etc. But cf. seem strange (befremden, fremdartig anmuten) (fin. H. 29) (df H. 29) seize hold of: *zugreifen, *Zugriff\n\nBeing and Time",
+      "meta": {
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "source_method": "pymupdf+bbox",
+        "pdftotext_version": "24.02.0",
+        "author_raw": "Heidegger, Martin",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "doc_id": "f6041c1a815c83f1",
+        "chunk_index": 362,
+        "collection": "rhetorical_ontology",
+        "page_end": 566,
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "is_clean_copy": false,
+        "qualifier": "My Copy",
+        "bboxes": "[{\"page_num\": 582, \"coords\": [24.638412475585938, 24.290685653686523, 162.25857543945312, 475.9706115722656], \"blocks\": [[24.638412475585938, 24.290685653686523, 162.25857543945312, 475.9706115722656]]}, {\"page_num\": 583, \"coords\": [23.572731018066406, 9.936140060424805, 309.13250732421875, 474.66473388671875], \"blocks\": [[135.51502990722656, 9.936140060424805, 193.34417724609375, 19.915836334228516], [176.7600555419922, 24.025129318237305, 309.13250732421875, 474.651611328125], [23.572731018066406, 24.374921798706055, 165.57080078125, 474.66473388671875]]}, {\"page_num\": 584, \"coords\": [113.94999694824219, 9.899259567260742, 214.42359924316406, 20.81253433227539], \"blocks\": [[113.94999694824219, 9.899259567260742, 214.42359924316406, 20.81253433227539]]}]",
+        "has_bboxes": true,
+        "is_my_copy": true,
+        "page_start": 565,
+        "clean_sha256": "ce6518557acd38014987fef656a8efdb5f7d191b3ec899e0ec66d7bb96ea39e3",
+        "is_image": false,
+        "title_raw": "Being and Time",
+        "mtime": 1771101202,
+        "is_notes": false,
+        "content_type": "text",
+        "is_table": false,
+        "year": 1962,
+        "cleaning_version": "clean_v1"
+      },
+      "rank": 7
+    },
+    {
+      "raw_rank": 9,
+      "chunk_id": "f6041c1a815c83f1:00115",
+      "distance": 0.6433066725730896,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 191,
+      "page_end": 191,
+      "text": "Being and Time I. s That which is understood gets Articulated when the entity to be under­ stood is brought close interpretatively by taking as our clue the 'some­ thing as something' ; and this Articulation lies before [liegt vor] our making any thematic assertion about it. In such an assertion the 'as' does not turn up for the first time ; it just gets expressed for the first time, and this is possible only in that it lies before us as something expressible.1 The fact that when we look at something, the explicitness of assertion can be absent, does not justify our denying that there is any Articulative interpretation in such mere seeing, and hence that there is any as-structure in it. When we have to do with anything, the mere seeing of the Things which are closest to us bears in itself the structure of interpretation, and in so primor­ dial a manner that just to grasp something free, as it were, of the \"as\", requires a certain readjustment. When we merely stare at something, our just-having-it-before-us lies before us as a failure to understand it any more. This grasping which is free of the \"as\", is a privation ofthe kind of seeing in which one merelJ understands. It is not more primordial than that kind of seeing, but is derived from it. If the 'as' is ontically unexpressed, this must not seduce us into overlooking it as a constitutive state for under­ standing, existential and a priori. But if we never perceive equipment that is ready-to-hand without already understanding and interpreting it, and if such perception lets us I 50 circumspectively encounter something as something, does this not mean that in the first instance we have experienced something purely present­ at-hand, and then taken it as a door, as a house ? This would be a misunderstanding of the specific way in which interpretation functions as disclosure. In interpreting, we do not, so to speak, throw a 'signification' over some naked thing which is present-at-hand, we do not stick a value on it; but when something within-the-world is encountered as such, the\n\n1 ' • . . was allein so moglich ist, dass es als Aussprechbares vor-Iiegt.' Here we follow the reading of the earlier editions. The hyphen in 'vor-liegt' comes at the end of the line in the later editions, but is undoubtedly meant to suggest (like the italicization of the 'vor' in the previous sentence) that this verb is to be interpreted with unusual literalness. This paragraph is noteworthy for an exploitation of the prefix 'aus' ('out'), which fails to Ƥhow up in our translation. Literally an 'Aussage' ('assertion') is something which is \n'srud out' ; an 'Auslegung' ('interpretation'} is a 'laying-out' ; that which is 'ausdriicklich' ('explicit') is something that has been 'pressed out' ; that which is 'aussprechbar' (our \n'expressible') is something that can be 'spoken out'. The verbs 'ausdriicken' and 'aussprechen' are roughly synonymous; but 'aussprechen' often has the more specific connotations of 'pronunciation', 'pronouncing oneself', 'speak­ ing one's mind', 'finishing what one has to say', etc. While it would be possible to reserve \n'express' for 'ausdricken' and translate 'aussprechen' by some such phrase as 'speak out', it is more convenient to use 'express' for both verbs, especially since 'aussprechen' and its derivatives have occurred very seldom before the present chapter, in which 'ausdriicken' rarely appears. On the other hand, we can easily distinguish between the more frequent \n'ausdriicklich' and 'ausgesprochen' by translating the latter as 'expressed' or 'expressly', and reserving 'explicit' for both 'ausdriicklich' and 'explizit'.\n\nBeing and Time",
+      "meta": {
+        "is_image": false,
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "is_clean_copy": false,
+        "content_type": "text",
+        "pdftotext_version": "24.02.0",
+        "year": 1962,
+        "source_method": "pymupdf+bbox",
+        "clean_sha256": "58da47cfab5aa492e97618dc95a78e5c12c83f8fdfc43ba83d55185419528af3",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "qualifier": "My Copy",
+        "cleaning_version": "clean_v1",
+        "is_notes": false,
+        "author_raw": "Heidegger, Martin",
+        "title_raw": "Being and Time",
+        "is_table": false,
+        "bboxes": "[{\"page_num\": 197, \"coords\": [4.330078125, 296.0543212890625, 309.6891784667969, 468.4828796386719], \"blocks\": [[26.14007568359375, 296.0543212890625, 308.1793212890625, 305.67291259765625], [27.03009033203125, 307.0343017578125, 308.9283752441406, 316.92340087890625], [27.03009033203125, 317.92431640625, 308.2450866699219, 327.54290771484375], [27.03009033203125, 328.7843017578125, 306.87091064453125, 338.40289306640625], [27.4600830078125, 339.87432861328125, 308.3038635253906, 349.492919921875], [27.030075073242188, 350.46429443359375, 186.34918212890625, 360.0828857421875], [36.76007080078125, 361.5285949707031, 308.41790771484375, 371.5025329589844], [27.680084228515625, 370.4832763671875, 309.16217041015625, 384.5105285644531], [27.6800537109375, 383.1943054199219, 308.9113464355469, 392.8128967285156], [27.680084228515625, 394.0443115234375, 308.9100341796875, 403.66290283203125], [27.900054931640625, 404.620849609375, 309.16656494140625, 414.54290771484375], [27.900054931640625, 415.654296875, 309.1573181152344, 425.27288818359375], [28.490081787109375, 426.48431396484375, 309.1579284667969, 436.1029052734375], [27.90008544921875, 436.8518981933594, 309.6891784667969, 446.90289306640625], [4.330078125, 448.09429931640625, 309.35400390625, 459.5238952636719], [28.330078125, 458.8642883300781, 308.8988037109375, 468.4828796386719]]}, {\"page_num\": 198, \"coords\": [33.95001220703125, 10.138601303100586, 318.0885314941406, 469.8183288574219], \"blocks\": [[33.95001220703125, 10.138601303100586, 317.08721923828125, 196.1127471923828], [34.38006591796875, 197.1543426513672, 318.0885314941406, 414.4859313964844], [42.17010498046875, 421.77130126953125, 246.35751342773438, 430.1067199707031], [34.17010498046875, 429.4407653808594, 318.0789794921875, 453.5807189941406], [34.380126953125, 453.05078125, 316.39422607421875, 469.8183288574219]]}, {\"page_num\": 199, \"coords\": [28.979999542236328, 10.048604965209961, 197.02894592285156, 22.50223159790039], \"blocks\": [[28.979999542236328, 10.048604965209961, 197.02894592285156, 22.50223159790039]]}]",
+        "is_my_copy": true,
+        "page_start": 191,
+        "collection": "rhetorical_ontology",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "page_end": 191,
+        "chunk_index": 115,
+        "has_bboxes": true,
+        "doc_id": "f6041c1a815c83f1",
+        "mtime": 1771101202
+      },
+      "rank": 8
+    }
+  ]
+}
+[god-learn] $ python3 scripts/retrieval/verify_phase4.py Dasein and being-in-the-world
+[PHASE4_VERIFY_OK]
+- query='Dasein and being-in-the-world'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[god-learn] $ bash scripts/highlights/phase5check.sh
+
+--- AUDIT REPORT ---
+root: /home/dalton/projects/claudeflow-testing/corpus
+manifest: /home/dalton/projects/claudeflow-testing/scripts/ingest/manifest.jsonl
+total_pdfs: 50
+
+[PHASE2_COMPLETE] (50)
+  - dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf :: phase=2 ok
+  - dissertation/in_progress/rhetorical phantasia test.pdf :: phase=2 ok
+  - metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf :: phase=2 ok
+  - metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf :: phase=2 ok
+  - metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf :: phase=2 ok
+  - new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf :: phase=2 ok
+
+[OK] dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf
+[OK] dissertation/in_progress/rhetorical phantasia test.pdf
+[OK] metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf
+[OK] metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf
+[OK] metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf
+[OK] metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf
+[OK] metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf
+[OK] metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf
+[OK] metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf
+[OK] metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf
+[OK] new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf
+[OK] new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf
+[OK] rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf
+[OK] rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf
+
+--- VERIFY REPORT (OK) ---
+OK=50 FAIL=0 TOTAL=50
+[PHASE4_VERIFY_OK]
+- query='phantasia and action'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[OK] Wrote:
+  /tmp/no_hl.txt
+  /tmp/with_hl.txt
+Diff (first 120 lines):
+--- /tmp/no_hl.txt	2026-03-26 22:31:22.111685011 -0700
++++ /tmp/with_hl.txt	2026-03-26 22:31:23.424155093 -0700
+@@ -6,51 +6,51 @@
+ 
+ [RESULTS]
+ 
+-01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  (raw_rank=1)
++01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  final_score=0.7484066486358643  hl_count=0  boost=0.0000  (raw_rank=1)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=303-305
+ 
+-02. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  (raw_rank=2)
++02. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  final_score=0.8132696557044983  hl_count=1  boost=0.0200  (raw_rank=4)
++    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
++    pages=22-24
++
++03. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  final_score=0.8133007287979126  hl_count=0  boost=0.0000  (raw_rank=2)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+     pages=167-169
+ 
+-03. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  (raw_rank=3)
++04. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  final_score=0.8137480616569519  hl_count=0  boost=0.0000  (raw_rank=3)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=279-281
+ 
+-04. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  (raw_rank=4)
+-    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+-    pages=22-24
+-
+-05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  (raw_rank=6)
++05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  final_score=0.851164698600769  hl_count=0  boost=0.0000  (raw_rank=6)
+     path_rel=rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+     pages=292-292
+ 
+-06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  (raw_rank=7)
++06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  final_score=0.8536148071289062  hl_count=0  boost=0.0000  (raw_rank=7)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=294-294
+ 
+-07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  (raw_rank=8)
++07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  final_score=0.864859938621521  hl_count=0  boost=0.0000  (raw_rank=8)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+     pages=18-18
+ 
+-08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  (raw_rank=9)
++08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  final_score=0.8705873489379883  hl_count=0  boost=0.0000  (raw_rank=9)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+     pages=215-215
+ 
+-09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  (raw_rank=10)
++09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  final_score=0.8722628355026245  hl_count=0  boost=0.0000  (raw_rank=10)
+     path_rel=rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+     pages=13-14
+ 
+-10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  (raw_rank=11)
++10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  final_score=0.8786800503730774  hl_count=0  boost=0.0000  (raw_rank=11)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=162-164
+ 
+-11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  (raw_rank=12)
++11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  final_score=0.8806346654891968  hl_count=0  boost=0.0000  (raw_rank=12)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=24-26
+ 
+-12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  (raw_rank=13)
++12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  final_score=0.8811410665512085  hl_count=0  boost=0.0000  (raw_rank=13)
+     path_rel=rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+     pages=252-254
+ 
+[god-learn] $ python3 scripts/learn/promote_hits.py --hits_json /tmp/phase4_hits.json --query Dasein and being-in-the-world
+22:31:24 [INFO    ] god-learn.phase6.promote: Starting promotion [hits_json=/tmp/phase4_hits.json, query=Dasein and being-in-the-world, min_chars=40, max_units=0, dry_run=False]
+22:31:24 [INFO    ] god-learn.phase6.promote: Promotion complete [promoted=8, total_indexed=39, knowledge_file=god-learn/knowledge.jsonl, index_file=god-learn/index.json]
+[Phase6:promote_hits] promoted=8 total_indexed=39
+[Phase6:promote_hits] wrote: god-learn/knowledge.jsonl
+[Phase6:promote_hits] index: god-learn/index.json
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 4
+[god-learn] normalize: sorted 39 KUs and rebuilt index (39 offsets)
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 4

@@ -1,0 +1,87 @@
+{
+  "generated_at": "2026-03-18T17:07:45.129346+00:00",
+  "updated_at": "2026-03-18T21:00:00.000000+00:00",
+  "summary": {
+    "total_edges": 824,
+    "contradictions": 0,
+    "potential_contradictions": 2,
+    "stale_uncorroborated": 0,
+    "orphaned": 663
+  },
+  "contradictions": [
+    {
+      "edge_a": {
+        "id": "edge_7d2bdcc991c8",
+        "source": "phantasia",
+        "relation": "contrasts_with",
+        "target": "aisthesis",
+        "confidence": "high",
+        "pipeline": "phantasia"
+      },
+      "edge_b": {
+        "id": "edge_77d7ec0316ea",
+        "source": "phantasia",
+        "relation": "depends_on",
+        "target": "aisthesis",
+        "confidence": "high",
+        "pipeline": "aristotle"
+      },
+      "type": "potential_contradiction",
+      "note": "Same source/target with depends_on AND contrasts_with",
+      "resolution": "LEGITIMATE — Aristotle (DA III.3) distinguishes phantasia FROM aisthesis as categorically distinct faculties (contrasts_with), but phantasia cannot function without prior sense-perception and depends causally on it (depends_on). The contrast is taxonomic; the dependency is causal. Both edges are textually grounded and philosophically correct."
+    },
+    {
+      "edge_a": {
+        "id": "edge_84fe338f4269",
+        "source": "Apophantical-As",
+        "relation": "contrasts_with",
+        "target": "Hermeneutical-As",
+        "confidence": "high",
+        "pipeline": "bt"
+      },
+      "edge_b": {
+        "id": "edge_5c788906119e",
+        "source": "Apophantical-As",
+        "relation": "depends_on",
+        "target": "Hermeneutical-As",
+        "confidence": "high",
+        "pipeline": "bt"
+      },
+      "type": "potential_contradiction",
+      "note": "Same source/target with depends_on AND contrasts_with",
+      "resolution": "LEGITIMATE — Heidegger (B&T S33) argues the Apophantical-As is a derivative, narrowed form of the Hermeneutical-As. It contrasts with it in scope (theoretical predication vs. pre-theoretical understanding) but depends on it as its condition of possibility (the apophantical is derived from the hermeneutical). Both edges are textually grounded and philosophically correct."
+    }
+  ],
+  "resolved_contradictions": [
+    {
+      "edge_removed": {
+        "id": "edge_b2e675a1e231",
+        "source": "resonant_motion",
+        "relation": "contrasts_with",
+        "target": "resonant_affect",
+        "confidence": "high",
+        "pipeline": "phantasia"
+      },
+      "edge_kept": {
+        "id": "edge_43fbef5e33d6",
+        "source": "resonant_motion",
+        "relation": "supports",
+        "target": "resonant_affect",
+        "confidence": "medium",
+        "pipeline": "phantasia"
+      },
+      "type": "resolved_contradiction",
+      "resolution": "REMOVED edge_b2e675a1e231 — resonant_motion and resonant_affect are both products of antichesis (the dual-trace mechanism) and are complementary aspects of the same phenomenon. Motion and affect arise together. The supports relation (medium confidence) is correct; the contrasts_with relation (high confidence) was incorrect.",
+      "resolved_at": "2026-03-18T21:00:00.000000+00:00"
+    }
+  ],
+  "stale": [],
+  "orphaned_count": 663,
+  "review_decisions": {
+    "contradiction_resonant_motion_affect": "RESOLVED — removed edge_b2e675a1e231 (contrasts_with). resonant_motion and resonant_affect are co-constituted via antichesis; supports is the correct relation.",
+    "potential_phantasia_aisthesis": "KEEP — DA III.3: causal dependency + categorical contrast are both textually grounded. Not a real contradiction.",
+    "potential_apophantical_hermeneutical": "KEEP — B&T S33: derivative dependence + leveling-down contrast. Not a real contradiction.",
+    "stale_bridge_rickert_4": "REMOVED — [INTERP-low], only 1 textual reference, no corroboration",
+    "stale_bridge_uexkull_3": "REMOVED — [INTERP-speculative], 0 textual references, purely inferential"
+  }
+}

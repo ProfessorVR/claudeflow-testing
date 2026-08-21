@@ -1,0 +1,524 @@
+[god-learn] $ python3 scripts/retrieval/query_chunks.py Vorhandenheit and Zuhandenheit present-at-hand --k 8 --overfetch 30 --include_docs --print_json
+{
+  "query": "Vorhandenheit and Zuhandenheit present-at-hand",
+  "config": {
+    "chroma_dir": "vector_db_1536",
+    "collection": "knowledge_chunks",
+    "k": 8,
+    "overfetch": 30,
+    "where": null,
+    "filters": {
+      "require_my_copy": false,
+      "collection_filter": null,
+      "keep_biblio": false
+    },
+    "include_docs": true,
+    "use_highlights": false,
+    "highlights_index": "scripts/highlights/highlight_index.json",
+    "highlight_alpha": 0.02,
+    "highlight_cap": 5
+  },
+  "results": [
+    {
+      "raw_rank": 1,
+      "chunk_id": "f6041c1a815c83f1:00212",
+      "distance": 0.6288648843765259,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 339,
+      "page_end": 340,
+      "text": "to reach the phenomenon. For the idea of the 'bad' conscience is oriented\n\nfactically by that of the 'good' conscience. The everyday interpretation\n\nkeeps within the dimension of concernfully reckoning up 'guilt' and\n\n'innocence' [\"Unschuld\"] and balancing them off. This, then, is the\n\nhorizon within which the voice of conscience gets 'Experienced'.\n\nIn characterizing what is primordial in the ideas of 'bad' and 'good'\n\nconscience, we have also decided as to the distinction between a conscience\n\nwhich points forward and warns and one which points back and reproves.\n\nThe idea of the warning conscience s ee ms, of course, to come closest to\n\nthe phenomenon of the summons. It shares with this the character of\n\npointing forward. But Ơhis agreement is just an illusion. When we exper­\n\nience a warning conscience, the voice is regarded in turn as merely oriented\n\ntowards the deed which has been willed, from which it seeks to preserve\n\nus. But the warning, as a check on what we have willed, is possible only\n\nbecause the 'warning' call is aimed at Dasein's potentiality-for-Being­\n\nthat is, at its understanding of itself in Being-guilty ; not until we have such 1 In this paragraph Heidegger takes pains to disassociate 'Gewissen' ('conscience') from the adjective 'gewiss' ('certain') and its derivatives-'Sichvergewissem' ('making­ certain'), 'Gewisswerden' ('becoming certain'), and 'Gewissheit' ('certainty').\n\n£1. 2 Being and Time \n\nunderstanding does 'what we have willed' get shattered. The conscience\n\nwhich warns us has the function of regulating from moment to moment\n\nour remaining free from indebtednesses.1 In the experience of a 'warning'\n\nconscience the tendency of its call is seen only to the extent that it remains\n\naccessible to the common sense of the \"they\".\n\nThe third consideration which we have mentioned invokes the fact that\n\nthe everyday experience of the conscience has no acquaintance with anything\n\nlike getting sumoned to Being-guilty. This must be conceded. But does\n\nthis everyday experience thus give us any guarantee that the full possible\n\ncontent of the call of the voice of conscience has been heard therein ?\n\nDoes it follow from this that theories of conscience which are based on the\n\nordinary way of experiencing it have made certain that their ontological horizon for analysing this phenomenon is an appropriate one ? Does not\n\nfalling, which is an essential kind of Being for Dasein, show us rather that\n\nontically this entity understands itself proximally and for the most part\n\nin terms of the horizon of concern, but that ontologically, it defines\n\n\"Being\" in the sense of presence-at-hand ? This, however, leads to cover-\n\ning up the phenomenon in two ways: what one sees in this theory is a\n\nsequence of Experiences or 'psychical processes' -a sequence whose kind\n\nof Being is for the most part wholly indefinite. In such experience the\n\nconscience is encountered as an arbiter and admonisher, with whom\n\nDasein reckons and pleads its cause.\n\nWhen Kant represented the conscience as a 'court of justice' and made\n\nthis the basic guiding idea in his Interpretation of it, he did not do so by\n\naccident; this was suggested by the idea of moral law-although his\n\nconception of morality was far removed from utilitarianism and eudae­\n\nmonism. Even the theory of value, whether it is regarded formally or\n\nmaterially, has as its unexpressed ontological presupposition a 'metaphysic\n\nofmorals'-that is, an ontology ofDasein and existence. Dasein is regarded\n\nas an entity with which one might concern oneself, whether this \"concern\"\n\nhas the sense of 'actualizing values' or of satisfying a norm.\n\nIf one is to invoke the full range of what the everyday experience of\n\nconscience-as the only higher court for the Interpretation of conscience­\n\nis acquainted with, this cannot be justified unless one has considered\n\nbeforehand whether the conscience can ever become authentically\n\naccessible here at all.\n\nThus the further objection that the existential Interpretation overlooks\n\nthe fact that the call of conscience always relates itself to some definite\n\ndeed which has been either 'actualized' or willed, also loses its force.\n\n1 'Das warnende Gewissen hat die Funktion der momentweisen Regelung eines Freibleibens von Verschuldungen.' The earlier editions contradict this by writing \n' . . . hat nicht die Funktion . • .'\n\nBeing and Tit14\n\nIt cannot be denied that the call is often experienced as having such a\n\ntendency. It remains questiollilble only whether this experience of the\n\ncall permits it to 'proclaim' itself ful\\y. In the common-sense interpreta­\n\ntion, one may suppose that one is sticking to the 'facts' ; but in the end,\n\nby its very common sense, this interpretation has restricted the call's\n\ndisclosive range. As little as the 'good' conscience lets itself be put in the\n\nservice of a 'Pharisaism', just as little may the function of the 'bad' con­\n\nscience be reduced to indicating indebtednesses which are present-at-hand",
+      "meta": {
+        "is_clean_copy": false,
+        "clean_sha256": "324e4a6069617824e777396fb004c9d76cd47438dea7de93587d1b2f428dbc5b",
+        "author_raw": "Heidegger, Martin",
+        "is_my_copy": true,
+        "collection": "rhetorical_ontology",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "source_method": "pymupdf+bbox",
+        "bboxes": "[{\"page_num\": 353, \"coords\": [2.599884033203125, 9.940214157104492, 311.75067138671875, 471.16156005859375], \"blocks\": [[2.599884033203125, 9.940214157104492, 311.75067138671875, 360.4293518066406], [27.899871826171875, 368.5201721191406, 310.56787109375, 411.0793762207031], [27.83984375, 413.1663513183594, 310.40643310546875, 471.16156005859375]]}, {\"page_num\": 354, \"coords\": [20.220001220703125, 10.418600082397461, 302.9889221191406, 174.691650390625], \"blocks\": [[20.220001220703125, 10.418600082397461, 302.9889221191406, 174.691650390625]]}]",
+        "page_start": 339,
+        "page_end": 340,
+        "has_bboxes": true,
+        "title_raw": "Being and Time",
+        "year": 1962,
+        "qualifier": "My Copy",
+        "content_type": "text",
+        "chunk_index": 212,
+        "is_notes": false,
+        "is_table": false,
+        "doc_id": "f6041c1a815c83f1",
+        "pdftotext_version": "24.02.0",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "is_image": false,
+        "cleaning_version": "clean_v1",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "mtime": 1771101202
+      },
+      "rank": 1
+    },
+    {
+      "raw_rank": 2,
+      "chunk_id": "746585ac7140c19c:00069",
+      "distance": 0.6998004913330078,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+      "page_start": 115,
+      "page_end": 115,
+      "text": "That about which I have a view, and to which I am resolved, is distinguished with regard to the extent of the region of being to which it can be directed.\n    2. Δόξα goes after the ἀληθές and the ψευδές.123 Δόξα depends upon grasp­ ing in its being that which a view is about. Προαίρεσις depends upon how it should be done, what should happen with it, that which is posited in a reso­ lution. Προαίρεσις always aims at a πρακτὸν ἀγαθόν. What is posited in a προαίρεσις is πρακτόν according to its essence.\n    3. Whoever has a view is not otherwise determined in their ἦθος by this having-a-definite-view. This having-a-view about a definite matter is not an \n“ethical” determination; it does not pertain to changing the general comport­ ment of human beings according to their being. Alternatively, the manner and mode in which I am resolved, that to which I am resolved, what stands in προαίρεσις, is decisive for my being, for the manner and mode in which I am, for my ἦθος.124 Thus δόξα points to a certain indifference with relation to be­ ing. Having-a-view presupposes a certain disinterestedness with regard to that which the view is about. This is important for the Greek conception of sci­ ence.\n    4. Corresponding to the peculiar being-character of that to which δόξα and προαίρεσις are directed—in the one case the ἀληθές and in the other case the πρακτόν—having-a-view as comporting itself points to a definite seeing, to the manner and mode in which beings are there, in which it deals with beings as beings. Προαίρεσις is directed at the “seizing” and “renouncing” of a matter; δόξα is directed at ἀληθεύειν.125\n\n5. Δόξα and προαίρεσις are distinguished by that which constitutes their genuineness. Δόξα depends on the ὀρθότης, by its approaching the ἀληθές, the being as it is. Προαίρεσις, on the other hand, is not concerned with set­ ting forth beings in their being. It is decisive for προαίρεσις that it be suitably reckoned.126 It does not depend on setting forth all of the being-aspects of a concrete situation, on theoretically describing them; but instead προαίρεσις depends on deliberating correctly, on keeping an eye on what comes into con­ sideration for the πρακτόν. Indeed, that is also an ἀληθεύειν, but one that is essentially distinct from δόξα. Its correctness is oriented to the πρακτόν, while the correctness of δόξα is oriented to the ἀληθές.\n    6. Δόξα and προαίρεσις are distinguished by their way of standing toward knowing. Δόξα is related to what one does not know precisely, to beings that are still concealed. The point is that δόξα is directed at “what we do not yet\n\n123. Eth. Nic. Γ 4, 1111 b 33: καὶ τῷ ψευδεῖ καὶ ἀληθεῖ διαιρεῖται.\n    124. Eth. Nic. Γ 4, 1112 a 1 sqq.: τῷ γὰρ προαιρεῖσθαι τἀγαθά ἢ τὰ κατὰ ποιοί τινές ἐσμεν, τῷ δὲ δοξάζειν οὔ.\n    125. Eth. Nic. Γ 4, 1112 a 3 sqq.: καὶ προαιρούμεθα μὲν λαβεῖν ἢ φυγεῖν ἤ τι τῶν τοιούτων, δοξάζομεν δὲ τί ἐστιν ἢ τίνι συμφέρει ἢ πῶς· λαβεῖν δὲ ἢ φυγεῖν οὐ πάνυ δοξάζομεν.\n    126. Eth. Nic. Γ 4, 1112 a 5 sqq.: καὶ ἡ μὲν προαίρεσις ἐπαινεῖται τῷ εἶναι οὗ δεῖ μᾶλλον ἢ τῷ ὀρθῶς, ἡ δὲ δόξα τῷ ὡς ἀληθῶς.\n\n§15. Δόξα [148–150]\n\ngenuinely know”; προαίρεσις is directed at “what we know most of all” in the sense of cognition, what we have clearly reckoned about, what corresponds to the circumstances on which it depends.127\n\n7. One can very well have the best view and yet come to, or be resolved to, a κακόν. Δόξα and προαίρεσις are distinguished in themselves. In the best case, being able to construct views about something and being able to be resolved in the right way are not conflated.128\n\nΔόξα and προαίρεσις approach each other precisely when one takes δόξα in the narrow meaning of being directed at “that which can be otherwise,” the ἐνδεχόμενον ἄλλως, insofar as it is a συμφέρον. I can have a definite view about a matter in light of its conduciveness; I can be for maintaining that it is better than the others.\n\nd) The Character of δόξα as the Orientedness of Average Being-with-One-\n\nAnother-in-the-World",
+      "meta": {
+        "mtime": 1774309798,
+        "is_image": false,
+        "has_bboxes": true,
+        "is_my_copy": false,
+        "page_end": 115,
+        "doc_id": "746585ac7140c19c",
+        "source_method": "pymupdf+bbox+marker_tables(4)",
+        "is_table": false,
+        "collection": "rhetorical_ontology",
+        "chunk_index": 69,
+        "qualifier": "Clean Copy",
+        "title_raw": "Basic Concepts of Aristotelian Philosophy",
+        "clean_sha256": "40f7a6336bd32b96cea5e8023daad69d468822ff702bf5fa55b45967ca8e98da",
+        "sha256": "80a304982c233cbf5737bf85145685b7df9034e595439b94c9c3ec740736d563",
+        "cleaning_version": "clean_v1",
+        "year": 2009,
+        "bboxes": "[{\"page_num\": 121, \"coords\": [42.2599983215332, 63.22998809814453, 356.8000183105469, 603.3759765625], \"blocks\": [[42.2599983215332, 63.22998809814453, 356.8000183105469, 520.3699951171875], [42.2599983215332, 547.843994140625, 144.156005859375, 603.3759765625]]}, {\"page_num\": 122, \"coords\": [44.130001068115234, 39.392974853515625, 355.1400451660156, 94.36998748779297], \"blocks\": [[160.39999389648438, 39.392974853515625, 354.3999938964844, 51.86297607421875], [44.130001068115234, 69.22998809814453, 355.1400451660156, 82.36998748779297], [163.5, 81.06999206542969, 233.29000854492188, 94.36998748779297]]}]",
+        "is_clean_copy": true,
+        "is_notes": false,
+        "content_type": "text",
+        "pdftotext_version": "24.02.0",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "page_start": 115,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "author_raw": "Heidegger, Martin"
+      },
+      "rank": 2
+    },
+    {
+      "raw_rank": 3,
+      "chunk_id": "746585ac7140c19c:00176",
+      "distance": 0.7018288373947144,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+      "page_start": 272,
+      "page_end": 272,
+      "text": "is actuality, but the actuality of δυνάμει, of possibility, i.e., of non-actuality— actuality of inactuality: a contradiction—and he even lets it stand—antinomy, dialectic! That sounds very ingenious, but there is nothing to it except thought­ lessness, or perhaps something else: irresponsibility to history. Κίνησις not παρά, but “in” the aforementioned how of the there. “In”: cf. ἐκείνινον. Movement is there like wood in a chest, but it cannot itself be like wood to earth and water, it is itself a there-character, mode of being-at-hand. As how of the there, arrested “that,” even said ontologically that these are themselves διχῶς: κίνησις—δυνάμει καὶ ἐντελεχείᾳ.135 Insofar as a being is there in the how of being-moved, it has the character of the categories, more precisely the four categories mentioned above, and these διχῶς. A being that is there as δυνάμει, present, in presence, there now in this being-thus—we then say: “It is built,”136 it is there through alteration. Here, on the basis of the type of explication already evident, the way that movement is understood as a determinate being-present. And this altering itself, becomingaltered in altering is οἰκοδόμησις.137 Altering something, ποιοῦν—to be itself in alteration, πάσχον. To understand on the basis of explication? Being-present: \never altering itself, itself but also another, occurring but with me—to be related from itself. Something warm alters something cold, it is there altering in the mode of changing itself, becoming cold. Not just any ἐντελέχεια, absence even of the non-moved, but rather τότε— ὅταν, αὕτη, “neither before nor after,”138 but then, in the now. ὁτὲ μὲν ἐνεργεῖν ὁτὲ δὲ μή:139 “to be in work,” being-present now of δυνάμει. This being-nowpresent of δυνάμει is a limiting case: being-now-present of δυνάμει as rest (rest and now, presence and time). Rest is primarily grounded therein since resting is a how of the there of a being in work, a being taken into work. Already having-been-completed rests there, can rest. Rest is constitutive of this there, i.e., meaningfulness. Ἐνέργεια, “being-in-work,” being-there in becoming-produced. The hermeneutic fact of the matter: I and you, we are not concerned with it, and yet it is there, it happens, is concerned with itself, is there arising, and the like—to come from itself into presence and, e.g., to rest therein—reality. Φύσις charac­ terizes a being that is: to be in itself the worker of itself. Οἰκία: for the “house,” being-there as being-completed—οἰκοδόμησις, which ἐνέργεια. Ἐνέργεια, particularly being-there as being-uncompleted, a how of the there of ἐντελέχεια. How of the there of something: how does “being-in-work” come to this\n\n135. Phys. Γ 1, 201 a 20.\n    136. Phys. Γ 1, 201 a 17: οἰκοδομεῖται.\n    137. Phys. Γ 1, 201 a 18.\n    138. Phys. Γ 1, 201 b 5 sqq.: ὅτι μὲν οὖν ἐστιν αὕτη, καὶ ὅτι συμβαίνει τότε κινεῖσθαι ὅταν ἡ ἐντελέχεια ᾖ αὕτη, καὶ οὔτε πρότερον οὔτε ὕστερον, δῆλον.\n    139. Phys. Γ 1, 201 b 8.\n\nPreserved Parts of the Handwritten Manuscript [381–382]\n\nontological-hermeneutical pre-eminence? Because being = being-produced. There = being-present, being-completed, being-here in the now, in a presence; in being-present, being-there-having, abiding with . . . Abiding, being-in precisely the there of living. A stone does not abide, it happens. But an animal: “It abides” in its heart! Θιγεῖν and ἁφή: primary and primitive being-in. “Dwelling”! Οὐσία, “household”! “In” = “abiding with",
+      "meta": {
+        "mtime": 1774309798,
+        "page_start": 272,
+        "content_type": "text",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "is_my_copy": false,
+        "is_notes": false,
+        "has_bboxes": true,
+        "bboxes": "[{\"page_num\": 284, \"coords\": [42.369998931884766, 315.0699768066406, 356.8999938964844, 591.8759765625], \"blocks\": [[42.369998931884766, 315.0699768066406, 356.8999938964844, 472.3699951171875], [170.89999389648438, 489.0699768066406, 225.8199920654297, 502.3699951171875], [111.80000305175781, 513.22998046875, 284.8499755859375, 526.3699951171875], [42.380001068115234, 531.22998046875, 296.0450134277344, 544.3699951171875], [42.380001068115234, 581.364013671875, 345.3320007324219, 591.8759765625]]}, {\"page_num\": 285, \"coords\": [42.2599983215332, 39.23698806762695, 356.79998779296875, 591.8759765625], \"blocks\": [[42.2599983215332, 39.23698806762695, 235.843994140625, 51.36297607421875], [42.2599983215332, 63.22998809814453, 356.7900085449219, 292.3699951171875], [170.8000030517578, 309.0699768066406, 225.72000122070312, 322.3699951171875], [176.6999969482422, 333.22998046875, 219.8199920654297, 346.3699951171875], [42.2599983215332, 351.22998046875, 356.79998779296875, 496.3699951171875], [42.2599983215332, 527.343994140625, 309.8440246582031, 591.8759765625]]}, {\"page_num\": 286, \"coords\": [42.380001068115234, 39.63701248168945, 356.8999938964844, 286.3699951171875], \"blocks\": [[160.8000030517578, 39.63701248168945, 354.3999938964844, 51.86297607421875], [42.380001068115234, 63.22998809814453, 356.8999938964844, 172.3699951171875], [42.380001068115234, 171.22998046875, 356.8900146484375, 232.3699951171875], [170.89999389648438, 249.0699920654297, 225.8199920654297, 262.3699951171875], [176.8000030517578, 273.22998046875, 219.9199981689453, 286.3699951171875]]}]",
+        "year": 2009,
+        "source_method": "pymupdf+bbox+marker_tables(4)",
+        "sha256": "80a304982c233cbf5737bf85145685b7df9034e595439b94c9c3ec740736d563",
+        "doc_id": "746585ac7140c19c",
+        "author_raw": "Heidegger, Martin",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "cleaning_version": "clean_v1",
+        "is_clean_copy": true,
+        "is_table": false,
+        "page_end": 272,
+        "collection": "rhetorical_ontology",
+        "chunk_index": 176,
+        "title_raw": "Basic Concepts of Aristotelian Philosophy",
+        "pdftotext_version": "24.02.0",
+        "qualifier": "Clean Copy",
+        "is_image": false,
+        "clean_sha256": "4dc99ad1bbcde98ae6dceed7d9288cc648c261c0f3939a9dbc6f9ce7d79492f4"
+      },
+      "rank": 3
+    },
+    {
+      "raw_rank": 4,
+      "chunk_id": "746585ac7140c19c:00179",
+      "distance": 0.7056185007095337,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+      "page_start": 276,
+      "page_end": 277,
+      "text": "Θεῖναι ἐν ἄλλῳ γένει167—εἰς ταῦτα: ἑτερότης, ἀνισότης, μὴ ὄν. Descent, not to otherwise determine this how of being-there. What is determined in its being-there by the propounded characteristics needs no beings to be that are moved. Are the above characteristics sufficient to determine a being in its there as a being in movement? If not, then is an ontology that is entirely dependent upon encountering beings externally, to be sure—what is here only meant as—λογία—as self-expressing conceals it, misplaced. With this veiling of λόγος, the analysis of being-there is hindered, movement turns into what—tradition!! And in its effort to be radical, halfmeasures. If a being is thus determined in its there, as Aristotle determines κίνησις, then it is in movement. In what is this τιθέναι168 grounded? Κίνησις an ἀόριστον.169 Why? Because\n\n158. Phys. Γ 2, 202 a 2: ἰδεῖν.\n    159. Phys. Γ 2, 202 a 9: εἶδος δὲ ἀεὶ οἴσεται τὸ κινοῦν.\n    160. Ibid.\n    161. Phys. Γ 3, 202 a 22 sq.\n    162. Phys. Γ 3, 202 b 17 sq.\n    163. Phys. Γ 3, 202 b 21 sq.\n    164. Editor’s note.\n    165. Phys. Γ 1, 201 a 12 sqq.\n    166. Themistii in Aristotelis Physica paraphrases 211, 12.\n    167. Phys. Γ 2, 201 b 18 sq.: οὔτε γὰρ τὴν κίνησιν καὶ τὴν μεταβολὴν ἐν ἄλλῳ γένει θεῖναι δύναιτ’ ἄν τις.\n    168. Phys. Γ 2, 201 b 24.\n    169. Ibid.\n\nPreserved Parts of the Handwritten Manuscript [386–388]\n\nnot ἁπλῶς θεῖναι εἰς δύναμιν and not εἰς ἐνέργειαν.170 Not ἁπλῶς, but σύνθεσις of the being-character. How is ἕν as there, the being-present of that which changes? Therefore,\n    1. generally, δύναμις and ἐνέργεια (from being-being-there as constitutive for the being-there of beings in motion);\n    2. not simply, in itself: beings, what is moved in another, is something like that, but how? Transition—the ‘from . . . to . . .’ Κίνησις: ἐνέργεια but τοιαύτη,171 i.e., δυνάμει ὄντος, and as such ἀτελής,172 ἐνδεχομένη δὲ εἶναι, “but something that is extant,” even if “difficult to see.”173\n\nRest: a how of being-there, there of the type of thing that can be in move­ ment. Ἀκινησία (cf. οὐσία!) furthermore: “unmovedness.” a) being-not-nowin-movement, b) unencounterable from being-in-movement. The ἐνεργεῖν πρὸς τὸ δυνάμει ὄν, ᾗ τοιοῦτον, αὐτὸ τὸ κινεῖν ἐστιν.174 “Mov­ ing is bringing-this-being-possible-in-this-way-into-the-there.” That which is moving through θίξις—simple, direct, having, taking an influence—i.e., some­ thing occurs with itself (cf. Prantl, notes).175 Bringing-something-about; be­ coming-brought-about and bringing, cf. ποίησις, πάθησις. Being-in-movement a how of the there.\n\nΚίνησις a How of the There\n\nPresence, that is a determinate one. As presence, and as this determinate one, it makes time, the now, explicitly: there now. Κινησία and ἀκινησία. With κίνησις, precisely the how-possibilities of being in movement. Cf. meaningfulness—rest. Rest makes the impression of presence beforehand, to such an extent that we thereby forget that it is ἀκινησία, that it is ungenuine movement, i.e., πρότερον—ὕστερον concealed as now, specifically as duration, i.e., πρότερον—ὕστερον there, but set in the now. Implicitly, I need, unconcealed to me, to leap into the now, but concealedly.\n\nAristotle inquires into the to what extent. How did it happen? You have seen the moved in a certain mode. What in itself requires this becoming-addressed\n\n170. Phys. Γ 2, 201 b 28 sq.: οὔτε εἰς δύναμιν τῶν ὄντων οὔτε εἰς ἐνέργειαν ἔστι θεῖναι αὐτήν.\n    171. Phys. Δ 2, 202 a 1 sq.: ἐνέργειαν μὲν τινα εἶναι, τοιαύτην δ’ ἐνέργειαν οἵαν εἴπομεν.\n    172. Phys. Δ 2, 201 b 32.\n    173. Phys. Δ 2, 202 a 2 sq.: χαλεπὴν μὲν ἰδεῖν, ἐνδεχομένην δ’ εἶναι.\n    174. Phys. Γ 2, 202 a 5 sq.: τὸ γὰρ πρὸς τοῦτο [τὸ δυνάμει ὄν] ἐνεργεῖν, ᾗ τοιοῦτον, αὐτὸ τὸ κινεῖν ἐστί.\n    175. Phys. Δ 2, 202 a 8 sq.: συμβαίνει δὲ τοῦτο θίξει τοῦ κινητικοῦ, ὥσθ’ ἅμα καὶ πάσχει. Edi­ tor’s note: These words were bracketed by Von Prantl.\n\nOn §28b [388–389]\n\nin how it shows itself? This inquiring-back, positive criticism, makes an insuf­ ficiency newly evident. Χαλεπὴν ἰδεῖν, “but something that can be!”176 What is primary is what shows itself: the moved is there. How do I catch sight of it? Not in the fore­ going way. Therefore: to see the there, the presence of that which is not yet produced. Only possible if presence is seen, i.e., if the ontological problem­ atic is made explicit with regard to its genuine ground: presence (abiding— presence). Being-there itself seen as being-in and viewed according to basic possibilities.\n\nOn §28a\n\n[Physics]177 Γ 3—Disposition",
+      "meta": {
+        "page_end": 277,
+        "content_type": "text",
+        "pdftotext_version": "24.02.0",
+        "has_bboxes": true,
+        "is_my_copy": false,
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "clean_sha256": "5283f120519bb92c3ac08b3e4c684383509bd91b16e6fa872500d28f4ccbc7b9",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "chunk_index": 179,
+        "collection": "rhetorical_ontology",
+        "title_raw": "Basic Concepts of Aristotelian Philosophy",
+        "cleaning_version": "clean_v1",
+        "sha256": "80a304982c233cbf5737bf85145685b7df9034e595439b94c9c3ec740736d563",
+        "qualifier": "Clean Copy",
+        "mtime": 1774309798,
+        "is_notes": false,
+        "page_start": 276,
+        "doc_id": "746585ac7140c19c",
+        "source_method": "pymupdf+bbox+marker_tables(4)",
+        "is_clean_copy": true,
+        "bboxes": "[{\"page_num\": 290, \"coords\": [42.380001068115234, 63.22998809814453, 356.9100036621094, 592.3699951171875], \"blocks\": [[42.380001068115234, 63.22998809814453, 356.9100036621094, 592.3699951171875]]}, {\"page_num\": 291, \"coords\": [42.2599983215332, 39.23698806762695, 231.66098022460938, 51.4630126953125], \"blocks\": [[42.2599983215332, 39.23698806762695, 231.66098022460938, 51.4630126953125]]}]",
+        "author_raw": "Heidegger, Martin",
+        "year": 2009,
+        "is_image": false,
+        "is_table": false
+      },
+      "rank": 4
+    },
+    {
+      "raw_rank": 5,
+      "chunk_id": "746585ac7140c19c:00129",
+      "distance": 0.7072964906692505,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+      "page_start": 196,
+      "page_end": 200,
+      "text": "§24. The Double Sense of the Possibility of Conceptuality [271–273]\n\ndressed. The being is, ultimately, always addressed in terms of its being. A definite sense of being guides every natural interpretation of beings. This sense does not need to be made categorially explicit, and precisely when it is not, it possesses its genuine being and its authority. In this interpretation of beingthere, being means being-present, being-completed. The being is not only there in its look; the being-character is itself explicitly there, in the sense of the ex­ plicitness of everyday seeing, considering, discussing. (c) The prevailing intelligibility. Being-with-one-another is thoroughly governed by δόξα. All speaking is oriented toward bringing the questionable, the unintelligible, into a definite familiarity. Being-there has, in itself, a definite claim on that which is familiar in a genuine sense. Being-there, in its inter­ pretation, is thoroughly governed by a definite idea of evidence, which is suf­ ficient for being-there as such, an evidence from which the scientific sense of evidence takes its standard, the various proofs, the rigor of proofs. Familiarity is the standard of intelligibility that λόγος possesses, that proceeds from the ἔνδοξον and returns to it. Ad 2. We have to ask more precisely how the being thus characterized can be cultivated as being-there itself, in such a way that conceptuality comes forward. We already know that the being-there of human beings is character­ ized by προαίρεσις. A “resolving-oneself” is always determined by the fact it that resolves itself in opposition to something. Accordingly, the cultivation of conceptuality also presumably arises from such a way of being of being-there, which runs precisely counter to this conceptuality, so that the being of the being-possible of conceptuality can be characterized as possibility in a doublesense: (1) in the sense of the possibility of that on the basis of which concep­ tuality can be cultivated, as from its contrary and (2) for-what and upon what, being-there can be cultivated in the conceiving of conceptuality. On the basis of this orientation, we will have to characterize movement since we will come to know it as a determination of beings, namely, of being-alive, from which all further consideration of being is developed. Κίνησις: guiding clue for the explication of the being of the being-there of human beings.1\n\n§24. The Double Sense of the Possibility of Conceptuality in Being-There\n\nI have attempted to establish the connection: to make conceptuality itself in­ telligible on the basis of being-there as such, to exhibit being-there according to a basic possibility of its being. This being has the possibility of carrying in itself the basic determinations of conceptuality. The fact of the matter is that, in human living, something like science and scientific research is possible. There\n\n1. See Hs. p. 354 ff.\n\nThe Being-There of Human Beings [273–275]\n\nare three aspects: concretely giving basic experience, guiding claim, prevailing intelligibility.\n    1. Concretely giving basic experience: we must understand that this being, which is called human being-there, has the possibility of carrying in itself the conceptual. How is conceptuality itself possible in being-there? Being-there is being-in-the-world. Insofar as it is, it stands in experience. Being-there has itself, finds itself in relation to itself, even if it often does so in such a way that being-there has itself in the world, and on the path beyond the world, in which it lives. I am in certain possibilities: my job, my occupation.\n    2. The guiding claim: this being-there has, in itself, a definite sense of be­ ing and, corresponding to that, what it is not.\n    3. Being-there has a definite standard of intelligibility, as in the way it speaks of and about itself, and about the manner and mode in which it deals. How is conceptuality itself possible in a being-there thus characterized? We must distinguish two possibilities. If science is something to which beingthere can resolve itself, ἕξις, then this ἕξις is characterized by its being: πῶς ἔχομεν πρὸς ἄλλων—πῶς, that which it is πρός, “against,” “in relation to” something, from which it extricates itself. Therefore, the first possibility in the sense of the arrangement against which ἕξις is cultivated; the second possibil­ ity, then, in the positive sense.\n\na) The Possibility of Conceptuality in the Negative Sense of\n\nThat in Relation to Which Conceptuality Is Cultivated\n\nα. The Interpretedness of Being-There in Fore-Having,\n\nFore-Sight, and Fore-Grasp",
+      "meta": {
+        "mtime": 1774309798,
+        "source_method": "pymupdf+bbox+marker_tables(4)",
+        "doc_id": "746585ac7140c19c",
+        "sha256": "80a304982c233cbf5737bf85145685b7df9034e595439b94c9c3ec740736d563",
+        "is_my_copy": false,
+        "year": 2009,
+        "pdftotext_version": "24.02.0",
+        "has_bboxes": true,
+        "bboxes": "[{\"page_num\": 207, \"coords\": [42.2599983215332, 255.22998046875, 356.8099670410156, 580.3699951171875], \"blocks\": [[42.2599983215332, 255.22998046875, 356.8099670410156, 580.3699951171875]]}, {\"page_num\": 208, \"coords\": [42.380001068115234, 39.392974853515625, 356.9100341796875, 579.3759765625], \"blocks\": [[90.62999725341797, 39.392974853515625, 354.3999938964844, 51.86297607421875], [42.380001068115234, 63.22998809814453, 356.9100341796875, 532.3699951171875], [42.380001068115234, 550.843994140625, 244.13197326660156, 579.3759765625]]}, {\"page_num\": 209, \"coords\": [42.2599983215332, 39.23698806762695, 322.4219970703125, 51.36297607421875], \"blocks\": [[42.2599983215332, 39.23698806762695, 322.4219970703125, 51.36297607421875]]}]",
+        "qualifier": "Clean Copy",
+        "clean_sha256": "7ebf3dad77cbaaa32b7a934adc4cb7b97ea8ad90528ef67321c3a7306f9e271e",
+        "title_raw": "Basic Concepts of Aristotelian Philosophy",
+        "cleaning_version": "clean_v1",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "collection": "rhetorical_ontology",
+        "content_type": "text",
+        "is_image": false,
+        "is_notes": false,
+        "page_start": 196,
+        "chunk_index": 129,
+        "is_table": false,
+        "page_end": 200,
+        "is_clean_copy": true,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf",
+        "author_raw": "Heidegger, Martin"
+      },
+      "rank": 5
+    },
+    {
+      "raw_rank": 6,
+      "chunk_id": "f6041c1a815c83f1:00231",
+      "distance": 0.7089125514030457,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 369,
+      "page_end": 371,
+      "text": "\"they\".1 When the \"I\" talks in the 'natural' manner, this is performed by\n\nthe they-self.2 What expresses itself in the 'I' is that-Self which, proxim­\n\nally and for the most part, I am not authentically. When one is absorbed\n\nin the everyday multiplicity and the rapid succession [Sich-jagen] of that\n\nwith which one is concerned, the Self of the self-forgetful \"I am concerned'\n\nshows itself as something simple which is constantly selfsame but indefinite\n\nand empty. Yet one is that with which one concerns oneself. In the\n\n'natural' ontical way in which the \"I\" talks, the phenomenal content of\n\nthe Dasein which one has in view in the \"l\" gets overlooked ; but this gives no justification for our joining in this overlooking of it, or for forcing upon the\n\nproblematic of the Self an inappropriate 'categorial' horizon when we\n\nInterpret the \"I\" ontologically.\n\nOf course by thus refusing to follow the everyday way in which the \"I\"\n\n1 'Durch das Verfallen des Daseins, als welches es vor sich selbst jlieht in das Man.' The 'es' appears only in the later editions.\n\n11 'Die \"natiirliche\" Ich-Rede vollzieht das Man-selbst.'\n\nII. 3 Being and Time\n\ntalks, our ontological Interpretation of the 'I' has by no means solved the\n\nproblem; but it has indeed prescribed the direction for any further inquiries.\n\nIn the \"I\", we have in view that entity which one is in 'being-in-the­\n\nworld'.\n\nBeing-already-in -a-world, however, as Being-alongside-the-ready-to­\n\nhand-within-the-world, means equiprimordially that one is ahead of\n\noneself. With the '1', what wr have in view is that entity for which the issue is the Being of the entity rnat it is. With the 'I', care expresses itself,\n\nthough proximally and for the most part in the 'fugitive' way in which\n\nthe \"I\" talks when it concerns itself with something. The they-self keeps\n\non saying \"I\" most loudly and most frequently because at bottom it is not authentically itself, and evades its authentic potentiality-for-Being. If the\n\nontological constitution of the Self is not to be traced back either to an\n\n\"!\"-substance or to a 'subject', but if, on the contrary, the everyday\n\nfugitive way in which we keep on saying \"I\" must be understood in terms\n\nof our authentic potentiality-for-Being, then the proposition that the Self\n\nis the basis of care and constantly present-at-hand, is one that still does\n\nnot follow. Selfhood is to be discerned existentially only in one's authentic\n\npotentiality-for-Being-one's-Self-that is to say, in the authenticity of\n\nDasein's Being as care. In terms of care the constancy of the Self, as the\n\nsupposed persistence of the subjectum, gets clarified. But the phenomenon\n\nof this authentic potentiality-for-Being also opens our eyes for the constancy of the Self in the sense of its having achieved some sort of position.1 The constancy of the Self, in the double sense of steadiness and steadfastness, is\n\nthe authentic counter-possibility to the non-Self-constancy which is charac­\n\nteristic of irresolute falling. 2 Existentially, \"Self-constancy\" signifies nothing\n\nother than anticipatory resoluteness. The ontological structure of such\n\nresoluteness reveals the existentiality of the Self's Selfhood.\n\nDasein is authentical[v itself in the primordial individualization of the\n\nreticent resoluteness which exacts anxiety of itself. As something that keeps \n\n1 ' • • , fiir die Stiindigkeit des Selbst in dem Sinn des Standgewonnenhabens.' Here our usual translation of 'Stiindigkeit' as 'constancy' seems inadequate; possibly 'stability' would be closer to what is meant. 1 'Die Stiindigkeit des Selbst im Doppelsinne der bestiindigen Standfestigkeit ist die eigentlicM Gegenmoglichkeit zur Unselbst-standigkeit des unentschlossenen Verfallens.' The italicization of the opening words of this sentence appears only in the later editions. Here, as on H. 117 and 303, Heidegger exploits various meanings of the adjective \n'standig' and other words derived from the base 'sta-', with the root-meaning of \n'standing'. The noun 'Unselbstiindigkeit' ordinarily stands for inability to stand on one's own feet or to make up one's mind independently. · But Heidegger expands it to 'Unselbst-stiindigkeit', which not only suggests instability and a failure to stand by oneself, but also the constancy or stability of that which. is other than the Selm-the non-Self, or more specifically, the they-self. In the followmg sentence the no_un Sel̦­ stiindigkeit', which ordinarily stands for autonomy, independence, or self-subsistence, IS similarly expanded to 'Selbst-stiindigkeit'-'Self-constancy'.\n\nBeing and Time II. 3 silent, authentic Being-one's-Self is just the sort of thing that does not keep\n\non saying 'I' ; but in its reticence it 'is' that thrown entity as which it can\n\nauthentically b e. The Self which the reticence of resolute existence un­\n\nveils is the primordial phenomenal basis for the question as to the Being",
+      "meta": {
+        "is_notes": false,
+        "content_type": "text",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "collection": "rhetorical_ontology",
+        "page_start": 369,
+        "cleaning_version": "clean_v1",
+        "mtime": 1771101202,
+        "is_clean_copy": false,
+        "title_raw": "Being and Time",
+        "year": 1962,
+        "clean_sha256": "e5c4b18f05a224bf99cc92de1cedbb1284886ed7d0a6d300aff63fa414830d70",
+        "doc_id": "f6041c1a815c83f1",
+        "bboxes": "[{\"page_num\": 381, \"coords\": [2.379852294921875, 175.74002075195312, 312.3188171386719, 469.71282958984375], \"blocks\": [[2.379852294921875, 175.74002075195312, 312.3188171386719, 469.71282958984375]]}, {\"page_num\": 382, \"coords\": [20.760025024414062, 9.729087829589844, 330.331787109375, 392.295166015625], \"blocks\": [[136.22000122070312, 9.729087829589844, 194.82403564453125, 20.181838989257812], [24.220001220703125, 23.650474548339844, 306.1206970214844, 33.30517578125], [24.000030517578125, 34.408287048339844, 304.68609619140625, 44.225189208984375], [24.000030517578125, 45.030479431152344, 306.231201171875, 54.6851806640625], [24.44000244140625, 55.76049041748047, 305.42767333984375, 65.577392578125], [33.09002685546875, 66.69908905029297, 307.9830627441406, 77.15184020996094], [24.000030517578125, 77.7304916381836, 305.77166748046875, 87.38519287109375], [24.220016479492188, 88.64049530029297, 305.9374084472656, 98.29519653320312], [24.22003173828125, 99.54048919677734, 305.7613220214844, 109.1951904296875], [23.790023803710938, 110.32048797607422, 305.71649169921875, 119.97518920898438], [23.790008544921875, 120.99907684326172, 307.37811279296875, 131.4518280029297], [23.730010986328125, 132.10049438476562, 304.2828063964844, 141.75518798828125], [24.220001220703125, 143.00048828125, 305.67120361328125, 152.65518188476562], [23.789993286132812, 153.94049072265625, 304.28289794921875, 163.59518432617188], [23.790008544921875, 164.93048095703125, 305.25927734375, 174.58517456054688], [24.0, 175.66049194335938, 305.25115966796875, 185.315185546875], [23.78997802734375, 186.328369140625, 303.6805419921875, 196.33438110351562], [23.789947509765625, 197.68048095703125, 305.2492370605469, 218.6918182373047], [23.789947509765625, 219.52047729492188, 305.2047424316406, 229.1751708984375], [23.5699462890625, 230.48046875, 305.3771667480469, 240.1351776123047], [23.359970092773438, 241.26046752929688, 305.414794921875, 250.91517639160156], [23.790008544921875, 252.07049560546875, 305.36859130859375, 261.7251892089844], [23.1400146484375, 262.73046875, 305.1280212402344, 272.60137939453125], [22.98004150390625, 273.8604736328125, 305.3544921875, 283.5151672363281], [23.140029907226562, 284.4004821777344, 69.79753875732422, 294.05517578125], [32.22003173828125, 295.81829833984375, 305.9305419921875, 305.6351623535156], [22.920013427734375, 306.45050048828125, 330.331787109375, 327.0951843261719], [20.760025024414062, 328.0090637207031, 305.1234130859375, 349.2139892578125], [22.710006713867188, 350.18048095703125, 304.107666015625, 359.8351745605469], [22.709991455078125, 361.1204833984375, 305.9844665527344, 370.7751770019531], [22.489959716796875, 371.8204650878906, 304.66668701171875, 381.47515869140625], [22.279983520507812, 382.6404724121094, 304.4598083496094, 392.295166015625]]}]",
+        "is_my_copy": true,
+        "source_method": "pymupdf+bbox",
+        "pdftotext_version": "24.02.0",
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "chunk_index": 231,
+        "is_image": false,
+        "author_raw": "Heidegger, Martin",
+        "is_table": false,
+        "qualifier": "My Copy",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "has_bboxes": true,
+        "page_end": 371
+      },
+      "rank": 6
+    },
+    {
+      "raw_rank": 7,
+      "chunk_id": "f6041c1a815c83f1:00067",
+      "distance": 0.7254308462142944,
+      "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+      "page_start": 117,
+      "page_end": 117,
+      "text": ". . . bei . . . \" soil durch den Terminus Verweisung angezeigt werden.' Here the point seems to be that if something has an 'involvement' in the sense of 'Bewandtnis' (or rather, if there is such an involvement 'with' it), the thing which has this involvement has been \n'assigned' or 'referred' for a certain activity or purpose 'in' which it may be said to be involved. 1 'Bewandtnis ist das Sein des innerweltlichen Seienden, darauf es je schon zunachst freigegeben ist. Mit ihm als Seiendem hat es je eine Bewandtnis. Dieses, clas es eine Bewandtnis hat, ist die ontologische Bestimmung des Seins dieses Seienden, nicht eine ontische Aussage tiber das Seiende. Das Wobei es die Bewandtnis hat, ist das Wozu der Dienlichkeit, das Wofiir der Verwendbarkeit.' This passage and those which follow are hard to translate because Heidegger is using three carefully differentiated prepositions ('zu', 'fur', and 'auf') where English idiom needs only 'for'. We can say that something is serviceable, usable, or applicable 'for' a purpose. and that it may be freed or given free rein 'for' some kind of activity. In German, however, it will be said to have 'Dienlichkeit zu • • .\n ', 'Verwendbarkeitfur . . . '; and it will be 'freigegeben arif • • •\n '. In the remainder of this section we shall use 'for' both for 'fiir' and for 'auf' as they occur in these expressions; we shall, however, continue to use 'towards-which' for the 'Wozu' of 'Dienlichkeit'. Se note 1, p. 109, H. 78 above. 11 'Dieses primare Wozu ist kein Dazu als mi>gliches Wobei einer Bewandtnis. Das primare \"Wozu\" ist ein Worum-willen.'\n\nI. 3 Being and Time\n\nDasein, for which, in its Being, that very Being is essentially an issue. We have thus indicated the interconnection by which the structure of an involvement leads to Dasein's very Being as the sole authentic \"for-the­ sake-of-which\" ; for the present, however, we shall pursue this no further. \n'Letting something be involved' must first be clarified enough to give the phenomenon ofworldhood the kind of definiteness which makes it possible to formulate any problems about it. Ontically, \"letting something be involved\" signifies that within our factical concern we let something ready-to-hand be so-and-so as it is already and in order that it be such.1 The way we take this ontical sense of \n'letting be' is, in principle, ontological. And therewith we Interpret the meaning of previously freeing what is proximally ready-to-hand within­ the-world. Previously letting something 'be' does not mean that we must first bring it into its Being and produce it; it means rather that something which is already an 'entity' must be discovered in its readiness-to-hand, and that we must thus let the entity which has this Being be encountered. This 'a priori' letting-something-be-involved is the condition for the possibility of encountering anything ready-to-hand, so that Dasein, in its ontical dealings with the entity thus encountered, can thereby let it be involved in the on tical sense. 2 On the other hand, if letting something be involved is understood ontologically, what is then pertinent is the freeing of everything ready-to-hand as ready-to-hand, no matter whether, taken ontically, it is involved thereby, or whether it is rather an entity of precisely such a sort that ontically it is not involved thereby. Such entities are, proximally and for the most part, those with which we concern ourselves when we do not let them 'be' as we have discovered that they are, but work upon them, make improvements in them, or smash them to pieces. When we speak of having already let something be involved, so that it has been freed for that involvement, we are using a perfect tense a priori which characterizes the kind of Being belonging to Dasein itself. 3 Letting an entity be involved, if we understand this ontologically, consists in previously freeing it for [auf] its readiness-to-hand within the environment. When we let something be involved, it must be involved in something; and in terms of this \"in-which\", the \"with-which\" of this involvement\n\n1 'Bewendenlasen bedeutet ontisch; innerhalb eines faktischen Besorgens ein Zuhan­ denes so und so sein lassen, wie es nunmehr ist und damit es so ist.' 2 ' • • • es im ontischen Sinne dabei bewenden lassen kann.' While we have translated \n'dabei' simply as 'thereby' in th_is contex̬, it.!s Ţoss!ble that it shouls havţ b_een cons.tru.ed rather as an instance of the special use of bet with bewenden lassen . A similar ambigwty occurs in the following sentence. a 'Das auf Bewandtnis hin freigebende Je-schon-haben-bewenden-lassen ist ein apriorisches Perfekt, das die Seinsart des Daseins selbst charakterisiert.\n\nI I8 Being and Time",
+      "meta": {
+        "page_end": 117,
+        "bboxes": "[{\"page_num\": 121, \"coords\": [25.409698486328125, 262.7428894042969, 310.2575378417969, 468.50360107421875], \"blocks\": [[26.379776000976562, 262.7428894042969, 308.4078063964844, 272.6259765625], [26.599761962890625, 273.9898986816406, 308.4466857910156, 283.84600830078125], [26.599761962890625, 284.9790954589844, 309.16375732421875, 327.4216003417969], [26.599761962890625, 328.3728942871094, 310.2575378417969, 338.2560119628906], [26.599777221679688, 339.1391296386719, 308.8221740722656, 348.8060302734375], [26.169769287109375, 354.96832275390625, 308.3884582519531, 392.95361328125], [25.8697509765625, 392.6008605957031, 306.9362487792969, 409.3536071777344], [25.409698486328125, 409.120849609375, 308.0749206542969, 468.50360107421875]]}, {\"page_num\": 122, \"coords\": [23.89996337890625, 8.840310096740723, 328.2328186035156, 401.9688415527344], \"blocks\": [[24.219999313354492, 8.840310096740723, 307.0707092285156, 22.86756134033203], [23.89996337890625, 22.332799911499023, 308.19378662109375, 130.23878479003906], [24.1700439453125, 130.64279174804688, 328.2328186035156, 401.9688415527344]]}]",
+        "has_bboxes": true,
+        "mtime": 1771101202,
+        "cleaning_version": "clean_v1",
+        "is_notes": false,
+        "page_start": 117,
+        "collection": "rhetorical_ontology",
+        "is_my_copy": true,
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "is_table": false,
+        "is_image": false,
+        "clean_sha256": "c3c2eb2a507dd39c1422aa46f935c5cbd0f2fdb136459d797a608f5ba4f95889",
+        "author_raw": "Heidegger, Martin",
+        "chunk_index": 67,
+        "is_clean_copy": false,
+        "doc_id": "f6041c1a815c83f1",
+        "content_type": "text",
+        "path_rel": "rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf",
+        "pdftotext_version": "24.02.0",
+        "year": 1962,
+        "title_raw": "Being and Time",
+        "source_method": "pymupdf+bbox",
+        "sha256": "b9c944b40030f55dbc6a782221ce67a779443c7beb612352c67dd3e14b026f35",
+        "qualifier": "My Copy"
+      },
+      "rank": 7
+    },
+    {
+      "raw_rank": 8,
+      "chunk_id": "b811388f4f1d7863:00011",
+      "distance": 0.7275987267494202,
+      "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+      "page_start": 15,
+      "page_end": 17,
+      "text": "*l.e. Plato.\n\nBOOK II\n\nexist by nature\n\nother causes\n\naccidentally\n\nex. doctor\n\nthings themselves Subject / nature\n\n193*1\n\n. Of things that exist, some exist by nature, some from other causes. By nature the animals and their parts exist, and the plants and the simple bodies (earth, fire, air, water)—for we say that these and the like exist by nature. All the things mentioned plainly differ from things which are not constituted by nature. For each of them has within itself a principle of motion and of stationariness (in respect of place, or of growth and decrease, or by way of alteration). On the other hand, a bed and a coat and anything else of that sort, qua receiving these designations—i.e. in so far as they are products of art—have no innate impulse to change. But in so far as they happen to be composed of stone or of earth or of a mixture of the two, they do have such an impulse, and just to that extent—which seems to indicate that nature is a principle or cause of being moved and of being at rest in that to which it belongs primarily, in virtue of itself and not accidentally. I say ‘not accidentally1, because (for instance) a man who is a doctor might himself be a cause of health to himself. Nevertheless it is not in so far as he is a patient that he possesses the art of medicine: it merely has happened that the same man is doctor and patient—and that is why these attributes are not always found together. So it is with all other artificial products. None of them has in itself the principle of its own production. But while in some cases (for instance houses and the other products of manual labour) that principle is in something else external to the thing, in others—those which may cause a change in themselves accidentally—it lies in the things themselves (but not in virtue of what they are). Nature then is what has been stated. Things have a nature which have a principle of this kind. Each of them is a substance; for it is a subject, and nature is always in a subject. The term ‘according to nature1 is applied to all these things and also to the attributes which belong to them in virtue of what they are, for instance the property of fire to be carried upwards—which is not a nature nor has a nature but is by nature or according to nature. What nature is, then, and the meaning of the terms ‘by nature1 and ‘according to nature1, has been stated. That nature exists, it would be absurd to try to prove; for it is obvious that there are many things of this kind, and to prove what is obvious by what is not is the mark of a man who is unable to distinguish what is self-evident from what is not. (This state of mind is clearly possible. A man blind from birth might reason about colours.) Presumably therefore such persons must be talking about words without any thought to correspond. Some identify the nature or substance of a natural object with that immediate constituent of it which taken by itself is without arrangement, e.g. the wood is the nature of the bed, and the bronze the nature of the statue. As an indication of this Antiphon points out that if you planted a bed and the rotting wood acquired the power of sending up a shoot, it would not be a bed that would come up, but wood which shows that the arrangement in accordance with the\n\nPHYSICS\n\nform - nature\n\nnature / coming-to- be\n\nshape - nature",
+      "meta": {
+        "path_abs": "/home/dalton/projects/claudeflow-testing/corpus/rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "has_bboxes": true,
+        "pdftotext_version": "24.02.0",
+        "sha256": "ef7ea48906dc0a46d6af757cb6a6e1d01fa4ed0541d828a8b93da87ecd346062",
+        "chunk_index": 11,
+        "title_raw": "Physics",
+        "is_my_copy": true,
+        "is_notes": false,
+        "path_rel": "rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf",
+        "is_table": false,
+        "collection": "rhetorical_ontology",
+        "is_clean_copy": false,
+        "year": 2014,
+        "qualifier": "My Copy",
+        "cleaning_version": "clean_v1",
+        "page_start": 15,
+        "mtime": 1771101202,
+        "is_image": false,
+        "clean_sha256": "2e3af01f83b8ae662496d6eeb8ef22b12224b7451e3b049dc5aa1f8616662685",
+        "doc_id": "b811388f4f1d7863",
+        "author_raw": "Aristotle",
+        "bboxes": "[{\"page_num\": 17, \"coords\": [30.64900016784668, 55.41254806518555, 389.4169921875, 516.5533447265625], \"blocks\": [[151.44000244140625, 55.41254806518555, 205.40414428710938, 68.1850814819336], [328.5050048828125, 81.56102752685547, 387.3819885253906, 95.0310287475586], [323.87799072265625, 141.09304809570312, 373.0250244140625, 154.56304931640625], [327.88800048828125, 214.81402587890625, 376.2080078125, 228.28402709960938], [327.88800048828125, 243.81402587890625, 367.8759765625, 257.2840270996094], [326.65399169921875, 275.27203369140625, 389.4169921875, 317.7420349121094], [332.95001220703125, 364.2889099121094, 346.219970703125, 370.40283203125], [30.64900016784668, 80.37545776367188, 323.7484130859375, 516.5533447265625]]}, {\"page_num\": 18, \"coords\": [4.317999839782715, 27.877429962158203, 231.20094299316406, 439.2680358886719], \"blocks\": [[69.0, 27.877429962158203, 231.20094299316406, 41.62484359741211], [5.552000045776367, 304.2660217285156, 58.311004638671875, 317.73602294921875], [4.317999839782715, 364.1070251464844, 84.02200317382812, 392.0770263671875], [6.478000164031982, 425.79803466796875, 62.56700134277344, 439.2680358886719]]}]",
+        "source_method": "pymupdf+bbox",
+        "page_end": 17,
+        "content_type": "text"
+      },
+      "rank": 8
+    }
+  ]
+}
+[god-learn] $ python3 scripts/retrieval/verify_phase4.py Vorhandenheit and Zuhandenheit present-at-hand
+[PHASE4_VERIFY_OK]
+- query='Vorhandenheit and Zuhandenheit present-at-hand'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[god-learn] $ bash scripts/highlights/phase5check.sh
+
+--- AUDIT REPORT ---
+root: /home/dalton/projects/claudeflow-testing/corpus
+manifest: /home/dalton/projects/claudeflow-testing/scripts/ingest/manifest.jsonl
+total_pdfs: 50
+
+[PHASE2_COMPLETE] (50)
+  - dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf :: phase=2 ok
+  - dissertation/in_progress/rhetorical phantasia test.pdf :: phase=2 ok
+  - metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf :: phase=2 ok
+  - metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf :: phase=2 ok
+  - metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf :: phase=2 ok
+  - metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf :: phase=2 ok
+  - new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf :: phase=2 ok
+  - new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf :: phase=2 ok
+  - rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf :: phase=2 ok
+
+[OK] dissertation/in_progress/Rhetorical Phantasia Notes and All.pdf
+[OK] dissertation/in_progress/rhetorical phantasia test.pdf
+[OK] metaphysics/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] metaphysics/Audi, P.-Grounding-Toward a Theory of the In-Virtue-Of Relation_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Barnes, Elizabeth - Emergence and Fundamentality_(2012)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Chalmers, David J. - The Virtual and the Real_(2016)_[Notes].pdf
+[OK] metaphysics/Fodor, J.A. - Special Sciences (or the Disunity of Science as a Working Hypothesis) (1974).pdf
+[OK] metaphysics/Horgan, Terence - From Supervenience to Superdupervenience-Meeting the Demands of a Material World_(1993)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Emergence-Core Ideas and Issues_(2006)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Explanatory Realism, Causal Realism, and Explanatory Exclusion_(1988)_[Clean Copy].pdf
+[OK] metaphysics/Kim, Jaegwon - Supervenience as a Philosophical Concept_(1990)_[Clean Copy].pdf
+[OK] metaphysics/McDonnell, Neil and Wildman, Nathan - Virtual Reality- Digital or Fictional_(2019)_[Clean Copy].pdf
+[OK] metaphysics/Metzinger, Thomas K. - Why Is Virtual Reality Interesting for Philosophers_(2018)_[Clean Copy].pdf
+[OK] metaphysics/Ney, Alyssa - On Phenomenal Functionalism about the Properties of Virtual and Non-virtual Objects_(2019)_[Clean Copy].pdf
+[OK] metaphysics/O'Connor, Timothy and Wong, Hong - The Metaphysics of Emergence_(2005)_[Clean Copy].pdf
+[OK] metaphysics/Raven, Michael - Fundamentality without Foundations_(2016)_[Clean Copy].pdf
+[OK] metaphysics/Silcox, Mark - The Transition into Virtual Reality_(2019)_[Clean Copy].pdf
+[OK] new_media/Calleja, Gordon - In-Game- From Immersion to Incorporation_(2011)_[My Copy].pdf
+[OK] new_media/Fink, Phillip, Foo, Patrick, Warren, WIlliam - Catching fly balls in virtual reality a critical test of the outfielder problem_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Metaphysics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Movement Of Animals_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Colours_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Memory_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On The Soul (De Anima)_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - On Things Heard_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Physics_(2014)_[My Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Rhetoric_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Aristotle - Sense And Sensibilia_(2014)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Bowin, John - Aristotle on the Perception and Cognition of Time_(2017)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+[OK] rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle_(1992)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gonzalez, Jose M. - The Meaning and Function of Phantasia in Aristotle's 'Rhetoric' III.1_(2006)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_(2017)_[My Copy].pdf
+[OK] rhetorical_ontology/Hawhee, Debra - Looking Into Aristotle's Eyes- Toward a Theory of Rhetorical Vision_(2011)_[My Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf
+[OK] rhetorical_ontology/Multiple Authors - Heidegger and Rhetoric_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/O'Gorman, Ned - Aristotle's Phantasia in the Rhetoric- Lexis, Appearance, and the Epideictic Function of Discourse_(2005)_[My Copy].pdf
+[OK] rhetorical_ontology/Papachristou, Christina - Three Kinds or Grades of Phantasia in Aristotle's De Anima_(2013)_[Clean Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - It Is All There-From Reason to Reasoning-in-the-World_(2019)_[My Copy].pdf
+[OK] rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+[OK] rhetorical_ontology/White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8_(1985)_[My Copy].pdf
+[OK] rhetorical_ontology/von Uexkull, Jacob - A Foray Into the Worlds of Animals and Humans with A Theory of Meaning_(1934)_[Clean Copy].pdf
+
+--- VERIFY REPORT (OK) ---
+OK=50 FAIL=0 TOTAL=50
+[PHASE4_VERIFY_OK]
+- query='phantasia and action'
+- retrieved=8
+- tmp_json=/tmp/retrieval_phase4_verify.json
+[OK] Wrote:
+  /tmp/no_hl.txt
+  /tmp/with_hl.txt
+Diff (first 120 lines):
+--- /tmp/no_hl.txt	2026-03-26 22:31:43.478225088 -0700
++++ /tmp/with_hl.txt	2026-03-26 22:31:44.804553891 -0700
+@@ -6,51 +6,51 @@
+ 
+ [RESULTS]
+ 
+-01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  (raw_rank=1)
++01. chunk_id=c2cb9cd00b7724ed:00156  distance=0.7484066486358643  final_score=0.7484066486358643  hl_count=0  boost=0.0000  (raw_rank=1)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=303-305
+ 
+-02. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  (raw_rank=2)
++02. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  final_score=0.8132696557044983  hl_count=1  boost=0.0200  (raw_rank=4)
++    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
++    pages=22-24
++
++03. chunk_id=0950ef01880ad8ae:00085  distance=0.8133007287979126  final_score=0.8133007287979126  hl_count=0  boost=0.0000  (raw_rank=2)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Grammar of Motives_(1945)_[My Copy].pdf
+     pages=167-169
+ 
+-03. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  (raw_rank=3)
++04. chunk_id=c2cb9cd00b7724ed:00143  distance=0.8137480616569519  final_score=0.8137480616569519  hl_count=0  boost=0.0000  (raw_rank=3)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=279-281
+ 
+-04. chunk_id=9ae14153cdb6ed0e:00007  distance=0.8332696557044983  (raw_rank=4)
+-    path_rel=rhetorical_ontology/Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action_(1985)_[My Copy].pdf
+-    pages=22-24
+-
+-05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  (raw_rank=6)
++05. chunk_id=39640bbbf94c2700:00168  distance=0.851164698600769  final_score=0.851164698600769  hl_count=0  boost=0.0000  (raw_rank=6)
+     path_rel=rhetorical_ontology/Gibson, James J. - The Ecological Approach to Visual Perception._(2015)_[Clean Copy].pdf
+     pages=292-292
+ 
+-06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  (raw_rank=7)
++06. chunk_id=c2cb9cd00b7724ed:00150  distance=0.8536148071289062  final_score=0.8536148071289062  hl_count=0  boost=0.0000  (raw_rank=7)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=294-294
+ 
+-07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  (raw_rank=8)
++07. chunk_id=1d5b0ffe62ad9280:00011  distance=0.864859938621521  final_score=0.864859938621521  hl_count=0  boost=0.0000  (raw_rank=8)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Towards Ecosophy in a Participating World-Rhetoric and Cosmology in Heidegger's Fourfold and Empedocles' Four Roots_(2018)_[My Copy].pdf
+     pages=18-18
+ 
+-08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  (raw_rank=9)
++08. chunk_id=ab2442b48417ead0:00127  distance=0.8705873489379883  final_score=0.8705873489379883  hl_count=0  boost=0.0000  (raw_rank=9)
+     path_rel=rhetorical_ontology/Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being_(2013)_[My Copy].pdf
+     pages=215-215
+ 
+-09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  (raw_rank=10)
++09. chunk_id=ff34260f396f650d:00016  distance=0.8722628355026245  final_score=0.8722628355026245  hl_count=0  boost=0.0000  (raw_rank=10)
+     path_rel=rhetorical_ontology/Caston, Victor - Why Aristotle Needs Imagination_(1995)_[Clean Copy].pdf
+     pages=13-14
+ 
+-10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  (raw_rank=11)
++10. chunk_id=c2cb9cd00b7724ed:00081  distance=0.8786800503730774  final_score=0.8786800503730774  hl_count=0  boost=0.0000  (raw_rank=11)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=162-164
+ 
+-11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  (raw_rank=12)
++11. chunk_id=c2cb9cd00b7724ed:00007  distance=0.8806346654891968  final_score=0.8806346654891968  hl_count=0  boost=0.0000  (raw_rank=12)
+     path_rel=rhetorical_ontology/Burke, Kenneth - A Rhetoric of Motives_(1950)_[My Copy].pdf
+     pages=24-26
+ 
+-12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  (raw_rank=13)
++12. chunk_id=6d64ae02ba913fc7:00140  distance=0.8811410665512085  final_score=0.8811410665512085  hl_count=0  boost=0.0000  (raw_rank=13)
+     path_rel=rhetorical_ontology/Burke, Kenneth - The War of Words_(2018)_[My Copy].pdf
+     pages=252-254
+ 
+[god-learn] $ python3 scripts/learn/promote_hits.py --hits_json /tmp/phase4_hits.json --query Vorhandenheit and Zuhandenheit present-at-hand
+22:31:46 [INFO    ] god-learn.phase6.promote: Starting promotion [hits_json=/tmp/phase4_hits.json, query=Vorhandenheit and Zuhandenheit present-at-hand, min_chars=40, max_units=0, dry_run=False]
+22:31:46 [INFO    ] god-learn.phase6.promote: Promotion complete [promoted=8, total_indexed=50, knowledge_file=god-learn/knowledge.jsonl, index_file=god-learn/index.json]
+[Phase6:promote_hits] promoted=8 total_indexed=50
+[Phase6:promote_hits] wrote: god-learn/knowledge.jsonl
+[Phase6:promote_hits] index: god-learn/index.json
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 4
+[god-learn] normalize: sorted 50 KUs and rebuilt index (50 offsets)
+[god-learn] $ python3 scripts/learn/verify_knowledge.py --strict_order
+[Phase6:verify] ERROR: Missing field tags on line 4
