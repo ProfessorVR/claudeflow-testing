@@ -1,0 +1,105 @@
+{
+  "id": "aae3281e-b77d-4240-9173-cf77b12747f3",
+  "model": "sonar-pro",
+  "created": 1776579168,
+  "usage": {
+    "prompt_tokens": 166,
+    "completion_tokens": 834,
+    "total_tokens": 1000,
+    "search_context_size": "low",
+    "cost": {
+      "input_tokens_cost": 0.0005,
+      "output_tokens_cost": 0.01251,
+      "request_cost": 0.006,
+      "total_cost": 0.01901
+    }
+  },
+  "citations": [
+    "https://www.vldb.org/2025/Workshops/VLDB-Workshops-2025/TaDA/TaDA25_16.pdf",
+    "https://arxiv.org/abs/2502.10855",
+    "https://www.microsoft.com/en-us/research/publication/towards-effective-extraction-and-evaluation-of-factual-claims/",
+    "https://arxiv.org/html/2502.04955v1",
+    "https://ceur-ws.org/Vol-4038/paper_103.pdf",
+    "https://www.semanticscholar.org/paper/Claim-Extraction-for-Fact-Checking:-Data,-Models,-Ullrich-Mlyn%C3%A1r/d4380d477d85a9c92d6d18d83a61701987841bd0",
+    "https://aclanthology.org/2026.propor-1.89.pdf",
+    "https://academic.oup.com/jrs/advance-article/doi/10.1093/jrs/feag001/8467098"
+  ],
+  "search_results": [
+    {
+      "title": "[PDF] Towards Fine-Grained Extraction of Scientific Claims from ...",
+      "url": "https://www.vldb.org/2025/Workshops/VLDB-Workshops-2025/TaDA/TaDA25_16.pdf",
+      "last_updated": "2026-03-16",
+      "snippet": "To evaluate the quality of the extracted contextual information, we introduce a second evaluation step based on the precision and recall of specification el-.",
+      "source": "web"
+    },
+    {
+      "title": "Towards Effective Extraction and Evaluation of Factual Claims - arXiv",
+      "url": "https://arxiv.org/abs/2502.10855",
+      "date": "2025-02-15",
+      "last_updated": "2026-03-23",
+      "snippet": "We propose a framework for evaluating claim extraction in the context of fact-checking along with automated, scalable, and replicable methods for applying this ...",
+      "source": "web"
+    },
+    {
+      "title": "Towards Effective Extraction and Evaluation of Factual Claims",
+      "url": "https://www.microsoft.com/en-us/research/publication/towards-effective-extraction-and-evaluation-of-factual-claims/",
+      "date": "2025-02-15",
+      "last_updated": "2026-02-19",
+      "snippet": "We propose a framework for evaluating claim extraction and introduce Claimify, an LLM-based method that outperforms prior solutions.",
+      "source": "web"
+    },
+    {
+      "title": "Claim Extraction for Fact-Checking: Data, Models, and Automated ...",
+      "url": "https://arxiv.org/html/2502.04955v1",
+      "date": "2025-02-07",
+      "last_updated": "2026-02-16",
+      "snippet": "In this paper, we explore the abstractive methods of claim extraction, modelled as one-to-many text-to-text task.",
+      "source": "web"
+    },
+    {
+      "title": "[PDF] Fine-tuning Vs Prompting in Claim Extraction - CEUR-WS.org",
+      "url": "https://ceur-ws.org/Vol-4038/paper_103.pdf",
+      "date": "2025-09-09",
+      "last_updated": "2026-04-06",
+      "snippet": "However, we observe that higher-quality claims can sometimes be extracted using other methods, even when their METEOR scores are lower. 1.",
+      "source": "web"
+    },
+    {
+      "title": "Claim Extraction for Fact-Checking: Data, Models, and Automated ...",
+      "url": "https://www.semanticscholar.org/paper/Claim-Extraction-for-Fact-Checking:-Data,-Models,-Ullrich-Mlyn%C3%A1r/d4380d477d85a9c92d6d18d83a61701987841bd0",
+      "snippet": "This paper explores the problem of Claim Extraction using one-to-many text generation methods, comparing LLMs, small summarization models finetuned for the ...",
+      "source": "web"
+    },
+    {
+      "title": "[PDF] Evaluating Reference-Free Summarization Quality Metrics for ...",
+      "url": "https://aclanthology.org/2026.propor-1.89.pdf",
+      "date": "2026-04-13",
+      "last_updated": "2026-04-13",
+      "snippet": "This work evaluates the efficacy of Question Answering (QA) based metrics against a direct LLM-as-a-Judge base- line for Portuguese financial ...",
+      "source": "web"
+    },
+    {
+      "title": "Field reflections from training Finnish asylum officials",
+      "url": "https://academic.oup.com/jrs/advance-article/doi/10.1093/jrs/feag001/8467098",
+      "date": "2026-02-08",
+      "last_updated": "2026-04-18",
+      "snippet": "Abstract. Evaluating asylum claims has been described as one of the most challenging forms of decision-making in the modern state.",
+      "source": "web"
+    }
+  ],
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Claim-extraction quality in the 2024-2026 literature is primarily evaluated using **precision, recall, and F1-score** for matching extracted claims to ground-truth sets, often extended to subcomponents like specifications (e.g., experimental contexts such as datasets or treatments), alongside LLM-as-a-judge protocols for semantic and factual accuracy.[1] Additional metrics include faithfulness (via LLM judgment or reference-based checks), coverage/decontextualization (measuring completeness and standalone interpretability of claims), atomicity (ensuring single-entity/relation claims), fluency (e.g., via Scribendi score combining perplexity and Levenshtein distance post-grammatical error correction), and focus (relevance to input).[4][1]\n\n### Key Evaluation Practices\n- **Precision/Recall/F1**: Standard for claim matching; penalizes duplicates (lowering precision) or fragmented extractions (lowering recall). GPT-4o excels in precision/F1, Llama3-70B in recall across 1-shot pipelines on scientific/medical texts.[1]\n- **Inter-annotator Agreement**: Not directly reported for argument components in these results; thin evidence overall, as focus is on automated metrics over manual annotation challenges like exploding claim counts from complex sentences.[4]\n- **BERTScore/ROUGE/METEOR**: Used sparingly; METEOR (0.2541 on validation) assesses reference-style summaries but undervalues higher-quality claims; ROUGE/BERTScore implied in fluency but not dominant.[5]\n- **Faithfulness Metrics**: LLM-as-a-judge evaluates extracted triples/claims against ground-truth for factual/semantic accuracy; also via reduction to NLP tasks (e.g., post-CoEdIT correction scoring). F_fact (hardest faithfulness metric) aligns closely with human F1/RMSE.[4][1]\n- **Citation-Groundedness Tests**: Absent in results; no explicit mention.\n- **LLM-as-Judge Protocols**: Core for specifications, decontextualization, and overall quality; scalable for fact-checking pipelines like Claimify, outperforming baselines on coverage.[1][2][3]\n\nLiterature lacks 2025-2026 primary ACL/EMNLP/NAACL papers here; evidence centers on VLDB workshops (TaDA'25), arXiv preprints (2025), and CEUR (fine-tuning vs. prompting).[1][2][4][5] No philosophical prose-specific evaluations.\n\n### Recommendations for Small Gold Set (~20-50 Claims) over Philosophical Prose\nFor limited data, prioritize scalable, reference-based automation over exhaustive annotation:\n\n| Strategy | Metrics | Rationale & Implementation |\n|----------|---------|----------------------------|\n| **Core Matching** | Precision/Recall/F1 | Exact/semantic matching (e.g., LLM-judged triples) to ground-truth claims; handles philosophical ambiguity via 1-shot prompting on GPT-4o/Llama3-70B.[1] |\n| **Quality Checks** | Faithfulness, Atomicity, Decontextualization, Fluency | LLM-as-judge per claim (e.g., \"Is this faithful/atomic/standalone?\"); CoEdIT + Scribendi for fluency; validate via 5-10 human spot-checks.[4][1] |\n| **Set-Level** | Coverage/Focus | NER recall (e.g., NameTag) on gold vs. extracted claims (~67% baseline feasible); aggregate F1.[4] |\n| **Bootstrap** | LLM-as-Judge Ensemble | Chain-of-thought prompts on 2-3 LLMs; correlate with human grading on 20-sample subset for calibration. Avoid METEOR/ROUGE due to paraphrase insensitivity in argumentative prose.[5][4] |\n\nThis hybrid approximates human evaluation (low RMSE on F_fact) while scaling to ~50 claims; thin philosophical benchmarks necessitate custom gold annotation emphasizing logical atomicity.[4]"
+      },
+      "delta": {
+        "role": "assistant",
+        "content": ""
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

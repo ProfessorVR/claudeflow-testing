@@ -1,0 +1,1577 @@
+{
+  "kind": "provisional-diagnostic",
+  "plan_phase": "E0-lite (not formal E0)",
+  "note": "Prompt-injection telemetry only. Runs no LLM. Not comparable to formal E0 which requires gold dev F1 + holdout F1 + god-write A/B.",
+  "generated_at": "2026-04-19T17:54:41Z",
+  "provenance": {
+    "sandbox_sha": "54c2ba1fec70775e57274fa3eeb9b42f1da8a4b8",
+    "artifact_manifest_hash": "620ffd9396d5e53d71ab39ed9e2bdca23ac4681a7a5603b17a4b3e8281420a6e",
+    "canonical_prompt_suite_hash": "80e76b57f5fefc8814c0f23c801cddce8dc351137052b6992074dc826883eea4"
+  },
+  "canonical_suite_version": 1,
+  "corpus_stats": {
+    "ontology_nodes": 1990,
+    "cross_pipeline_hooks": 558,
+    "tension_edges": 45,
+    "claims": 1145,
+    "concept_mentions": 3391,
+    "canonical_terms": 873
+  },
+  "telemetry": [
+    {
+      "prompt_id": "phantasia-action",
+      "label": "Phantasia / action",
+      "topic": "Discuss Aristotle's account of phantasia and its role in practical reasoning, drawing on De Anima III.3 and the relevant commentators.",
+      "activation": {
+        "ontology_lines": 12,
+        "hook_lines": 3,
+        "claim_lines": 6,
+        "tension_lines": 5
+      },
+      "claim_eval": {
+        "total_evaluated": 1145,
+        "total_filtered_out": 56
+      },
+      "distinct_authors_activated": [
+        "Aristotle",
+        "Aristotle c. 350 BCE",
+        "Caston, Victor 1995",
+        "Frede, Dorothea",
+        "Frede, Dorothea 1992",
+        "O'Gorman, Ned",
+        "Rickert",
+        "White, Kevin"
+      ],
+      "expected_authors": [
+        "Aristotle",
+        "Caston",
+        "Frede",
+        "Nussbaum"
+      ],
+      "expected_missing": [
+        "Nussbaum"
+      ],
+      "ontology_top": [
+        {
+          "name": "Movement/Change",
+          "greek": "κίνησις",
+          "score": 4,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Imagination",
+          "greek": "φαντασία",
+          "score": 3,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "κίνησις",
+          "greek": "κίνησις",
+          "score": 3,
+          "centrality": "core",
+          "type": "ontological-psychological"
+        },
+        {
+          "name": "Perception",
+          "greek": "αἴσθησις",
+          "score": 2,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Soul",
+          "greek": "ψυχή",
+          "score": 2,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Logos",
+          "greek": "λόγος",
+          "score": 2,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Image",
+          "greek": "φάντασμα",
+          "score": 2,
+          "centrality": "important",
+          "type": "important"
+        },
+        {
+          "name": "λόγος",
+          "greek": "λόγος",
+          "score": 2,
+          "centrality": "important",
+          "type": "ontological-psychological"
+        },
+        {
+          "name": "Formula / Account",
+          "greek": "λόγος",
+          "score": 2,
+          "centrality": "important",
+          "type": "important"
+        },
+        {
+          "name": "πέψις (maturation)",
+          "greek": "πέψις",
+          "score": 2,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Chance / Spontaneity",
+          "greek": "τύχη / τὸ αὐτόματον",
+          "score": 2,
+          "centrality": "medium",
+          "type": "medium"
+        },
+        {
+          "name": "Curiosity",
+          "greek": "Neugier",
+          "score": 2,
+          "centrality": "peripheral",
+          "type": "concept"
+        }
+      ],
+      "hook_top": [
+        {
+          "id": "bridge-cand-aristotle-da-3.3-014",
+          "sourceText": "Aristotle c. 350 BCE",
+          "targetText": "Rickert",
+          "sourceConcept": "phantasia as distinct from aisthesis and dianoia",
+          "targetConcept": "κίνησις (DA) → Ambient Rhetoric",
+          "tag": "INTERP-high-AUTO",
+          "score": 7,
+          "auto_generated": true
+        },
+        {
+          "id": "hook-caston-1995-arist-φαντασία-βουλευτική---αἰσθητική",
+          "sourceText": "Caston, Victor 1995",
+          "targetText": "Aristotle",
+          "sourceConcept": "phantasia",
+          "targetConcept": "φαντασία βουλευτική / αἰσθητική",
+          "tag": "INTERP-direct-AUTO",
+          "score": 5,
+          "auto_generated": true
+        },
+        {
+          "id": "hook-frede-1992-arist-phenomenology",
+          "sourceText": "Frede, Dorothea 1992",
+          "targetText": "Aristotle",
+          "sourceConcept": "minimal account",
+          "targetConcept": "Phenomenology",
+          "tag": "INTERP-direct-AUTO",
+          "score": 5,
+          "auto_generated": true
+        }
+      ],
+      "claim_top": [
+        {
+          "id": "claim-white-1985-001",
+          "speaker": "White, Kevin",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "exegetical_claim",
+          "faithfulness": "partial",
+          "claim": "Aristotle's treatment of phantasia in De Anima III.3 occurs at a critical juncture between his account of sensation and his account of nous.",
+          "source_author": "White, Kevin",
+          "source_year": "1985",
+          "score": 13
+        },
+        {
+          "id": "claim-ogorman-2005-086",
+          "speaker": "O'Gorman, Ned",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "subsidiary_claim",
+          "faithfulness": "supported",
+          "claim": "De Anima's discussion of phantasia illuminates Aristotle's ambivalence toward lexis in Rhetoric book 3 because phantasia, while integral to cognition, is vulner",
+          "source_author": "O'Gorman, Ned",
+          "source_year": "2005",
+          "score": 12
+        },
+        {
+          "id": "claim-frede-1992-011",
+          "speaker": "Frede, Dorothea",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "methodological_claim",
+          "faithfulness": "supported",
+          "claim": "Frede's methodological strategy is to offer a 'minimal account' of phantasia's role in DA 3.3 and verify it against the rest of De Anima and related texts.",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 11
+        },
+        {
+          "id": "claim-white-1985-113",
+          "speaker": "Aristotle",
+          "use_mention": "mention",
+          "stance": "reports_neutral",
+          "claim_type": "exegetical_claim",
+          "faithfulness": "supported",
+          "claim": "Aristotle uses the discussion of animal locomotion as an occasion to examine moral topics including practical intellect, practical syllogism, choice, wish, desi",
+          "source_author": "White, Kevin",
+          "source_year": "1985",
+          "score": 11
+        },
+        {
+          "id": "claim-white-1985-192",
+          "speaker": "Aristotle",
+          "use_mention": "mention",
+          "stance": "reports_neutral",
+          "claim_type": "textual_claim",
+          "faithfulness": "supported",
+          "claim": "Although Aristotle initially distinguishes animals with and without phantasia, he ultimately grants all animals, even the most primitive, an indeterminate form ",
+          "source_author": "White, Kevin",
+          "source_year": "1985",
+          "score": 11
+        },
+        {
+          "id": "claim-frede-1992-071",
+          "speaker": "Frede, Dorothea",
+          "use_mention": "use",
+          "stance": "critiques",
+          "claim_type": "critical_claim",
+          "faithfulness": "supported",
+          "claim": "Schofield's sceptical reading of phantasia is one-sided because it neglects phantasia's role in memory, thinking, and decision-making, and ignores the causal ac",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 10
+        }
+      ],
+      "tension_top": [
+        {
+          "id": "CT-04",
+          "nodeA": "phantasia (DA III.3: kinesis from actual sensation — causally derived)",
+          "nodeB": "phantasia (DA/Rhet/Mem/MA: functionally autonomous in dreams, deliberation, rhetoric, involuntary movement)",
+          "score": 4
+        },
+        {
+          "id": "CT-05",
+          "nodeA": "telos (Phys II.8: nature acts for an end without deliberating)",
+          "nodeB": "techne (Phys II.8: art acts purposively through deliberation)",
+          "score": 2
+        },
+        {
+          "id": "CT-06",
+          "nodeA": "practical syllogism (MA ch. 7: universal major + particular minor = action)",
+          "nodeB": "orexis (MA/DA: desire as proximate efficient cause of locomotion)",
+          "score": 2
+        },
+        {
+          "id": "CT-01",
+          "nodeA": "energeia (Met Theta: ontological priority)",
+          "nodeB": "energeia (Rhet III.11: rhetorical vividness)",
+          "score": 1
+        },
+        {
+          "id": "CT-02",
+          "nodeA": "psyche (DA II.1: first entelecheia of natural body; inseparable from body)",
+          "nodeB": "nous (DA III.5: active nous is separable, immortal, eternal)",
+          "score": 1
+        }
+      ],
+      "tests_per_plan": [
+        "active-claims block firing",
+        "use-mention discipline on secondary-lit",
+        "cross-pipeline bridge injection"
+      ]
+    },
+    {
+      "prompt_id": "perception-sense",
+      "label": "Perception / sense",
+      "topic": "Analyze Aristotle's theory of perception and the common sense (koinē aisthēsis) in De Anima III, with attention to how phantasia mediates between perception and thought.",
+      "activation": {
+        "ontology_lines": 12,
+        "hook_lines": 3,
+        "claim_lines": 6,
+        "tension_lines": 5
+      },
+      "claim_eval": {
+        "total_evaluated": 1145,
+        "total_filtered_out": 56
+      },
+      "distinct_authors_activated": [
+        "Aristotle",
+        "Frede, Dorothea",
+        "Frede, Dorothea 1992"
+      ],
+      "expected_authors": [
+        "Aristotle",
+        "Caston",
+        "Frede",
+        "Papachristou"
+      ],
+      "expected_missing": [
+        "Caston",
+        "Papachristou"
+      ],
+      "ontology_top": [
+        {
+          "name": "Merkzeichen (perception sign)",
+          "greek": "*Merkzeichen*",
+          "score": 8,
+          "centrality": "core",
+          "type": "perceptual"
+        },
+        {
+          "name": "μνήμη",
+          "greek": "μνήμη",
+          "score": 7,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Funktionskreis (functional cycle)",
+          "greek": "*Funktionskreis*",
+          "score": 6,
+          "centrality": "core",
+          "type": "biosemiotic"
+        },
+        {
+          "name": "Merkbild / Wahrnehmungsbild (perception image)",
+          "greek": "*Merkbild / Wahrnehmungsbild*",
+          "score": 6,
+          "centrality": "important",
+          "type": "perceptual"
+        },
+        {
+          "name": "Perception",
+          "greek": "αἴσθησις",
+          "score": 5,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Imagination",
+          "greek": "φαντασία",
+          "score": 5,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Memory",
+          "greek": "μνήμη",
+          "score": 5,
+          "centrality": "important",
+          "type": "important"
+        },
+        {
+          "name": "ὕλη",
+          "greek": "ὕλη",
+          "score": 5,
+          "centrality": "important",
+          "type": "ontological"
+        },
+        {
+          "name": "κοινὴ αἴσθησις",
+          "greek": "κοινὴ αἴσθησις",
+          "score": 5,
+          "centrality": "important",
+          "type": "psychological"
+        },
+        {
+          "name": "Within-time-ness",
+          "greek": "Innerzeitigkeit",
+          "score": 5,
+          "centrality": "important",
+          "type": "concept"
+        },
+        {
+          "name": "Reality",
+          "greek": "Realität",
+          "score": 5,
+          "centrality": "peripheral",
+          "type": "concept"
+        },
+        {
+          "name": "Movement/Change",
+          "greek": "κίνησις",
+          "score": 4,
+          "centrality": "core",
+          "type": "core"
+        }
+      ],
+      "hook_top": [
+        {
+          "id": "hook-frede-1992-arist-perception",
+          "sourceText": "Frede, Dorothea 1992",
+          "targetText": "Aristotle",
+          "sourceConcept": "phantasia",
+          "targetConcept": "Perception",
+          "tag": "INTERP-direct-AUTO",
+          "score": 15,
+          "auto_generated": true
+        },
+        {
+          "id": "hook-frede-1992-arist-image",
+          "sourceText": "Frede, Dorothea 1992",
+          "targetText": "Aristotle",
+          "sourceConcept": "phantasia",
+          "targetConcept": "Image",
+          "tag": "INTERP-direct-AUTO",
+          "score": 11,
+          "auto_generated": true
+        },
+        {
+          "id": "hook-frede-1992-arist-φαντασία",
+          "sourceText": "Frede, Dorothea 1992",
+          "targetText": "Aristotle",
+          "sourceConcept": "phantasia",
+          "targetConcept": "φαντασία",
+          "tag": "INTERP-direct-AUTO",
+          "score": 11,
+          "auto_generated": true
+        }
+      ],
+      "claim_top": [
+        {
+          "id": "claim-frede-1992-020",
+          "speaker": "Aristotle",
+          "use_mention": "mention",
+          "stance": "reports_neutral",
+          "claim_type": "textual_claim",
+          "faithfulness": "supported",
+          "claim": "Aristotle defines phantasia as a motion that cannot occur without sense-perception, arises from sense-perception's activity, and resembles perception.",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 24
+        },
+        {
+          "id": "claim-frede-1992-109",
+          "speaker": "Frede, Dorothea",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "interpretive_claim",
+          "faithfulness": "partial",
+          "claim": "Frede interprets Aristotle's claim in APo. 2.19 that aisthesis grasps the universal as referring to collected phantasiai rather than individual sense-perception",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 22
+        },
+        {
+          "id": "claim-frede-1992-022",
+          "speaker": "Frede, Dorothea",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "interpretive_claim",
+          "faithfulness": "supported",
+          "claim": "The phantasia following perception of a sense's proper object (idion) is true while perception lasts but can become false once perception ceases.",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 20
+        },
+        {
+          "id": "claim-frede-1992-037",
+          "speaker": "Frede, Dorothea",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "primary_thesis",
+          "faithfulness": "supported",
+          "claim": "Frede identifies two main functions of phantasia: (1) synthesis and retention of sense-perceptions, and (2) application of thought to objects of sense-perceptio",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 19
+        },
+        {
+          "id": "claim-frede-1992-084",
+          "speaker": "Frede, Dorothea",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "interpretive_claim",
+          "faithfulness": "supported",
+          "claim": "In Aristotle's precise usage, sense-perception is confined to the present moment of perceptual contact, so what we loosely call sense-perceptions in a wider sen",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 19
+        },
+        {
+          "id": "claim-frede-1992-055",
+          "speaker": "Aristotle",
+          "use_mention": "mention",
+          "stance": "reports_neutral",
+          "claim_type": "textual_claim",
+          "faithfulness": "supported",
+          "claim": "Aristotle calls inner-sense imprints both 'perceptions and imaginations' and asserts phantasiai arise even while perception is active and the object present.",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 16
+        }
+      ],
+      "tension_top": [
+        {
+          "id": "T4",
+          "nodeA": "Suchbild",
+          "nodeB": "Merkbild",
+          "score": 9
+        },
+        {
+          "id": "CT-07",
+          "nodeA": "nous (DA III.4: impassible, unmixed, without nature of its own)",
+          "nodeB": "phantasma (DA III.7: the soul never thinks without an image)",
+          "score": 6
+        },
+        {
+          "id": "T5",
+          "nodeA": "magische_Umwelt",
+          "nodeB": "Funktionskreis",
+          "score": 5
+        },
+        {
+          "id": "CT-04",
+          "nodeA": "phantasia (DA III.3: kinesis from actual sensation — causally derived)",
+          "nodeB": "phantasia (DA/Rhet/Mem/MA: functionally autonomous in dreams, deliberation, rhetoric, involuntary movement)",
+          "score": 4
+        },
+        {
+          "id": "T5",
+          "nodeA": "Being-towards-death",
+          "nodeB": "Being-with",
+          "score": 3
+        }
+      ],
+      "tests_per_plan": [
+        "ontology-node ranking",
+        "Greek-term expansion"
+      ]
+    },
+    {
+      "prompt_id": "methodology",
+      "label": "Methodology",
+      "topic": "Describe the dialectical method Aristotle uses in De Anima, specifically how he engages predecessor views while developing his own account of the soul.",
+      "activation": {
+        "ontology_lines": 12,
+        "hook_lines": 3,
+        "claim_lines": 6,
+        "tension_lines": 5
+      },
+      "claim_eval": {
+        "total_evaluated": 1145,
+        "total_filtered_out": 56
+      },
+      "distinct_authors_activated": [
+        "Aristotle c. 350 BCE",
+        "B&T",
+        "BCAP",
+        "Caston, Victor",
+        "Frede, Dorothea",
+        "Heidegger, Martin 2009",
+        "White, Kevin"
+      ],
+      "expected_authors": [
+        "Aristotle",
+        "Bowin",
+        "Caston"
+      ],
+      "expected_missing": [
+        "Bowin"
+      ],
+      "ontology_top": [
+        {
+          "name": "Cause",
+          "greek": "αἴτιον / αἰτία",
+          "score": 3,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "End/Purpose",
+          "greek": "τέλος",
+          "score": 3,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Logos",
+          "greek": "λόγος",
+          "score": 2,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Formula / Account",
+          "greek": "λόγος",
+          "score": 2,
+          "centrality": "important",
+          "type": "important"
+        },
+        {
+          "name": "Phenomenology",
+          "greek": "Phänomenologie",
+          "score": 2,
+          "centrality": "peripheral",
+          "type": "method"
+        },
+        {
+          "name": "Movement/Change",
+          "greek": "κίνησις",
+          "score": 1,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Imagination",
+          "greek": "φαντασία",
+          "score": 1,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Soul",
+          "greek": "ψυχή",
+          "score": 1,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Emotion",
+          "greek": "πάθος",
+          "score": 1,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Image",
+          "greek": "φάντασμα",
+          "score": 1,
+          "centrality": "important",
+          "type": "important"
+        },
+        {
+          "name": "State/Disposition",
+          "greek": "ἕξις",
+          "score": 1,
+          "centrality": "important",
+          "type": "important"
+        },
+        {
+          "name": "Principle",
+          "greek": "ἀρχή",
+          "score": 1,
+          "centrality": "important",
+          "type": "important"
+        }
+      ],
+      "hook_top": [
+        {
+          "id": "bridge-cand-heidegger-bcap-014",
+          "sourceText": "Heidegger, Martin 2009",
+          "targetText": "BCAP",
+          "sourceConcept": "λόγος as exhibiting/showing (ἀποφαίνεσθαι)",
+          "targetConcept": "",
+          "tag": "INTERP-medium-AUTO",
+          "score": 4,
+          "auto_generated": true
+        },
+        {
+          "id": "bridge-cand-aristotle-da-3.3-013",
+          "sourceText": "Aristotle c. 350 BCE",
+          "targetText": "B&T",
+          "sourceConcept": "phantasia as distinct faculty",
+          "targetConcept": "Erschlossenheit / Being-in-the-World",
+          "tag": "INTERP-high-AUTO",
+          "score": 3,
+          "auto_generated": true
+        },
+        {
+          "id": "bridge-cand-heidegger-bcap-008",
+          "sourceText": "Heidegger, Martin 2009",
+          "targetText": "BCAP",
+          "sourceConcept": "λόγος as ὁρισμός (definition) addressing οὐσία",
+          "targetConcept": "",
+          "tag": "INTERP-high-AUTO",
+          "score": 3,
+          "auto_generated": true
+        }
+      ],
+      "claim_top": [
+        {
+          "id": "claim-white-1985-058",
+          "speaker": "White, Kevin",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "interpretive_claim",
+          "faithfulness": "supported",
+          "claim": "A key difference between Plato and Aristotle on 'phantasma' is that Plato applies it to all reflected appearances (visible, verbal, mental), whereas Aristotle r",
+          "source_author": "White, Kevin",
+          "source_year": "1985",
+          "score": 8
+        },
+        {
+          "id": "claim-white-1985-070",
+          "speaker": "Aristotle",
+          "use_mention": "mention",
+          "stance": "reports_neutral",
+          "claim_type": "textual_claim",
+          "faithfulness": "partial",
+          "claim": "De Anima I,1 is introductory, and I,2–5 follow Aristotle's standard doxographical method of surveying predecessors' views.",
+          "source_author": "White, Kevin",
+          "source_year": "1985",
+          "score": 8
+        },
+        {
+          "id": "claim-caston-1995-025",
+          "speaker": "Caston, Victor",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "subsidiary_claim",
+          "faithfulness": "supported",
+          "claim": "Even if Aristotle's account of sensation and conception had resources to explain failure of intersubstitutivity, Aristotle would be unwilling to use them",
+          "source_author": "Caston, Victor",
+          "source_year": "1995",
+          "score": 7
+        },
+        {
+          "id": "claim-white-1985-001",
+          "speaker": "White, Kevin",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "exegetical_claim",
+          "faithfulness": "partial",
+          "claim": "Aristotle's treatment of phantasia in De Anima III.3 occurs at a critical juncture between his account of sensation and his account of nous.",
+          "source_author": "White, Kevin",
+          "source_year": "1985",
+          "score": 7
+        },
+        {
+          "id": "claim-white-1985-095",
+          "speaker": "Aristotle",
+          "use_mention": "mention",
+          "stance": "reports_neutral",
+          "claim_type": "textual_claim",
+          "faithfulness": "supported",
+          "claim": "Throughout De Anima Book I, movement and cognition recur as the two primary features of the soul in the views of Aristotle's predecessors.",
+          "source_author": "White, Kevin",
+          "source_year": "1985",
+          "score": 7
+        },
+        {
+          "id": "claim-frede-1992-011",
+          "speaker": "Frede, Dorothea",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "methodological_claim",
+          "faithfulness": "supported",
+          "claim": "Frede's methodological strategy is to offer a 'minimal account' of phantasia's role in DA 3.3 and verify it against the rest of De Anima and related texts.",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 6
+        }
+      ],
+      "tension_top": [
+        {
+          "id": "CT-09",
+          "nodeA": "eidos (Met Z.viii: man generates man — form shared across instances)",
+          "nodeB": "eidos (Met Z.xiii: no universal is substance — form must be individual)",
+          "score": 2
+        },
+        {
+          "id": "CT-01",
+          "nodeA": "energeia (Met Theta: ontological priority)",
+          "nodeB": "energeia (Rhet III.11: rhetorical vividness)",
+          "score": 1
+        },
+        {
+          "id": "CT-03",
+          "nodeA": "kinesis (Phys III.2: energeia ateles, incomplete actuality)",
+          "nodeB": "energeia (Met Theta.8: actuality prior in formula, time, substance)",
+          "score": 1
+        },
+        {
+          "id": "CT-10",
+          "nodeA": "chronos (Phys IV.11: number of motion — grounded in motion, mind-independent)",
+          "nodeB": "chronos (Phys IV.14: time qua numbered requires soul as counter)",
+          "score": 1
+        },
+        {
+          "id": "CT-12",
+          "nodeA": "phantasma (Mem: object of contemplation in itself, theorema)",
+          "nodeB": "phantasma (Mem: likeness of the thing remembered, eikon)",
+          "score": 1
+        }
+      ],
+      "tests_per_plan": [
+        "predecessor_report vs dialectical_objection discipline",
+        "refutation structure"
+      ]
+    },
+    {
+      "prompt_id": "virtual-digital",
+      "label": "Virtual / digital (E4 modern-node probe)",
+      "topic": "Draw on the metaphysics-of-emergence and virtual-reality literature to theorize how Aristotelian phantasia might illuminate the phenomenology of virtual perception.",
+      "activation": {
+        "ontology_lines": 12,
+        "hook_lines": 3,
+        "claim_lines": 6,
+        "tension_lines": 3
+      },
+      "claim_eval": {
+        "total_evaluated": 1145,
+        "total_filtered_out": 56
+      },
+      "distinct_authors_activated": [
+        "Aristotle",
+        "Aristotle c. 350 BCE",
+        "Frede, Dorothea",
+        "Nussbaum, Martha",
+        "O'Gorman, Ned",
+        "Rickert",
+        "Unknown ",
+        "White, Kevin"
+      ],
+      "expected_authors": [
+        "Aristotle",
+        "Chalmers",
+        "Metzinger",
+        "Nussbaum"
+      ],
+      "expected_missing": [
+        "Chalmers",
+        "Metzinger"
+      ],
+      "ontology_top": [
+        {
+          "name": "Withdrawal",
+          "greek": "",
+          "score": 4,
+          "centrality": "important",
+          "type": "concept"
+        },
+        {
+          "name": "Phenomenology",
+          "greek": "Phänomenologie",
+          "score": 3,
+          "centrality": "peripheral",
+          "type": "method"
+        },
+        {
+          "name": "Movement/Change",
+          "greek": "κίνησις",
+          "score": 1,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Perception",
+          "greek": "αἴσθησις",
+          "score": 1,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Imagination",
+          "greek": "φαντασία",
+          "score": 1,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Enthymeme",
+          "greek": "ἐνθύμημα",
+          "score": 1,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Image",
+          "greek": "φάντασμα",
+          "score": 1,
+          "centrality": "important",
+          "type": "important"
+        },
+        {
+          "name": "Privation",
+          "greek": "στέρησις",
+          "score": 1,
+          "centrality": "important",
+          "type": "important"
+        },
+        {
+          "name": "Memory",
+          "greek": "μνήμη",
+          "score": 1,
+          "centrality": "important",
+          "type": "important"
+        },
+        {
+          "name": "φαντασία",
+          "greek": "φαντασία",
+          "score": 1,
+          "centrality": "core",
+          "type": "psychological"
+        },
+        {
+          "name": "κίνησις",
+          "greek": "κίνησις",
+          "score": 1,
+          "centrality": "core",
+          "type": "ontological-psychological"
+        },
+        {
+          "name": "οὐσία",
+          "greek": "οὐσία",
+          "score": 1,
+          "centrality": "important",
+          "type": "ontological"
+        }
+      ],
+      "hook_top": [
+        {
+          "id": "bridge-cand-aristotle-da-3.3-014",
+          "sourceText": "Aristotle c. 350 BCE",
+          "targetText": "Rickert",
+          "sourceConcept": "phantasia as distinct from aisthesis and dianoia",
+          "targetConcept": "κίνησις (DA) → Ambient Rhetoric",
+          "tag": "INTERP-high-AUTO",
+          "score": 5,
+          "auto_generated": true
+        },
+        {
+          "id": "hook-nussbaum,-martha-arist-phenomenology",
+          "sourceText": "Nussbaum, Martha",
+          "targetText": "Aristotle",
+          "sourceConcept": "phantasia",
+          "targetConcept": "Phenomenology",
+          "tag": "INTERP-direct-AUTO",
+          "score": 5,
+          "auto_generated": true
+        },
+        {
+          "id": "bridge-cand-nussbaum-014",
+          "sourceText": "Unknown ",
+          "targetText": "Rickert",
+          "sourceConcept": "φαντασία",
+          "targetConcept": "κίνησις (DA) → Ambient Rhetoric",
+          "tag": "INTERP-high-AUTO",
+          "score": 4,
+          "auto_generated": true
+        }
+      ],
+      "claim_top": [
+        {
+          "id": "claim-ogorman-2005-010",
+          "speaker": "Benediktson, D. Thomas",
+          "use_mention": "mention",
+          "stance": "reports_neutral",
+          "claim_type": "textual_claim",
+          "faithfulness": "supported",
+          "claim": "Aristotle's passages on phantasia show that he regarded literature and the visual arts as nearly identical because both present images the soul uses as raw data",
+          "source_author": "O'Gorman, Ned",
+          "source_year": "2005",
+          "score": 9
+        },
+        {
+          "id": "claim-ogorman-2005-086",
+          "speaker": "O'Gorman, Ned",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "subsidiary_claim",
+          "faithfulness": "supported",
+          "claim": "De Anima's discussion of phantasia illuminates Aristotle's ambivalence toward lexis in Rhetoric book 3 because phantasia, while integral to cognition, is vulner",
+          "source_author": "O'Gorman, Ned",
+          "source_year": "2005",
+          "score": 7
+        },
+        {
+          "id": "claim-ogorman-2005-150",
+          "speaker": "O'Gorman, Ned",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "interpretive_claim",
+          "faithfulness": "supported",
+          "claim": "Aristotelian cognitive virtue does not suppress phantasia; instead, higher modes of thought such as contemplation incorporate and build on mental images produce",
+          "source_author": "O'Gorman, Ned",
+          "source_year": "2005",
+          "score": 7
+        },
+        {
+          "id": "claim-frede-1992-016",
+          "speaker": "Frede, Dorothea",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "exegetical_claim",
+          "faithfulness": "supported",
+          "claim": "The initial claim that phantasia is 'up to us' (unlike supposition) is undermined in 3.3 itself, since dreams are not up to us and phantasiai can be true or fal",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 6
+        },
+        {
+          "id": "claim-ogorman-2005-005",
+          "speaker": "O'Gorman, Ned",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "primary_thesis",
+          "faithfulness": "supported",
+          "claim": "Aristotle's phantasia constitutes a conceptual link between his rhetoric and his psychology/phenomenology.",
+          "source_author": "O'Gorman, Ned",
+          "source_year": "2005",
+          "score": 6
+        },
+        {
+          "id": "claim-white-1985-019",
+          "speaker": "White, Kevin",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "methodological_claim",
+          "faithfulness": "supported",
+          "claim": "Although 'imagination' is often the closest English approximation, its post-Aristotelian connotations are extremely inappropriate for rendering Aristotle's phan",
+          "source_author": "White, Kevin",
+          "source_year": "1985",
+          "score": 6
+        }
+      ],
+      "tension_top": [
+        {
+          "id": "CT-04",
+          "nodeA": "phantasia (DA III.3: kinesis from actual sensation — causally derived)",
+          "nodeB": "phantasia (DA/Rhet/Mem/MA: functionally autonomous in dreams, deliberation, rhetoric, involuntary movement)",
+          "score": 3
+        },
+        {
+          "id": "T1",
+          "nodeA": "withdrawal",
+          "nodeB": "disclosure",
+          "score": 3
+        },
+        {
+          "id": "CT-12",
+          "nodeA": "phantasma (Mem: object of contemplation in itself, theorema)",
+          "nodeB": "phantasma (Mem: likeness of the thing remembered, eikon)",
+          "score": 1
+        }
+      ],
+      "tests_per_plan": [
+        "E4 modern-philosophy ontology nodes",
+        "cross-epoch bridging"
+      ]
+    },
+    {
+      "prompt_id": "tension-acknowledgement",
+      "label": "Tension acknowledgement",
+      "topic": "Discuss the tension between Aristotle's claim that phantasia always involves truth-apt representation and the possibility of deceptive or erroneous imagination.",
+      "activation": {
+        "ontology_lines": 12,
+        "hook_lines": 3,
+        "claim_lines": 6,
+        "tension_lines": 5
+      },
+      "claim_eval": {
+        "total_evaluated": 1145,
+        "total_filtered_out": 56
+      },
+      "distinct_authors_activated": [
+        "Aristotle",
+        "Aristotle c. 350 BCE",
+        "Frede, Dorothea",
+        "Frede, Dorothea 1992",
+        "O'Gorman, Ned",
+        "Rickert",
+        "Unknown ",
+        "White, Kevin"
+      ],
+      "expected_authors": [
+        "Aristotle",
+        "Caston",
+        "Frede",
+        "Nussbaum"
+      ],
+      "expected_missing": [
+        "Caston",
+        "Nussbaum"
+      ],
+      "ontology_top": [
+        {
+          "name": "Being-towards-death",
+          "greek": "Sein-zum-Tode",
+          "score": 5,
+          "centrality": "core",
+          "type": "concept"
+        },
+        {
+          "name": "Withdrawal",
+          "greek": "",
+          "score": 5,
+          "centrality": "important",
+          "type": "concept"
+        },
+        {
+          "name": "Worldliness / Being-in-the-World",
+          "greek": "",
+          "score": 4,
+          "centrality": "important",
+          "type": "concept"
+        },
+        {
+          "name": "Cause",
+          "greek": "αἴτιον / αἰτία",
+          "score": 3,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "The Composite",
+          "greek": "σύνολον",
+          "score": 3,
+          "centrality": "peripheral",
+          "type": "peripheral"
+        },
+        {
+          "name": "ἀλλοίωσις",
+          "greek": "ἀλλοίωσις",
+          "score": 3,
+          "centrality": "important",
+          "type": "important"
+        },
+        {
+          "name": "τέχνη",
+          "greek": "τέχνη",
+          "score": 3,
+          "centrality": "important",
+          "type": "important"
+        },
+        {
+          "name": "State-of-mind",
+          "greek": "Befindlichkeit",
+          "score": 3,
+          "centrality": "core",
+          "type": "concept"
+        },
+        {
+          "name": "Historicality",
+          "greek": "Geschichtlichkeit",
+          "score": 3,
+          "centrality": "important",
+          "type": "concept"
+        },
+        {
+          "name": "Curiosity",
+          "greek": "Neugier",
+          "score": 3,
+          "centrality": "peripheral",
+          "type": "concept"
+        },
+        {
+          "name": "Ambient Rhetoric",
+          "greek": "",
+          "score": 3,
+          "centrality": "core",
+          "type": "concept"
+        },
+        {
+          "name": "Embodiment / Embodied Cognition",
+          "greek": "",
+          "score": 3,
+          "centrality": "important",
+          "type": "concept"
+        }
+      ],
+      "hook_top": [
+        {
+          "id": "bridge-cand-aristotle-da-3.3-014",
+          "sourceText": "Aristotle c. 350 BCE",
+          "targetText": "Rickert",
+          "sourceConcept": "phantasia as distinct from aisthesis and dianoia",
+          "targetConcept": "κίνησις (DA) → Ambient Rhetoric",
+          "tag": "INTERP-high-AUTO",
+          "score": 8,
+          "auto_generated": true
+        },
+        {
+          "id": "bridge-cand-nussbaum-014",
+          "sourceText": "Unknown ",
+          "targetText": "Rickert",
+          "sourceConcept": "φαντασία",
+          "targetConcept": "κίνησις (DA) → Ambient Rhetoric",
+          "tag": "INTERP-high-AUTO",
+          "score": 6,
+          "auto_generated": true
+        },
+        {
+          "id": "hook-frede-1992-arist-destruktion",
+          "sourceText": "Frede, Dorothea 1992",
+          "targetText": "Aristotle",
+          "sourceConcept": "phantasia",
+          "targetConcept": "Destruktion",
+          "tag": "INTERP-direct-AUTO",
+          "score": 6,
+          "auto_generated": true
+        }
+      ],
+      "claim_top": [
+        {
+          "id": "claim-ogorman-2005-182",
+          "speaker": "Fortenbaugh",
+          "use_mention": "mention",
+          "stance": "reports_neutral",
+          "claim_type": "textual_claim",
+          "faithfulness": "supported",
+          "claim": "Fortenbaugh reports that Aristotle explicitly identifies shame with phantasia of disgrace (1384a22), such that shame always involves an imaginative representati",
+          "source_author": "O'Gorman, Ned",
+          "source_year": "2005",
+          "score": 12
+        },
+        {
+          "id": "claim-frede-1992-016",
+          "speaker": "Frede, Dorothea",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "exegetical_claim",
+          "faithfulness": "supported",
+          "claim": "The initial claim that phantasia is 'up to us' (unlike supposition) is undermined in 3.3 itself, since dreams are not up to us and phantasiai can be true or fal",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 10
+        },
+        {
+          "id": "claim-frede-1992-108",
+          "speaker": "Frede, Dorothea",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "interpretive_claim",
+          "faithfulness": "supported",
+          "claim": "Although APo. 2.19 does not mention phantasia explicitly, Frede argues that the aisthesis described there as leading to memory, experience, and nous in fact con",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 10
+        },
+        {
+          "id": "claim-frede-1992-129",
+          "speaker": "Modrak",
+          "use_mention": "mention",
+          "stance": "reports_neutral",
+          "claim_type": "textual_claim",
+          "faithfulness": "supported",
+          "claim": "Some scholars have proposed that the relationship between phantasia (or aisthesis broadly) and nous is analogous to that between matter and form.",
+          "source_author": "Frede, Dorothea",
+          "source_year": "1992",
+          "score": 10
+        },
+        {
+          "id": "claim-ogorman-2005-065",
+          "speaker": "O'Gorman, Ned",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "subsidiary_claim",
+          "faithfulness": "supported",
+          "claim": "Two aspects of Aristotle's discussion of lexis in the Rhetoric—formal similarity and relationship to the affections—corroborate important connections between le",
+          "source_author": "O'Gorman, Ned",
+          "source_year": "2005",
+          "score": 10
+        },
+        {
+          "id": "claim-white-1985-182",
+          "speaker": "White, Kevin",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "subsidiary_claim",
+          "faithfulness": "supported",
+          "claim": "The persistence of past sensory traces in phantasia creates a psychological tension in the subject between present sensation and past-derived imagery.",
+          "source_author": "White, Kevin",
+          "source_year": "1985",
+          "score": 10
+        }
+      ],
+      "tension_top": [
+        {
+          "id": "CT-04",
+          "nodeA": "phantasia (DA III.3: kinesis from actual sensation — causally derived)",
+          "nodeB": "phantasia (DA/Rhet/Mem/MA: functionally autonomous in dreams, deliberation, rhetoric, involuntary movement)",
+          "score": 3
+        },
+        {
+          "id": "CT-09",
+          "nodeA": "eidos (Met Z.viii: man generates man — form shared across instances)",
+          "nodeB": "eidos (Met Z.xiii: no universal is substance — form must be individual)",
+          "score": 3
+        },
+        {
+          "id": "T1",
+          "nodeA": "withdrawal",
+          "nodeB": "disclosure",
+          "score": 3
+        },
+        {
+          "id": "CT-02",
+          "nodeA": "psyche (DA II.1: first entelecheia of natural body; inseparable from body)",
+          "nodeB": "nous (DA III.5: active nous is separable, immortal, eternal)",
+          "score": 2
+        },
+        {
+          "id": "CT-03",
+          "nodeA": "kinesis (Phys III.2: energeia ateles, incomplete actuality)",
+          "nodeB": "energeia (Met Theta.8: actuality prior in formula, time, substance)",
+          "score": 2
+        }
+      ],
+      "tests_per_plan": [
+        "tension-edge retrieval (H1 cap=5)",
+        "productive non-resolution of tension",
+        "quality-gate tension-acknowledgement rate"
+      ]
+    },
+    {
+      "prompt_id": "adversarial-dialectical",
+      "label": "Adversarial / dialectical voicing",
+      "topic": "Consider the view that all thinking is a bodily process like perceiving, as the ancients held, and evaluate whether Aristotle's critique of this view depends on his theory of phantasia.",
+      "activation": {
+        "ontology_lines": 12,
+        "hook_lines": 3,
+        "claim_lines": 6,
+        "tension_lines": 5
+      },
+      "claim_eval": {
+        "total_evaluated": 1145,
+        "total_filtered_out": 56
+      },
+      "distinct_authors_activated": [
+        "Aristotle",
+        "Aristotle c. 350 BCE",
+        "Caston, Victor",
+        "Frede, Dorothea 1992",
+        "White, Kevin",
+        "White, Kevin 1985"
+      ],
+      "expected_authors": [
+        "Aristotle",
+        "Caston",
+        "Nussbaum"
+      ],
+      "expected_missing": [
+        "Nussbaum"
+      ],
+      "ontology_top": [
+        {
+          "name": "Cause",
+          "greek": "αἴτιον / αἰτία",
+          "score": 4,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "Form",
+          "greek": "εἶδος",
+          "score": 3,
+          "centrality": "core",
+          "type": "core"
+        },
+        {
+          "name": "φάντασμα",
+          "greek": "φάντασμα",
+          "score": 3,
+          "centrality": "important",
+          "type": "psychological"
+        },
+        {
+          "name": "ἀλλοίωσις",
+          "greek": "ἀλλοίωσις",
+          "score": 3,
+          "centrality": "important",
+          "type": "important"
+        },
+        {
+          "name": "Dasein",
+          "greek": "Dasein",
+          "score": 3,
+          "centrality": "core",
+          "type": "concept"
+        },
+        {
+          "name": "State-of-mind",
+          "greek": "Befindlichkeit",
+          "score": 3,
+          "centrality": "core",
+          "type": "concept"
+        },
+        {
+          "name": "Attunement / Stimmung",
+          "greek": "",
+          "score": 3,
+          "centrality": "core",
+          "type": "concept"
+        },
+        {
+          "name": "Embodiment / Embodied Cognition",
+          "greek": "",
+          "score": 3,
+          "centrality": "important",
+          "type": "concept"
+        },
+        {
+          "name": "Worldliness / Being-in-the-World",
+          "greek": "",
+          "score": 3,
+          "centrality": "important",
+          "type": "concept"
+        },
+        {
+          "name": "Periechon",
+          "greek": "",
+          "score": 3,
+          "centrality": "important",
+          "type": "concept"
+        },
+        {
+          "name": "Terroir",
+          "greek": "",
+          "score": 3,
+          "centrality": "peripheral",
+          "type": "example"
+        },
+        {
+          "name": "Kompositionslehre (composition theory)",
+          "greek": "*Kompositionslehre der Natur*",
+          "score": 3,
+          "centrality": "core",
+          "type": "methodological"
+        }
+      ],
+      "hook_top": [
+        {
+          "id": "hook-aristotle-da-3.3-arist-principle",
+          "sourceText": "Aristotle c. 350 BCE",
+          "targetText": "Aristotle",
+          "sourceConcept": "like by like",
+          "targetConcept": "Principle",
+          "tag": "INTERP-direct-AUTO",
+          "score": 5,
+          "auto_generated": true
+        },
+        {
+          "id": "hook-white-1985-arist-fear",
+          "sourceText": "White, Kevin 1985",
+          "targetText": "Aristotle",
+          "sourceConcept": "phantasia",
+          "targetConcept": "Fear",
+          "tag": "INTERP-direct-AUTO",
+          "score": 5,
+          "auto_generated": true
+        },
+        {
+          "id": "hook-frede-1992-arist-thought---intellect",
+          "sourceText": "Frede, Dorothea 1992",
+          "targetText": "Aristotle",
+          "sourceConcept": "thinking",
+          "targetConcept": "Thought / Intellect",
+          "tag": "INTERP-direct-AUTO",
+          "score": 4,
+          "auto_generated": true
+        }
+      ],
+      "claim_top": [
+        {
+          "id": "claim-white-1985-121",
+          "speaker": "Aristotle",
+          "use_mention": "mention",
+          "stance": "reports_neutral",
+          "claim_type": "exegetical_claim",
+          "faithfulness": "supported",
+          "claim": "Aristotle objects that the materialist view—that like is known by like—cannot account for error.",
+          "source_author": "White, Kevin",
+          "source_year": "1985",
+          "score": 16
+        },
+        {
+          "id": "claim-aristotle-da-3.3-020",
+          "speaker": "predecessors who hold like-by-like theory",
+          "use_mention": "mention",
+          "stance": "reports_neutral",
+          "claim_type": "dialectical_objection",
+          "faithfulness": "supported",
+          "claim": "Error consists in contact with the unlike, which is the opposite of knowing like by like.",
+          "source_author": "Aristotle",
+          "source_year": "c. 350 BCE",
+          "score": 13
+        },
+        {
+          "id": "claim-aristotle-da-3.3-016",
+          "speaker": "the ancients",
+          "use_mention": "mention",
+          "stance": "critiques",
+          "claim_type": "exegetical_claim",
+          "faithfulness": "supported",
+          "claim": "The ancient philosophers regard thinking as a bodily process analogous to perceiving.",
+          "source_author": "Aristotle",
+          "source_year": "c. 350 BCE",
+          "score": 12
+        },
+        {
+          "id": "claim-aristotle-da-3.3-068",
+          "speaker": "Aristotle",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "analogical_argument",
+          "faithfulness": "supported",
+          "claim": "If thinking is like perceiving, then thinking must be a process in which the soul is acted upon by the thinkable.",
+          "source_author": "Aristotle",
+          "source_year": "c. 350 BCE",
+          "score": 10
+        },
+        {
+          "id": "claim-caston-1995-016",
+          "speaker": "Caston, Victor",
+          "use_mention": "use",
+          "stance": "endorses",
+          "claim_type": "interpretive_claim",
+          "faithfulness": "partial",
+          "claim": "For Aristotle's inference to be valid, the thesis must maintain only that thinking consists in the same kind of process as perceiving, not strict identity",
+          "source_author": "Caston, Victor",
+          "source_year": "1995",
+          "score": 10
+        },
+        {
+          "id": "claim-aristotle-da-3.3-017",
+          "speaker": "the ancients",
+          "use_mention": "mention",
+          "stance": "reports_neutral",
+          "claim_type": "predecessor_report",
+          "faithfulness": "partial",
+          "claim": "The ancient philosophers hold that like is known or understood by like.",
+          "source_author": "Aristotle",
+          "source_year": "c. 350 BCE",
+          "score": 9
+        }
+      ],
+      "tension_top": [
+        {
+          "id": "CT-12",
+          "nodeA": "phantasma (Mem: object of contemplation in itself, theorema)",
+          "nodeB": "phantasma (Mem: likeness of the thing remembered, eikon)",
+          "score": 4
+        },
+        {
+          "id": "CT-03",
+          "nodeA": "kinesis (Phys III.2: energeia ateles, incomplete actuality)",
+          "nodeB": "energeia (Met Theta.8: actuality prior in formula, time, substance)",
+          "score": 3
+        },
+        {
+          "id": "CT-09",
+          "nodeA": "eidos (Met Z.viii: man generates man — form shared across instances)",
+          "nodeB": "eidos (Met Z.xiii: no universal is substance — form must be individual)",
+          "score": 3
+        },
+        {
+          "id": "CT-01",
+          "nodeA": "energeia (Met Theta: ontological priority)",
+          "nodeB": "energeia (Rhet III.11: rhetorical vividness)",
+          "score": 2
+        },
+        {
+          "id": "CT-02",
+          "nodeA": "psyche (DA II.1: first entelecheia of natural body; inseparable from body)",
+          "nodeB": "nous (DA III.5: active nous is separable, immortal, eternal)",
+          "score": 2
+        }
+      ],
+      "tests_per_plan": [
+        "use-mention integrity under adversarial framing (ancient voicing must NOT be re-attributed to Aristotle)",
+        "dialectical refutation attribution"
+      ]
+    }
+  ]
+}

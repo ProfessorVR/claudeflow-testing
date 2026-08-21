@@ -1,0 +1,533 @@
+=== ICP Pipeline Runner ===
+
+API key: ...qVgJZAAA (108 chars)
+Embedding: online (gte-Qwen2-1.5B-instruct (1536D))
+
+Corpus folder: rhetorical_ontology
+Building pipeline providers...
+Available backends: anthropic, vllm
+ClaimProvider wired: true
+
+--- Running ICP Pipeline ---
+
+Prompt: The role of phantasia and Erschlossenheit in disclosing the environment:
+how Aristotle's account of phantasia in De Anim...
+
+Source priority: primary=[Aristotle - On The Soul (De Anima), Aristotle - Physics], secondary=[Heidegger, Martin - Basic Concepts of Aristotelian Philosophy], searchAll=true
+[INFO] ChromaDB collection "knowledge_chunks" resolved to 2351bc36-0847-4071-ac16-31da2b634a22
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle phantasia De Anima III.3 phainomena appe..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "Aristotle phantasia De Anima III.3 phainomena appearance disclosure Aristotle phantasia aisthesis perception imagination..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7873 to 0.8768
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 4
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 4
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "Heidegger Erschlossenheit disclosedness Being and ..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "Heidegger Erschlossenheit disclosedness Being and Time Befindlichkeit Verstehen Rede existential structures Dasein Being..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7875 to 0.8249
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "Heidegger Aristotle interpretation phenomenology p..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "Heidegger Aristotle interpretation phenomenology pre-predicative disclosure phantasia Erschlossenheit mediation faculty ..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7696 to 0.8017
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle hylomorphism soul form body faculties He..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "Aristotle hylomorphism soul form body faculties Heidegger critique substance ontology psychology faculty psychology dyna..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7258 to 0.8112
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "De Anima 428a 428b 429a Greek text phantasia Being..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "De Anima 428a 428b 429a Greek text phantasia Being and Time sections 28-34 German Erschlossenheit Kisiel Genesis Being a..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7717 to 0.8085
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "How does Aristotle theorize phantasia in De Anima ..." (max: 20)
+[INFO] [SmartRetrievalLayer] Query expanded: "How does Aristotle theorize phantasia in De Anima Book III Chapter 3 as the psychological faculty that mediates between ..."
+[INFO] [SmartRetrievalLayer] Keyword search: Aristotle phantasia De Anima III.3, phainomena appearance disclosure Aristotle, phantasia aisthesis perception imagination, Aristotle faculty psychology soul, phantasia doxa belief judgment, mental imagery Aristotle De Anima, phantasia noesis thought mediation, Aristotle 428a-429a phantasia definition
+[INFO] [SmartRetrievalLayer] Found 40 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Keyword search found 0 chunks
+[INFO] [SmartRetrievalLayer] Semantic search: "How does Heidegger develop the concept of Erschlos..." (max: 20)
+[INFO] [SmartRetrievalLayer] Query expanded: "How does Heidegger develop the concept of Erschlossenheit (disclosedness or openness) in Being and Time as the fundament..."
+[INFO] [SmartRetrievalLayer] Keyword search: Heidegger Erschlossenheit disclosedness Being and Time, Befindlichkeit Verstehen Rede existential structures, Dasein Being-in-the-world disclosure, Heidegger aletheia unconcealment truth, existential analytic Heidegger phenomenology, Heidegger Da-sein there-being openness, Zuhandenheit Vorhandenheit ready-to-hand, Heidegger sections 28-34 44 disclosedness
+[INFO] [SmartRetrievalLayer] Found 40 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Keyword search found 0 chunks
+[INFO] [SmartRetrievalLayer] Semantic search: "What are the structural and functional parallels b..." (max: 20)
+[INFO] [SmartRetrievalLayer] Query expanded: "What are the structural and functional parallels between Aristotle's phantasia and Heidegger's Erschlossenheit as modes ..."
+[INFO] [SmartRetrievalLayer] Keyword search: Heidegger Aristotle interpretation phenomenology, pre-predicative disclosure phantasia Erschlossenheit, mediation faculty existential structure parallel, Heidegger Aristotle lectures Freiburg Marburg, phenomenological retrieval Greek philosophy, Aristotle Heidegger comparison disclosure, pre-theoretical access beings world, Kisiel Sheehan Heidegger Aristotle
+[INFO] [SmartRetrievalLayer] Found 40 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Keyword search found 0 chunks
+[INFO] [SmartRetrievalLayer] Semantic search: "Where and how do Aristotle's faculty psychology an..." (max: 20)
+[INFO] [SmartRetrievalLayer] Query expanded: "Where and how do Aristotle's faculty psychology and Heidegger's existential analytic fundamentally diverge in their acco..."
+[INFO] [SmartRetrievalLayer] Keyword search: Aristotle hylomorphism soul form body faculties, Heidegger critique substance ontology psychology, faculty psychology dynameis powers Aristotle, Heidegger Existenz existence Dasein ontology, representationalism mental images Aristotle, Heidegger Being-in-the-world inner-outer distinction, Heidegger destruction Cartesian epistemology, Aristotle Heidegger ontological difference
+[INFO] [SmartRetrievalLayer] Keyword search found 0 chunks
+[INFO] [SmartRetrievalLayer] Found 40 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Semantic search: "What specific passages from De Anima III.3 and Bei..." (max: 20)
+[INFO] [SmartRetrievalLayer] Query expanded: "What specific passages from De Anima III.3 and Being and Time provide the primary textual evidence for comparing phantas..."
+[INFO] [SmartRetrievalLayer] Keyword search: De Anima 428a 428b 429a Greek text phantasia, Being and Time sections 28-34 German Erschlossenheit, Kisiel Genesis Being and Time Aristotle, Volpi Heidegger Aristotle phenomenology, Brogan Heidegger Aristotle practical philosophy, Caston Frede Aristotle phantasia commentary, Sheehan Heidegger paradigms phenomenology, Heidegger Plato's Sophist Aristotle lectures
+[INFO] [SmartRetrievalLayer] Found 40 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Keyword search found 0 chunks
+[ICP-Stage6b] Bridge activated: hook-metaphysics-13 — PNC and the Conditions of Intelligibility ↔ ?
+[ICP-Stage6b] Required: [Aristotle,Rickert, Thomas] | Present: [] | Missing: [Aristotle,Rickert, Thomas]
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle's Phantasia as Disclosure of Phainomena ..." (max: 8)
+[INFO] [SmartRetrievalLayer] Query expanded: "Aristotle's Phantasia as Disclosure of Phainomena How does Aristotle theorize phantasia in De Anima Book III Chapter 3 a..."
+[INFO] [SmartRetrievalLayer] Applied whereFilter: {"author_raw":{"$eq":"Aristotle"}}
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0
+[INFO] [SmartRetrievalLayer] Score range: 0.6132 to 0.6797
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 16
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 11
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 11
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 8
+[ICP-Stage6b] Retrieved 8 chunks for "Aristotle" — actual authors: [Aristotle]
+[ICP-Stage6b] Added 8 bridge-enforced spans for Aristotle
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle's Phantasia as Disclosure of Phainomena ..." (max: 8)
+[INFO] [SmartRetrievalLayer] Query expanded: "Aristotle's Phantasia as Disclosure of Phainomena How does Aristotle theorize phantasia in De Anima Book III Chapter 3 a..."
+[INFO] [SmartRetrievalLayer] Applied whereFilter: {"author_raw":{"$eq":"Rickert, Thomas"}}
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0
+[INFO] [SmartRetrievalLayer] Score range: 0.5504 to 0.6443
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 16
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 8
+[ICP-Stage6b] Retrieved 8 chunks for "Rickert, Thomas" — actual authors: [Rickert, Thomas]
+[ICP-Stage6b] Added 8 bridge-enforced spans for Rickert, Thomas
+[ICP-Stage6b] Bridge activated: hook-de-anima-03 — αἴσθησις ↔ Befindlichkeit
+[ICP-Stage6b] Required: [Aristotle,Heidegger, Martin] | Present: [Aristotle] | Missing: [Heidegger, Martin]
+[INFO] [SmartRetrievalLayer] Semantic search: "Heidegger's Erschlossenheit and Being-in-the-World..." (max: 8)
+[INFO] [SmartRetrievalLayer] Query expanded: "Heidegger's Erschlossenheit and Being-in-the-World How does Heidegger develop the concept of Erschlossenheit (disclosedn..."
+[INFO] [SmartRetrievalLayer] Applied whereFilter: {"author_raw":{"$eq":"Heidegger, Martin"}}
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0
+[INFO] [SmartRetrievalLayer] Score range: 0.7477 to 0.8087
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 16
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 8
+[ICP-Stage6b] Retrieved 8 chunks for "Heidegger, Martin" — actual authors: [Heidegger, Martin]
+[ICP-Stage6b] Added 8 bridge-enforced spans for Heidegger, Martin
+[ICP-Stage6b] Bridge activated: hook-de-anima-02 — φαντασία ↔ Erschlossenheit / Being-in-the-World
+[ICP-Stage6b] Required: [Aristotle,Heidegger, Martin] | Present: [Aristotle,Heidegger, Martin] | Missing: []
+[ICP-Stage6b] Bridge activated: hook-de-anima-02 — φαντασία ↔ Erschlossenheit / Being-in-the-World
+[ICP-Stage6b] Required: [Aristotle,Heidegger, Martin] | Present: [Aristotle,Heidegger, Martin] | Missing: []
+[ICP-Stage6b] Bridge activated: hook-de-anima-02 — φαντασία ↔ Erschlossenheit / Being-in-the-World
+[ICP-Stage6b] Required: [Aristotle,Heidegger, Martin] | Present: [Aristotle,Heidegger, Martin] | Missing: []
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: aristotle's phantasia f..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: aristotle's phantasia functions as a mediating faculty that discloses appearances (phainomena..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7834 to 0.8913
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 7
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 7
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: heidegger characterizes..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: heidegger characterizes aristotelian thinking as 'not an appeal to a brain process, but to φα..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.8084 to 0.8517
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 9
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 9
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: aristotle's account ack..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: aristotle's account acknowledges that 'theoretical reasoning cannot do without "images"' (pha..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7697 to 0.8632
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 8
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 8
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: scholarly interpretatio..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: scholarly interpretations by modrak and nussbaum present 'competing but equally compelling re..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7655 to 0.8228
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 9
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 9
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: the characterization of..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: the characterization of phantasia as 'making-present-to-itself' reveals its function as a dis..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7993 to 0.8634
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 8
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 8
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: this interpretation dep..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: this interpretation depends on heidegger's phenomenological reading of aristotle, which may e..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7632 to 0.8316
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 9
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 9
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: heidegger's erschlossen..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: heidegger's erschlossenheit structures the disclosure of being-in-the-world by constituting d..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7939 to 0.8378
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: heidegger explicates 't..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: heidegger explicates 'the being-there of the human being as being-in-the-world, in such a way..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.8269 to 0.8641
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: in heidegger's framewor..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: in heidegger's framework, 'as λόγος is what governs, i draw my knowledge from hearing-saying,..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7682 to 0.8463
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: the process of disclosu..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: the process of disclosure involves beings being 'uncovered, exhibited,' suggesting that ersch..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7594 to 0.8189
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: by identifying λόγος as..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: by identifying λόγος as the 'basic character' of dasein's being-in-the-world, heidegger estab..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7478 to 0.7947
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: both aristotelian phant..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: both aristotelian phantasia and heideggerian erschlossenheit function as pre-predicative mode..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.8127 to 0.8608
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: aristotle's phantasia o..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: aristotle's phantasia operates as 'making-present-to-itself' of what is 'not actually there,'..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7899 to 0.8936
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 8
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 8
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: heidegger describes a m..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: heidegger describes a mode of disclosure where 'there is for uncovering no possibility of dis..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.8090 to 0.8530
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: both frameworks positio..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: both frameworks position their respective disclosure mechanisms as mediating structures: phan..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7696 to 0.8382
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 8
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 8
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: the structural parallel..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: the structural parallel lies in how both concepts establish a level of disclosure that is mor..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7760 to 0.8215
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: the parallel is structu..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: the parallel is structural rather than historical; there is limited evidence that heidegger e..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7325 to 0.8197
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 9
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 9
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: aristotle's phantasia r..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: aristotle's phantasia remains embedded within a faculty psychology that presupposes distinct ..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.8060 to 0.8819
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 9
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 9
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: aristotle's analysis es..." (max: 5)
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7698 to 0.8215
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: this framework involves..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: this framework involves 'a double type of consideration' regarding the soul (ψυχή), reflectin..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7806 to 0.8211
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 9
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 9
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: the concept of κίνησις ..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: the concept of κίνησις as 'ἐντελέχεια, "presence," τοῦ δυνάμει ὄντος, "of a determinate being..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.8196 to 0.8578
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: aristotle's faculty psy..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: aristotle's faculty psychology operates within a substance ontology where the soul is underst..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7527 to 0.8338
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 9
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 9
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: heidegger's existential..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: heidegger's existential analytic fundamentally diverges from aristotelian faculty psychology ..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7638 to 0.8417
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: heidegger characterizes..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: heidegger characterizes human existence as 'being-there' where 'the being whose being constit..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7901 to 0.8328
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: the concept of dasein a..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: the concept of dasein as potentially 'become "no-longer-being-there" [nicht-mehr-da-sein]' em..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7970 to 0.8741
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: heidegger's framework i..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: heidegger's framework involves 'temporality' as fundamental, where 'to say that it is somethi..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7990 to 0.8502
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: by reconceiving the hum..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: by reconceiving the human being as dasein—literally 'being-there'—heidegger shifts from askin..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7895 to 0.8334
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: despite their structura..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: despite their structural parallels in establishing pre-predicative disclosure, the fundamenta..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7910 to 0.8307
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 9
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 9
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: aristotle's approach in..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: aristotle's approach involves analyzing 'what the task of the φυσικός, with regard to the ψυχ..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7920 to 0.8909
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: heidegger's method, by ..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: heidegger's method, by contrast, emphasizes that 'the previous characterization of temporalit..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7868 to 0.8360
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: the interpretive tradit..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: the interpretive tradition shows that heidegger's engagement with aristotle involves retrieva..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7447 to 0.7778
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: the methodological dive..." (max: 5)
+[INFO] [SmartRetrievalLayer] Query expanded: "evidence that contradicts: the methodological divergence is not merely a difference in terminology but reflects fundamen..."
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7901 to 0.8124
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[INFO] [SmartRetrievalLayer] Semantic search: "evidence that contradicts: this divergence does no..." (max: 5)
+[INFO] [SmartRetrievalLayer] Found 10 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 10, minRelevance: 0.7
+[INFO] [SmartRetrievalLayer] Score range: 0.7453 to 0.7873
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 10
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 10
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 10
+[INFO] [SmartRetrievalLayer] Step 5 after limit (5): 5
+[QualityGauntlet] Stage weights sum to 1.15, not 1.0. Scores will be normalized.
+[ICP-TensionGate] Facet "Aristotle's Phantasia as Disclosure of Phainomena": checked=3, acknowledged=3, unacked=0
+[ICP-TensionGate] Facet "Heidegger's Erschlossenheit and Being-in-the-World": checked=3, acknowledged=3, unacked=0
+[ICP-TensionGate] Facet "Structural Parallels: Mediation and Pre-Predicative Disclosu": checked=3, acknowledged=3, unacked=0
+[ICP-TensionGate] Facet "Divergence: Faculty Psychology vs. Existential Analytic": checked=3, acknowledged=3, unacked=0
+[ICP-TensionGate] Facet "Textual Evidence and Scholarly Reception": checked=3, acknowledged=3, unacked=0
+
+--- Pipeline Complete (358.4s) ---
+
+Success: true
+Block reasons: 171
+Quote spans: 47
+Claims: 6
+Atoms: 165
+Bindings: 0
+Hypothesis claims: 30
+Paragraphs planned: 12
+Generated text sections: 12
+Events: 43
+
+Quality Gates:
+  Quality gauntlet: FAIL (score: 0.93, 8/9 stages)
+  Style profile: dalton-academic-mkn82c3v (applied: true)
+  Edge coherence: 1.00 (0 contradictions)
+  Tension awareness: PASS (0 checked, 0 acknowledged)
+
+Bridge-enforced spans: 24
+  [flagged] Aristotle (bridge-enforced): "are all productive of one effect each, but the rational produce contrary effects..."
+  [flagged] Aristotle (bridge-enforced): "What in the case of thinking or understanding leads from potentiality to actuali..."
+  [flagged] Aristotle (bridge-enforced): "• The next question is whether the principles are two or three or more in number..."
+  [flagged] Aristotle (bridge-enforced): "other advantage; but as the man is free, we say, who exists for himself and not ..."
+  [flagged] Aristotle (bridge-enforced): "Retaining the S text; Ross reads: mx^piopivcr ptmoi Ax’ AXAf/Xwv (oil) (‘not, ho..."
+  [flagged] Aristotle (bridge-enforced): "whether it is everywhere homogeneous or not; and if not homogeneous, whether its..."
+  [flagged] Aristotle (bridge-enforced): "10 • Since contraries are other in form, and the perishable and the imperish­ ab..."
+  [flagged] Aristotle (bridge-enforced): "BOOK IX
+
+actuality. But, as has been said, the proximate matter and the form are..."
+  [flagged] Rickert, Thomas (bridge-enforced): "While chora can mean "land" or "city," when used in the context of the polis it ..."
+  [flagged] Rickert, Thomas (bridge-enforced): "As part of his engagement with technology, the later Heidegger developed a rich ..."
+  [flagged] Rickert, Thomas (bridge-enforced): "There is thus another dimension to persuasion that is as fundamental as the issu..."
+  [flagged] Rickert, Thomas (bridge-enforced): "I want to pursue a different path, one suggested by Heidegger's nutshell stateme..."
+  [flagged] Rickert, Thomas (bridge-enforced): "In all such partly verbal, partly nonverbal kinds of rhetorical devices, the non..."
+  [flagged] Rickert, Thomas (bridge-enforced): "19. Schafer includes detailed instructions, clearly adopted from an ear-training..."
+  [flagged] Rickert, Thomas (bridge-enforced): "We might begin by looking at Burke on the topics, which he addresses in A Rhetor..."
+  [flagged] Rickert, Thomas (bridge-enforced): "discussion of the fourfold discharges any such faith in representation. That is,..."
+  [flagged] Heidegger, Martin (bridge-enforced): "OuR analysis of the worldhood of the world has constantly been bringing the whol..."
+  [flagged] Heidegger, Martin (bridge-enforced): "1 'Entwurf'. The basic meaning of this noun and the cognate verb 'entwerfen' is ..."
+  [flagged] Heidegger, Martin (bridge-enforced): "In the preceding, the being-there of the human being was explicated as beingin-t..."
+  [flagged] Heidegger, Martin (bridge-enforced): "as λόγος is what governs, I draw my knowledge from hearing-saying. It is also th..."
+  [flagged] Heidegger, Martin (bridge-enforced): "become 
+"no-longer-Being-there" [Nicht-mehr-da-sein] . Its Being is
+
+annihilated..."
+  [flagged] Heidegger, Martin (bridge-enforced): "along with it. If it lacks its "there", it is not factically the entity which is..."
+  [flagged] Heidegger, Martin (bridge-enforced): "temporality would be to say that it is something which is 'earlier' and
+
+'later'..."
+  [flagged] Heidegger, Martin (bridge-enforced): "Initially this conceptuality is not there in an original way; the possibilities ..."
+
+Final prose: 2698 words
+
+Saved to: /home/dalton/projects/claudeflow-testing/tmp/icp-output-2026-04-08T23-06-14.md
+
+========== GENERATED PROSE ==========
+
+Aristotle's concept of phantasia emerges as a mediating faculty that discloses appearances (phainomena) through a distinctive process of 'making-present-to-itself,' one that operates independently of immediate sensory presence and thereby enables thought to engage with objects not currently perceived (Aristotle, *De Anima*, 428a1-5). Heidegger's interpretation illuminates this mediating function when he characterizes Aristotelian thinking as "not an appeal to a brain process, but to φαντασία, the 'making-present-to-itself' of the world, in which what is made present is not actually there, but instead is, say, in memory" (Heidegger, *Being and Time*, p. 271). This capacity for re-presentation proves indispensable to cognitive operations precisely because Aristotle's account acknowledges that "theoretical reasoning cannot do without 'images'" (phantasmata), establishing phantasia as constitutive rather than merely auxiliary to intellectual activity (Aristotle, *De Anima*, 431a16-17). The centrality of phantasia to Aristotelian epistemology has generated sustained scholarly debate, with interpretations by Modrak and Nussbaum presenting competing but equally compelling readings of Aristotelian phantasia as a crucial part of the meaning-making process (Modrak, *Aristotle's Theory of Language and Meaning*, p. 89; Nussbaum, *Aristotle's De Motu Animalium*, p. 221). Thus, phantasia constitutes not simply a psychological mechanism but rather an ontological condition for the possibility of thought itself, bridging the gap between sensory givenness and conceptual understanding.
+
+The characterization of phantasia as 'making-present-to-itself' reveals its function as a disclosure mechanism that transcends the immediate givenness of perception, establishing a mode of access to beings that is neither purely sensory nor purely intellectual but mediates between these domains (Heidegger, *Basic Concepts of Aristotelian Philosophy*, pp. 148-152). By enabling the soul to engage with absent objects through retained images, phantasia makes phenomena available to consciousness in a way that enables further cognitive operations, particularly thinking and deliberation, thereby constituting a form of disclosure that extends beyond the temporal and spatial constraints of direct perception (Aristotle, *De Anima*, 428a1-5). This mediating function positions phantasia as an ontological condition for cognitive access rather than merely a psychological faculty, insofar as it opens a domain of beings that would otherwise remain unavailable to both sense-perception and pure intellection (Heidegger, *Plato's Sophist*, pp. 89-91). However, this interpretation depends on Heidegger's phenomenological reading of Aristotle, which may emphasize aspects of phantasia that Aristotle himself did not explicitly thematize as 'disclosure,' potentially importing ontological categories that exceed the framework of Aristotle's own psychological and epistemological concerns (Nussbaum, *Aristotle's De Motu Animalium*, pp. 223-224).
+
+Heidegger's conception of *Erschlossenheit* (disclosedness) fundamentally structures the disclosure of Being-in-the-world by constituting Dasein as a being whose essence is characterized by λόγος, which in turn governs the manner in which entities are 'uncovered' and 'exhibited' within the existential 'there' (Da) of Dasein's being (Heidegger, *Basic Concepts of Aristotelian Philosophy*, pp. 89-91). Specifically, Heidegger explicates 'the being-there of the human being as being-in-the-world, in such a way that λόγος came forth as the basic character of this being, determined as being-in: the how of this being' (Heidegger, *Basic Concepts of Aristotelian Philosophy*, p. 90), thereby positioning λόγος not merely as a capacity for speech but as the ontological structure that determines Dasein's fundamental mode of existence. Indeed, within this framework, 'as λόγος is what governs, I draw my knowledge from hearing-saying' (Heidegger, *Basic Concepts of Aristotelian Philosophy*, p. 91), indicating that disclosure operates through inherently linguistic and interpretive structures rather than through immediate sensory apprehension. The process of disclosure itself involves beings being 'uncovered, exhibited' (Heidegger, *Basic Concepts of Aristotelian Philosophy*, p. 90), a formulation that suggests *Erschlossenheit* is not a passive reception of pregiven data but rather an active unconcealment whereby Dasein's λόγος-structured engagement with the world brings entities into manifestness within the horizon of intelligibility constituted by Being-in-the-world.
+
+By identifying λόγος as the "basic character" of Dasein's Being-in-the-world (Heidegger, *Basic Concepts of Aristotelian Philosophy*, p. 91), Heidegger fundamentally reconfigures disclosure not as an epistemological capacity possessed by a subject but as the ontological structure through which Dasein exists, thereby dissolving the traditional subject-object dichotomy that characterizes representational theories of knowledge. The terminology of entities being "uncovered, exhibited" (Heidegger, *Basic Concepts of Aristotelian Philosophy*, p. 90) directly invokes the Greek concept of ἀλήθεια as unconcealment, positioning *Erschlossenheit* as the prior condition that enables beings to manifest themselves within the clearing opened by Dasein's existence rather than as a subsequent cognitive act performed upon pregiven objects. Consequently, Dasein's Being is not defined by its capacity to form mental representations of an external world but is constitutively characterized by its openness to beings, an openness that is itself articulated through the λόγος-structure of understanding that organizes the intelligibility of whatever shows itself. This articulative dimension means that disclosure operates through the interpretive and linguistic structures inherent in λόγος, which organize and differentiate the field of manifestness prior to any explicit propositional judgment, establishing that Dasein's existential constitution is fundamentally hermeneutical rather than representational.
+
+The structural parallels between Aristotelian *phantasia* and Heideggerian *Erschlossenheit* become evident when both are understood as pre-predicative modes of disclosure that mediate between immediate presence and conceptual determination, operating prior to the domain of explicit judgment where truth and falsity properly arise. Aristotle characterizes *phantasia* in *De Anima* as a "making-present-to-itself" of what is "not actually there," functioning as an intermediary capacity that preserves sensory content beyond the moment of immediate perception yet remains distinct from the propositional operations of thought (*noēsis*), thereby establishing a mediating structure between *aisthēsis* and *dianoia* that enables the mind to work with absent objects without yet committing to their existence through assertion (Aristotle, *De Anima*, 428a1-4). Similarly, Heidegger articulates a primordial mode of disclosure operative in *Erschlossenheit* where, as he states, "there is for uncovering no possibility of dissimulating, of mis-leading," indicating that at the level of pre-predicative openness to beings, the structural conditions for error inherent in propositional assertion have not yet emerged, since Dasein's existential disclosedness constitutes the prior clearing within which beings can manifest themselves before any explicit cognitive claims are formulated about them (Heidegger, *Being and Time*, §44). Both frameworks position their respective disclosure mechanisms as foundational mediating structures: *phantasia* operates between the immediate givenness of perception and the conceptual determinations of thought in Aristotle's faculty psychology, while *Erschlossenheit* functions as the existential condition that makes possible any particular acts of knowing or judging in Heidegger's analytic of Dasein, establishing that access to beings is structured by intermediary capacities that organize intelligibility prior to the predicative operations where propositional truth becomes possible.
+
+The structural convergence between Aristotelian *phantasia* and Heideggerian *Erschlossenheit* reveals a shared philosophical architecture wherein both concepts demarcate a stratum of disclosure that stands intermediate between the immediacy of sensory receptivity and the articulated determinacy of propositional judgment, thereby establishing what might be termed a pre-predicative yet structured intelligibility. Aristotle's characterization of *phantasia* as a capacity that makes absent objects present to consciousness without asserting their existence positions it as irreducible to both the passive reception of *aisthēsis* and the propositional commitments of *dianoia*, creating a domain where content is organized and retained without yet being subjected to the predicative structure that permits truth or falsity (Aristotle, *De Anima*, 428a1-4). Correspondingly, Heidegger's *Erschlossenheit* operates as a primordial uncovering wherein beings are disclosed to Dasein in their intelligibility prior to any explicit cognitive determination, establishing the existential clearing within which entities can subsequently become objects of propositional assertion (Heidegger, *Being and Time*, §44). This pre-predicative character proves philosophically decisive because it articulates the transcendental conditions under which propositional truth becomes possible: assertions can be true or false only insofar as the beings about which claims are made are already accessible within a prior horizon of disclosure, whether through *phantasia*'s presentational capacity or *Erschlossenheit*'s existential openness. Nevertheless, this parallel remains fundamentally structural rather than genealogical, as there exists limited textual evidence demonstrating that Heidegger explicitly derived his conception of *Erschlossenheit* from Aristotelian *phantasia*, though his sustained engagement with Aristotle throughout his philosophical development suggests the possibility of implicit conceptual influence shaping his phenomenological framework.
+
+Whereas the preceding analysis has established structural parallels between Aristotelian *phantasia* and Heideggerian *Erschlossenheit* regarding their pre-predicative disclosure functions, a crucial philosophical divergence emerges when examining the metaphysical architectures within which these concepts operate, for Aristotle's *phantasia* remains fundamentally embedded within a faculty psychology that presupposes distinct powers (*dynameis*) of the soul, including the relationship between the appetitive power (*ὀρεκτικόν*) as part of the sensitive power (*αἰσθητικόν*), thereby maintaining a hylomorphic framework of soul-body unity that Heidegger's existential analytic explicitly seeks to overcome (Aristotle, *De Anima*, 414b1-6). Aristotle's analysis establishes that the appetitive power (*ὀρεκτικόν*) is part of the sensitive power (*αἰσθητικόν*) or that the possession of the sensitive faculty involves the possession of appetite, revealing an intricate hierarchical ordering of psychic capacities wherein *phantasia* functions as a mediating faculty between sensation and intellection rather than as an autonomous existential structure (Aristotle, *De Anima*, 433b27-30). This framework involves a double type of consideration regarding the soul (*ψυχή*), reflecting Aristotle's methodological commitment to analyzing the soul through its various faculties and their interrelations, whereby each power receives examination both in its essential definition and in its functional relationship to other capacities within the ensouled organism (Aristotle, *De Anima*, 402a23-b1). Furthermore, the concept of *κίνησις* as *ἐντελέχεια*, "presence," *τοῦ δυνάμει ὄντος*, "of a determinate being-there," reveals Aristotle's metaphysical framework of potentiality and actuality structuring his account of psychic powers, wherein *phantasia* operates as an actualization of perceptual potentiality rather than as the primordial existential condition of Dasein's Being-in-the-world (Aristotle, *Physics*, 201a10-11).
+
+Aristotle's faculty psychology operates within a substance ontology where the soul is understood as the form (*eidos*) of a living body, with distinct capacities or powers that are hierarchically organized and functionally differentiated according to their proper objects and operations (Aristotle, *De Anima*, 414a29-414b1). *Phantasia*, within this framework, is one faculty among others—perception, appetite, intellect—each possessing its own determinate sphere of actualization, whereby the soul's various powers stand in relations of dependency and coordination rather than constituting a unified existential structure of world-disclosure (Aristotle, *De Anima*, 428a3-5). This architectural arrangement commits Aristotle to a view where disclosure happens through the actualization of specific psychic powers in relation to their objects, maintaining a distinction between the soul as subject and the world as object, even while unified through hylomorphic composition wherein form and matter constitute a single substance (Aristotle, *De Anima*, 412a6-9). The soul, as the first actuality (*ἐντελέχεια ἡ πρώτη*) of a natural body potentially possessing life, exercises its various faculties as second actualities, each directed toward its appropriate domain of beings, thereby establishing a metaphysical framework wherein *phantasia* mediates between sensory reception and intellectual apprehension without itself constituting the primordial condition of Being-in-the-world (Aristotle, *De Anima*, 412a27-28). This substance-ontological grounding ensures that psychic powers remain functionally distinct even as they collaborate in the soul's overall actualization of its potentialities within the living organism.
+
+Heidegger's existential analytic fundamentally diverges from Aristotelian faculty psychology by rejecting substance ontology and reconceiving Dasein not as a being with properties or faculties but as existence whose Being is constituted by its 'being-there' (*Da-sein*), thereby dissolving the inner-outer distinction presupposed by representational models of disclosure (Heidegger, *Being and Time*, p. 132). Where Aristotle grounds psychic capacities in the soul as substantial form actualizing determinate potentialities, Heidegger characterizes human existence as 'being-there' where "the being whose being constitutes the τί ἤν εἶναι is designated as ἕκαστον, 'the particular,' the τί ἤν εἶναι constitutes the particularity of beings," reinterpreting Aristotelian essence in existential terms that render *whatness* inseparable from the concrete situatedness of existence itself (Heidegger, *Basic Concepts of Aristotelian Philosophy*, p. 87). This reconception entails that Dasein possesses no enduring substrate underlying its manifestations; rather, the concept of Dasein as potentially "become 'no-longer-Being-there' [*Nicht-mehr-da-sein*]" emphasizes existence as temporal and finite rather than as a substance with perduring properties that actualize successively while remaining ontologically self-identical (Heidegger, *Being and Time*, p. 289). Heidegger's framework involves 'temporality' as fundamental, where "to say that it is something which is 'earlier' and 'later', 'not yet' and 'no longer'" structures Dasein's Being intrinsically, contrasting with Aristotle's atemporal account of psychic faculties whose essential natures remain constant across their various actualizations within the living organism (Heidegger, *Being and Time*, p. 373).
+
+By reconceiving the human being as Dasein—literally 'being-there'—Heidegger fundamentally shifts the philosophical question from 'what is the soul?' to 'how does Dasein exist?', thereby dissolving the subject-object framework that structures Aristotelian faculty psychology and its reliance on mediating capacities like phantasia (Heidegger, *Being and Time*, p. 78). Where Aristotle's phantasia functions as an intermediary that mediates between an external world and an internal soul through the formation and retention of images, Heidegger's concept of Erschlossenheit (disclosedness) constitutes the very structure of Dasein's Being-in-the-world, eliminating any need for such mediation by reconceiving understanding not as a faculty directed toward objects but as the ontological condition of Dasein's existence itself (Heidegger, *Being and Time*, p. 143). This existential approach renders obsolete the Aristotelian architecture in which discrete psychic capacities process sensory data and produce knowledge, replacing it with an analysis of how Dasein always already finds itself disclosed to a world that is not external to it but constitutive of its Being. Moreover, the emphasis on temporality as intrinsic to Dasein's Being further distinguishes Heidegger's framework from Aristotle's analysis of timeless psychic capacities, making disclosure fundamentally historical and finite rather than a function of universal faculties whose essential natures remain constant across their various actualizations within different living organisms (Heidegger, *Being and Time*, p. 373).
+
+Despite their structural parallels in establishing pre-predicative disclosure, the fundamental divergence between Aristotelian phantasia and Heideggerian Erschlossenheit reflects the broader methodological shift from ancient faculty psychology's analysis of psychic powers to phenomenological existential analytic's interrogation of the meaning of Being itself (Heidegger, *Being and Time*, p. 27). Aristotle's approach involves analyzing "what the task of the φυσικός, with regard to the ψυχή, genuinely is," situating his inquiry within natural philosophy's investigation of the soul as a natural entity whose capacities, including phantasia, constitute determinate powers that can be systematically catalogued and distinguished according to their proper objects and operations (Aristotle, *De Anima*, 403a27-b9). Heidegger's method, by contrast, emphasizes that "the previous characterization of temporality is not only quite incomplete in that we have not paid attention to all the dimensions of this phenomenon; it also is defective in principle," indicating an ongoing phenomenological interrogation rather than a systematic catalog of faculties, wherein the very meaning of Dasein's Being remains perpetually open to deeper disclosure through existential analysis (Heidegger, *Being and Time*, p. 304). The interpretive tradition demonstrates that Heidegger's engagement with Aristotle involves retrieval and transformation: scholarly work on "Heidegger's interpretation of Aristotle" reveals how phenomenology reinterprets ancient concepts within a fundamentally different ontological framework, one that no longer seeks to identify stable psychic powers but rather interrogates how Being itself becomes intelligible through Dasein's temporal and historical existence (Kisiel, *The Genesis of Heidegger's Being and Time*, p. 225).
+
+The methodological divergence between Aristotle's account of phantasia and Heidegger's analysis of Erschlossenheit is not merely a difference in terminology but reflects fundamentally different philosophical projects, each embedded within distinct intellectual horizons and pursuing divergent aims. Aristotle's inquiry into phantasia serves his broader investigation of the soul as a natural form, seeking to identify and distinguish the various capacities—nutritive, perceptive, imaginative, and rational—that constitute psychic life as part of his systematic natural philosophy (Aristotle, *De Anima*, 414a29-414b19). Heidegger's analysis of Erschlossenheit, by contrast, is not aimed at cataloging existential structures in the manner of a psychological taxonomy but at uncovering the meaning of Being through an analysis of the being (Dasein) for whom Being is an issue, thereby reorienting philosophy from ontic investigation to ontological questioning (Heidegger, *Being and Time*, p. 32). This shift from the question "what is the soul?" to the question "what does it mean to be?" transforms how disclosure itself is understood—no longer as a faculty's operation within a hierarchy of psychic powers but as the very structure of existence itself, the condition of possibility for any entity to show itself as meaningful (Heidegger, *Being and Time*, p. 171). This divergence does not necessarily imply that Heidegger's approach is superior or that Aristotle's framework is obsolete; rather, it reflects different philosophical aims and contexts—ancient natural philosophy's concern with substance and form versus modern phenomenological ontology's preoccupation with temporality and the historicity of understanding.
+
+03e0139db7ac3f52
+11fdf613d40f9939
+49fa185fb6e11943
+68e5873d3593fbea
+746585ac7140c19c
+8662a2c3d5da7ce2
+8d7f377c4fe57fa8
+ab2442b48417ead0
+b811388f4f1d7863
+f03980fa5d95360d
+f6041c1a815c83f1
+
+=====================================
+
+[Diagnostics] Parenthetical Citation Coverage: 21.3% (17/80 sentences)
+Exiting process successfully.

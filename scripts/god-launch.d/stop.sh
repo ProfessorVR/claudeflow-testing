@@ -45,6 +45,16 @@ do_stop() {
     # Wait a moment for graceful shutdown
     sleep 2
 
+    # 6. Local Marker (optional)
+    log_info "Stopping local Marker (if running)..."
+    local marker_pid_file="${GOD_PROJECT_DIR}/.run/marker.pid"
+    if [[ -f "$marker_pid_file" ]]; then
+        kill "$(cat "$marker_pid_file")" 2>/dev/null || true
+    else
+        pkill -f "marker_server" 2>/dev/null || true
+    fi
+    rm -f "$marker_pid_file" 2>/dev/null || true
+
     # Kill the tmux session
     log_info "Cleaning up tmux session..."
     tmux kill-session -t "${GOD_SESSION_NAME}" 2>/dev/null || true
@@ -82,6 +92,15 @@ stop_service() {
             ;;
         observe)
             (cd "${GOD_PROJECT_DIR}" && npm run observe:stop 2>/dev/null) || true
+            ;;
+        marker)
+            local marker_pid_file="${GOD_PROJECT_DIR}/.run/marker.pid"
+            if [[ -f "$marker_pid_file" ]]; then
+                kill "$(cat "$marker_pid_file")" 2>/dev/null || true
+            else
+                pkill -f "marker_server" 2>/dev/null || true
+            fi
+            rm -f "$marker_pid_file" 2>/dev/null || true
             ;;
         *)
             log_error "Unknown service: ${service}"

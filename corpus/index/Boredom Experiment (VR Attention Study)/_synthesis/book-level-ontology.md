@@ -24,10 +24,14 @@ four channels PROCESSED 2026-07-16** (see below).
 **O-9 processing status (updated 2026-07-29).** `ch-eeg`, `ch-hmd` and `ch-fig` are **PROCESSED** — full N=8, methods
 grounded in the two published papers, cross-validated and statistically tested; scripts at `scripts/boredom-o9/`
 (commit `b766783a5`), per-subject outputs untracked, findings note at
-`tmp/Dissertation/Part_III/reanalysis/boredom-o9-physiological-findings.md`. **`ch-obs` remains UNPROCESSED** and is
-scoped as its own final phase (GPU stimulus-segmentation + head-restlessness + off-task, which **corroborate**
-`ch-gaze`/`ch-hmd` rather than adding an independent surface): see
-`plans/boredom-experiment-o9-processing-scope-2026-07-16.md`. Currently usable: `ch-selfreport` (full record),
+`tmp/Dissertation/Part_III/reanalysis/boredom-o9-physiological-findings.md`. **`ch-obs` is PROBE-CLOSED
+(2026-07-29) and remains unprocessed — for a stated methodological reason, not deferral.** A pilot pass established
+that global optical flow cannot yield a valid cross-stimulus restlessness measure from this material: for Boring and
+Interesting the subject views a small bright panel in a featureless black void, so flow tracks the stimulus's visual
+richness rather than head motion. Its alignment-anchor value is real but unneeded — no section finding is a
+time-course claim. Full statement in the `ch-obs` node below and in `units/bex-04`; original scoping (superseded in
+its head-restlessness assumption): `plans/boredom-experiment-o9-processing-scope-2026-07-16.md`.
+Currently usable: `ch-selfreport` (full record),
 `ch-eeg`/`ch-hmd`/`ch-fig` (processed N=8), `ch-gaze` (P2 published derivation, N=12).
 
 ## Map of the entry
@@ -84,15 +88,32 @@ scoped as its own final phase (GPU stimulus-segmentation + head-restlessness + o
 - **aliases**: HMD channel, exposure protocol, Omnicept telemetry
 
 #### 6. ch-obs — session-video channel (first-person in-VR headset feed)
-- **definition**: OBS screen-capture of the subject's first-person in-VR view (Windows Mixed Reality feed) — 4K/HEVC/60 fps, ~85.6 GB across 8 subjects. **NOT a body/comportment camera: no participant body footage was ever recorded (confirmed 2026-07-16), so posture/fidget/watch-glance are not recoverable and there is no independent third behavioral surface.** What the feed yields: stimulus-state **segmentation** (a precise cross-channel alignment anchor for `ch-eeg`/`ch-hmd`/`ch-fig`), head-restlessness (global optical flow), and on/off-task — signals that **corroborate `ch-gaze`/`ch-hmd`, not a new axis.** **The one channel still UNPROCESSED (O-9)** — the other three light channels were processed 2026-07-16; this one is its own final phase, GPU-bound and IO-bound, and is scoped in `plans/boredom-experiment-o9-processing-scope-2026-07-16.md`.
+- **definition**: OBS screen-capture of the subject's first-person in-VR view (Windows Mixed Reality feed) — 4K/HEVC/60 fps, ~85.6 GB across 8 subjects. **NOT a body/comportment camera: no participant body footage was ever recorded (confirmed 2026-07-16), so posture/fidget/watch-glance are not recoverable and there is no independent third behavioral surface.** What the feed yields: stimulus-state **segmentation** (a precise cross-channel alignment anchor for `ch-eeg`/`ch-hmd`/`ch-fig`), head-restlessness (global optical flow), and on/off-task — signals that **corroborate `ch-gaze`/`ch-hmd`, not a new axis.** **PROBE-CLOSED 2026-07-29 — remains UNPROCESSED, now for a stated methodological reason rather than deferral.** A pilot pass (single subject-stimulus file, NVDEC decode at 11–12× realtime) established three things. **(1) The channel is 20 files, not 24**, in two shapes: four subjects (S02/S04/S07/S08) have one recording per stimulus, while four (S01/S03/S05/S06) have a **single continuous unedited session recording of 65–88 min** containing all three stimuli plus breaks — for those, filenames carry no usable stimulus label. **(2) The raw feed carries NO gaze overlay** (the eye-tracking dot exists only in the edited `Videos/` compilations). **(3) The decisive finding: global optical flow cannot yield a valid cross-stimulus restlessness measure from this material.** For Boring and Interesting the subject views a small bright panel floating in a featureless black void, which has no image features to move; for Clinical the subject is inside a fully textured 360° operating room. Flow magnitude therefore tracks the **stimulus's visual richness**, not the subject's head motion, and any cross-stimulus comparison built on it would be an artifact. A valid measure would require panel-tracking or within-stimulus-only normalization — instrumentation the recordings do not support without development this project does not need. **The channel's declared value stands but is not required:** its alignment-anchor timestamps would matter only for within-episode time-course claims, and none of the section's findings are time-course claims (all are per-episode aggregates computed from the stimulus-window crops). Head-restlessness would in any case corroborate `ch-gaze`, which is processed and published at N=12. Future work, gesture-scale. Scoping: `plans/boredom-experiment-o9-processing-scope-2026-07-16.md`.
 - **type**: DATASET-CHANNEL
 - **units**: bex-04
 - **centrality**: supporting
 - **aliases**: OBS channel, in-VR headset feed, stimulus-segmentation / alignment source
 
 #### 7. ch-fig — analysis-figure channel
-- **definition**: Per-subject MATLAB `.fig` analysis outputs derived from the EEG/gaze channels. **PROCESSED at O-9 (2026-07-16)** — MATLAB v5 files read with `scipy.io.loadmat`; 161 unique series of 168 extracted. Its unique value is the **processed** gaze (two filter levels) and pupil (five-level denoise cascade) that exist only in the `.fig` and cannot be regenerated from the raw CSV; HR/HRV/cognitive-load traces proved byte-exact tail-aligned duplicates of the HMD CSV and are kept as validation, not as new signal (fig ≡ CSV in 60/63 checks, confirming the channel mapping). Known gaps: S07 is missing the entire Interesting set; S03 carries md5-identical flat and nested duplicates.
+- **definition**: Per-subject MATLAB `.fig` analysis outputs derived from the EEG/gaze channels. **PROCESSED at O-9 (2026-07-16)** — MATLAB v5 files read with `scipy.io.loadmat`; 161 unique series of 168 extracted. Its unique value is the **processed** gaze (two filter levels) and pupil (five-level denoise cascade) that exist only in the `.fig` and cannot be regenerated from the raw CSV; HR/HRV/cognitive-load traces proved byte-exact tail-aligned duplicates of the HMD CSV and are kept as validation, not as new signal (fig ≡ CSV in 60/63 checks, confirming the channel mapping). Known gaps: S07's Interesting figure set is absent because **the physiological capture failed although the session ran and was recorded** (author-confirmed 2026-07-29); S03 carries md5-identical flat and nested duplicates.
 - **type**: DATASET-CHANNEL
 - **units**: bex-04
 - **centrality**: peripheral
 - **aliases**: figure channel, MATLAB .fig outputs
+
+#### 8. r2-sessions — Round 2 session layer & processed-artifact registry
+- **definition**: The experiment's second data-collection round (March 2024): 4 subjects (**R2-S01…R2-S04**,
+  sorted-directory convention; identities only in the repo's committed operational docs, author ruling 2026-08-05) ×
+  3 conditions = 12 sessions of raw Omnicept **SDK** streams (ET 120 Hz 32-col / CL / HR / HRV / IMU — not Round 1's
+  headerless export) + first-person OBS HMD 4K60 feed, with **genuine body/comportment footage in 4 sessions**
+  (R2-S02 ×3, R2-S03 Interesting) — the surface `ch-obs` was confirmed not to be. **Full synchronized artifact set
+  registered 2026-08-05** (pipeline 2026-07-31→08-05, commit `acd31b469`): 55 `_Crop.csv` sensor trims, 12
+  `CropEvents.json` provenance files, 12 gaze-overlay 4K60 renders (Round 1 dot parity via a reverse-engineered DLT
+  projection, 7.7 px median), 15 heatmaps, 12 HMD + 4 bodycam `_Crop.mkv` cuts, 4 side-by-side composites — all on
+  D:, originals untouched. Analysis window **CSV-primary and LOCKED** (author-verified closure anchors; consumed by
+  the Part III lab-boredom analyses v1–v4 — do not re-crop). Bodycam sync = stimulus-mix xcorr (bodycam a:0 carries
+  the same desktop mix as HMD a:0; the room-mic track is silent).
+- **type**: DATASET-LAYER
+- **units**: bex-05
+- **centrality**: supporting
+- **aliases**: Round 2, R2 session grid, gaze-overlay artifact set, R2 crops

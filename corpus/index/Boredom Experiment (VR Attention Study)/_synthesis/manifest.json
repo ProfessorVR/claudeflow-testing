@@ -3,7 +3,7 @@
   "prefix": "bex",
   "kind": "empirical-primary-object (raw-dataset channel anchor; lab/VR pole)",
   "built": "2026-07-16",
-  "status": "Phase-2 anchor build (rescoped plan). Compact channel-schema anchor; findings live at vle-02. O-9 UPDATE 2026-07-29: ch-eeg/ch-hmd/ch-fig PROCESSED (full N=8, 2026-07-16); ch-obs alone still deferred. O-10 RESOLVED 2026-07-29.",
+  "status": "Phase-2 anchor build (rescoped plan). Compact channel-schema anchor; findings live at vle-02. O-9 UPDATE 2026-07-29: ch-eeg/ch-hmd/ch-fig PROCESSED (full N=8, 2026-07-16); ch-obs alone still deferred. O-10 RESOLVED 2026-07-29. ROUND 2 artifact layer registered 2026-08-05 (bex-05).",
   "relationship_to_vle_02": "This entry is the RAW dataset (lab pole). 'vle-02-boredom-raw-dataset' under the King-Salvo VLE anchor is its anonymized DERIVATIVE view; the study's findings are registered as vle nodes 10-14 there and are NOT duplicated here. This entry holds the dataset's channel structure only.",
   "sources": {
     "publications": [
@@ -63,7 +63,7 @@
       "register": "raw",
       "n": 8,
       "unit": "bex-04",
-      "status": "THE ONE CHANNEL STILL O-9 DEFERRED; corroboration-only (no body cam). Separate final phase.",
+      "status": "PROBE-CLOSED 2026-07-29 -- unprocessed for a stated methodological reason (black-void optical-flow confound); corroboration-only value, not required by any section finding.",
       "o9": true
     },
     {
@@ -128,12 +128,23 @@
       "ch-fig (MATLAB v5 -> processed gaze/pupil cascades that the raw CSV cannot regenerate; 161/168 series)"
     ],
     "still_deferred": [
-      "ch-obs (SEPARATE FINAL PHASE: GPU stimulus-segmentation + head-restlessness + off-task; corroborates ch-gaze/ch-hmd; no body cam so NO independent surface; ~85.6 GB, IO-bound)"
+      "ch-obs (PROBE-CLOSED 2026-07-29): remains unprocessed for a METHODOLOGICAL reason, not time. Pilot found (a) 20 files not 24, half of them single continuous 65-88 min session recordings; (b) no gaze overlay on raw feed; (c) DECISIVE: for BOR/INT the surround is a featureless black void, so global optical flow tracks stimulus visual richness rather than head motion -- no valid cross-stimulus restlessness measure is obtainable from this material without panel-tracking or within-stimulus normalization. Alignment-anchor value is real but unneeded: no section finding is a time-course claim."
     ],
     "scripts": "scripts/boredom-o9/ (committed b766783a5; out/ gitignored; Sxx derived at runtime, no PII)",
     "findings_note": "tmp/Dissertation/Part_III/reanalysis/boredom-o9-physiological-findings.md (untracked)"
   },
-  "ontology_nodes": 7,
+  "round2": {
+    "registered": "2026-08-05",
+    "unit": "bex-05",
+    "shape": "4 subjects (R2-S01..R2-S04, sorted-directory convention) x 3 conditions = 12 sessions (2024-03); raw Omnicept SDK CSVs (ET 120Hz 32-col / CL / HR / HRV sparse / IMU ~1kHz) + OBS first-person HMD 4K60 + bodycam in 4 sessions (R2-S02 x3, R2-S03 Interesting)",
+    "artifacts": "55 _Crop.csv (+t_rel_s) | 12 CropEvents.json | CROP-QA-REPORT-2026-07-31.md | 12 gaze-overlay 4K60 renders | 12 HMD _Crop.mkv | 15 heatmaps (12+3 aggregate) | 4 bodycam _Crop.mkv | 4 BodyCamHMD side-by-side composites | bodycam sync-verification bundle — all on D:, originals untouched",
+    "window_lock": "CSV-primary analysis windows (author-verified closure anchors) CONSUMED by the Part III lab-boredom analyses v1-v4 — do NOT re-crop without coordinating",
+    "sync": "HMD via cue-consensus + stimulus-energy veto; bodycam via stimulus-mix xcorr (bodycam a:0 = same desktop mix as HMD a:0; room-mic track silent — root cause of earlier sync refusals)",
+    "pipeline": "scripts/boredom-r2-overlay/ (commit acd31b469); plans/boredom-r2-gaze-overlay-plan-2026-07-31.md; plans/HANDOFF-BOREDOM-R2-OVERLAY-2026-08-04.md sec.7",
+    "pii": "entry files stay name-free (permanent gate); Round 2 identities exist in the committed operational docs by author ruling 2026-08-05",
+    "bodycam_note": "Round 2 has genuine body/comportment footage (4 sessions) — the surface R1 ch-obs was confirmed NOT to be; artifacts only, comportment analysis = future-work gesture"
+  },
+  "ontology_nodes": 8,
   "provenance_discipline": "FE / FE-U / FAITHFUL-HEIDEGGER / PROJECTED (anticipatory-application); category caution; two-channel rule; no PII in any file",
   "registration": {
     "compiled_index": "TEXT_DIRS entry added 2026-07-16 (ontology_format=header, analysis_subdir=_synthesis)",

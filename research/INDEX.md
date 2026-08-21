@@ -112,7 +112,7 @@ research/
 | File | Description |
 |------|-------------|
 | `scholarly-sources-phantasia.md` | Scholarly sources on phantasia |
-| `calleja-framework-summary.md` | Summary of Calleja's Player Involvement Model |
+| `calleja-pim-framework.md` | Calleja's Player Involvement Model (PIM) — Analytical Framework: 6 dimensions × 2 phases + analytical protocol (restored 2026-05-04 from aristotle-prime; generated 2026-03-04 via FENRIR pipeline; 273-chunk corpus) |
 | `gnomes-goblins-reference-index.md` | Reference index for Gnomes & Goblins VR analysis |
 | `veridissimilitude-application.md` | Application notes for veri(dis)similitude concept |
 | `phd-pipeline-improvement-proposal.md` | Proposal for PhD pipeline improvements |
@@ -127,6 +127,6 @@ research/
 
 ---
 
-**Last Updated:** 2026-01-20
+**Last Updated:** 2026-05-04
 **Total Files:** 45
 **Subfolders:** 5

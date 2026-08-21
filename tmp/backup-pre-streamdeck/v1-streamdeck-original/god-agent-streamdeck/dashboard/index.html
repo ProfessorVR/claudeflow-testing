@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>God Agent — Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:        #080c10;
+    --surface:   #0d1420;
+    --border:    #1a2d4a;
+    --glow:      #00c8ff;
+    --glow2:     #7b2fff;
+    --accent:    #ff6b35;
+    --success:   #00ff88;
+    --warn:      #ffcc00;
+    --danger:    #ff3355;
+    --text:      #c8dff5;
+    --muted:     #4a6080;
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-ui:   'Rajdhani', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Animated background grid ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,200,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,200,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -20%;
+    width: 60%;
+    height: 80%;
+    background: radial-gradient(ellipse, rgba(0,200,255,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: drift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes drift {
+    from { transform: translate(0, 0) rotate(0deg); }
+    to   { transform: translate(10%, 5%) rotate(3deg); }
+  }
+
+  /* ── Layout ── */
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    display: grid;
+    gap: 20px;
+  }
+
+  /* ── Header ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--glow2), var(--glow));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 0 20px rgba(0,200,255,0.3);
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(0,200,255,0.3); }
+    50%       { box-shadow: 0 0 40px rgba(0,200,255,0.6), 0 0 80px rgba(123,47,255,0.2); }
+  }
+
+  .logo-text h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .logo-text span {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--glow);
+    text-transform: uppercase;
+    font-weight: 500;
+    font-family: var(--font-mono);
+  }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success);
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
+
+  /* ── Stats Row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card:hover { border-color: var(--glow); }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--glow2), var(--glow));
+    opacity: 0.6;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    font-family: var(--font-mono);
+    line-height: 1.2;
+    margin-top: 4px;
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .stat-value.green  { color: var(--success); }
+  .stat-value.blue   { color: var(--glow); }
+  .stat-value.purple { color: var(--glow2); }
+  .stat-value.orange { color: var(--accent); }
+
+  /* ── Main content ── */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 20px;
+  }
+
+  /* ── Stream Deck Visual ── */
+  .deck-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+  }
+
+  .panel-title {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    margin-bottom: 20px;
+  }
+
+  .deck-visual {
+    background: #050810;
+    border-radius: 18px;
+    padding: 20px;
+    border: 2px solid #1a2535;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    aspect-ratio: 5/3;
+  }
+
+  .deck-btn {
+    border-radius: 10px;
+    border: 1px solid #1e3050;
+    background: #0a1525;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+    padding: 8px 4px;
+  }
+
+  .deck-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.03), transparent);
+    pointer-events: none;
+  }
+
+  .deck-btn:hover {
+    border-color: var(--glow);
+    background: #0f1e35;
+    box-shadow: 0 0 12px rgba(0,200,255,0.15), inset 0 0 8px rgba(0,200,255,0.05);
+    transform: scale(0.97);
+  }
+
+  .deck-btn:active {
+    transform: scale(0.93);
+    box-shadow: 0 0 20px rgba(0,200,255,0.3);
+  }
+
+  .deck-btn.active {
+    border-color: var(--glow);
+    background: rgba(0,200,255,0.08);
+    animation: active-pulse 0.5s ease-out;
+  }
+
+  @keyframes active-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(0,200,255,0.4); }
+    100% { box-shadow: 0 0 0 20px rgba(0,200,255,0); }
+  }
+
+  .deck-btn.empty { opacity: 0.2; cursor: default; }
+  .deck-btn.empty:hover { transform: none; border-color: #1e3050; background: #0a1525; box-shadow: none; }
+
+  .btn-icon { font-size: 20px; line-height: 1; }
+  .btn-label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text);
+    font-family: var(--font-mono);
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  /* Row color accents */
+  .deck-btn[data-row="1"] { --btn-accent: var(--glow); }
+  .deck-btn[data-row="2"] { --btn-accent: var(--glow2); }
+  .deck-btn[data-row="3"] { --btn-accent: var(--accent); }
+
+  .deck-btn[data-row="1"] .btn-label { color: rgba(0,200,255,0.8); }
+  .deck-btn[data-row="2"] .btn-label { color: rgba(123,47,255,0.9); }
+  .deck-btn[data-row="3"] .btn-label { color: rgba(255,107,53,0.9); }
+
+  /* ── Terminal / Output panel ── */
+  .terminal-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .term-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0,0,0,0.2);
+  }
+
+  .term-dots { display: flex; gap: 6px; }
+  .term-dots span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .term-dots span:nth-child(1) { background: #ff5f57; }
+  .term-dots span:nth-child(2) { background: #febc2e; }
+  .term-dots span:nth-child(3) { background: #28c840; }
+
+  .term-title {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    flex: 1;
+    text-align: center;
+  }
+
+  .term-body {
+    flex: 1;
+    padding: 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.8;
+    overflow-y: auto;
+    min-height: 320px;
+    max-height: 320px;
+  }
+
+  .term-line { display: block; }
+  .term-line.dim    { color: var(--muted); }
+  .term-line.green  { color: var(--success); }
+  .term-line.blue   { color: var(--glow); }
+  .term-line.purple { color: var(--glow2); }
+  .term-line.orange { color: var(--accent); }
+  .term-line.warn   { color: var(--warn); }
+
+  .term-cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--glow);
+    animation: cursor-blink 1s step-end infinite;
+    vertical-align: text-bottom;
+    margin-left: 2px;
+  }
+
+  @keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* ── Input area ── */
+  .input-area {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+  }
+
+  .input-row {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .input-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+
+  select, input[type="text"] {
+    background: #060a12;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  select:focus, input[type="text"]:focus { border-color: var(--glow); }
+
+  select option { background: #0d1420; }
+
+  .run-btn {
+    background: linear-gradient(135deg, var(--glow2), var(--glow));
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .run-btn:hover {
+    opacity: 0.9;
+    box-shadow: 0 0 20px rgba(0,200,255,0.3);
+    transform: translateY(-1px);
+  }
+
+  .run-btn:active { transform: translateY(0); }
+
+  /* ── Setup guide ── */
+  .setup-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 24px;
+  }
+
+  .setup-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 14px;
+  }
+
+  .setup-step {
+    background: #060a12;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+
+  .step-num {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--glow);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .step-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .step-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    background: rgba(0,200,255,0.08);
+    color: var(--glow);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+
+  /* ── Layout map ── */
+  .layout-map {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .map-key {
+    background: #060a12;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .map-key.row1 { color: var(--glow);   border-color: rgba(0,200,255,0.2); }
+  .map-key.row2 { color: var(--glow2);  border-color: rgba(123,47,255,0.2); }
+  .map-key.row3 { color: var(--accent); border-color: rgba(255,107,53,0.2); }
+  .map-key.empty { opacity: 0.2; }
+
+  .map-key span { display: block; font-size: 16px; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">
+        <h1>God Agent</h1>
+        <span>Command Center v1.0</span>
+      </div>
+    </div>
+    <div class="status-pill">
+      <div class="dot"></div>
+      <span id="status-text">SYSTEM ONLINE</span>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Agents</div>
+      <div class="stat-value blue">197</div>
+      <div class="stat-sub">24 categories</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Architecture</div>
+      <div class="stat-value purple">5</div>
+      <div class="stat-sub">layers active</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Init Time</div>
+      <div class="stat-value green">~70ms</div>
+      <div class="stat-sub">target &lt;100ms ✓</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Learning</div>
+      <div class="stat-value orange">EWC++</div>
+      <div class="stat-sub">trajectory-based</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Improvement</div>
+      <div class="stat-value green">+26%</div>
+      <div class="stat-sub">on repeated tasks</div>
+    </div>
+  </div>
+
+  <!-- Main grid -->
+  <div class="content-grid">
+
+    <!-- Stream Deck Visual -->
+    <div class="deck-panel">
+      <div class="panel-title">// Stream Deck MK.2 — 15 Key Layout</div>
+      <div class="deck-visual" id="deck">
+
+        <!-- Row 1 -->
+        <div class="deck-btn" data-row="1" data-cmd="status" onclick="triggerBtn(this)">
+          <div class="btn-icon">📊</div>
+          <div class="btn-label">STATUS</div>
+        </div>
+        <div class="deck-btn" data-row="1" data-cmd="ask" onclick="triggerBtn(this)">
+          <div class="btn-icon">💬</div>
+          <div class="btn-label">ASK</div>
+        </div>
+        <div class="deck-btn" data-row="1" data-cmd="code" onclick="triggerBtn(this)">
+          <div class="btn-icon">⚙️</div>
+          <div class="btn-label">CODE</div>
+        </div>
+        <div class="deck-btn" data-row="1" data-cmd="research" onclick="triggerBtn(this)">
+          <div class="btn-icon">🔬</div>
+          <div class="btn-label">RESEARCH</div>
+        </div>
+        <div class="deck-btn" data-row="1" data-cmd="write" onclick="triggerBtn(this)">
+          <div class="btn-icon">✍️</div>
+          <div class="btn-label">WRITE</div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="deck-btn" data-row="2" data-cmd="learn" onclick="triggerBtn(this)">
+          <div class="btn-icon">🧠</div>
+          <div class="btn-label">LEARN</div>
+        </div>
+        <div class="deck-btn" data-row="2" data-cmd="query" onclick="triggerBtn(this)">
+          <div class="btn-icon">🔍</div>
+          <div class="btn-label">QUERY</div>
+        </div>
+        <div class="deck-btn" data-row="2" data-cmd="learn-style" onclick="triggerBtn(this)">
+          <div class="btn-icon">📄</div>
+          <div class="btn-label">STYLE IN</div>
+        </div>
+        <div class="deck-btn" data-row="2" data-cmd="style-status" onclick="triggerBtn(this)">
+          <div class="btn-icon">🎨</div>
+          <div class="btn-label">STYLES</div>
+        </div>
+        <div class="deck-btn" data-row="2" data-cmd="feedback" onclick="triggerBtn(this)">
+          <div class="btn-icon">⭐</div>
+          <div class="btn-label">FEEDBACK</div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="deck-btn empty" data-row="3">
+          <div class="btn-label">—</div>
+        </div>
+        <div class="deck-btn empty" data-row="3">
+          <div class="btn-label">—</div>
+        </div>
+        <div class="deck-btn empty" data-row="3">
+          <div class="btn-label">—</div>
+        </div>
+        <div class="deck-btn empty" data-row="3">
+          <div class="btn-label">—</div>
+        </div>
+        <div class="deck-btn" data-row="3" data-cmd="dashboard" onclick="triggerBtn(this)">
+          <div class="btn-icon">🖥️</div>
+          <div class="btn-label">DASH</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Terminal Output -->
+    <div class="terminal-panel">
+      <div class="term-header">
+        <div class="term-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="term-title">god-agent — output</div>
+      </div>
+      <div class="term-body" id="terminal">
+        <span class="term-line dim">// God Agent Command Center</span>
+        <span class="term-line dim">// Click a button above or use the panel below</span>
+        <span class="term-line">&nbsp;</span>
+        <span class="term-line green">✓ System initialized</span>
+        <span class="term-line blue">✓ 197 agents loaded across 24 categories</span>
+        <span class="term-line purple">✓ ReasoningBank: 4 modes active</span>
+        <span class="term-line orange">✓ SoNA Engine: EWC++ regularization on</span>
+        <span class="term-line green">✓ UCM: Unbounded context memory ready</span>
+        <span class="term-line">&nbsp;</span>
+        <span class="term-line dim">$ <span class="term-cursor"></span></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Input / Quick Launch -->
+  <div class="input-area">
+    <div class="panel-title">// Quick Launch</div>
+    <div class="input-row">
+      <div class="input-label">Command</div>
+      <select id="cmd-select">
+        <option value="ask">ask — Question / General</option>
+        <option value="code">code — Generate Code</option>
+        <option value="research">research — Deep Research</option>
+        <option value="write">write — Write Document</option>
+        <option value="learn">learn — Store Knowledge</option>
+        <option value="query">query — Search Knowledge</option>
+        <option value="status">status — System Status</option>
+        <option value="style-status">style-status — View Styles</option>
+      </select>
+      <button class="run-btn" onclick="launchCmd()">▶ RUN</button>
+    </div>
+    <div class="input-row">
+      <div class="input-label">Input</div>
+      <input type="text" id="cmd-input" placeholder="Enter your query, task, or knowledge..." onkeydown="if(event.key==='Enter') launchCmd()" />
+    </div>
+  </div>
+
+  <!-- Setup Guide -->
+  <div class="setup-panel">
+    <div class="panel-title">// Stream Deck Setup Guide</div>
+    <div class="setup-grid">
+      <div class="setup-step">
+        <div class="step-num">STEP 01</div>
+        <div class="step-title">Run Setup Script</div>
+        <div class="step-desc">Execute <code>setup.sh</code> to make all shell scripts executable and verify your God Agent path.</div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">STEP 02</div>
+        <div class="step-title">Configure Each Button</div>
+        <div class="step-desc">In Stream Deck app, set each key to <strong>Open</strong> action → <strong>Application: Terminal</strong> → pass the script path as argument.</div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">STEP 03</div>
+        <div class="step-title">Set Button Icons</div>
+        <div class="step-desc">Right-click each key → set icon. Use the layout below as reference for which script maps to which position.</div>
+      </div>
+    </div>
+
+    <!-- Visual map -->
+    <div class="panel-title" style="margin-top:20px">// Key Map — scripts/god-*.sh</div>
+    <div class="layout-map">
+      <div class="map-key row1"><span>📊</span>god-status</div>
+      <div class="map-key row1"><span>💬</span>god-ask</div>
+      <div class="map-key row1"><span>⚙️</span>god-code</div>
+      <div class="map-key row1"><span>🔬</span>god-research</div>
+      <div class="map-key row1"><span>✍️</span>god-write</div>
+
+      <div class="map-key row2"><span>🧠</span>god-learn</div>
+      <div class="map-key row2"><span>🔍</span>god-query</div>
+      <div class="map-key row2"><span>📄</span>god-learn-style</div>
+      <div class="map-key row2"><span>🎨</span>god-style-status</div>
+      <div class="map-key row2"><span>⭐</span>god-feedback</div>
+
+      <div class="map-key empty"><span>—</span>unused</div>
+      <div class="map-key empty"><span>—</span>unused</div>
+      <div class="map-key empty"><span>—</span>unused</div>
+      <div class="map-key empty"><span>—</span>unused</div>
+      <div class="map-key row3"><span>🖥️</span>god-dashboard</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const terminal = document.getElementById('terminal');
+
+  const RESPONSES = {
+    status: [
+      { t: 'blue',   m: '$ npx tsx cli.ts status' },
+      { t: 'dim',    m: '' },
+      { t: 'green',  m: '[GodAgent] Initialized in 70ms' },
+      { t: 'blue',   m: '[AgentRegistry] 197 agents · 24 categories' },
+      { t: 'purple', m: '[ReasoningBank] 4 modes · Hybrid active' },
+      { t: 'orange', m: '[SoNA] Weights loaded · Drift: NORMAL (0.08)' },
+      { t: 'green',  m: '[UCM] Episode storage ready · 1536D vectors' },
+      { t: '',       m: '' },
+      { t: 'green',  m: '✓ All systems operational' },
+    ],
+    ask: [
+      { t: 'blue',   m: '$ npx tsx cli.ts ask "..."' },
+      { t: 'dim',    m: '[GodAgent] Mode: HYBRID · Trajectory created' },
+      { t: 'dim',    m: '[PatternMatcher] Found 7 relevant patterns' },
+      { t: 'dim',    m: '[CausalMemory] Inference depth: 3' },
+      { t: '',       m: '' },
+      { t: 'green',  m: '[Response] Processing complete' },
+      { t: 'dim',    m: '[SoNA] Quality: 0.84 · Pattern created' },
+    ],
+    code: [
+      { t: 'blue',   m: '$ npx tsx cli.ts code "..."' },
+      { t: 'dim',    m: '[GodAgent] Mode: CODE · Agent: coder-agent' },
+      { t: 'dim',    m: '[PatternMatcher] 12 code patterns matched' },
+      { t: 'dim',    m: '[TinyDancer] Routing to coder-agent' },
+      { t: '',       m: '' },
+      { t: 'green',  m: '[Output] Code generated successfully' },
+      { t: 'purple', m: '[EWC++] Weights updated · lr: 0.001' },
+    ],
+    research: [
+      { t: 'blue',   m: '$ npx tsx cli.ts research "..."' },
+      { t: 'dim',    m: '[GodAgent] Mode: RESEARCH · Pipeline: DAI-002' },
+      { t: 'dim',    m: '[RelayRace] Stage 1/4: Gathering sources' },
+      { t: 'dim',    m: '[RelayRace] Stage 2/4: Synthesis' },
+      { t: 'dim',    m: '[RelayRace] Stage 3/4: Writing' },
+      { t: 'dim',    m: '[RelayRace] Stage 4/4: Review' },
+      { t: 'green',  m: '✓ Research complete' },
+    ],
+    write: [
+      { t: 'blue',   m: '$ npx tsx cli.ts write "..."' },
+      { t: 'dim',    m: '[GodAgent] Mode: WRITE · Style: Academic' },
+      { t: 'dim',    m: '[StyleAnalyzer] Profile loaded' },
+      { t: 'dim',    m: '[AttentionFactory] Dual-space attention' },
+      { t: 'green',  m: '✓ Document generated' },
+    ],
+    learn: [
+      { t: 'blue',   m: '$ npx tsx cli.ts learn "..."' },
+      { t: 'dim',    m: '[GodAgent] Generating embedding (768D)' },
+      { t: 'dim',    m: '[VectorDB] Inserted → vectorId: v_a7f3' },
+      { t: 'dim',    m: '[GraphDB] Node created → nodeId: n_2bc1' },
+      { t: 'dim',    m: '[ProvenanceStore] L-Score: 0.90' },
+      { t: 'green',  m: '✓ Knowledge stored successfully' },
+    ],
+    query: [
+      { t: 'blue',   m: '$ npx tsx cli.ts query "..."' },
+      { t: 'dim',    m: '[VectorDB] Semantic search · k=10' },
+      { t: 'dim',    m: '[Results] 8 matches above threshold 0.7' },
+      { t: '',       m: '' },
+      { t: 'green',  m: '✓ Query complete' },
+    ],
+    'style-status': [
+      { t: 'blue',   m: '$ npx tsx cli.ts style-status' },
+      { t: 'dim',    m: '' },
+      { t: 'orange', m: 'Style Profiles:' },
+      { t: '',       m: '  Academic     · 1 source PDF' },
+      { t: '',       m: '  Technical    · 2 source PDFs' },
+      { t: '',       m: '  Conversational · 1 source PDF' },
+      { t: 'green',  m: '' },
+      { t: 'green',  m: '✓ 3 profiles loaded' },
+    ],
+    dashboard: [
+      { t: 'orange', m: '// Dashboard opened in browser' },
+      { t: 'dim',    m: '// You are here :)' },
+    ],
+  };
+
+  function clearTerminal() {
+    terminal.innerHTML = '';
+  }
+
+  function addLine(type, text) {
+    const span = document.createElement('span');
+    span.className = 'term-line' + (type ? ' ' + type : '');
+    span.textContent = text === '' ? '\u00a0' : text;
+    terminal.appendChild(span);
+    terminal.scrollTop = terminal.scrollHeight;
+  }
+
+  function addCursor() {
+    const span = document.createElement('span');
+    span.className = 'term-line dim';
+    span.innerHTML = '$ <span class="term-cursor"></span>';
+    terminal.appendChild(span);
+  }
+
+  async function typeLines(lines) {
+    clearTerminal();
+    for (let i = 0; i < lines.length; i++) {
+      await new Promise(r => setTimeout(r, i === 0 ? 0 : 80 + Math.random() * 40));
+      addLine(lines[i].t, lines[i].m);
+    }
+    await new Promise(r => setTimeout(r, 150));
+    addCursor();
+  }
+
+  function triggerBtn(el) {
+    if (el.classList.contains('empty')) return;
+    // Flash active state
+    el.classList.add('active');
+    setTimeout(() => el.classList.remove('active'), 500);
+
+    const cmd = el.dataset.cmd;
+    const lines = RESPONSES[cmd] || [{ t: 'dim', m: '// No preview for this command' }];
+    typeLines(lines);
+  }
+
+  function launchCmd() {
+    const cmd = document.getElementById('cmd-select').value;
+    const input = document.getElementById('cmd-input').value.trim();
+
+    // Highlight corresponding deck button
+    const btn = document.querySelector(`.deck-btn[data-cmd="${cmd}"]`);
+    if (btn) {
+      btn.classList.add('active');
+      setTimeout(() => btn.classList.remove('active'), 500);
+    }
+
+    const baseLines = RESPONSES[cmd] || [];
+    const lines = baseLines.map((l, i) => {
+      if (i === 0 && input) {
+        return { t: l.t, m: `$ npx tsx cli.ts ${cmd} "${input}"` };
+      }
+      return l;
+    });
+
+    typeLines(lines.length ? lines : [{ t: 'dim', m: `$ npx tsx cli.ts ${cmd} "${input}"` }]);
+    document.getElementById('cmd-input').value = '';
+  }
+
+  // Boot sequence
+  window.addEventListener('load', () => {
+    const boot = [
+      { t: 'dim',    m: '// God Agent Command Center' },
+      { t: 'dim',    m: '// Stream Deck MK.2 Companion' },
+      { t: '',       m: '' },
+      { t: 'green',  m: '✓ System initialized' },
+      { t: 'blue',   m: '✓ 197 agents · 24 categories' },
+      { t: 'purple', m: '✓ ReasoningBank: 4 modes active' },
+      { t: 'orange', m: '✓ SoNA: EWC++ regularization on' },
+      { t: 'green',  m: '✓ UCM: Episode memory ready' },
+      { t: '',       m: '' },
+      { t: 'dim',    m: '// Click a button or use Quick Launch below' },
+    ];
+    typeLines(boot);
+  });
+</script>
+</body>
+</html>

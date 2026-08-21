@@ -10,7 +10,7 @@ v7 — Full benchmark fix + PyMuPDF zero-tolerance visual grounding:
   PyMuPDF: 3-tier extraction (Marker → PyMuPDF → pdftotext) with native bboxes
 
 Usage:
-    python3 scripts/ingest/parallel_ingest.py --root corpus/ --marker --marker-url http://192.168.50.22:8001
+    python3 scripts/ingest/parallel_ingest.py --root corpus/ --marker --marker-url http://127.0.0.1:8003
 """
 
 from __future__ import annotations
@@ -710,7 +710,8 @@ def main():
     parser = argparse.ArgumentParser(description="Parallel ingestion v7 — 3-tier extraction with PyMuPDF")
     parser.add_argument("--root", required=True, help="Corpus root directory")
     parser.add_argument("--marker", action="store_true", help="Enable Marker OCR")
-    parser.add_argument("--marker-url", type=str, default="http://192.168.50.22:8001")
+    parser.add_argument("--marker-url", type=str, default="",
+                        help="Marker server URL (no default — WRAITH retired 2026-07-29; use a local server)")
     parser.add_argument("--workers", type=int, default=2, help="Number of producer threads")
     parser.add_argument("--force", action="store_true", help="Re-process all files")
     args = parser.parse_args()

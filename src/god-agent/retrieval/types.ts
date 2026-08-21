@@ -292,7 +292,7 @@ export interface SmartRetrievalConfig {
     port?: number;
   };
 
-  /** Cross-encoder rerank settings (wraith-infer /v1/rerank). Falls back to env
+  /** Cross-encoder rerank settings (/v1/rerank; WRAITH retired — no default endpoint). Falls back to env
    *  GOD_RERANK_ENDPOINT / GOD_RERANK_ENABLED, then a hardcoded WRAITH default. */
   rerank?: {
     endpoint?: string;

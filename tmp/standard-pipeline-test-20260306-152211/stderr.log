@@ -1,0 +1,302 @@
+{"timestamp":"2026-03-06T23:24:11.711Z","level":"INFO","message":"Configuration initialized","context":{"service":"config-manager","configPath":null,"version":"2.1.0"}}
+{"timestamp":"2026-03-06T23:24:11.716Z","level":"INFO","message":"Initializing Layer 1: Native Core","context":{}}
+{"timestamp":"2026-03-06T23:24:11.717Z","level":"INFO","message":"Initializing Layer 2: Reasoning","context":{}}
+{"timestamp":"2026-03-06T23:24:11.717Z","level":"INFO","message":"Initializing Layer 3: Memory","context":{}}
+{"timestamp":"2026-03-06T23:24:11.721Z","level":"WARN","message":"Local API unavailable, using mock provider","context":{"service":"embedding-provider"}}
+{"timestamp":"2026-03-06T23:24:11.721Z","level":"INFO","message":"No existing causal graph found, starting fresh","context":{"component":"CausalMemory"}}
+{"timestamp":"2026-03-06T23:24:11.919Z","level":"INFO","message":"Initializing Layer 4: Learning","context":{}}
+{"timestamp":"2026-03-06T23:24:11.921Z","level":"INFO","message":"SonaEngine created with database persistence enabled","context":{}}
+{"timestamp":"2026-03-06T23:24:11.922Z","level":"INFO","message":"SonaEngine persistence verified - DAOs initialized","context":{}}
+{"timestamp":"2026-03-06T23:24:11.922Z","level":"INFO","message":"  Trajectory metadata: {\"totalCount\":2051,\"activeCount\":145,\"completedCount\":660,\"failedCount\":1246,\"abandonedCount\":0,\"avgQualityScore\":0.36033700898275645,\"avgStepCount\":0.3052169673330083,\"totalFileBytes\":0}","context":{}}
+{"timestamp":"2026-03-06T23:24:11.922Z","level":"INFO","message":"  Patterns: {\"totalCount\":9,\"activeCount\":9,\"deprecatedCount\":0,\"totalSuccessCount\":0,\"totalFailureCount\":0,\"averageWeight\":0.9353542159310559,\"successRate\":0}","context":{}}
+{"timestamp":"2026-03-06T23:24:11.922Z","level":"INFO","message":"  Feedback: {\"feedbackCount\":1000,\"processedCount\":607,\"unprocessedCount\":393,\"avgQuality\":0.5398367891211338,\"outcomeBreakdown\":{\"positive\":12,\"negative\":375,\"neutral\":613}}","context":{}}
+[SonaEngine] Trajectory streaming enabled
+{"timestamp":"2026-03-06T23:24:11.925Z","level":"INFO","message":"Loaded SoNA weights from disk","context":{}}
+{"timestamp":"2026-03-06T23:24:11.925Z","level":"INFO","message":"Initializing Layer 5: Orchestration","context":{}}
+{"timestamp":"2026-03-06T23:24:11.925Z","level":"INFO","message":"Initializing Unified Search","context":{}}
+{"timestamp":"2026-03-06T23:24:11.926Z","level":"info","component":"MemoryClient","message":"Connected to memory server at unix:/tmp/god-agent-memory.sock"}
+{"timestamp":"2026-03-06T23:24:11.926Z","level":"INFO","message":"MemoryClient connected for search","context":{}}
+{"timestamp":"2026-03-06T23:24:11.926Z","level":"INFO","message":"UnifiedSearch initialized","context":{}}
+{"timestamp":"2026-03-06T23:24:11.926Z","level":"INFO","message":"God Agent initialized in 210.87ms","context":{}}
+{"timestamp":"2026-03-06T23:24:11.930Z","level":"WARN","message":"Local API unavailable, using mock provider","context":{"service":"embedding-provider"}}
+[QualityGauntlet] Stage weights sum to 1.15, not 1.0. Scores will be normalized.
+[AgentLoader] YAML parse error, using fallback extraction
+[AgentLoader] YAML parse error, using fallback extraction
+[AgentLoader] YAML parse error, using fallback extraction
+{"timestamp":"2026-03-06T23:24:12.007Z","level":"info","component":"MemoryClient","message":"Connected to memory server at unix:/tmp/god-agent-memory.sock"}
+{"timestamp":"2026-03-06T23:24:15.019Z","level":"ERROR","message":"DESC injection failed","context":{"component":"UCMDaemonClient","error_message":"UCM RPC Error [-32603]: Cannot connect to embedding service at http://127.0.0.1:8000","error_name":"Error","error_stack":"Error: UCM RPC Error [-32603]: Cannot connect to embedding service at http://127.0.0.1:8000\n    at Socket.<anonymous> (/home/dalton/projects/claudeflow-testing/src/god-agent/cli/ucm-daemon-client.ts:204:20)\n    at Socket.emit (node:events:519:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at Readable.push (node:internal/streams/readable:392:5)\n    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)"}}
+[SmartRetrievalLayer] Semantic search: "**Central Thesis**..." (max: 7)
+[SmartRetrievalLayer] Semantic search error: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SmartRetrievalLayer.semanticSearch (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:419:33)
+    at async SmartRetrievalLayer.retrieveContext (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:121:26)
+    at async WritePipelineOrchestrator.write (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/write-pipeline-orchestrator.ts:1003:28)
+    at async main (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/cli.ts:1448:31) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 8000
+  }
+}
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (7): 0
+[SmartRetrievalLayer] Semantic search: "**Aristotelian Analysis**..." (max: 7)
+[SmartRetrievalLayer] Semantic search error: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SmartRetrievalLayer.semanticSearch (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:419:33)
+    at async SmartRetrievalLayer.retrieveContext (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:121:26)
+    at async WritePipelineOrchestrator.write (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/write-pipeline-orchestrator.ts:1003:28)
+    at async main (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/cli.ts:1448:31) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 8000
+  }
+}
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (7): 0
+[SmartRetrievalLayer] Semantic search: "**Heideggerian Analysis**..." (max: 7)
+[SmartRetrievalLayer] Semantic search error: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SmartRetrievalLayer.semanticSearch (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:419:33)
+    at async SmartRetrievalLayer.retrieveContext (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:121:26)
+    at async WritePipelineOrchestrator.write (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/write-pipeline-orchestrator.ts:1003:28)
+    at async main (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/cli.ts:1448:31) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 8000
+  }
+}
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (7): 0
+[SmartRetrievalLayer] Semantic search: "**Comparative Synthesis**..." (max: 7)
+[SmartRetrievalLayer] Semantic search error: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SmartRetrievalLayer.semanticSearch (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:419:33)
+    at async SmartRetrievalLayer.retrieveContext (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:121:26)
+    at async WritePipelineOrchestrator.write (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/write-pipeline-orchestrator.ts:1003:28)
+    at async main (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/cli.ts:1448:31) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 8000
+  }
+}
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (7): 0
+[SmartRetrievalLayer] Semantic search: "**Argumentative Structure (CARS Model)**..." (max: 7)
+[SmartRetrievalLayer] Semantic search error: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SmartRetrievalLayer.semanticSearch (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:419:33)
+    at async SmartRetrievalLayer.retrieveContext (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:121:26)
+    at async WritePipelineOrchestrator.write (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/write-pipeline-orchestrator.ts:1003:28)
+    at async main (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/cli.ts:1448:31) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 8000
+  }
+}
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (7): 0
+[SmartRetrievalLayer] Semantic search: "**Style Requirements**..." (max: 7)
+[SmartRetrievalLayer] Semantic search error: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SmartRetrievalLayer.semanticSearch (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:419:33)
+    at async SmartRetrievalLayer.retrieveContext (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:121:26)
+    at async WritePipelineOrchestrator.write (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/write-pipeline-orchestrator.ts:1003:28)
+    at async main (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/cli.ts:1448:31) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 8000
+  }
+}
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (7): 0
+[SmartRetrievalLayer] Semantic search: "**Key Concepts to Track**..." (max: 7)
+[SmartRetrievalLayer] Semantic search error: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SmartRetrievalLayer.semanticSearch (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:419:33)
+    at async SmartRetrievalLayer.retrieveContext (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:121:26)
+    at async WritePipelineOrchestrator.write (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/write-pipeline-orchestrator.ts:1003:28)
+    at async main (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/cli.ts:1448:31) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 8000
+  }
+}
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (7): 0
+[SmartRetrievalLayer] Semantic search: "**Claim Map**: Number each major claim (C1, C2, ....." (max: 7)
+[SmartRetrievalLayer] Semantic search error: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SmartRetrievalLayer.semanticSearch (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:419:33)
+    at async SmartRetrievalLayer.retrieveContext (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:121:26)
+    at async WritePipelineOrchestrator.write (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/write-pipeline-orchestrator.ts:1003:28)
+    at async main (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/cli.ts:1448:31) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 8000
+  }
+}
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (7): 0
+[SmartRetrievalLayer] Semantic search: "**Quotation Fidelity Ledger**: List each direct qu..." (max: 7)
+[SmartRetrievalLayer] Semantic search error: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SmartRetrievalLayer.semanticSearch (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:419:33)
+    at async SmartRetrievalLayer.retrieveContext (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:121:26)
+    at async WritePipelineOrchestrator.write (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/write-pipeline-orchestrator.ts:1003:28)
+    at async main (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/cli.ts:1448:31) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 8000
+  }
+}
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (7): 0
+[SmartRetrievalLayer] Semantic search: "**Citation Ledger**: List all unique sources cited..." (max: 7)
+[SmartRetrievalLayer] Semantic search error: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SmartRetrievalLayer.semanticSearch (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:419:33)
+    at async SmartRetrievalLayer.retrieveContext (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:121:26)
+    at async WritePipelineOrchestrator.write (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/write-pipeline-orchestrator.ts:1003:28)
+    at async main (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/cli.ts:1448:31) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 8000
+  }
+}
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (7): 0
+[SmartRetrievalLayer] Semantic search: "**Validation Summary**: Total citations, corpus-ve..." (max: 7)
+[SmartRetrievalLayer] Semantic search error: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SmartRetrievalLayer.semanticSearch (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:419:33)
+    at async SmartRetrievalLayer.retrieveContext (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:121:26)
+    at async WritePipelineOrchestrator.write (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/write-pipeline-orchestrator.ts:1003:28)
+    at async main (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/cli.ts:1448:31) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 8000
+  }
+}
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (7): 0
+[SmartRetrievalLayer] Semantic search: "**Quality Gauntlet Report**: Overall quality score..." (max: 7)
+[SmartRetrievalLayer] Semantic search error: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14902:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SmartRetrievalLayer.semanticSearch (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:419:33)
+    at async SmartRetrievalLayer.retrieveContext (/home/dalton/projects/claudeflow-testing/src/god-agent/retrieval/smart-retrieval-layer.ts:121:26)
+    at async WritePipelineOrchestrator.write (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/write-pipeline-orchestrator.ts:1003:28)
+    at async main (/home/dalton/projects/claudeflow-testing/src/god-agent/universal/cli.ts:1448:31) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 8000
+  }
+}
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (7): 0
+[SonaEngine] Trajectory traj_1772839455029_5dc4519e has no steps for pattern creation
+{"timestamp":"2026-03-06T23:25:50.135Z","level":"WARN","message":"Pattern sync failed","context":{"component":"ReasoningBank","error":"NotNormalizedError: Pattern embedding: Vector not L2-normalized (norm: 0.000000, expected: 1.0)"}}
+[SonaEngine] Auto-created pattern pattern_1772839550134_ombpwb9dou from high-quality trajectory traj_1772839455029_5dc4519e (no prior patterns - bootstrap)
+{"timestamp":"2026-03-06T23:25:50.135Z","level":"INFO","message":"SonaEngine updated for trajectory","context":{"component":"ReasoningBank","trajectoryId":"traj_1772839455029_5dc4519e"}}
+{"timestamp":"2026-03-06T23:25:50.135Z","level":"INFO","message":"High-quality trajectory eligible for hyperedge creation","context":{"component":"ReasoningBank","trajectoryId":"traj_1772839455029_5dc4519e","quality":0.8420364201016375}}
+{"timestamp":"2026-03-06T23:25:50.141Z","level":"info","component":"MemoryClient","message":"Disconnected from memory server"}
+{"timestamp":"2026-03-06T23:25:50.141Z","level":"INFO","message":"Shutting down God Agent...","context":{}}
+{"timestamp":"2026-03-06T23:25:50.147Z","level":"INFO","message":"SoNA weights saved to disk","context":{}}
+{"timestamp":"2026-03-06T23:25:50.147Z","level":"info","component":"MemoryClient","message":"Disconnected from memory server"}
+{"timestamp":"2026-03-06T23:25:50.147Z","level":"INFO","message":"MemoryClient disconnected","context":{}}
+{"timestamp":"2026-03-06T23:25:50.147Z","level":"INFO","message":"God Agent shutdown complete","context":{}}

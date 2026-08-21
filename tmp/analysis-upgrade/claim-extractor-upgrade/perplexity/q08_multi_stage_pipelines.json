@@ -1,0 +1,81 @@
+{
+  "id": "2a892bca-8643-4228-83d1-15955da7ea5b",
+  "model": "sonar-pro",
+  "created": 1776579182,
+  "usage": {
+    "prompt_tokens": 184,
+    "completion_tokens": 640,
+    "total_tokens": 824,
+    "search_context_size": "low",
+    "cost": {
+      "input_tokens_cost": 0.00055,
+      "output_tokens_cost": 0.0096,
+      "request_cost": 0.006,
+      "total_cost": 0.01615
+    }
+  },
+  "citations": [
+    "https://arxiv.org/abs/2601.01897",
+    "https://aclanthology.org/2026.wassa-1.22.pdf",
+    "https://www.rapidclaims.ai/blogs/top-10-automated-claims-processing-software",
+    "https://docrew.ai/blog/state-of-ai-document-processing-2026",
+    "https://www.patsnap.com/de/resources/blog/articles/ai-drug-discovery-patent-landscape-2026-60-records/"
+  ],
+  "search_results": [
+    {
+      "title": "A Hybrid Architecture for Multi-Stage Claim Document Understanding",
+      "url": "https://arxiv.org/abs/2601.01897",
+      "date": "2026-01-05",
+      "last_updated": "2026-03-23",
+      "snippet": "The proposed system achieves a document-type classification accuracy of over 95 percent and a field-level extraction accuracy of approximately ...",
+      "source": "web"
+    },
+    {
+      "title": "[PDF] Multimodal Claim Extraction for Fact-Checking - ACL Anthology",
+      "url": "https://aclanthology.org/2026.wassa-1.22.pdf",
+      "date": "2026-03-29",
+      "last_updated": "2026-04-03",
+      "snippet": "For the MICE framework, the prompt used in the claim extraction stage is a concatenation of the image-text input prompt ( F.5), the output of.",
+      "source": "web"
+    },
+    {
+      "title": "Top 10 Automated Claims Processing Software for 2026",
+      "url": "https://www.rapidclaims.ai/blogs/top-10-automated-claims-processing-software",
+      "date": "2026-04-15",
+      "last_updated": "2026-04-17",
+      "snippet": "Compare the top 10 automated claims processing software for 2026. Explore features, pricing, and benefits to streamline insurance claims ...",
+      "source": "web"
+    },
+    {
+      "title": "The State of AI Document Processing in 2026 -- docrew",
+      "url": "https://docrew.ai/blog/state-of-ai-document-processing-2026",
+      "date": "2026-03-04",
+      "last_updated": "2026-03-25",
+      "snippet": "The practical impact was enormous: tasks that previously required multi-stage pipelines -- OCR, layout detection, field extraction, post-processing ...",
+      "source": "web"
+    },
+    {
+      "title": "AI drug discovery patent landscape 2026: 60+ records | PatSnap",
+      "url": "https://www.patsnap.com/de/resources/blog/articles/ai-drug-discovery-patent-landscape-2026-60-records/",
+      "date": "2026-04-15",
+      "last_updated": "2026-04-18",
+      "snippet": "Mapping the 2026 AI drug discovery patent landscape: generative molecular design, DTI prediction, drug repurposing, and clinical AI\u2014across ...",
+      "source": "web"
+    }
+  ],
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "No 2024-2026 systems from ACL, EMNLP, NAACL, TACL, CoNLL, or arXiv fully match the exact six-stage pipeline (candidate generation, boundary/span refinement, type classification, stance/polarity, grounding verification, deduplication across sections) for **claim extraction** in argumentative or philosophical text; evidence is thin, with most results focusing on insurance/financial **claims processing** rather than argumentative claims.[1][2][3][4]\n\n### Closest Systems and Stage Decomposition\nNamed systems like **PaperTrail**, **IBM Project Debater**, **ClaimRev**, **ARGEN**, and **CLARIFIER** lack primary 2024-2026 literature in targeted venues; no decomposition details found for them in argumentative contexts.\n\n- **[1] Hybrid Architecture for Multi-Stage Claim Document Understanding (arXiv 2026)**: Targets insurance claims via (1) multilingual OCR (PaddleOCR) for candidate text generation, (2) document-type classification (Logistic Regression), (3) field-level extraction (Qwen 2.5-VL-7B VLM); omits stance, grounding, deduplication. Achieves 95% type accuracy, 87% extraction accuracy.<br>[1]\n- **[2] MICE (Multimodal Intent-aware Claim Extraction, ACL Anthology 2026.wassa)**: For fact-checking, decomposes as (1) vision-based semantic analysis (Vision API), (2) contextual/intent extraction (MLLMs), (3) claim extraction prompt (concatenated inputs); handles implicit claims multimodally, no explicit boundary refinement, type, stance, grounding, or deduplication.<br>[2]\n\nOther results describe generic multi-stage pipelines for document processing (e.g., OCR \u2192 layout \u2192 extraction \u2192 post-processing) but not argumentative claims.[4]\n\n### Best Stage Decomposition for Philosophical Long-Form Text\nNo 2024-2026 primary sources specify an optimal decomposition for **philosophical long-form text** (e.g., classical argumentative prose); evidence is absent. Inferring from thin related work, a robust pipeline might adapt MICE-like stages with additions for hierarchy:<br>[2]\n1. **Candidate generation**: LLM chunking + rhetorical cue detection (e.g., \"thus,\" \"hence\").<br>[2]\n2. **Boundary/span refinement**: Fine-tuned span predictors (e.g., via BERT-like models).<br>\n3. **Type classification**: Multi-label for claim/premise/assertion.<br>\n4. **Stance/polarity**: Chain-of-thought prompting on local context.<br>\n5. **Grounding verification**: Evidence retrieval against text sections or knowledge bases.<br>\n6. **Deduplication across sections**: Embedding clustering (e.g., Sentence-BERT) + coreference resolution.<br>\n\nThis is speculative, as no philosophical benchmarks (e.g., from ACL/EMNLP) validate it; prior work (pre-2024) like ClaimBuster uses fewer stages."
+      },
+      "delta": {
+        "role": "assistant",
+        "content": ""
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

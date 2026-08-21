@@ -1,0 +1,88 @@
+{
+  "id": "40136c9d-2fa9-4b82-a4cf-b959015d3054",
+  "model": "sonar-pro",
+  "created": 1776579292,
+  "usage": {
+    "prompt_tokens": 189,
+    "completion_tokens": 716,
+    "total_tokens": 905,
+    "search_context_size": "low",
+    "cost": {
+      "input_tokens_cost": 0.00057,
+      "output_tokens_cost": 0.01074,
+      "request_cost": 0.006,
+      "total_cost": 0.01731
+    }
+  },
+  "citations": [
+    "https://arxiv.org/html/2601.16946v1",
+    "https://github.com/ParthaPRay/LLM-Learning-Sources",
+    "https://www.tandfonline.com/doi/full/10.1080/17538947.2025.2521786",
+    "https://www.lakera.ai/blog/prompt-engineering-guide",
+    "https://magazine.sebastianraschka.com/p/state-of-llms-2025",
+    "https://geol.ai/briefing/llm-ranking-factors-decoding-how-ai-models-prioritize-content"
+  ],
+  "search_results": [
+    {
+      "title": "Strategies for Span Labeling with Large Language Models - arXiv",
+      "url": "https://arxiv.org/html/2601.16946v1",
+      "date": "2026-01-23",
+      "last_updated": "2026-02-16",
+      "snippet": "With vanilla matching methods, LLMs tend to normalize the text during generation, leading to mismatches (see Table\u02dc4 for an example of such ...",
+      "source": "web"
+    },
+    {
+      "title": "ParthaPRay/LLM-Learning-Sources: This repo contains a ... - GitHub",
+      "url": "https://github.com/ParthaPRay/LLM-Learning-Sources",
+      "date": "2024-01-09",
+      "last_updated": "2025-10-25",
+      "snippet": "This repo contains a list of sources, weblinks, blogs and Youtube channels from where LLMs can and should be learned.",
+      "source": "web"
+    },
+    {
+      "title": "Optimizing context-based location extraction by tuning open-source ...",
+      "url": "https://www.tandfonline.com/doi/full/10.1080/17538947.2025.2521786",
+      "snippet": "We propose to optimize LLMs using Retrieval-Augmented Generation (RAG) and prompt-tuning methods, such as zero-shot and instruction-based prompting to improve ...",
+      "source": "web"
+    },
+    {
+      "title": "The Ultimate Guide to Prompt Engineering in 2026 - Lakera AI",
+      "url": "https://www.lakera.ai/blog/prompt-engineering-guide",
+      "date": "2026-04-16",
+      "last_updated": "2026-04-17",
+      "snippet": "Master advanced prompt engineering techniques to improve LLM output quality, security, and reliability\u2014featuring real-world use cases and expert tips.",
+      "source": "web"
+    },
+    {
+      "title": "The State Of LLMs 2025: Progress, Problems, and Predictions",
+      "url": "https://magazine.sebastianraschka.com/p/state-of-llms-2025",
+      "date": "2025-12-30",
+      "last_updated": "2026-04-06",
+      "snippet": "A lot of LLM benchmark and performance progress will come from improved tooling and inference-time scaling rather than from training or the core ...",
+      "source": "web"
+    },
+    {
+      "title": "LLM Ranking Factors: Retrieval, Selection & Citations - Geol.ai",
+      "url": "https://geol.ai/briefing/llm-ranking-factors-decoding-how-ai-models-prioritize-content",
+      "date": "2026-03-31",
+      "last_updated": "2026-04-16",
+      "snippet": "News analysis of how LLMs rank and cite sources ... In 2024\u20132026 ... If you want to be cited, make it easy to extract the exact span that answers the question.",
+      "source": "web"
+    }
+  ],
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "**LogitMatch, a constrained decoding method that forces LLM outputs to align exactly with valid input spans, is the most reliable 2024 technique for extracting claims with exact source spans in long documents, outperforming baselines like tagging and content matching.**[1] It addresses key LLM limitations\u2014unreliable copying, counting, and ambiguous spans\u2014without finetuning, making it suitable for long contexts where matching degrades.[1]\n\n### Comparison of Techniques (2024-2026 Literature)\nEvidence from 2024-2026 NLP papers (primarily arXiv) is thin beyond span labeling strategies; no primary ACL/EMNLP/NAACL papers directly report 2025-2026 error rates or long-document benchmarks for all listed methods. \"Strategies for Span Labeling with Large Language Models\" (2024) evaluates three families (tagging, indexing, matching) across four tasks with state-of-the-art LLMs, introducing LogitMatch.[1] Other methods like Pointer Networks or two-pass extraction lack 2024-2026 citations in results. Reliability rankings and issues derive from this paper; error rates are not numerically reported (e.g., no F1/span accuracy tables quoted), but qualitative results favor tagging/LogitMatch for consistency.[1]\n\n| Technique | Description | Reliability Issues | Suitability for Long Documents | Evidence (2024-2026) |\n|-----------|-------------|---------------------|-------------------------------|----------------------|\n| **(a) Character offsets** | LLM generates start/end indices (e.g., word-level + numbering).[1] | Unreliable counting; LLMs \"cannot count reliably.\"[1] | Poor; errors compound in long texts. | Weakest in indexing family.[1] |\n| **(b) Verbatim quote + fuzzy-matching** | LLM outputs span content; post-hoc string matching (e.g., JSON).[1] | Normalization/mismatch (LLMs \"cannot copy reliably\"); ambiguity if duplicate spans.[1] | Degrades with length (more duplicates, noise). Competitive but inconsistent vs. tagging.[1] |\n| **(c) Constrained decoding (span-only tokens)** | LogitMatch: Modifies logits to generate only exact input spans.[1] | Minimal; guarantees valid spans via decoding intervention. | High; token-efficient, no finetuning, scales to long inputs. Outperforms matching in some setups.[1] |\n| **(d) Two-pass (extract then locate)** | Not directly evaluated. | N/A (inferred unreliable due to extraction errors propagating). | Likely poor for long docs (context dilution). | No 2024-2026 evidence. |\n| **(e) Pointer Networks/RetrievalQA spans** | Pointer Nets predict positions; RetrievalQA for span retrieval. | N/A. | Potentially good for long docs (attention-efficient). | No 2024-2026 primary sources; pre-LLM era methods. |\n\n**For long documents, LogitMatch is most reliable per evaluations, as tagging (robust baseline) is less token-efficient, and matching degrades from mismatches/duplicates.**[1] No error rates given (e.g., % mismatch); paper states LogitMatch \"eliminates span matching issues\" and is \"highly competitive.\"[1] Evidence gaps: No benchmarks on classical texts/philosophy; thin post-2024 coverage."
+      },
+      "delta": {
+        "role": "assistant",
+        "content": ""
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

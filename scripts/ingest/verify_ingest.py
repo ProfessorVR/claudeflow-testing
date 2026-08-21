@@ -69,12 +69,17 @@ def iter_pdfs(root: Path) -> Iterable[Path]:
             yield p
 
 def get_chunk_count_from_manifest(rec: Dict[str, Any]) -> Optional[int]:
-    # best-effort across likely keys
+    # The manifest stores the chunk count as an int under "chunks" (verified across
+    # all records). Read that first — the prior code only handled the list form, so
+    # this comparison was silently skipped for every record.
+    chunks = rec.get("chunks")
+    if isinstance(chunks, int):
+        return chunks
+    # Legacy aliases
     for k in ("chunk_count", "num_chunks", "chunks_total"):
         v = rec.get(k)
         if isinstance(v, int):
             return v
-    chunks = rec.get("chunks")
     if isinstance(chunks, list):
         return len(chunks)
     return None
@@ -85,6 +90,13 @@ def expected_chunk_ids(doc_id: str, n: int) -> List[str]:
 # ---------- chroma ----------
 
 def open_chroma_collection(chroma_dir: Path, collection_name: str):
+    """Open the LIVE Chroma collection over HTTP (the ingest write path,
+    run_ingest_phase2.py:786 uses HttpClient 127.0.0.1:8001). Reading the on-disk
+    store directly via PersistentClient can contend with the running server and read a
+    different/stale store, so always go through the server. Fails loudly if the
+    collection is missing (no silent get_or_create that masks an empty/wrong store).
+    chroma_dir is retained for CLI compatibility but unused in HTTP mode.
+    """
     try:
         import chromadb
     except ImportError:
@@ -92,8 +104,10 @@ def open_chroma_collection(chroma_dir: Path, collection_name: str):
         print("        Install it in the same venv you used for Phase 2.", file=sys.stderr)
         raise
 
-    client = chromadb.PersistentClient(path=str(chroma_dir))
-    return client.get_or_create_collection(name=collection_name)
+    host = os.environ.get("CHROMA_HOST", "127.0.0.1")
+    port = int(os.environ.get("CHROMA_PORT", "8001"))
+    client = chromadb.HttpClient(host=host, port=port)
+    return client.get_collection(name=collection_name)
 
 def chroma_count_for_doc(collection, doc_id: str) -> int:
     # Chroma supports metadata filters via where

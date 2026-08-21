@@ -129,7 +129,7 @@ export interface CrossEncoderRerankerConfig {
 
   /** Rerank HTTP API configuration (real mode only) */
   vllmConfig?: {
-    /** Rerank endpoint (default: http://192.168.50.22:8100/v1/rerank on WRAITH) */
+    /** Rerank endpoint (no default — the WRAITH cross-encoder service is retired) */
     endpoint?: string;
     /** Reranker model name (default: bge-reranker-v2-m3) */
     modelName?: string;
@@ -525,7 +525,7 @@ export class CrossEncoderReranker {
   }
 
   /**
-   * Compute real cross-encoder score via the wraith-infer rerank API.
+   * Compute real cross-encoder score via a configured rerank API (WRAITH service retired).
    *
    * POSTs the query + single document to /v1/rerank and returns the sigmoid relevance
    * score in [0, 1]. On any failure it falls back to the deterministic mock score, so
@@ -534,7 +534,9 @@ export class CrossEncoderReranker {
   private async computeRealScore(query: string, document: string): Promise<number> {
     this.apiCallCount++;
 
-    const endpoint = this.config.vllmConfig?.endpoint ?? 'http://192.168.50.22:8100/v1/rerank';
+    // WRAITH retired (index-overhaul A6): no baked-in endpoint. An unset endpoint
+    // falls straight through to the deterministic mock score via the catch below.
+    const endpoint = this.config.vllmConfig?.endpoint ?? '';
     const modelName = this.config.vllmConfig?.modelName ?? 'bge-reranker-v2-m3';
     const timeout = this.config.vllmConfig?.timeout ?? 5000;
 

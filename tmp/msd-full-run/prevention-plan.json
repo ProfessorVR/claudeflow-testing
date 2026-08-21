@@ -1,0 +1,54 @@
+{
+  "phase": "3c",
+  "name": "Prevention Plan for v2 Generation",
+  "basedOn": "v1-investigation.json",
+  "issues": [
+    {
+      "id": "I7",
+      "problem": "Main text only 1,783 words (target: 3,000-3,500). Sections average ~225 words each.",
+      "prevention": "Add explicit per-section minimum: 'Each of the 7 sections MUST be at least 350 words. The total main text MUST exceed 3,000 words before the Validation Appendix.'",
+      "severity": "HIGH"
+    },
+    {
+      "id": "I8",
+      "problem": "Section 7 (Phantasia) is only 177 words — shortest section on a critical topic.",
+      "prevention": "Emphasize in prompt: 'Section 5 (Phantasia and Temporal Unification) and Section 6 (Heidegger) are the most important sections — they should be 400+ words each.'",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "I9",
+      "problem": "Missing O'Gorman and Gibson from citations — both are relevant corpus sources.",
+      "prevention": "Add to prompt: 'You MUST cite O\\'Gorman (on phantasia) and at least 2 additional authors beyond Aristotle, Heidegger, Burke, Rickert.'",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "I10",
+      "problem": "Only 4 transition types used (target: 7). Missing: specifically, subsequently, similarly.",
+      "prevention": "Style profile will inject full transition list. Add: 'Use ALL of these transitions at least once: thus, indeed, hence, accordingly, specifically, subsequently, similarly.'",
+      "severity": "LOW"
+    },
+    {
+      "id": "I11",
+      "problem": "Duplicate section heading '1. Articulating Aristotle's Understanding' appears twice.",
+      "prevention": "Ensure section headings are distinct in prompt structure.",
+      "severity": "LOW"
+    }
+  ],
+  "v1Strengths": [
+    "18 direct quotations (excellent — carry forward)",
+    "Zero phantom citations (chunk trimming working)",
+    "Good sentence length (30.9 avg, 63% long)",
+    "6 authors cited with page numbers"
+  ],
+  "v2Strategy": {
+    "chunkAdjustments": "None needed — trimming working well at 352 avg chars",
+    "promptAdditions": [
+      "Inject full style profile (dalton-academic-mkn82c3v)",
+      "Add per-section minimum word count (350 words each)",
+      "Add total minimum word count (3,000 words main text)",
+      "Require O'Gorman citation for phantasia section",
+      "Require all 7 transition types",
+      "Separate word target: '3,000-3,500 words of MAIN TEXT, followed by Validation Appendix'"
+    ]
+  }
+}

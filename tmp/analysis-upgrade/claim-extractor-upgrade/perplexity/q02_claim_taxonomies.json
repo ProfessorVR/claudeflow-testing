@@ -1,0 +1,96 @@
+{
+  "id": "fa15f03b-adf5-4c25-980d-6d3b499d2fbf",
+  "model": "sonar-pro",
+  "created": 1776579136,
+  "usage": {
+    "prompt_tokens": 184,
+    "completion_tokens": 611,
+    "total_tokens": 795,
+    "search_context_size": "low",
+    "cost": {
+      "input_tokens_cost": 0.00055,
+      "output_tokens_cost": 0.00916,
+      "request_cost": 0.006,
+      "total_cost": 0.01572
+    }
+  },
+  "citations": [
+    "https://www.ijcai.org/Proceedings/15/Papers/033.pdf",
+    "https://aclanthology.org/W17-5102/",
+    "http://www.cs.columbia.edu/nlp/papers/2017/hidey_semantic_arguments.pdf",
+    "https://journals.sagepub.com/doi/10.1177/19462174251344764",
+    "https://arxiv.org/pdf/2502.08371",
+    "https://ecampusontario.pressbooks.pub/criticalthinking1234/chapter/__unknown__-29/",
+    "https://discovery.dundee.ac.uk/files/18930411/aac_2F2017_2F8_3_2Faac_8_3_aac026_2Faac_8_aac026.pdf"
+  ],
+  "search_results": [
+    {
+      "title": "[PDF] Context-Independent Claim Detection for Argument Mining - IJCAI",
+      "url": "https://www.ijcai.org/Proceedings/15/Papers/033.pdf",
+      "last_updated": "2026-03-11",
+      "snippet": "One particularly important aspect of argumentation mining is claim identification. Most of the current approaches are engineered to address specific do- mains.",
+      "source": "web"
+    },
+    {
+      "title": "Analyzing the Semantic Types of Claims and Premises in an Online ...",
+      "url": "https://aclanthology.org/W17-5102/",
+      "date": "2017-09-14",
+      "last_updated": "2025-12-14",
+      "snippet": "We propose a two-tiered annotation scheme to label claims and premises and their semantic types in an online persuasive forum, Change My View.",
+      "source": "web"
+    },
+    {
+      "title": "[PDF] Analyzing the Semantic Types of Claims and Premises in an Online ...",
+      "url": "http://www.cs.columbia.edu/nlp/papers/2017/hidey_semantic_arguments.pdf",
+      "last_updated": "2025-10-27",
+      "snippet": "Recent studies in argument mining and computational so- cial science have focused on persuasion detection and prediction. A bulk of them have focused on the ...",
+      "source": "web"
+    },
+    {
+      "title": "Mining implicit arguments for reasoning: A survey - Sage Journals",
+      "url": "https://journals.sagepub.com/doi/10.1177/19462174251344764",
+      "date": "2025-06-30",
+      "last_updated": "2025-08-07",
+      "snippet": "Some schemes, for instance, are based on types of reasoning, such as generalization, sign, or analogy; others are defined by rules of inference, ...",
+      "source": "web"
+    },
+    {
+      "title": "[PDF] Theoretical Analysis and NLP Applications in Argument Mining - arXiv",
+      "url": "https://arxiv.org/pdf/2502.08371",
+      "date": "2025-02-12",
+      "last_updated": "2026-03-23",
+      "snippet": "Claim scores are calculated based on predicted relations, with higher weights assigned to relations pointing to claims and weights set to 0 for.",
+      "source": "web"
+    },
+    {
+      "title": "Argumentation Schemes & Their Application in Argument Mining",
+      "url": "https://ecampusontario.pressbooks.pub/criticalthinking1234/chapter/__unknown__-29/",
+      "date": "2008-10-25",
+      "last_updated": "2026-03-01",
+      "snippet": "A method using argumentation schemes that will be helpful for the purpose of identifying arguments in natural language discourse.",
+      "source": "web"
+    },
+    {
+      "title": "[PDF] Harnessing rhetorical figures for argument mining",
+      "url": "https://discovery.dundee.ac.uk/files/18930411/aac_2F2017_2F8_3_2Faac_8_3_aac026_2Faac_8_aac026.pdf",
+      "last_updated": "2025-06-03",
+      "snippet": "The identification of figural forms can then be harnessed for argument min- ing as a feature for machine learning techniques, or equally serve in combination ...",
+      "source": "web"
+    }
+  ],
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Toulmin's model defines six components\u2014**claim** (assertion), **ground** (evidence/data), **warrant** (inference rule), **backing** (support for warrant), **qualifier** (strength/modality), and **rebuttal** (exceptions)\u2014providing a general, domain-independent structure for analyzing argumentative components.[1][4]\n\nIBM Debater's **Context-Dependent Claim schema** (from IJCAI 2015) emphasizes rhetorical patterns like assertion verbs (e.g., *argue*, *assert*), subordinate clauses, colons for quotes, and comparisons, enabling domain-independent claim detection.[1]\n\nStab & Gurevych's **argumentation schemes** (e.g., from 2014-2017 works) draw from Walton et al., categorizing schemes into practical reasoning (e.g., argument from consequences), abductive (e.g., from sign), causal (e.g., cause-to-effect), and source-based (e.g., expert opinion, position to know), often applied in mining tasks like corpus annotation.[4][6]\n\nThe **AAEC corpus** (not directly detailed here; evidence thin) aligns with pragma-dialectics, using *standpoint* (dynamic claim) and *premise*, influencing component identification in mining.[4]\n\nNo 2024-2026 refinements appear in results; evidence thin\u2014recent arXiv (2025) covers general mining steps (component classification, relation detection) without new typologies.[5]\n\n### Comparison Table\n\n| Typology                  | Key Features                                                                 | Strengths in Mining                          | Limitations                          |\n|---------------------------|-----------------------------------------------------------------------------|----------------------------------------------|--------------------------------------|\n| **Toulmin**              | Claim/ground/warrant/backing/qualifier/rebuttal[1][4]                       | Flexible for structured relations             | Less granular for semantic types     |\n| **IBM Debater**          | Rhetorical structures (assertions, quotes, comparisons)[1]                   | Domain-independent detection                 | Focuses narrowly on claims           |\n| **Stab & Gurevych**      | Walton-inspired schemes (practical, causal, source-based)[4][6]              | Rich scheme variety for classification       | Complex annotation overhead          |\n| **AAEC**                 | Standpoint/premise (pragma-dialectic)[4]                                     | Dialogic flexibility                         | Limited scheme detail here           |\n\n**For (a) argumentative academic papers**: Stab & Gurevych's schemes best fit, as they support scheme-based mining in structured prose (e.g., causal/source arguments common in papers).[4][6]\n\n**For (b) philosophical primary texts** (mixing exposition/dialectic/assertion): Toulmin excels for its component flexibility across static claims and rebuttals; IBM Debater aids assertion detection in mixed rhetoric.[1][4] Evidence thin for philosophy-specific adaptations post-2017."
+      },
+      "delta": {
+        "role": "assistant",
+        "content": ""
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

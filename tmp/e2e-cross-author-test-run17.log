@@ -1,0 +1,67 @@
+=== ICP Pipeline Runner ===
+
+API key: ...qVgJZAAA (108 chars)
+Embedding: online (gte-Qwen2-1.5B-instruct (1536D))
+
+Corpus folder: rhetorical_ontology
+Building pipeline providers...
+Available backends: anthropic, vllm
+ClaimProvider wired: true
+
+--- Running ICP Pipeline ---
+
+Prompt: The role of phantasia and Erschlossenheit in disclosing the environment:
+how Aristotle's account of phantasia in De Anim...
+
+Source priority: primary=[Aristotle - On The Soul (De Anima), Aristotle - Physics, Heidegger, Martin - Being and Time], secondary=[Heidegger, Martin - Basic Concepts of Aristotelian Philosophy], searchAll=true
+[INFO] ChromaDB collection "knowledge_chunks" resolved to 2351bc36-0847-4071-ac16-31da2b634a22
+[INFO] [SmartRetrievalLayer] Semantic search: "phantasia phainomena De Anima III.3 appearance dis..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "phantasia phainomena De Anima III.3 appearance disclosure aisthesis perception noesis thought mental imagery representat..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7793 to 0.8283
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 4
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 4
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "Erschlossenheit disclosedness Being-in-the-world B..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "Erschlossenheit disclosedness Being-in-the-world Befindlichkeit Verstehen Rede Dasein worldhood (question of Being, Sein..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7620 to 0.7915
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "disclosure Aristotle Heidegger pre-predicative med..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "disclosure Aristotle Heidegger pre-predicative mediation world-disclosure phenomenological interpretation Basic Concepts..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7638 to 0.7876
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "faculty psychology existential analytic psyche sou..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "faculty psychology existential analytic psyche soul dynamis capacity subject-object Heidegger critique psychology ontolo..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.6720 to 0.7358
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "Heidegger Aristotle interpretation aletheia unconc..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "Heidegger Aristotle interpretation aletheia unconcealment logos phainomena phenomenology hermeneutic appropriation (λόγο..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7514 to 0.7801
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[ICP-Stage1b] Suggested primary sources: Aristotle - On The Soul (De Anima), Heidegger, Martin - Being and Time, Heidegger, Martin - Basic Concepts of Aristotelian Philosophy, Frede, Dorothea - The Cognitive Role of Phantasia in Aristotle, Caston, Victor - Why Aristotle Needs Imagination, White, Kevin - The Meaning of Phantasia in Aristotle's De Anime, III, 3-8, Nussbaum, Martha - The Role of Phantasia in Aristotle's Explanation of Action, Multiple Authors - Heidegger and Rhetoric, Rickert, Thomas - Ambient Rhetoric- The Attunements of Rhetorical Being
+Pipeline failed: ReferenceError: sourcePriority is not defined
+    at ICPOrchestrator.run (/home/dalton/projects/claudeflow-testing/src/god-agent/core/composition/icp-orchestrator.ts:216:7)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async main (/home/dalton/projects/claudeflow-testing/scripts/icp-run.ts:149:18)

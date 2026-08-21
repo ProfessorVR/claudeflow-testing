@@ -1,0 +1,215 @@
+/**
+ * AuthorScrubber - Scrub non-corpus author references from generated content
+ *
+ * Extracted from UniversalAgent (Tranche E-01, SEAM-3).
+ * Pure functions with zero side effects.
+ *
+ * Fix 25: After citation enforcement removes formal citations, informal references
+ * like "Modrak's account" or "Drawing on Roark" may remain. This module scans
+ * for signal-phrase patterns referencing authors NOT in the corpus constraint
+ * whitelist and removes the containing sentences.
+ */
+
+import type { CorpusConstraint, CorpusSource } from '../core/writing/index.js';
+import type { ContextChunk } from '../retrieval/index.js';
+
+export interface ScrubResult {
+  content: string;
+  removedCount: number;
+  removedAuthors: string[];
+  contexts: Record<string, string[]>;
+}
+
+/**
+ * Scrub non-corpus author references from final content.
+ *
+ * Scans for signal-phrase patterns referencing authors NOT in
+ * the corpus constraint whitelist and removes the containing sentences.
+ */
+export function scrubNonCorpusAuthors(
+  content: string,
+  constraint: CorpusConstraint
+): ScrubResult {
+  // Build set of allowed author last names (normalized)
+  const allowedAuthors = new Set<string>();
+  for (const source of constraint.sources) {
+    // Extract last name from various formats
+    const lastName = source.author.includes(',')
+      ? source.author.split(',')[0].trim().toLowerCase()
+      : source.author.split(/\s+/).pop()?.toLowerCase() || '';
+    if (lastName) allowedAuthors.add(lastName);
+
+    // Also add first word for single-name authors like "Aristotle"
+    const firstWord = source.author.split(/[\s,]+/)[0].toLowerCase();
+    if (firstWord) allowedAuthors.add(firstWord);
+  }
+
+  // Common non-author words that match capitalized patterns but aren't authors.
+  // Must be comprehensive — any word that can start a sentence in scholarly text
+  // and follow a signal-phrase verb pattern will cause a false positive.
+  const falsePositives = new Set([
+    // Determiners, conjunctions, adverbs
+    'the', 'this', 'that', 'these', 'those', 'however', 'moreover',
+    'furthermore', 'indeed', 'thus', 'hence', 'yet', 'still', 'also',
+    'although', 'because', 'since', 'while', 'whereas', 'nevertheless',
+    'nonetheless', 'accordingly', 'consequently', 'therefore', 'meanwhile',
+    'subsequently', 'similarly', 'conversely', 'alternatively', 'rather',
+    'instead', 'otherwise', 'specifically', 'notably', 'importantly',
+    'significantly', 'particularly', 'especially', 'certainly', 'clearly',
+    'evidently', 'presumably', 'perhaps', 'arguably', 'ultimately',
+    'finally', 'initially', 'primarily', 'essentially', 'fundamentally',
+    // Document/structural terms
+    'chapter', 'section', 'part', 'book', 'volume', 'figure', 'table',
+    'passage', 'text', 'paragraph', 'page', 'line', 'note', 'appendix',
+    // Languages, traditions, adjectives
+    'greek', 'latin', 'english', 'german', 'french', 'ancient', 'modern',
+    'western', 'eastern', 'european', 'classical', 'medieval', 'contemporary',
+    'aristotelian', 'heideggerian', 'platonic', 'socratic', 'kantian',
+    'cartesian', 'husserlian', 'thomistic', 'stoic', 'peripatetic',
+    'phenomenological', 'rhetorical', 'ontological', 'epistemological',
+    'metaphysical', 'hermeneutical', 'dialectical', 'teleological',
+    // Greek/philosophical terms and disciplines
+    'de', 'anima', 'rhetoric', 'physics', 'metaphysics', 'ethics', 'philosophy',
+    'being', 'time', 'soul', 'phantasia', 'stimmung', 'dasein', 'logos',
+    'kinesis', 'chronos', 'telos', 'eidos', 'hyle', 'dynamis', 'energeia',
+    'physis', 'techne', 'praxis', 'poiesis', 'ousia', 'pathos', 'ethos',
+    'aisthesis', 'nous', 'psyche', 'polis', 'ergon', 'hexis', 'dunamis',
+    'entelecheia', 'kategoria', 'topos', 'phronesis', 'theoria', 'doxa',
+    // Common English nouns/verbs that appear capitalized at sentence starts
+    'motion', 'change', 'movement', 'perception', 'sensation', 'imagination',
+    'knowledge', 'truth', 'form', 'matter', 'substance', 'nature', 'essence',
+    'existence', 'reality', 'experience', 'consciousness', 'awareness',
+    'understanding', 'reason', 'thought', 'mind', 'body', 'world', 'object',
+    'subject', 'action', 'activity', 'process', 'event', 'state', 'quality',
+    'quantity', 'relation', 'place', 'position', 'order', 'structure',
+    'continuity', 'potentiality', 'actuality', 'possibility', 'necessity',
+    'power', 'capacity', 'faculty', 'sense', 'meaning', 'concept', 'idea',
+    'principle', 'cause', 'effect', 'purpose', 'end', 'beginning', 'origin',
+    'source', 'ground', 'basis', 'condition', 'limit', 'measure', 'number',
+    'unity', 'identity', 'difference', 'distinction', 'division', 'whole',
+    // Common verbs at sentence starts (imperative or gerund)
+    'consider', 'examine', 'explore', 'analyze', 'discuss', 'investigate',
+    'demonstrate', 'illustrate', 'explain', 'describe', 'define', 'identify',
+    'establish', 'determine', 'reveal', 'show', 'indicate', 'suggest',
+    'argue', 'claim', 'propose', 'maintain', 'assert', 'note', 'observe',
+    'recognize', 'acknowledge', 'emphasize', 'highlight', 'address',
+    'compare', 'contrast', 'distinguish', 'relate', 'connect', 'link',
+    'develop', 'extend', 'elaborate', 'articulate', 'formulate', 'construct',
+    'interpret', 'understand', 'comprehend', 'grasp', 'appreciate',
+    'quote', 'cite', 'reference', 'engage', 'draw', 'build', 'follow',
+    // Multi-word false positive fragments (second word of two-word captures)
+    'and', 'or', 'but', 'for', 'with', 'from', 'into', 'upon', 'about',
+    // Additional false positives from pipeline testing (Fix 44)
+    'there', 'here', 'retrieval', 'paragraph', 'martin', 'translation',
+    'press', 'university', 'oxford', 'cambridge', 'edition', 'review',
+    // More false positives from Runs 7-8
+    'now', 'then', 'first', 'second', 'third', 'last', 'next', 'both',
+    'all', 'many', 'most', 'such', 'other', 'further', 'full', 'certain',
+    'foundation', 'serving', 'movement', 'passage', 'approach', 'method',
+    'argument', 'claim', 'reading', 'treatment', 'account', 'analysis',
+    'view', 'position', 'framework', 'insight', 'observation',
+    'attempts', 'text', 'work', 'works', 'system', 'inquiry', 'study',
+    'tradition', 'heritage', 'legacy', 'influence', 'reception',
+    // Fix 49: Pronouns, prepositions, and common multi-word false positive tails
+    'itself', 'himself', 'herself', 'themselves', 'oneself',
+    'above', 'below', 'before', 'after', 'earlier', 'later',
+    'interpretation', 'investigation', 'synthesis', 'development',
+    'contribution', 'formulation', 'discussion', 'distinction',
+  ]);
+
+  // Fix 30: Expanded signal phrase patterns for broader scholarly attribution coverage
+  const verbList = 'argues?|observes?|notes?|states?|maintains?|suggests?|contends?|claims?|emphasize[sd]?|explains?|demonstrates?|shows?|remarks?|writes?|proposes?|develops?|articulates?|characterizes?|distinguishes?|advances?|interprets?|critiques?|identifies?|establishes?|recognizes?|acknowledges?|theorizes?|posits?|holds?|defends?|elaborates?|outlines?|highlights?|underscores?|describes?|explores?|examines?|considers?|asserts?|insists?|reveals?|documents?|presents?|illustrates?|formulates?';
+  const nounList = 'account|analysis|reading|interpretation|argument|view|theory|claim|framework|approach|position|treatment|discussion|taxonomy|classification|model|concept|distinction|insight|observation|formulation|critique|contribution|definition|thesis|proposal|scheme|typology|ontology|epistemology|phenomenology|methodology';
+
+  const authorSignalPatterns = [
+    // "As Author argues/observes/notes..."
+    new RegExp(`\\bAs\\s+([A-Z][a-z']+(?:\\s+[A-Z][a-z']+)?)\\s+(?:${verbList})\\b`, 'g'),
+    // "Author argues/observes/notes that..."
+    new RegExp(`\\b([A-Z][a-z']+(?:\\s+[A-Z][a-z']+)?)\\s+(?:${verbList})\\s+(?:that|how|why|whether)\\b`, 'g'),
+    // "Author has shown/has demonstrated..."
+    new RegExp(`\\b([A-Z][a-z']+(?:\\s+[A-Z][a-z']+)?)\\s+has\\s+(?:shown|demonstrated|argued|suggested|noted|observed|proposed|established|maintained|claimed|illustrated)\\b`, 'g'),
+    // "Author's account/analysis/reading..."
+    new RegExp(`\\b([A-Z][a-z']+(?:\\s+[A-Z][a-z']+)?)'s\\s+(?:${nounList})\\b`, 'g'),
+    // "according to Author" or "following Author" or "drawing on Author"
+    /\b(?:according\s+to|following|drawing\s+on|building\s+on|inspired\s+by|indebted\s+to)\s+([A-Z][a-z']+(?:\s+[A-Z][a-z']+)?)\b/gi,
+    // "the work/account of Author"
+    new RegExp(`\\b(?:the\\s+(?:work|${nounList})\\s+(?:of|in|by))\\s+([A-Z][a-z']+(?:\\s+[A-Z][a-z']+)?)\\b`, 'gi'),
+  ];
+
+  const removedAuthors = new Set<string>();
+  const contexts: Record<string, string[]> = {};
+  let removedCount = 0;
+
+  // Split into sentences for targeted removal
+  const sentences = content.split(/(?<=[.!?])\s+/);
+  const cleanSentences: string[] = [];
+
+  for (const sentence of sentences) {
+    let hasExternalAuthor = false;
+
+    for (const pattern of authorSignalPatterns) {
+      pattern.lastIndex = 0;
+      let match;
+      while ((match = pattern.exec(sentence)) !== null) {
+        const authorName = match[1]?.trim();
+        if (!authorName) continue;
+
+        // Fix 49: Strip trailing possessive ('s, ') from captured name before checking.
+        // Regex char class [a-z'] captures "Heidegger's" as one token, making
+        // normalized="heidegger's" which doesn't match "heidegger" in allowedAuthors.
+        const rawNormalized = authorName.split(/\s+/).pop()?.toLowerCase() || '';
+        const normalized = rawNormalized.replace(/'s$|'$/, '');
+        // Check if this is NOT an allowed corpus author and NOT a false positive
+        if (normalized && !allowedAuthors.has(normalized) && !falsePositives.has(normalized)) {
+          hasExternalAuthor = true;
+          removedAuthors.add(authorName);
+          removedCount++;
+
+          // Collect context snippets (first 2 per author for diagnostics)
+          if (!contexts[authorName]) contexts[authorName] = [];
+          if (contexts[authorName].length < 2) {
+            contexts[authorName].push(sentence.slice(0, 120));
+          }
+        }
+      }
+    }
+
+    if (!hasExternalAuthor) {
+      cleanSentences.push(sentence);
+    }
+  }
+
+  return {
+    content: cleanSentences.join(' '),
+    removedCount,
+    removedAuthors: Array.from(removedAuthors),
+    contexts,
+  };
+}
+
+/**
+ * Build CorpusSource array from context chunks for inline validation.
+ * Phase 11: Inline Citation Enforcement
+ */
+export function buildCorpusSourcesFromChunks(chunks: ContextChunk[]): CorpusSource[] {
+  // Group chunks by author+year+title to build unique sources
+  const sourceMap = new Map<string, CorpusSource>();
+
+  for (const chunk of chunks) {
+    const { author, year, title } = chunk.metadata;
+    if (!author) continue;
+
+    const key = `${author}_${year || 'nd'}_${title || 'unknown'}`;
+
+    if (!sourceMap.has(key)) {
+      sourceMap.set(key, {
+        author,
+        year: year ?? 0,
+        title: title || 'Unknown Title',
+        citationKey: `${author.split(/[,\s]+/)[0]}_${year || 'nd'}`,
+      });
+    }
+  }
+
+  return Array.from(sourceMap.values());
+}

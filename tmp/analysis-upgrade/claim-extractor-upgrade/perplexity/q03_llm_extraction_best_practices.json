@@ -1,0 +1,80 @@
+{
+  "id": "21c10af2-9234-4f8d-8861-84e4c131a1c7",
+  "model": "sonar-pro",
+  "created": 1776579145,
+  "usage": {
+    "prompt_tokens": 162,
+    "completion_tokens": 493,
+    "total_tokens": 655,
+    "search_context_size": "low",
+    "cost": {
+      "input_tokens_cost": 0.00049,
+      "output_tokens_cost": 0.0074,
+      "request_cost": 0.006,
+      "total_cost": 0.01388
+    }
+  },
+  "citations": [
+    "https://www.microsoft.com/en-us/research/blog/claimify-extracting-high-quality-claims-from-language-model-outputs/",
+    "https://wsu.technologypublisher.com/techcase?caseid=Software-25%2F3609",
+    "https://arxiv.org/abs/2602.14743",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC12932350/",
+    "https://hatchworks.com/blog/gen-ai/large-language-models-guide/"
+  ],
+  "search_results": [
+    {
+      "title": "Claimify: Extracting high-quality claims from language model outputs",
+      "url": "https://www.microsoft.com/en-us/research/blog/claimify-extracting-high-quality-claims-from-language-model-outputs/",
+      "date": "2025-03-19",
+      "last_updated": "2026-03-26",
+      "snippet": "In this blog post, we discuss common claim extraction issues and explore Claimify's approach. Key issues in claim extraction. As a case study, ...",
+      "source": "web"
+    },
+    {
+      "title": "Structured Data Extraction Using Large Language Models - WSU",
+      "url": "https://wsu.technologypublisher.com/techcase?caseid=Software-25%2F3609",
+      "last_updated": "2025-02-14",
+      "snippet": "Large Language Models (LLMs) excel in Natural Language Process (NLPs) tasks but face challenges in extracting information from large databases effectively.",
+      "source": "web"
+    },
+    {
+      "title": "Benchmarking Large Language Model Structured Data Extraction",
+      "url": "https://arxiv.org/abs/2602.14743",
+      "date": "2026-02-16",
+      "last_updated": "2026-04-01",
+      "snippet": "Abstract:We present LLMStructBench, a novel benchmark for evaluating Large Language Models (LLMs) on extracting structured data and ...",
+      "source": "web"
+    },
+    {
+      "title": "Operationalizing Large Language Models for Clinical Research ...",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12932350/",
+      "date": "2026-02-25",
+      "last_updated": "2026-04-13",
+      "snippet": "In practice, structured extraction pipelines typically incorporate deterministic decoding and predefined output schemas to ensure ...",
+      "source": "web"
+    },
+    {
+      "title": "Large Language Models: What You Need to Know in 2026",
+      "url": "https://hatchworks.com/blog/gen-ai/large-language-models-guide/",
+      "date": "2026-01-16",
+      "last_updated": "2026-03-17",
+      "snippet": "Explore the latest on large language models in 2026 with our guide on their capabilities, advancements, and limitations.",
+      "source": "web"
+    }
+  ],
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "I must be direct: the search results provided do not adequately cover the 2024-2026 literature on structured claim extraction from long documents using contemporary LLMs. The results contain limited methodological depth on the specific techniques you've asked about, and I cannot reliably synthesize best practices from these sources alone.\n\n## What the search results cover\n\nThe results address related but distinct problems:\n\n**Claim extraction for fact-checking:** Microsoft's Claimify[1] demonstrates a four-stage pipeline (sentence splitting, selection, rewriting, consolidation) focused on extracting verifiable claims from LLM outputs for downstream fact-checking. It achieves 99% entailment between extracted claims and source sentences and minimizes critical context loss\u2014but this targets claim extraction *from* LLM outputs, not *using* LLMs for extraction.\n\n**Structured data extraction:** The WSU sliding window method[2] and LLMStructBench[3] address long-form data extraction challenges, showing that prompting strategy outweighs model size for JSON generation validity. Clinical research workflows[4] describe a \"prompt\u2013retrieve\u2013constrain\u2013adapt\u2013optimize\" (PRCAO) paradigm incorporating schema validation and human adjudication\u2014but neither directly compares few-shot vs. zero-shot for claim extraction or addresses span-anchored grounding systematically.\n\n## Critical gaps\n\nThe search results do not substantively cover:\n- Few-shot vs. zero-shot performance comparisons for claim extraction specifically\n- Chain-of-thought prompting for claims from long documents\n- Comparative analysis of whole-document vs. section-aware chunking strategies\n- Self-verification or iterative verification loops\n- Span-anchored grounding (tracing extracted claims back to source text locations)\n- Hallucination mitigation techniques specific to claim extraction\n\n## Recommendation\n\nTo answer your query rigorously, I would need access to 2024-2026 papers from ACL, EMNLP, NAACL, or arXiv specifically addressing:\n- Claim/proposition extraction benchmarks (e.g., updates to ClaimBuster, FEVER-style tasks)\n- Comparative studies of prompting strategies for argument/claim extraction\n- Long-document processing methods (e.g., hierarchical retrieval, recursive summarization)\n- Grounding and faithfulness evaluation in extraction tasks\n\nThe sources here are tangentially relevant but insufficient to establish current best practices with confidence. I recommend searching specifically for 2024-2026 venue proceedings on information extraction, fact verification, and argument mining."
+      },
+      "delta": {
+        "role": "assistant",
+        "content": ""
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+feat(pipeline): comprehensive ICP hardening — cross-author integration, citation enforcement, reasoning refactor
+
+Three-session hardening arc (2026-04-07 to 2026-04-09) across 22 E2E test runs:
+
+Cross-Author Integration:
+- NEW: shared/cross-author-utils.ts — bridge detection, tension matching, manifest canonicals, query expansion
+- Dynamic bridge injection in gold-standard-prompt-builder MANDATORY THEORETICAL SYNTHESIS
+- Stage 6b: cross-author bridge enforcement with forced author-specific ChromaDB retrieval
+- Stage 8a: preventive edge coherence — tension directives injected into generation
+- Dynamic source prioritization: decomposition provider emits suggestedPrimarySources/SecondarySources
+
+Citation Hardening (H-06):
+- authorTitlesIndex with title validation in both match paths
+- MLA regex captures title in group [2], multi-work parsing
+- Closed-book constraints + work-level restriction in 3 ICP prompt paths
+- Final directive parenthetical citation mandate + CITATION DENSITY EXPECTATION
+
+Reasoning Graph (H-04/H-11):
+- Author-scoped bucketing in Phase 7 (21 buckets from 401 KUs)
+- Cross-author pass: forbidden supports edges, hook-licensed exception
+- 2,230 merged edges (788 manual, 33 bridge, 1,407 phase7, 2 LLM)
+
+Pipeline Fixes:
+- ClaimProvider wiring, autoVerifyThreshold 0.85->0.65, cache key serialization
+- 3 import path fixes, endnote generation gated, process.exit chained
+
+Quality Gates (7): edge coherence, tension awareness, preventive coherence,
+unanchored edges, author conflict events, OCR quality summary, citation enforcement
+
+Infrastructure: manifest authority tiers, canonical author table, author KU index,
+domain validation, centralized compiled-index cache, canonical term reranking
+
+Dashboard: edge coherence card, provider health, diagnostics tab, 6 V2 quality cards
+
+Verification: 77/77 tests passing (scripts/verify-hardening.ts)
+
+Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>

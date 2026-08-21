@@ -1,0 +1,88 @@
+{
+  "id": "262134f9-a171-4be5-b07a-6353ec525f26",
+  "model": "sonar-pro",
+  "created": 1776579267,
+  "usage": {
+    "prompt_tokens": 146,
+    "completion_tokens": 828,
+    "total_tokens": 974,
+    "search_context_size": "low",
+    "cost": {
+      "input_tokens_cost": 0.00044,
+      "output_tokens_cost": 0.01242,
+      "request_cost": 0.006,
+      "total_cost": 0.01886
+    }
+  },
+  "citations": [
+    "https://www.microsoft.com/en-us/research/blog/claimify-extracting-high-quality-claims-from-language-model-outputs/",
+    "https://www.microsoft.com/en-us/research/video/claimify-extracting-high-quality-claims-from-language-model-outputs/",
+    "https://github.com/AdamGustavsson/ClaimsMCP",
+    "https://www.microsoft.com/en-us/research/video/claimify-extracting-high-quality-claims-from-language-model-outputs/?lang=ko-kr",
+    "https://www.microsoft.com/en-us/research/publication/towards-effective-extraction-and-evaluation-of-factual-claims/",
+    "https://huggingface.co/papers/2502.10855"
+  ],
+  "search_results": [
+    {
+      "title": "Claimify: Extracting high-quality claims from language model outputs",
+      "url": "https://www.microsoft.com/en-us/research/blog/claimify-extracting-high-quality-claims-from-language-model-outputs/",
+      "date": "2025-03-19",
+      "last_updated": "2026-03-26",
+      "snippet": "A common strategy for fact-checking LLM-generated texts \u2013 especially complex, highly detailed outputs \u2013 is claim extraction.",
+      "source": "web"
+    },
+    {
+      "title": "Claimify: Extracting high-quality claims from language model outputs",
+      "url": "https://www.microsoft.com/en-us/research/video/claimify-extracting-high-quality-claims-from-language-model-outputs/",
+      "date": "2025-05-06",
+      "last_updated": "2026-03-29",
+      "snippet": "A new method for extracting simple, verifiable claims from LLM outputs. Claim extraction is a key step in fact-checking LLM-generated content.",
+      "source": "web"
+    },
+    {
+      "title": "Claimify: Research-Based Claim Extraction via MCP - GitHub",
+      "url": "https://github.com/AdamGustavsson/ClaimsMCP",
+      "snippet": "Claimify extracts verifiable, decontextualized factual claims from text using a sophisticated four-stage pipeline: Sentence Splitting: Breaks text into ...",
+      "source": "web"
+    },
+    {
+      "title": "Claimify: Extracting high-quality claims from language model outputs",
+      "url": "https://www.microsoft.com/en-us/research/video/claimify-extracting-high-quality-claims-from-language-model-outputs/?lang=ko-kr",
+      "date": "2025-05-06",
+      "last_updated": "2026-03-29",
+      "snippet": "May 6, 2025; Dasha Metropolitansky, Microsoft. Dasha Metropolitansky, Research Data Scientist, Microsoft Research Special Projects, introduces Claimify, ...",
+      "source": "web"
+    },
+    {
+      "title": "Towards Effective Extraction and Evaluation of Factual Claims",
+      "url": "https://www.microsoft.com/en-us/research/publication/towards-effective-extraction-and-evaluation-of-factual-claims/",
+      "date": "2025-02-15",
+      "last_updated": "2026-02-19",
+      "snippet": "We propose a framework for evaluating claim extraction and introduce Claimify, an LLM-based method that outperforms prior solutions.",
+      "source": "web"
+    },
+    {
+      "title": "Towards Effective Extraction and Evaluation of Factual Claims",
+      "url": "https://huggingface.co/papers/2502.10855",
+      "date": "2025-02-15",
+      "last_updated": "2026-04-08",
+      "snippet": "A key feature of Claimify is its ability to handle ambiguity and extract claims only when there is high confidence in the correct interpretation ...",
+      "source": "web"
+    }
+  ],
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "**Microsoft Claimify is an LLM-based system for extracting verifiable claims from LLM-generated texts, using a four-stage pipeline: (1) sentence splitting and context creation, (2) selection, (3) disambiguation (not rewriting), and (4) decomposition (not consolidation).** It operates on question-answer pairs, guided by five principles: capturing all verifiable content while excluding unverifiable parts, ensuring full entailment from source text, standalone understandability, preserving critical context, and flagging unresolvable ambiguity.[1]\n\n### Four-Stage Pipeline in Technical Detail\n- **Stage 1: Sentence splitting and context creation.** The input answer text is split into individual sentences. For each sentence, a \"context\" is constructed as a configurable combination of surrounding sentences and metadata (e.g., Markdown-style header hierarchy).[1]\n- **Stage 2: Selection.** An LLM processes each sentence with its context to identify those lacking verifiable content, labeling them \"No verifiable claims\" and excluding them. Sentences with mixed verifiable/unverifiable components are rewritten by the LLM to retain only verifiable parts.[1]\n- **Stage 3: Disambiguation.** For sentences passing selection, an LLM checks for ambiguity using the provided context. If fully resolvable, it outputs a disambiguated version; otherwise, the sentence is labeled \"Cannot be disambiguated\" and excluded from the next stage.[1]\n- **Stage 4: Decomposition.** For unambiguous or disambiguated sentences, an LLM generates standalone claims that preserve critical context (e.g., conditional clauses to avoid distorting fact-checking verdicts). Sentences yielding no claims are labeled \"No verifiable claims.\"[1]\n\n**Note on query mismatch:** Search results describe stages as sentence splitting/context creation \u2192 selection \u2192 **disambiguation** \u2192 **decomposition**, not \"sentence-split, selection, rewriting, consolidation.\" Rewriting occurs within selection for mixed-content sentences; no \"consolidation\" stage is mentioned.[1]\n\n### Prompts and Prompt Patterns\nNo exact prompts are detailed in available sources. Stage 1 uses the \"proposition chunking\" prompt from NirDiamant\u2019s RAG Techniques repository (via GPT-4o with multiple generations, selecting the most representative response), but its content is not quoted or reproduced here.[1] Other stages rely on unspecified LLM prompts enforcing the five principles (e.g., verifiable content detection, ambiguity resolution, context preservation).[1]\n\n### Achieving 99% Entailment\nClaimify attains **99% entailment** (extracted claims fully supported by source sentences) via its cascaded filtering: selection excludes unverifiable/mixed content (rewriting to verifiable only); disambiguation resolves or flags ambiguity; decomposition enforces standalone claims with preserved context. This multi-stage design outperforms prior LLM methods on entailment, coverage of verifiable content, and context retention, as evaluated in their framework.[1]\n\n### Failure Modes on Long Academic or Philosophical Prose\nNo direct evidence exists in results for performance on **long academic prose or philosophical text** (e.g., classical or argumentative sources). Potential issues, inferred from design:\n- **Ambiguity flagging:** High philosophical ambiguity (e.g., mutually exclusive interpretations like \"AI has advanced renewable energy at Company A and Company B\") leads to exclusion (\"Cannot be disambiguated\"), potentially under-extracting claims.[1]\n- **Context limits:** Long prose may exceed LLM context windows or dilute metadata (e.g., headers), weakening disambiguation or decomposition.[1]\n- **Verifiable content exclusion:** Abstract/subjective prose (common in philosophy) risks \"No verifiable claims\" labels, omitting interpretive claims despite fact-check relevance.[1]\nResults focus on LLM outputs (e.g., detailed Q&A), not academic/philosophical benchmarks; evidence is thin for these domains.[1][5][6]"
+      },
+      "delta": {
+        "role": "assistant",
+        "content": ""
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

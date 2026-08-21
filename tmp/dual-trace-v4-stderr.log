@@ -1,0 +1,261 @@
+{"timestamp":"2026-03-19T03:53:29.396Z","level":"INFO","message":"Configuration initialized","context":{"service":"config-manager","configPath":null,"version":"2.1.0"}}
+[CLI] SonaEngine initialized with persistence enabled
+{"timestamp":"2026-03-19T03:53:29.477Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+{"timestamp":"2026-03-19T03:53:29.739Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[QualityGauntlet] Stage weights sum to 1.15, not 1.0. Scores will be normalized.
+[AgentRegistry] Duplicate key 'research-planner' in .claude/agents/phdresearch/research-planner.md, already registered from .claude/agents/coding-pipeline/research-planner.md
+[AgentRegistry] Duplicate key 'performance-optimizer' in .claude/agents/frontendvisualsimplementation/performance-optimizer.md, already registered from .claude/agents/coding-pipeline/performance-optimizer.md
+[AgentRegistry] Duplicate key 'adversarial-reviewer' in .claude/agents/usacf/adversarial-reviewer.md, already registered from .claude/agents/phdresearch/adversarial-reviewer.md
+[AgentRegistry] Duplicate key 'ambiguity-clarifier' in .claude/agents/usacf/ambiguity-clarifier.md, already registered from .claude/agents/phdresearch/ambiguity-clarifier.md
+[AgentRegistry] Duplicate key 'confidence-quantifier' in .claude/agents/usacf/confidence-quantifier.md, already registered from .claude/agents/phdresearch/confidence-quantifier.md
+[AgentRegistry] Duplicate key 'gap-hunter' in .claude/agents/usacf/gap-hunter.md, already registered from .claude/agents/phdresearch/gap-hunter.md
+[AgentRegistry] Duplicate key 'risk-analyst' in .claude/agents/usacf/risk-analyst.md, already registered from .claude/agents/phdresearch/risk-analyst.md
+[AgentRegistry] Duplicate key 'self-ask-decomposer' in .claude/agents/usacf/self-ask-decomposer.md, already registered from .claude/agents/phdresearch/self-ask-decomposer.md
+[AgentRegistry] Duplicate key 'step-back-analyzer' in .claude/agents/usacf/step-back-analyzer.md, already registered from .claude/agents/phdresearch/step-back-analyzer.md
+[AgentRegistry] Duplicate key 'pattern-analyst' in .claude/agents/business-research/pattern-analyst.md, already registered from .claude/agents/phdresearch/pattern-analyst.md
+[AgentRegistry] Duplicate key 'synthesis-specialist' in .claude/agents/business-research/synthesis-specialist.md, already registered from .claude/agents/usacf/synthesis-specialist.md
+[AgentRegistry] Duplicate key 'goal-planner' in .claude/agents/reasoning/goal-planner.md, already registered from .claude/agents/goal/goal-planner.md
+{"timestamp":"2026-03-19T03:53:29.844Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[AgentRegistry] Duplicate key 'research-planner' in .claude/agents/phdresearch/research-planner.md, already registered from .claude/agents/coding-pipeline/research-planner.md
+[AgentRegistry] Duplicate key 'performance-optimizer' in .claude/agents/frontendvisualsimplementation/performance-optimizer.md, already registered from .claude/agents/coding-pipeline/performance-optimizer.md
+[AgentRegistry] Duplicate key 'adversarial-reviewer' in .claude/agents/usacf/adversarial-reviewer.md, already registered from .claude/agents/phdresearch/adversarial-reviewer.md
+[AgentRegistry] Duplicate key 'ambiguity-clarifier' in .claude/agents/usacf/ambiguity-clarifier.md, already registered from .claude/agents/phdresearch/ambiguity-clarifier.md
+[AgentRegistry] Duplicate key 'confidence-quantifier' in .claude/agents/usacf/confidence-quantifier.md, already registered from .claude/agents/phdresearch/confidence-quantifier.md
+[AgentRegistry] Duplicate key 'gap-hunter' in .claude/agents/usacf/gap-hunter.md, already registered from .claude/agents/phdresearch/gap-hunter.md
+[AgentRegistry] Duplicate key 'risk-analyst' in .claude/agents/usacf/risk-analyst.md, already registered from .claude/agents/phdresearch/risk-analyst.md
+[AgentRegistry] Duplicate key 'self-ask-decomposer' in .claude/agents/usacf/self-ask-decomposer.md, already registered from .claude/agents/phdresearch/self-ask-decomposer.md
+[AgentRegistry] Duplicate key 'step-back-analyzer' in .claude/agents/usacf/step-back-analyzer.md, already registered from .claude/agents/phdresearch/step-back-analyzer.md
+[AgentRegistry] Duplicate key 'pattern-analyst' in .claude/agents/business-research/pattern-analyst.md, already registered from .claude/agents/phdresearch/pattern-analyst.md
+[AgentRegistry] Duplicate key 'synthesis-specialist' in .claude/agents/business-research/synthesis-specialist.md, already registered from .claude/agents/usacf/synthesis-specialist.md
+[AgentRegistry] Duplicate key 'goal-planner' in .claude/agents/reasoning/goal-planner.md, already registered from .claude/agents/goal/goal-planner.md
+{"timestamp":"2026-03-19T03:53:51.440Z","level":"ERROR","message":"DESC injection failed","context":{"component":"UCMDaemonClient","error_message":"UCM daemon timeout calling desc.inject","error_name":"Error","error_stack":"Error: UCM daemon timeout calling desc.inject\n    at Timeout._onTimeout (/home/dalton/projects/claudeflow-testing/src/god-agent/cli/ucm-daemon-client.ts:187:16)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)"}}
+[GOLD STD] Multi-query retrieval + style + single-shot generation...
+[GOLD STD] Phase 1a: Multi-query retrieval: 4 semantic queries
+[GOLD STD]   Query: "Aristotle motion"
+[GOLD STD]   Query: "Aristotle affect"
+[GOLD STD]   Query: "Aristotle ontolog"
+[GOLD STD]   Query: "Aristotle time"
+[INFO] ChromaDB collection "knowledge_chunks" resolved to 256473d0-5091-4494-af4d-007e8f62d43f
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle motion..." (max: 12)
+[INFO] [SmartRetrievalLayer] Found 24 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 24, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.4269 to 0.6308
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 24
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 19
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 19
+[INFO] [SmartRetrievalLayer] Step 5 after limit (12): 12
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle affect..." (max: 12)
+[INFO] [SmartRetrievalLayer] Found 24 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 24, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.2536 to 0.3536
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 2
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 2
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 2
+[INFO] [SmartRetrievalLayer] Step 5 after limit (12): 2
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle ontolog..." (max: 12)
+[INFO] [SmartRetrievalLayer] Found 24 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 24, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.2930 to 0.3683
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 4
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 2
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 2
+[INFO] [SmartRetrievalLayer] Step 5 after limit (12): 2
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle time..." (max: 12)
+[INFO] [SmartRetrievalLayer] Found 24 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 24, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3705 to 0.5482
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 24
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 24
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 24
+[INFO] [SmartRetrievalLayer] Step 5 after limit (12): 12
+[GOLD STD] Phase 1a result: 22 unique chunks from 7 sources
+[GOLD STD] Phase 1b: Source-targeted supplementation for: Aristotle
+[INFO] [SmartRetrievalLayer] Semantic search: "The Dual Trace: Resonant Motion, Resonant Affect, ..." (max: 16)
+[INFO] [SmartRetrievalLayer] Found 32 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 32, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.5256 to 0.6240
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 32
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 29
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 29
+[INFO] [SmartRetrievalLayer] Step 5 after limit (16): 16
+[GOLD STD]   Aristotle: +14 new chunks (16 retrieved)
+[GOLD STD] Phase 1b result: 36 total unique chunks
+[GOLD STD] Phase 1c: Diversity-enforced selection: 28 chunks
+[GOLD STD]   Aristotle: 16 chunks
+[GOLD STD]   Burke, Kenneth: 4 chunks
+[GOLD STD]   Gibson, James J.: 2 chunks
+[GOLD STD]   Heidegger, Martin: 2 chunks
+[GOLD STD]   von Uexkull, Jacob: 2 chunks
+[GOLD STD]   Rickert, Thomas: 1 chunks
+[GOLD STD]   Fodor, J.A.: 1 chunks
+[GOLD STD] Phase 1c+: Primary author ratio: 16/28 = 57% (target: ≥30%)
+[GOLD STD] Phase 1d: Chunk trimming: 3897 → 317 avg chars/chunk (92% reduction)
+[GOLD STD] Phase 1e: Chunks reordered for attention (highest relevance at start/end)
+[GOLD STD] Phase 1f: Retrieval coverage validation
+[GOLD STD]   ✅ Aristotle: 16 chunks
+[GOLD STD] Loaded 10 knowledge units (21 domain-relevant)
+[GOLD STD] Loaded 30 structural edges (312 relevant of 1103 total)
+[GOLD STD] Style profile: loaded (568 chars)
+[GOLD STD] Knowledge units: 10
+[GOLD STD] Prompt subsections: 4 (from extractRetrievalQueries)
+[GOLD STD] === MULTI-STEP MODE: v1 → investigate → v2 ===
+[GOLD STD] Step 4a: Building v1 prompt (no style, grounding focus)...
+[GOLD STD] V1 prompt assembled (23487 chars). Generating v1...
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[API] stop_reason=end_turn, usage={"input_tokens":6656,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":5448,"service_tier":"standard","inference_geo":"global"}, model=claude-opus-4-6, max_tokens=16384
+[GOLD STD] V1 generation complete: 3312 words
+[GOLD STD] Step 4b-pre: Running quality gauntlet on v1...
+[GOLD STD] V1 quality gauntlet: 68.5% (0 weak stages)
+[GOLD STD] Step 4b: Investigating v1 output (local analysis)...
+[GOLD STD] Investigation results:
+[GOLD STD]   Word count: 2122
+[GOLD STD]   Citations: 21
+[GOLD STD]   Quotations: 20
+[GOLD STD]   Unique authors cited: aristotle, heidegger, burke, rickert, von uexkull, gibson
+[GOLD STD]   Issues: 50 (15 critical)
+[GOLD STD]     [critical] phantom-quotation: Quotation not found in any chunk: " of being itself. Burke captures the dialectical complexity ..."
+[GOLD STD]     [critical] phantom-quotation: Quotation not found in any chunk: " (Burke, *A Grammar of Motives*, pp. 261–262). Similarly, Ar..."
+[GOLD STD]     [critical] phantom-quotation: Quotation not found in any chunk: " (Aristotle, *On The Soul (De Anima)*, pp. 13–14). This pass..."
+[GOLD STD]     [critical] phantom-quotation: Quotation not found in any chunk: " (Aristotle, *On The Soul (De Anima)*, pp. 9–10). The soul's..."
+[GOLD STD]     [critical] phantom-quotation: Quotation not found in any chunk: " and describes responsiveness as ..."
+[GOLD STD]   Prevention plan:
+[GOLD STD]     Blacklisted: none
+[GOLD STD]     Under-cited: gibson, james j., burke, kenneth, von uexkull, jacob, fodor, j.a., heidegger, martin, rickert, thomas
+[GOLD STD]     Constraints: 4
+[GOLD STD] Step 4b+: Supplemental retrieval for 6 under-cited source(s)...
+[INFO] [SmartRetrievalLayer] Semantic search: "gibson, james j. The Dual Trace: Resonant Motion, ..." (max: 6)
+[INFO] [SmartRetrievalLayer] Found 12 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 12, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.1131 to 0.1698
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (6): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "burke, kenneth The Dual Trace: Resonant Motion, Re..." (max: 6)
+[INFO] [SmartRetrievalLayer] Found 12 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 12, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.1198 to 0.1733
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (6): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "von uexkull, jacob The Dual Trace: Resonant Motion..." (max: 6)
+[INFO] [SmartRetrievalLayer] Found 12 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 12, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.1183 to 0.1731
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (6): 0
+[GOLD STD] Step 4c: Building v2 prompt (full style + prevention plan)...
+[GOLD STD] Per-section constraints: 4 rules derived from prompt structure
+[GOLD STD] Prompt assembled (25610 chars, 4 subsections, 28 chunks, with prevention plan)
+[GOLD STD] Corpus constraint built: 40 verified sources
+[GOLD STD] Generating content (prompt length: 25610 chars)...
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[API] stop_reason=end_turn, usage={"input_tokens":7263,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":5819,"service_tier":"standard","inference_geo":"global"}, model=claude-opus-4-6, max_tokens=16384
+[GOLD STD] Generation complete: 3574 words
+[INFO] [SmartRetrievalLayer] Semantic search: "principle cause being moved being Aristotle, *Phys..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7547 to 0.8895
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 15
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 15
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "origin other motions which moves Aristotle, *Movem..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7375 to 0.8940
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 15
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 15
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "essence itself, being moved cannot Aristotle, *On ..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.5811 to 0.6250
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "being pained pleased, thinking, movements Aristotl..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.6136 to 0.6695
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 4
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 2
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 2
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 2
+[INFO] [SmartRetrievalLayer] Semantic search: "being beings Heidegger, *Basic Concepts of Aristot..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7351 to 0.8922
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 15
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 15
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "present-at-hand multiplicity 'nows' Heidegger, *Be..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7609 to 0.8931
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 15
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 15
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "unity, boundary Aristotle, *On The Soul (De Anima..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.5714 to 0.6134
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "same, same, unless indeed called Aristotle, *Metap..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7486 to 0.9089
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 15
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 15
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "movable either itself accidentally, produces Arist..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7455 to 0.9014
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 14
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 14
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "motion perpetual succession, Aristotle, *Physics*,..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7663 to 0.9018
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 15
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 15
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "perceive 'now' neither before after Aristotle, *Ph..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7737 to 0.9037
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 15
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 15
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "which 'universally' accessible clocks something He..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7307 to 0.8801
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 15
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 15
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "Hawhee..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.2182 to 0.7738
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 1
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 1
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 1
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 1

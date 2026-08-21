@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Heidegger on Uexkull in BT and FCM</title>
+</head>
+<body>
+<h1>Heidegger&rsquo;s Engagement with Jakob von Uexküll</h1>
+<h2><em>Being and Time</em> (1927) Corpus Analysis — and the Necessary Pivot to <em>Fundamental Concepts of Metaphysics</em> (GA 29/30, 1929–30)</h2>
+<p><strong>Compiled</strong>: 2026-05-25
+<strong>Sources surveyed</strong>:
+- <code>corpus/index/Heidegger - Being and Time/bt-analysis/</code> (38 files: 17 phase2 unit analyses, bt-german-appendix, book-level-ontology, graphs, etc.)
+- <code>corpus/rhetorical_ontology/Heidegger, Martin - Being and Time_(1962)_[My Copy].pdf</code> (Macquarrie–Robinson trans., extracted to plain text)
+- <code>corpus/index/Von Uexkull - A Foray into the Worlds of Animals and Humans/uex-analysis/</code> (32 files including cross-pipeline graph mapping Uexküll → Heidegger concepts)
+- <code>tmp/uexkull-tones-report/Uexkull-Tones-and-Umwelt.md</code> (existing user report on Uexküll&rsquo;s tonal vocabulary)
+- <code>tmp/Dissertation/Working tex versions/1.2-v2.tex</code> and <code>1.3-v2.tex</code> (user&rsquo;s existing dissertation engagements with Uexküll)
+- Web sources on FCM (1995 McNeill–Walker trans.; Buchanan&rsquo;s <em>Onto-Ethologies</em>; Calarco; Mitchell)</p>
+<hr />
+<h2>I. Bottom-Line Finding</h2>
+<p><strong>Being and Time (1927) contains zero direct citations of Jakob von Uexküll.</strong></p>
+<p>Direct verification:
+- <code>grep -iE "uex|uexkull|uexküll"</code> on the full PDF-extracted text returns <strong>zero matches</strong>.
+- The corpus index files for BT (<code>bt-german-appendix.md</code>, <code>book-level-ontology.md</code>, <code>phase2-bt-*.md</code>, <code>concept-matrix.csv</code>, <code>global-edges.csv</code>, <code>contested-nodes.md</code>) likewise contain <strong>zero references</strong> to Uexküll.
+- The Author&rsquo;s Notes / Footnotes appendix of the 1962 Macquarrie–Robinson translation cites Husserl, Scheler, Hartmann, Dilthey, Cassirer, Aquinas, Aristotle, Plato, Augustine, Calvin, Zwingli, Kant, Grimm — but <strong>not Uexküll</strong>.</p>
+<p>The only adjacent biological-tradition reference in BT is to <strong>Karl Ernst von Baer</strong> (1792–1876), the embryologist, in §12 (H. 58 / M&amp;R p. 84): Heidegger acknowledges that the term <em>Umwelt</em> &ldquo;has been used in biology, especially since K. von Baer,&rdquo; and immediately distances his ontological use of the term from any &ldquo;biologism.&rdquo; This passage will be quoted in full below.</p>
+<p><strong>Note on user&rsquo;s prior TODO entry</strong>: The user&rsquo;s <code>tmp/Dissertation/TODO_NOTES.md</code> (line 494) lists &ldquo;Heidegger BT §10 (M&amp;R fn, Uexküll reference)&rdquo; among items to investigate. I verified §10 (H. 45–50, M&amp;R pp. 71–77) and its footnotes (Authors&rsquo; Notes ii–x): <strong>no Uexküll citation appears</strong>. The note appears to be either a misremembered claim or a pointer to an item the user wanted to verify; the verification falsifies it.</p>
+<p><strong>Note on corpus-internal claim that BT cites Uexküll directly</strong>: The cross-pipeline analysis in <code>corpus/index/Von Uexkull - A Foray into the Worlds of Animals and Humans/uex-analysis/uex-graph-cross-pipeline.mmd</code> (edge #1, &ldquo;Umwelt ↔ In-der-Welt-sein&rdquo;) and <code>phase2-uex-f0.md</code> line 90 assert that &ldquo;Heidegger explicitly cites Uexküll&rdquo; in B&amp;T §§14–18. <strong>This is incorrect.</strong> The corpus&rsquo;s own qualifier <code>[INTERP-high]</code> flags the edge as interpretively synthesized; the citation-claim itself appears to be an analyst&rsquo;s slip. Other Uexküll-corpus files correctly attribute the explicit engagement to GA 29/30 (<code>phase2-uex-f2.md</code> line 95, <code>phase2-uex-f4.md</code> line 93, <code>phase2-uex-f5.md</code> line 99, <code>phase2-uex-m1.md</code> line 109, <code>phase2-uex-m6.md</code> line 133).</p>
+<hr />
+<h2>II. The One Passage in BT That Engages the Biological Umwelt-Tradition (§12, H. 58)</h2>
+<p>This is the only passage in BT that explicitly thematizes the biological lineage of the term <em>Umwelt</em>. It is BT&rsquo;s nearest neighbor to a Uexküll-engagement, but it conspicuously routes the genealogy through von Baer rather than through the more obvious contemporary candidate (Uexküll&rsquo;s <em>Umwelt und Innenwelt der Tiere</em>, 1909/1921, which had been in circulation for ~18 years when BT appeared).</p>
+<blockquote>
+<p>&ldquo;Nowadays there is much talk about &lsquo;man&rsquo;s having an environment [<em>Umwelt</em>]&rsquo;; but this says nothing ontologically as long as this &lsquo;having&rsquo; is left indefinite. In its very possibility this &lsquo;having&rsquo; is founded upon the existential state of Being-in. Because Dasein is essentially an entity with Being-in, it can explicitly discover those entities which it encounters environmentally, it can know them, it can avail itself of them, it can have the &lsquo;world&rsquo;. To talk about &lsquo;having an environment&rsquo; is ontically trivial, but ontologically it presents a problem. To solve it requires nothing else than defining the Being of Dasein, and doing so in a way which is ontologically adequate. <strong>Although this state of Being is one of which use has been made in biology, especially since K. von Baer, one must not conclude that its philosophical use implies &lsquo;biologism&rsquo;.</strong> For the environment is a structure which even biology as a positive science can never find and can never define, but must presuppose and constantly employ. Yet, even as an a priori condition for the objects which biology takes for its theme, this structure itself can be explained philosophically only if it has been conceived beforehand as a structure of Dasein. Only in terms of an orientation towards the ontological structure thus conceived can &lsquo;life&rsquo; as a state of Being be defined a priori, and this must be done in a privative manner.&rdquo;</p>
+<p>— Heidegger, <em>Being and Time</em>, §12 (H. 57–58; M&amp;R 1962, p. 84). <strong>Emphasis added.</strong></p>
+</blockquote>
+<p>Three points worth noting:</p>
+<ol>
+<li>
+<p><strong>Heidegger acknowledges the biological tradition but neutralizes it.</strong> The acknowledgment is single-named (von Baer) and immediately followed by a distancing move: the philosophical concept of environment must be conceived as a structure <em>of Dasein</em>, not as a biological feature of organisms.</p>
+</li>
+<li>
+<p><strong>Heidegger does not name Uexküll</strong> — even though Uexküll&rsquo;s <em>Umwelt und Innenwelt der Tiere</em> (1909, expanded 2nd ed. 1921) had been the most influential 20th-century elaboration of biological Umwelt-theory at the time of BT&rsquo;s composition. The omission is significant: Heidegger names a 19th-century embryologist (von Baer) rather than the living contemporary whose name was synonymous with Umwelt-discourse in 1927. Heidegger&rsquo;s silence here is best read as a deliberate distancing move — distancing his existential-ontological Umwelt-concept from the very biology that had popularized the term.</p>
+</li>
+<li>
+<p><strong>The privative-method clause</strong> (&ldquo;life as a state of Being [must be defined] in a privative manner&rdquo;) foreshadows the move Heidegger will make in GA 29/30: animal life will be characterized <em>privatively</em> against Dasein&rsquo;s world-formation, as &ldquo;poor in world&rdquo; (<em>weltarm</em>). The same privative-methodological commitment that grounds BT §10&rsquo;s brief gesture toward biology becomes, two years later, the explicit framework for the engagement with Uexküll.</p>
+</li>
+</ol>
+<hr />
+<h2>III. BT&rsquo;s Umwelt-Analysis (§§12–24) — Conceptual Parallels Without Citation</h2>
+<p>Although Uexküll is uncited, BT&rsquo;s existential analytic of <em>Umwelt</em> (the environing-world) and <em>Bewandtnisganzheit</em> (the totality of involvements) develops a structure with significant conceptual parallels to Uexküll&rsquo;s biological theory. The corpus index&rsquo;s cross-pipeline graph maps ~13 such parallels, of which the most architecturally consequential are:</p>
+<h3>1. Closed meaning-world (Umwelt ↔ In-der-Welt-sein)</h3>
+<p>For Uexküll, the <em>Umwelt</em> is a closed, self-contained perceptual world composed of <em>Merkwelt</em> (perception-world) and <em>Wirkwelt</em> (effect-world), linked by the <em>Funktionskreis</em> (functional cycle). For Heidegger, <em>In-der-Welt-sein</em> (Being-in-the-world) is the closed existential structure within which entities can show up at all. Both reject the model of a subject-confronting-objects in a neutral space; both treat the meaning-totality as constitutive of, rather than derivative from, the encounter with individual entities.</p>
+<h3>2. Equipment ↔ Carrier of meaning (Zuhandenheit ↔ Bedeutungsträger)</h3>
+<p>BT §§15–18 develops the analysis of <em>Zeug</em> (equipment) and <em>Bewandtnis</em> (involvement): the hammer is what it is through its in-order-to (Um-zu) and for-the-sake-of (Worumwillen) relations, not through objective properties. Uexküll&rsquo;s <em>Bedeutungsträger</em> (carrier of meaning) is similarly constituted through its place in a <em>Funktionskreis</em>: the same physical object becomes a different &ldquo;thing&rdquo; in different functional cycles (Uexküll&rsquo;s &ldquo;oak tree&rdquo; example: forester&rsquo;s cordwood, ant&rsquo;s pathway, bark beetle&rsquo;s larval substrate, ichneumon wasp&rsquo;s host). The structural parallel is precise: meaning is <em>relationally constituted</em> in both frameworks.</p>
+<h3>3. Mood as world-disclosive (Stimmung ↔ Befindlichkeit)</h3>
+<p>In BT §29 <em>Befindlichkeit</em> (attunement/disposition) discloses how Dasein finds itself in the world <em>before</em> any determinate perception. Uexküll&rsquo;s <em>Stimmung</em> (in the hermit-crab/sea-anemone example, <em>Foray</em> p. 97) functions analogously at the biosemiotic level: the same object (the anemone) yields different <em>Wirktöne</em> (effect-tones) — protective, dwelling, feeding — depending on the crab&rsquo;s <em>Stimmung</em>. The crab does not first see the anemone as a neutral object and then &ldquo;apply&rdquo; a mood; the mood is constitutive of what the anemone shows up as.</p>
+<p><strong>This parallel is the one your dissertation §1.3 L144 fn synthesizes</strong>: &ldquo;Heideggerian disclosure-withdrawal, Gibsonian affordance, and Uexküllian <em>Wirkton</em> each name the same architectonic feature of attuned engagement.&rdquo;</p>
+<h3>4. Spatial schema as projected (Raumschema ↔ Entwurf/de-severance)</h3>
+<p>BT §§22–24 rejects homogeneous Cartesian space in favor of existentially constituted <em>Raum</em> (de-severance, directionality, regionality). Uexküll&rsquo;s three spaces (<em>Wirkraum</em>, <em>Merkraum</em>, <em>Tastraum</em>) and his territory-analysis make the parallel biological argument: space is not a neutral receptacle but a subject-constituted structure.</p>
+<h3>5. Nature within the work-world (&ldquo;environing Nature,&rdquo; <em>Umweltnatur</em>)</h3>
+<p>BT §15 (H. 100, M&amp;R p. 100) provides a striking passage where Heidegger handles Nature within the equipment-totality. This is the BT passage that most resembles Uexküll&rsquo;s framework, though again Uexküll is uncited:</p>
+<blockquote>
+<p>&ldquo;Even when goods are produced by the dozen, this constitutive assignment is by no means lacking… Along with the public world, the environing Nature [<em>die Umweltnatur</em>] is discovered and is accessible to everyone. In roads, streets, bridges, buildings, our concern discovers Nature as having some definite direction. A covered railway platform takes account of bad weather; an installation for public lighting takes account of the darkness… When we look at the clock, we tacitly make use of the &lsquo;sun&rsquo;s position&rsquo;…&rdquo;</p>
+<p>— Heidegger, <em>Being and Time</em>, §15 (H. 71; M&amp;R 1962, p. 100).</p>
+</blockquote>
+<p>This passage articulates a thoroughgoing ontological inseparability between the perceiving/acting subject and its meaningful environment that runs strictly parallel to Uexküll&rsquo;s <em>Funktionskreis</em>. The bridge &ldquo;takes account of&rdquo; the river; the platform &ldquo;takes account of&rdquo; the weather. This is not metaphor — it is Heidegger&rsquo;s claim that the worldhood of the work-world <em>is</em> the relational totality. Where Uexküll generalizes from the tick&rsquo;s perception of butyric acid to a universal biosemiotic principle (each organism&rsquo;s <em>Bauplan</em> shapes and is shaped by the <em>Bauplan</em> of its environing entities), Heidegger generalizes from clock-and-sun to the existential structure of Dasein&rsquo;s care-laden absorption in the world.</p>
+<h3>6. The &ldquo;as&rdquo;-structure (Als-Struktur ↔ perception-marks)</h3>
+<p>BT §32–33 develops the hermeneutic &ldquo;as&rdquo;: an entity is encountered <em>as</em> something within its referential totality (the hammer is encountered <em>as</em> hammer-for-driving-nails). Uexküll&rsquo;s perception-marks function biosemiotically: the tick perceives butyric acid <em>as</em> mammal-approach-signal, not as a chemical with vapor pressure. The convergence is not accidental — both reject the model of bare sense-data plus interpretation.</p>
+<hr />
+<h2>IV. The Real Engagement: <em>Fundamental Concepts of Metaphysics</em> (GA 29/30, 1929–30)</h2>
+<p>Heidegger&rsquo;s direct, sustained engagement with Uexküll occurs in the lecture course delivered the winter semester after BT was published — <strong>Die Grundbegriffe der Metaphysik: Welt – Endlichkeit – Einsamkeit</strong> (GA 29/30), first published in 1983, English trans. by McNeill and Walker as <em>The Fundamental Concepts of Metaphysics: World, Finitude, Solitude</em> (Indiana UP, 1995).</p>
+<h3>Location of the engagement</h3>
+<p>FCM Chapter Four (&ldquo;Clarification of the Essence of the Animal&rsquo;s Poverty in World&rdquo;; English pp. 201–267) is the locus. The Uexküll-engagement is concentrated at:</p>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Topic</th>
+<th>Page (McNeill-Walker)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§49</td>
+<td>Methodology of transposition into animal being</td>
+<td>209</td>
+</tr>
+<tr>
+<td>§50</td>
+<td>Having/not having world as deprivation</td>
+<td>212</td>
+</tr>
+<tr>
+<td>§51–57</td>
+<td>Organism essence, organs, capability</td>
+<td>215–235</td>
+</tr>
+<tr>
+<td>§58</td>
+<td>Behavior and captivation of the animal</td>
+<td>236</td>
+</tr>
+<tr>
+<td>§59</td>
+<td>Animal behavior structure</td>
+<td>241</td>
+</tr>
+<tr>
+<td>§60</td>
+<td>Openness of behavior and captivation</td>
+<td>249</td>
+</tr>
+<tr>
+<td>§61</td>
+<td>Concluding delimitation of the essential concept of the organism</td>
+<td>257</td>
+</tr>
+<tr>
+<td><strong>§61b</strong></td>
+<td><strong>&ldquo;Two essential steps in biology: Driesch and Uexküll&rdquo;</strong></td>
+<td><strong>261–267</strong></td>
+</tr>
+<tr>
+<td>§62–63</td>
+<td>World-poverty conclusions</td>
+<td>267+</td>
+</tr>
+</tbody>
+</table>
+<p>The Uexküll-by-name engagement clusters at <strong>pp. 261–267</strong> (per the Wikipedia/secondary literature citations confirmed via web search) and at scattered earlier references (especially pp. 224, 241).</p>
+<h3>What Heidegger actually says about Uexküll (verbatim, FCM)</h3>
+<p><strong>On Uexküll&rsquo;s two major contributions to biology</strong> (FCM §61b, p. 261ff., McNeill–Walker trans.):</p>
+<blockquote>
+<p>&ldquo;The <em>first step</em> concerns the recognition of the holistic character of the organism.&rdquo;</p>
+<p>&ldquo;The <em>second step</em> is the insight into the essential significance of research concerned with how the animal is bound to its environment.&rdquo;</p>
+</blockquote>
+<p><strong>On the standing of Uexküll&rsquo;s work</strong>:</p>
+<blockquote>
+<p>&ldquo;His investigations are very highly valued today, but they have not yet acquired the fundamental significance they could have if a more radical interpretation of the organism were developed on their basis.&rdquo;</p>
+</blockquote>
+<p><strong>On the philosophical importance of taking Uexküll seriously</strong>:</p>
+<blockquote>
+<p>&ldquo;It would be foolish if we attempted to impute or ascribe philosophical inadequacy to Uexküll&rsquo;s interpretations, instead of recognising that the engagement with concrete investigations like this is one of the most fruitful things that philosophy can learn from contemporary biology.&rdquo;</p>
+</blockquote>
+<p>These four passages, taken together, are striking for their (rare) Heideggerian generosity toward a contemporary scientist. Heidegger does not patronize Uexküll the way he patronizes most modern biology; he treats Uexküll as a philosophical-ontological resource whose insights remain underdetermined because Uexküll lacked the ontological framework to draw them out.</p>
+<h3>What concepts Heidegger draws from Uexküll</h3>
+<ol>
+<li>
+<p><strong>The holistic character of the organism.</strong> Heidegger affirms Uexküll&rsquo;s anti-mechanism: the organism is not a sum of parts but a structural whole.</p>
+</li>
+<li>
+<p><strong>The organism–environment inseparability (<em>Umwelt</em>).</strong> This is the operationally critical Uexküllian thesis for Heidegger. The animal is <em>bound to</em> its environment in such a way that the environment is internal to its mode of being, not an external space within which it happens to operate.</p>
+</li>
+<li>
+<p><strong>The <em>Funktionskreis</em> (functional cycle) model.</strong> Uexküll&rsquo;s diagrammatic schematization of the closed loop perception-organ → perception-mark → object → effect-mark → effect-organ (see <em>Foray</em> Fig. 3) supplies Heidegger with the biological-empirical material on which to build the <em>Enthemmungsring</em> (disinhibiting ring) account.</p>
+</li>
+<li>
+<p><strong>The graduated structure of animal Umwelten.</strong> Uexküll&rsquo;s hierarchy from the simplest organisms (paramecium with one functional cycle, sea urchin as &ldquo;reflex republic&rdquo;) up through the tick (chemical-thermal-tactile cycle), the jackdaw, and the higher mammals supplies the differential biological material against which Heidegger develops his thesis that animals are &ldquo;poor in world&rdquo; — that they have access to entities but only within a closed disinhibiting structure, not as entities-as-such.</p>
+</li>
+<li>
+<p><strong>Subject-constituted spatiality and temporality.</strong> Uexküll&rsquo;s argument that &ldquo;without a living subject, there can be neither space nor time&rdquo; (<em>Foray</em> p. 48) parallels — though does not identify with — Heidegger&rsquo;s analysis of Dasein&rsquo;s spatiality and temporality as ontological structures, not Cartesian receptacles.</p>
+</li>
+</ol>
+<h3>How Heidegger transforms what he draws</h3>
+<p>Heidegger does not merely adopt Uexküll&rsquo;s framework; he transforms it through three operations:</p>
+<ol>
+<li>
+<p><strong>Renaming.</strong> Heidegger renames Uexküll&rsquo;s <em>Umwelt</em> as the <em>Enthemmungsring</em> (&ldquo;disinhibiting ring&rdquo;). Where Uexküll&rsquo;s term suggests a positive perceptual–effectual world the animal &ldquo;has,&rdquo; Heidegger&rsquo;s term emphasizes that the animal is <em>captivated</em> (<em>benommen</em>) within a circle of triggers that disinhibit its drives. The animal does not &ldquo;have&rdquo; its environment as a structure; it is &ldquo;taken in by&rdquo; (<em>be-nommen</em>) the disinhibiting ring.</p>
+</li>
+<li>
+<p><strong>Reframing as deprivation.</strong> Where Uexküll posits a positive equality among Umwelten (&ldquo;All animal subjects are inserted into their environments to the same degree of perfection,&rdquo; <em>Foray</em> p. 46), Heidegger reframes the animal&rsquo;s mode of being as a <em>privation</em> relative to Dasein&rsquo;s world-formation. The famous tripartite thesis: the stone is <em>weltlos</em> (worldless); the animal is <em>weltarm</em> (poor in world); the human is <em>weltbildend</em> (world-forming).</p>
+</li>
+<li>
+<p><strong>Ontologizing rather than biologizing.</strong> Heidegger preserves Uexküll&rsquo;s biological insights but recasts them ontologically. The closed structure of the Funktionskreis becomes the closed structure of <em>Benommenheit</em> (captivation), which Heidegger then contrasts with the open structure of <em>Erschlossenheit</em> (disclosedness) characteristic of Dasein.</p>
+</li>
+</ol>
+<h3>The &ldquo;captivation/disinhibiting ring&rdquo; thesis in detail</h3>
+<p>In FCM §§58–61, Heidegger develops his most distinctive contribution. The animal&rsquo;s mode of being is <em>Benommenheit</em> — a captivation in which the animal is wholly taken up by the disinhibitors of its drives. The animal &ldquo;behaves&rdquo; (<em>benimmt sich</em>) rather than &ldquo;comports itself&rdquo; (<em>verhält sich zu</em>); it is absorbed in a circle of stimulus-response triggers that, taken together, constitute its disinhibiting ring. The Uexküllian <em>Umwelt</em> is, on this transformation, not a positive perceptual world the animal &ldquo;has&rdquo; but the closed disinhibiting structure within which the animal is captivated.</p>
+<p>The dissertation&rsquo;s §1.2 footnote on Uexküll (Working tex versions / <code>1.2-v2.tex</code>) gets this correctly:</p>
+<blockquote>
+<p>&ldquo;Heidegger directly engages Uexküll in <em>The Fundamental Concepts of Metaphysics</em> (GA 29/30, §§42–58), reading Uexküll&rsquo;s <em>Funktionskreis</em> model into the worldhood-analysis and distinguishing animal captivation (<em>Benommenheit</em>) from human world-formation (<em>Weltbildung</em>). This distinction handles the extension of the <em>Umwelt</em>-analogy to rational animals: at the basic hedonic-tonality stage of the chain, the perceptual world the animal inhabits is structured by Umwelt-relations whether or not the animal is capable of <em>doxa</em>-mediated articulation; the distinction between captivation and world-formation marks the divide at which higher-order rational operations transform the bare Umwelt-structure.&rdquo;</p>
+</blockquote>
+<hr />
+<h2>V. Which Uexküll Texts Did Heidegger Know?</h2>
+<p>The biographical-chronological situation:</p>
+<ul>
+<li><strong>1909</strong>: Uexküll, <em>Umwelt und Innenwelt der Tiere</em> (Berlin: Springer; expanded 2nd ed. 1921).</li>
+<li><strong>1920/1928</strong>: Uexküll, <em>Theoretische Biologie</em> (Berlin: Borntraeger; 2nd ed. 1928).</li>
+<li><strong>1927</strong>: Heidegger, <em>Sein und Zeit</em> (Jahrbuch für Philosophie und phänomenologische Forschung, vol. 8). <strong>Uexküll uncited.</strong></li>
+<li><strong>1929–30 WS</strong>: Heidegger delivers the <em>Die Grundbegriffe der Metaphysik</em> lecture course (Freiburg). Engages Uexküll&rsquo;s <em>Umwelt und Innenwelt der Tiere</em> (1909/1921) and <em>Theoretische Biologie</em> (1920/1928) extensively — these are the only two major Uexküll books available at the time.</li>
+<li><strong>1934</strong>: Uexküll, <em>Streifzüge durch die Umwelten von Tieren und Menschen</em> (Berlin: Springer). <strong>Postdates FCM.</strong></li>
+<li><strong>1940</strong>: Uexküll, <em>Bedeutungslehre</em> (Leipzig: Barth). <strong>Postdates FCM.</strong></li>
+</ul>
+<p>Heidegger&rsquo;s FCM engagement is therefore with the <strong>first two</strong> Uexküll works — neither of which is in the local corpus (which holds the 1934 <em>Foray</em> and 1940 <em>Theory of Meaning</em> in the 2010 O&rsquo;Neil translation). This is a critical bibliographic note for the dissertation: when discussing Heidegger&rsquo;s reading of Uexküll, the canonical texts are the 1909/1921 <em>Umwelt und Innenwelt der Tiere</em> and the 1920/1928 <em>Theoretische Biologie</em>, not the more famous <em>Foray</em> (which is what readers today most often cite).</p>
+<p>The historical consensus (per Anne Harrington&rsquo;s <em>Reenchanted Science</em>, 1996, and Brett Buchanan&rsquo;s <em>Onto-Ethologies</em>, 2008) is that Heidegger had &ldquo;studied and digested Uexküll&rsquo;s works at remarkable length&rdquo; — referring specifically to those first two works — by the time of FCM. The depth of engagement in §§61b–62 (the named-Uexküll passages) corroborates this: Heidegger discusses the <em>Funktionskreis</em> model with technical accuracy, not in passing.</p>
+<hr />
+<h2>VI. Why Heidegger Did Not Cite Uexküll in BT — A Hypothesis</h2>
+<p>Three readings of the citation-gap are defensible:</p>
+<p><strong>(a) Chronological-genetic.</strong> Heidegger had read Uexküll before BT but had not yet worked out an explicit philosophical position on him. The 1929–30 lectures represent Heidegger&rsquo;s first systematic engagement, and BT&rsquo;s 1927 publication anticipates that engagement only obliquely (the von Baer reference, the privative-method clause). On this reading, the citation-gap is a chronological accident: Heidegger needed the additional two years before he was prepared to engage Uexküll explicitly.</p>
+<p><strong>(b) Strategic disambiguation.</strong> Heidegger had read Uexküll and deliberately omitted reference to him in BT because citing Uexküll would have invited exactly the &ldquo;biologism&rdquo; charge that §12 specifically forecloses. By naming the dead 19th-century embryologist (von Baer) rather than the living-and-controversial biologist (Uexküll), Heidegger asserts that his ontological <em>Umwelt</em>-concept is independent of contemporary biological theory. On this reading, the silence is rhetorical: Heidegger is constructing a stance from which he can later engage Uexküll on his own terms (the FCM stance: &ldquo;It would be foolish to ascribe philosophical inadequacy to Uexküll&rdquo;).</p>
+<p><strong>(c) Buchanan/Harrington thesis (deep but unacknowledged influence).</strong> Uexküll&rsquo;s <em>Umwelt</em> concept was so pervasive in the German-speaking philosophical biology of the 1920s that Heidegger could not have been unaware of it, and the architectural parallels between BT&rsquo;s <em>Umwelt</em>-analytic and Uexküll&rsquo;s biological <em>Umwelt</em>-theory are too close to be coincidental. Whether or not BT names Uexküll, his influence is present.</p>
+<p>The three readings are not mutually exclusive. A defensible synthesis: Heidegger had read at least <em>Umwelt und Innenwelt der Tiere</em> (1909/1921) by the time of BT&rsquo;s composition; he deliberately did not cite Uexküll in BT because citing him would have complicated the existential-ontological reframing he was trying to perform; the FCM engagement two years later represents Heidegger working out, philosophically and explicitly, the position toward Uexküll that BT&rsquo;s §12 left implicit.</p>
+<hr />
+<h2>VII. Why This Matters for the Dissertation</h2>
+<p>For your project (Aristotle-primary, Heidegger-close-second, Rickert-and-Uexküll lesser), the bibliographic-philological situation has three practical consequences:</p>
+<ol>
+<li>
+<p><strong>The §1.2-v2 footnote should be precise about the FCM location.</strong> The footnote currently reads &ldquo;§§42–58.&rdquo; Per the McNeill–Walker English edition the named-Uexküll engagement clusters at §61b (pp. 261–267) and §50 (p. 212), with scattered earlier references at pp. 224 and 241. Consider revising to &ldquo;§§42–63 (especially §61b)&rdquo; or &ldquo;FCM Chapter Four, esp. §§50, 58–61.&rdquo;</p>
+</li>
+<li>
+<p><strong>The §1.3 L144 synthesis footnote (Heideggerian disclosure-withdrawal / Gibsonian affordance / Uexküllian <em>Wirkton</em>) operates correctly at the conceptual level.</strong> The architectural-homology argument does not require citation-of-Uexküll-by-BT — it requires only that the three frameworks name the same architectonic feature, which they do.</p>
+</li>
+<li>
+<p><strong>If your Chapter X (announced at §1.0 L85 fn as &ldquo;engagement with Heidegger, Rickert, Uexküll, and Burke&rdquo;) plans to treat Uexküll philosophically rather than biologically</strong>, the canonical texts for the Heidegger-Uexküll relation are:
+   - Uexküll, <em>Umwelt und Innenwelt der Tiere</em> (1909/1921) — <strong>Heidegger&rsquo;s source</strong>.
+   - Uexküll, <em>Theoretische Biologie</em> (1920/1928) — <strong>Heidegger&rsquo;s source</strong>.
+   - Heidegger, <em>FCM</em> (1929–30) §§42–63, esp. §50 and §61b — <strong>the engagement</strong>.
+   - The <em>Foray</em> (1934) you have in corpus is structurally continuous with the earlier works but <strong>was not available to Heidegger in 1927 or 1929</strong>, so it cannot be cited <em>as Heidegger&rsquo;s source</em>. It can be cited as a Uexküll-canon source provided the chronology is stated explicitly.</p>
+</li>
+</ol>
+<p>The secondary literature that synthesizes the relationship (and would supply citations for Chapter X) includes:
+- Buchanan, <em>Onto-Ethologies: The Animal Environments of Uexküll, Heidegger, Merleau-Ponty, and Deleuze</em> (SUNY 2008).
+- Calarco, <em>Zoographies: The Question of the Animal from Heidegger to Derrida</em> (Columbia 2008).
+- Agamben, <em>The Open: Man and Animal</em> (Stanford 2004), Chs. 11–13.
+- Harrington, <em>Reenchanted Science</em> (Princeton 1996), Ch. 1 (Uexküll&rsquo;s reception).
+- Mitchell, &ldquo;Heidegger&rsquo;s Later Thinking of Animality: The End of World Poverty,&rdquo; <em>Gatherings</em> 1 (2011).
+- Engelland, &ldquo;Heidegger and the Human Difference,&rdquo; <em>Journal of the American Philosophical Association</em> (2015).</p>
+<hr />
+<h2>VIII. Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BT (1927) directly cites Uexküll</td>
+<td><strong>FALSE</strong> (zero textual occurrences, zero corpus index references)</td>
+</tr>
+<tr>
+<td>BT §12&rsquo;s &ldquo;K. von Baer&rdquo; passage acknowledges the biological Umwelt-tradition</td>
+<td>TRUE, but routes the genealogy <em>around</em> Uexküll</td>
+</tr>
+<tr>
+<td>BT&rsquo;s <em>Umwelt</em>-analytic (§§12–18, §15 <em>Umweltnatur</em>, §29 <em>Befindlichkeit</em>) develops parallel structures to Uexküll&rsquo;s <em>Funktionskreis</em></td>
+<td>TRUE — extensive architectural parallels, no citations</td>
+</tr>
+<tr>
+<td>The corpus index claim &ldquo;Heidegger explicitly cites Uexküll&rdquo; at BT §§14–18 (<code>phase2-uex-f0.md</code> L90, cross-pipeline graph edge #1)</td>
+<td><strong>FALSE</strong> — corpus analyst error</td>
+</tr>
+<tr>
+<td>The dissertation §1.2-v2 attribution of explicit engagement to FCM (GA 29/30)</td>
+<td>TRUE and correctly cited</td>
+</tr>
+<tr>
+<td>Heidegger&rsquo;s named, sustained engagement with Uexküll occurs in FCM (1929–30), esp. §50 and §§58–61b</td>
+<td>TRUE</td>
+</tr>
+<tr>
+<td>Heidegger transforms Uexküll&rsquo;s <em>Umwelt</em> → <em>Enthemmungsring</em> and reframes animal-being as <em>Benommenheit</em> / <em>weltarm</em></td>
+<td>TRUE — Heidegger&rsquo;s distinctive philosophical operation on Uexküll&rsquo;s biology</td>
+</tr>
+<tr>
+<td>Heidegger&rsquo;s source-texts on Uexküll were <em>Umwelt und Innenwelt der Tiere</em> (1909/1921) and <em>Theoretische Biologie</em> (1920/1928), not <em>Foray</em> (1934)</td>
+<td>TRUE — chronologically necessary</td>
+</tr>
+</tbody>
+</table>
+<p>The honest one-sentence answer to the user&rsquo;s question: <strong>Heidegger does not reference Uexküll in Being and Time at all; the direct philosophical engagement (where Heidegger names Uexküll, draws on his Funktionskreis, transforms his Umwelt-concept into the Enthemmungsring, and articulates the famous &ldquo;world-poverty&rdquo; thesis) occurs two years later in The Fundamental Concepts of Metaphysics (GA 29/30, 1929–30), and an interpretation of BT&rsquo;s silent Umwelt-analytic in light of Uexküll&rsquo;s biology is reconstructive philosophical work, not exegesis of explicit textual citation.</strong></p>
+</body>
+</html>

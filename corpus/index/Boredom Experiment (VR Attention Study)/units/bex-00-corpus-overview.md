@@ -37,7 +37,7 @@ re-present the study's findings.
 | `ch-eeg` | 4-ch EEG F3/F4/P3/P4, DMN alpha/theta | FE (P1) / raw | 3 / 8 | **PROCESSED N=8** (suggestive; n.s.) | bex-02 |
 | `ch-gaze` | gaze-variance @120 Hz + pupil | FE (P2) | 12 | published only (N=12 ≠ raw N=8) | bex-03 |
 | `ch-hmd` | Omnicept telemetry / exposure protocol | raw | 8 | **PROCESSED N=8** (pupil = the one significant surface) | bex-04 |
-| `ch-obs` | first-person in-VR headset feed (NOT a body cam) | raw | 8 | **the one channel still O-9 deferred** | bex-04 |
+| `ch-obs` | first-person in-VR headset feed (NOT a body cam) | raw | 8 | **PROBE-CLOSED 2026-07-29** — unprocessed for a stated methodological reason (black-void flow confound) | bex-04 |
 | `ch-fig` | per-subject MATLAB `.fig` | derived | 8 | **PROCESSED** (161/168 series; fig-only gaze/pupil) | bex-04 |
 | `ch-stimulus` | 10× 4K60 state-contrast compilations | FE | — | metadata only | bex-04 |
 
@@ -72,13 +72,23 @@ in the `.fig` files, plus a tail-aligned validation confirming the HR/HRV/cognit
 checks). Scripts are committed at `scripts/boredom-o9/` (`b766783a5`); per-subject outputs stay untracked; the findings
 note is `tmp/Dissertation/Part_III/reanalysis/boredom-o9-physiological-findings.md`.
 
-**`ch-obs` is the one channel still deferred**, as its own final phase. Confirmed 2026-07-16 that no body camera was
+**`ch-obs` is PROBE-CLOSED (2026-07-29) and remains unprocessed** — not merely deferred, but closed against a stated methodological finding (see bex-04). Confirmed 2026-07-16 that no body camera was
 ever recorded, so it yields stimulus-segmentation (a cross-channel alignment anchor) + head-restlessness + off-task —
 signals that corroborate `ch-gaze`/`ch-hmd` rather than an independent third surface. Approach:
 `plans/boredom-experiment-o9-processing-scope-2026-07-16.md` §2.4.
 
 Currently usable: `ch-selfreport` (full per-subject record, O-10 resolved), the processed `ch-eeg`/`ch-hmd`/`ch-fig`
 surfaces at N=8, and the published `ch-gaze` (P2, N=12) derivation.
+
+## Round 2 layer (registered 2026-08-05 — see bex-05)
+The experiment's **second data-collection round** (March 2024): 4 subjects (**R2-S01…R2-S04**, sorted-directory
+convention) × 3 conditions = 12 sessions of raw Omnicept **SDK** streams (ET/CL/HR/HRV/IMU — a different format from
+Round 1's headerless export) + first-person OBS HMD feed, with **genuine body/comportment footage in 4 sessions**
+(the surface Round 1's `ch-obs` was confirmed not to be). `bex-05` registers the full synchronized artifact set
+produced 2026-07-31→08-05 (CSV crops, 4K60 gaze-overlay renders, heatmaps, HMD/bodycam cuts, side-by-side composites,
+per-session `CropEvents.json` provenance) under an author-ruled, **LOCKED** CSV-primary analysis window that the
+Part III lab-boredom analyses have already consumed. The PII gate holds unchanged over this entry's files; Round 2
+identities exist only in the repo's operational pipeline docs (author ruling 2026-08-05).
 
 ## Analysis home
 Full apparatus: `tmp/Dissertation/Part_III/reanalysis/boredom-experiment-brief.md` (untracked). This entry carries the

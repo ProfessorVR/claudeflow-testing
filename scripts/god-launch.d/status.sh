@@ -77,6 +77,19 @@ check_service_status() {
                 pid=$(pgrep -f "observability/daemon" 2>/dev/null | head -1)
             fi
             ;;
+        marker)
+            # Optional local Marker OCR server (:8003). Only "running" when enabled + reachable.
+            if [[ "${MARKER_LOCAL_ENABLED:-false}" == "true" ]] && \
+               curl -sf "http://127.0.0.1:${MARKER_LOCAL_PORT:-8003}/" >/dev/null 2>&1; then
+                status="running"
+                local marker_pid_file="${GOD_PROJECT_DIR}/.run/marker.pid"
+                if [[ -f "$marker_pid_file" ]]; then
+                    pid=$(cat "$marker_pid_file" 2>/dev/null)
+                else
+                    pid=$(pgrep -f "marker_server" 2>/dev/null | head -1)
+                fi
+            fi
+            ;;
     esac
 
     # Get process stats if running

@@ -131,7 +131,7 @@ export interface ServicesConfig {
     /** API endpoint for external embedding */
     endpoint?: string;
   };
-  /** Cross-encoder rerank service (wraith-infer on WRAITH :8100) */
+  /** Cross-encoder rerank service (RETIRED — WRAITH is offline; kept for config-shape compat) */
   rerank?: {
     /** Rerank endpoint (POST {query, documents} -> {results:[{index,relevance_score}]}) */
     endpoint?: string;
@@ -282,8 +282,11 @@ export const DEFAULT_CONFIG: GodAgentConfig = {
       endpoint: 'http://127.0.0.1:8000/embed',
     },
     rerank: {
-      endpoint: 'http://192.168.50.22:8100/v1/rerank',
-      enabled: true,
+      // WRAITH retired (index-overhaul step A6): the cross-encoder service on
+      // :8100 is permanently offline. Disabled with no endpoint; the config
+      // shape is kept so older config files still parse. Do not re-enable.
+      endpoint: '',
+      enabled: false,
       timeoutMs: 8000,
       candidateMultiplier: 3,
     },

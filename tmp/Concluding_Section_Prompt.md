@@ -1,0 +1,604 @@
+====================================================================
+RECOMMENDED INVOCATION (multistep + rolling-context, v2 prompt)
+====================================================================
+
+This prompt is designed for the multistep drafting pipeline. Recommended CLI invocation (post rolling-context-patch 2026-05-24):
+
+```bash
+npx tsx src/god-agent/universal/cli.ts write "$(cat tmp/Concluding_Section_Prompt.md)" \
+  --execute --json \
+  --multi-step \
+  --rolling-context \
+  --whitelist \
+  --corpus-chunk-count 60 \
+  --corpus-min-relevance 0.60 \
+  --enable-endnotes \
+  --style academic \
+  --format paper \
+  --length comprehensive \
+  --word-target 6500 \
+  --max-revisions 2
+```
+
+**Flag rationale (2026-05-24 revision after the v1 run failed):**
+- `--whitelist` (changed from `--use-corpus`): activates the same retrieval pipeline but is the canonical flag for the rolling-context branch (v2 also auto-promotes `--use-corpus` to whitelist, but `--whitelist` is explicit).
+- `--rolling-context`: NOW WIRED in v2 (was previously silently no-op'd — patched 2026-05-24 to call `writeRollingContext` from `writeV2`). Triggers per-subsection sequential drafting with sliding-window prior-section context + per-author citation tracker (caps any single author at 3 citations in shared pool, redirects retrieval toward under-cited authors).
+- `--corpus-chunk-count 60` (raised from 30): give the rolling-context shared pool more chunk-author diversity to draw from. The v1 run got 30/30 Heidegger BCAP chunks; raising count + lowering min-relevance gives Gross, Hawhee, Nussbaum, Frede, Caston a chance to surface in retrieval.
+- `--corpus-min-relevance 0.60` (lowered from 0.65): same author-diversity goal.
+- `--verify-sources` REMOVED: the CitationEnforcement subsystem actively degraded prose in v1 by replacing author-prominent intros ("Aristotle observes that") with broken `(Aristotle 2014, *On The Soul (De Anima)*, p. [PAGE NEEDED])` parentheticals. The dissertation uses Bekker / BT / BCAP citation conventions, not author-year-page; the enforcement system can't recognize these.
+- `--candidate-selection` and `--nli-verify` REMOVED: high cost, marginal benefit on this run.
+- `--max-revisions 2`: retained — if the quality gauntlet flags weak stages, allow up to 2 revision passes.
+
+The `--multi-step` flag triggers the v1 → investigateV1 → prevention-plan → v2 pipeline (dissertation-strict mode). The `--rolling-context` flag triggers per-subsection sequential generation with sliding-context window across the 8 numbered subsections specified below; each subsection sees prior-section summaries plus a citation tracker tracking which authors have been cited (so the chain's source diversity is balanced across the conclusion). The numbered subsections defined below are the `globalOutline` the rolling-context loop iterates; the per-subsection word targets define `sectionWordTarget`; the per-subsection requirements define the coverage criteria for investigateV1's gap analysis. The Bekker Citation Ledger and the Supplementary Evidence Pack become the grounding constraints for the prevention plan.
+
+====================================================================
+SOURCE HIERARCHY (READ THIS BEFORE ANY QUOTATION)
+====================================================================
+
+**This dissertation already has authoritative source-of-truth files. Use them, in this strict priority order, before falling back to corpus chunks or training-data recall:**
+
+### Tier 0 (HIGHEST PRIORITY) — `tmp/Dissertation/verbatim_passages.md` ★
+
+This is a 74KB curated catalog of **PDF-verbatim-verified quotations**, maintained by the user. Every entry has been cross-checked against the source PDF in `corpus/rhetorical_ontology/` or `corpus/download/`. **For ANY quoted material from the works listed below, draw the quotation TEXT VERBATIM from this file rather than generating, paraphrasing, or recalling from training data.** The quote text in `verbatim_passages.md` is authoritative — if there is any discrepancy between training-data recall and this file, the file wins.
+
+Catalog covers (as of 2026-05-24): Aristotle *De Anima*, *Physics*, *Metaphysics*, *De Motu Animalium*, *De Memoria*, *Sense and Sensibilia*, *Rhetoric*, *Nicomachean Ethics*, *De Insomniis*; Heidegger BCAP (GA 18) — pp. 119, 122, 123, 125, 127, 128, 131, 132, 134, 135 and others; Heidegger BT — §§29, 32, 65, 72, 74; Heidegger FCM (GA 29/30); Gibson 1979/2015; Coope 2005; Broadie 1982.
+
+**Catalog gaps to be aware of:** Gross (*Uncomfortable Situations*, *Heidegger and Rhetoric*) are NOT yet in the catalog. Rhetoric I.11 1370a27–30 not yet in catalog. For these, fall back to Tier 1 (corpus/index) then Tier 2 (PDFs).
+
+**Convention:** when deploying a verbatim_passages.md quote, preserve italics and punctuation exactly. Use the file's Bekker / BT / BCAP locus exactly as recorded.
+
+### Tier 1 — `corpus/index/` (for locus identification + chunk metadata)
+
+When a passage is needed and is NOT in verbatim_passages.md, consult `corpus/index/` next:
+- `corpus/index/Aristotle - Complete Works/` includes `aristotle-bekker-index.md` and `phase05-offset-validation.md` (the latter has the validated Bekker↔PDF formulas).
+- `corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/` includes `bcap-structured/manifest.json` for page-mapping.
+- `corpus/index/Heidegger - Being and Time/` for BT page indexing.
+- `corpus/index/Heidegger and Rhetoric/` (Gross & Kemmann eds. 2005) and `corpus/index/Uncomfortable Situations/` (Gross 2017) for advisor-priority work.
+
+Corpus chunks retrieved by the pipeline's ChromaDB search use these manifests for citation metadata. **The `aristotle-bekker-index.md` standalone page numbers are NOT reliable for mid-/late-work loci** — always use the offset-validation formulas in `phase05-offset-validation.md` (see `verbatim_passages.md` header for the table).
+
+### Tier 2 — `corpus/rhetorical_ontology/` PDFs (FALLBACK only)
+
+When neither verbatim_passages.md nor corpus/index resolves a needed quotation or locus, fall back to the PDF directly:
+- Aristotle "My Copy" / "Clean Copy" 2014 editions (Smith / Ross / Barnes ROT 1984): `corpus/rhetorical_ontology/Aristotle - *.pdf`
+- Heidegger BCAP (Metcalf & Tanzer 2009): `corpus/rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf`
+- Heidegger BT (Macquarrie & Robinson 1962): `corpus/rhetorical_ontology/Heidegger - Being and Time*.pdf`
+- Gross *Uncomfortable Situations* (2017): `corpus/rhetorical_ontology/Gross, Daniel M. - Uncomfortable Situations_*.pdf`
+- Gross *Heidegger and Rhetoric* (Gross & Kemmann eds. 2005): `corpus/rhetorical_ontology/Gross & Kemmann - Heidegger and Rhetoric_*.pdf`
+
+The pipeline's ChromaDB retrieves chunks from these PDFs (semantic search). The corpus chunks supplied to you in the prompt are the chunks that retrieval surfaced for this run. **A quotation from a chunk is only verbatim-trustworthy after cross-check against the PDF locus**, but if the chunk text matches the verbatim_passages.md text exactly, that is your strongest evidence.
+
+### Tier 3 (LAST RESORT) — training-data recall
+
+ONLY when all three tiers above fail and the quotation is non-load-bearing. In that case, mark the quotation `****** UNVERIFIED: <text>` so the user can verify it manually. Do NOT silently generate quotations from training data — this produced 32 phantom quotations in the previous run.
+
+### Convention reminders
+
+For **terminology conventions** (Greek transliteration, German rendering, dissertation coinages, Aristotelian work titles), consult `tmp/Dissertation/GLOSSARY.md` — the dissertation's authoritative glossary. This file specifies, for example:
+- `aisthētikon` (Greek faculty-name) is preferred over "faculty of sense" in user prose
+- `Stimmung` is rendered "attunement" (Rickert) not "mood" in ontological-atmospheric register
+- `*De Anima*` (Latin) is the standard work-title, never "On The Soul"
+- `*resonant kinēsis*` / `*resonant aisthēma*` / `*resonant epithymia*` are dissertation coinages (italicized as units)
+
+**For deeper convention details:** `tmp/Dissertation/REVISION-PROTOCOL.md` is the canonical workflow rulebook; `tmp/Dissertation/TODO_NOTES.md` Section H logs failed-pattern instances to avoid.
+
+**Why these flags together:** the conclusion section has 8 subsections (~6,500 words total), substantial cross-section thematic interdependence (the typology in §4 must be referenced by the doxa-gate analysis in §5; the hexis bivalence in §6 must be referenced by the pathetic loop in §7), and high citation-density demands (Bekker for Aristotle, BT/BCAP for Heidegger, advisor-rigor for Gross). Rolling-context handles the cross-section thematic flow; multi-step handles the citation grounding via v1→investigate→v2; the verbatim_passages.md catalog handles quotation accuracy at the source.
+
+====================================================================
+TOPIC
+====================================================================
+
+Write the §1.5 concluding section of a PhD dissertation chapter on Aristotle's actualization chain of perceptual motion. This section is **both** the terminal-node A_4 (completed action / *praxis*) **and** the chapter's synthesizing closure. It must (a) close the synchronic chain A_0 → A_1 → A_2 → A_3 → A_4 by specifying what A_4 is and how the *orektikon*-mediated motion M_3 → A_4 actualizes it; (b) develop the three-types-of-action typology (simple appetition / habitual-rational / evaluatively complex) using Aristotle's own examples in *De Motu Animalium* 7; (c) articulate the content-conditional doxa-gate that distinguishes the three types; (d) integrate the *hexis* bivalence (*technē*-hexis vs *praxis*-hexis) that Heidegger develops in *Basic Concepts of Aristotelian Philosophy* §17; (e) close the diachronic loop (A_4 → *hexeis* → fresh A_0 cycle) by articulating the *pathetic* loop in both its synchronic and diachronic registers; (f) deliver a synthesizing closing on emotion as the affective architecture of being-in-the-world. Target length is ~6,500 words of body prose. Use author-prominent citation at ~99% rate throughout.
+
+====================================================================
+ARCHITECTURAL CONTEXT — WHAT §1.5 INHERITS FROM §§1.0–1.4
+====================================================================
+
+This is the closing section of Chapter 1. The chapter has already established:
+
+- **§1.0 (Introduction)**: The dissertation's overarching thesis — that the soul is constitutively rhetorical, with *phantasia* as the temporal-kinetic medium that generates a continuous, affectively charged narrative of experience across past, present, and future. Five-node actualization chain laid out: A_0 (dyadic first actuality of sensible object + *aisthētikon* within the encompassing horizon of motion and time), A_1 (completed perception with dual residual trace: *resonant aisthēma* + *resonant epithymia*), A_2 (the *phantasma* proper), A_3 (completed cognitive actuality: three orientational modes + orthogonal committal *doxa*), A_4 (completed *praxis*). Each completed actuality is simultaneously the terminus of its antecedent motion and the unmoved originator of its successor. Methodology explicitly previews the *pathetic* loop and the three types of action; the §1.5 conclusion is what that preview points to.
+
+- **§1.1 (A_0 — Motion and Time as Ontological Horizon)**: Motion (*kinēsis*) and time (*chronos*) co-eternal (*Metaphysics* XII.6, 1071b6–11), both already-actual before any chain-stage can occur. Motion as *energeia ateles* (*Physics* III.1, 201a10–14); time as number of motion in respect of before and after (*Physics* IV.11, 219b1). Heidegger's *Bewegtheit* (BCAP §§25–26) recovers *kinēsis* at the level of fundamental ontology. The synchronic / diachronic dual register is announced: synchronic = single iterated chain within one discrete event; diachronic = cumulative trajectory across being-in-the-world where each completed action reshapes the dispositional ground (*hexeis* chief among them).
+
+- **§1.2 (M_0 → A_1 — Actualization of *Aisthēsis*)**: *Aisthēsis* itself *is* a *kinēsis* (*De Anima* II.5, 416b33–417a1); the three-factor schema of *De Anima* III.10, 433b13–18 applies directly. Hylomorphic reception of form (*De Anima* II.12, 424a17–24, the wax-signet metaphor); sense as ratio / *logos* (*De Anima* III.2, 426a27–b8); one-in-substrate-different-in-being structure (*De Anima* III.2, 425b26–27). Coining of *resonant kinēsis* (the residual motion persisting after object-withdrawal), and the dual-resonance thesis: the residue is composite of *resonant aisthēma* (formal-eidetic trace) + *resonant epithymia* (affective-orectic trace), one in substrate, two in being. Basic hedonic tonality is internal to *aisthēsis*'s *kritikon*, not added downstream (warrant: *De Anima* II.3, 414b1–6; II.2, 413b24; III.7, 431a8–14). Four-senses of *pathos* (*Metaphysics* Δ.21, 1022b15–21, glossed by Heidegger BCAP pp. 131–132).
+
+- **§1.3 (A_3 — Completed Cognitive Actuality and the Three Orientational Modes)**: A_3 = the four-dimensional cognitive achievement converging on the *phantasma* stabilized at A_2. Three orientational modes — intellection (atemporal), memory (retrospective), discursive/deliberative *phantasia bouleutikē* (prospective or atemporal-contemplative) — each non-committal in itself. *Doxa* enters as the orthogonal committal dimension (involuntary, *logos*-dependent, exclusive to rational beings; warrant: *De Anima* III.3, 427b17–24, 428a19–24, 428b2–9). The three modes map onto Heidegger's three ecstases (futural / *Gewesenheit* / present, *Being and Time* §65, H.328–329) while preserving non-identity. Speculative vs practical cognition (*De Anima* III.10, 433a13–15). Settled *doxai* as a species of *hexis* (per *Categories* 8, 8b25–9a13) function as additional unmoved originators feeding M_2 → A_3 from prior chain-passes.
+
+- **§1.4 (Emotion — The Form of Desire Under Evaluative Disclosure)**: Higher-order *pathē* (anger, fear, pity, shame from *Rhetoric* II) and basic *resonant epithymia* are two articulational concretions of one ontological structure (preservative *paschein* / *sōtēria*, *De Anima* II.5, 417b2–7). The doxa-gate: bare *phantasma* leaves the soul "unaffected" of higher-order *pathē* (basic valence still operative); *doxa* propositionally ratifies the *phantasma*, producing the higher-order *pathē* *euthys* (*De Anima* III.3, 427b21–24). The *pathetic* loop, named here, has two registers: synchronic (directional A_0 → A_4 within one pass) and diachronic (residues of prior passes sediment as *hexis* / *Geworfenheit*, modulating subsequent passes — *Stimmung*-saturation at A_1; corrective-faculty impairment at A_2 → A_3 per *On Dreams* 460b3–16). *Hexis* bivalence introduced as the L195–201 set-up that §1.5 must develop: *technē*-hexis reduces deliberation toward transparent routine (BCAP p. 127); *praxis*-hexis is "holding-oneself-open" for fresh *kairos*-resolution (BCAP p. 128).
+
+§1.5 is the closing inheritance: it must do the integrative work — close A_4, deliver the typology, articulate the loop, and synthesize the chapter.
+
+====================================================================
+MANDATORY OUTPUT STRUCTURE — PRODUCE EXACTLY THIS SECTION HIERARCHY
+====================================================================
+
+The output MUST use exactly these subsection headings in this order, using LaTeX `\subsubsection*{}` markup. NO OTHER SECTION HEADINGS ARE PERMITTED in the main body. Do NOT create additional headings from corpus retrieval material, from quoted Aristotelian clauses, from the Evidence Pack below, or from any other source. The eight headings below are the ONLY permitted section structure:
+
+1. `\subsubsection*{A_4 in the Chain: The Convergence at *Praxis*}` — approx. 700 words
+2. `\subsubsection*{*Phantasia* at the Heart of Every Action}` — approx. 900 words
+3. `\subsubsection*{The Three-Factor Schema, the Three Entry Points}` — approx. 600 words
+4. `\subsubsection*{Three Types of Action}` — approx. 1,300 words (this is the typology section; the user's existing draft is the foundation)
+5. `\subsubsection*{The Content-Conditional Doxa-Gate}` — approx. 700 words
+6. `\subsubsection*{*Hexis* Bivalence: *Technē*-Hexis and *Praxis*-Hexis}` — approx. 900 words
+7. `\subsubsection*{The *Pathetic* Loop: Synchronic Pass and Diachronic Sedimentation}` — approx. 700 words
+8. `\subsubsection*{Synthesis: Emotion as the Affective Architecture of Being-in-the-World}` — approx. 700 words
+9. `\subsection*{Development Note}` — approx. 400 words (appears at the very end, AFTER the Heidegger deferral footnote)
+
+The Heidegger deferral footnote appears as a single `\footnote{}` at the end of subsection 8, BEFORE the Development Note subsection.
+
+====================================================================
+CITATION FORMAT — HARD REQUIREMENT
+====================================================================
+
+ALL Aristotle citations MUST use Bekker notation. NEVER use page numbers, Barnes pagination, or PDF page numbers.
+
+CORRECT examples:
+- "*De Motu Animalium* 7, 701a29–b1"
+- "*De Motu Animalium* 7, 701a7–16"
+- "*De Anima* III.10, 433b13–18"
+- "*De Anima* III.3, 427b21–24"
+- "*Rhetoric* II.1, 1378a21–22"
+- "*Metaphysics* IX.8, 1050b1–6"
+
+INCORRECT — NEVER USE THESE:
+- "Aristotle, *De Motu Animalium*, p. 7" ← FORBIDDEN
+- "(Aristotle, *Rhetoric*, p. 46)" ← FORBIDDEN
+- "On The Soul (De Anima), pp. 22–23" ← FORBIDDEN
+
+The corpus retrieval may return chunks with Barnes page numbers in their metadata. IGNORE those page numbers completely. Always use the Bekker notation provided in the Bekker Citation Ledger below.
+
+For Heidegger's *Being and Time*, use the standard MUST-INCLUDE format: `(BT \S<n>, H.<page>; Eng.~<page>)`. Example: `(BT \S29, H.137; Eng.~p.~176)`. For *Basic Concepts of Aristotelian Philosophy* (GA 18), use abbreviated form: `(BCAP p.~<n>)`.
+
+For Burke, Caston, Frede, Gibson, Gonzalez, Gross, Hawhee, Nussbaum, O'Gorman, Rickert, Uexküll, White, and other secondary sources, use standard author-year-page notation. For Gross specifically, use full citation form because of his advisor status: `(Gross, *Uncomfortable Situations*, p.~<n>)` or `(Gross, *Heidegger and Rhetoric* p.~<n>)`.
+
+**Inline narrative convention**: work title appears in narrative, locus in parenthetical. Example:
+- ✗ "Aristotle's *De Anima* III.7, 431a8–14 establishes…"
+- ✓ "Aristotle, in *De Anima*, establishes that perception of a pleasant or painful object is intrinsically discriminative-evaluative (*De Anima* III.7, 431a8–14)…"
+- Load-bearing exception: when the discussion is specifically about a particular book/chapter, inline locus is appropriate.
+
+====================================================================
+HEIDEGGER — PRIMARY-SOURCE PRIORITY; ARISTOTLE-FIRST CONSTRAINT
+====================================================================
+
+Heidegger's own texts (*Being and Time*; *Basic Concepts of Aristotelian Philosophy*) MAY be cited directly throughout subsections 1–8 when the claim being advanced is explicitly Heideggerian (e.g., about Being-in-the-world, *Stimmung*, *Befindlichkeit*, *hexis* as how-of-*pathos*, *technē* / *praxis* bivalence, originary temporality, ecstases). Subsection 8 in particular is the load-bearing Heideggerian-closing section and SHOULD deploy Heidegger substantively.
+
+SOURCE HIERARCHY:
+- For claims about Aristotle's doctrine: cite Aristotle first (Bekker notation).
+- For claims about Heidegger's interpretation of Aristotle: cite Heidegger first (BCAP / BT), then secondary commentary as needed.
+- For claims about scholarly reception of Heidegger: cite secondary scholarship first, with Heidegger providing the underlying textual anchor.
+
+PRIMARY HEIDEGGER RULE:
+- When you attribute a view to Heidegger, prefer direct citation of *Being and Time* or *Basic Concepts of Aristotelian Philosophy* over secondary paraphrase.
+- You MAY quote Heidegger in the main body when the quotation is load-bearing for a Heideggerian claim; keep Heidegger's role clearly distinct from Aristotle's.
+
+SECONDARY COMMENTARY RULE:
+- Secondary scholarship on Heidegger (Gross's *Uncomfortable Situations* and *Heidegger and Rhetoric*; Rickert's *Ambient Rhetoric*; Burke's *Grammar of Motives*; Hawhee, Withy, Struever, Pöggeler, Michalski, Kisiel, Gadamer) MAY be cited in the main body when it illuminates either Heidegger's reading of Aristotle or the Aristotelian argument itself.
+- When you rely on a secondary author's construal of Heidegger, mark the mediation: "as Gross reads Heidegger," "on Rickert's interpretation of Heidegger."
+
+ARISTOTLE-FIRST CONSTRAINT:
+- Do NOT use Heidegger as the sole warrant for claims about what Aristotle himself holds.
+- Do NOT collapse Aristotle's text into Heidegger's interpretation; preserve the distinction between Aristotle's position and Heidegger's reading of that position.
+
+ADVISOR-RIGOR RULE (UTMOST PRIORITY):
+- Daniel Gross is the dissertation advisor. ANY citation, quotation, or paraphrase of *Uncomfortable Situations* (2017) or *Heidegger and Rhetoric* (2005, Gross & Kemmann eds.) must be **perfectly verbatim** AND **contextually accurate**. Page numbers must be exact. Italics in quoted text must match Gross's original. Where uncertainty exists, mark the quotation `****** UNVERIFIED: <text>` so the user can verify against the PDF. Do NOT silently correct any Gross page number; do NOT silently re-italicize.
+
+HEIDEGGER QUOTATION-PRESERVATION CONVENTION:
+- Anything between LaTeX double-quote pairs in Heidegger citations **preserves his exact punctuation and italics verbatim**, including nested internal quotes (rendered via four backticks where Heidegger himself uses internal quote marks). Even where stylistically unusual in English, the punctuation and italics are preserved.
+
+DEVELOPMENT FOOTNOTE:
+- The Heidegger deferral footnote appears as a single `\footnote{}` at the end of subsection 8, BEFORE the Development Note subsection. The footnote points forward to the chapter where the full Heideggerian development is treated at length. The footnote should read approximately:
+  "The Heideggerian development of these themes — the *pathetic* loop as *Stimmung*-saturation of *Befindlichkeit*, the *praxis*-hexis as the *Augenblick*-readiness of resolute Dasein, and the chain's recursive structure as the temporal self-temporalizing of care (*Sorge*) — is the subject of the subsequent chapter on rhetoric, attunement, and ambient persuasion, in which Heidegger's account is brought into conversation with Rickert's *Ambient Rhetoric*, Burke's *Grammar of Motives*, and Gross's *Heidegger and Rhetoric* and *Uncomfortable Situations*. The present section flags only the structural homology; the genealogical-philosophical development belongs there."
+
+====================================================================
+PER-SUBSECTION REQUIREMENTS
+====================================================================
+
+**Subsection 1 — A_4 in the Chain: The Convergence at *Praxis* (~700 words).**
+Open by declaring A_4's architectural role: the terminal actuality of the synchronic chain — completed action, *praxis* — at which *orexis* has converted into bodily motion via the *orektikon* (*De Anima* III.10, 433b10–18). State that A_4 is BOTH the terminus of M_3 → A_4 AND, in the diachronic register, the originator of fresh *hexis*-formation that conditions subsequent chain-passes. Briefly recapitulate the five-node chain (A_0 the encompassing horizon of motion and time + dyadic first actuality; A_1 completed perception with dual residual trace; A_2 the *phantasma* proper; A_3 completed cognitive actuality with orthogonal *doxa*; A_4 completed *praxis*). Emphasize the iterative pattern: each completed actuality is simultaneously terminus and unmoved originator. Deploy *De Motu Animalium* 7, 702a17–19: "the organic parts are suitably prepared by the affections, these again by desire, and desire by imagination" — this single sentence concentrates the entire chain. Close with the gateway claim that the section will develop in what follows: A_4's specification requires three things — articulating *phantasia*'s pervasive role across every chain-pass; articulating the three-factor schema's application to action; and articulating the three distinct routes through the chain that yield distinct types of action.
+
+**Subsection 2 — *Phantasia* at the Heart of Every Action (~900 words).**
+Develop the user's existing-draft thesis: *phantasia* is the temporal-kinetic medium that pervades every actualization in the chain. Open with *De Anima* III.3, 429a1–2: *phantasia* is "a movement resulting from actual perception" — a residual motion that persists, recombines, and re-presents, supplying the condition for evaluative response in the absence of immediate stimuli. Deploy *Rhetoric* I.11, 1370a27–30 on remembering and hoping as attended by *phantasia* of what is remembered or hoped. Develop the temporal-depth claim: the feared evil does not yet exist, but the *phantasma* of it does, and the soul moves as though the feared thing were present (anchor: *Rhetoric* II.5, 1382a21–22). Integrate the secondary scholarship: Nussbaum on *phantasia* as material-supplier for practical reasoning (*Fragility of Goodness*; *De Motu Animalium* commentary); Hawhee on rhetorical activation of the audience's phantasmatic capacity (*Looking Into Aristotle's Eyes*, p. 145); O'Gorman's synthesis that *phantasia* "forms the objects of belief and desire" ("Aristotle's *Phantasia* in the *Rhetoric*," p. 34). State the rhetorical cascade: new *phantasma* → new *doxa* → new emotion → new orientation → new action. Close with the structural claim: every action is mediated by *phantasia* because every action is mediated by an appearance — whether the immediate *phantasma* identifying the present object as drink, the settled *phantasma* informing the universal premise of a practical syllogism, the projected *phantasma* synthesized by deliberative *phantasia bouleutikē* (*De Anima* III.11, 434a5–10), or the vivid *phantasma* induced by rhetorical *enargeia* in the audience. This is the unifying thread that the typology in Subsection 4 will refract into three distinct routes.
+
+**Subsection 3 — The Three-Factor Schema, the Three Entry Points (~600 words).**
+Deploy *De Anima* III.10, 433b13–18 as the architectural backbone: "All movement involves three factors, (1) that which originates the movement, (2) that by means of which it originates it, and (3) that which is moved." Specify each factor in the case of action: the unmoved originator is "the realizable good" (*to orekton* / *to prakton agathon*); that by means of which is the faculty of appetite (*to orektikon*), which is "moved-mover" (moves the body while being itself moved by the realizable good); that which is moved is the animal, via the bodily instrument. Integrate *De Anima* III.10, 433a9–12: "These two at all events appear to be sources of movement: appetite and thought (if one may venture to regard imagination as a kind of thinking; for many men follow their imaginations contrary to knowledge, and in all animals other than man there is no thinking or calculation but only imagination)." Then state the three entry-points per *De Motu Animalium* 7: sense, imagination, and thought can each initiate the chain — "I want to drink, says appetite; this is drink, says sense or imagination or thought: straightaway I drink" (701a32–33). Emphasize: the three entry-points are NOT three parallel chains; they are three modes by which the SAME chain is entered. Close with the typological foreshadowing: which entry-point is operative, and at what level of *doxastic* articulation, determines which of three types of action results.
+
+**Subsection 4 — Three Types of Action (~1,300 words).**
+The typological core of the section. Use the user's existing-draft examples as the foundation. Structure as:
+
+(a) **Simple appetition (Type 1)**: Deploy *De Motu Animalium* 7, 701a29–b1 as the load-bearing block-quote (use `\begin{adjustwidth}{0.5in}{0in}` ... `\end{adjustwidth}` markup): "And so what we do without reflection, we do quickly. For when a man is actually using perception or imagination or thought in relation to that for the sake of which, what he desires he does at once. For the actualizing of desire is a substitute for inquiry or thinking. I want to drink, says appetite; this is drink, says sense or imagination or thought: straightaway I drink. In this way living creatures are impelled to move and to act, and desire is the last cause of movement, and desire arises through perception or through imagination and thought. And things that desire to act make and act sometimes from appetite or impulse and sometimes from wish." The chain here runs from appetite directly to action, mediated by a *phantasma* identifying the present object as drink. No *doxa* intervenes; no higher-order *pathē* are mobilized; the desire is simple *epithymia* responding to a sensory presentation. The action is "emotionally transparent" — it passes through the system without engaging the evaluative structures that produce fear, anger, or pity. Notation: A_1 → *resonant epithymia* → action, with A_2 supplying the immediate *phantasma* but A_3's *doxa* not gated open by evaluatively complex content. Aristotle's phrase "what we do without reflection, we do quickly" frames this unreflective swiftness as NORMAL for rational-animal *epithymetic* action, not as aberration from a *doxa*-mediated default.
+
+(b) **Habitual-rational action (Type 2)**: Deploy *De Motu Animalium* 7, 701a7–16 as block-quote: "But how is it that thought is sometimes followed by action, sometimes not; sometimes by movement, sometimes not? What happens seems parallel to the case of thinking and inferring about the immovable objects. There the end is the truth seen (for, when one thinks the two propositions, one thinks and puts together the conclusion), but here the two propositions result in a conclusion which is an action — for example, whenever one thinks that every man ought to walk, and that one is a man oneself, straightaway one walks; or that, in this case, no man should walk, one is a man: straightaway one remains at rest. And one so acts in the two cases provided that there is nothing to compel or to prevent." Here the practical syllogism fires from a settled *doxa* (a doxastic species of *hexis*; *Categories* 8, 8b25–9a13). The universal premise ("every man ought to walk" — because walking is good for health) is a settled *doxa* sedimented through prior chain-passes; the particular premise ("I am a man") is perceptual self-recognition; the conclusion is the action. *Doxa* is fully operative, but its content does NOT engage the evaluative categories of the *Rhetoric* — no slight, threat, undeserved suffering, or disgrace. Therefore no higher-order *pathē* concretize. Develop with the walking-for-health example AND the contemporary pianist example (the expert performing a rehearsed sonata: each settled *doxa* fires almost automatically; *doxa* is engaged at every step but its content is procedural-musical craft-knowledge, not evaluatively complex). Note that Type 2 corresponds structurally to *technē*-hexis (developed in Subsection 6).
+
+(c) **Evaluatively complex action (Type 3)**: The full chain runs basic *pathos* → A_2 *phantasma* → A_3 *doxa* (with evaluatively complex content) → higher-order *pathē* (articulationally concretized from latent *resonant epithymia*) → species-specific orectic mobilization → A_4. Example: the person who *takes the object to be* fearful does not merely desire to flee; the person *fears*, and it is the fear — the composite of cognitive evaluation, conative orientation, hedonic tonality, and physiological preparation — that specifies the form of the ensuing desire and action. The *doxa*'s content engages the rhetorical evaluative categories (per *Rhetoric* II.1–11). Note that Type 3 corresponds structurally to *praxis*-hexis (developed in Subsection 6). Close the subsection with a synoptic statement: the pattern across the three cases — simple appetition (no *doxa* engaged on evaluative axis), habitual-rational action (*doxa* engaged but not evaluatively), evaluatively complex action (*doxa* engaged with the *Rhetoric*'s categories) — shows that *doxa* is necessary but not sufficient for the higher-order *pathē*: the gate is content-conditional, not *doxa*-presence-conditional. That formal articulation is the subject of Subsection 5.
+
+**Subsection 5 — The Content-Conditional Doxa-Gate (~700 words).**
+Formal articulation of the gating condition. State the rule: higher-order *pathē* arise when (a) *doxa* forms (involuntary *taking-as-something-true*) AND (b) the *doxa*'s content engages evaluatively complex categories — slight, threat, undeserved suffering, disgrace, or their kin (*Rhetoric* II.1–11). When (a) holds without (b), one has habitual-rational action without higher-order *pathē* (Type 2). When (a) and (b) both hold, one has evaluatively complex action with full higher-order *pathē* (Type 3). When neither (a) nor (b) holds — when the *phantasma* operates without *doxastic* ratification on any axis — one has simple appetition (Type 1). Anchor the gate's textual warrant in *De Anima* III.3, 427b21–24: when the soul merely *imagines* fearful things "we remain unaffected"; only when *doxa* propositionally ratifies the aspectual presentation does emotion arise *euthys*. Anchor the content-conditional reading in *Rhetoric* II.1, 1378a21–22 (the *Rhetoric*'s definition of *pathē* as "judgement-modifying," i.e., requiring evaluative-judgemental content) and in *Rhetoric* II.2, 1378a31–b5 (anger as definitionally arising from perceived slight). Develop that the gate's content-conditionality explains both the *cases* of action and the *therapeutic* possibilities of rhetoric: a rhetor who induces an evaluatively complex *phantasma* (via *enargeia*) can move an audience from Type 2 routine into Type 3 affective engagement, OR can de-fuse an audience's evaluative complexity by reframing the *phantasma* so that *doxa* no longer ratifies the evaluative categories. Note the structural symmetry: the gate is functionally the same whether moving *toward* or *away* from higher-order *pathē* — what matters is whether *doxa* finds evaluatively complex content to ratify.
+
+**Subsection 6 — *Hexis* Bivalence: *Technē*-Hexis and *Praxis*-Hexis (~900 words).**
+Develop the *hexis* dimension that §1.4 set up at L195–201. Open with *Categories* 8, 8b25–9a13 (Ackrill translation in *Heidegger and Rhetoric* / Barnes ROT): *hexis* is a settled disposition, more stable than *diathesis*, encompassing virtues, crafts, knowledge, and bodily states. State that settled *doxai* are ONE SPECIES of *hexis* (the doxastic-cognitive species; warrant: *De Motu Animalium* 7, 701a7–16, where the practical syllogism's universal premise is a settled *doxa*) but that *hexis* is the broader genus. Deploy Heidegger's bivalent reading from *Basic Concepts of Aristotelian Philosophy* §17. For *technē*-hexis, quote BCAP p. 127: "Through practice, by frequently-undergoing, it comes about that being-oriented puts the prescription further and further out of play. Training has the precise sense of reducing deliberation insofar as it is through training that the completedness of attaining a result comes about." Training reduces deliberation; the *technē*-grounded *doxa* runs the chain WITHOUT engaging higher-order *pathē*. For *praxis*-hexis, quote BCAP p. 128: "Cultivating *hexis* never depends on an operation, a routine. In an operation, the moment is destroyed. Every completedness, as settled routine, breaks down in the face of the moment. Appropriation and cultivation of *hexis* through habituation means nothing other than correct repetition.... The distinction lies in the fact that *praxis* depends on the *how*. The how is only appropriated in such a way that the human being enables himself *to be composed at each moment*; not routine but holding-oneself-open, *dynamis* in the *mesotēs*." *Praxis*-hexis is holding-oneself-open for fresh *kairos*-resolution; it is the *hexis* through which an agent enters Type 3 evaluatively complex action well — neither bypassing *doxa* (Type 1) nor running it on routine (Type 2). Connect *praxis*-hexis to *phronēsis* (*Nicomachean Ethics* VI.5, 1140a24–b30: "a true and reasoned state of capacity to act with regard to the things that are good or bad for man"); connect *technē*-hexis to BCAP p. 122–123 ("for there is no *technē* for the *kairos*"). Map the bivalence onto the three types: Type 1 bypasses both *technē*-hexis and *praxis*-hexis (it is appetitive-immediate); Type 2 routes through *technē*-hexis; Type 3 routes through *praxis*-hexis. Note that *praxis*-hexis uniquely exercises a two-level reach — modulating both basic-valence input at A_1 (*Stimmung*-saturation) AND the doxa-gate at A_2 → A_3 (the corrective faculty's preparation for fresh evaluative ratification) — while *technē*-hexis runs the chain forward without engaging the evaluative axis at all. Close with the diachronic claim: every completed action at A_4 sediments back into the agent's *hexeis*, but the kind of *hexis* sedimented depends on which type of action was completed (Type 2 deepens *technē*-hexis; Type 3 deepens *praxis*-hexis).
+
+**Subsection 7 — The *Pathetic* Loop: Synchronic Pass and Diachronic Sedimentation (~700 words).**
+Develop the *pathetic* loop in both registers. **Synchronic register** (single chain-pass within a discrete event): A_0 → A_1 → A_2 → A_3 → A_4, with emotion entering at the A_3 *doxa*-gate (for Type 3) and converting *orexis* into species-specific affective-orectic mobilization at M_3 → A_4. **Diachronic register** (across chain-passes): residues of prior actualizations sediment as *hexis* / *Geworfenheit*, modulating subsequent passes through two distinct mechanisms — (i) ***Stimmung*-saturation** biases basic valence at A_1 (Heidegger's *Befindlichkeit* / Pöggeler's reading; Aristotelian warrant: *On Dreams* 460b3–11, the cowardly when excited by fear thinks he sees his foes approaching, the amorous person sees the object of desire even with little resemblance to go upon — affective priming of recognition); (ii) **corrective-faculty impairment**, also from *On Dreams* 460b3–16, where existing emotional state modulates the *gating* operation at A_2 → A_3. Both are diachronic modulations of existing synchronic transitions, NOT new transitions. The loop's *judgement-modifying* function (*Rhetoric* II.1, 1378a21–22) is the synchronic expression of the diachronic mechanism: emotion modifies the very judgement that would normally check or correct it. Close with the recursive-feedback claim: A_4 completion → fresh *hexis*-formation → next chain-pass enters at a new A_0 with the sedimented dispositional ground subtly shifted. The chain is therefore not merely iterative but spiraling: the agent who has just acted is not the same agent who would next act, because the act itself has reshaped the dispositional ground. State that this is what Heidegger names *Geschichtlichkeit* (*Being and Time* §74, H.385–386): Dasein's historicity is the diachronic structure of the *pathetic* loop's recursive self-modification.
+
+**Subsection 8 — Synthesis: Emotion as the Affective Architecture of Being-in-the-World (~700 words).**
+Close the chapter. Open with the synthesizing claim: emotion is not an add-on to rationality, not a disruption of cognition, but the way the soul's self-movement discloses significance at the precise point where significance must become motion. Develop the Aristotelian formulation: what *phantasia* presents, *doxa* commits to; what *doxa* commits to, emotion mobilizes; what emotion mobilizes, action completes. Each motion in the chain is *kinēsis*, and each is *kinēsis* of an ensouled being whose being is itself to-be-moved (anchor: *De Anima* I.4, 408b5–7: "being pained or pleased, or thinking" are movements of the ensouled being). Transition to the Heideggerian register. Heidegger reads *pathos* as the primordial attunement that constitutes the clearing in which beings can appear at all (BCAP pp. 133–134: "*pathē* are 'not psychic experiences' and not 'in consciousness' but a being-taken of human beings *in their full being-in-the-world*"). State that Heidegger radicalizes the Aristotelian insight that emotion is a mode of world-disclosure rather than psychological addendum. Develop the continuity: for Aristotle, emotion is the kinetic-affective-evaluative dimension of how the world appears to us — grounded in *phantasia*, shaped through involuntary *doxa*, felt as pleasure or pain, expressed as *orexis* toward or away from what the soul takes to be significant. For Heidegger, *Stimmung* / mood is the ontological-atmospheric correlate that "comes neither from the 'outside' nor from the 'inside', but arises out of Being-in-the-world" (BT \S29, H.137; Eng.~p.~176). The dissertation's coined formulation: emotion, in its full Aristotelian sense and in its Heideggerian radicalization, is nothing less than the **affective architecture of being-in-the-world**. Close with the chapter-arc claim: the actualization chain has been developed not as a theoretical model imposed on Aristotle's psychology but as the structural articulation of how rhetorical-affective being unfolds — from the joint actuality of sensible object and *aisthētikon* at A_0, through the dual-resonance deposit at A_1, the *phantasma* at A_2, the *doxa*-gated cognitive actuality at A_3, to the completed *praxis* at A_4 — and back, through *hexis*-sedimentation, into the next pass. Attach the Heidegger deferral footnote specified above.
+
+**Development Note (~400 words, own `\subsection*{Development Note}` AFTER subsection 8).**
+Flag for forward development: (i) The deferred question of whether *technē*-hexis and *praxis*-hexis are mutually exclusive in a single agent or whether the same agent can hold both for different domains (the carpenter who is also a parent; the orator who is also a friend); this bears on the wider question of how the diachronic chain layers across an agent's life. (ii) The further question — flagged in §1.4 as a deferred item — of whether the *Stimmung*-saturation mechanism at A_1 is genuinely a direct effect of the perceptual *hexis*-state or whether it reduces to derivative biasing via A_2 *phantasma*-content; the L135 architectural follow-up is left open for V1 capstone synthesis. (iii) The relationship between the *pathetic* loop's diachronic recursion and the rhetoric-chapter's analysis of how external rhetorical situations (Aristotelian *pisteis*; Heideggerian *Mitsein*; Rickert's ambient *Stimmung*; Burke's symbolic action; Gross's affordance-theoretic articulation) modulate the loop from without. (iv) The deployment of *De Anima* I.4, 408b5–7 (thinking and feeling as *kinēseis* of the ensouled being) as the textual warrant for the direct application of the three-factor schema across cognitive and *pathic* motions — fully developed in Section 8 above but bearing also on the cognitive-actuality chapter (§1.3) and the emotion-actuality chapter (§1.4) where it warrants the direct rather than analogical application of the schema. (v) The eventual integration with the rhetoric chapter's treatment of *enargeia* (vivid presence-making in the audience) as the operation by which a rhetor moves an audience between action-types — toward Type 3 affective engagement via evaluatively complex *phantasma* induction, or toward Type 2 routine via *phantasma* de-evaluation.
+
+====================================================================
+STYLISTIC CONSTRAINTS
+====================================================================
+
+- Lanham-tuned profile: avg ~31 words/sentence with periodic short-pivot variation; ~50% long sentences balanced by periodic short assertions; formality ~0.64.
+- Author-prominent citations at ~99% rate. Introduce Aristotle (or Burke, Caston, Coope, Frede, Gibson, Gonzalez, Gross, Hawhee, Heidegger, Kisiel, Michalski, Nussbaum, O'Gorman, Pöggeler, Rickert, Struever, Uexküll, White) as agent BEFORE the quote: "Aristotle observes," "Aristotle argues," "Aristotle insists," "Aristotle writes," "Aristotle states," "Heidegger reads," "Heidegger develops," "Gross argues," "Rickert observes," "Nussbaum demonstrates."
+- Transition vocabulary: *thus*, *specifically*, *indeed*, *accordingly*, *hence*. Do NOT use: *poignantly*, *strategically qualified*, *interestingly*, *it is worth appreciating*.
+- Minimize meta-discourse: do NOT use "to reiterate," "before we can analyze," "I should clarify here," "as we have discussed."
+- Block quotes only when load-bearing (the two *De Motu Animalium* quotes in Subsection 4 are load-bearing); extract decisive clauses and unpack them discursively elsewhere. Use `\begin{adjustwidth}{0.5in}{0in}` ... `\end{adjustwidth}` markup for block-quotes per the dissertation's existing convention.
+- Em-dashes flush (no spaces): use `---` not ` --- `.
+- Greek transliterations use Unicode macrons: `ē`, `ā`, `ī` (not LaTeX `\=e`).
+- Greek-derived technical adjectives italicized: *phantastic*, *doxastic*, *kinetic*, *noetic*, *aisthētic*, *epithymetic*, *orectic*, *pathic*.
+- Aristotle work titles use Latin/Greek standardized form: *De Anima* (NOT *On the Soul*); *De Motu Animalium* (NOT *Movement of Animals*); *De Insomniis* (NOT *On Dreams*); *De Memoria* (NOT *On Memory*); *De Sensu* (NOT *Sense and Sensibilia*).
+
+====================================================================
+VOCABULARY CONSTRAINTS — DO USE
+====================================================================
+
+(These coinages were established in §§1.0–1.4 and must be deployed consistently here.)
+
+- ***resonant kinēsis*** — the residual motion in the sensory apparatus that persists after the sensible object withdraws (italicized as a unit: `\textit{resonant kinēsis}`)
+- ***resonant aisthēma*** — the formal-eidetic aspect of the residual motion (italicized as a unit)
+- ***resonant epithymia*** — the affective-orectic aspect of the residual motion; the basic-orectic-charge residue deposited at A_1 (italicized as a unit)
+- ***pathetic* loop** — the judgement-modifying recursive structure of pathos (NOT "pathos feedback loop"; that wording was retired 2026-05-24)
+- **articulational concretion** — the axis along which generic *pathos* (basic hedonic tonality) becomes determinate higher-order *pathē*; the higher-order *pathē* are MORE-articulated forms of the same ontological structure, not categorically distinct kinds
+- **dual-resonance thesis** — the thesis that A_1 deposits both formal-eidetic and affective-orectic residues simultaneously (NOT "dual-trace" — that wording was retired 2026-05-23)
+- **content-conditional doxa-gate** — the rule that *doxa* alone is necessary but not sufficient for higher-order *pathē*; the *doxa*'s content must engage evaluatively complex categories
+- **synchronic / diachronic register** — synchronic = single chain-pass within one event; diachronic = cumulative trajectory reshaping dispositional ground
+- ***technē*-hexis** / ***praxis*-hexis** — Heidegger's BCAP §17 bivalent reading of *hexis*: training-reducing-deliberation vs holding-oneself-open
+- **affective architecture of being-in-the-world** — the section's closing synthesis term for emotion's ontological function
+
+DO USE (primary Aristotelian terminology):
+- *aisthēsis*, *aisthēma*, *aisthēmata*, *aisthētikon*, *aisthētērion*, *aisthēton*
+- *phantasia*, *phantasma*, *phantasmata*, *phantastikon*, *phantasia bouleutikē*
+- *kinēsis*, *energeia*, *energeia ateles*, *dynamis*, *entelecheia*
+- *pathos*, *pathē* (singular and plural; *pathē* defaults to higher-order)
+- *alloiōsis*, *paschein*, *sōtēria*
+- *hylē*, *eidos* (matter / form)
+- *logos*, *logoi*
+- *orexis*, *orektikon*, *epithymia*, *thymos*, *boulēsis*
+- *doxa*, *kritikon*, *krisis*, *diakrisis*
+- *hexis*, *hexeis*, *diathesis*
+- *praxis*, *poiēsis*, *technē*, *phronēsis*
+- *nous*, *noēsis*
+- *psychē*, *archē*, *telos*, *ousia*
+- *to kinoun*, *to kinoumenon*, *to orekton*, *to prakton agathon*
+
+DO USE (Heideggerian German):
+- *Bewegtheit* (NOT *Bewegung*) — being-moved
+- *Befindlichkeit* — disposedness (Kisiel rendering; NOT "state-of-mind")
+- *Stimmung* — attunement (Rickert rendering; NOT "mood" when serving ontological-atmospheric register)
+- *Sorge* — care
+- *Geworfenheit* — thrownness
+- *Geschichtlichkeit* — historicity
+- *Zeitlichkeit* — temporality
+- *Ekstasen*, *Gewesenheit*, *Gegenwart*, *Zukunft*
+- *Mitsein* — Being-with
+- *Augenblick* — moment (only in Heidegger deferral footnote)
+- *Da-sein* / Dasein — untranslated
+
+====================================================================
+VOCABULARY CONSTRAINTS — DO NOT USE
+====================================================================
+
+Retired terminology:
+- "dual-trace" / "dual trace" / "dual residual trace" — use **dual-resonance**
+- "resonant motion" / "resonant mood" / "resonant tonality" / "resonant trace" — use **resonant *kinēsis*** / **resonant *orexis*** / **resonant *aisthēma*** / **resonant *epithymia***
+- "pathos feedback loop" — use ***pathetic* loop**
+- "supervenient" / "supervenes on" — replace with substantive language ("operates orthogonally to," "is layered upon," "ratifies")
+- "faculty of X" English formulations — use Greek faculty-names (*aisthētikon*, *orektikon*, *kritikon*, *kinētikon*, *phantastikon*)
+
+Advisor-prose forbidden patterns:
+- "The dissertation's claim ... rests on this structural reading"
+- "X underwrites the [distinction] this chapter deploys"
+- "X is necessary for Y to be the case" (as a meta-narrative claim)
+- "The chapter's interpretive reading ..."
+- "The present chapter's interpretive move"
+- `\textit{Framing}:` or "Framing:" footnote prefixes
+- "interpretive" qualifier on the author's own readings (just make the reading; don't announce it as interpretive)
+- "supplies the [canonical/textual/philological] [anchor/ground/basis] for the X [reading/argument] [deployed here/articulated above]"
+- Any meta-narrative phrasing that turns a sentence or footnote into a defense of "the chapter" / "the dissertation" / "the project"
+
+Back-reference patterns:
+- "§1.X has already developed/established..."
+- "as established in §1.0..."
+- "as we have seen at..."
+- "this chapter" / "the chapter" — use "section" / "subsection" or, where appropriate, "Chapter 1" only when the chapter as a whole is the antecedent
+- Inline "at *Work* [locus]" formulations — always work-in-narrative, locus-in-parens
+- Where a prior section's claim must be invoked, just restate the claim with parenthetical citation (no announcement of where it was first developed)
+
+Translation conventions:
+- "potency" / "act" — use "potentiality" / "actuality" (with Greek *dynamis* / *energeia* in parens at first technical use)
+- Aristotle's "now" in the technical sense (*to nun*) — wrap in single marks: `` `now' ``
+
+LaTeX hygiene:
+- No `\inlinenote{}` markers, working notes, TODO markers, or margin notes in the output
+- No `\hl{}` highlighting in the output
+- No spaced em-dashes ` --- `; use flush `---`
+- No bare `\cite{}` calls; use `\autocite[locus]{key}` for biblatex authoryear (or, where bibkey is uncertain, fall back to standard parenthetical author-year-page form)
+
+====================================================================
+BEKKER CITATION LEDGER (use these exact Bekker references)
+====================================================================
+
+**Source-hierarchy reminder:** For each locus below, FIRST consult `tmp/Dissertation/verbatim_passages.md` for the PDF-verbatim quotation text. If not present, consult `corpus/index/Aristotle - Complete Works/phase05-offset-validation.md` for the Bekker→PDF page formula, then `corpus/rhetorical_ontology/Aristotle - <work>_(2014)_[*Copy].pdf`. NEVER generate quotation text from training-data recall when the locus is load-bearing.
+
+DE ANIMA:
+- I.1, 403a25–b19 — *pathē* of soul as enmattered accounts (hylomorphic definitions)
+- I.4, 408b5–7 — "being pained or pleased, or thinking" as movements of ensouled being
+- II.2, 413b24 — "Where there is sensation, there is also pleasure and pain"
+- II.3, 414b1–6 — sensation entails pleasure/pain entails appetite (analytic entailment)
+- II.5, 416b33–417a1 — sensation as movement and affection from without ("change of quality" — not "change in quality")
+- II.5, 417a21–b7 — preservative *alloiōsis* / *sōtēria*
+- II.12, 424a17–24 — wax-signet metaphor, reception of form without matter
+- III.2, 425b23–26 — sensings and imaginings continue to exist in the sense-organs
+- III.2, 425b26–27 — activity of sensible and of sense is one (one in substrate, two in being)
+- III.2, 426a27–b8 — sense as ratio (*logos*)
+- III.3, 427b14–428a18 — *phantasia* and *doxa* distinguished; sun-passage; bare *phantasia* leaves soul unaffected, *doxa* produces *euthys paschomen*
+- III.3, 427b17–24 — *phantasia* voluntary, *doxa* not
+- III.3, 427b21–24 — soul unaffected by *phantasia* alone; *euthys paschomen* with *doxa*
+- III.3, 428a19–24 — *doxa* requires *logos*, *pistis*, *pepoíthēsis*
+- III.3, 428b2–9 — sun-passage proving *phantasia* / *doxa* distinctness
+- III.3, 428b10–17 — *phantasia* as movement produced by actual sensation
+- III.3, 429a1–2 — *phantasia* as "a movement resulting from actual perception"
+- III.3, 429a4–8 — *phantasia* from *phaos* (light); imaginations remain in organs
+- III.7, 431a8–14 — perception is like bare asserting; pursues/avoids when object is pleasant/painful; perception and appetite one in substrate, different in being
+- III.7, 431a14–17 — soul never thinks without an image
+- III.9, 432a15–17 — soul of animals characterized by faculty of discrimination + faculty of locomotion
+- III.9, 432b27–433a3 — speculative thought never says anything about object to be avoided or pursued
+- III.10, 433a9–12 — appetite and thought as sources of movement; imagination as a kind of thinking
+- III.10, 433a13–15 — speculative thought moves nothing; practical thought concerns the realizable good
+- III.10, 433b10–18 — three-factor schema (unmoved originator: realizable good; moved-mover: faculty of appetite; that which is moved: animal)
+- III.11, 434a5–10 — deliberative *phantasia bouleutikē* composes multiple *phantasmata*
+
+PHYSICS:
+- II.1, 192b20–23 — nature as principle of motion
+- III.1, 201a10–14 — motion as *energeia ateles*
+- III.2, 202a13–20 — single actuality of mover and movable
+- IV.11, 219b1 — time as number of motion in respect of before and after
+- V.1, 224b7–9 — motion takes its name from terminus
+
+METAPHYSICS:
+- V.1 (Δ.1), 1013a7–10, 1013a17–19 — *archē* (six senses, sense 4 load-bearing)
+- IX.6, 1048b22–30 — *energeia* / *kinēsis* same-time vs incomplete activities
+- IX.8, 1050b1–6 — priority of actuality (one actuality always precedes another in time)
+- XII.6, 1071b6–11 — motion and time co-eternal
+- Δ.20, 1022b4 — *hexis* as activity of haver and had; *hexis* as disposition for being well or ill disposed
+- Δ.21, 1022b15–21 — fourfold of *pathos* (quality in respect of which a thing can be altered)
+
+DE MOTU ANIMALIUM:
+- 7, 701a7–16 — the practical syllogism: "every man ought to walk" / "I am a man" / straightaway one walks
+- 7, 701a29–b1 — "I want to drink, says appetite; this is drink, says sense or imagination or thought: straightaway I drink"; "the actualizing of desire is a substitute for inquiry or thinking"
+- 7, 701b16–32 — somatic effects (heating, cooling, trembling)
+- 7, 702a17–19 — "the organic parts are suitably prepared by the affections, these again by desire, and desire by imagination"
+
+DE INSOMNIIS:
+- 2, 459a24–28 — affection persists in organs after object departs
+- 2, 460b1–10 — the cowardly excited by fear sees foes approaching; the amorous by amorous desire sees the object; affective priming of recognition
+
+RHETORIC:
+- I.11, 1370a27–b1 — pleasure as weak perception attending memory and expectation; "the man who remembers and the man who hopes... will be attended by an imagination of what he remembers or hopes"
+- II.1, 1378a21–22 — *pathē* as "judgement-modifying"; the *Rhetoric*'s canonical definition
+- II.2, 1378a31–b5 — anger as definitionally arising from perceived slight
+- II.5, 1382a21–22 — fear as "a pain or disturbance due to imagining some destructive or painful evil in the future"
+
+DE ANIMA / NICOMACHEAN ETHICS / CATEGORIES (for *hexis*):
+- *Categories* 8, 8b25–9a13 — *hexis* vs *diathesis*; *hexis* as more stable, longer-lasting; knowledge and virtue as paradigmatic *hexeis*
+- *Nicomachean Ethics* II.1, 1103a14–b25 — moral excellence comes about as a result of habit; *ethos* / *hexis* etymological connection
+- *Nicomachean Ethics* II.4, 1105a17–b13 — agent's condition (knowing / choosing / firm-and-unchangeable character) as condition of *excellence*-possession
+- *Nicomachean Ethics* VI.5, 1140a24–b30 — *phronēsis* as "true and reasoned state of capacity to act with regard to the things that are good or bad for man"
+- *Nicomachean Ethics* III.7, 1115b7–13 — courage and the regulation of fear under noble action
+- *Nicomachean Ethics* VII.3, 1147a14–24, 1147a25–b3 — akrasia and the practical syllogism with opposed appetite
+
+HEIDEGGER — BCAP (GA 18):
+- §15e (pp. 104–107) — *doxa* as basis of theoretical negotiating
+- §17 (pp. 119, 122–125, 127–128) — *hexis* as how-of-*pathos*; γένεσις of ἀρετή; no *technē* for the *kairos*; training reduces deliberation; *praxis*-hexis as holding-oneself-open
+- pp. 131–132 — Heidegger's gloss of the four-senses fourfold (used at §1.2 / §1.4)
+- pp. 133–134 — *pathē* not psychic experiences; being-taken of being-there in full being-in-the-world
+- p. 110 — deliberative-oratorical *Mitsein* structure
+
+HEIDEGGER — BT:
+- §29, H.135–137 (Eng.~pp.~172–176) — *Befindlichkeit* / *Stimmung* / *Geworfenheit*; "A mood assails us. It comes neither from 'outside' nor from 'inside', but arises out of Being-in-the-world"
+- §32, H.150 (Eng.~p.~191) — fore-having / fore-sight / fore-conception
+- §65, H.328–329 (Eng.~pp.~377–378) — originary temporality; three ecstases; future as primary; equiprimordiality
+- §74, H.385–386 (Eng.~p.~437) — *Geschichtlichkeit*; ecstatico-horizonal unity of raptures
+
+SECONDARY:
+- Caston, 1996 — *aisthēma* as direct effect of sensory stimulation; *doxa* as ratification of *phantasma*
+- Coope, *Time for Aristotle*, pp. 160, 162 — time as mind-dependent in a way change is not
+- Frede, "The Cognitive Role of *Phantasia* in Aristotle," pp. 282–285 — residual motion has a life of its own
+- Gibson, *Ecological Approach to Visual Perception*, pp. 45–46, 119–120 — ambient optic array; affordance complementarity
+- Gonzalez, 2006, pp. 126–127 — orator-*phantasia*-lexis-*skhēmata*-pathos chain
+- Gross, *Heidegger and Rhetoric*, pp. 4, 26 (verbatim verified per §1.4 audit) — anti-internalist social-ontology
+- Gross, *Uncomfortable Situations*, pp. 3, 20 (verbatim verified per §1.4 audit) — rhetoric as humanistic affordance theory
+- Hawhee, *Looking Into Aristotle's Eyes*, p. 145; "Rhetorical Vision," p. 152 — phantasmatic capacity in rhetorical persuasion; phantasia as graft onto direct perception
+- Heidegger, FCM (GA 29/30), p. 67 — *Stimmung* as atmosphere
+- Nussbaum, *Fragility of Goodness* (and *MA* commentary) — *phantasia* as supplier of material for practical reasoning; *phantasia* as interpretation grafted onto direct perception (1985, p. 265)
+- O'Gorman, "Aristotle's *Phantasia* in the *Rhetoric*," pp. 25, 31, 34 — *phantasia* forms objects of belief and desire; corporate phantasmata; epideictic-as-affective-ground
+- Rickert, *Ambient Rhetoric*, pp. 131, 146, 243–244, 285 — *Stimmung* as attunement; disclosure / withdrawal; rhetorical being-in-the-world
+- Struever, in *Heidegger and Rhetoric* (Gross & Kemmann eds.), pp. 109–110, 117, 287 — *Da*-character; *Veränderlichkeit*; GA 18 reading
+- Uexküll, *A Foray into the Worlds of Animals and Humans*, pp. 97, 99 — hermit-crab / *Wirkton*
+- White, "The Meaning of *Phantasia* in Aristotle's *De Anima*, III, 3–8," p. 498 — residual motion as lingering, resonating, echoing presence
+- Withy, 2023, p. 3 — Heideggerian anti-internalism (used at §1.4 L52)
+
+====================================================================
+FORBIDDEN DEPLOYMENTS
+====================================================================
+
+**v1 RUN FAILURE PATTERNS — DO NOT REPEAT** (these are concrete patterns from the failed 2026-05-24 first run; all are spec violations):
+- **Three-types typology**: USE "Simple appetition / Habitual-rational / Evaluatively complex". DO NOT use "Pathē-driven / Hexis-formed / Logos-guided" (the v1 run substituted a structurally inconsistent schema).
+- **Subsection headings**: ALL 8 `\subsubsection*{}` headings + `\subsection*{Development Note}` MUST be present. Before finalizing output, count your headings — there MUST be exactly 8 `\subsubsection*` + 1 `\subsection*`. If fewer, add the missing ones. (v1 missed the Content-Conditional Doxa-Gate heading and the Development Note subsection.)
+- **Block-quotes**: The four spec-required block-quotes (DMA 7 701a29-b1 + DMA 7 701a7-16 + BCAP p.127 + BCAP p.128) MUST appear in `\begin{adjustwidth}{0.5in}{0in}...\end{adjustwidth}` markup. Use the verbatim text from `verbatim_passages.md` for each. (v1 had zero of the four.)
+- **Voice failures**: NEVER use "the user", "the reader", or any direct address to an audience. This is academic monograph prose, not user-facing documentation. (v1 had 3 "The user is..." instances.)
+- **Citation format**: NEVER write `(Aristotle 2014, *On The Soul (De Anima)*, p. [PAGE NEEDED])`. Aristotle = Bekker notation only. The work title is `*De Anima*`, never "On The Soul". (v1 had 5 instances of the broken pattern.)
+- **Markdown vs LaTeX**: All italics MUST be `\textit{X}` LaTeX, NEVER `*X*` Markdown. All bold MUST be `\textbf{X}`. (v1 had 100+ Markdown italics requiring post-cleanup.)
+- **Phantom quotations**: NEVER fabricate quotation text. Every quotation MUST come verbatim from `verbatim_passages.md`, a corpus chunk, or the corpus PDF via the source-hierarchy above. (v1 had 32 phantom quotations.)
+- **Numbered endnote refs**: Use `\footnote{...}` for ALL footnotes; never use bracketed `[N]` markers. (v1 had 28 bracketed refs requiring manual reconstruction.)
+
+- Do NOT use Heidegger as the sole or primary warrant for a claim about Aristotle's own doctrine; Aristotle must be cited first for Aristotle.
+- When you deploy Heidegger in the main body, explicitly mark his contribution as an interpretation of or perspective on Aristotle ("Heidegger reads Aristotle as ..."), unless the claim is explicitly Heideggerian (e.g., about *Befindlichkeit*, *Stimmung*, *Sorge*, Dasein's *Geschichtlichkeit*).
+- Gross's *Uncomfortable Situations* and *Heidegger and Rhetoric* are advisor-priority sources: verbatim accuracy and page-number precision are non-negotiable. Any uncertain quotation must be flagged `****** UNVERIFIED:` per the relaxed-placeholder protocol.
+- Do NOT use Barnes page numbers for Aristotle — Bekker notation only.
+- Do NOT develop higher-order *pathē* anew in this section (anger, fear, pity, shame); they were developed in §1.4. Only refer back to that development as needed for the typology and the doxa-gate articulation.
+- Do NOT develop the *phantasma* anew at length (it was developed in §1.2 and §1.3); refer back as needed.
+- Do NOT redevelop the cognitive-actuality A_3 analysis (developed in §1.3); refer back via the role of *doxa* and the three orientational modes.
+- Do NOT redevelop the perceptual hylomorphic-reception analysis (developed in §1.2); refer back via the dual-resonance thesis and *resonant epithymia* as the substrate for downstream affective concretion.
+- Do NOT include working notes, margin notes, `\inlinenote{}` markers, TODO markers, or `\hl{}` highlights in the output.
+- Do NOT use register-inflated adverbs: "poignantly," "strategically qualified," "interestingly," "it is worth appreciating."
+- Do NOT use meta-discourse: "to reiterate," "as we have discussed," "I should clarify here," "before we can analyze."
+- Do NOT generate auto-injected sections titled "Claim Map," "Quotation Ledger," "Citation Ledger," "Validation Summary" as part of the main body. If the pipeline attaches these as post-generation artifacts, that is acceptable; but do not include them as part of the 6,500-word body count.
+- Do NOT create section headings from quoted Aristotelian clauses or from the supplementary evidence pack below.
+- Do NOT present the three-factor schema methodology as its own separate subsection; it is integrated into Subsection 3.
+- Do NOT preemptively tackle the deferred V1 capstone items (quotation verbatim verification against PDFs; biblatex migration). Those belong to the final V1 capstone pass.
+- Do NOT use "supplies the canonical / textual / philological anchor for" phrasing; just state what the source says and how it bears on the claim.
+- Do NOT use the phrase "underwrites" in any meta-narrative function ("X underwrites the distinction Y"); replace with substantive language ("X grounds Y," "X is the textual warrant for Y," "X is consistent with Y").
+- Do NOT use the phrase "the dissertation's claim ... rests on ...". State the claim and the textual warrant directly.
+
+====================================================================
+SUPPLEMENTARY EVIDENCE PACK (background material, NOT a structural spine)
+====================================================================
+
+TREAT THIS AS INLINE SUPPORTING EVIDENCE FOR SPECIFIC PARAGRAPHS, NOT AS SECTION HEADINGS. Do NOT create subsection titles from any of the quoted material below.
+
+**IMPORTANT**: The quotations in this pack are reproduced from `tmp/Dissertation/verbatim_passages.md` for convenience. When deploying any of these quotes in the body, the canonical authoritative source is `verbatim_passages.md` itself — re-check there for the latest user-verified text, italics, and punctuation. If a quote below is updated in `verbatim_passages.md` (e.g., corrected italics, typo fix), the file version wins. For quotes NOT shown below (e.g., Gross, Rhetoric I.11 expanded variants), consult `verbatim_passages.md` first, then `corpus/index/`, then the source PDF in `corpus/rhetorical_ontology/`.
+
+**Source A — Aristotle direct deployments (use verbatim where load-bearing):**
+
+*De Motu Animalium 7, 701a29–b1* (Subsection 4(a) load-bearing block-quote):
+> "And so what we do without reflection, we do quickly. For when a man is actually using perception or imagination or thought in relation to that for the sake of which, what he desires he does at once. For the actualizing of desire is a substitute for inquiry or thinking. I want to drink, says appetite; this is drink, says sense or imagination or thought: straightaway I drink. In this way living creatures are impelled to move and to act, and desire is the last cause of movement, and desire arises through perception or through imagination and thought. And things that desire to act make and act sometimes from appetite or impulse and sometimes from wish."
+
+*De Motu Animalium 7, 701a7–16* (Subsection 4(b) load-bearing block-quote):
+> "But how is it that thought is sometimes followed by action, sometimes not; sometimes by movement, sometimes not? What happens seems parallel to the case of thinking and inferring about the immovable objects. There the end is the truth seen (for, when one thinks the two propositions, one thinks and puts together the conclusion), but here the two propositions result in a conclusion which is an action---for example, whenever one thinks that every man ought to walk, and that one is a man oneself, straightaway one walks; or that, in this case, no man should walk, one is a man: straightaway one remains at rest. And one so acts in the two cases provided that there is nothing to compel or to prevent."
+
+*De Anima III.10, 433b10–18* (Subsection 3 backbone):
+> "It follows that while that which originates movement must be specifically one, viz. the faculty of appetite as such (or rather farthest back of all the object of that faculty; for it is it that itself remaining unmoved originates the movement by being apprehended in thought or imagination), the things that originate movement are numerically many. All movement involves three factors, (1) that which originates the movement, (2) that by means of which it originates it, and (3) that which is moved. The expression 'that which originates the movement' is ambiguous: it may mean either something which itself is unmoved or that which at once moves and is moved. Here that which moves without itself being moved is the realizable good, that which at once moves and is moved is the faculty of appetite (for that which is moved is moved insofar as it desires, and appetite in the sense of actual appetite *is* a kind of movement)."
+
+*De Anima III.3, 429a1–2* (Subsection 2 anchor):
+> *Phantasia* is "a movement resulting from actual perception."
+
+*Rhetoric I.11, 1370a28–30* (Subsection 2 anchor):
+> "Both the man who remembers and the man who hopes will be attended by an imagination of what he remembers or hopes."
+
+*De Insomniis 2, 460b1–10* (Subsection 7 diachronic anchor):
+> "even when the external object of perception has departed, the impressions it has made persist, and are themselves objects of perception; and let us assume, besides, that we are easily deceived respecting the operations of sense-perception when we are excited by emotions, and different persons according to their different emotions; for example, the coward when excited by fear, the amorous person by amorous desire; so that, with but little resemblance to go upon, the former thinks he sees his foes approaching, the latter, that he sees the object of his desire; and the more deeply one is under the influence of the emotion, the less similarity is required to give rise to these impressions."
+
+**Source B — Heidegger BCAP §17 (load-bearing in Subsection 6):**
+
+*BCAP p. 127* (training reduces deliberation):
+> "Through practice, by frequently-undergoing, it comes about that being-oriented puts the prescription further and further out of play. Training has the precise sense of reducing deliberation insofar as it is through training that the completedness of attaining a result comes about."
+
+*BCAP p. 128* (*praxis*-hexis as holding-oneself-open):
+> "Cultivating *hexis* never depends on an operation, a routine. In an operation, the moment is destroyed. Every completedness, as settled routine, breaks down in the face of the moment. Appropriation and cultivation of *hexis* through habituation means nothing other than correct repetition.... The distinction lies in the fact that *praxis* depends on the *how*. The how is only appropriated in such a way that the human being enables himself *to be composed at each moment*; not routine but holding-oneself-open, *dynamis* in the *mesotēs*."
+
+*BCAP p. 125* (*hexis* as how-of-*pathos*):
+> "*Hexis* is nothing other than a how of *pathos*, being-out-of-composure, in relation to being-composed-as-to . . . Insofar as we can define *hexis* according to its basic structure, we will also clarify the possible-structure of *pathē*."
+
+*BCAP pp. 122–123* (no *technē* for the *kairos*):
+> "For this determination should not be conceived as though there were a *technē* for this taking-opportunities and venturing-out into the *deina* of life."
+
+*BCAP pp. 133–134* (anti-internalism, Subsection 8 closing):
+> *pathē* are "not psychic experiences and not in consciousness" but "a being-taken of human beings *in their full being-in-the-world*."
+
+**Source C — Heidegger BT (load-bearing in Subsections 7 and 8):**
+
+*BT §29, H.137 (Eng.~p.~176)* — *Stimmung* as ontological-atmospheric:
+> "A mood assails us. It comes neither from `outside' nor from `inside', but arises out of Being-in-the-world, as a way of such Being."
+
+*BT §74, H.385–386 (Eng.~p.~437)* — *Geschichtlichkeit* as ecstatic-horizonal:
+> "As historical, Dasein is possible only by reason of its temporality, and temporality temporalizes itself in the ecstatico-horizonal unity of its raptures."
+
+*FCM (GA 29/30), p. 67* — *Stimmung* as atmosphere:
+> "[*Stimmung* is] like an atmosphere in which we first immerse ourselves in each case and which then attunes us through and through."
+
+**Source D — Secondary touchstones (Subsection 2 integration):**
+
+- O'Gorman ("Aristotle's *Phantasia* in the *Rhetoric*," p. 34): *phantasia* "forms the objects of belief and desire, even gives birth to belief and desire and provides the images that are the objects of deliberative desire, ethical choice, and political judgment."
+- Hawhee (*Looking Into Aristotle's Eyes*, p. 145): rhetor's task is to "supply images concrete, narrative, and affectively charged enough to allow the audience to see what the rhetor wants them to see."
+- Nussbaum (*Fragility of Goodness*; *MA* commentary): *phantasia* as material-supplier for practical reasoning; the *phantasia* operated upon by deliberative reasoning synthesizes alternatives into unrealized possibilities and measures them against a single standard.
+- White ("The Meaning of *Phantasia*," p. 498): residual motion as "lingering, resonating, echoing presence of sensible forms freed from their original matter."
+- Frede ("The Cognitive Role of *Phantasia*," pp. 282–285): residual motion has "a life of its own"; *phantasma* produced while sense-perception still in operation.
+
+**Source E — Gross (advisor verbatim quotes; audit-verified against PDFs in §1.4 walkthrough 2026-05-24):**
+
+These four Gross quotations have been verified verbatim against the source PDFs. Deploy at least three of them across the section (especially in Subsections 7-8 where the diachronic loop + affective-architecture synthesis closes). DO NOT paraphrase — use as-is.
+
+*Gross, "Introduction: Being-Moved: The Pathos of Heidegger's Rhetorical Ontology," in* Heidegger and Rhetoric *(ed. Gross & Kemmann, SUNY, 2005), p. 4* (anti-internalist anchor — load-bearing for any claim that *pathos* grounds *logos*):
+> "Heidegger characterizes *pathos* (variously 'passion,' 'affect,' 'mood,' or 'emotion') as the very condition for the possibility of rational discourse, or *logos*. No cynical and crowd-pleasing addition to *logos*, *pathos* is the very substance in which propositional thought finds its objects and its motivation. Without affect our disembodied minds would have no heart, and no legs to stand on."
+
+*Gross, "Introduction," in* Heidegger and Rhetoric *(2005), p. 26* (translating GA 18, 206–207; enmattered-*eidos* thesis):
+> "the *eidos* of fear draws primarily upon a body's condition. The difference lies in the fact that the particular condition of the body (being, say, brown or scratched) plays no role in mathematical inseparability, while for the *pathe* Being in such and such a condition is essential. Both are *logoi enyloi*, but in quite different senses of the term... The *eidos* of the *pathe* is a disposition toward other humans, a Being-in-the-world."
+
+*Gross,* Uncomfortable Situations *(Chicago, 2017), p. 3* (Aristotle as social-phenomenon humanism):
+> "Aristotle's *Rhetoric* offers alternatives for understanding emotions as social phenomena, which is something that leading humanists like Martha Nussbaum and Richard Sorabji should have remembered as they rushed toward the latest brain science."
+
+*Gross,* Uncomfortable Situations *(Chicago, 2017), p. 20* (rhetoric-as-affordance-theory; load-bearing for Subsection 8 close):
+> "Rhetoric, as a humanistic form of affordance theory, posits a situation that is not neutral but is rather 'persuasive,' threatening and promising with respect to our human being-in-the-world."
+
+**Bonus Heidegger epigraph from Gross's editor-Introduction (SUNY 2005, p. 1):**
+> "the self-elaboration of Dasein is expressly executed" (Heidegger, SS 1924, GA 18.110, epigraph in Gross ed., *Heidegger and Rhetoric*, p. 1)
+
+**Deployment guidance for Gross quotes (ADVISOR-RIGOR — UTMOST PRIORITY):**
+- The 2005 p. 4 quote belongs in Subsection 8 or 7 — wherever the anti-internalist thesis (emotion as condition of possibility for *logos*) is most cleanly stated.
+- The 2017 p. 3 + p. 20 quotes belong in Subsection 8 — the section's synthesizing close on emotion-as-affective-architecture. Gross's "humanistic affordance theory" formulation maps directly onto the dissertation's coined "affective architecture of being-in-the-world."
+- The 2005 p. 26 quote may be deployed in Subsection 6 (hexis bivalence) or Subsection 7 (the diachronic mechanism), where the enmattered-*eidos* structure bears on the bodily-dispositional dimension.
+- All four MUST be cited verbatim with exact page numbers. NO paraphrase.
+
+====================================================================
+EXISTING-DRAFT FOUNDATION
+====================================================================
+
+The user has supplied a partial draft of this concluding section as the foundation for the rewrite. Treat the user's existing draft as PRECEDENT for substantive content (especially in Subsection 2 on *phantasia* centrality and Subsection 4 on the three types of action with the drinking / walking-for-health / pianist examples), but rewrite, expand, and polish under the architectural plan above. Specifically:
+
+- The drinking-case block-quote (701a29–b1) and the walking-syllogism block-quote (701a7–16) are load-bearing and must be preserved verbatim in Subsection 4.
+- The pianist example is the user's contemporary illustration of *technē*-hexis and should be preserved in Subsection 4(b) or moved to Subsection 6.
+- The closing claim — "Emotion … is nothing less than the *affective architecture of being-in-the-world*" — is the section's signature synthesis term and must close Subsection 8.
+- The three-observation analysis of the drinking case in the user's draft (the actualizing of desire as substitute for inquiry; the disjunction "sense or imagination or thought" including perception alone for rational humans; "what we do without reflection, we do quickly" as NORMAL not aberrant) must be preserved and developed in Subsection 4(a).
+- The "ON HABITUAL-rational ACTION (need to incorporate discussion of *hexis*)" note in the user's draft marks the location where Subsection 6 (the full *hexis* development) attaches; absorb this hand-off into the rewrite.
+- The closing pattern statement — "*doxa* with non-evaluative-complex content (Case 2) does not produce *pathē*; *doxa* with evaluatively-complex content (Case 3) does" — is the formal articulation that Subsection 5 develops at length.
+
+The rewrite should produce polished publication-quality prose under the dissertation's stylistic profile, integrating Heidegger and the dual-resonance / *pathetic*-loop / *hexis*-bivalence threads that the §§1.0–1.4 sections established.
+
+====================================================================
+POST-GENERATION CHECKLIST (for the writing agent's self-audit before output)
+====================================================================
+
+Before producing the final draft, mechanically check (these are CHECKLIST ITEMS, not body subsections — see MANDATORY OUTPUT STRUCTURE above for the 9 actual headings):
+
+- **Convention compliance**: grep the draft mentally for each forbidden phrase listed above (especially "underwrites," "supervenient," "faculty of," "rests on," "this chapter," "dual-trace," "at *Work* [locus]" inline, German-first slips for Heideggerian terms, "supplies the canonical anchor for"). If any appear, rewrite before output.
+
+- **Bekker compliance**: every Aristotle citation uses Bekker notation; no Barnes page numbers; no PDF page numbers.
+
+- **BT full-citation compliance**: every BT citation uses format `(BT \S<n>, H.<page>; Eng.~p.~<page>)`.
+
+- **Gross advisor-rigor**: every Gross citation has exact page number; every quoted phrase is verbatim or flagged `****** UNVERIFIED:`.
+
+- **Coinage compliance**: *resonant kinēsis*, *resonant aisthēma*, *resonant epithymia* italicized as units; *pathetic* loop (not "pathos feedback loop"); dual-resonance (not "dual-trace"); articulational concretion; content-conditional doxa-gate.
+
+- **Section structure**: exactly the 9 headings specified (8 `\subsubsection*{}` + 1 `\subsection*{Development Note}`); Heidegger deferral footnote between Subsection 8 and Development Note.
+
+- **Work-titles**: *De Anima*, *De Motu Animalium*, *De Insomniis*, *De Memoria*, *De Sensu* — never the English equivalents in user prose (translator's English preserved in direct quotations only).
+
+- **Em-dash hygiene**: flush `---`, no spaces.
+
+- **Greek accents**: Unicode macrons `ē`, `ā`, `ī`; not LaTeX `\=e`.
+
+- **Block-quotes**: only the two *De Motu Animalium* quotes in Subsection 4 are load-bearing block-quotes; all other quotations under 5 lines stay in-text.
+
+- **Author-prominent introduction**: 99% of citations introduce the author before the quote ("Aristotle observes," "Heidegger reads," "Gross argues").
+
+- **Work-in-narrative / locus-in-parens**: every reference uses the canonical pattern; no inline "at *De Anima* III.7, 431a8–14" formulations.
+
+- **Forward-pointing footnote**: Heidegger deferral footnote present, signaling forward to the rhetoric / attunement chapter.
+
+- **No back-references**: no "§1.X has already developed/established"; restate claims with parenthetical citation where needed.
+
+- **Word count target**: ~6,500 words of body prose, distributed approximately per the per-subsection requirements above; do NOT exceed 7,500 words.

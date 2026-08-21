@@ -1,0 +1,347 @@
+{"timestamp":"2026-03-19T19:06:25.441Z","level":"INFO","message":"Configuration initialized","context":{"service":"config-manager","configPath":null,"version":"2.1.0"}}
+{"timestamp":"2026-03-19T19:06:25.448Z","level":"INFO","message":"Initializing Layer 1: Native Core","context":{}}
+{"timestamp":"2026-03-19T19:06:25.449Z","level":"INFO","message":"Initializing Layer 2: Reasoning","context":{}}
+{"timestamp":"2026-03-19T19:06:25.449Z","level":"INFO","message":"Initializing Layer 3: Memory","context":{}}
+{"timestamp":"2026-03-19T19:06:25.520Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+{"timestamp":"2026-03-19T19:06:25.521Z","level":"INFO","message":"No existing causal graph found, starting fresh","context":{"component":"CausalMemory"}}
+{"timestamp":"2026-03-19T19:06:25.708Z","level":"INFO","message":"Initializing Layer 4: Learning","context":{}}
+{"timestamp":"2026-03-19T19:06:25.711Z","level":"INFO","message":"SonaEngine created with database persistence enabled","context":{}}
+{"timestamp":"2026-03-19T19:06:25.712Z","level":"INFO","message":"SonaEngine persistence verified - DAOs initialized","context":{}}
+{"timestamp":"2026-03-19T19:06:25.712Z","level":"INFO","message":"  Trajectory metadata: {\"totalCount\":2558,\"activeCount\":532,\"completedCount\":780,\"failedCount\":1246,\"abandonedCount\":0,\"avgQualityScore\":0.38247292019187923,\"avgStepCount\":0.326817826426896,\"totalFileBytes\":0}","context":{}}
+{"timestamp":"2026-03-19T19:06:25.712Z","level":"INFO","message":"  Patterns: {\"totalCount\":27,\"activeCount\":27,\"deprecatedCount\":0,\"totalSuccessCount\":0,\"totalFailureCount\":0,\"averageWeight\":0.9067968328900103,\"successRate\":0}","context":{}}
+{"timestamp":"2026-03-19T19:06:25.712Z","level":"INFO","message":"  Feedback: {\"feedbackCount\":1125,\"processedCount\":607,\"unprocessedCount\":518,\"avgQuality\":0.5613330045451174,\"outcomeBreakdown\":{\"positive\":32,\"negative\":375,\"neutral\":718}}","context":{}}
+[SonaEngine] Trajectory streaming enabled
+{"timestamp":"2026-03-19T19:06:25.716Z","level":"INFO","message":"Loaded SoNA weights from disk","context":{}}
+{"timestamp":"2026-03-19T19:06:25.716Z","level":"INFO","message":"Initializing Layer 5: Orchestration","context":{}}
+{"timestamp":"2026-03-19T19:06:25.716Z","level":"INFO","message":"Initializing Unified Search","context":{}}
+{"timestamp":"2026-03-19T19:06:25.717Z","level":"INFO","message":"MemoryClient connection skipped (server not running)","context":{}}
+{"timestamp":"2026-03-19T19:06:25.717Z","level":"INFO","message":"UnifiedSearch initialized","context":{}}
+{"timestamp":"2026-03-19T19:06:25.717Z","level":"INFO","message":"God Agent initialized in 269.56ms","context":{}}
+{"timestamp":"2026-03-19T19:06:25.788Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[QualityGauntlet] Stage weights sum to 1.15, not 1.0. Scores will be normalized.
+{"timestamp":"2026-03-19T19:06:25.927Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[CapabilityCache] Computing content hash for 472 files
+[CapabilityCache] Hash computed in 81.46ms: 100bc7caa6905ec6...
+[CapabilityCache] Cache HIT - loaded 253 agents in 81.23ms
+[CapabilityIndex] Cache HIT - loaded 253 agents in 85.56ms
+{"timestamp":"2026-03-19T19:06:26.223Z","level":"ERROR","message":"DESC injection failed","context":{"component":"UCMDaemonClient","error_message":"UCM daemon connection error: connect EAGAIN /tmp/godagent-ucm.sock","error_name":"Error","error_stack":"Error: UCM daemon connection error: connect EAGAIN /tmp/godagent-ucm.sock\n    at Socket.<anonymous> (/home/dalton/projects/claudeflow-testing/src/god-agent/cli/ucm-daemon-client.ts:215:16)\n    at Socket.emit (node:events:519:28)\n    at emitErrorNT (node:internal/streams/destroy:170:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)"}}
+[GOLD STD] Multi-query retrieval + style + single-shot generation...
+[GOLD STD] Phase 1a: Multi-query retrieval: 7 semantic queries
+[GOLD STD]   Query: "Taking Structure Ground Resonant Motion"
+[GOLD STD]   Query: "Phantasia Retentive Medium Resonant Affect"
+[GOLD STD]   Query: "Aisthesis, Perception, Affordance Landscape"
+[GOLD STD]   Query: "Pursuit Avoidance Desire, Judgment, Kinaesthetic Arc"
+[GOLD STD]   Query: "Attunement, Mood, Affective Coloring Experience"
+[GOLD STD]   Query: "Imagination Opinion Deliberative Horizon"
+[GOLD STD]   Query: "Resonant Motion Affect Fundamental Structure Temporal"
+[INFO] ChromaDB collection "knowledge_chunks" resolved to 256473d0-5091-4494-af4d-007e8f62d43f
+[INFO] [SmartRetrievalLayer] Semantic search: "Taking Structure Ground Resonant Motion..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3273 to 0.5521
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 14
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 14
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 14
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "Phantasia Retentive Medium Resonant Affect..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.4337 to 0.6104
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 18
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 18
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "Aisthesis, Perception, Affordance Landscape..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.4754 to 0.7114
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 18
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 18
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "Pursuit Avoidance Desire, Judgment, Kinaesthetic A..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3706 to 0.5030
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 18
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 18
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "Attunement, Mood, Affective Coloring Experience..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.6284 to 0.7628
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 18
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 18
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "Imagination Opinion Deliberative Horizon..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.4964 to 0.6514
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 18
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 18
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "Resonant Motion Affect Fundamental Structure Tempo..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3721 to 0.5792
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 18
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 18
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[GOLD STD] Phase 1a result: 26 unique chunks from 7 sources
+[GOLD STD] Phase 1c: Diversity-enforced selection: 26 chunks
+[GOLD STD]   Gibson, James J.: 10 chunks
+[GOLD STD]   O'Connor, Timothy and Wong, Hong: 5 chunks
+[GOLD STD]   Rickert, Thomas: 4 chunks
+[GOLD STD]   Burke, Kenneth: 3 chunks
+[GOLD STD]   Gross, Daniel M.: 2 chunks
+[GOLD STD]   Heidegger, Martin: 1 chunks
+[GOLD STD]   Metzinger, Thomas K.: 1 chunks
+[GOLD STD] Phase 1d: Chunk trimming: 4765 → 377 avg chars/chunk (92% reduction)
+[GOLD STD] Phase 1e: Chunks reordered for attention (highest relevance at start/end)
+[GOLD STD] Phase 1f: Retrieval coverage validation
+[GOLD STD] Loaded 10 knowledge units (18 domain-relevant)
+[GOLD STD] Loaded 30 structural edges (381 relevant of 1103 total)
+[GOLD STD] Style profile: loaded (568 chars)
+[GOLD STD] Knowledge units: 10
+[GOLD STD] Prompt subsections: 7 (from extractRetrievalQueries)
+[GOLD STD] === MULTI-STEP MODE: v1 → investigate → v2 ===
+[GOLD STD] Step 4a: Building v1 prompt (no style, grounding focus)...
+[GOLD STD] V1 prompt assembled (24763 chars). Generating v1...
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[API] stop_reason=end_turn, usage={"input_tokens":6842,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":5123,"service_tier":"standard","inference_geo":"global"}, model=claude-opus-4-6, max_tokens=16384
+[GOLD STD] V1 generation complete: 3225 words
+[GOLD STD] Step 4b-pre: Running quality gauntlet on v1...
+[GOLD STD] V1 quality gauntlet: 68.5% (0 weak stages)
+[GOLD STD] Step 4b: Investigating v1 output (local analysis)...
+[GOLD STD] Investigation results:
+[GOLD STD]   Word count: 2448
+[GOLD STD]   Citations: 18
+[GOLD STD]   Quotations: 14
+[GOLD STD]   Unique authors cited: burke, gibson, gross, rickert, metzinger
+[GOLD STD]   Issues: 64 (6 critical)
+[GOLD STD]     [critical] phantom-quotation: Quotation not found in any chunk: " structure: the organism does not merely register sensory da..."
+[GOLD STD]     [critical] phantom-quotation: Quotation not found in any chunk: " the dynamically attuned movement of an embodied perceiver t..."
+[GOLD STD]     [critical] phantom-quotation: Quotation not found in any chunk: "The 'permanent objects' of the world, which are of so much c..."
+[GOLD STD]     [critical] phantom-quotation: Quotation not found in any chunk: "there is always a 'prevailing' illumination, a direction at ..."
+[GOLD STD]     [critical] phantom-quotation: Quotation not found in any chunk: "The awareness of 'out there' and of 'here' are complementary..."
+[GOLD STD]   Prevention plan:
+[GOLD STD]     Blacklisted: none
+[GOLD STD]     Under-cited: o'connor, timothy and wong, hong, gibson, james j., burke, kenneth, rickert, thomas, gross, daniel m., heidegger, martin, metzinger, thomas k.
+[GOLD STD]     Constraints: 9
+[GOLD STD] Step 4b+: Supplemental retrieval for 7 under-cited source(s)...
+[INFO] [SmartRetrievalLayer] Semantic search: "o'connor, timothy and wong, hong Resonant Motion a..." (max: 6)
+[INFO] [SmartRetrievalLayer] Found 12 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 12, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.4459 to 0.5617
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 12
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 12
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 12
+[INFO] [SmartRetrievalLayer] Step 5 after limit (6): 6
+[INFO] [SmartRetrievalLayer] Semantic search: "gibson, james j. Resonant Motion and Resonant Affe..." (max: 6)
+[INFO] [SmartRetrievalLayer] Found 12 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 12, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.4464 to 0.5654
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 12
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 12
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 12
+[INFO] [SmartRetrievalLayer] Step 5 after limit (6): 6
+[INFO] [SmartRetrievalLayer] Semantic search: "burke, kenneth Resonant Motion and Resonant Affect..." (max: 6)
+[INFO] [SmartRetrievalLayer] Found 12 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 12, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.4617 to 0.5715
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 12
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 12
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 12
+[INFO] [SmartRetrievalLayer] Step 5 after limit (6): 6
+[GOLD STD] Step 4c: Building v2 prompt (full style + prevention plan)...
+[GOLD STD] Per-section constraints: 2 rules derived from prompt structure
+[GOLD STD] === ROLLING CONTEXT MODE ===
+[GOLD STD] Corpus constraint built: 24 verified sources
+[ROLLING CTX] Chunk allocation: 5 shared pool, 7 sections
+[ROLLING CTX]   Section 1: 5 section-specific chunks
+[ROLLING CTX]   Section 2: 3 section-specific chunks
+[ROLLING CTX]   Section 3: 3 section-specific chunks
+[ROLLING CTX]   Section 4: 3 section-specific chunks
+[ROLLING CTX]   Section 5: 4 section-specific chunks
+[ROLLING CTX]   Section 6: 3 section-specific chunks
+[ROLLING CTX]   Section 7: 5 section-specific chunks
+[ROLLING CTX] 
+=== Section 1/7: The Taking-As Structure and the Ground of Resonant Motion ===
+[ROLLING CTX]   Chunks: 10 (5 specific + 5 shared)
+[ROLLING CTX]   Prior context: 0 chars
+[ROLLING CTX]   Prompt: 13570 chars
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[API] stop_reason=end_turn, usage={"input_tokens":3692,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":458,"service_tier":"standard","inference_geo":"global"}, model=claude-opus-4-6, max_tokens=2048
+[ROLLING CTX]   Generated: 309 words
+[ROLLING CTX]   Stats: 309 words, 2 citations, 3 quotations
+[ROLLING CTX]   Authors: gibson, gross
+[API] stop_reason=end_turn, usage={"input_tokens":515,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":58,"service_tier":"standard","inference_geo":"not_available"}, model=claude-haiku-4-5-20251001, max_tokens=100
+[ROLLING CTX]   Summary: "Living organisms navigate their environments through a "taking-as" structure—an ..."
+[ROLLING CTX] 
+=== Section 2/7: Phantasia as the Retentive Medium of Resonant Affect ===
+[ROLLING CTX]   Chunks: 8 (3 specific + 5 shared)
+[ROLLING CTX]   Prior context: 2271 chars
+[ROLLING CTX]   Prompt: 15169 chars
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[API] stop_reason=end_turn, usage={"input_tokens":4068,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":890,"service_tier":"standard","inference_geo":"global"}, model=claude-opus-4-6, max_tokens=2048
+[ROLLING CTX]   Generated: 590 words
+[ROLLING CTX]   Stats: 590 words, 3 citations, 3 quotations
+[ROLLING CTX]   Authors: o'connor and wong, rickert, burke
+[API] stop_reason=end_turn, usage={"input_tokens":950,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":50,"service_tier":"standard","inference_geo":"not_available"}, model=claude-haiku-4-5-20251001, max_tokens=100
+[ROLLING CTX]   Summary: "Phantasia functions as the retentive medium through which affective residues of ..."
+[ROLLING CTX] 
+=== Section 3/7: Aisthesis, Perception, and the Affordance Landscape ===
+[ROLLING CTX]   Chunks: 8 (3 specific + 5 shared)
+[ROLLING CTX]   Prior context: 6507 chars
+[ROLLING CTX]   Prompt: 19012 chars
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[API] stop_reason=end_turn, usage={"input_tokens":4865,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":688,"service_tier":"standard","inference_geo":"global"}, model=claude-opus-4-6, max_tokens=2048
+[ROLLING CTX]   Generated: 442 words
+[ROLLING CTX]   Stats: 442 words, 4 citations, 5 quotations
+[ROLLING CTX]   Authors: gibson, o'connor and wong, burke
+[API] stop_reason=end_turn, usage={"input_tokens":748,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":62,"service_tier":"standard","inference_geo":"not_available"}, model=claude-haiku-4-5-20251001, max_tokens=100
+[ROLLING CTX]   Summary: "Perception (aisthesis) discloses an affordance landscape structured by ecologica..."
+[ROLLING CTX] 
+=== Section 4/7: Pursuit and Avoidance: Desire, Judgment, and the Kinaesthetic Arc ===
+[ROLLING CTX]   Chunks: 8 (3 specific + 5 shared)
+[ROLLING CTX]   Prior context: 7549 chars
+[ROLLING CTX]   Prompt: 20095 chars
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[API] stop_reason=end_turn, usage={"input_tokens":5100,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":906,"service_tier":"standard","inference_geo":"global"}, model=claude-opus-4-6, max_tokens=2048
+[ROLLING CTX]   Generated: 604 words
+[ROLLING CTX]   Stats: 604 words, 3 citations, 3 quotations
+[ROLLING CTX]   Authors: gibson, o'connor and wong, burke
+[API] stop_reason=end_turn, usage={"input_tokens":971,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":54,"service_tier":"standard","inference_geo":"not_available"}, model=claude-haiku-4-5-20251001, max_tokens=100
+[ROLLING CTX]   Summary: "The kinaesthetic arc integrates perception, desire, and action through temporall..."
+[ROLLING CTX] 
+=== Section 5/7: Attunement, Mood, and the Affective Coloring of Experience ===
+[ROLLING CTX]   Chunks: 9 (4 specific + 5 shared)
+[ROLLING CTX]   Prior context: 7706 chars
+[ROLLING CTX]   Prompt: 20915 chars
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[API] stop_reason=end_turn, usage={"input_tokens":5248,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":1157,"service_tier":"standard","inference_geo":"global"}, model=claude-opus-4-6, max_tokens=2048
+[ROLLING CTX]   Generated: 793 words
+[ROLLING CTX]   Stats: 793 words, 5 citations, 5 quotations
+[ROLLING CTX]   Authors: rickert, gibson, o'connor and wong, gross, burke
+[API] stop_reason=end_turn, usage={"input_tokens":1219,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":50,"service_tier":"standard","inference_geo":"not_available"}, model=claude-haiku-4-5-20251001, max_tokens=100
+[ROLLING CTX]   Summary: "Mood functions as an ontological filter that establishes the affective backgroun..."
+[ROLLING CTX] 
+=== Section 6/7: Imagination and Opinion: The Deliberative Horizon ===
+[ROLLING CTX]   Chunks: 8 (3 specific + 5 shared)
+[ROLLING CTX]   Prior context: 10014 chars
+[ROLLING CTX]   Prompt: 22565 chars
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[API] stop_reason=end_turn, usage={"input_tokens":5580,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":694,"service_tier":"standard","inference_geo":"global"}, model=claude-opus-4-6, max_tokens=2048
+[ROLLING CTX]   Generated: 477 words
+[ROLLING CTX]   Stats: 477 words, 3 citations, 3 quotations
+[ROLLING CTX]   Authors: gibson, burke, o'connor and wong
+[API] stop_reason=end_turn, usage={"input_tokens":749,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":58,"service_tier":"standard","inference_geo":"not_available"}, model=claude-haiku-4-5-20251001, max_tokens=100
+[ROLLING CTX]   Summary: "Imagination and opinion operate as intertwined faculties within a deliberative h..."
+[ROLLING CTX] 
+=== Section 7/7: Resonant Motion and Affect as the Fundamental Structure of Temporal Navigation ===
+[ROLLING CTX]   Chunks: 10 (5 specific + 5 shared)
+[ROLLING CTX]   Prior context: 9187 chars
+[ROLLING CTX]   Prompt: 22366 chars
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[API] stop_reason=end_turn, usage={"input_tokens":5470,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":889,"service_tier":"standard","inference_geo":"global"}, model=claude-opus-4-6, max_tokens=2048
+[ROLLING CTX]   Generated: 581 words
+[ROLLING CTX]   Stats: 581 words, 5 citations, 4 quotations
+[ROLLING CTX]   Authors: gibson, o'connor and wong, gross, rickert, burke
+[API] stop_reason=end_turn, usage={"input_tokens":949,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":65,"service_tier":"standard","inference_geo":"not_available"}, model=claude-haiku-4-5-20251001, max_tokens=100
+[ROLLING CTX]   Summary: "Resonant motion and affect constitute the fundamental structure enabling tempora..."
+[ROLLING CTX] Generating validation appendix...
+[API] stop_reason=end_turn, usage={"input_tokens":6104,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":1888,"service_tier":"standard","inference_geo":"not_available"}, model=claude-haiku-4-5-20251001, max_tokens=4096
+[ROLLING CTX] Validation appendix generated: 1021 words
+[ROLLING CTX] 
+=== ROLLING CONTEXT COMPLETE ===
+[ROLLING CTX] Total: 4900 words, 25 citations, 26 quotations
+[ROLLING CTX] Authors cited: gibson, gross, o'connor and wong, rickert, burke
+[ROLLING CTX] Authors NOT cited: o'connor, timothy and wong, hong, gibson, james j., burke, kenneth, rickert, thomas, gross, daniel m., heidegger, martin, metzinger, thomas k.
+[ROLLING CTX] Shared pool evictions: 0
+[GOLD STD] Rolling context content: 4900 words — skipping single-shot generation
+{"timestamp":"2026-03-19T19:11:12.625Z","level":"INFO","message":"Starting endnote generation","context":{"component":"EndnoteGenerator"}}
+{"timestamp":"2026-03-19T19:11:12.625Z","level":"INFO","message":"Found 14 citations to process","context":{"component":"EndnoteGenerator"}}
+[INFO] [SmartRetrievalLayer] Semantic search: "nonmodal perception, cutting across perceptual Gib..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.6901 to 0.8258
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "temporal, which sometimes means historical Gross, ..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7062 to 0.8715
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "whole's having emergent property supervenes O'Conn..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7323 to 0.8789
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "complexly generating overarching ambient environme..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.6748 to 0.8614
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "consists complex motions deformations, fluctuating..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7283 to 0.8407
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "complex motions deformations, fluctuating luminous..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7254 to 0.8329
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "partly causally determinative physical state O'Con..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7503 to 0.8591
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "interactions material social surroundings world Gr..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7360 to 0.8624
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 15
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 15
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "ambient light point observation structured Gibson,..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.6737 to 0.8042
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+{"timestamp":"2026-03-19T19:11:13.138Z","level":"INFO","message":"Generated 14 endnotes with 40 supporting quotations","context":{"component":"EndnoteGenerator"}}
+{"timestamp":"2026-03-19T19:11:13.141Z","level":"INFO","message":"SonaEngine updated for trajectory","context":{"component":"ReasoningBank","trajectoryId":"traj_1773947186301_011c42bc"}}
+{"timestamp":"2026-03-19T19:11:13.141Z","level":"ERROR","message":"DESC store failed","context":{"component":"UCMDaemonClient","error_message":"UCM daemon connection error: connect EAGAIN /tmp/godagent-ucm.sock","error_name":"Error","error_stack":"Error: UCM daemon connection error: connect EAGAIN /tmp/godagent-ucm.sock\n    at Socket.<anonymous> (/home/dalton/projects/claudeflow-testing/src/god-agent/cli/ucm-daemon-client.ts:215:16)\n    at Socket.emit (node:events:519:28)\n    at emitErrorNT (node:internal/streams/destroy:170:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)"}}
+{"timestamp":"2026-03-19T19:11:13.148Z","level":"INFO","message":"Shutting down God Agent...","context":{}}
+{"timestamp":"2026-03-19T19:11:13.156Z","level":"INFO","message":"SoNA weights saved to disk","context":{}}
+{"timestamp":"2026-03-19T19:11:13.157Z","level":"info","component":"MemoryClient","message":"Disconnected from memory server"}
+{"timestamp":"2026-03-19T19:11:13.157Z","level":"INFO","message":"MemoryClient disconnected","context":{}}
+{"timestamp":"2026-03-19T19:11:13.157Z","level":"INFO","message":"God Agent shutdown complete","context":{}}

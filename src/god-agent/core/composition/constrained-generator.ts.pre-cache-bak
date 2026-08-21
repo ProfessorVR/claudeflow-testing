@@ -1,0 +1,1849 @@
+/**
+ * Constrained Generator — Plan-First Generation with Dual Drift Detection
+ *
+ * Generation protocol:
+ *   1. Produce paragraph plan: [{ paragraph_id, atom_ids, required_quotes }]
+ *   2. Validate plan against ClaimMap (all atoms covered, no orphans)
+ *   3. Generate paragraph text under atom constraints
+ *   4. Post-generation: dual drift detection (forward + reverse)
+ *
+ * Mode-dependent SentenceScope protocol:
+ *   strict: inline constraint tokens ([supports: atom_1, atom_3])
+ *   analytics: post-hoc JSON mapping
+ *   off: paragraph→quote constrained only
+ *
+ * @module constrained-generator
+ */
+
+import { randomUUID } from 'crypto';
+import type {
+  ClaimAtom,
+  ClaimBinding,
+  QuoteSpan,
+  ParagraphPlanEntry,
+  SentenceScope,
+  DiscourseState,
+  AtomsMode,
+  ReverseCheckMode,
+  DriftFlag,
+  ReverseCheckVerdict,
+  ParagraphLedger,
+  ParagraphLedgerItem,
+  WarnResolution,
+  Facet,
+  FacetRole,
+  EvidenceStrictness,
+  BlockReason,
+  SuperPrompt,
+  StressTestReport,
+  AtomStressResult,
+  SuperPromptEnrichmentId,
+  SuperPromptEnrichmentEntry,
+  SuperPromptEnrichmentManifest,
+  SuperPromptEnrichmentData,
+} from './icp-types.js';
+import { sha256 } from './quote-span-staleness.js';
+import { PropositionExtractor } from './proposition-extractor.js';
+import { ProseSanitizer } from '../../cli/composition/prose-sanitizer.js';
+import type { ICPInlineValidator } from './icp-inline-validator.js';
+
+// =============================================================================
+// CONFIGURATION
+// =============================================================================
+
+export interface ConstrainedGeneratorConfig {
+  /** Max atoms per paragraph */
+  maxAtomsPerParagraph?: number;
+  /** Enable coherence controller */
+  enableCoherence?: boolean;
+  /** Max retries for inline validation (default: 2) */
+  maxInlineRetries?: number;
+}
+
+const DEFAULT_CONFIG: Required<ConstrainedGeneratorConfig> = {
+  maxAtomsPerParagraph: 5,
+  enableCoherence: true,
+  maxInlineRetries: 2,
+};
+
+// =============================================================================
+// SUPERPROMPT SESSION CONTEXT (for enrichment)
+// =============================================================================
+
+export interface SuperPromptSessionContext {
+  writing_contract?: {
+    thesis: string;
+    scope: string;
+    audience: string;
+    section_outline?: Array<{ section_id: string; title: string; facet_ids: string[] }>;
+  };
+  stress_test_report?: StressTestReport;
+  facets: Facet[];
+  claims?: Array<{
+    id: string;
+    claim: string;
+    warrant: string;
+    backing?: string;
+    qualification?: string;
+    rebuttal?: string;
+  }>;
+  prompt_spec?: {
+    research_questions: string[];
+    success_criteria: Map<string, string>;
+  };
+  binding_quality?: Array<{
+    atomId: string;
+    quoteId: string;
+    scores: { overall: number };
+  }>;
+  paragraph_plan: ParagraphPlanEntry[];
+}
+
+// =============================================================================
+// LLM GENERATION PROVIDER (abstraction)
+// =============================================================================
+
+export interface GenerationProvider {
+  generateParagraph(prompt: string, systemPrompt: string): Promise<string>;
+  generateParagraphPlan(
+    atoms: ClaimAtom[],
+    bindings: ClaimBinding[],
+    desiredWordCount?: string,
+  ): Promise<ParagraphPlanEntry[]>;
+  generateSentenceMapping(
+    paragraphText: string,
+    atomIds: string[],
+  ): Promise<Array<{ sentence_id: string; text: string; supports_atoms: string[] }>>;
+}
+
+// =============================================================================
+// GENERATION RESULT
+// =============================================================================
+
+export interface GenerationResult {
+  paragraphs: GeneratedParagraph[];
+  ledger: ParagraphLedger;
+  discourse_state: DiscourseState;
+  block_reasons: BlockReason[];
+}
+
+export interface GeneratedParagraph {
+  paragraph_id: string;
+  paragraph_order: number;
+  text: string;
+  sentences: SentenceScope[];
+  drift_flags: DriftFlag[];
+}
+
+// =============================================================================
+// CONSTRAINED GENERATOR
+// =============================================================================
+
+export class ConstrainedGenerator {
+  private readonly config: Required<ConstrainedGeneratorConfig>;
+  private readonly propositionExtractor: PropositionExtractor;
+  private readonly sanitizer: ProseSanitizer;
+  private inlineValidator?: ICPInlineValidator;
+
+  constructor(
+    config: ConstrainedGeneratorConfig = {},
+    propositionExtractor?: PropositionExtractor,
+  ) {
+    this.config = { ...DEFAULT_CONFIG, ...config };
+    this.propositionExtractor = propositionExtractor ?? new PropositionExtractor();
+    this.sanitizer = new ProseSanitizer();
+  }
+
+  /**
+   * Parse a "min-max" word count string into numeric bounds.
+   * Returns undefined if the string is missing or malformed.
+   */
+  static parseWordBudget(desiredWordCount?: string): { min: number; max: number } | undefined {
+    if (!desiredWordCount) return undefined;
+    const match = desiredWordCount.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (!match) return undefined;
+    return { min: parseInt(match[1], 10), max: parseInt(match[2], 10) };
+  }
+
+  /**
+   * Compute per-paragraph word budget from the total budget and paragraph count.
+   */
+  static perParagraphBudget(
+    totalBudget: { min: number; max: number },
+    paragraphCount: number,
+  ): { min: number; max: number } {
+    if (paragraphCount <= 0) return totalBudget;
+    return {
+      min: Math.round(totalBudget.min / paragraphCount),
+      max: Math.round(totalBudget.max / paragraphCount),
+    };
+  }
+
+  /**
+   * Hard-cap a paragraph plan to fit a word budget.
+   * Assumes ~200 words per paragraph. Keeps opening and closing paragraphs,
+   * then selects body paragraphs with the most atoms (best evidence density).
+   */
+  static capPlanToWordBudget(
+    plan: ParagraphPlanEntry[],
+    budget: { min: number; max: number },
+  ): ParagraphPlanEntry[] {
+    const maxParas = Math.max(2, Math.ceil(budget.max / 150));
+    if (plan.length <= maxParas) return plan;
+
+    const sorted = [...plan].sort((a, b) => a.paragraph_order - b.paragraph_order);
+
+    // Always keep first and last
+    const first = sorted[0];
+    const last = sorted[sorted.length - 1];
+    const body = sorted.slice(1, -1);
+
+    // Rank body paragraphs by atom count (evidence density)
+    const ranked = body.sort((a, b) => b.atom_ids.length - a.atom_ids.length);
+    const kept = ranked.slice(0, maxParas - 2);
+
+    // Reassemble in original order
+    const result = [first, ...kept, last].sort((a, b) => a.paragraph_order - b.paragraph_order);
+
+    // Re-index paragraph_order to be contiguous
+    return result.map((entry, i) => ({ ...entry, paragraph_order: i }));
+  }
+
+  /**
+   * Set the inline validator for per-paragraph validation.
+   */
+  setInlineValidator(validator: ICPInlineValidator): void {
+    this.inlineValidator = validator;
+  }
+
+  /**
+   * Validate a paragraph plan against the claim map.
+   * Checks: all atoms covered, no orphans, no overloaded paragraphs.
+   */
+  validatePlan(
+    plan: ParagraphPlanEntry[],
+    atoms: ClaimAtom[],
+    bindings: ClaimBinding[],
+    facets: Facet[],
+    atomsMode: AtomsMode,
+  ): { valid: boolean; errors: string[]; warnings: string[] } {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    if (atomsMode === 'off') {
+      // In off mode, plan just needs to cover required quotes
+      return { valid: true, errors, warnings };
+    }
+
+    // Check: all atoms are assigned to at least one paragraph
+    const assignedAtoms = new Set(plan.flatMap(p => p.atom_ids));
+    const requiredAtoms = atoms.filter(a => a.evidence_mode !== 'NO_EVIDENCE_REQUIRED');
+
+    for (const atom of requiredAtoms) {
+      if (!assignedAtoms.has(atom.atom_id)) {
+        if (atomsMode === 'strict') {
+          errors.push(`Atom "${atom.display_text}" (${atom.atom_id}) not assigned to any paragraph`);
+        } else {
+          warnings.push(`Atom "${atom.display_text}" not assigned to any paragraph`);
+        }
+      }
+    }
+
+    // Check: no paragraph has too many atoms
+    for (const entry of plan) {
+      if (entry.atom_ids.length > this.config.maxAtomsPerParagraph) {
+        warnings.push(
+          `Paragraph ${entry.paragraph_id} has ${entry.atom_ids.length} atoms (max ${this.config.maxAtomsPerParagraph})`,
+        );
+      }
+    }
+
+    // Check: required quotes are assigned
+    const allRequiredQuotes = new Set(plan.flatMap(p => p.required_quotes));
+    const boundQuoteIds = new Set(bindings.flatMap(b => b.quote_ids));
+    for (const quoteId of allRequiredQuotes) {
+      if (!boundQuoteIds.has(quoteId)) {
+        warnings.push(`Required quote ${quoteId} is not in any binding`);
+      }
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors,
+      warnings,
+    };
+  }
+
+  /**
+   * Generate text for a paragraph plan with constrained generation.
+   * Uses LLM provider for actual text generation.
+   */
+  async generate(
+    plan: ParagraphPlanEntry[],
+    atoms: ClaimAtom[],
+    bindings: ClaimBinding[],
+    spans: QuoteSpan[],
+    facets: Facet[],
+    atomsMode: AtomsMode,
+    reverseCheckMode: ReverseCheckMode,
+    provider: GenerationProvider,
+    stylePrompt?: string,
+    desiredWordCount?: string,
+  ): Promise<GenerationResult> {
+    const paragraphs: GeneratedParagraph[] = [];
+    const allDriftFlags: DriftFlag[] = [];
+    const blockReasons: BlockReason[] = [];
+
+    const totalBudget = ConstrainedGenerator.parseWordBudget(desiredWordCount);
+
+    // Hard-cap paragraph count to fit word budget
+    if (totalBudget) {
+      plan = ConstrainedGenerator.capPlanToWordBudget(plan, totalBudget);
+    }
+
+    const paraBudget = totalBudget
+      ? ConstrainedGenerator.perParagraphBudget(totalBudget, plan.length)
+      : undefined;
+
+    let discourse: DiscourseState = {
+      last_paragraph_tail: [],
+      transitions_used_so_far: [],
+      rhetorical_goal: '',
+      section_argument_trajectory: '',
+    };
+
+    for (const entry of plan) {
+      // Build system prompt with constraints
+      const systemPrompt = this.buildParagraphPrompt(
+        entry,
+        atoms,
+        bindings,
+        spans,
+        discourse,
+        atomsMode,
+        stylePrompt,
+        paraBudget,
+      );
+
+      // Generate paragraph text
+      const userPrompt = this.buildUserPrompt(entry, atoms, atomsMode, paraBudget);
+      let rawText = await provider.generateParagraph(userPrompt, systemPrompt);
+
+      // Sanitize raw output — remove LLM meta-text, placeholders, artifacts
+      const sanitizationResult = await this.sanitizer.sanitize(rawText);
+      let cleanedText = this.extractParagraphContent(sanitizationResult.sanitized);
+
+      // Inline validation loop — validate and retry if needed
+      if (this.inlineValidator) {
+        let attempts = 0;
+        let validated = false;
+
+        while (!validated && attempts < this.config.maxInlineRetries) {
+          const entryAtoms = entry.atom_ids
+            .map(id => atoms.find(a => a.atom_id === id)!)
+            .filter(Boolean);
+          const entryQuotes = (entry.required_quotes ?? [])
+            .map(id => spans.find(s => s.quote_id === id)!)
+            .filter(Boolean);
+
+          const validation = await this.inlineValidator.validateParagraph(
+            cleanedText,
+            entryAtoms,
+            entryQuotes,
+          );
+
+          if (validation.passed) {
+            validated = true;
+          } else {
+            const retryPrompt = `${userPrompt}\n\nPREVIOUS ATTEMPT ISSUES:\n${validation.suggestedRetryFeedback}`;
+            rawText = await provider.generateParagraph(retryPrompt, systemPrompt);
+            const retryResult = await this.sanitizer.sanitize(rawText);
+            cleanedText = retryResult.sanitized;
+            attempts++;
+          }
+        }
+      }
+
+      // Parse text and extract sentence scopes
+      const { text, sentences } = await this.parseParagraphOutput(
+        cleanedText,
+        entry,
+        atoms,
+        atomsMode,
+        provider,
+      );
+
+      // Dual drift detection
+      const driftFlags = this.runDriftDetection(
+        sentences,
+        atoms,
+        atomsMode,
+        reverseCheckMode,
+      );
+
+      // Check if drift flags should block
+      const blockingDrift = driftFlags.filter(f => f.verdict === 'BLOCK');
+      if (blockingDrift.length > 0 && atomsMode === 'strict') {
+        for (const flag of blockingDrift) {
+          blockReasons.push({
+            action: 'generate',
+            facet_id: entry.atom_ids[0] ? atoms.find(a => a.atom_id === entry.atom_ids[0])?.facet_id : undefined,
+            rule_id: 'drift_block',
+            required_state: `All propositions mapped to atoms`,
+            observed_state: `Unmapped proposition: "${flag.proposition}"`,
+            minimal_remediations: [
+              'Create atom for this proposition',
+              'Mark as rhetorical glue',
+              'Switch to analytics mode',
+            ],
+          });
+        }
+      }
+
+      const paragraph: GeneratedParagraph = {
+        paragraph_id: entry.paragraph_id,
+        paragraph_order: entry.paragraph_order,
+        text,
+        sentences,
+        drift_flags: driftFlags,
+      };
+
+      paragraphs.push(paragraph);
+      allDriftFlags.push(...driftFlags);
+
+      // Update discourse state
+      discourse = this.updateDiscourseState(discourse, text);
+    }
+
+    // Build ledger
+    const ledger = this.buildParagraphLedger(paragraphs, plan, atoms, bindings, facets);
+
+    return {
+      paragraphs,
+      ledger,
+      discourse_state: discourse,
+      block_reasons: blockReasons,
+    };
+  }
+
+  /**
+   * Build ParagraphLedger — deterministically recomputed.
+   */
+  buildParagraphLedger(
+    paragraphs: GeneratedParagraph[],
+    plan: ParagraphPlanEntry[],
+    atoms: ClaimAtom[],
+    bindings: ClaimBinding[],
+    facets: Facet[],
+  ): ParagraphLedger {
+    const items: ParagraphLedgerItem[] = [];
+
+    for (const para of paragraphs) {
+      const planEntry = plan.find(p => p.paragraph_id === para.paragraph_id);
+      if (!planEntry) continue;
+
+      // Compute coverage stats
+      const mappedAtomIds = new Set(para.sentences.flatMap(s => s.supports_atoms));
+      const totalAtoms = planEntry.atom_ids.length;
+      const coveredAtoms = planEntry.atom_ids.filter(id => mappedAtomIds.has(id)).length;
+      const quoteIds = new Set(planEntry.required_quotes);
+
+      // Get facet strictness
+      const atomFacets = planEntry.atom_ids
+        .map(id => atoms.find(a => a.atom_id === id)?.facet_id)
+        .filter((id): id is string => !!id);
+      const strictness = this.getMostRestrictiveStrictness(atomFacets, facets);
+
+      items.push({
+        paragraph_id: para.paragraph_id,
+        paragraph_order: para.paragraph_order,
+        atom_ids: planEntry.atom_ids,
+        quote_ids: [...quoteIds],
+        strictness,
+        coverage_stats: {
+          atoms_covered: coveredAtoms,
+          atoms_total: totalAtoms,
+          quotes_used: quoteIds.size,
+        },
+        drift_flags: para.drift_flags,
+        warn_resolutions: [],
+      });
+    }
+
+    const ledgerHash = sha256(JSON.stringify(items));
+    return { items, ledger_hash: ledgerHash };
+  }
+
+  /**
+   * Compute sentence boundary hash for polish invariant checking.
+   */
+  computeSentenceBoundaryHash(text: string): string {
+    const boundaries = this.findSentenceBoundaries(text);
+    return sha256(JSON.stringify(boundaries));
+  }
+
+  // ===========================================================================
+  // SUPERPROMPT ASSEMBLY + GENERATION
+  // ===========================================================================
+
+  /**
+   * Assemble a SuperPrompt for a single paragraph — returns the fully-built
+   * system + user prompts without executing them.
+   *
+   * When sessionContext is provided, injects enrichment from pipeline data
+   * (thesis, facets, stress advisories, Toulmin structure, etc.).
+   */
+  assembleSuperPrompt(
+    entry: ParagraphPlanEntry,
+    atoms: ClaimAtom[],
+    bindings: ClaimBinding[],
+    spans: QuoteSpan[],
+    discourse: DiscourseState,
+    atomsMode: AtomsMode,
+    stylePrompt?: string,
+    sessionContext?: SuperPromptSessionContext,
+    wordBudget?: { min: number; max: number },
+  ): {
+    systemPrompt: string;
+    userPrompt: string;
+    enrichmentManifest: SuperPromptEnrichmentManifest;
+    enrichmentData: SuperPromptEnrichmentData;
+  } {
+    // Base prompts (always built)
+    const baseSystemPrompt = this.buildParagraphPrompt(entry, atoms, bindings, spans, discourse, atomsMode, stylePrompt, wordBudget);
+    const baseUserPrompt = this.buildUserPrompt(entry, atoms, atomsMode, wordBudget);
+
+    if (!sessionContext) {
+      return {
+        systemPrompt: baseSystemPrompt,
+        userPrompt: baseUserPrompt,
+        enrichmentManifest: {
+          entries: [],
+          applied_count: 0,
+          skipped_count: 0,
+          total_token_estimate: 0,
+          enriched: false,
+        },
+        enrichmentData: {},
+      };
+    }
+
+    // Build all 8 enrichments
+    const enrichmentResults = [
+      this.buildThesisScopeEnrichment(sessionContext.writing_contract),
+      this.buildFacetContextEnrichment(entry, atoms, sessionContext),
+      this.buildStressAdvisoriesEnrichment(entry, atoms, sessionContext.stress_test_report),
+      this.buildToulminStructureEnrichment(entry, atoms, sessionContext.claims),
+      this.buildBindingQualityEnrichment(entry, sessionContext.binding_quality),
+      this.buildQuoteContextEnrichment(entry, spans),
+      this.buildParagraphFunctionEnrichment(entry, sessionContext.paragraph_plan),
+      this.buildArgumentTrajectoryEnrichment(entry, atoms, sessionContext),
+    ];
+
+    // Assemble manifest
+    const entries = enrichmentResults.map(r => r.entry);
+    const appliedCount = entries.filter(e => e.applied).length;
+    const skippedCount = entries.filter(e => !e.applied).length;
+    const totalTokenEstimate = entries.reduce((sum, e) => sum + e.token_estimate, 0);
+
+    const manifest: SuperPromptEnrichmentManifest = {
+      entries,
+      applied_count: appliedCount,
+      skipped_count: skippedCount,
+      total_token_estimate: totalTokenEstimate,
+      enriched: appliedCount > 0,
+    };
+
+    // Merge enrichment data
+    const enrichmentData: SuperPromptEnrichmentData = {};
+    for (const r of enrichmentResults) {
+      Object.assign(enrichmentData, r.data);
+    }
+
+    // Assemble enriched system prompt
+    const enrichedSections = enrichmentResults
+      .filter(r => r.entry.applied && r.promptSection.length > 0)
+      .map(r => r.promptSection);
+
+    let systemPrompt: string;
+    if (enrichedSections.length > 0) {
+      systemPrompt = this.assembleEnrichedSystemPrompt(
+        baseSystemPrompt,
+        enrichedSections,
+      );
+    } else {
+      systemPrompt = baseSystemPrompt;
+    }
+
+    // Build enriched user prompt
+    const userPrompt = this.buildEnrichedUserPrompt(
+      entry, atoms, atomsMode, sessionContext, enrichmentData, wordBudget,
+    );
+
+    return { systemPrompt, userPrompt, enrichmentManifest: manifest, enrichmentData };
+  }
+
+  /**
+   * Generate a single paragraph from a pre-assembled SuperPrompt.
+   * Runs sanitization, inline validation, sentence parsing, and drift detection.
+   */
+  async generateFromSuperPrompt(
+    superPrompt: SuperPrompt,
+    entry: ParagraphPlanEntry,
+    atoms: ClaimAtom[],
+    spans: QuoteSpan[],
+    atomsMode: AtomsMode,
+    reverseCheckMode: ReverseCheckMode,
+    provider: GenerationProvider,
+  ): Promise<GeneratedParagraph> {
+    // 1. Call LLM with pre-assembled prompts
+    let rawText = await provider.generateParagraph(superPrompt.user_prompt, superPrompt.system_prompt);
+
+    // 2. Sanitize and extract <paragraph> content
+    const sanitizationResult = await this.sanitizer.sanitize(rawText);
+    let cleanedText = this.extractParagraphContent(sanitizationResult.sanitized);
+
+    // 3. Inline validation loop
+    if (this.inlineValidator) {
+      let attempts = 0;
+      let validated = false;
+
+      while (!validated && attempts < this.config.maxInlineRetries) {
+        const entryAtoms = entry.atom_ids
+          .map(id => atoms.find(a => a.atom_id === id)!)
+          .filter(Boolean);
+        const entryQuotes = (entry.required_quotes ?? [])
+          .map(id => spans.find(s => s.quote_id === id)!)
+          .filter(Boolean);
+
+        const validation = await this.inlineValidator.validateParagraph(
+          cleanedText,
+          entryAtoms,
+          entryQuotes,
+        );
+
+        if (validation.passed) {
+          validated = true;
+        } else {
+          const retryPrompt = `${superPrompt.user_prompt}\n\nPREVIOUS ATTEMPT ISSUES:\n${validation.suggestedRetryFeedback}`;
+          rawText = await provider.generateParagraph(retryPrompt, superPrompt.system_prompt);
+          const retryResult = await this.sanitizer.sanitize(rawText);
+          cleanedText = retryResult.sanitized;
+          attempts++;
+        }
+      }
+    }
+
+    // 4. Parse paragraph output (sentence scopes)
+    const { text, sentences } = await this.parseParagraphOutput(
+      cleanedText,
+      entry,
+      atoms,
+      atomsMode,
+      provider,
+    );
+
+    // 5. Drift detection
+    const driftFlags = this.runDriftDetection(
+      sentences,
+      atoms,
+      atomsMode,
+      reverseCheckMode,
+    );
+
+    return {
+      paragraph_id: entry.paragraph_id,
+      paragraph_order: entry.paragraph_order,
+      text,
+      sentences,
+      drift_flags: driftFlags,
+    };
+  }
+
+  // ===========================================================================
+  // PROMPT ASSEMBLY (public for SuperPrompt stage)
+  // ===========================================================================
+
+  /**
+   * Compute sentence budget from word budget.
+   * Academic sentences average ~31 words (from style profile).
+   */
+  static wordBudgetToSentenceBudget(
+    wordBudget: { min: number; max: number },
+    avgWordsPerSentence = 31,
+  ): { min: number; max: number } {
+    return {
+      min: Math.max(3, Math.round(wordBudget.min / avgWordsPerSentence)),
+      max: Math.max(4, Math.round(wordBudget.max / avgWordsPerSentence)),
+    };
+  }
+
+  /**
+   * Build the system prompt for paragraph generation.
+   * Uses XML tag structure for Claude's trained parsing.
+   */
+  public buildParagraphPrompt(
+    entry: ParagraphPlanEntry,
+    atoms: ClaimAtom[],
+    bindings: ClaimBinding[],
+    spans: QuoteSpan[],
+    discourse: DiscourseState,
+    atomsMode: AtomsMode,
+    stylePrompt?: string,
+    wordBudget?: { min: number; max: number },
+  ): string {
+    const parts: string[] = [];
+
+    // --- Role (concise academic persona) ---
+    parts.push('<role>');
+    parts.push('You are an academic writer specializing in philosophy and rhetoric.');
+    parts.push('Your prose is formal, evidence-driven, and precisely cited.');
+    parts.push('You write in the style described in <style_requirements>.');
+    parts.push('</role>');
+
+    // --- Style requirements ---
+    if (stylePrompt) {
+      parts.push('');
+      parts.push('<style_requirements>');
+      parts.push(stylePrompt);
+      parts.push('</style_requirements>');
+    }
+
+    // --- Style exemplar ---
+    parts.push('');
+    parts.push('<style_exemplar>');
+    parts.push('The following represents the target prose style:');
+    parts.push('"Thus, Aristotle\'s account of phantasia suggests that the capacity for mental imagery');
+    parts.push('serves not merely as a repository of sensory impressions but as an active faculty');
+    parts.push('that mediates between perception and intellection (Aristotle, De Anima, 429a1-4).');
+    parts.push('Indeed, this formulation complicates the conventional reading of imagination as');
+    parts.push('passive reception, positioning it instead as a constitutive element of rational thought."');
+    parts.push('</style_exemplar>');
+
+    // --- Vocabulary guidance ---
+    parts.push('');
+    parts.push('<vocabulary_guidance>');
+    parts.push('This writer favors precise philosophical terms over generic intensifiers:');
+    parts.push('- "examines" over "delves into"');
+    parts.push('- "essential" or "constitutive" over "crucial" or "pivotal"');
+    parts.push('- "domain" or "field" over "landscape" or "realm"');
+    parts.push('- "analysis" over "exploration" or "journey"');
+    parts.push('- "complex" or "qualified" over "nuanced" (when used as filler)');
+    parts.push('The writer does not use: delve, crucial, landscape, pivotal, realm, holistic,');
+    parts.push('synergy, intricate, multifaceted, unveil, underscore, foster, leverage, tapestry,');
+    parts.push('embark, beacon, cornerstone, paradigm shift.');
+    parts.push('</vocabulary_guidance>');
+
+    // --- Evidence: atoms, sources, quotes ---
+    // Add atom context
+    const paragraphAtoms = entry.atom_ids
+      .map(id => atoms.find(a => a.atom_id === id))
+      .filter((a): a is ClaimAtom => !!a);
+
+    parts.push('');
+    parts.push('<evidence>');
+
+    if (paragraphAtoms.length > 0) {
+      parts.push('<atoms>');
+      for (const atom of paragraphAtoms) {
+        parts.push(`<atom id="${atom.atom_id}">${atom.display_text} (${atom.modality}, ${atom.kind})</atom>`);
+      }
+      parts.push('</atoms>');
+    }
+
+    // Collect citation anchors from atoms (Fix 1+5: propagate claim citations)
+    const citationAnchors = new Map<string, { author: string; year: number; locator?: string; fullCitation: string }>();
+    for (const atom of paragraphAtoms) {
+      if (atom.citations) {
+        for (const cit of atom.citations) {
+          if (!citationAnchors.has(cit.key)) {
+            citationAnchors.set(cit.key, {
+              author: cit.author,
+              year: cit.year,
+              locator: cit.locator ?? undefined,
+              fullCitation: cit.fullCitation,
+            });
+          }
+        }
+      }
+    }
+
+    if (citationAnchors.size > 0) {
+      parts.push('<available_sources>');
+      for (const [key, cit] of citationAnchors) {
+        const locator = cit.locator ? `, ${cit.locator}` : '';
+        parts.push(`<source>${cit.author} (${cit.year}${locator}) — ${cit.fullCitation || key}</source>`);
+      }
+      parts.push('</available_sources>');
+    }
+
+    // Add approved quotes
+    const quoteSpans = entry.required_quotes
+      .map(id => spans.find(s => s.quote_id === id))
+      .filter((s): s is QuoteSpan => !!s);
+
+    if (quoteSpans.length > 0) {
+      parts.push('<approved_quotes>');
+      for (const span of quoteSpans) {
+        const anchor = span.source_anchor ?? span.doc_id;
+        parts.push(`<quote id="${span.quote_id}" cite="${anchor}">${span.text}</quote>`);
+      }
+      parts.push('</approved_quotes>');
+    }
+
+    parts.push('</evidence>');
+
+    // --- Discourse state ---
+    if (this.config.enableCoherence && discourse.last_paragraph_tail.length > 0) {
+      parts.push('');
+      parts.push('<discourse_state>');
+      parts.push('<previous_tail>');
+      for (const sent of discourse.last_paragraph_tail) {
+        parts.push(`"${sent}"`);
+      }
+      parts.push('</previous_tail>');
+      if (discourse.transitions_used_so_far.length > 0) {
+        parts.push(`<avoid_transitions>${discourse.transitions_used_so_far.join(', ')}</avoid_transitions>`);
+      }
+      parts.push('</discourse_state>');
+    }
+
+    // --- Constraints ---
+    parts.push('');
+    parts.push('<constraints>');
+
+    // Citation rules
+    parts.push('<citation_rules>');
+    parts.push('Every claim derived from a source MUST include a parenthetical citation: (Author, Year, p. XX).');
+    parts.push('For signal phrases: As Heidegger argues, "..." (Heidegger, 2009, p. 45).');
+    parts.push('Use author-prominent signal phrases (e.g., "Aristotle observes...", "Frede argues...").');
+    parts.push('Only cite sources listed in <available_sources>. Do not fabricate page numbers.');
+    parts.push('</citation_rules>');
+
+    // Length control — sentence budget (ceiling only, no rigid map)
+    if (wordBudget) {
+      const sb = ConstrainedGenerator.wordBudgetToSentenceBudget(wordBudget);
+      parts.push(`<length_control>Write at most ${sb.max} sentences, aiming for ${sb.min}-${sb.max}.</length_control>`);
+    }
+
+    // Content rules
+    parts.push('<content_rules>');
+    parts.push('Only use quotation marks for quotes listed in <approved_quotes>.');
+    parts.push('Cover every atom listed in <atoms>.');
+    parts.push('Do not introduce claims not covered by the atoms.');
+    parts.push('</content_rules>');
+
+    if (atomsMode === 'strict') {
+      parts.push('<strict_mode>');
+      parts.push('IMPORTANT: Before each sentence, output an inline tag:');
+      parts.push('[supports: atom_id1, atom_id2] Your sentence text here.');
+      parts.push('If a sentence supports no atoms, output [supports: none]');
+      parts.push('</strict_mode>');
+    }
+
+    parts.push('</constraints>');
+
+    // --- Scratchpad instruction (quarantined plan + draft + self-check) ---
+    parts.push('');
+    parts.push('<output_protocol>');
+    parts.push('You must use a <scratchpad> to plan, draft, and review your text.');
+    parts.push('TOKEN ECONOMY: Inside the scratchpad, NEVER write out full atom or quote text. Refer to them ONLY by ID (e.g., A:atom_1, Q:q_1). Save prose for the final <paragraph>.');
+    parts.push('Inside the scratchpad:');
+    parts.push('1. Map each atom and quote to a specific sentence number (use IDs only: A:atom_1, Q:q_1).');
+    parts.push('2. Note any hedging or Toulmin constraints that apply to specific sentences.');
+    parts.push('3. Write a draft.');
+    parts.push('4. Self-check the draft:');
+    parts.push('   - Every atom in <atoms> addressed by at least one sentence?');
+    parts.push('   - Every quote in <approved_quotes> used with correct citation?');
+    if (wordBudget) {
+      const sb = ConstrainedGenerator.wordBudgetToSentenceBudget(wordBudget);
+      parts.push(`   - Sentence count at most ${sb.max}?`);
+    } else {
+      parts.push('   - Sentence count appropriate (6-8)?');
+    }
+    parts.push('   - No uncited sources? No fabricated page numbers?');
+    parts.push('   - Vocabulary matches <style_exemplar>?');
+    parts.push('5. Revise the draft if any check fails.');
+    parts.push('Once all checks pass, output ONLY the final text inside a <paragraph> tag.');
+    parts.push('</output_protocol>');
+
+    return parts.join('\n');
+  }
+
+  /**
+   * Build the user prompt for paragraph generation.
+   */
+  public buildUserPrompt(
+    entry: ParagraphPlanEntry,
+    atoms: ClaimAtom[],
+    atomsMode: AtomsMode,
+    wordBudget?: { min: number; max: number },
+  ): string {
+    const paragraphAtoms = entry.atom_ids
+      .map(id => atoms.find(a => a.atom_id === id))
+      .filter((a): a is ClaimAtom => !!a);
+
+    const atomIds = paragraphAtoms.map(a => a.atom_id).join(', ');
+    const quoteIds = (entry.required_quotes ?? []).join(', ');
+
+    let sentenceCeiling = '6-8';
+    if (wordBudget) {
+      const sb = ConstrainedGenerator.wordBudgetToSentenceBudget(wordBudget);
+      sentenceCeiling = `${sb.max}`;
+    }
+
+    const parts: string[] = [];
+
+    parts.push(`Generate paragraph ${entry.paragraph_order + 1}. Develop atoms [${atomIds}]${quoteIds ? ` using quotes [${quoteIds}]` : ''}.`);
+
+    parts.push('');
+    parts.push('<critical_reminders>');
+    parts.push('HIGHEST PRIORITY:');
+    parts.push(`1. Write at most ${sentenceCeiling} sentences.`);
+    parts.push('2. Only cite sources from <available_sources>.');
+    parts.push('3. Use every approved quote with its exact citation anchor.');
+    parts.push('4. Match the prose style in <style_exemplar>.');
+    parts.push('5. No fabricated page numbers. No uncited sources.');
+    parts.push('</critical_reminders>');
+    parts.push('');
+    parts.push('Begin by opening your <scratchpad> block.');
+
+    return parts.join('\n');
+  }
+
+  /**
+   * Parse paragraph output based on atoms mode.
+   */
+  private async parseParagraphOutput(
+    rawText: string,
+    entry: ParagraphPlanEntry,
+    atoms: ClaimAtom[],
+    atomsMode: AtomsMode,
+    provider: GenerationProvider,
+  ): Promise<{ text: string; sentences: SentenceScope[] }> {
+    if (atomsMode === 'strict') {
+      return this.parseInlineConstraintTokens(rawText, entry.paragraph_id);
+    }
+
+    if (atomsMode === 'analytics') {
+      // Post-hoc JSON mapping — non-fatal if LLM returns malformed JSON
+      const cleanText = rawText;
+      try {
+        const mapping = await provider.generateSentenceMapping(
+          cleanText,
+          entry.atom_ids,
+        );
+
+        const sentences: SentenceScope[] = mapping.map((m, i) => ({
+          sentence_id: m.sentence_id || randomUUID(),
+          paragraph_id: entry.paragraph_id,
+          sentence_order: i,
+          supports_atoms: m.supports_atoms,
+          text: m.text,
+        }));
+
+        return { text: cleanText, sentences };
+      } catch {
+        // Fallback: split into sentences without atom mapping
+      }
+    }
+
+    // Off mode: no atom mapping
+    const sentenceTexts = this.splitSentences(rawText);
+    const sentences: SentenceScope[] = sentenceTexts.map((text, i) => ({
+      sentence_id: randomUUID(),
+      paragraph_id: entry.paragraph_id,
+      sentence_order: i,
+      supports_atoms: [],
+      text,
+    }));
+
+    return { text: rawText, sentences };
+  }
+
+  /**
+   * Extract paragraph content from <paragraph> tags if present.
+   * Strips <scratchpad> blocks and returns only the final paragraph text.
+   * If no <paragraph> tag found, returns the input unchanged (backward compat).
+   */
+  private extractParagraphContent(rawText: string): string {
+    // Strip scratchpad blocks first
+    const withoutScratchpad = rawText.replace(/<scratchpad>[\s\S]*?<\/scratchpad>/gi, '').trim();
+
+    // Extract <paragraph> content
+    const paragraphMatch = withoutScratchpad.match(/<paragraph>([\s\S]*?)<\/paragraph>/i);
+    if (paragraphMatch) {
+      return paragraphMatch[1].trim();
+    }
+
+    // Fault-tolerant fallback: Claude closed </scratchpad> but dropped <paragraph> wrapper
+    // (happens when hitting token limit or hallucinating formatting)
+    if (rawText.includes('</scratchpad>')) {
+      const afterScratchpad = rawText.split('</scratchpad>').pop()?.trim() ?? '';
+      if (afterScratchpad.length > 0) {
+        // Strip any stray <paragraph> open tag without close (partial output)
+        return afterScratchpad.replace(/<\/?paragraph>/gi, '').trim();
+      }
+    }
+
+    // No tags at all — return cleaned text (backward compat)
+    return withoutScratchpad;
+  }
+
+  /**
+   * Parse inline constraint tokens from strict mode output.
+   * Format: [supports: atom_1, atom_3] Sentence text here.
+   */
+  private parseInlineConstraintTokens(
+    rawText: string,
+    paragraphId: string,
+  ): { text: string; sentences: SentenceScope[] } {
+    const sentences: SentenceScope[] = [];
+    const cleanParts: string[] = [];
+
+    const tagPattern = /\[supports:\s*([^\]]*)\]\s*/g;
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+    let order = 0;
+
+    // Split by sentence-ending punctuation while preserving tags
+    const lines = rawText.split(/(?<=\.|\?|!)\s+/);
+
+    for (const line of lines) {
+      const tagMatch = line.match(/^\[supports:\s*([^\]]*)\]\s*/);
+      let text: string;
+      let atomIds: string[];
+
+      if (tagMatch) {
+        text = line.slice(tagMatch[0].length).trim();
+        const atomList = tagMatch[1].trim();
+        atomIds = atomList === 'none'
+          ? []
+          : atomList.split(/\s*,\s*/).filter(id => id.length > 0);
+      } else {
+        text = line.trim();
+        atomIds = [];
+      }
+
+      if (text.length > 0) {
+        cleanParts.push(text);
+        sentences.push({
+          sentence_id: randomUUID(),
+          paragraph_id: paragraphId,
+          sentence_order: order++,
+          supports_atoms: atomIds,
+          text,
+        });
+      }
+    }
+
+    return {
+      text: cleanParts.join(' '),
+      sentences,
+    };
+  }
+
+  /**
+   * Run dual drift detection on generated sentences.
+   */
+  private runDriftDetection(
+    sentences: SentenceScope[],
+    atoms: ClaimAtom[],
+    atomsMode: AtomsMode,
+    reverseCheckMode: ReverseCheckMode,
+  ): DriftFlag[] {
+    const flags: DriftFlag[] = [];
+
+    if (atomsMode === 'off') return flags;
+
+    // Build atom lookup
+    const atomMap = new Map(atoms.map(a => [a.atom_id, a]));
+
+    for (const sentence of sentences) {
+      // Forward check: each declared atom should be entailed by the sentence
+      // (simplified: check term overlap)
+      if (atomsMode === 'strict') {
+        for (const atomId of sentence.supports_atoms) {
+          const atom = atomMap.get(atomId);
+          if (!atom) {
+            flags.push({
+              sentence_id: sentence.sentence_id,
+              verdict: 'WARN',
+              proposition: `References unknown atom: ${atomId}`,
+              unmapped_atoms: [atomId],
+            });
+          }
+        }
+      }
+
+      // Reverse check: find undeclared claim-bearing predicates
+      if (reverseCheckMode !== 'off') {
+        const mappedAtomIds = new Map<string, string[]>();
+        mappedAtomIds.set(sentence.sentence_id, sentence.supports_atoms);
+
+        const propositions = this.propositionExtractor.extractPropositions(
+          [{ sentence_id: sentence.sentence_id, text: sentence.text }],
+          mappedAtomIds,
+        );
+
+        for (const prop of propositions) {
+          if (prop.severity === 'OK') continue;
+
+          const verdict: ReverseCheckVerdict =
+            reverseCheckMode === 'block' && prop.severity === 'BLOCK'
+              ? 'BLOCK'
+              : 'WARN';
+
+          flags.push({
+            sentence_id: sentence.sentence_id,
+            verdict,
+            proposition: prop.text,
+            unmapped_atoms: [],
+          });
+        }
+      }
+    }
+
+    return flags;
+  }
+
+  /**
+   * Update discourse state after generating a paragraph.
+   */
+  private updateDiscourseState(
+    current: DiscourseState,
+    paragraphText: string,
+  ): DiscourseState {
+    const sentences = this.splitSentences(paragraphText);
+    const tail = sentences.slice(-3);
+
+    // Detect transitions used
+    const transitionPatterns = [
+      'however', 'moreover', 'furthermore', 'nevertheless',
+      'in contrast', 'similarly', 'accordingly', 'thus',
+      'therefore', 'consequently', 'indeed', 'specifically',
+    ];
+    const newTransitions = transitionPatterns.filter(t =>
+      paragraphText.toLowerCase().includes(t),
+    );
+
+    return {
+      last_paragraph_tail: tail,
+      transitions_used_so_far: [
+        ...current.transitions_used_so_far,
+        ...newTransitions,
+      ],
+      rhetorical_goal: current.rhetorical_goal,
+      section_argument_trajectory: current.section_argument_trajectory,
+    };
+  }
+
+  /**
+   * Split text into sentences.
+   */
+  private splitSentences(text: string): string[] {
+    return text
+      .split(/(?<=[.!?])\s+/)
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
+  }
+
+  /**
+   * Find sentence boundaries (positions of sentence-ending punctuation).
+   */
+  private findSentenceBoundaries(text: string): number[] {
+    const boundaries: number[] = [];
+    const pattern = /[.!?]\s+/g;
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(text)) !== null) {
+      boundaries.push(match.index);
+    }
+    return boundaries;
+  }
+
+  /**
+   * Get the most restrictive strictness from a set of facet IDs.
+   */
+  private getMostRestrictiveStrictness(
+    facetIds: string[],
+    facets: Facet[],
+  ): EvidenceStrictness {
+    let most: EvidenceStrictness = 'permissive';
+    for (const fid of facetIds) {
+      const facet = facets.find(f => f.facet_id === fid);
+      const strictness = facet?.strictness_override ?? 'strict';
+      if (strictness === 'strict') return 'strict';
+      if (strictness === 'moderate') most = 'moderate';
+    }
+    return most;
+  }
+
+  // ===========================================================================
+  // ENRICHMENT BUILDERS
+  // ===========================================================================
+
+  private estimateTokens(text: string): number {
+    return Math.ceil(text.length / 4);
+  }
+
+  /**
+   * Assemble enriched system prompt: base prompt + enrichment sections inserted
+   * between evidence/discourse and constraints blocks.
+   */
+  private assembleEnrichedSystemPrompt(
+    basePrompt: string,
+    enrichmentSections: string[],
+  ): string {
+    // Insert enrichment sections before <constraints> block
+    const constraintsIndex = basePrompt.indexOf('<constraints>');
+    if (constraintsIndex === -1) {
+      // Fallback: append enrichments before </output_protocol> or at the end
+      return basePrompt + '\n\n' + enrichmentSections.join('\n\n');
+    }
+
+    const before = basePrompt.slice(0, constraintsIndex);
+    const after = basePrompt.slice(constraintsIndex);
+    return before + enrichmentSections.join('\n\n') + '\n\n' + after;
+  }
+
+  /**
+   * Build enriched user prompt with thesis awareness and positional instructions.
+   */
+  private buildEnrichedUserPrompt(
+    entry: ParagraphPlanEntry,
+    atoms: ClaimAtom[],
+    atomsMode: AtomsMode,
+    ctx: SuperPromptSessionContext,
+    enrichmentData: SuperPromptEnrichmentData,
+    wordBudget?: { min: number; max: number },
+  ): string {
+    const paragraphAtoms = entry.atom_ids
+      .map(id => atoms.find(a => a.atom_id === id))
+      .filter((a): a is ClaimAtom => !!a);
+
+    const atomIds = paragraphAtoms.map(a => a.atom_id).join(', ');
+    const quoteIds = (entry.required_quotes ?? []).join(', ');
+
+    let sentenceCeiling = '6-8';
+    if (wordBudget) {
+      const sb = ConstrainedGenerator.wordBudgetToSentenceBudget(wordBudget);
+      sentenceCeiling = `${sb.max}`;
+    }
+
+    const pf = enrichmentData.paragraph_function;
+    const total = pf?.total_paragraphs ?? ctx.paragraph_plan.length;
+    const paraNum = pf ? pf.paragraph_index + 1 : entry.paragraph_order + 1;
+
+    const parts: string[] = [];
+
+    // Thesis-aware opening trigger
+    if (ctx.writing_contract?.thesis) {
+      const thesisSnippet = ctx.writing_contract.thesis.length > 120
+        ? ctx.writing_contract.thesis.slice(0, 120) + '...'
+        : ctx.writing_contract.thesis;
+      parts.push(`Generate paragraph ${paraNum} of ${total}. Advance the thesis: "${thesisSnippet}"`);
+    } else {
+      parts.push(`Generate paragraph ${paraNum} of ${total}.`);
+    }
+
+    parts.push(`Develop atoms [${atomIds}]${quoteIds ? ` using quotes [${quoteIds}]` : ''}.`);
+
+    // Positional instruction
+    if (pf) {
+      if (pf.position === 'opening') {
+        parts.push('This is the opening paragraph — introduce the topic and establish the argumentative frame.');
+      } else if (pf.position === 'closing') {
+        parts.push('This is the closing paragraph — synthesize the preceding arguments and reinforce the thesis.');
+      }
+    }
+
+    parts.push('');
+    parts.push('<critical_reminders>');
+    parts.push('HIGHEST PRIORITY:');
+    parts.push(`1. Write at most ${sentenceCeiling} sentences.`);
+    parts.push('2. Only cite sources from <available_sources>.');
+    parts.push('3. Use every approved quote with its exact citation anchor.');
+    parts.push('4. Match the prose style in <style_exemplar>.');
+    parts.push('5. No fabricated page numbers. No uncited sources.');
+    parts.push('</critical_reminders>');
+    parts.push('');
+    parts.push('Begin by opening your <scratchpad> block.');
+
+    return parts.join('\n');
+  }
+
+  // -- Individual enrichment builders --
+
+  private buildThesisScopeEnrichment(
+    contract?: SuperPromptSessionContext['writing_contract'],
+  ): { entry: SuperPromptEnrichmentEntry; promptSection: string; data: Partial<SuperPromptEnrichmentData> } {
+    if (!contract?.thesis) {
+      return {
+        entry: {
+          id: 'thesis_scope',
+          label: 'Thesis & Scope',
+          applied: false,
+          skip_reason: 'No writing contract available',
+          token_estimate: 0,
+          summary: 'Skipped — no writing contract',
+        },
+        promptSection: '',
+        data: {},
+      };
+    }
+
+    const section = [
+      '<thesis_scope>',
+      `<thesis>${contract.thesis}</thesis>`,
+      `<scope>${contract.scope}</scope>`,
+      `<audience>${contract.audience}</audience>`,
+      'Keep all claims within this scope.',
+      '</thesis_scope>',
+    ].join('\n');
+
+    return {
+      entry: {
+        id: 'thesis_scope',
+        label: 'Thesis & Scope',
+        applied: true,
+        token_estimate: this.estimateTokens(section),
+        summary: `Thesis: "${contract.thesis.slice(0, 80)}..."`,
+      },
+      promptSection: section,
+      data: {
+        thesis: contract.thesis,
+        scope: contract.scope,
+        audience: contract.audience,
+      },
+    };
+  }
+
+  private buildFacetContextEnrichment(
+    entry: ParagraphPlanEntry,
+    atoms: ClaimAtom[],
+    ctx: SuperPromptSessionContext,
+  ): { entry: SuperPromptEnrichmentEntry; promptSection: string; data: Partial<SuperPromptEnrichmentData> } {
+    // Resolve facet(s) for this paragraph's atoms
+    const facetIds = new Set(
+      entry.atom_ids
+        .map(id => atoms.find(a => a.atom_id === id)?.facet_id)
+        .filter((id): id is string => !!id),
+    );
+
+    const facets = ctx.facets.filter(f => facetIds.has(f.facet_id));
+    if (facets.length === 0) {
+      return {
+        entry: {
+          id: 'facet_context',
+          label: 'Facet Context',
+          applied: false,
+          skip_reason: 'No facets resolved for paragraph atoms',
+          token_estimate: 0,
+          summary: 'Skipped — no facets',
+        },
+        promptSection: '',
+        data: {},
+      };
+    }
+
+    const primaryFacet = facets[0];
+    const parts = ['<facet_context>'];
+    parts.push(`<facet name="${primaryFacet.name}" role="${primaryFacet.facet_role}">${primaryFacet.description}</facet>`);
+
+    // Research questions from prompt_spec
+    const rqs: string[] = [];
+    if (ctx.prompt_spec?.research_questions) {
+      rqs.push(...ctx.prompt_spec.research_questions);
+      parts.push(`<research_questions>${rqs.join('; ')}</research_questions>`);
+    }
+
+    // Success criteria
+    let sc: string | undefined;
+    if (ctx.prompt_spec?.success_criteria) {
+      sc = ctx.prompt_spec.success_criteria.get(primaryFacet.facet_id);
+      if (sc) parts.push(`<success_criteria>${sc}</success_criteria>`);
+    }
+
+    parts.push('</facet_context>');
+    const section = parts.join('\n');
+
+    return {
+      entry: {
+        id: 'facet_context',
+        label: 'Facet Context',
+        applied: true,
+        token_estimate: this.estimateTokens(section),
+        summary: `Facet: ${primaryFacet.name} (${primaryFacet.facet_role})`,
+      },
+      promptSection: section,
+      data: {
+        facet_name: primaryFacet.name,
+        facet_role: primaryFacet.facet_role,
+        facet_description: primaryFacet.description,
+        research_questions: rqs.length > 0 ? rqs : undefined,
+        success_criteria: sc,
+      },
+    };
+  }
+
+  private buildStressAdvisoriesEnrichment(
+    entry: ParagraphPlanEntry,
+    atoms: ClaimAtom[],
+    stressReport?: StressTestReport,
+  ): { entry: SuperPromptEnrichmentEntry; promptSection: string; data: Partial<SuperPromptEnrichmentData> } {
+    if (!stressReport?.atom_results || stressReport.atom_results.length === 0) {
+      return {
+        entry: {
+          id: 'stress_advisories',
+          label: 'Stress Advisories',
+          applied: false,
+          skip_reason: 'No stress test report available',
+          token_estimate: 0,
+          summary: 'Skipped — no stress test data',
+        },
+        promptSection: '',
+        data: {},
+      };
+    }
+
+    // Filter to atoms in this paragraph that have issues
+    const paragraphAtomIds = new Set(entry.atom_ids);
+    const relevantResults = stressReport.atom_results.filter(
+      r => paragraphAtomIds.has(r.atom_id) &&
+           (r.warrant_verdict !== 'adequate' || r.contested),
+    );
+
+    if (relevantResults.length === 0) {
+      return {
+        entry: {
+          id: 'stress_advisories',
+          label: 'Stress Advisories',
+          applied: false,
+          skip_reason: 'All atoms in this paragraph passed stress test',
+          token_estimate: 0,
+          summary: 'Skipped — all atoms adequate',
+        },
+        promptSection: '',
+        data: {},
+      };
+    }
+
+    const parts = ['<stress_advisories>'];
+    const advisories: SuperPromptEnrichmentData['stress_advisories'] = [];
+
+    for (const result of relevantResults) {
+      const atom = atoms.find(a => a.atom_id === result.atom_id);
+      const instructions: string[] = [];
+
+      if (result.warrant_verdict === 'weak') {
+        instructions.push('Present cautiously, emphasize evidence over assertion');
+      }
+      if (result.warrant_verdict === 'missing') {
+        instructions.push('Hedge with "may", "suggests", "arguably"');
+      }
+      if (result.contested) {
+        instructions.push('Acknowledge that this point is contested in the scholarship');
+      }
+      for (const rem of result.remediations) {
+        if (rem.type === 'qualify') {
+          instructions.push('Hedge with "may", "suggests", "arguably"');
+        } else if (rem.type === 'add_rebuttal') {
+          instructions.push(`Address counterargument: ${rem.contra_evidence}`);
+        } else if (rem.type === 'acknowledge_contradiction') {
+          instructions.push('Acknowledge scholarly tension');
+        }
+      }
+
+      // Deduplicate instructions
+      const uniqueInstructions = [...new Set(instructions)];
+
+      parts.push(`<advisory atom="${result.atom_id}" action="hedge">${uniqueInstructions.join('; ')}</advisory>`);
+      if (result.fragility_warning) {
+        parts.push(`<!-- fragility: ${result.fragility_warning} -->`);
+      }
+
+      advisories.push({
+        atom_id: result.atom_id,
+        display_text: atom?.display_text ?? result.atom_id,
+        warrant_verdict: result.warrant_verdict,
+        contested: result.contested,
+        fragility_warning: result.fragility_warning,
+        remediation_instructions: uniqueInstructions,
+      });
+    }
+
+    parts.push('</stress_advisories>');
+    const section = parts.join('\n');
+
+    return {
+      entry: {
+        id: 'stress_advisories',
+        label: 'Stress Advisories',
+        applied: true,
+        token_estimate: this.estimateTokens(section),
+        summary: `${relevantResults.length} atom(s) need hedging/rebuttal`,
+      },
+      promptSection: section,
+      data: { stress_advisories: advisories },
+    };
+  }
+
+  private buildToulminStructureEnrichment(
+    entry: ParagraphPlanEntry,
+    atoms: ClaimAtom[],
+    claims?: SuperPromptSessionContext['claims'],
+  ): { entry: SuperPromptEnrichmentEntry; promptSection: string; data: Partial<SuperPromptEnrichmentData> } {
+    if (!claims || claims.length === 0) {
+      return {
+        entry: {
+          id: 'toulmin_structure',
+          label: 'Toulmin Structure',
+          applied: false,
+          skip_reason: 'No claim map available',
+          token_estimate: 0,
+          summary: 'Skipped — no claims',
+        },
+        promptSection: '',
+        data: {},
+      };
+    }
+
+    const claimMap = new Map(claims.map(c => [c.id, c]));
+    const paragraphAtoms = entry.atom_ids
+      .map(id => atoms.find(a => a.atom_id === id))
+      .filter((a): a is ClaimAtom => !!a);
+
+    const toulminEntries: NonNullable<SuperPromptEnrichmentData['toulmin_claims']> = [];
+    const parts = ['<toulmin_structure>'];
+
+    for (const atom of paragraphAtoms) {
+      const claim = claimMap.get(atom.parent_claim_id);
+      if (!claim?.warrant) continue;
+
+      parts.push(`<toulmin atom="${atom.atom_id}">`);
+      parts.push(`<warrant>${claim.warrant}</warrant>`);
+      if (claim.backing) parts.push(`<backing>${claim.backing}</backing>`);
+      if (claim.qualification) parts.push(`<qualification>${claim.qualification}</qualification>`);
+      if (claim.rebuttal) parts.push(`<rebuttal>${claim.rebuttal}</rebuttal>`);
+      parts.push('</toulmin>');
+
+      toulminEntries.push({
+        atom_id: atom.atom_id,
+        warrant: claim.warrant,
+        backing: claim.backing,
+        qualification: claim.qualification,
+        rebuttal: claim.rebuttal,
+      });
+    }
+
+    if (toulminEntries.length === 0) {
+      return {
+        entry: {
+          id: 'toulmin_structure',
+          label: 'Toulmin Structure',
+          applied: false,
+          skip_reason: 'No warrants found for paragraph atoms',
+          token_estimate: 0,
+          summary: 'Skipped — no warrants',
+        },
+        promptSection: '',
+        data: {},
+      };
+    }
+
+    parts.push('</toulmin_structure>');
+    const section = parts.join('\n');
+
+    return {
+      entry: {
+        id: 'toulmin_structure',
+        label: 'Toulmin Structure',
+        applied: true,
+        token_estimate: this.estimateTokens(section),
+        summary: `${toulminEntries.length} warrant(s) injected`,
+      },
+      promptSection: section,
+      data: { toulmin_claims: toulminEntries },
+    };
+  }
+
+  private buildBindingQualityEnrichment(
+    entry: ParagraphPlanEntry,
+    bindingQuality?: SuperPromptSessionContext['binding_quality'],
+  ): { entry: SuperPromptEnrichmentEntry; promptSection: string; data: Partial<SuperPromptEnrichmentData> } {
+    if (!bindingQuality || bindingQuality.length === 0) {
+      return {
+        entry: {
+          id: 'binding_quality',
+          label: 'Binding Quality',
+          applied: false,
+          skip_reason: 'No binding quality data available',
+          token_estimate: 0,
+          summary: 'Skipped — no binding data',
+        },
+        promptSection: '',
+        data: {},
+      };
+    }
+
+    const paragraphAtomIds = new Set(entry.atom_ids);
+    const relevant = bindingQuality.filter(bq => paragraphAtomIds.has(bq.atomId));
+
+    if (relevant.length === 0) {
+      return {
+        entry: {
+          id: 'binding_quality',
+          label: 'Binding Quality',
+          applied: false,
+          skip_reason: 'No binding quality data for paragraph atoms',
+          token_estimate: 0,
+          summary: 'Skipped — no relevant bindings',
+        },
+        promptSection: '',
+        data: {},
+      };
+    }
+
+    const parts = ['<binding_quality>'];
+    const scores: NonNullable<SuperPromptEnrichmentData['binding_scores']> = [];
+
+    for (const bq of relevant) {
+      const emphasis: 'high' | 'medium' | 'low' =
+        bq.scores.overall >= 0.7 ? 'high' :
+        bq.scores.overall >= 0.45 ? 'medium' : 'low';
+
+      const guidance =
+        emphasis === 'high' ? 'Feature prominently with direct quotation.' :
+        emphasis === 'medium' ? 'Use for paraphrase support.' :
+        'Use sparingly, prefer stronger evidence.';
+
+      parts.push(`<binding atom="${bq.atomId}" quote="${bq.quoteId}" emphasis="${emphasis}">${guidance}</binding>`);
+
+      scores.push({
+        atom_id: bq.atomId,
+        quote_id: bq.quoteId,
+        overall: bq.scores.overall,
+        emphasis,
+      });
+    }
+
+    parts.push('</binding_quality>');
+    const section = parts.join('\n');
+
+    return {
+      entry: {
+        id: 'binding_quality',
+        label: 'Binding Quality',
+        applied: true,
+        token_estimate: this.estimateTokens(section),
+        summary: `${relevant.length} binding(s) scored`,
+      },
+      promptSection: section,
+      data: { binding_scores: scores },
+    };
+  }
+
+  private buildQuoteContextEnrichment(
+    entry: ParagraphPlanEntry,
+    spans: QuoteSpan[],
+  ): { entry: SuperPromptEnrichmentEntry; promptSection: string; data: Partial<SuperPromptEnrichmentData> } {
+    const quoteSpans = entry.required_quotes
+      .map(id => spans.find(s => s.quote_id === id))
+      .filter((s): s is QuoteSpan => !!s);
+
+    const contextualized = quoteSpans.filter(
+      s => s.context_before || s.context_after || s.core_text,
+    );
+
+    if (contextualized.length === 0) {
+      return {
+        entry: {
+          id: 'quote_context',
+          label: 'Quote Context',
+          applied: false,
+          skip_reason: 'No quotes with context windows',
+          token_estimate: 0,
+          summary: 'Skipped — no context windows',
+        },
+        promptSection: '',
+        data: {},
+      };
+    }
+
+    const parts = ['<quote_context>'];
+    const contexts: NonNullable<SuperPromptEnrichmentData['quote_contexts']> = [];
+
+    for (const span of contextualized) {
+      parts.push(`<quote_window id="${span.quote_id}">`);
+      if (span.context_before) parts.push(`<preceding_passage>...${span.context_before}</preceding_passage>`);
+      if (span.core_text) parts.push(`<exact_quote>${span.core_text}</exact_quote>`);
+      if (span.context_after) parts.push(`<following_passage>${span.context_after}...</following_passage>`);
+      parts.push('</quote_window>');
+
+      contexts.push({
+        quote_id: span.quote_id,
+        context_before: span.context_before,
+        context_after: span.context_after,
+        core_text: span.core_text,
+      });
+    }
+
+    parts.push('</quote_context>');
+    const section = parts.join('\n');
+
+    return {
+      entry: {
+        id: 'quote_context',
+        label: 'Quote Context',
+        applied: true,
+        token_estimate: this.estimateTokens(section),
+        summary: `${contextualized.length} quote(s) with context`,
+      },
+      promptSection: section,
+      data: { quote_contexts: contexts },
+    };
+  }
+
+  private buildParagraphFunctionEnrichment(
+    entry: ParagraphPlanEntry,
+    plan: ParagraphPlanEntry[],
+  ): { entry: SuperPromptEnrichmentEntry; promptSection: string; data: Partial<SuperPromptEnrichmentData> } {
+    if (plan.length === 0) {
+      return {
+        entry: {
+          id: 'paragraph_function',
+          label: 'Paragraph Function',
+          applied: false,
+          skip_reason: 'Empty paragraph plan',
+          token_estimate: 0,
+          summary: 'Skipped — empty plan',
+        },
+        promptSection: '',
+        data: {},
+      };
+    }
+
+    const sorted = [...plan].sort((a, b) => a.paragraph_order - b.paragraph_order);
+    const index = sorted.findIndex(p => p.paragraph_id === entry.paragraph_id);
+    const total = sorted.length;
+
+    const position: 'opening' | 'body' | 'closing' =
+      index === 0 ? 'opening' :
+      index === total - 1 ? 'closing' : 'body';
+
+    const precedingFacets = sorted.slice(0, index).flatMap(p => p.atom_ids);
+    const followingFacets = sorted.slice(index + 1).flatMap(p => p.atom_ids);
+
+    const positionInstructions: Record<string, string> = {
+      opening: 'This is the OPENING paragraph. Introduce the topic, establish the argumentative frame, and orient the reader to what follows.',
+      body: `This is paragraph ${index + 1} of ${total}. Develop the argument building on preceding claims.`,
+      closing: 'This is the CLOSING paragraph. Synthesize preceding arguments, reinforce the thesis, and provide closure.',
+    };
+
+    const section = [
+      `<paragraph_function position="${position}" index="${index + 1}" total="${total}">`,
+      positionInstructions[position],
+      '</paragraph_function>',
+    ].join('\n');
+
+    return {
+      entry: {
+        id: 'paragraph_function',
+        label: 'Paragraph Function',
+        applied: true,
+        token_estimate: this.estimateTokens(section),
+        summary: `${position} paragraph (${index + 1}/${total})`,
+      },
+      promptSection: section,
+      data: {
+        paragraph_function: {
+          position,
+          paragraph_index: index,
+          total_paragraphs: total,
+          preceding_facets: precedingFacets,
+          following_facets: followingFacets,
+        },
+      },
+    };
+  }
+
+  private buildArgumentTrajectoryEnrichment(
+    entry: ParagraphPlanEntry,
+    atoms: ClaimAtom[],
+    ctx: SuperPromptSessionContext,
+  ): { entry: SuperPromptEnrichmentEntry; promptSection: string; data: Partial<SuperPromptEnrichmentData> } {
+    // Resolve facet roles for atoms in this paragraph
+    const facetIds = new Set(
+      entry.atom_ids
+        .map(id => atoms.find(a => a.atom_id === id)?.facet_id)
+        .filter((id): id is string => !!id),
+    );
+    const facets = ctx.facets.filter(f => facetIds.has(f.facet_id));
+
+    if (facets.length === 0) {
+      return {
+        entry: {
+          id: 'argument_trajectory',
+          label: 'Argument Trajectory',
+          applied: false,
+          skip_reason: 'No facets resolved',
+          token_estimate: 0,
+          summary: 'Skipped — no facets',
+        },
+        promptSection: '',
+        data: {},
+      };
+    }
+
+    // Derive rhetorical goal from facet roles
+    const roleGoals: Record<string, string> = {
+      core: 'establish the central argument with direct evidence',
+      supporting: 'provide supplementary evidence and contextual depth',
+      exploratory: 'open new lines of inquiry and suggest further implications',
+    };
+
+    const primaryRole = facets[0].facet_role;
+    const rhetoricalGoal = roleGoals[primaryRole] ?? 'develop the argument';
+
+    // Compute section trajectory from plan position
+    const sorted = [...ctx.paragraph_plan].sort((a, b) => a.paragraph_order - b.paragraph_order);
+    const idx = sorted.findIndex(p => p.paragraph_id === entry.paragraph_id);
+    const total = sorted.length;
+    const progress = total > 1 ? idx / (total - 1) : 0.5;
+
+    let trajectory: string;
+    if (progress < 0.2) {
+      trajectory = 'Introduction phase — establish premises and definitions';
+    } else if (progress < 0.5) {
+      trajectory = 'Development phase — build the core argument with evidence';
+    } else if (progress < 0.8) {
+      trajectory = 'Deepening phase — address nuances, counterarguments, and qualifications';
+    } else {
+      trajectory = 'Conclusion phase — synthesize and reinforce the thesis';
+    }
+
+    const section = [
+      '<argument_trajectory>',
+      `<rhetorical_goal>${rhetoricalGoal}</rhetorical_goal>`,
+      `<section_trajectory>${trajectory}</section_trajectory>`,
+      '</argument_trajectory>',
+    ].join('\n');
+
+    return {
+      entry: {
+        id: 'argument_trajectory',
+        label: 'Argument Trajectory',
+        applied: true,
+        token_estimate: this.estimateTokens(section),
+        summary: `Goal: ${rhetoricalGoal.slice(0, 60)}`,
+      },
+      promptSection: section,
+      data: {
+        argument_trajectory: {
+          rhetorical_goal: rhetoricalGoal,
+          section_trajectory: trajectory,
+        },
+      },
+    };
+  }
+}

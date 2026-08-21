@@ -1,0 +1,95 @@
+You are generating a scholarly, dissertation-grade academic text under strict validation constraints.
+
+Critical Rules (must be followed)
+    1. Use ONLY the local corpus.
+        1.a. Do not cite or quote any source that is not present in the local ChromaDB corpus.
+    2. Use citation_lookup before citing any author or work.
+    3. Every factual, historical, or interpretive claim that requires support must be cited.
+    4. Quoted material must be copied VERBATIM from the corpus.
+        4.a. If you cannot find an exact quotation, paraphrase WITHOUT quotation marks and cite the source.
+    5. Do not invent citations, page numbers, or quotations.
+    6. If a claim cannot be supported by the corpus, either:
+        6.a. weaken it (qualify it as interpretive/speculative), or
+        6.b. omit it entirely.
+
+Topic
+    1. Articulate Aristotle's understanding of:
+        1.a. motion (kinesis),
+        1.b. time (chronos),
+        1.c. the relationship between motion and time,
+        1.d. and how aisthēsis and phantasia function within Aristotle's temporal framework.
+    2. Additionally, explicitly engage Heidegger's interpretation of Aristotle, drawing on Martin Heidegger, Basic Concepts of Aristotelian Philosophy (2009), including several verbatim quotations from that work, if relevant to Aristotle's concepts.
+
+Required Structure
+Generate approximately 2,000 words, organized into the following units:
+    1. Aristotle on Motion
+        1.a. Focus on Physics III (definition of motion).
+        1.b. This section is expected to include textually grounded claims and may include verbatim quotations.
+    2. Aristotle on Time
+        2.a. Focus on Physics IV (time as number/measure of motion).
+        2.b. Clearly articulate the dependence relation between motion and time.
+        2.c. Citations are mandatory for definitional and dependency claims.
+    3. The Relation Between Motion and Time
+        3.a. Explain how time depends on motion and number.
+        3.b. This section may include inferential and conceptual claims, but must still be grounded in corpus sources.
+    4. Aisthēsis and Temporal Awareness
+        4.a. Explain perception's role in discriminating the "now."
+        4.b. Support claims with Aristotle where available.
+    5. Phantasia and Temporal Unification
+        5.a. Explain how phantasia enables retention, anticipation, or continuity across time.
+        5.b. Use citations for claims about Aristotle's psychological architecture.
+    6. Heidegger's Interpretation of Aristotle
+        6.a. Engage Heidegger's reading of Aristotle on motion, time, and perception.
+        6.b. Include at least 3 verbatim quotations from Basic Concepts of Aristotelian Philosophy if supported by the corpus.
+        6.c. Quotations must be exact and cited.
+    7. Conclusion
+        7.a. Summarize without introducing new unsupported claims.
+        7.b. Prefer synthesis over new factual assertions.
+
+Validation Transparency Requirement
+After the main text, include a clearly labeled Validation Appendix containing:
+    1. Claim Map
+        1.a. A list of detected claims with:
+            1.a.1. claim text
+            1.a.2. claim type (factual / interpretive / evaluative)
+            1.a.3. whether a citation was required
+            1.a.4. citation(s) used (if any)
+    2. Quotation Ledger
+        2.a Each quotation used, with:
+            2.a.1. quoted text
+            2.a.2. author
+            2.a.3 work
+            2.a.4. page or corpus reference (if available)
+    3. Citation Ledger
+        3.a. Full list of all citations used in the document.
+    4. Validation Summary
+        4.a. Number of claims detected
+        4.b. Number of claims requiring citation
+        4.c. Number of claims successfully cited
+        4.d. Number of quotations attempted
+        4.e. Number of quotations verified as verbatim
+        4.f. Any sections that required retries or were replaced with placeholders
+
+Final Instruction
+    1. This task is designed to stress-test strict academic validation.
+    2. If a paragraph cannot pass validation, it is preferable to fail explicitly or produce a placeholder rather than include unsupported content.
+    3. Present the final output formatted as a Markdown (.md) document including:
+        3.a. the generated text
+            3.a.1. The full generated document, including any explicit placeholders for failed units.
+        3.b. Quality Gauntlet Results
+            3.b.1. Overall pass/fail status
+            3.b.2. Per-stage results (including the claim validation stage)
+            3.b.3. Any critical or blocking issues identified
+        3.c. Claim inventory
+            3.c.1. A list of detected claims, each including:
+                3.c.1.a. claim text
+                3.c.1.b. claim type (factualy / interpretive / evaluative / etc.)
+                3.c.1.c. whether a citation was required
+                3.c.1.d. citation(s) provided, if any
+                3.c.1.e. final verification status (supported / unsupported / contradicted / blocked)
+        3.d. quote inventory
+            3.d.1. a list of all quotations used, each including:
+                3.d.1.a. quoted text
+                3.d.1.b. source author and work
+                3.d.1.c. page or corpus reference (if available)
+                3.d.1.d. whether the quote passed verbatim fidelity validation.

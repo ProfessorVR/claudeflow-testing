@@ -1,0 +1,695 @@
+/**
+ * LLM Claim Provider — Generates Toulmin-structured claims from a PromptSpec
+ *
+ * Thin wrapper around ModelRouter.callJSON() that produces ToulminClaim[]
+ * grounded in retrieved QuoteSpan evidence. Same pattern as
+ * LLMDecompositionProviderImpl and LLMGenerationProviderImpl.
+ *
+ * Features:
+ *   - Generates 3-8 Toulmin claims per facet from research questions + evidence
+ *   - Grounds claims in actual QuoteSpan texts (no hallucinated evidence)
+ *   - Builds ClaimMap with hierarchy and metadata
+ *   - Uses costTier: 'high' (Anthropic Claude) — academic reasoning task
+ *
+ * @module llm-claim-provider
+ */
+
+import { randomUUID } from 'crypto';
+import type { ModelRouter } from './model-router.js';
+import type { PromptSpec, QuoteSpan } from './icp-types.js';
+
+/** User-specified source priority for claim generation */
+export interface SourcePriorityConfig {
+  primarySources: Array<{ author: string; title: string } | string>;
+  secondarySources: Array<{ author: string; title: string } | string>;
+  searchAll: boolean;
+  corpusFolder?: string;
+}
+import type {
+  ToulminClaim,
+  ClaimMap,
+  ClaimQuality,
+  ClaimLocation,
+  CitationAnchor,
+} from '../../cli/composition/sir/claim-map.js';
+
+// =============================================================================
+// SYSTEM PROMPT
+// =============================================================================
+
+const CLAIM_GENERATION_SYSTEM_PROMPT = `You are an expert academic philosopher generating Toulmin-structured claims for evidence-first scholarly writing.
+
+Given a research question, its thematic facets, and retrieved corpus evidence (quote spans), produce Toulmin claims that are GROUNDED in the provided evidence. Every claim must be anchored to at least one quote span.
+
+For each claim provide:
+- id: Unique claim identifier (e.g., "C1", "C2", "C3")
+- claim: The thesis/conclusion statement
+- grounds: Array of evidence statements drawn FROM the provided quote spans (2-4 per claim)
+- warrant: Reasoning connecting grounds to claim (REQUIRED)
+- backing: Support for the warrant (optional)
+- qualification: Degree of certainty, hedging language (optional)
+- rebuttal: Counterarguments addressed (optional)
+- citations: Array of citation anchors referencing the source_anchors from the evidence
+- facet_name: Which facet this claim primarily addresses
+
+RULES:
+1. Every ground MUST be derivable from the provided quote span texts
+2. Do NOT invent evidence — only use what the corpus provides
+3. Generate 4-6 claims total, covering the research question's facets
+4. Claims should build on each other (foundational definitions first, then analysis)
+5. Include warrants that explain WHY the grounds support the claim
+6. Keep each ground to 1-2 sentences. Keep citations concise.
+
+SOURCE PRIORITY RULES:
+7. When evidence is labeled PRIMARY, prefer it for direct quotation in grounds. Aim for 60%+ of grounds from primary-labeled evidence when available.
+8. SECONDARY sources provide interpretation and scholarly framing — use them in warrants, backing, and contextual commentary.
+9. When both primary and secondary evidence covers the same concept, prefer primary for grounds and secondary for warrants.
+10. The corpus may contain primary author texts within scholarly commentary. Extract and cite the primary author's own words when they appear in the corpus evidence, attributing them to the primary author.
+
+IMPORTANT: Always generate claims from the available evidence. Even if the evidence comes from scholarly commentary about a primary author, use the quotations and ideas present in that commentary to construct well-grounded claims. Never refuse to generate claims.
+
+Respond ONLY with valid JSON matching this schema:
+{
+  "thesis": "string (overarching thesis statement)",
+  "claims": [
+    {
+      "id": "string",
+      "claim": "string",
+      "grounds": ["string"],
+      "warrant": "string",
+      "backing": "string or null",
+      "qualification": "string or null",
+      "rebuttal": "string or null",
+      "citations": [
+        {
+          "key": "string",
+          "author": "string",
+          "year": 0,
+          "locator": "string or null",
+          "fullCitation": "string",
+          "isPrimary": true
+        }
+      ],
+      "facet_name": "string"
+    }
+  ]
+}`;
+
+// =============================================================================
+// PROVIDER IMPLEMENTATION
+// =============================================================================
+
+export class LLMClaimProvider {
+  private readonly router: ModelRouter;
+
+  constructor(router: ModelRouter) {
+    this.router = router;
+  }
+
+  /**
+   * Generate Toulmin-structured claims from a research prompt and evidence.
+   *
+   * @param promptSpec - Decomposed research question with facets
+   * @param quoteSpans - Retrieved and verified quote spans for grounding
+   * @returns Claims array and assembled ClaimMap
+   */
+  async generateClaims(
+    promptSpec: PromptSpec,
+    quoteSpans: QuoteSpan[],
+    sourcePriority?: SourcePriorityConfig,
+  ): Promise<{ claims: ToulminClaim[]; claimMap: ClaimMap }> {
+    const userPrompt = buildClaimPrompt(promptSpec, quoteSpans, sourcePriority);
+
+    // Use call() instead of callJSON() so we can repair the JSON ourselves
+    const response = await this.router.call({
+      systemPrompt: CLAIM_GENERATION_SYSTEM_PROMPT,
+      userPrompt,
+      jsonMode: true,
+      costTier: 'high',
+      temperature: 0.3,
+      maxTokens: 8000,
+    });
+
+    const result = parseAndRepairClaimsJSON(response.content);
+
+    // Build full ClaimMap from validated claims
+    const claimMap = buildClaimMap(result.thesis, result.claims, promptSpec);
+
+    return { claims: result.claims, claimMap };
+  }
+}
+
+// =============================================================================
+// PROMPT BUILDER
+// =============================================================================
+
+function buildClaimPrompt(
+  promptSpec: PromptSpec,
+  quoteSpans: QuoteSpan[],
+  sourcePriority?: SourcePriorityConfig,
+): string {
+  const parts: string[] = [
+    `RESEARCH QUESTION: ${promptSpec.original_prompt}`,
+    '',
+    'RESEARCH SUB-QUESTIONS:',
+    ...promptSpec.research_questions.map((q, i) => `${i + 1}. ${q}`),
+    '',
+    'THEMATIC FACETS:',
+  ];
+
+  for (const facet of promptSpec.required_facets) {
+    parts.push(`- ${facet.name}: ${facet.description}`);
+  }
+  for (const facet of promptSpec.optional_facets) {
+    parts.push(`- ${facet.name} (optional): ${facet.description}`);
+  }
+
+  if (quoteSpans.length === 0) {
+    parts.push('', 'CORPUS EVIDENCE (quote spans — use these as grounds):');
+    parts.push('  (No quote spans available — generate claims based on research questions and facets only)');
+  } else if (sourcePriority && (sourcePriority.primarySources.length > 0 || sourcePriority.secondarySources.length > 0)) {
+    // Group spans by source priority tier
+    const primaryPatterns = sourcePriority.primarySources.map(s => typeof s === 'string' ? s.toLowerCase() : `${s.author} ${s.title}`.toLowerCase());
+    const secondaryPatterns = sourcePriority.secondarySources.map(s => typeof s === 'string' ? s.toLowerCase() : `${s.author} ${s.title}`.toLowerCase());
+
+    const primarySpans: QuoteSpan[] = [];
+    const secondarySpans: QuoteSpan[] = [];
+    const otherSpans: QuoteSpan[] = [];
+
+    for (const span of quoteSpans) {
+      // Check source_anchor, doc_id, AND span text content for author matching
+      const anchor = (span.source_anchor ?? '').toLowerCase();
+      const docId = (span.doc_id ?? '').toLowerCase();
+      const spanText = (span.repaired_text ?? span.text ?? '').toLowerCase();
+      const matchField = `${anchor} ${docId} ${spanText}`;
+      if (primaryPatterns.some(p => anchor.includes(p) || docId.includes(p))) {
+        primarySpans.push(span);
+      } else if (secondaryPatterns.some(p => anchor.includes(p) || docId.includes(p))) {
+        secondarySpans.push(span);
+      } else if (primaryPatterns.some(p => matchField.includes(p))) {
+        // Span text mentions primary author — treat as primary even if metadata doesn't match
+        primarySpans.push(span);
+      } else if (secondaryPatterns.some(p => matchField.includes(p))) {
+        secondarySpans.push(span);
+      } else {
+        otherSpans.push(span);
+      }
+    }
+
+    // Show primary sources first (all of them, up to 40)
+    parts.push('', '=== PRIMARY SOURCE EVIDENCE (cite these DIRECTLY with verbatim quotations) ===');
+    const fmtSources = (arr: any[]) => arr.map(s => typeof s === 'string' ? s : `${s.author} — ${s.title}`).join(', ');
+    parts.push(`Sources: ${fmtSources(sourcePriority.primarySources)}`);
+    if (primarySpans.length === 0) {
+      parts.push('  (No spans matched primary source metadata, but all evidence below discusses the primary authors. Use the most directly relevant quotations as primary evidence.)');
+    } else {
+      for (const span of primarySpans.slice(0, 40)) {
+        const anchor = span.source_anchor ?? span.doc_id;
+        const text = (span.repaired_text ?? span.text).slice(0, 300);
+        parts.push(`  [${span.quote_id}] "${text}" — ${anchor}`);
+      }
+    }
+
+    // Then secondary sources (up to 20)
+    parts.push('', '=== SECONDARY SOURCE EVIDENCE (use for interpretation and commentary) ===');
+    parts.push(`Sources: ${fmtSources(sourcePriority.secondarySources)}`);
+    if (secondarySpans.length === 0) {
+      parts.push('  (No secondary source spans retrieved)');
+    } else {
+      for (const span of secondarySpans.slice(0, 20)) {
+        const anchor = span.source_anchor ?? span.doc_id;
+        const text = (span.repaired_text ?? span.text).slice(0, 200);
+        parts.push(`  [${span.quote_id}] "${text}" — ${anchor}`);
+      }
+    }
+
+    // Then other sources if searchAll is enabled (up to 10)
+    if (sourcePriority.searchAll && otherSpans.length > 0) {
+      parts.push('', '=== OTHER CORPUS EVIDENCE (supplementary) ===');
+      for (const span of otherSpans.slice(0, 10)) {
+        const anchor = span.source_anchor ?? span.doc_id;
+        const text = (span.repaired_text ?? span.text).slice(0, 150);
+        parts.push(`  [${span.quote_id}] "${text}" — ${anchor}`);
+      }
+    }
+
+    parts.push('');
+    parts.push('PRIORITY INSTRUCTION: At least 60% of claim grounds MUST draw from PRIMARY source evidence.');
+    parts.push('Each claim about a primary author\'s concept MUST include at least one verbatim quotation from that author.');
+    parts.push('Use secondary sources for interpretation, commentary, and contextual framing only.');
+  } else {
+    // No source priority — show all spans (up to 50)
+    parts.push('', 'CORPUS EVIDENCE (quote spans — use these as grounds):');
+    for (const span of quoteSpans.slice(0, 50)) {
+      const anchor = span.source_anchor ?? span.doc_id;
+      const text = (span.repaired_text ?? span.text).slice(0, 200);
+      parts.push(`  [${span.quote_id}] "${text}" — ${anchor}`);
+    }
+  }
+
+  parts.push('', `Generate Toulmin claims grounded in this evidence. Target 4-6 claims.`);
+
+  return parts.join('\n');
+}
+
+// =============================================================================
+// VALIDATION
+// =============================================================================
+
+interface RawClaimResult {
+  thesis: string;
+  claims: ToulminClaim[];
+}
+
+/**
+ * Extract, repair, and parse JSON from LLM response.
+ * Handles: markdown code blocks, unescaped newlines in strings,
+ * truncated responses (closes open brackets), unescaped control chars,
+ * trailing commas, and other common LLM JSON issues.
+ */
+function parseAndRepairClaimsJSON(content: string): RawClaimResult {
+  // 1. Extract from code blocks
+  let jsonStr = content;
+  const codeBlockMatch = content.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+  if (codeBlockMatch) {
+    jsonStr = codeBlockMatch[1].trim();
+  } else {
+    const objMatch = content.match(/(\{[\s\S]*\})/);
+    if (objMatch) jsonStr = objMatch[1].trim();
+  }
+
+  // 2. Try parsing as-is
+  try {
+    return validateClaimsResult(JSON.parse(jsonStr));
+  } catch { /* fall through to repair */ }
+
+  // 3. Repair: escape unescaped newlines/tabs inside JSON string values
+  let repaired = escapeNewlinesInStrings(jsonStr);
+
+  try {
+    return validateClaimsResult(JSON.parse(repaired));
+  } catch { /* fall through */ }
+
+  // 4. Repair: fix trailing commas before ] or }
+  repaired = repaired.replace(/,\s*([\]}])/g, '$1');
+
+  try {
+    return validateClaimsResult(JSON.parse(repaired));
+  } catch { /* fall through */ }
+
+  // 5. Repair: close truncated JSON (missing closing brackets)
+  repaired = repairTruncatedJSON(repaired);
+
+  try {
+    return validateClaimsResult(JSON.parse(repaired));
+  } catch { /* fall through to aggressive repair */ }
+
+  // 6. Aggressive repair: strip all control characters from string values,
+  //    handle unescaped quotes by replacing problematic patterns
+  repaired = aggressiveJSONRepair(jsonStr);
+
+  try {
+    return validateClaimsResult(JSON.parse(repaired));
+  } catch { /* fall through */ }
+
+  // 7. Last resort: close truncated aggressive repair
+  repaired = repairTruncatedJSON(repaired);
+
+  try {
+    return validateClaimsResult(JSON.parse(repaired));
+  } catch (err) {
+    throw new Error(
+      `Claim JSON repair failed: ${err instanceof Error ? err.message : String(err)}. ` +
+      `Raw content (first 300 chars): ${content.slice(0, 300)}...`,
+    );
+  }
+}
+
+/**
+ * Aggressive JSON repair: rebuild string values by escaping all problematic
+ * characters and handling unescaped internal quotes.
+ */
+function aggressiveJSONRepair(json: string): string {
+  const out: string[] = [];
+  let inString = false;
+  let escaped = false;
+
+  for (let i = 0; i < json.length; i++) {
+    const ch = json[i];
+
+    if (escaped) {
+      // Validate escape sequence — if it's not a valid JSON escape, just emit the char
+      if ('"\\\/bfnrtu'.includes(ch)) {
+        out.push(ch);
+      } else {
+        // Invalid escape like \a or \' — emit both chars escaped
+        out.push('\\');
+        out.push(ch);
+      }
+      escaped = false;
+      continue;
+    }
+
+    if (ch === '\\' && inString) {
+      out.push(ch);
+      escaped = true;
+      continue;
+    }
+
+    if (ch === '"') {
+      if (!inString) {
+        inString = true;
+        out.push(ch);
+        continue;
+      }
+      // We're in a string and hit a quote — is this the closing quote?
+      // Look ahead: if the next non-whitespace char is : , ] } then it's a closer
+      const ahead = json.slice(i + 1).match(/^\s*([,:}\]])/);
+      if (ahead) {
+        // Closing quote
+        inString = false;
+        out.push(ch);
+        continue;
+      }
+      // Check if next char starts a new key or value (another quote right after whitespace+comma)
+      const aheadStr = json.slice(i + 1).match(/^\s*"[^"]/);
+      if (aheadStr) {
+        // This looks like a closing quote before the next key/value
+        inString = false;
+        out.push(ch);
+        continue;
+      }
+      // Otherwise it's an unescaped quote inside a string — escape it
+      out.push('\\"');
+      continue;
+    }
+
+    if (inString) {
+      // Escape control characters
+      const code = ch.charCodeAt(0);
+      if (code < 0x20) {
+        if (ch === '\n') { out.push('\\n'); continue; }
+        if (ch === '\r') { out.push('\\r'); continue; }
+        if (ch === '\t') { out.push('\\t'); continue; }
+        // Other control chars — use unicode escape
+        out.push('\\u' + code.toString(16).padStart(4, '0'));
+        continue;
+      }
+    }
+
+    out.push(ch);
+  }
+
+  // Close unclosed string
+  if (inString) out.push('"');
+
+  let result = out.join('');
+
+  // Fix trailing commas
+  result = result.replace(/,\s*([\]}])/g, '$1');
+
+  return result;
+}
+
+/**
+ * Escape literal newlines and tabs inside JSON string values.
+ * Walks character-by-character tracking string boundaries.
+ */
+function escapeNewlinesInStrings(json: string): string {
+  const out: string[] = [];
+  let inString = false;
+  let escaped = false;
+
+  for (let i = 0; i < json.length; i++) {
+    const ch = json[i];
+
+    if (escaped) {
+      out.push(ch);
+      escaped = false;
+      continue;
+    }
+
+    if (ch === '\\' && inString) {
+      out.push(ch);
+      escaped = true;
+      continue;
+    }
+
+    if (ch === '"') {
+      inString = !inString;
+      out.push(ch);
+      continue;
+    }
+
+    if (inString) {
+      if (ch === '\n') { out.push('\\n'); continue; }
+      if (ch === '\r') { out.push('\\r'); continue; }
+      if (ch === '\t') { out.push('\\t'); continue; }
+    }
+
+    out.push(ch);
+  }
+
+  return out.join('');
+}
+
+/**
+ * Attempt to close truncated JSON by tracking open brackets/braces.
+ * Removes the last incomplete element and closes all open structures.
+ */
+function repairTruncatedJSON(json: string): string {
+  // Find the last valid position (last complete value before truncation)
+  const stack: string[] = [];
+  let inString = false;
+  let escaped = false;
+  let lastValidComma = -1;
+
+  for (let i = 0; i < json.length; i++) {
+    const ch = json[i];
+
+    if (escaped) {
+      escaped = false;
+      continue;
+    }
+
+    if (ch === '\\' && inString) {
+      escaped = true;
+      continue;
+    }
+
+    if (ch === '"') {
+      inString = !inString;
+      continue;
+    }
+
+    if (inString) continue;
+
+    if (ch === '{') stack.push('}');
+    else if (ch === '[') stack.push(']');
+    else if (ch === '}' || ch === ']') stack.pop();
+    else if (ch === ',') lastValidComma = i;
+  }
+
+  // If string is unclosed, close it
+  if (inString) {
+    json += '"';
+  }
+
+  // If we have open structures, truncate at last comma and close them
+  if (stack.length > 0 && lastValidComma > 0) {
+    json = json.slice(0, lastValidComma);
+  }
+
+  // Close all open structures
+  while (stack.length > 0) {
+    json += stack.pop();
+  }
+
+  return json;
+}
+
+function validateClaimsResult(raw: unknown): RawClaimResult {
+  if (!raw || typeof raw !== 'object') {
+    throw new Error('Claims result must be an object');
+  }
+
+  const obj = raw as Record<string, unknown>;
+
+  // Validate thesis
+  const thesis = typeof obj.thesis === 'string' ? obj.thesis : 'Research thesis';
+
+  // Validate claims array
+  if (!Array.isArray(obj.claims) || obj.claims.length === 0) {
+    throw new Error('Claims result must contain at least 1 claim');
+  }
+
+  const claims: ToulminClaim[] = obj.claims
+    .filter((c): c is Record<string, unknown> => c != null && typeof c === 'object')
+    .map((c, i) => validateSingleClaim(c, i));
+
+  if (claims.length === 0) {
+    throw new Error('No valid claims in result');
+  }
+
+  return { thesis, claims };
+}
+
+function validateSingleClaim(raw: Record<string, unknown>, index: number): ToulminClaim {
+  const id = typeof raw.id === 'string' ? raw.id : `C${index + 1}`;
+  const claim = typeof raw.claim === 'string' ? raw.claim : '';
+  if (!claim) {
+    throw new Error(`Claim ${id} has no claim text`);
+  }
+
+  const grounds = Array.isArray(raw.grounds)
+    ? raw.grounds.filter((g): g is string => typeof g === 'string' && g.length > 0)
+    : [];
+  if (grounds.length === 0) {
+    throw new Error(`Claim ${id} has no grounds`);
+  }
+
+  const warrant = typeof raw.warrant === 'string' ? raw.warrant : '';
+  if (!warrant) {
+    throw new Error(`Claim ${id} has no warrant`);
+  }
+
+  const backing = typeof raw.backing === 'string' ? raw.backing : undefined;
+  const qualification = typeof raw.qualification === 'string' ? raw.qualification : undefined;
+  const rebuttal = typeof raw.rebuttal === 'string' ? raw.rebuttal : undefined;
+
+  // Validate citations
+  const citations: CitationAnchor[] = Array.isArray(raw.citations)
+    ? raw.citations
+        .filter((c): c is Record<string, unknown> => c != null && typeof c === 'object')
+        .map(c => ({
+          key: typeof c.key === 'string' ? c.key : `${id}-ref`,
+          author: typeof c.author === 'string' ? c.author : 'Unknown',
+          year: typeof c.year === 'number' ? c.year : 0,
+          locator: typeof c.locator === 'string' ? c.locator : undefined,
+          fullCitation: typeof c.fullCitation === 'string' ? c.fullCitation : '',
+          isPrimary: typeof c.isPrimary === 'boolean' ? c.isPrimary : true,
+        }))
+    : [];
+
+  // Compute scores
+  const warrantGenerality = 0.7; // Default reasonable score
+  const completenessScore = computeCompleteness(claim, grounds, warrant, backing, qualification, rebuttal);
+
+  const location: ClaimLocation = {
+    sectionId: '1',
+    paragraphIndex: index,
+  };
+
+  const quality: ClaimQuality = {
+    toulminCompleteness: completenessScore,
+    warrantQuality: warrantGenerality,
+    evidenceStrength: Math.min(1.0, grounds.length / 4),
+    counterArgumentHandling: rebuttal ? 0.8 : 0.5,
+    overallScore: 0,
+  };
+  quality.overallScore = (
+    quality.toulminCompleteness * 0.30 +
+    quality.warrantQuality * 0.25 +
+    quality.evidenceStrength * 0.25 +
+    quality.counterArgumentHandling * 0.20
+  );
+
+  return {
+    id,
+    claim,
+    grounds,
+    warrant,
+    backing,
+    qualification,
+    rebuttal,
+    warrantGenerality,
+    completenessScore,
+    citations,
+    location,
+    quality,
+  };
+}
+
+function computeCompleteness(
+  claim: string,
+  grounds: string[],
+  warrant: string,
+  backing?: string,
+  qualification?: string,
+  rebuttal?: string,
+): number {
+  let score = 0;
+  if (claim) score += 0.233;
+  if (grounds.length > 0) score += 0.233;
+  if (warrant) score += 0.234;
+  if (backing) score += 0.10;
+  if (qualification) score += 0.10;
+  if (rebuttal) score += 0.10;
+  return Math.min(1.0, score);
+}
+
+// =============================================================================
+// CLAIM MAP BUILDER
+// =============================================================================
+
+function buildClaimMap(
+  thesis: string,
+  claims: ToulminClaim[],
+  promptSpec: PromptSpec,
+): ClaimMap {
+  // Build thesis claim for hierarchy
+  const thesisClaim: ToulminClaim = {
+    id: 'thesis',
+    claim: thesis,
+    grounds: claims.map(c => c.claim),
+    warrant: `The analysis of ${promptSpec.original_prompt} proceeds through these constituent claims.`,
+    warrantGenerality: 0.8,
+    completenessScore: 0.7,
+    citations: [],
+    location: { sectionId: '0', paragraphIndex: 0 },
+    quality: {
+      toulminCompleteness: 0.7,
+      warrantQuality: 0.8,
+      evidenceStrength: Math.min(1.0, claims.length / 4),
+      counterArgumentHandling: 0.5,
+      overallScore: 0.7,
+    },
+  };
+
+  // Group claims into a single section
+  const sections = [{
+    sectionId: '1',
+    title: promptSpec.required_facets[0]?.name ?? 'Main Argument',
+    claims,
+  }];
+
+  // Compute metadata
+  const totalClaims = claims.length;
+  const completeClaims = claims.filter(c => c.completenessScore >= 0.7).length;
+  const claimsWithRebuttals = claims.filter(c => c.rebuttal).length;
+  const avgWarrantGenerality = claims.reduce((s, c) => s + c.warrantGenerality, 0) / totalClaims;
+  const avgCompleteness = claims.reduce((s, c) => s + c.completenessScore, 0) / totalClaims;
+  const avgQuality = claims.reduce((s, c) => s + c.quality.overallScore, 0) / totalClaims;
+
+  return {
+    claims,
+    dependencies: new Map(),
+    hierarchy: {
+      thesis: thesisClaim,
+      sections,
+    },
+    metadata: {
+      totalClaims,
+      completeClaims,
+      claimsWithRebuttals,
+      averageWarrantGenerality: avgWarrantGenerality,
+      averageCompletenessScore: avgCompleteness,
+      averageQuality: avgQuality,
+      validationStatus: {
+        passed: true,
+        score: avgQuality,
+        issues: [],
+      },
+    },
+  };
+}

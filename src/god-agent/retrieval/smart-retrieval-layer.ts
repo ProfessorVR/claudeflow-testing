@@ -1187,14 +1187,15 @@ export class SmartRetrievalLayer {
     if (this.config.rerank?.enabled !== undefined) return this.config.rerank.enabled;
     const env = process.env.GOD_RERANK_ENABLED;
     if (env !== undefined) return env === 'true' || env === '1';
-    return true;
+    // WRAITH retired (index-overhaul A6): default OFF, and no baked-in endpoint.
+    return false;
   }
 
   private rerankEndpoint(): string {
     return (
       this.config.rerank?.endpoint ||
       process.env.GOD_RERANK_ENDPOINT ||
-      'http://192.168.50.22:8100/v1/rerank'
+      ''
     );
   }
 
@@ -1207,7 +1208,7 @@ export class SmartRetrievalLayer {
   }
 
   /**
-   * Re-rank results with a cross-encoder (wraith-infer POST /v1/rerank).
+   * Re-rank results with a cross-encoder via a configured /v1/rerank endpoint (WRAITH retired; off by default).
    *
    * Replaces relevanceScore with the cross-encoder score (preserving the retrieval cosine
    * in retrievalScore) and reorders descending. Runs BEFORE the canonical-term / KG boosts

@@ -1,0 +1,138 @@
+{"timestamp":"2026-03-07T00:47:12.671Z","level":"INFO","message":"Configuration initialized","context":{"service":"config-manager","configPath":null,"version":"2.1.0"}}
+{"timestamp":"2026-03-07T00:47:12.676Z","level":"INFO","message":"Initializing Layer 1: Native Core","context":{}}
+{"timestamp":"2026-03-07T00:47:12.677Z","level":"INFO","message":"Initializing Layer 2: Reasoning","context":{}}
+{"timestamp":"2026-03-07T00:47:12.677Z","level":"INFO","message":"Initializing Layer 3: Memory","context":{}}
+{"timestamp":"2026-03-07T00:47:12.721Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+{"timestamp":"2026-03-07T00:47:12.721Z","level":"INFO","message":"No existing causal graph found, starting fresh","context":{"component":"CausalMemory"}}
+{"timestamp":"2026-03-07T00:47:12.915Z","level":"INFO","message":"Initializing Layer 4: Learning","context":{}}
+{"timestamp":"2026-03-07T00:47:12.918Z","level":"INFO","message":"SonaEngine created with database persistence enabled","context":{}}
+{"timestamp":"2026-03-07T00:47:12.918Z","level":"INFO","message":"SonaEngine persistence verified - DAOs initialized","context":{}}
+{"timestamp":"2026-03-07T00:47:12.918Z","level":"INFO","message":"  Trajectory metadata: {\"totalCount\":2056,\"activeCount\":145,\"completedCount\":665,\"failedCount\":1246,\"abandonedCount\":0,\"avgQualityScore\":0.36147026636631535,\"avgStepCount\":0.3044747081712062,\"totalFileBytes\":0}","context":{}}
+{"timestamp":"2026-03-07T00:47:12.918Z","level":"INFO","message":"  Patterns: {\"totalCount\":12,\"activeCount\":12,\"deprecatedCount\":0,\"totalSuccessCount\":0,\"totalFailureCount\":0,\"averageWeight\":0.9118452787821458,\"successRate\":0}","context":{}}
+{"timestamp":"2026-03-07T00:47:12.918Z","level":"INFO","message":"  Feedback: {\"feedbackCount\":1005,\"processedCount\":607,\"unprocessedCount\":398,\"avgQuality\":0.5410986358467946,\"outcomeBreakdown\":{\"positive\":15,\"negative\":375,\"neutral\":615}}","context":{}}
+[SonaEngine] Trajectory streaming enabled
+{"timestamp":"2026-03-07T00:47:12.921Z","level":"INFO","message":"Loaded SoNA weights from disk","context":{}}
+{"timestamp":"2026-03-07T00:47:12.921Z","level":"INFO","message":"Initializing Layer 5: Orchestration","context":{}}
+{"timestamp":"2026-03-07T00:47:12.922Z","level":"INFO","message":"Initializing Unified Search","context":{}}
+{"timestamp":"2026-03-07T00:47:12.922Z","level":"info","component":"MemoryClient","message":"Connected to memory server at unix:/tmp/god-agent-memory.sock"}
+{"timestamp":"2026-03-07T00:47:12.922Z","level":"INFO","message":"MemoryClient connected for search","context":{}}
+{"timestamp":"2026-03-07T00:47:12.923Z","level":"INFO","message":"UnifiedSearch initialized","context":{}}
+{"timestamp":"2026-03-07T00:47:12.923Z","level":"INFO","message":"God Agent initialized in 246.91ms","context":{}}
+{"timestamp":"2026-03-07T00:47:12.959Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[QualityGauntlet] Stage weights sum to 1.15, not 1.0. Scores will be normalized.
+[AgentLoader] YAML parse error, using fallback extraction
+[AgentLoader] YAML parse error, using fallback extraction
+[AgentLoader] YAML parse error, using fallback extraction
+{"timestamp":"2026-03-07T00:47:13.052Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[AgentLoader] YAML parse error, using fallback extraction
+[AgentLoader] YAML parse error, using fallback extraction
+[AgentLoader] YAML parse error, using fallback extraction
+[CapabilityCache] Computing content hash for 472 files
+[CapabilityCache] Hash computed in 67.80ms: 100bc7caa6905ec6...
+[CapabilityCache] Cache HIT - loaded 253 agents in 85.76ms
+[CapabilityIndex] Cache HIT - loaded 253 agents in 89.74ms
+{"timestamp":"2026-03-07T00:47:13.310Z","level":"info","component":"MemoryClient","message":"Connected to memory server at unix:/tmp/god-agent-memory.sock"}
+{"timestamp":"2026-03-07T00:47:33.313Z","level":"ERROR","message":"DESC injection failed","context":{"component":"UCMDaemonClient","error_message":"UCM daemon timeout calling desc.inject","error_name":"Error","error_stack":"Error: UCM daemon timeout calling desc.inject\n    at Timeout._onTimeout (/home/dalton/projects/claudeflow-testing/src/god-agent/cli/ucm-daemon-client.ts:187:16)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)"}}
+[SmartRetrievalLayer] Semantic search: "**Motion and Kinesis**: Aristotle's understanding ..." (max: 7)
+[SmartRetrievalLayer] Found 14 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 14, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.7464 to 0.7992
+[SmartRetrievalLayer] Step 2 after relevance filter: 14
+[SmartRetrievalLayer] Step 3 after diversity boost: 13
+[SmartRetrievalLayer] Step 4 after rerank: 13
+[SmartRetrievalLayer] Step 5 after limit (7): 7
+[SmartRetrievalLayer] Semantic search: "**Time and Chronos**: Aristotle's account of time ..." (max: 7)
+[SmartRetrievalLayer] Found 14 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 14, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.6704 to 0.7440
+[SmartRetrievalLayer] Step 2 after relevance filter: 14
+[SmartRetrievalLayer] Step 3 after diversity boost: 13
+[SmartRetrievalLayer] Step 4 after rerank: 13
+[SmartRetrievalLayer] Step 5 after limit (7): 7
+[SmartRetrievalLayer] Semantic search: "**Motion-Time Relationship**: How motion and time ..." (max: 7)
+[SmartRetrievalLayer] Found 14 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 14, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.6281 to 0.7136
+[SmartRetrievalLayer] Step 2 after relevance filter: 14
+[SmartRetrievalLayer] Step 3 after diversity boost: 13
+[SmartRetrievalLayer] Step 4 after rerank: 13
+[SmartRetrievalLayer] Step 5 after limit (7): 7
+[SmartRetrievalLayer] Semantic search: "**Aisthesis in the Temporal Framework**: How perce..." (max: 7)
+[SmartRetrievalLayer] Found 14 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 14, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.7263 to 0.8253
+[SmartRetrievalLayer] Step 2 after relevance filter: 14
+[SmartRetrievalLayer] Step 3 after diversity boost: 14
+[SmartRetrievalLayer] Step 4 after rerank: 14
+[SmartRetrievalLayer] Step 5 after limit (7): 7
+[SmartRetrievalLayer] Semantic search: "**Phantasia and Temporal Synthesis**: How imaginat..." (max: 7)
+[SmartRetrievalLayer] Found 14 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 14, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.6853 to 0.7587
+[SmartRetrievalLayer] Step 2 after relevance filter: 14
+[SmartRetrievalLayer] Step 3 after diversity boost: 14
+[SmartRetrievalLayer] Step 4 after rerank: 14
+[SmartRetrievalLayer] Step 5 after limit (7): 7
+[SmartRetrievalLayer] Semantic search: "**Heidegger's Reading of Aristotle**: The ontologi..." (max: 7)
+[SmartRetrievalLayer] Found 14 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 14, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.6134 to 0.7386
+[SmartRetrievalLayer] Step 2 after relevance filter: 14
+[SmartRetrievalLayer] Step 3 after diversity boost: 14
+[SmartRetrievalLayer] Step 4 after rerank: 14
+[SmartRetrievalLayer] Step 5 after limit (7): 7
+[SmartRetrievalLayer] Semantic search: "**Integration**: The temporal fabric of perception..." (max: 7)
+[SmartRetrievalLayer] Found 14 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 14, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.7730 to 0.8361
+[SmartRetrievalLayer] Step 2 after relevance filter: 14
+[SmartRetrievalLayer] Step 3 after diversity boost: 14
+[SmartRetrievalLayer] Step 4 after rerank: 14
+[SmartRetrievalLayer] Step 5 after limit (7): 7
+[SmartRetrievalLayer] Semantic search: "**Claim Map**: Number each major claim (C1, C2, ....." (max: 7)
+[SmartRetrievalLayer] Found 14 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 14, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.3669 to 0.4400
+[SmartRetrievalLayer] Step 2 after relevance filter: 14
+[SmartRetrievalLayer] Step 3 after diversity boost: 13
+[SmartRetrievalLayer] Step 4 after rerank: 13
+[SmartRetrievalLayer] Step 5 after limit (7): 7
+[SmartRetrievalLayer] Semantic search: "**Quotation Fidelity Ledger**: List each direct qu..." (max: 7)
+[SmartRetrievalLayer] Found 14 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 14, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.6286 to 0.6921
+[SmartRetrievalLayer] Step 2 after relevance filter: 14
+[SmartRetrievalLayer] Step 3 after diversity boost: 14
+[SmartRetrievalLayer] Step 4 after rerank: 14
+[SmartRetrievalLayer] Step 5 after limit (7): 7
+[SmartRetrievalLayer] Semantic search: "**Citation Ledger**: All unique sources cited with..." (max: 7)
+[SmartRetrievalLayer] Found 14 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 14, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.4665 to 0.5909
+[SmartRetrievalLayer] Step 2 after relevance filter: 14
+[SmartRetrievalLayer] Step 3 after diversity boost: 14
+[SmartRetrievalLayer] Step 4 after rerank: 14
+[SmartRetrievalLayer] Step 5 after limit (7): 7
+[SmartRetrievalLayer] Semantic search: "**Validation Summary**: Total citations, corpus-ve..." (max: 7)
+[SmartRetrievalLayer] Found 14 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 14, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.4318 to 0.4853
+[SmartRetrievalLayer] Step 2 after relevance filter: 14
+[SmartRetrievalLayer] Step 3 after diversity boost: 13
+[SmartRetrievalLayer] Step 4 after rerank: 13
+[SmartRetrievalLayer] Step 5 after limit (7): 7
+[SmartRetrievalLayer] Semantic search: "**Quality Gauntlet Report**: Overall quality score..." (max: 7)
+[SmartRetrievalLayer] Found 14 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 14, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.4940 to 0.5894
+[SmartRetrievalLayer] Step 2 after relevance filter: 14
+[SmartRetrievalLayer] Step 3 after diversity boost: 14
+[SmartRetrievalLayer] Step 4 after rerank: 14
+[SmartRetrievalLayer] Step 5 after limit (7): 7
+{"timestamp":"2026-03-07T00:48:43.366Z","level":"INFO","message":"SonaEngine updated for trajectory","context":{"component":"ReasoningBank","trajectoryId":"traj_1772844453392_ac584369"}}
+{"timestamp":"2026-03-07T00:48:43.371Z","level":"info","component":"MemoryClient","message":"Disconnected from memory server"}
+{"timestamp":"2026-03-07T00:48:43.371Z","level":"INFO","message":"Shutting down God Agent...","context":{}}
+{"timestamp":"2026-03-07T00:48:43.376Z","level":"INFO","message":"SoNA weights saved to disk","context":{}}
+{"timestamp":"2026-03-07T00:48:43.376Z","level":"info","component":"MemoryClient","message":"Disconnected from memory server"}
+{"timestamp":"2026-03-07T00:48:43.376Z","level":"INFO","message":"MemoryClient disconnected","context":{}}
+{"timestamp":"2026-03-07T00:48:43.376Z","level":"INFO","message":"God Agent shutdown complete","context":{}}

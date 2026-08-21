@@ -1,0 +1,96 @@
+{"timestamp":"2026-03-19T15:21:56.042Z","level":"INFO","message":"Configuration initialized","context":{"service":"config-manager","configPath":null,"version":"2.1.0"}}
+{"timestamp":"2026-03-19T15:21:56.046Z","level":"INFO","message":"Initializing Layer 1: Native Core","context":{}}
+{"timestamp":"2026-03-19T15:21:56.047Z","level":"INFO","message":"Initializing Layer 2: Reasoning","context":{}}
+{"timestamp":"2026-03-19T15:21:56.047Z","level":"INFO","message":"Initializing Layer 3: Memory","context":{}}
+{"timestamp":"2026-03-19T15:21:56.109Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+{"timestamp":"2026-03-19T15:21:56.109Z","level":"INFO","message":"No existing causal graph found, starting fresh","context":{"component":"CausalMemory"}}
+{"timestamp":"2026-03-19T15:21:56.290Z","level":"INFO","message":"Initializing Layer 4: Learning","context":{}}
+{"timestamp":"2026-03-19T15:21:56.292Z","level":"INFO","message":"SonaEngine created with database persistence enabled","context":{}}
+{"timestamp":"2026-03-19T15:21:56.293Z","level":"INFO","message":"SonaEngine persistence verified - DAOs initialized","context":{}}
+{"timestamp":"2026-03-19T15:21:56.293Z","level":"INFO","message":"  Trajectory metadata: {\"totalCount\":2552,\"activeCount\":531,\"completedCount\":775,\"failedCount\":1246,\"abandonedCount\":0,\"avgQualityScore\":0.38167020634724147,\"avgStepCount\":0.3275862068965517,\"totalFileBytes\":0}","context":{}}
+{"timestamp":"2026-03-19T15:21:56.293Z","level":"INFO","message":"  Patterns: {\"totalCount\":27,\"activeCount\":27,\"deprecatedCount\":0,\"totalSuccessCount\":0,\"totalFailureCount\":0,\"averageWeight\":0.9067968328900103,\"successRate\":0}","context":{}}
+{"timestamp":"2026-03-19T15:21:56.293Z","level":"INFO","message":"  Feedback: {\"feedbackCount\":1120,\"processedCount\":607,\"unprocessedCount\":513,\"avgQuality\":0.5606830186002542,\"outcomeBreakdown\":{\"positive\":32,\"negative\":375,\"neutral\":713}}","context":{}}
+[SonaEngine] Trajectory streaming enabled
+{"timestamp":"2026-03-19T15:21:56.296Z","level":"INFO","message":"Loaded SoNA weights from disk","context":{}}
+{"timestamp":"2026-03-19T15:21:56.296Z","level":"INFO","message":"Initializing Layer 5: Orchestration","context":{}}
+{"timestamp":"2026-03-19T15:21:56.297Z","level":"INFO","message":"Initializing Unified Search","context":{}}
+{"timestamp":"2026-03-19T15:21:56.298Z","level":"INFO","message":"MemoryClient connection skipped (server not running)","context":{}}
+{"timestamp":"2026-03-19T15:21:56.298Z","level":"INFO","message":"UnifiedSearch initialized","context":{}}
+{"timestamp":"2026-03-19T15:21:56.298Z","level":"INFO","message":"God Agent initialized in 251.79ms","context":{}}
+{"timestamp":"2026-03-19T15:21:56.355Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[QualityGauntlet] Stage weights sum to 1.15, not 1.0. Scores will be normalized.
+{"timestamp":"2026-03-19T15:21:56.480Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[CapabilityCache] Computing content hash for 472 files
+[CapabilityCache] Hash computed in 59.95ms: 100bc7caa6905ec6...
+[CapabilityCache] Cache HIT - loaded 253 agents in 101.88ms
+[CapabilityCache] Cache load exceeded 100ms target: 101.88ms
+[CapabilityIndex] Cache HIT - loaded 253 agents in 106.05ms
+{"timestamp":"2026-03-19T15:21:56.739Z","level":"ERROR","message":"DESC injection failed","context":{"component":"UCMDaemonClient","error_message":"UCM daemon connection error: connect EAGAIN /tmp/godagent-ucm.sock","error_name":"Error","error_stack":"Error: UCM daemon connection error: connect EAGAIN /tmp/godagent-ucm.sock\n    at Socket.<anonymous> (/home/dalton/projects/claudeflow-testing/src/god-agent/cli/ucm-daemon-client.ts:215:16)\n    at Socket.emit (node:events:519:28)\n    at emitErrorNT (node:internal/streams/destroy:170:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)"}}
+[INFO] [v2] === STAGE 1: RETRIEVAL ===
+[GOLD STD] v2: Multi-query retrieval + style + single-shot generation...
+[INFO] ChromaDB collection "knowledge_chunks" resolved to 256473d0-5091-4494-af4d-007e8f62d43f
+[INFO] [SmartRetrievalLayer] Semantic search: "Phantasia Aisthesis..." (max: 10)
+[INFO] [SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.4683 to 0.6541
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 20
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 20
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 20
+[INFO] [SmartRetrievalLayer] Step 5 after limit (10): 10
+[INFO] [SmartRetrievalLayer] Semantic search: "Aisthesis Kinesis..." (max: 10)
+[INFO] [SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.4561 to 0.6547
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 20
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 20
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 20
+[INFO] [SmartRetrievalLayer] Step 5 after limit (10): 10
+[INFO] [SmartRetrievalLayer] Semantic search: "Aisthesis Dynamis..." (max: 10)
+[INFO] [SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.5399 to 0.7203
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 20
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 20
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 20
+[INFO] [SmartRetrievalLayer] Step 5 after limit (10): 10
+[INFO] [SmartRetrievalLayer] Semantic search: "Aisthesis Apoleipomene kinesis..." (max: 10)
+[INFO] [SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.4871 to 0.5728
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 20
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 19
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 19
+[INFO] [SmartRetrievalLayer] Step 5 after limit (10): 10
+[INFO] [SmartRetrievalLayer] Semantic search: "Apoleipomene kinesis Resonant motion..." (max: 10)
+[INFO] [SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3810 to 0.5673
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 20
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 20
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 20
+[INFO] [SmartRetrievalLayer] Step 5 after limit (10): 10
+[INFO] [SmartRetrievalLayer] Semantic search: "Phantasma Phantasia..." (max: 10)
+[INFO] [SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.2785 to 0.3920
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 2
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 2
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 2
+[INFO] [SmartRetrievalLayer] Step 5 after limit (10): 2
+[INFO] [SmartRetrievalLayer] Semantic search: "Phantasia Mneme..." (max: 10)
+[INFO] [SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3409 to 0.5584
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 15
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 15
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 15
+[INFO] [SmartRetrievalLayer] Step 5 after limit (10): 10
+[INFO] [SmartRetrievalLayer] Semantic search: "Phantasia Doxa..." (max: 10)
+[INFO] [SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3973 to 0.5926
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 20
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 20
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 20
+[INFO] [SmartRetrievalLayer] Step 5 after limit (10): 10
+[INFO] [v2] === STAGE 2: DRAFTING ===

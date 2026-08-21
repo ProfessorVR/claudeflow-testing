@@ -73,7 +73,14 @@
       "mcp__serena__insert_after_symbol",
       "mcp__serena__insert_before_symbol",
       "mcp__serena__replace_symbol_body",
-      "mcp__serena__write_memory"
+      "mcp__serena__write_memory",
+      "mcp__streamdeck__streamdeck_read_profiles",
+      "mcp__streamdeck__streamdeck_read_page",
+      "mcp__streamdeck__streamdeck_write_page",
+      "mcp__streamdeck__streamdeck_create_icon",
+      "mcp__streamdeck__streamdeck_create_action",
+      "mcp__streamdeck__streamdeck_restart_app",
+      "mcp__elgato__*"
     ],
     "deny": [
       "Bash(rm -rf /)"
@@ -136,6 +143,10 @@
           {
             "type": "command",
             "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; SKILL=$(cat | jq -r \".tool_input.skill // empty\"); if [ \"$SKILL\" = \"god-code\" ] && [ -x \"$ROOT/.claude/hooks/coding-pipeline-post.sh\" ]; then \"$ROOT/.claude/hooks/coding-pipeline-post.sh\"; fi || true'"
+          },
+          {
+            "type": "command",
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && [ -x \"$ROOT/.claude/hooks/streamdeck-mode-switch.sh\" ] && \"$ROOT/.claude/hooks/streamdeck-mode-switch.sh\" || true'"
           }
         ]
       },
@@ -223,6 +234,10 @@
           {
             "type": "command",
             "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && [ -f \"$ROOT/scripts/hooks/leann-process-queue.ts\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; echo \"[LEANN] Processing index queue...\"; timeout 120 npx tsx \"$ROOT/scripts/hooks/leann-process-queue.ts\" 2>/dev/null || echo \"[LEANN] Queue processing skipped or timed out\"'"
+          },
+          {
+            "type": "command",
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && echo \"default\" > \"$ROOT/.god-agent/streamdeck-mode\" 2>/dev/null || true'"
           }
         ]
       }
@@ -241,13 +256,17 @@
           {
             "type": "command",
             "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && [ -f \"$ROOT/scripts/hooks/ucm-session-start.ts\" ] && cd \"$ROOT\" && source ~/.profile 2>/dev/null && nvm use 22 --silent 2>/dev/null; npx tsx \"$ROOT/scripts/hooks/ucm-session-start.ts\" 2>/dev/null || true'"
+          },
+          {
+            "type": "command",
+            "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && mkdir -p \"$ROOT/.god-agent\" && echo \"default\" > \"$ROOT/.god-agent/streamdeck-mode\" 2>/dev/null || true'"
           }
         ]
       }
     ]
   },
   "includeCoAuthoredBy": true,
-  "enabledMcpjsonServers": ["claude-flow@alpha", "ruv-swarm", "serena"],
+  "enabledMcpjsonServers": ["claude-flow@alpha", "ruv-swarm", "serena", "streamdeck", "elgato"],
   "statusLine": {
     "type": "command",
     "command": "/bin/bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -n \"$ROOT\" ] && [ -x \"$ROOT/.claude/statusline-command.sh\" ] && \"$ROOT/.claude/statusline-command.sh\" || echo \"\"'"

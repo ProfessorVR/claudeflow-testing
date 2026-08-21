@@ -122,9 +122,10 @@ logger = logging.getLogger(__name__)
 EMBED_URL = "http://127.0.0.1:8000/embed"
 EMBED_DIM = 1536
 
-# Marker-pdf OCR servers. Resolution order (prefer WRAITH when up):
-#   explicit MARKER_URL override  ->  WRAITH (both GPU ports :8001/:8002)  ->  local :8003
-MARKER_REMOTE_URL = os.environ.get("MARKER_URL_REMOTE", "http://192.168.50.22:8001")  # WRAITH (2x GPU)
+# Marker-pdf OCR servers. Resolution order: explicit MARKER_URL override -> local :8003.
+# WRAITH Marker retired 2026-07-29 (index-overhaul A6): no remote default; setting
+# MARKER_URL_REMOTE explicitly still works for a future non-WRAITH remote.
+MARKER_REMOTE_URL = os.environ.get("MARKER_URL_REMOTE", "").strip()
 MARKER_LOCAL_URL = os.environ.get("MARKER_URL_LOCAL", "http://127.0.0.1:8003")         # local fallback Marker
 # Manual override: if MARKER_URL is set (env or --marker-url) use EXACTLY that one server.
 # Empty ("") means "let resolve_marker_pool() decide". (Dead default http://10.0.0.2:8001 removed.)
@@ -156,8 +157,9 @@ def resolve_marker_pool() -> List[str]:
     if MARKER_URL:
         return [MARKER_URL] if _probe(MARKER_URL) else []
     pool: List[str] = []
-    base = MARKER_REMOTE_URL.rsplit(":", 1)[0]  # e.g. "http://192.168.50.22"
-    pool += [u for u in (f"{base}:8001", f"{base}:8002") if _probe(u)]  # live WRAITH GPUs
+    if MARKER_REMOTE_URL:  # only probe a remote if one is explicitly configured (WRAITH retired)
+        base = MARKER_REMOTE_URL.rsplit(":", 1)[0]
+        pool += [u for u in (f"{base}:8001", f"{base}:8002") if _probe(u)]
     if _probe(MARKER_LOCAL_URL):
         pool.append(MARKER_LOCAL_URL)  # local GPU as an additional worker
     return pool

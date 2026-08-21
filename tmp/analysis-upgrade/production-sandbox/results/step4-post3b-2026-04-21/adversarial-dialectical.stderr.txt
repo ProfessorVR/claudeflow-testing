@@ -1,0 +1,271 @@
+{"timestamp":"2026-04-21T22:50:18.854Z","level":"INFO","message":"Configuration initialized","context":{"service":"config-manager","configPath":null,"version":"2.1.0"}}
+{"timestamp":"2026-04-21T22:50:18.859Z","level":"INFO","message":"Initializing Layer 1: Native Core","context":{}}
+{"timestamp":"2026-04-21T22:50:18.860Z","level":"INFO","message":"Initializing Layer 2: Reasoning","context":{}}
+{"timestamp":"2026-04-21T22:50:18.860Z","level":"INFO","message":"Initializing Layer 3: Memory","context":{}}
+{"timestamp":"2026-04-21T22:50:18.924Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+{"timestamp":"2026-04-21T22:50:18.925Z","level":"INFO","message":"No existing causal graph found, starting fresh","context":{"component":"CausalMemory"}}
+{"timestamp":"2026-04-21T22:50:19.123Z","level":"INFO","message":"Initializing Layer 4: Learning","context":{}}
+{"timestamp":"2026-04-21T22:50:19.126Z","level":"INFO","message":"SonaEngine created with database persistence enabled","context":{}}
+{"timestamp":"2026-04-21T22:50:19.127Z","level":"INFO","message":"SonaEngine persistence verified - DAOs initialized","context":{}}
+{"timestamp":"2026-04-21T22:50:19.127Z","level":"INFO","message":"  Trajectory metadata: {\"totalCount\":2016,\"activeCount\":109,\"completedCount\":661,\"failedCount\":1246,\"abandonedCount\":0,\"avgQualityScore\":0.3610608226484553,\"avgStepCount\":0.310515873015873,\"totalFileBytes\":0}","context":{}}
+{"timestamp":"2026-04-21T22:50:19.127Z","level":"INFO","message":"  Patterns: {\"totalCount\":12,\"activeCount\":12,\"deprecatedCount\":0,\"totalSuccessCount\":0,\"totalFailureCount\":0,\"averageWeight\":0.8779422745750534,\"successRate\":0}","context":{}}
+{"timestamp":"2026-04-21T22:50:19.127Z","level":"INFO","message":"  Feedback: {\"feedbackCount\":1001,\"processedCount\":607,\"unprocessedCount\":394,\"avgQuality\":0.541036402388216,\"outcomeBreakdown\":{\"positive\":15,\"negative\":375,\"neutral\":611}}","context":{}}
+[SonaEngine] Trajectory streaming enabled
+{"timestamp":"2026-04-21T22:50:19.128Z","level":"INFO","message":"Loaded SoNA weights from disk","context":{}}
+{"timestamp":"2026-04-21T22:50:19.129Z","level":"INFO","message":"Initializing Layer 5: Orchestration","context":{}}
+{"timestamp":"2026-04-21T22:50:19.129Z","level":"INFO","message":"Initializing Unified Search","context":{}}
+{"timestamp":"2026-04-21T22:50:19.129Z","level":"INFO","message":"MemoryClient connection skipped (server not running)","context":{}}
+{"timestamp":"2026-04-21T22:50:19.129Z","level":"INFO","message":"UnifiedSearch initialized","context":{}}
+{"timestamp":"2026-04-21T22:50:19.129Z","level":"INFO","message":"God Agent initialized in 271.09ms","context":{}}
+{"timestamp":"2026-04-21T22:50:19.182Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[QualityGauntlet] Stage weights sum to 1.20, not 1.0. Scores will be normalized.
+{"timestamp":"2026-04-21T22:50:19.282Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[CapabilityCache] Computing content hash for 472 files
+[CapabilityCache] Hash computed in 64.99ms: 100bc7caa6905ec6...
+[CapabilityCache] Cache HIT - loaded 253 agents in 82.62ms
+[CapabilityIndex] Cache HIT - loaded 253 agents in 87.17ms
+{"timestamp":"2026-04-21T22:50:39.537Z","level":"ERROR","message":"DESC injection failed","context":{"component":"UCMDaemonClient","error_message":"UCM daemon timeout calling desc.inject","error_name":"Error","error_stack":"Error: UCM daemon timeout calling desc.inject\n    at Timeout._onTimeout (/home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/src-worktree/src/god-agent/cli/ucm-daemon-client.ts:187:16)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)"}}
+[INFO] [v2] === STAGE 1: RETRIEVAL ===
+[GOLD STD] Multi-query retrieval + style + single-shot generation...
+[GOLD STD] Active claims: 6 / 4921 evaluated, 245 filtered; authors=[White, Kevin, Aristotle, Audi, P., Kim, Jaegwon, Barnes, Elizabeth, Ney, Alyssa, O'Connor, Timothy and Wong, Hong, Caston, Victor]
+[GOLD STD] Query expanded: added Perception, Imagination, φαντασία
+[GOLD STD] Query expanded: added Imagination, Image, φαντασία, φάντασμα
+[GOLD STD] Query expanded: added Imagination, Memory, φαντασία
+[GOLD STD] Query expanded: added Imagination, φαντασία
+[GOLD STD] Query expanded: added Imagination, Emotion, φαντασία, πάθος / πάθη
+[GOLD STD] Query expanded: added Imagination, φαντασία
+[GOLD STD] Query expanded: added Imagination, Desire, φαντασία, ὄρεξις
+[GOLD STD] Query expanded: added Imagination, φαντασία
+[GOLD STD] Query expanded: added Imagination, φαντασία
+[GOLD STD] Phase 1a: Multi-query retrieval: 9 semantic queries
+[INFO] ChromaDB collection "knowledge_chunks" resolved to 2351bc36-0847-4071-ac16-31da2b634a22
+[INFO] [SmartRetrievalLayer] Semantic search: "Phantasia Aisthesis Perception Imagination φαντασί..." (max: 8)
+[INFO] [SmartRetrievalLayer] Query expanded: "Phantasia Aisthesis Perception Imagination φαντασία (αἴσθησις)..."
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.6200 to 0.6940
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 3
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 2
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 2
+[INFO] [SmartRetrievalLayer] knowledge.jsonl not found, KU boosting disabled
+[INFO] [SmartRetrievalLayer] Loaded 2230 edges from /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/src-worktree/god-reason/reasoning.jsonl
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 2
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 2
+[INFO] [SmartRetrievalLayer] Semantic search: "Phantasma Phantasia Imagination Image φαντασία φάν..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.5072 to 0.6688
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 1
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 1
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 1
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 1
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 1
+[INFO] [SmartRetrievalLayer] Semantic search: "Phantasia Mneme Imagination Memory φαντασία..." (max: 8)
+[INFO] [SmartRetrievalLayer] Query expanded: "Phantasia Mneme Imagination Memory φαντασία (μνήμη)..."
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.4730 to 0.6331
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "Phantasia Doxa Imagination φαντασία..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.4226 to 0.6127
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "Phantasia Pathos Imagination Emotion φαντασία πάθο..." (max: 8)
+[INFO] [SmartRetrievalLayer] Query expanded: "Phantasia Pathos Imagination Emotion φαντασία πάθος / πάθη (emotion, feeling, affect, being-affected, disposition)..."
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.6272 to 0.7221
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 8
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 6
+[INFO] [SmartRetrievalLayer] Semantic search: "Phantasia Taking Imagination φαντασία..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.4460 to 0.6358
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "Orexis Phantasia Imagination Desire φαντασία ὄρεξι..." (max: 8)
+[INFO] [SmartRetrievalLayer] Query expanded: "Orexis Phantasia Imagination Desire φαντασία ὄρεξις (appetite, desire)..."
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.5574 to 0.6709
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 1
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 1
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 1
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 1
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 1
+[INFO] [SmartRetrievalLayer] Semantic search: "Phantasia Habituated phantasia Imagination φαντασί..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.6523 to 0.7510
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 16
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 8
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle phantasia Imagination φαντασία..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.7245 to 0.8398
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 16
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 8
+[GOLD STD] Phase 1b: Source-targeted supplementation for: Aristotle
+[INFO] [SmartRetrievalLayer] Semantic search: "Consider the view that all thinking is a bodily pr..." (max: 16)
+[INFO] [SmartRetrievalLayer] Query expanded: "Consider the view that all thinking is a bodily process like perceiving, as the ancients held, and evaluate whether Aris..."
+[INFO] [SmartRetrievalLayer] Applied whereFilter: {"author_raw":{"$eq":"Aristotle"}}
+[INFO] [SmartRetrievalLayer] Found 32 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 32, minRelevance: 0
+[INFO] [SmartRetrievalLayer] Score range: 0.5900 to 0.6757
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 32
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 28
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 28
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 28
+[INFO] [SmartRetrievalLayer] Step 5 after limit (16): 16
+[GOLD STD] Phase 1b-secondary: Active-claim-author targeting for: White, Kevin, Audi, P., Kim, Jaegwon, Barnes, Elizabeth, Ney, Alyssa, O'Connor, Timothy and Wong, Hong, Caston, Victor
+[INFO] [SmartRetrievalLayer] Semantic search: "Consider the view that all thinking is a bodily pr..." (max: 4)
+[INFO] [SmartRetrievalLayer] Query expanded: "Consider the view that all thinking is a bodily process like perceiving, as the ancients held, and evaluate whether Aris..."
+[INFO] [SmartRetrievalLayer] Applied whereFilter: {"author_raw":{"$eq":"White, Kevin"}}
+[INFO] [SmartRetrievalLayer] Found 8 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 8, minRelevance: 0
+[INFO] [SmartRetrievalLayer] Score range: 0.4257 to 0.7704
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 8
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 8
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 8
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 8
+[INFO] [SmartRetrievalLayer] Step 5 after limit (4): 4
+[INFO] [SmartRetrievalLayer] Semantic search: "Consider the view that all thinking is a bodily pr..." (max: 4)
+[INFO] [SmartRetrievalLayer] Query expanded: "Consider the view that all thinking is a bodily process like perceiving, as the ancients held, and evaluate whether Aris..."
+[INFO] [SmartRetrievalLayer] Applied whereFilter: {"author_raw":{"$eq":"Audi, P."}}
+[INFO] [SmartRetrievalLayer] Found 8 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 8, minRelevance: 0
+[INFO] [SmartRetrievalLayer] Score range: 0.3996 to 0.5647
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 8
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 8
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 8
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 8
+[INFO] [SmartRetrievalLayer] Step 5 after limit (4): 4
+[INFO] [SmartRetrievalLayer] Semantic search: "Consider the view that all thinking is a bodily pr..." (max: 4)
+[INFO] [SmartRetrievalLayer] Query expanded: "Consider the view that all thinking is a bodily process like perceiving, as the ancients held, and evaluate whether Aris..."
+[INFO] [SmartRetrievalLayer] Applied whereFilter: {"author_raw":{"$eq":"Kim, Jaegwon"}}
+[INFO] [SmartRetrievalLayer] Found 8 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 8, minRelevance: 0
+[INFO] [SmartRetrievalLayer] Score range: 0.5309 to 0.5906
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 8
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 8
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 8
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 8
+[INFO] [SmartRetrievalLayer] Step 5 after limit (4): 4
+[INFO] [SmartRetrievalLayer] Semantic search: "Consider the view that all thinking is a bodily pr..." (max: 4)
+[INFO] [SmartRetrievalLayer] Query expanded: "Consider the view that all thinking is a bodily process like perceiving, as the ancients held, and evaluate whether Aris..."
+[INFO] [SmartRetrievalLayer] Applied whereFilter: {"author_raw":{"$eq":"Barnes, Elizabeth"}}
+[INFO] [SmartRetrievalLayer] Found 8 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 8, minRelevance: 0
+[INFO] [SmartRetrievalLayer] Score range: 0.4008 to 0.5181
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 8
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 8
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 8
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 8
+[INFO] [SmartRetrievalLayer] Step 5 after limit (4): 4
+[INFO] [SmartRetrievalLayer] Semantic search: "Consider the view that all thinking is a bodily pr..." (max: 4)
+[INFO] [SmartRetrievalLayer] Query expanded: "Consider the view that all thinking is a bodily process like perceiving, as the ancients held, and evaluate whether Aris..."
+[INFO] [SmartRetrievalLayer] Applied whereFilter: {"author_raw":{"$eq":"Ney, Alyssa"}}
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0
+[INFO] [SmartRetrievalLayer] Score range: 0.3181 to 0.5933
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (4): 4
+[INFO] [SmartRetrievalLayer] Semantic search: "Consider the view that all thinking is a bodily pr..." (max: 4)
+[INFO] [SmartRetrievalLayer] Query expanded: "Consider the view that all thinking is a bodily process like perceiving, as the ancients held, and evaluate whether Aris..."
+[INFO] [SmartRetrievalLayer] Applied whereFilter: {"author_raw":{"$eq":"O'Connor, Timothy and Wong, Hong"}}
+[INFO] [SmartRetrievalLayer] Found 8 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 8, minRelevance: 0
+[INFO] [SmartRetrievalLayer] Score range: 0.4151 to 0.6274
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 8
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 8
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 8
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 8
+[INFO] [SmartRetrievalLayer] Step 5 after limit (4): 4
+[INFO] [SmartRetrievalLayer] Semantic search: "αἴσθησις..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "αἴσθησις (aisthēsis, perception, sensation)..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.6509 to 0.7331
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[GOLD STD] Keyword expansion: "αἴσθησις" → 3 chunks
+[INFO] [SmartRetrievalLayer] Semantic search: "φαντασία..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "φαντασία (phantasia, imagination)..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.5660 to 0.6623
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 2
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 2
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 2
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 2
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 2
+[GOLD STD] Keyword expansion: "φαντασία" → 2 chunks
+[INFO] [SmartRetrievalLayer] Semantic search: "φάντασμα..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "φάντασμα (phantasma, image)..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.5012 to 0.6342
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "μνήμη..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "μνήμη (mnēmē, memory)..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.4914 to 0.6312
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "πάθος..." (max: 3)
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.65
+[INFO] [SmartRetrievalLayer] Score range: 0.5708 to 0.7721
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 4
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 4
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 4
+[INFO] [SmartRetrievalLayer] Step 4b after KG boost: 4
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[GOLD STD] Keyword expansion: "πάθος" → 3 chunks
+[GOLD STD] Corpus index: 12 nodes, 3 hooks, 5 tensions
+[INFO] [v2] === STAGE 2: DRAFTING ===
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[API] stop_reason=end_turn, usage={"input_tokens":9135,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":2140,"service_tier":"standard","inference_geo":"global"}, model=claude-opus-4-6, max_tokens=16384
+[INFO] [v2] === STAGE 3: VALIDATION ===
+[INFO] [v2] Fix 62: Stripped 1 bare APA parenthetical(s): (Hawhee 2011)
+{"timestamp":"2026-04-21T22:51:36.780Z","level":"INFO","message":"SonaEngine updated for trajectory","context":{"component":"ReasoningBank","trajectoryId":"traj_1776811839589_a7f46636"}}
+{"timestamp":"2026-04-21T22:51:36.783Z","level":"INFO","message":"Shutting down God Agent...","context":{}}
+{"timestamp":"2026-04-21T22:51:36.785Z","level":"INFO","message":"SoNA weights saved to disk","context":{}}
+{"timestamp":"2026-04-21T22:51:36.785Z","level":"info","component":"MemoryClient","message":"Disconnected from memory server"}
+{"timestamp":"2026-04-21T22:51:36.785Z","level":"INFO","message":"MemoryClient disconnected","context":{}}
+{"timestamp":"2026-04-21T22:51:36.785Z","level":"INFO","message":"God Agent shutdown complete","context":{}}

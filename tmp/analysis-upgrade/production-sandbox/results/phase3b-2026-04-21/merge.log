@@ -1,0 +1,1699 @@
+=== Papers found: aristotle-da-3-3 audi-2012 barnes-2012 bowin-2017 caston-1995 chalmers-2016 fodor-1974 frede-1992 heidegger-bcap-4-5 horgan-1993 kim-1988 kim-1990 kim-2006 mcdonnell-wildman-2019 metzinger-2018 ney-2019 nussbaum-1985 oconnor-wong-2005 ogorman-2005 papachristou-2013 raven-2016 silcox-2019 white-1985 ===
+
+=== 1. resolve_concepts.py (per paper) ===
+  [resolve] aristotle-da-3-3
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 80/80 claims after dropping 0 unsupported
+  progress 16/80  (top1: Perception 0.663)
+  progress 32/80  (top1: πάθος / πάθη 0.749)
+  progress 48/80  (top1: Image 0.700)
+  progress 64/80  (top1: φαντασία βουλευτική / αἰσθητική 0.586)
+  progress 80/80  (top1: κοινὰ αἰσθητά 0.716)
+[resolve] wrote 320 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/aristotle-da-3-3/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   28  Perception
+   20  Imagination
+   16  κοινὰ αἰσθητά
+   16  αἴσθησις
+   15  Common Sense
+   14  φαντασία
+   14  Image
+   11  πάθη τῆς ψυχῆς
+   11  τὰ ἴδια αἰσθητά
+   11  Intellect
+   10  κοινὴ αἴσθησις
+    9  φάντασμα
+    8  φαντασία βουλευτική / αἰσθητική
+    6  The Continuous
+    5  Contradiction (PNC)
+  [resolve] audi-2012
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 256/261 claims after dropping 5 unsupported
+  progress 16/256  (top1: κοινὰ αἰσθητά 0.538)
+  progress 32/256  (top1: Understanding 0.539)
+  progress 48/256  (top1: κοινὰ αἰσθητά 0.546)
+  progress 64/256  (top1: μεσότης 0.514)
+  progress 80/256  (top1: Cause 0.641)
+  progress 96/256  (top1: Hypothetical Necessity 0.663)
+  progress 112/256  (top1: Contradiction (PNC) 0.686)
+  progress 128/256  (top1: The Composite 0.649)
+  progress 144/256  (top1: Reality 0.630)
+  progress 160/256  (top1: Cause 0.632)
+  progress 176/256  (top1: The Continuous 0.632)
+  progress 192/256  (top1: The Continuous 0.692)
+  progress 208/256  (top1: The Composite 0.627)
+  progress 224/256  (top1: Contradiction (PNC) 0.676)
+  progress 240/256  (top1: Presence-at-hand 0.709)
+  progress 256/256  (top1: Cause 0.682)
+[resolve] wrote 978 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/audi-2012/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+  141  Contradiction (PNC)
+   90  Cause
+   71  Reality
+   66  Presence-at-hand
+   59  Privation
+   42  στέρησις
+   39  The Continuous
+   36  Hypothetical Necessity
+   31  Disclosedness
+   27  The Composite
+   23  Destruktion
+   20  κοινὰ αἰσθητά
+   20  Worldhood
+   20  Authenticity/Inauthenticity
+   16  Essence
+  [resolve] barnes-2012
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 303/304 claims after dropping 1 unsupported
+  progress 16/303  (top1: The Composite 0.677)
+  progress 32/303  (top1: Destruktion 0.712)
+  progress 48/303  (top1: The Composite 0.732)
+  progress 64/303  (top1: Falling 0.559)
+  progress 80/303  (top1: Focal Meaning 0.482)
+  progress 96/303  (top1: Contradiction (PNC) 0.596)
+  progress 112/303  (top1: Cause 0.620)
+  progress 128/303  (top1: The Continuous 0.645)
+  progress 144/303  (top1: Withdrawal 0.635)
+  progress 160/303  (top1: Existence 0.637)
+  progress 176/303  (top1: Potentiality / Capacity 0.666)
+  progress 192/303  (top1: Contradiction (PNC) 0.682)
+  progress 208/303  (top1: The Continuous 0.660)
+  progress 224/303  (top1: κοινὰ αἰσθητά 0.570)
+  progress 240/303  (top1: κοινὰ αἰσθητά 0.498)
+  progress 256/303  (top1: Worldhood 0.484)
+  progress 272/303  (top1: Destruktion 0.490)
+  progress 288/303  (top1: Presence-at-hand 0.694)
+  progress 303/303  (top1: Cause 0.648)
+[resolve] wrote 1044 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/barnes-2012/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+  107  Contradiction (PNC)
+   90  Presence-at-hand
+   76  Cause
+   70  The Composite
+   66  The Continuous
+   63  Destruktion
+   50  Existence
+   45  Reality
+   37  Withdrawal
+   35  Kompositionslehre (composition theory)
+   28  Authenticity/Inauthenticity
+   25  Being-in-the-world
+   25  Bedeutungstrager (carrier of meaning)
+   22  Substance
+   18  Worldhood
+  [resolve] bowin-2017
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 155/156 claims after dropping 1 unsupported
+  progress 16/155  (top1: Enthymeme 0.493)
+  progress 32/155  (top1: Image 0.727)
+  progress 48/155  (top1: Common Sense 0.729)
+  progress 64/155  (top1: ἐπιείκεια 0.548)
+  progress 80/155  (top1: ἐπιείκεια 0.522)
+  progress 96/155  (top1: φαντασία βουλευτική / αἰσθητική 0.534)
+  progress 112/155  (top1: φαντασία βουλευτική / αἰσθητική 0.518)
+  progress 128/155  (top1: κοινὰ αἰσθητά 0.567)
+  progress 144/155  (top1: κατηγορήματα 0.529)
+  progress 155/155  (top1: Within-time-ness 0.524)
+[resolve] wrote 326 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/bowin-2017/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   21  κοινὰ αἰσθητά
+   19  Within-time-ness
+   18  Common Sense
+   18  εὐδαιμονία
+   17  Time
+   16  φαντασία βουλευτική / αἰσθητική
+   13  Perception
+   12  Principle
+   12  ἐπιείκεια
+    8  Imagination
+    8  The Continuous
+    7  κοινὴ αἴσθησις
+    6  Recollection
+    6  Presence-at-hand
+    6  Motion / Change
+  [resolve] caston-1995
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 54/56 claims after dropping 2 unsupported
+  progress 16/54  (top1: κοινὰ αἰσθητά 0.596)
+  progress 32/54  (top1: κοινὰ αἰσθητά 0.592)
+  progress 48/54  (top1: κοινὰ αἰσθητά 0.589)
+  progress 54/54  (top1: μεσότης 0.494)
+[resolve] wrote 54 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/caston-1995/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   23  κοινὰ αἰσθητά
+    5  πάθη τῆς ψυχῆς
+    4  μεσότης
+    3  φαντασία βουλευτική / αἰσθητική
+    2  Perception
+    2  Destruktion
+    1  Soul
+    1  κίνησις
+    1  δύναμις
+    1  ἐντελέχεια
+    1  Intellect
+    1  Imagination
+    1  Image
+    1  Recollection
+    1  Emotion
+  [resolve] chalmers-2016
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 510/513 claims after dropping 3 unsupported
+  progress 16/510  (top1: Reality 0.686)
+  progress 32/510  (top1: Merkbild / Wahrnehmungsbild (perception image) 0.651)
+  progress 48/510  (top1: Ambience / Ambient 0.681)
+  progress 64/510  (top1: κοινὰ αἰσθητά 0.514)
+  progress 80/510  (top1: Destruktion 0.505)
+  progress 96/510  (top1: Chora 0.514)
+  progress 112/510  (top1: Wirkbild (effect image) 0.651)
+  progress 128/510  (top1: Embodiment / Embodied Cognition 0.632)
+  progress 144/510  (top1: Wirkraum / Tastraum / Sehraum 0.610)
+  progress 160/510  (top1: μέγεθος 0.594)
+  progress 176/510  (top1: Wirkbild (effect image) 0.569)
+  progress 192/510  (top1: μεσότης 0.416)
+  progress 208/510  (top1: κοινὰ αἰσθητά 0.526)
+  progress 224/510  (top1: Wirkbild (effect image) 0.601)
+  progress 240/510  (top1: κοινὰ αἰσθητά 0.519)
+  progress 256/510  (top1: κοινὰ αἰσθητά 0.507)
+  progress 272/510  (top1: Embodiment / Embodied Cognition 0.658)
+  progress 288/510  (top1: κοινὰ αἰσθητά 0.566)
+  progress 304/510  (top1: φαντασία βουλευτική / αἰσθητική 0.569)
+  progress 320/510  (top1: κοινὰ αἰσθητά 0.538)
+  progress 336/510  (top1: φαντασία βουλευτική / αἰσθητική 0.619)
+  progress 352/510  (top1: Destruktion 0.508)
+  progress 368/510  (top1: Contradiction (PNC) 0.649)
+  progress 384/510  (top1: Reality 0.631)
+  progress 400/510  (top1: φαντασία βουλευτική / αἰσθητική 0.533)
+  progress 416/510  (top1: Ambience / Ambient 0.641)
+  progress 432/510  (top1: Ambience / Ambient 0.584)
+  progress 448/510  (top1: κοινὰ αἰσθητά 0.518)
+  progress 464/510  (top1: Wirkraum / Tastraum / Sehraum 0.618)
+  progress 480/510  (top1: Ambience / Ambient 0.615)
+  progress 496/510  (top1: Reality 0.690)
+  progress 510/510  (top1: Reality 0.670)
+[resolve] wrote 1510 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/chalmers-2016/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+  147  Reality
+  101  Wirkraum / Tastraum / Sehraum
+   93  Presence-at-hand
+   76  Authenticity/Inauthenticity
+   65  Embodiment / Embodied Cognition
+   58  κοινὰ αἰσθητά
+   54  Merkbild / Wahrnehmungsbild (perception image)
+   54  Suchbild / Suchton (search image / search tone)
+   50  Wirkbild (effect image)
+   48  Ambience / Ambient
+   42  Cause
+   42  Perception
+   40  Nonhuman Agency
+   40  Recollection
+   39  Destruktion
+  [resolve] fodor-1974
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 221/228 claims after dropping 7 unsupported
+  progress 16/221  (top1: Potentiality / Capacity 0.647)
+  progress 32/221  (top1: κοινὰ αἰσθητά 0.557)
+  progress 48/221  (top1: μεσότης 0.525)
+  progress 64/221  (top1: Hypothetical Necessity 0.671)
+  progress 80/221  (top1: Authenticity/Inauthenticity 0.619)
+  progress 96/221  (top1: Hypothetical Necessity 0.687)
+  progress 112/221  (top1: Contradiction (PNC) 0.417)
+  progress 128/221  (top1: Recollection 0.643)
+  progress 144/221  (top1: Hypothetical Necessity 0.663)
+  progress 160/221  (top1: The Composite 0.633)
+  progress 176/221  (top1: Chance / Spontaneity 0.587)
+  progress 192/221  (top1: Kompositionslehre (composition theory) 0.640)
+  progress 208/221  (top1: The Continuous 0.652)
+  progress 221/221  (top1: Recollection 0.645)
+[resolve] wrote 866 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/fodor-1974/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+  121  Cause
+   86  Contradiction (PNC)
+   85  Hypothetical Necessity
+   62  Kompositionslehre (composition theory)
+   47  Privation
+   41  End/Purpose
+   40  Presence-at-hand
+   40  The Continuous
+   37  The Composite
+   33  End / Final Cause
+   23  Destruktion
+   23  Contraries
+   21  Planmassigkeit (conformity to plan)
+   21  Potentiality / Capacity
+   17  Bedeutungstrager (carrier of meaning)
+  [resolve] frede-1992
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 143/144 claims after dropping 1 unsupported
+  progress 16/143  (top1: Imagination 0.692)
+  progress 32/143  (top1: Emotion 0.457)
+  progress 48/143  (top1: εὐδαιμονία 0.644)
+  progress 64/143  (top1: Perception 0.724)
+  progress 80/143  (top1: Image 0.711)
+  progress 96/143  (top1: Focal Meaning 0.434)
+  progress 112/143  (top1: Image 0.683)
+  progress 128/143  (top1: Perception 0.701)
+  progress 143/143  (top1: Being-in-the-world 0.646)
+[resolve] wrote 531 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/frede-1992/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   78  Imagination
+   72  Image
+   65  Perception
+   27  φάντασμα
+   25  φαντασία
+   20  Emotion
+   19  κίνησις
+   17  State/Disposition
+   14  Thought / Intellect
+   11  Destruktion
+   11  κοινὰ αἰσθητά
+    9  Contradiction (PNC)
+    9  Intellect
+    8  Form
+    8  εὐδαιμονία
+  [resolve] heidegger-bcap-4-5
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 111/112 claims after dropping 1 unsupported
+  progress 16/111  (top1: Phenomenology 0.695)
+  progress 32/111  (top1: Bedeutungstrager (carrier of meaning) 0.642)
+  progress 48/111  (top1: Destruktion 0.687)
+  progress 64/111  (top1: κοινὰ αἰσθητά 0.630)
+  progress 80/111  (top1: Discourse 0.652)
+  progress 96/111  (top1: Worldhood 0.679)
+  progress 111/111  (top1: Discourse 0.705)
+[resolve] wrote 481 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/heidegger-bcap-4-5/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   27  ὁρισμός
+   18  Formula / Account
+   16  κοινωνία
+   16  Logos
+   14  κοινὰ αἰσθητά
+   14  λόγος
+   13  τὸ πρέπον
+   12  Signs
+   12  κοινὴ αἴσθησις
+   12  Bedeutung (meaning)
+   12  Understanding
+   11  Essence
+   11  Worldhood
+   11  Principle
+   10  Discourse
+  [resolve] horgan-1993
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 342/345 claims after dropping 3 unsupported
+  progress 16/342  (top1: κοινὰ αἰσθητά 0.563)
+  progress 32/342  (top1: κοινὰ αἰσθητά 0.506)
+  progress 48/342  (top1: Chora 0.464)
+  progress 64/342  (top1: Contradiction (PNC) 0.640)
+  progress 80/342  (top1: Contradiction (PNC) 0.638)
+  progress 96/342  (top1: Reality 0.652)
+  progress 112/342  (top1: Presence-at-hand 0.631)
+  progress 128/342  (top1: Presence-at-hand 0.623)
+  progress 144/342  (top1: Presence-at-hand 0.682)
+  progress 160/342  (top1: Contradiction (PNC) 0.484)
+  progress 176/342  (top1: Hypothetical Necessity 0.651)
+  progress 192/342  (top1: Authenticity/Inauthenticity 0.652)
+  progress 208/342  (top1: κοινὰ αἰσθητά 0.500)
+  progress 224/342  (top1: φαντασία βουλευτική / αἰσθητική 0.525)
+  progress 240/342  (top1: κοινὰ αἰσθητά 0.561)
+  progress 256/342  (top1: κοινὰ αἰσθητά 0.558)
+  progress 272/342  (top1: Cause 0.666)
+  progress 288/342  (top1: Hypothetical Necessity 0.661)
+  progress 304/342  (top1: Hypothetical Necessity 0.649)
+  progress 320/342  (top1: Withdrawal 0.641)
+  progress 336/342  (top1: Reality 0.672)
+  progress 342/342  (top1: Contradiction (PNC) 0.635)
+[resolve] wrote 1051 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/horgan-1993/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+  126  Presence-at-hand
+  124  Cause
+  101  Contradiction (PNC)
+   80  Hypothetical Necessity
+   76  Reality
+   45  The Continuous
+   37  Withdrawal
+   36  Destruktion
+   27  κοινὰ αἰσθητά
+   26  Authenticity/Inauthenticity
+   25  Embodiment / Embodied Cognition
+   25  End / Final Cause
+   22  Being qua Being
+   22  End/Purpose
+   20  The Composite
+  [resolve] kim-1988
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 177/177 claims after dropping 0 unsupported
+  progress 16/177  (top1: κοινὰ αἰσθητά 0.561)
+  progress 32/177  (top1: Cause 0.690)
+  progress 48/177  (top1: Cause 0.701)
+  progress 64/177  (top1: κοινὰ αἰσθητά 0.498)
+  progress 80/177  (top1: Contradiction (PNC) 0.502)
+  progress 96/177  (top1: Reality 0.642)
+  progress 112/177  (top1: κοινὰ αἰσθητά 0.535)
+  progress 128/177  (top1: μεσότης 0.471)
+  progress 144/177  (top1: Cause 0.689)
+  progress 160/177  (top1: Cause 0.629)
+  progress 176/177  (top1: Cause 0.662)
+  progress 177/177  (top1: Cause 0.662)
+[resolve] wrote 592 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/kim-1988/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+  100  Cause
+   59  Contradiction (PNC)
+   50  Reality
+   42  Presence-at-hand
+   36  Disclosedness
+   27  Hypothetical Necessity
+   23  Privation
+   22  Chance / Spontaneity
+   17  κοινὰ αἰσθητά
+   17  The Continuous
+   16  Withdrawal
+   16  Destruktion
+   15  Authenticity/Inauthenticity
+   12  End/Purpose
+   11  The Composite
+  [resolve] kim-1990
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 338/339 claims after dropping 1 unsupported
+  progress 16/338  (top1: Essence 0.689)
+  progress 32/338  (top1: Contradiction (PNC) 0.485)
+  progress 48/338  (top1: κοινὰ αἰσθητά 0.493)
+  progress 64/338  (top1: Chora 0.524)
+  progress 80/338  (top1: Withdrawal 0.470)
+  progress 96/338  (top1: Destruktion 0.589)
+  progress 112/338  (top1: Contradiction (PNC) 0.461)
+  progress 128/338  (top1: Withdrawal 0.572)
+  progress 144/338  (top1: κοινὰ αἰσθητά 0.503)
+  progress 160/338  (top1: Kompositionslehre (composition theory) 0.643)
+  progress 176/338  (top1: Cause 0.595)
+  progress 192/338  (top1: Hypothetical Necessity 0.681)
+  progress 208/338  (top1: End / Final Cause 0.620)
+  progress 224/338  (top1: Cause 0.601)
+  progress 240/338  (top1: Contradiction (PNC) 0.664)
+  progress 256/338  (top1: The Continuous 0.676)
+  progress 272/338  (top1: The Continuous 0.680)
+  progress 288/338  (top1: κοινὰ αἰσθητά 0.552)
+  progress 304/338  (top1: Presence-at-hand 0.618)
+  progress 320/338  (top1: Presence-at-hand 0.612)
+  progress 336/338  (top1: Cause 0.651)
+  progress 338/338  (top1: Contradiction (PNC) 0.615)
+[resolve] wrote 916 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/kim-1990/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+  127  Cause
+   98  The Continuous
+   98  Contradiction (PNC)
+   66  Privation
+   58  Presence-at-hand
+   47  Hypothetical Necessity
+   39  The Composite
+   27  Kompositionslehre (composition theory)
+   26  Destruktion
+   24  End/Purpose
+   24  Reality
+   19  Withdrawal
+   17  Planmassigkeit (conformity to plan)
+   16  κοινὰ αἰσθητά
+   16  Contraries
+  [resolve] kim-2006
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 162/162 claims after dropping 0 unsupported
+  progress 16/162  (top1: Historicality 0.531)
+  progress 32/162  (top1: κοινὰ αἰσθητά 0.488)
+  progress 48/162  (top1: κοινὰ αἰσθητά 0.553)
+  progress 64/162  (top1: Chora 0.491)
+  progress 80/162  (top1: κοινὰ αἰσθητά 0.527)
+  progress 96/162  (top1: κοινὰ αἰσθητά 0.524)
+  progress 112/162  (top1: κοινὰ αἰσθητά 0.492)
+  progress 128/162  (top1: στέρησις 0.657)
+  progress 144/162  (top1: Cause 0.628)
+  progress 160/162  (top1: Chora 0.569)
+  progress 162/162  (top1: μεσότης 0.549)
+[resolve] wrote 173 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/kim-2006/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   25  κοινὰ αἰσθητά
+   24  Cause
+   21  Contradiction (PNC)
+    8  The Continuous
+    8  Presence-at-hand
+    7  Hypothetical Necessity
+    6  Chora
+    6  Potentiality / Capacity
+    6  Chance / Spontaneity
+    5  δύναμις / ἐνέργεια
+    5  Privation
+    5  Withdrawal
+    4  μεσότης
+    4  Authenticity/Inauthenticity
+    4  Nonhuman Agency
+  [resolve] mcdonnell-wildman-2019
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 238/238 claims after dropping 0 unsupported
+  progress 16/238  (top1: Understanding 0.513)
+  progress 32/238  (top1: Destruktion 0.515)
+  progress 48/238  (top1: Cause 0.668)
+  progress 64/238  (top1: Presence-at-hand 0.622)
+  progress 80/238  (top1: Cause 0.661)
+  progress 96/238  (top1: Cause 0.675)
+  progress 112/238  (top1: Presence-at-hand 0.669)
+  progress 128/238  (top1: Presence-at-hand 0.616)
+  progress 144/238  (top1: Destruktion 0.667)
+  progress 160/238  (top1: φαντασία βουλευτική / αἰσθητική 0.490)
+  progress 176/238  (top1: φαντασία βουλευτική / αἰσθητική 0.551)
+  progress 192/238  (top1: φαντασία βουλευτική / αἰσθητική 0.578)
+  progress 208/238  (top1: φαντασία βουλευτική / αἰσθητική 0.390)
+  progress 224/238  (top1: Ambience / Ambient 0.618)
+  progress 238/238  (top1: Embodiment / Embodied Cognition 0.664)
+[resolve] wrote 632 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/mcdonnell-wildman-2019/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   69  Cause
+   56  Reality
+   50  Contradiction (PNC)
+   50  Presence-at-hand
+   38  Destruktion
+   34  Authenticity/Inauthenticity
+   29  Nonhuman Agency
+   24  Embodiment / Embodied Cognition
+   20  Privation
+   20  The Continuous
+   20  Wirkraum / Tastraum / Sehraum
+   17  κοινὰ αἰσθητά
+   17  Being-in-the-world
+   14  Chance / Spontaneity
+   10  φαντασία βουλευτική / αἰσθητική
+  [resolve] metzinger-2018
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 229/229 claims after dropping 0 unsupported
+  progress 16/229  (top1: κατηγορήματα 0.493)
+  progress 32/229  (top1: Embodiment / Embodied Cognition 0.635)
+  progress 48/229  (top1: Presence-at-hand 0.616)
+  progress 64/229  (top1: Phenomenology 0.668)
+  progress 80/229  (top1: Disclosedness 0.692)
+  progress 96/229  (top1: φαντασία βουλευτική / αἰσθητική 0.460)
+  progress 112/229  (top1: κοινὰ αἰσθητά 0.487)
+  progress 128/229  (top1: Nonhuman Agency 0.656)
+  progress 144/229  (top1: Chora 0.487)
+  progress 160/229  (top1: φαντασία βουλευτική / αἰσθητική 0.553)
+  progress 176/229  (top1: Embodiment / Embodied Cognition 0.667)
+  progress 192/229  (top1: Worldhood 0.739)
+  progress 208/229  (top1: κοινὰ αἰσθητά 0.529)
+  progress 224/229  (top1: κοινὰ αἰσθητά 0.550)
+  progress 229/229  (top1: φαντασία βουλευτική / αἰσθητική 0.471)
+[resolve] wrote 619 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/metzinger-2018/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   73  Embodiment / Embodied Cognition
+   53  Reality
+   42  Nonhuman Agency
+   39  Recollection
+   30  Presence-at-hand
+   26  Electracy
+   22  Being-in-the-world
+   22  Worldhood
+   22  Suchbild / Suchton (search image / search tone)
+   21  Wirkraum / Tastraum / Sehraum
+   20  Technics / Technology
+   19  Ambience / Ambient
+   17  Perception
+   17  Authenticity/Inauthenticity
+   11  Merkwelt (perception world)
+  [resolve] ney-2019
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 123/129 claims after dropping 6 unsupported
+  progress 16/123  (top1: μεσότης 0.477)
+  progress 32/123  (top1: Chora 0.493)
+  progress 48/123  (top1: Embodiment / Embodied Cognition 0.646)
+  progress 64/123  (top1: Spatiality 0.657)
+  progress 80/123  (top1: Spatiality 0.630)
+  progress 96/123  (top1: φαντασία βουλευτική / αἰσθητική 0.496)
+  progress 112/123  (top1: Authenticity/Inauthenticity 0.626)
+  progress 123/123  (top1: Embodiment / Embodied Cognition 0.557)
+[resolve] wrote 314 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ney-2019/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   29  Wirkraum / Tastraum / Sehraum
+   27  Presence-at-hand
+   22  κοινὰ αἰσθητά
+   20  Reality
+   18  Spatiality
+   13  Authenticity/Inauthenticity
+   12  Merkbild / Wahrnehmungsbild (perception image)
+   12  Embodiment / Embodied Cognition
+   12  Being-in-the-world
+   10  The Continuous
+    9  The Composite
+    9  Suchbild / Suchton (search image / search tone)
+    8  Wirkbild (effect image)
+    7  Cause
+    7  Perception
+  [resolve] nussbaum-1985
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 119/119 claims after dropping 0 unsupported
+  progress 16/119  (top1: Suchbild / Suchton (search image / search tone) 0.637)
+  progress 32/119  (top1: Perception 0.771)
+  progress 48/119  (top1: φαντασία βουλευτική / αἰσθητική 0.698)
+  progress 64/119  (top1: κίνησις 0.725)
+  progress 80/119  (top1: Image 0.741)
+  progress 96/119  (top1: Chance / Spontaneity 0.598)
+  progress 112/119  (top1: Perception 0.754)
+  progress 119/119  (top1: Perception 0.729)
+[resolve] wrote 557 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/nussbaum-1985/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   60  Perception
+   59  Imagination
+   57  Image
+   26  κίνησις
+   23  φαντασία
+   20  φάντασμα
+   15  Movement/Change
+   14  εἰκών
+   14  αἴσθησις
+   14  κοινὰ αἰσθητά
+   13  Presence-at-hand
+   12  Setting Before the Eyes
+   11  State/Disposition
+   11  Recollection
+   11  φαντασία βουλευτική / αἰσθητική
+  [resolve] oconnor-wong-2005
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 238/240 claims after dropping 2 unsupported
+  progress 16/238  (top1: Embodiment / Embodied Cognition 0.646)
+  progress 32/238  (top1: κοινὰ αἰσθητά 0.595)
+  progress 48/238  (top1: Cause 0.618)
+  progress 64/238  (top1: τόπος / τόποι 0.642)
+  progress 80/238  (top1: κοινὰ αἰσθητά 0.524)
+  progress 96/238  (top1: φαντασία βουλευτική / αἰσθητική 0.558)
+  progress 112/238  (top1: Cause 0.696)
+  progress 128/238  (top1: Cause 0.671)
+  progress 144/238  (top1: Chora 0.468)
+  progress 160/238  (top1: μεσότης 0.437)
+  progress 176/238  (top1: Presence-at-hand 0.636)
+  progress 192/238  (top1: Kompositionslehre (composition theory) 0.620)
+  progress 208/238  (top1: Presence-at-hand 0.702)
+  progress 224/238  (top1: The Composite 0.633)
+  progress 238/238  (top1: Assemblage 0.681)
+[resolve] wrote 799 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/oconnor-wong-2005/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+  105  Cause
+   76  Presence-at-hand
+   53  Contradiction (PNC)
+   47  The Continuous
+   44  The Composite
+   31  Reality
+   29  Destruktion
+   29  δύναμις / ἐνέργεια
+   29  Kompositionslehre (composition theory)
+   28  Embodiment / Embodied Cognition
+   22  Hypothetical Necessity
+   18  Withdrawal
+   18  Being-in-the-world
+   16  Authenticity/Inauthenticity
+   15  Planmassigkeit (conformity to plan)
+  [resolve] ogorman-2005
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 190/191 claims after dropping 1 unsupported
+  progress 16/190  (top1: Image 0.751)
+  progress 32/190  (top1: Imagination 0.503)
+  progress 48/190  (top1: ἐπιείκεια 0.481)
+  progress 64/190  (top1: Chora 0.586)
+  progress 80/190  (top1: Emotion 0.523)
+  progress 96/190  (top1: Enthymeme 0.475)
+  progress 112/190  (top1: ἕξις 0.549)
+  progress 128/190  (top1: εὐδαιμονία 0.750)
+  progress 144/190  (top1: ἐπιείκεια 0.495)
+  progress 160/190  (top1: State/Disposition 0.670)
+  progress 176/190  (top1: Imagination 0.682)
+  progress 190/190  (top1: Emotion 0.690)
+[resolve] wrote 410 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ogorman-2005/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   38  Imagination
+   28  Image
+   25  Emotion
+   20  φαντασία βουλευτική / αἰσθητική
+   17  ἕξις
+   16  Preparatory Rhetoric
+   15  Rhetorical Being
+   14  Setting Before the Eyes
+   14  State/Disposition
+   13  Logos
+   11  Perception
+   10  φάντασμα
+   10  Character
+   10  πάθη τῆς ψυχῆς
+   10  κοινὰ αἰσθητά
+  [resolve] papachristou-2013
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 311/313 claims after dropping 2 unsupported
+  progress 16/311  (top1: Destruktion 0.524)
+  progress 32/311  (top1: εὐδαιμονία 0.560)
+  progress 48/311  (top1: εὐδαιμονία 0.629)
+  progress 64/311  (top1: εὐδαιμονία 0.528)
+  progress 80/311  (top1: εὐδαιμονία 0.568)
+  progress 96/311  (top1: εὐδαιμονία 0.585)
+  progress 112/311  (top1: Enthymeme 0.491)
+  progress 128/311  (top1: Emotion 0.568)
+  progress 144/311  (top1: Image 0.700)
+  progress 160/311  (top1: State/Disposition 0.688)
+  progress 176/311  (top1: Enthymeme 0.503)
+  progress 192/311  (top1: εὐδαιμονία 0.573)
+  progress 208/311  (top1: κοινὰ αἰσθητά 0.637)
+  progress 224/311  (top1: εὐδαιμονία 0.548)
+  progress 240/311  (top1: εὐδαιμονία 0.565)
+  progress 256/311  (top1: κατηγορήματα 0.468)
+  progress 272/311  (top1: εὐδαιμονία 0.483)
+  progress 288/311  (top1: Image 0.778)
+  progress 304/311  (top1: Perception 0.669)
+  progress 311/311  (top1: Image 0.695)
+[resolve] wrote 702 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/papachristou-2013/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   90  εὐδαιμονία
+   78  Imagination
+   63  Image
+   50  Emotion
+   33  Perception
+   31  φάντασμα
+   26  κίνησις
+   25  κοινὰ αἰσθητά
+   24  φαντασία
+   22  πάθη τῆς ψυχῆς
+   20  ἐπιείκεια
+   19  Logos
+   16  State/Disposition
+   15  Fulfillment
+   15  Recollection
+  [resolve] raven-2016
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 201/202 claims after dropping 1 unsupported
+  progress 16/201  (top1: κοινὰ αἰσθητά 0.590)
+  progress 32/201  (top1: Cause 0.676)
+  progress 48/201  (top1: The Continuous 0.690)
+  progress 64/201  (top1: Cause 0.617)
+  progress 80/201  (top1: Principle 0.675)
+  progress 96/201  (top1: Contradiction (PNC) 0.660)
+  progress 112/201  (top1: The Continuous 0.698)
+  progress 128/201  (top1: Circumspection 0.662)
+  progress 144/201  (top1: Contradiction (PNC) 0.674)
+  progress 160/201  (top1: The Continuous 0.698)
+  progress 176/201  (top1: Being-in-the-world 0.674)
+  progress 192/201  (top1: Contradiction (PNC) 0.689)
+  progress 201/201  (top1: Embodiment / Embodied Cognition 0.602)
+[resolve] wrote 876 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/raven-2016/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+  131  Contradiction (PNC)
+   73  Cause
+   62  The Continuous
+   60  Destruktion
+   59  Authenticity/Inauthenticity
+   41  Privation
+   38  Presence-at-hand
+   36  Reality
+   28  Disclosedness
+   23  στέρησις
+   22  The Composite
+   21  Withdrawal
+   20  Hypothetical Necessity
+   18  Being
+   18  Potentiality / Capacity
+  [resolve] silcox-2019
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 126/127 claims after dropping 1 unsupported
+  progress 16/126  (top1: Merkwelt (perception world) 0.615)
+  progress 32/126  (top1: κοινὰ αἰσθητά 0.594)
+  progress 48/126  (top1: Destruktion 0.655)
+  progress 64/126  (top1: Attunement / Stimmung 0.653)
+  progress 80/126  (top1: Wirkraum / Tastraum / Sehraum 0.611)
+  progress 96/126  (top1: Reality 0.642)
+  progress 112/126  (top1: Chora 0.478)
+  progress 126/126  (top1: μεσότης 0.512)
+[resolve] wrote 348 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/silcox-2019/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   37  Reality
+   30  Embodiment / Embodied Cognition
+   25  Nonhuman Agency
+   20  Wirkraum / Tastraum / Sehraum
+   17  Technics / Technology
+   14  Ambience / Ambient
+   14  Recollection
+   11  Presence-at-hand
+   11  Readiness-to-hand
+    9  Cause
+    9  φαντασία βουλευτική / αἰσθητική
+    9  Authenticity/Inauthenticity
+    8  κοινὰ αἰσθητά
+    8  Destruktion
+    8  Circumspection
+  [resolve] white-1985
+[resolve] loading ontology embeddings: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ontology-embeddings.jsonl
+  278 ontology embeddings
+[resolve] 293/295 claims after dropping 2 unsupported
+  progress 16/293  (top1: Imagination 0.742)
+  progress 32/293  (top1: φαντασία βουλευτική / αἰσθητική 0.657)
+  progress 48/293  (top1: εὐδαιμονία 0.577)
+  progress 64/293  (top1: κοινὰ αἰσθητά 0.613)
+  progress 80/293  (top1: εὐδαιμονία 0.550)
+  progress 96/293  (top1: Enthymeme 0.464)
+  progress 112/293  (top1: κοινὰ αἰσθητά 0.565)
+  progress 128/293  (top1: Image 0.735)
+  progress 144/293  (top1: Image 0.727)
+  progress 160/293  (top1: Emotion 0.586)
+  progress 176/293  (top1: εὐδαιμονία 0.503)
+  progress 192/293  (top1: Emotion 0.573)
+  progress 208/293  (top1: Focal Meaning 0.505)
+  progress 224/293  (top1: Focal Meaning 0.543)
+  progress 240/293  (top1: εὐδαιμονία 0.548)
+  progress 256/293  (top1: κοινὰ αἰσθητά 0.661)
+  progress 272/293  (top1: φαντασία βουλευτική / αἰσθητική 0.600)
+  progress 288/293  (top1: Image 0.699)
+  progress 293/293  (top1: Authenticity/Inauthenticity 0.688)
+[resolve] wrote 712 mentions → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/white-1985/concept-mentions.jsonl
+Top-15 linked ontology nodes:
+   79  Imagination
+   78  Image
+   50  Perception
+   50  κοινὰ αἰσθητά
+   42  Emotion
+   41  εὐδαιμονία
+   32  κίνησις
+   28  φαντασία βουλευτική / αἰσθητική
+   28  πάθη τῆς ψυχῆς
+   25  φάντασμα
+   21  Intellect
+   18  ἐπιείκεια
+   17  φαντασία
+   14  Movement/Change
+   13  Thought / Intellect
+
+=== 2. generate_bridges.py (per paper) ===
+  [bridges] aristotle-da-3-3
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 80 claims, 320 mentions
+[bridges] top-8 concepts: ['Perception', 'Imagination', 'αἴσθησις', 'Common Sense', 'φαντασία', 'Image', 'κοινὰ αἰσθητά', 'τὰ ἴδια αἰσθητά']
+  [Perception] -> unrelated/high  (8.0s)
+  [Perception] -> unrelated/high  (3.3s)
+  [Perception] -> extension/medium  (4.0s)
+  [Imagination] -> unrelated/high  (3.1s)
+  [Imagination] -> unrelated/high  (3.8s)
+  [Imagination] -> unrelated/high  (3.8s)
+  [αἴσθησις] -> extension/medium  (3.8s)
+  [αἴσθησις] -> extension/medium  (4.5s)
+  [αἴσθησις] -> unrelated/high  (2.7s)
+  [Common Sense] -> unrelated/high  (2.7s)
+  [Common Sense] -> unrelated/high  (5.0s)
+  [Common Sense] -> extension/medium  (4.2s)
+  [φαντασία] -> extension/medium  (4.7s)
+  [φαντασία] -> extension/high  (4.4s)
+  [φαντασία] -> unrelated/high  (12.6s)
+  [Image] -> unrelated/high  (4.8s)
+  [Image] -> unrelated/high  (3.8s)
+  [Image] -> unrelated/high  (3.7s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.4s)
+  [κοινὰ αἰσθητά] -> extension/medium  (4.6s)
+  [κοινὰ αἰσθητά] -> extension/medium  (4.3s)
+  [τὰ ἴδια αἰσθητά] -> unrelated/high  (3.7s)
+  [τὰ ἴδια αἰσθητά] -> unrelated/high  (4.1s)
+  [τὰ ἴδια αἰσθητά] -> unrelated/high  (12.7s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/aristotle-da-3-3/bridge-candidates.jsonl
+  relations: {'unrelated': 16, 'extension': 8}
+  [bridges] audi-2012
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 261 claims, 978 mentions
+[bridges] top-8 concepts: ['Contradiction (PNC)', 'Cause', 'Reality', 'Presence-at-hand', 'Privation', 'στέρησις', 'The Continuous', 'Hypothetical Necessity']
+  [Contradiction (PNC)] -> unrelated/high  (3.1s)
+  [Contradiction (PNC)] -> unrelated/high  (3.7s)
+  [Contradiction (PNC)] -> unrelated/high  (3.5s)
+  [Cause] -> unrelated/high  (3.6s)
+  [Cause] -> unrelated/high  (3.8s)
+  [Cause] -> unrelated/high  (4.0s)
+  [Reality] -> unrelated/high  (5.9s)
+  [Reality] -> extension/medium  (8.2s)
+  [Reality] -> unrelated/high  (4.0s)
+  [Presence-at-hand] -> unrelated/high  (3.2s)
+  [Presence-at-hand] -> extension/medium  (4.3s)
+  [Presence-at-hand] -> unrelated/high  (3.9s)
+  [Privation] -> unrelated/high  (2.6s)
+  [Privation] -> unrelated/high  (8.9s)
+  [Privation] -> unrelated/high  (4.0s)
+  [στέρησις] -> unrelated/high  (2.9s)
+  [στέρησις] -> unrelated/high  (5.0s)
+  [στέρησις] -> unrelated/high  (3.7s)
+  [The Continuous] -> unrelated/high  (4.1s)
+  [The Continuous] -> unrelated/high  (4.3s)
+  [The Continuous] -> unrelated/high  (4.6s)
+  [Hypothetical Necessity] -> unrelated/high  (3.7s)
+  [Hypothetical Necessity] -> extension/medium  (3.9s)
+  [Hypothetical Necessity] -> unrelated/high  (3.7s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/audi-2012/bridge-candidates.jsonl
+  relations: {'unrelated': 21, 'extension': 3}
+  [bridges] barnes-2012
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 304 claims, 1044 mentions
+[bridges] top-8 concepts: ['Contradiction (PNC)', 'Presence-at-hand', 'Cause', 'The Composite', 'The Continuous', 'Destruktion', 'Existence', 'Reality']
+  [Contradiction (PNC)] -> unrelated/high  (10.1s)
+  [Contradiction (PNC)] -> extension/medium  (5.3s)
+  [Contradiction (PNC)] -> unrelated/high  (4.1s)
+  [Presence-at-hand] -> unrelated/high  (2.8s)
+  [Presence-at-hand] -> contestation/medium  (3.6s)
+  [Presence-at-hand] -> contestation/medium  (5.0s)
+  [Cause] -> unrelated/high  (2.9s)
+  [Cause] -> unrelated/high  (3.6s)
+  [Cause] -> unrelated/high  (4.0s)
+  [The Composite] -> unrelated/high  (3.9s)
+  [The Composite] -> unrelated/high  (4.2s)
+  [The Composite] -> unrelated/high  (3.8s)
+  [The Continuous] -> unrelated/high  (3.0s)
+  [The Continuous] -> unrelated/high  (4.4s)
+  [The Continuous] -> unrelated/high  (3.7s)
+  [Destruktion] -> unrelated/high  (3.9s)
+  [Destruktion] -> unrelated/high  (4.0s)
+  [Destruktion] -> unrelated/high  (3.5s)
+  [Existence] -> unrelated/high  (3.0s)
+  [Existence] -> contestation/medium  (3.8s)
+  [Existence] -> contestation/medium  (5.0s)
+  [Reality] -> unrelated/high  (3.0s)
+  [Reality] -> extension/medium  (4.0s)
+  [Reality] -> unrelated/high  (5.2s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/barnes-2012/bridge-candidates.jsonl
+  relations: {'unrelated': 18, 'extension': 2, 'contestation': 4}
+  [bridges] bowin-2017
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 156 claims, 326 mentions
+[bridges] top-8 concepts: ['Within-time-ness', 'κοινὰ αἰσθητά', 'Common Sense', 'Time', 'εὐδαιμονία', 'φαντασία βουλευτική / αἰσθητική', 'Perception', 'Principle']
+  [Within-time-ness] -> unrelated/high  (3.1s)
+  [Within-time-ness] -> unrelated/high  (3.7s)
+  [Within-time-ness] -> extension/medium  (5.3s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.6s)
+  [κοινὰ αἰσθητά] -> extension/medium  (4.8s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (4.1s)
+  [Common Sense] -> unrelated/high  (9.0s)
+  [Common Sense] -> extension/medium  (4.3s)
+  [Common Sense] -> unrelated/high  (4.0s)
+  [Time] -> unrelated/high  (3.7s)
+  [Time] -> unrelated/high  (5.3s)
+  [Time] -> unrelated/high  (3.9s)
+  [εὐδαιμονία] -> unrelated/high  (3.3s)
+  [εὐδαιμονία] -> unrelated/high  (7.0s)
+  [εὐδαιμονία] -> unrelated/high  (3.9s)
+  [φαντασία βουλευτική / αἰσθητική] -> extension/medium  (4.2s)
+  [φαντασία βουλευτική / αἰσθητική] -> unrelated/high  (2.7s)
+  [φαντασία βουλευτική / αἰσθητική] -> unrelated/high  (5.1s)
+  [Perception] -> unrelated/high  (3.7s)
+  [Perception] -> unrelated/high  (3.5s)
+  [Perception] -> unrelated/high  (3.6s)
+  [Principle] -> unrelated/high  (4.6s)
+  [Principle] -> unrelated/high  (4.7s)
+  [Principle] -> unrelated/high  (4.7s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/bowin-2017/bridge-candidates.jsonl
+  relations: {'unrelated': 20, 'extension': 4}
+  [bridges] caston-1995
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 56 claims, 54 mentions
+[bridges] top-8 concepts: ['κοινὰ αἰσθητά', 'πάθη τῆς ψυχῆς', 'μεσότης', 'φαντασία βουλευτική / αἰσθητική', 'Perception', 'Destruktion', 'Soul', 'κίνησις']
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.5s)
+  [κοινὰ αἰσθητά] -> extension/medium  (4.2s)
+  [κοινὰ αἰσθητά] -> extension/medium  (5.1s)
+  [πάθη τῆς ψυχῆς] -> unrelated/high  (3.1s)
+  [πάθη τῆς ψυχῆς] -> unrelated/high  (3.8s)
+  [πάθη τῆς ψυχῆς] -> unrelated/high  (3.3s)
+  [μεσότης] -> unrelated/high  (3.2s)
+  [μεσότης] -> unrelated/high  (3.7s)
+  [μεσότης] -> unrelated/medium  (4.0s)
+  [φαντασία βουλευτική / αἰσθητική] -> extension/medium  (5.0s)
+  [φαντασία βουλευτική / αἰσθητική] -> unrelated/high  (3.2s)
+  [φαντασία βουλευτική / αἰσθητική] -> unrelated/high  (4.3s)
+  [Perception] -> unrelated/high  (2.7s)
+  [Perception] -> unrelated/high  (4.9s)
+  [Perception] -> unrelated/high  (4.5s)
+  [Destruktion] -> unrelated/high  (3.6s)
+  [Destruktion] -> unrelated/high  (3.7s)
+  [Destruktion] -> unrelated/high  (3.5s)
+  [Soul] -> unrelated/high  (3.5s)
+  [Soul] -> unrelated/high  (3.8s)
+  [Soul] -> alignment/medium  (3.8s)
+  [κίνησις] -> alignment/medium  (4.3s)
+  [κίνησις] -> unrelated/high  (3.7s)
+  [κίνησις] -> unrelated/high  (3.6s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/caston-1995/bridge-candidates.jsonl
+  relations: {'unrelated': 19, 'extension': 3, 'alignment': 2}
+  [bridges] chalmers-2016
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 513 claims, 1510 mentions
+[bridges] top-8 concepts: ['Reality', 'Wirkraum / Tastraum / Sehraum', 'Presence-at-hand', 'Authenticity/Inauthenticity', 'Embodiment / Embodied Cognition', 'κοινὰ αἰσθητά', 'Suchbild / Suchton (search image / search tone)', 'Merkbild / Wahrnehmungsbild (perception image)']
+  [Reality] -> unrelated/high  (3.7s)
+  [Reality] -> unrelated/high  (4.6s)
+  [Reality] -> unrelated/high  (3.6s)
+  [Wirkraum / Tastraum / Sehraum] -> unrelated/high  (3.2s)
+  [Wirkraum / Tastraum / Sehraum] -> unrelated/high  (3.6s)
+  [Wirkraum / Tastraum / Sehraum] -> unrelated/high  (3.4s)
+  [Presence-at-hand] -> unrelated/high  (3.7s)
+  [Presence-at-hand] -> extension/medium  (4.5s)
+  [Presence-at-hand] -> unrelated/high  (6.0s)
+  [Authenticity/Inauthenticity] -> unrelated/high  (3.8s)
+  [Authenticity/Inauthenticity] -> unrelated/high  (6.2s)
+  [Authenticity/Inauthenticity] -> unrelated/high  (4.1s)
+  [Embodiment / Embodied Cognition] -> unrelated/high  (3.1s)
+  [Embodiment / Embodied Cognition] -> extension/medium  (5.6s)
+  [Embodiment / Embodied Cognition] -> unrelated/high  (4.3s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.6s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.9s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.7s)
+  [Suchbild / Suchton (search image / search tone)] -> unrelated/high  (3.8s)
+  [Suchbild / Suchton (search image / search tone)] -> unrelated/high  (4.2s)
+  [Suchbild / Suchton (search image / search tone)] -> unrelated/high  (5.4s)
+  [Merkbild / Wahrnehmungsbild (perception image)] -> unrelated/high  (3.9s)
+  [Merkbild / Wahrnehmungsbild (perception image)] -> unrelated/high  (3.5s)
+  [Merkbild / Wahrnehmungsbild (perception image)] -> extension/medium  (5.1s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/chalmers-2016/bridge-candidates.jsonl
+  relations: {'unrelated': 21, 'extension': 3}
+  [bridges] fodor-1974
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 228 claims, 866 mentions
+[bridges] top-8 concepts: ['Cause', 'Contradiction (PNC)', 'Hypothetical Necessity', 'Kompositionslehre (composition theory)', 'Privation', 'End/Purpose', 'Presence-at-hand', 'The Continuous']
+  [Cause] -> unrelated/high  (4.2s)
+  [Cause] -> unrelated/high  (7.3s)
+  [Cause] -> unrelated/high  (4.3s)
+  [Contradiction (PNC)] -> unrelated/high  (2.9s)
+  [Contradiction (PNC)] -> extension/medium  (4.3s)
+  [Contradiction (PNC)] -> extension/medium  (4.4s)
+  [Hypothetical Necessity] -> unrelated/high  (3.7s)
+  [Hypothetical Necessity] -> unrelated/high  (4.3s)
+  [Hypothetical Necessity] -> unrelated/high  (4.5s)
+  [Kompositionslehre (composition theory)] -> unrelated/high  (3.1s)
+  [Kompositionslehre (composition theory)] -> unrelated/high  (3.5s)
+  [Kompositionslehre (composition theory)] -> unrelated/high  (4.0s)
+  [Privation] -> unrelated/high  (3.5s)
+  [Privation] -> unrelated/high  (4.2s)
+  [Privation] -> unrelated/high  (3.9s)
+  [End/Purpose] -> unrelated/high  (7.8s)
+  [End/Purpose] -> unrelated/high  (3.7s)
+  [End/Purpose] -> unrelated/high  (4.1s)
+  [Presence-at-hand] -> unrelated/high  (2.2s)
+  [Presence-at-hand] -> extension/medium  (4.8s)
+  [Presence-at-hand] -> extension/medium  (4.7s)
+  [The Continuous] -> unrelated/high  (3.1s)
+  [The Continuous] -> unrelated/high  (3.8s)
+  [The Continuous] -> unrelated/high  (4.0s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/fodor-1974/bridge-candidates.jsonl
+  relations: {'unrelated': 20, 'extension': 4}
+  [bridges] frede-1992
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 144 claims, 531 mentions
+[bridges] top-8 concepts: ['Imagination', 'Image', 'Perception', 'φάντασμα', 'φαντασία', 'Emotion', 'κίνησις', 'State/Disposition']
+  [Imagination] -> unrelated/high  (3.0s)
+  [Imagination] -> unrelated/high  (4.2s)
+  [Imagination] -> unrelated/high  (4.2s)
+  [Image] -> unrelated/high  (2.9s)
+  [Image] -> unrelated/high  (3.5s)
+  [Image] -> unrelated/high  (3.2s)
+  [Perception] -> unrelated/high  (3.2s)
+  [Perception] -> unrelated/high  (6.6s)
+  [Perception] -> unrelated/high  (4.4s)
+  [φάντασμα] -> extension/high  (4.3s)
+  [φάντασμα] -> unrelated/high  (3.1s)
+  [φάντασμα] -> unrelated/high  (3.5s)
+  [φαντασία] -> extension/medium  (4.4s)
+  [φαντασία] -> extension/high  (4.0s)
+  [φαντασία] -> unrelated/high  (3.3s)
+  [Emotion] -> unrelated/high  (3.1s)
+  [Emotion] -> unrelated/high  (4.1s)
+  [Emotion] -> unrelated/high  (3.6s)
+  [κίνησις] -> extension/medium  (4.1s)
+  [κίνησις] -> unrelated/high  (3.0s)
+  [κίνησις] -> unrelated/high  (3.7s)
+  [State/Disposition] -> unrelated/high  (3.1s)
+  [State/Disposition] -> extension/medium  (4.9s)
+  [State/Disposition] -> unrelated/high  (6.6s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/frede-1992/bridge-candidates.jsonl
+  relations: {'unrelated': 19, 'extension': 5}
+  [bridges] heidegger-bcap-4-5
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 112 claims, 481 mentions
+[bridges] top-8 concepts: ['ὁρισμός', 'Formula / Account', 'Logos', 'κοινωνία', 'λόγος', 'κοινὰ αἰσθητά', 'τὸ πρέπον', 'Signs']
+  [ὁρισμός] -> unrelated/high  (3.4s)
+  [ὁρισμός] -> extension/medium  (3.9s)
+  [ὁρισμός] -> unrelated/high  (4.1s)
+  [Formula / Account] -> unrelated/high  (2.9s)
+  [Formula / Account] -> alignment/high  (3.9s)
+  [Formula / Account] -> unrelated/medium  (4.4s)
+  [Logos] -> unrelated/high  (5.0s)
+  [Logos] -> alignment/high  (3.5s)
+  [Logos] -> unrelated/medium  (4.1s)
+  [κοινωνία] -> unrelated/high  (3.3s)
+  [κοινωνία] -> extension/medium  (4.0s)
+  [κοινωνία] -> unrelated/high  (2.9s)
+  [λόγος] -> unrelated/high  (3.3s)
+  [λόγος] -> extension/medium  (4.2s)
+  [λόγος] -> unrelated/high  (3.2s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.2s)
+  [κοινὰ αἰσθητά] -> extension/medium  (4.0s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.6s)
+  [τὸ πρέπον] -> unrelated/high  (3.0s)
+  [τὸ πρέπον] -> unrelated/high  (4.0s)
+  [τὸ πρέπον] -> unrelated/high  (3.4s)
+  [Signs] -> unrelated/high  (3.2s)
+  [Signs] -> extension/medium  (4.2s)
+  [Signs] -> unrelated/high  (3.8s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/heidegger-bcap-4-5/bridge-candidates.jsonl
+  relations: {'unrelated': 17, 'extension': 5, 'alignment': 2}
+  [bridges] horgan-1993
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 345 claims, 1051 mentions
+[bridges] top-8 concepts: ['Presence-at-hand', 'Cause', 'Contradiction (PNC)', 'Hypothetical Necessity', 'Reality', 'The Continuous', 'Withdrawal', 'Destruktion']
+  [Presence-at-hand] -> unrelated/high  (2.9s)
+  [Presence-at-hand] -> unrelated/high  (3.8s)
+  [Presence-at-hand] -> unrelated/high  (3.7s)
+  [Cause] -> unrelated/high  (4.7s)
+  [Cause] -> unrelated/high  (4.4s)
+  [Cause] -> unrelated/high  (3.9s)
+  [Contradiction (PNC)] -> unrelated/high  (2.8s)
+  [Contradiction (PNC)] -> unrelated/high  (4.1s)
+  [Contradiction (PNC)] -> unrelated/high  (3.8s)
+  [Hypothetical Necessity] -> unrelated/high  (3.2s)
+  [Hypothetical Necessity] -> unrelated/high  (3.9s)
+  [Hypothetical Necessity] -> unrelated/high  (4.2s)
+  [Reality] -> unrelated/high  (4.3s)
+  [Reality] -> unrelated/high  (3.7s)
+  [Reality] -> unrelated/high  (4.0s)
+  [The Continuous] -> unrelated/high  (3.2s)
+  [The Continuous] -> unrelated/high  (4.5s)
+  [The Continuous] -> unrelated/high  (4.2s)
+  [Withdrawal] -> unrelated/high  (3.9s)
+  [Withdrawal] -> unrelated/high  (4.2s)
+  [Withdrawal] -> unrelated/high  (5.2s)
+  [Destruktion] -> unrelated/high  (2.8s)
+  [Destruktion] -> unrelated/high  (3.7s)
+  [Destruktion] -> unrelated/high  (3.4s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/horgan-1993/bridge-candidates.jsonl
+  relations: {'unrelated': 24}
+  [bridges] kim-1988
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 177 claims, 592 mentions
+[bridges] top-8 concepts: ['Cause', 'Contradiction (PNC)', 'Reality', 'Presence-at-hand', 'Disclosedness', 'Hypothetical Necessity', 'Privation', 'Chance / Spontaneity']
+  [Cause] -> unrelated/high  (3.4s)
+  [Cause] -> unrelated/high  (3.9s)
+  [Cause] -> unrelated/high  (3.8s)
+  [Contradiction (PNC)] -> unrelated/high  (3.9s)
+  [Contradiction (PNC)] -> unrelated/high  (4.0s)
+  [Contradiction (PNC)] -> unrelated/high  (4.1s)
+  [Reality] -> unrelated/high  (3.6s)
+  [Reality] -> unrelated/high  (3.7s)
+  [Reality] -> unrelated/high  (3.4s)
+  [Presence-at-hand] -> unrelated/high  (3.1s)
+  [Presence-at-hand] -> unrelated/high  (4.5s)
+  [Presence-at-hand] -> unrelated/high  (4.1s)
+  [Disclosedness] -> unrelated/high  (3.0s)
+  [Disclosedness] -> unrelated/high  (4.7s)
+  [Disclosedness] -> unrelated/high  (3.9s)
+  [Hypothetical Necessity] -> unrelated/high  (2.4s)
+  [Hypothetical Necessity] -> unrelated/high  (3.7s)
+  [Hypothetical Necessity] -> unrelated/high  (3.8s)
+  [Privation] -> unrelated/high  (3.1s)
+  [Privation] -> unrelated/high  (4.1s)
+  [Privation] -> unrelated/high  (3.7s)
+  [Chance / Spontaneity] -> unrelated/high  (4.0s)
+  [Chance / Spontaneity] -> unrelated/high  (3.9s)
+  [Chance / Spontaneity] -> unrelated/high  (3.5s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/kim-1988/bridge-candidates.jsonl
+  relations: {'unrelated': 24}
+  [bridges] kim-1990
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 339 claims, 916 mentions
+[bridges] top-8 concepts: ['Cause', 'The Continuous', 'Contradiction (PNC)', 'Privation', 'Presence-at-hand', 'Hypothetical Necessity', 'The Composite', 'Kompositionslehre (composition theory)']
+  [Cause] -> unrelated/high  (3.2s)
+  [Cause] -> unrelated/high  (3.9s)
+  [Cause] -> unrelated/high  (3.6s)
+  [The Continuous] -> unrelated/high  (3.6s)
+  [The Continuous] -> unrelated/high  (3.7s)
+  [The Continuous] -> unrelated/high  (4.4s)
+  [Contradiction (PNC)] -> unrelated/high  (3.5s)
+  [Contradiction (PNC)] -> unrelated/high  (5.2s)
+  [Contradiction (PNC)] -> unrelated/high  (3.4s)
+  [Privation] -> unrelated/high  (3.4s)
+  [Privation] -> unrelated/high  (4.5s)
+  [Privation] -> unrelated/high  (3.5s)
+  [Presence-at-hand] -> unrelated/high  (2.6s)
+  [Presence-at-hand] -> unrelated/high  (4.2s)
+  [Presence-at-hand] -> unrelated/high  (3.5s)
+  [Hypothetical Necessity] -> unrelated/high  (3.3s)
+  [Hypothetical Necessity] -> unrelated/high  (3.6s)
+  [Hypothetical Necessity] -> unrelated/high  (3.8s)
+  [The Composite] -> unrelated/high  (3.5s)
+  [The Composite] -> unrelated/high  (3.9s)
+  [The Composite] -> unrelated/high  (4.0s)
+  [Kompositionslehre (composition theory)] -> unrelated/high  (3.4s)
+  [Kompositionslehre (composition theory)] -> unrelated/high  (4.2s)
+  [Kompositionslehre (composition theory)] -> unrelated/high  (3.7s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/kim-1990/bridge-candidates.jsonl
+  relations: {'unrelated': 24}
+  [bridges] kim-2006
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 162 claims, 173 mentions
+[bridges] top-8 concepts: ['Cause', 'κοινὰ αἰσθητά', 'Contradiction (PNC)', 'Presence-at-hand', 'The Continuous', 'Hypothetical Necessity', 'Potentiality / Capacity', 'Chance / Spontaneity']
+  [Cause] -> unrelated/high  (3.5s)
+  [Cause] -> unrelated/high  (3.7s)
+  [Cause] -> unrelated/high  (4.1s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.2s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (4.5s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.4s)
+  [Contradiction (PNC)] -> unrelated/high  (3.4s)
+  [Contradiction (PNC)] -> unrelated/high  (3.7s)
+  [Contradiction (PNC)] -> unrelated/high  (4.5s)
+  [Presence-at-hand] -> unrelated/high  (3.4s)
+  [Presence-at-hand] -> unrelated/high  (3.5s)
+  [Presence-at-hand] -> unrelated/high  (3.3s)
+  [The Continuous] -> unrelated/high  (2.7s)
+  [The Continuous] -> unrelated/high  (3.7s)
+  [The Continuous] -> unrelated/high  (4.3s)
+  [Hypothetical Necessity] -> unrelated/high  (4.3s)
+  [Hypothetical Necessity] -> unrelated/high  (4.0s)
+  [Hypothetical Necessity] -> unrelated/high  (3.9s)
+  [Potentiality / Capacity] -> unrelated/high  (2.8s)
+  [Potentiality / Capacity] -> unrelated/high  (3.5s)
+  [Potentiality / Capacity] -> unrelated/high  (3.3s)
+  [Chance / Spontaneity] -> unrelated/high  (6.5s)
+  [Chance / Spontaneity] -> unrelated/high  (4.1s)
+  [Chance / Spontaneity] -> unrelated/high  (3.8s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/kim-2006/bridge-candidates.jsonl
+  relations: {'unrelated': 24}
+  [bridges] mcdonnell-wildman-2019
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 238 claims, 632 mentions
+[bridges] top-8 concepts: ['Cause', 'Reality', 'Presence-at-hand', 'Contradiction (PNC)', 'Destruktion', 'Authenticity/Inauthenticity', 'Nonhuman Agency', 'Embodiment / Embodied Cognition']
+  [Cause] -> unrelated/high  (3.4s)
+  [Cause] -> unrelated/high  (4.2s)
+  [Cause] -> unrelated/high  (3.7s)
+  [Reality] -> unrelated/high  (3.7s)
+  [Reality] -> unrelated/high  (3.9s)
+  [Reality] -> unrelated/high  (3.6s)
+  [Presence-at-hand] -> unrelated/high  (3.2s)
+  [Presence-at-hand] -> unrelated/high  (4.5s)
+  [Presence-at-hand] -> unrelated/high  (4.1s)
+  [Contradiction (PNC)] -> unrelated/high  (3.8s)
+  [Contradiction (PNC)] -> unrelated/high  (4.4s)
+  [Contradiction (PNC)] -> unrelated/high  (3.8s)
+  [Destruktion] -> unrelated/high  (3.7s)
+  [Destruktion] -> unrelated/high  (4.6s)
+  [Destruktion] -> unrelated/high  (4.4s)
+  [Authenticity/Inauthenticity] -> unrelated/high  (3.6s)
+  [Authenticity/Inauthenticity] -> unrelated/high  (4.3s)
+  [Authenticity/Inauthenticity] -> unrelated/high  (4.5s)
+  [Nonhuman Agency] -> unrelated/high  (2.9s)
+  [Nonhuman Agency] -> unrelated/high  (3.6s)
+  [Nonhuman Agency] -> unrelated/high  (3.5s)
+  [Embodiment / Embodied Cognition] -> unrelated/high  (3.8s)
+  [Embodiment / Embodied Cognition] -> unrelated/high  (3.6s)
+  [Embodiment / Embodied Cognition] -> unrelated/high  (3.6s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/mcdonnell-wildman-2019/bridge-candidates.jsonl
+  relations: {'unrelated': 24}
+  [bridges] metzinger-2018
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 229 claims, 619 mentions
+[bridges] top-8 concepts: ['Embodiment / Embodied Cognition', 'Reality', 'Nonhuman Agency', 'Recollection', 'Presence-at-hand', 'Electracy', 'Worldhood', 'Being-in-the-world']
+  [Embodiment / Embodied Cognition] -> unrelated/high  (4.0s)
+  [Embodiment / Embodied Cognition] -> extension/medium  (4.0s)
+  [Embodiment / Embodied Cognition] -> unrelated/high  (3.8s)
+  [Reality] -> unrelated/high  (3.9s)
+  [Reality] -> extension/medium  (8.3s)
+  [Reality] -> unrelated/high  (4.2s)
+  [Nonhuman Agency] -> unrelated/high  (4.0s)
+  [Nonhuman Agency] -> unrelated/high  (3.6s)
+  [Nonhuman Agency] -> extension/medium  (4.8s)
+  [Recollection] -> unrelated/high  (3.2s)
+  [Recollection] -> unrelated/high  (4.1s)
+  [Recollection] -> unrelated/high  (3.4s)
+  [Presence-at-hand] -> unrelated/high  (3.3s)
+  [Presence-at-hand] -> extension/medium  (4.1s)
+  [Presence-at-hand] -> unrelated/high  (3.9s)
+  [Electracy] -> unrelated/high  (3.0s)
+  [Electracy] -> unrelated/high  (4.5s)
+  [Electracy] -> unrelated/high  (3.6s)
+  [Worldhood] -> unrelated/high  (3.5s)
+  [Worldhood] -> extension/medium  (3.9s)
+  [Worldhood] -> unrelated/high  (3.6s)
+  [Being-in-the-world] -> extension/medium  (4.6s)
+  [Being-in-the-world] -> unrelated/high  (4.1s)
+  [Being-in-the-world] -> unrelated/medium  (4.9s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/metzinger-2018/bridge-candidates.jsonl
+  relations: {'unrelated': 18, 'extension': 6}
+  [bridges] ney-2019
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 129 claims, 314 mentions
+[bridges] top-8 concepts: ['Wirkraum / Tastraum / Sehraum', 'Presence-at-hand', 'κοινὰ αἰσθητά', 'Reality', 'Spatiality', 'Authenticity/Inauthenticity', 'Merkbild / Wahrnehmungsbild (perception image)', 'Embodiment / Embodied Cognition']
+  [Wirkraum / Tastraum / Sehraum] -> unrelated/high  (4.2s)
+  [Wirkraum / Tastraum / Sehraum] -> unrelated/high  (4.6s)
+  [Wirkraum / Tastraum / Sehraum] -> unrelated/high  (4.1s)
+  [Presence-at-hand] -> unrelated/high  (3.1s)
+  [Presence-at-hand] -> unrelated/high  (3.6s)
+  [Presence-at-hand] -> unrelated/high  (3.0s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (4.1s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.6s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.4s)
+  [Reality] -> unrelated/high  (3.0s)
+  [Reality] -> unrelated/high  (4.1s)
+  [Reality] -> unrelated/high  (4.6s)
+  [Spatiality] -> unrelated/high  (2.8s)
+  [Spatiality] -> unrelated/high  (4.7s)
+  [Spatiality] -> unrelated/high  (3.2s)
+  [Authenticity/Inauthenticity] -> unrelated/high  (3.6s)
+  [Authenticity/Inauthenticity] -> unrelated/high  (3.9s)
+  [Authenticity/Inauthenticity] -> unrelated/high  (3.2s)
+  [Merkbild / Wahrnehmungsbild (perception image)] -> unrelated/high  (5.1s)
+  [Merkbild / Wahrnehmungsbild (perception image)] -> unrelated/high  (3.0s)
+  [Merkbild / Wahrnehmungsbild (perception image)] -> unrelated/high  (4.2s)
+  [Embodiment / Embodied Cognition] -> unrelated/high  (3.2s)
+  [Embodiment / Embodied Cognition] -> unrelated/high  (4.1s)
+  [Embodiment / Embodied Cognition] -> unrelated/high  (4.6s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ney-2019/bridge-candidates.jsonl
+  relations: {'unrelated': 24}
+  [bridges] nussbaum-1985
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 119 claims, 557 mentions
+[bridges] top-8 concepts: ['Perception', 'Imagination', 'Image', 'κίνησις', 'φαντασία', 'φάντασμα', 'Movement/Change', 'αἴσθησις']
+  [Perception] -> unrelated/high  (4.4s)
+  [Perception] -> unrelated/high  (3.7s)
+  [Perception] -> extension/medium  (4.9s)
+  [Imagination] -> unrelated/high  (3.3s)
+  [Imagination] -> extension/medium  (4.7s)
+  [Imagination] -> extension/medium  (4.1s)
+  [Image] -> unrelated/high  (3.0s)
+  [Image] -> unrelated/high  (3.2s)
+  [Image] -> unrelated/high  (3.1s)
+  [κίνησις] -> alignment/high  (3.9s)
+  [κίνησις] -> unrelated/high  (5.3s)
+  [κίνησις] -> unrelated/high  (3.5s)
+  [φαντασία] -> extension/high  (4.1s)
+  [φαντασία] -> alignment/high  (3.5s)
+  [φαντασία] -> unrelated/high  (2.8s)
+  [φάντασμα] -> contestation/high  (3.2s)
+  [φάντασμα] -> unrelated/high  (3.6s)
+  [φάντασμα] -> unrelated/high  (4.0s)
+  [Movement/Change] -> unrelated/high  (3.1s)
+  [Movement/Change] -> unrelated/high  (3.7s)
+  [Movement/Change] -> extension/high  (6.8s)
+  [αἴσθησις] -> alignment/high  (4.5s)
+  [αἴσθησις] -> alignment/high  (3.7s)
+  [αἴσθησις] -> unrelated/high  (3.8s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/nussbaum-1985/bridge-candidates.jsonl
+  relations: {'unrelated': 14, 'extension': 5, 'alignment': 4, 'contestation': 1}
+  [bridges] oconnor-wong-2005
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 240 claims, 799 mentions
+[bridges] top-8 concepts: ['Cause', 'Presence-at-hand', 'Contradiction (PNC)', 'The Continuous', 'The Composite', 'Reality', 'Destruktion', 'Kompositionslehre (composition theory)']
+  [Cause] -> unrelated/high  (3.0s)
+  [Cause] -> unrelated/high  (3.7s)
+  [Cause] -> unrelated/high  (3.5s)
+  [Presence-at-hand] -> unrelated/high  (3.2s)
+  [Presence-at-hand] -> unrelated/high  (4.9s)
+  [Presence-at-hand] -> unrelated/high  (3.1s)
+  [Contradiction (PNC)] -> unrelated/high  (3.0s)
+  [Contradiction (PNC)] -> unrelated/high  (3.3s)
+  [Contradiction (PNC)] -> unrelated/high  (3.6s)
+  [The Continuous] -> unrelated/high  (3.8s)
+  [The Continuous] -> unrelated/high  (4.3s)
+  [The Continuous] -> unrelated/high  (3.5s)
+  [The Composite] -> unrelated/high  (3.5s)
+  [The Composite] -> unrelated/high  (4.5s)
+  [The Composite] -> unrelated/high  (5.6s)
+  [Reality] -> unrelated/high  (2.8s)
+  [Reality] -> unrelated/high  (3.8s)
+  [Reality] -> unrelated/high  (4.4s)
+  [Destruktion] -> unrelated/high  (2.8s)
+  [Destruktion] -> unrelated/high  (3.7s)
+  [Destruktion] -> unrelated/high  (4.0s)
+  [Kompositionslehre (composition theory)] -> unrelated/high  (4.2s)
+  [Kompositionslehre (composition theory)] -> unrelated/high  (4.4s)
+  [Kompositionslehre (composition theory)] -> unrelated/high  (4.0s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/oconnor-wong-2005/bridge-candidates.jsonl
+  relations: {'unrelated': 24}
+  [bridges] ogorman-2005
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 191 claims, 410 mentions
+[bridges] top-8 concepts: ['Imagination', 'Image', 'Emotion', 'φαντασία βουλευτική / αἰσθητική', 'ἕξις', 'Preparatory Rhetoric', 'Rhetorical Being', 'Setting Before the Eyes']
+  [Imagination] -> unrelated/high  (3.0s)
+  [Imagination] -> extension/medium  (4.2s)
+  [Imagination] -> extension/medium  (3.9s)
+  [Image] -> unrelated/high  (2.6s)
+  [Image] -> extension/medium  (4.5s)
+  [Image] -> extension/medium  (4.8s)
+  [Emotion] -> unrelated/high  (4.8s)
+  [Emotion] -> extension/medium  (3.5s)
+  [Emotion] -> extension/medium  (4.9s)
+  [φαντασία βουλευτική / αἰσθητική] -> extension/medium  (6.0s)
+  [φαντασία βουλευτική / αἰσθητική] -> unrelated/high  (3.0s)
+  [φαντασία βουλευτική / αἰσθητική] -> unrelated/high  (4.1s)
+  [ἕξις] -> unrelated/high  (3.6s)
+  [ἕξις] -> extension/medium  (4.2s)
+  [ἕξις] -> extension/medium  (5.0s)
+  [Preparatory Rhetoric] -> unrelated/high  (3.1s)
+  [Preparatory Rhetoric] -> unrelated/high  (4.0s)
+  [Preparatory Rhetoric] -> unrelated/medium  (4.8s)
+  [Rhetorical Being] -> unrelated/high  (3.1s)
+  [Rhetorical Being] -> unrelated/medium  (4.3s)
+  [Rhetorical Being] -> unrelated/high  (3.9s)
+  [Setting Before the Eyes] -> unrelated/high  (4.1s)
+  [Setting Before the Eyes] -> extension/medium  (4.9s)
+  [Setting Before the Eyes] -> unrelated/medium  (3.7s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/ogorman-2005/bridge-candidates.jsonl
+  relations: {'unrelated': 14, 'extension': 10}
+  [bridges] papachristou-2013
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 313 claims, 702 mentions
+[bridges] top-8 concepts: ['Imagination', 'εὐδαιμονία', 'Image', 'Emotion', 'Perception', 'φάντασμα', 'κίνησις', 'φαντασία']
+  [Imagination] -> unrelated/low  (3.6s)
+  [Imagination] -> unrelated/high  (3.1s)
+  [Imagination] -> unrelated/high  (8.0s)
+  [εὐδαιμονία] -> unrelated/high  (4.5s)
+  [εὐδαιμονία] -> unrelated/high  (5.2s)
+  [εὐδαιμονία] -> extension/medium  (4.5s)
+  [Image] -> unrelated/low  (3.0s)
+  [Image] -> unrelated/high  (3.6s)
+  [Image] -> unrelated/high  (4.3s)
+  [Emotion] -> unrelated/high  (3.9s)
+  [Emotion] -> unrelated/high  (3.5s)
+  [Emotion] -> alignment/medium  (3.5s)
+  [Perception] -> unrelated/low  (2.6s)
+  [Perception] -> unrelated/high  (4.1s)
+  [Perception] -> unrelated/high  (3.1s)
+  [φάντασμα] -> extension/high  (4.8s)
+  [φάντασμα] -> unrelated/high  (2.7s)
+  [φάντασμα] -> unrelated/high  (4.0s)
+  [κίνησις] -> alignment/high  (3.9s)
+  [κίνησις] -> unrelated/high  (3.0s)
+  [κίνησις] -> unrelated/high  (6.0s)
+  [φαντασία] -> alignment/medium  (5.1s)
+  [φαντασία] -> alignment/high  (3.5s)
+  [φαντασία] -> unrelated/low  (2.4s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/papachristou-2013/bridge-candidates.jsonl
+  relations: {'unrelated': 18, 'extension': 2, 'alignment': 4}
+  [bridges] raven-2016
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 202 claims, 876 mentions
+[bridges] top-8 concepts: ['Contradiction (PNC)', 'Cause', 'The Continuous', 'Destruktion', 'Authenticity/Inauthenticity', 'Privation', 'Presence-at-hand', 'Reality']
+  [Contradiction (PNC)] -> unrelated/high  (4.2s)
+  [Contradiction (PNC)] -> unrelated/high  (5.4s)
+  [Contradiction (PNC)] -> unrelated/high  (3.4s)
+  [Cause] -> unrelated/high  (3.3s)
+  [Cause] -> unrelated/high  (4.1s)
+  [Cause] -> unrelated/high  (9.0s)
+  [The Continuous] -> unrelated/high  (3.3s)
+  [The Continuous] -> unrelated/high  (6.5s)
+  [The Continuous] -> unrelated/high  (3.8s)
+  [Destruktion] -> unrelated/high  (2.8s)
+  [Destruktion] -> unrelated/high  (3.4s)
+  [Destruktion] -> unrelated/high  (4.0s)
+  [Authenticity/Inauthenticity] -> unrelated/high  (3.3s)
+  [Authenticity/Inauthenticity] -> unrelated/high  (3.5s)
+  [Authenticity/Inauthenticity] -> unrelated/high  (4.2s)
+  [Privation] -> unrelated/high  (3.0s)
+  [Privation] -> unrelated/high  (4.0s)
+  [Privation] -> unrelated/high  (4.4s)
+  [Presence-at-hand] -> unrelated/high  (2.6s)
+  [Presence-at-hand] -> extension/medium  (4.3s)
+  [Presence-at-hand] -> unrelated/high  (3.8s)
+  [Reality] -> unrelated/high  (3.2s)
+  [Reality] -> unrelated/high  (3.6s)
+  [Reality] -> unrelated/high  (3.9s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/raven-2016/bridge-candidates.jsonl
+  relations: {'unrelated': 23, 'extension': 1}
+  [bridges] silcox-2019
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 127 claims, 348 mentions
+[bridges] top-8 concepts: ['Reality', 'Embodiment / Embodied Cognition', 'Nonhuman Agency', 'Wirkraum / Tastraum / Sehraum', 'Technics / Technology', 'Recollection', 'Ambience / Ambient', 'Presence-at-hand']
+  [Reality] -> unrelated/high  (3.5s)
+  [Reality] -> unrelated/high  (4.7s)
+  [Reality] -> unrelated/high  (3.4s)
+  [Embodiment / Embodied Cognition] -> unrelated/high  (3.0s)
+  [Embodiment / Embodied Cognition] -> unrelated/high  (3.7s)
+  [Embodiment / Embodied Cognition] -> unrelated/high  (3.4s)
+  [Nonhuman Agency] -> unrelated/high  (3.3s)
+  [Nonhuman Agency] -> unrelated/high  (3.9s)
+  [Nonhuman Agency] -> unrelated/high  (3.9s)
+  [Wirkraum / Tastraum / Sehraum] -> unrelated/high  (2.9s)
+  [Wirkraum / Tastraum / Sehraum] -> unrelated/high  (4.6s)
+  [Wirkraum / Tastraum / Sehraum] -> extension/medium  (4.0s)
+  [Technics / Technology] -> unrelated/high  (3.6s)
+  [Technics / Technology] -> unrelated/high  (4.0s)
+  [Technics / Technology] -> unrelated/high  (3.8s)
+  [Recollection] -> unrelated/high  (3.5s)
+  [Recollection] -> unrelated/high  (3.5s)
+  [Recollection] -> unrelated/high  (3.9s)
+  [Ambience / Ambient] -> unrelated/high  (4.1s)
+  [Ambience / Ambient] -> unrelated/high  (4.9s)
+  [Ambience / Ambient] -> unrelated/high  (4.3s)
+  [Presence-at-hand] -> unrelated/high  (3.8s)
+  [Presence-at-hand] -> unrelated/high  (3.9s)
+  [Presence-at-hand] -> unrelated/high  (4.0s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/silcox-2019/bridge-candidates.jsonl
+  relations: {'unrelated': 23, 'extension': 1}
+  [bridges] white-1985
+[bridges] 558 existing hooks in sandbox compiled-index
+[bridges] 295 claims, 712 mentions
+[bridges] top-8 concepts: ['Image', 'Imagination', 'Perception', 'κοινὰ αἰσθητά', 'Emotion', 'εὐδαιμονία', 'κίνησις', 'φάντασμα']
+  [Image] -> unrelated/high  (3.1s)
+  [Image] -> unrelated/high  (3.8s)
+  [Image] -> unrelated/high  (4.2s)
+  [Imagination] -> unrelated/high  (3.4s)
+  [Imagination] -> unrelated/high  (3.8s)
+  [Imagination] -> unrelated/high  (4.9s)
+  [Perception] -> unrelated/high  (2.9s)
+  [Perception] -> unrelated/high  (3.2s)
+  [Perception] -> unrelated/high  (3.1s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.2s)
+  [κοινὰ αἰσθητά] -> extension/medium  (4.0s)
+  [κοινὰ αἰσθητά] -> unrelated/high  (3.5s)
+  [Emotion] -> unrelated/high  (3.3s)
+  [Emotion] -> unrelated/high  (4.3s)
+  [Emotion] -> extension/medium  (4.0s)
+  [εὐδαιμονία] -> unrelated/high  (2.5s)
+  [εὐδαιμονία] -> extension/medium  (4.2s)
+  [εὐδαιμονία] -> unrelated/high  (3.5s)
+  [κίνησις] -> extension/high  (4.7s)
+  [κίνησις] -> unrelated/high  (3.3s)
+  [κίνησις] -> extension/medium  (5.0s)
+  [φάντασμα] -> extension/high  (3.9s)
+  [φάντασμα] -> unrelated/high  (2.7s)
+  [φάντασμα] -> unrelated/high  (4.5s)
+[bridges] wrote 24 candidates → /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/scripts/../data/corpus/index/white-1985/bridge-candidates.jsonl
+  relations: {'unrelated': 18, 'extension': 6}
+
+=== 3. recompile_index.py (merge) ===
+[recompile] INDEX_DIR=/home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/data/corpus/index
+[recompile] 23 paper directories:
+  - aristotle-da-3-3
+  - audi-2012
+  - barnes-2012
+  - bowin-2017
+  - caston-1995
+  - chalmers-2016
+  - fodor-1974
+  - frede-1992
+  - heidegger-bcap-4-5
+  - horgan-1993
+  - kim-1988
+  - kim-1990
+  - kim-2006
+  - mcdonnell-wildman-2019
+  - metzinger-2018
+  - ney-2019
+  - nussbaum-1985
+  - oconnor-wong-2005
+  - ogorman-2005
+  - papachristou-2013
+  - raven-2016
+  - silcox-2019
+  - white-1985
+[recompile] aggregate: 4960 claims, 14811 mentions, 552 bridges
+[recompile] dropped 40 unsupported claims
+[recompile] wrote /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/data/corpus/index/compiled-index.json
+  claims:               4920
+  conceptMentions:      14811
+  bridgeCandidates:     552
+  promoted hooks:       +78
+  direct hooks:         +500
+  novel ontology nodes: +5399
+  total hooks now:      1136
+  total ontology now:   7389
+
+=== 4. claim-roundtrip smoke (TS->data) ===
+smoke pass: no NEW live production file changes since baseline
+smoke pass: no new tsc errors relative to baseline
+claim round-trip: compile PASS; godwrite check skipped (scripts/god-write-minimal.sh not present)
+claim round-trip: PASS
+smoke pass: claim round-trip PASS
+smoke test: PASS (sandbox)
+
+=== 5. Canary health report ===
+=== Canary health report — 23 papers ===
+data_dir: /home/dalton/projects/claudeflow-testing/tmp/analysis-upgrade/production-sandbox/data/corpus/index
+
+--- aristotle-da-3-3 ---
+  claims: 80
+  faithfulness: {'supported': 58, 'partial': 21, 'unchecked': 1}
+  use_mention:  {'use': 65, 'mention': 15}
+  claim_types:  {'thetic': 28, 'dialectical_objection': 6, 'analogical_argument': 4, 'dialectical_refutation': 9, 'definitional': 6, 'predecessor_report': 7, 'exegetical_claim': 3, 'empirical_observation': 16, 'aporetic': 1}
+
+--- audi-2012 ---
+  claims: 261
+  faithfulness: {'supported': 180, 'partial': 68, 'unsupported': 5, 'unchecked': 8}
+  use_mention:  {'use': 214, 'mention': 47}
+  claim_types:  {'subsidiary_claim': 144, 'primary_thesis': 47, 'methodological_claim': 14, 'concession': 8, 'textual_claim': 20, 'critical_claim': 24, 'exegetical_claim': 4}
+
+--- barnes-2012 ---
+  claims: 304
+  faithfulness: {'supported': 227, 'partial': 65, 'unchecked': 11, 'unsupported': 1}
+  use_mention:  {'use': 256, 'mention': 48}
+  claim_types:  {'primary_thesis': 48, 'methodological_claim': 25, 'concession': 14, 'subsidiary_claim': 185, 'textual_claim': 20, 'critical_claim': 8, 'exegetical_claim': 4}
+
+--- bowin-2017 ---
+  claims: 156
+  faithfulness: {'supported': 118, 'partial': 31, 'unchecked': 6, 'unsupported': 1}
+  use_mention:  {'mention': 43, 'use': 113}
+  claim_types:  {'textual_claim': 40, 'interpretive_claim': 41, 'primary_thesis': 12, 'subsidiary_claim': 40, 'concession': 4, 'critical_claim': 7, 'exegetical_claim': 12}
+
+--- caston-1995 ---
+  claims: 56
+  faithfulness: {'supported': 33, 'partial': 16, 'unchecked': 5, 'unsupported': 2}
+  use_mention:  {'use': 43, 'mention': 13}
+  claim_types:  {'primary_thesis': 4, 'subsidiary_claim': 14, 'textual_claim': 13, 'interpretive_claim': 20, 'critical_claim': 5}
+
+--- chalmers-2016 ---
+  claims: 513
+  faithfulness: {'unsupported': 3, 'partial': 149, 'supported': 343, 'unchecked': 18}
+  use_mention:  {'use': 431, 'mention': 82}
+  claim_types:  {'primary_thesis': 66, 'critical_claim': 26, 'subsidiary_claim': 355, 'textual_claim': 23, 'methodological_claim': 17, 'concession': 23, 'exegetical_claim': 3}
+
+--- fodor-1974 ---
+  claims: 228
+  faithfulness: {'supported': 162, 'partial': 48, 'unchecked': 11, 'unsupported': 7}
+  use_mention:  {'mention': 27, 'use': 201}
+  claim_types:  {'textual_claim': 8, 'subsidiary_claim': 151, 'critical_claim': 14, 'primary_thesis': 38, 'methodological_claim': 8, 'concession': 9}
+
+--- frede-1992 ---
+  claims: 144
+  faithfulness: {'supported': 89, 'partial': 50, 'unchecked': 4, 'unsupported': 1}
+  use_mention:  {'use': 99, 'mention': 45}
+  claim_types:  {'subsidiary_claim': 27, 'interpretive_claim': 38, 'exegetical_claim': 15, 'textual_claim': 43, 'methodological_claim': 2, 'critical_claim': 8, 'primary_thesis': 8, 'concession': 3}
+
+--- heidegger-bcap-4-5 ---
+  claims: 112
+  faithfulness: {'supported': 92, 'partial': 19, 'unsupported': 1}
+  use_mention:  {'mention': 45, 'use': 67}
+  claim_types:  {'predecessor_report': 35, 'exegetical_claim': 16, 'thetic': 21, 'aporetic': 3, 'definitional': 14, 'dialectical_refutation': 1, 'methodological_remark': 22}
+
+--- horgan-1993 ---
+  claims: 345
+  faithfulness: {'supported': 239, 'partial': 86, 'unchecked': 17, 'unsupported': 3}
+  use_mention:  {'use': 241, 'mention': 104}
+  claim_types:  {'subsidiary_claim': 161, 'textual_claim': 73, 'exegetical_claim': 23, 'primary_thesis': 42, 'methodological_claim': 13, 'concession': 5, 'interpretive_claim': 5, 'critical_claim': 23}
+
+--- kim-1988 ---
+  claims: 177
+  faithfulness: {'supported': 127, 'partial': 42, 'unchecked': 8}
+  use_mention:  {'use': 138, 'mention': 39}
+  claim_types:  {'primary_thesis': 20, 'subsidiary_claim': 97, 'concession': 9, 'textual_claim': 22, 'exegetical_claim': 16, 'critical_claim': 10, 'methodological_claim': 3}
+
+--- kim-1990 ---
+  claims: 339
+  faithfulness: {'supported': 223, 'partial': 79, 'unchecked': 36, 'unsupported': 1}
+  use_mention:  {'use': 257, 'mention': 82}
+  claim_types:  {'primary_thesis': 34, 'subsidiary_claim': 177, 'textual_claim': 39, 'methodological_claim': 14, 'critical_claim': 29, 'exegetical_claim': 36, 'concession': 10}
+
+--- kim-2006 ---
+  claims: 162
+  faithfulness: {'supported': 112, 'unchecked': 10, 'partial': 40}
+  use_mention:  {'use': 127, 'mention': 35}
+  claim_types:  {'subsidiary_claim': 86, 'methodological_claim': 7, 'primary_thesis': 29, 'textual_claim': 13, 'exegetical_claim': 12, 'critical_claim': 12, 'concession': 2, 'interpretive_claim': 1}
+
+--- mcdonnell-wildman-2019 ---
+  claims: 238
+  faithfulness: {'supported': 178, 'partial': 53, 'unchecked': 7}
+  use_mention:  {'use': 171, 'mention': 67}
+  claim_types:  {'primary_thesis': 21, 'subsidiary_claim': 119, 'concession': 13, 'methodological_claim': 7, 'textual_claim': 41, 'critical_claim': 36, 'exegetical_claim': 1}
+
+--- metzinger-2018 ---
+  claims: 229
+  faithfulness: {'supported': 150, 'unchecked': 22, 'partial': 57}
+  use_mention:  {'use': 203, 'mention': 26}
+  claim_types:  {'primary_thesis': 51, 'methodological_claim': 4, 'textual_claim': 17, 'subsidiary_claim': 150, 'critical_claim': 2, 'concession': 3, 'exegetical_claim': 2}
+
+--- ney-2019 ---
+  claims: 129
+  faithfulness: {'supported': 85, 'partial': 34, 'unchecked': 4, 'unsupported': 6}
+  use_mention:  {'mention': 43, 'use': 86}
+  claim_types:  {'textual_claim': 15, 'primary_thesis': 14, 'exegetical_claim': 16, 'methodological_claim': 3, 'concession': 14, 'subsidiary_claim': 55, 'critical_claim': 12}
+
+--- nussbaum-1985 ---
+  claims: 119
+  faithfulness: {'supported': 119}
+  use_mention:  {'use': 119}
+  claim_types:  {'subsidiary_claim': 119}
+
+--- oconnor-wong-2005 ---
+  claims: 240
+  faithfulness: {'supported': 164, 'partial': 70, 'unchecked': 4, 'unsupported': 2}
+  use_mention:  {'mention': 58, 'use': 182}
+  claim_types:  {'subsidiary_claim': 114, 'methodological_claim': 13, 'primary_thesis': 31, 'critical_claim': 41, 'textual_claim': 30, 'exegetical_claim': 3, 'concession': 8}
+
+--- ogorman-2005 ---
+  claims: 191
+  faithfulness: {'supported': 116, 'partial': 49, 'unchecked': 25, 'unsupported': 1}
+  use_mention:  {'use': 106, 'mention': 85}
+  claim_types:  {'primary_thesis': 28, 'textual_claim': 76, 'methodological_claim': 2, 'interpretive_claim': 31, 'subsidiary_claim': 37, 'exegetical_claim': 10, 'critical_claim': 7}
+
+--- papachristou-2013 ---
+  claims: 313
+  faithfulness: {'supported': 204, 'partial': 92, 'unchecked': 15, 'unsupported': 2}
+  use_mention:  {'use': 138, 'mention': 175}
+  claim_types:  {'interpretive_claim': 48, 'subsidiary_claim': 67, 'primary_thesis': 18, 'methodological_claim': 14, 'textual_claim': 153, 'exegetical_claim': 10, 'critical_claim': 2, 'concession': 1}
+
+--- raven-2016 ---
+  claims: 202
+  faithfulness: {'supported': 127, 'partial': 66, 'unchecked': 8, 'unsupported': 1}
+  use_mention:  {'mention': 53, 'use': 149}
+  claim_types:  {'subsidiary_claim': 107, 'primary_thesis': 28, 'critical_claim': 14, 'methodological_claim': 15, 'textual_claim': 30, 'concession': 6, 'interpretive_claim': 1, 'exegetical_claim': 1}
+
+--- silcox-2019 ---
+  claims: 127
+  faithfulness: {'partial': 47, 'supported': 69, 'unchecked': 10, 'unsupported': 1}
+  use_mention:  {'mention': 33, 'use': 94}
+  claim_types:  {'textual_claim': 23, 'primary_thesis': 12, 'concession': 9, 'critical_claim': 18, 'methodological_claim': 7, 'subsidiary_claim': 49, 'exegetical_claim': 9}
+
+--- white-1985 ---
+  claims: 295
+  faithfulness: {'partial': 76, 'supported': 202, 'unchecked': 15, 'unsupported': 2}
+  use_mention:  {'use': 211, 'mention': 84}
+  claim_types:  {'exegetical_claim': 40, 'textual_claim': 72, 'subsidiary_claim': 56, 'interpretive_claim': 85, 'primary_thesis': 24, 'methodological_claim': 8, 'critical_claim': 6, 'concession': 4}
+
+=== Aggregate ===
+  total claims: 4960
+  median claims/paper: 202
+  zero-claim papers: 0
+
+  total cost: $0.00
+  total API calls: 0
+
+=== B7 taxonomy spot-check (human review recommended) ===
+  primary_exegetical_on_secondary: 236 items  first 3: ['claim-aristotle-da-3.3-016', 'claim-aristotle-da-3.3-062', 'claim-aristotle-da-3.3-077']
+  aporetic_as_thetic_candidates: 0 items
+  mention_for_endorsed_borrowing: 26 items  first 3: ['claim-aristotle-da-3.3-072', 'claim-bowin-2017-031', 'claim-bowin-2017-039']
+  dialectical_on_ancients_without_refutation: 1 items  first 3: ['claim-aristotle-da-3.3-034']
+
+=== GATE VERDICT ===
+  VERDICT: PASS

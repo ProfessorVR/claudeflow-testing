@@ -283,6 +283,43 @@ start_observe() {
 }
 
 # Create tmux session with windows
+# ==================== Local Marker OCR Server ====================
+start_marker() {
+    # Optional service: only starts when explicitly enabled in .env.
+    if [[ "${MARKER_LOCAL_ENABLED:-false}" != "true" ]]; then
+        log_info "Skipping local Marker (set MARKER_LOCAL_ENABLED=true in .env to enable)"
+        return 0
+    fi
+    local port="${MARKER_LOCAL_PORT:-8003}"
+
+    # Already running (e.g. a manual launch)? Leave it.
+    if curl -sf "http://127.0.0.1:${port}/" >/dev/null 2>&1; then
+        log_success "Local Marker already running on :${port}"
+        return 0
+    fi
+
+    local bin="${MARKER_VENV:-${HOME}/.venv-marker}/bin/marker_server"
+    if [[ ! -x "${bin}" ]]; then
+        log_error "marker_server not found: ${bin} (install marker-pdf in ${MARKER_VENV})"
+        return 1
+    fi
+
+    log_info "Starting local Marker server on :${port} (first run downloads models)..."
+    tmux send-keys -t "${GOD_SESSION_NAME}:marker" \
+        "TORCH_DEVICE=cuda RECOGNITION_BATCH_SIZE=16 DETECTOR_BATCH_SIZE=4 LAYOUT_BATCH_SIZE=4 TABLE_REC_BATCH_SIZE=4 OCR_ERROR_BATCH_SIZE=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True '${bin}' --host 127.0.0.1 --port ${port} 2>&1 | tee '${GOD_LOG_DIR}/marker.log'; echo '--- Marker exited ---'; read" Enter
+
+    log_info "Waiting for local Marker to initialize (model load can take minutes)..."
+    if wait_for_http "http://127.0.0.1:${port}/" 300; then
+        local pid
+        pid=$(pgrep -f "marker_server.*${port}" 2>/dev/null | head -1)
+        [[ -n "${pid}" ]] && echo "${pid}" > "${GOD_PROJECT_DIR}/.run/marker.pid"
+        log_success "Local Marker ready on :${port}"
+    else
+        log_error "Local Marker failed to start within 300s"
+        return 1
+    fi
+}
+
 create_session() {
     log_info "Creating tmux session: ${GOD_SESSION_NAME}"
 
@@ -295,6 +332,7 @@ create_session() {
     tmux new-window -t "${GOD_SESSION_NAME}" -n "daemon"
     tmux new-window -t "${GOD_SESSION_NAME}" -n "ucm"
     tmux new-window -t "${GOD_SESSION_NAME}" -n "observe"
+    tmux new-window -t "${GOD_SESSION_NAME}" -n "marker"
     tmux new-window -t "${GOD_SESSION_NAME}" -n "embed"
     tmux new-window -t "${GOD_SESSION_NAME}" -n "shell"
 
@@ -302,7 +340,7 @@ create_session() {
     tmux send-keys -t "${GOD_SESSION_NAME}:shell" "cd '${GOD_PROJECT_DIR}'" Enter
     tmux send-keys -t "${GOD_SESSION_NAME}:shell" "echo 'God Agent Shell - Ready for commands'" Enter
 
-    log_success "Session created with 8 windows"
+    log_success "Session created with 9 windows"
 }
 
 # Main start function
@@ -411,6 +449,9 @@ do_start() {
     else
         log_info "Skipping observe (not in profile: ${CURRENT_PROFILE})"
     fi
+
+    # 7. Local Marker OCR (optional; self-gates on MARKER_LOCAL_ENABLED)
+    start_marker
 
     # Start dashboard in window 0
     log_info "Starting dashboard..."

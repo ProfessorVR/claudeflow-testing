@@ -1,0 +1,335 @@
+{"timestamp":"2026-03-11T18:25:25.895Z","level":"INFO","message":"Configuration initialized","context":{"service":"config-manager","configPath":null,"version":"2.1.0"}}
+{"timestamp":"2026-03-11T18:25:25.899Z","level":"INFO","message":"Initializing Layer 1: Native Core","context":{}}
+{"timestamp":"2026-03-11T18:25:25.900Z","level":"INFO","message":"Initializing Layer 2: Reasoning","context":{}}
+{"timestamp":"2026-03-11T18:25:25.900Z","level":"INFO","message":"Initializing Layer 3: Memory","context":{}}
+{"timestamp":"2026-03-11T18:25:25.993Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+{"timestamp":"2026-03-11T18:25:25.993Z","level":"INFO","message":"No existing causal graph found, starting fresh","context":{"component":"CausalMemory"}}
+{"timestamp":"2026-03-11T18:25:26.187Z","level":"INFO","message":"Initializing Layer 4: Learning","context":{}}
+{"timestamp":"2026-03-11T18:25:26.190Z","level":"INFO","message":"SonaEngine created with database persistence enabled","context":{}}
+{"timestamp":"2026-03-11T18:25:26.191Z","level":"INFO","message":"SonaEngine persistence verified - DAOs initialized","context":{}}
+{"timestamp":"2026-03-11T18:25:26.192Z","level":"INFO","message":"  Trajectory metadata: {\"totalCount\":2356,\"activeCount\":369,\"completedCount\":741,\"failedCount\":1246,\"abandonedCount\":0,\"avgQualityScore\":0.37542260754047013,\"avgStepCount\":0.3166383701188455,\"totalFileBytes\":0}","context":{}}
+{"timestamp":"2026-03-11T18:25:26.192Z","level":"INFO","message":"  Patterns: {\"totalCount\":19,\"activeCount\":19,\"deprecatedCount\":0,\"totalSuccessCount\":0,\"totalFailureCount\":0,\"averageWeight\":0.8927291357554834,\"successRate\":0}","context":{}}
+{"timestamp":"2026-03-11T18:25:26.192Z","level":"INFO","message":"  Feedback: {\"feedbackCount\":1086,\"processedCount\":607,\"unprocessedCount\":479,\"avgQuality\":0.5548565515537972,\"outcomeBreakdown\":{\"positive\":23,\"negative\":375,\"neutral\":688}}","context":{}}
+[SonaEngine] Trajectory streaming enabled
+{"timestamp":"2026-03-11T18:25:26.195Z","level":"INFO","message":"Loaded SoNA weights from disk","context":{}}
+{"timestamp":"2026-03-11T18:25:26.195Z","level":"INFO","message":"Initializing Layer 5: Orchestration","context":{}}
+{"timestamp":"2026-03-11T18:25:26.196Z","level":"INFO","message":"Initializing Unified Search","context":{}}
+{"timestamp":"2026-03-11T18:25:26.196Z","level":"info","component":"MemoryClient","message":"Connected to memory server at unix:/tmp/god-agent-memory.sock"}
+{"timestamp":"2026-03-11T18:25:26.196Z","level":"INFO","message":"MemoryClient connected for search","context":{}}
+{"timestamp":"2026-03-11T18:25:26.196Z","level":"INFO","message":"UnifiedSearch initialized","context":{}}
+{"timestamp":"2026-03-11T18:25:26.196Z","level":"INFO","message":"God Agent initialized in 297.44ms","context":{}}
+{"timestamp":"2026-03-11T18:25:26.250Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[QualityGauntlet] Stage weights sum to 1.15, not 1.0. Scores will be normalized.
+{"timestamp":"2026-03-11T18:25:26.352Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[CapabilityCache] Computing content hash for 472 files
+[CapabilityCache] Hash computed in 69.25ms: 100bc7caa6905ec6...
+[CapabilityCache] Cache HIT - loaded 253 agents in 82.83ms
+[CapabilityIndex] Cache HIT - loaded 253 agents in 86.88ms
+{"timestamp":"2026-03-11T18:25:26.607Z","level":"info","component":"MemoryClient","message":"Connected to memory server at unix:/tmp/god-agent-memory.sock"}
+{"timestamp":"2026-03-11T18:25:46.610Z","level":"ERROR","message":"DESC injection failed","context":{"component":"UCMDaemonClient","error_message":"UCM daemon timeout calling desc.inject","error_name":"Error","error_stack":"Error: UCM daemon timeout calling desc.inject\n    at Timeout._onTimeout (/home/dalton/projects/claudeflow-testing/src/god-agent/cli/ucm-daemon-client.ts:187:16)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)"}}
+[GOLD STD] Multi-query retrieval + style + single-shot generation...
+[GOLD STD] Phase 1a: Multi-query retrieval: 7 semantic queries
+[GOLD STD]   Query: "IV. Phantasia, Umwelt, Soap Bubble World"
+[GOLD STD]   Query: "IV.1 Uexküll's Soap Bubble Species Specific"
+[GOLD STD]   Query: "IV.2 Human Phantasia Mood Anthropological "Soap"
+[GOLD STD]   Query: "Heidegger phantasia"
+[GOLD STD]   Query: "Heidegger biosemiotic"
+[GOLD STD]   Query: "Aristotle phantasia"
+[GOLD STD]   Query: "Aristotle biosemiotic"
+[INFO] ChromaDB collection "knowledge_chunks" resolved to 256473d0-5091-4494-af4d-007e8f62d43f
+[INFO] [SmartRetrievalLayer] Semantic search: "IV. Phantasia, Umwelt, Soap Bubble World..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3014 to 0.4271
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 4
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 4
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 4
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 4
+[INFO] [SmartRetrievalLayer] Semantic search: "IV.1 Uexküll's Soap Bubble Species Specific..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3097 to 0.4738
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 9
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 9
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 9
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "IV.2 Human Phantasia Mood Anthropological "Soap..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.1384 to 0.3835
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 1
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 1
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 1
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 1
+[INFO] [SmartRetrievalLayer] Semantic search: "Heidegger phantasia..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.5661 to 0.6983
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 15
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 15
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "Heidegger biosemiotic..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.5604 to 0.6674
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 17
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 17
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle phantasia..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.6095 to 0.7125
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 11
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 11
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle biosemiotic..." (max: 9)
+[INFO] [SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.5457 to 0.6588
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 18
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 12
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 12
+[INFO] [SmartRetrievalLayer] Step 5 after limit (9): 9
+[GOLD STD] Phase 1a result: 36 unique chunks from 11 sources
+[GOLD STD] Phase 1b: Source-targeted supplementation for: Heidegger, Aristotle, Rickert, Frede, Nussbaum, White, O'gorman, Hawhee, Gonzalez, Caston, Papachristou, Burke, Bowin
+[INFO] [SmartRetrievalLayer] Semantic search: "You are writing ONLY Section IV of a dissertation ..." (max: 16)
+[INFO] [SmartRetrievalLayer] Found 0 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (16): 0
+[GOLD STD]   Heidegger: +0 new chunks (0 retrieved)
+[INFO] [SmartRetrievalLayer] Semantic search: "Heidegger You are writing ONLY Section IV of a dis..." (max: 10)
+[INFO] [SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3296 to 0.5689
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 15
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 15
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 15
+[INFO] [SmartRetrievalLayer] Step 5 after limit (10): 10
+[GOLD STD]   Aristotle: +0 new chunks (0 retrieved)
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle You are writing ONLY Section IV of a dis..." (max: 10)
+[INFO] [SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3373 to 0.5672
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 14
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 14
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 14
+[INFO] [SmartRetrievalLayer] Step 5 after limit (10): 10
+[GOLD STD]   Rickert: +0 new chunks (0 retrieved)
+[INFO] [SmartRetrievalLayer] Semantic search: "Rickert You are writing ONLY Section IV of a disse..." (max: 10)
+[INFO] [SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3247 to 0.5364
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 8
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 8
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 8
+[INFO] [SmartRetrievalLayer] Step 5 after limit (10): 8
+[GOLD STD] Phase 1b result: 41 total unique chunks
+[GOLD STD] Phase 1b+: Title-targeted retrieval for 1 referenced work(s)
+[INFO] [SmartRetrievalLayer] Semantic search: "A Foray Into the Worlds of Animals and Humans with..." (max: 12)
+[INFO] [SmartRetrievalLayer] Found 24 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 24, minRelevance: 0
+[INFO] [SmartRetrievalLayer] Score range: 0.2756 to 0.6631
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 24
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 24
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 24
+[INFO] [SmartRetrievalLayer] Step 5 after limit (12): 12
+[GOLD STD]   "A Foray Into the Worlds of Animals and Humans with A Theory of Meaning" (7 mentions): +8 new chunks (12 retrieved)
+[GOLD STD] Phase 1b+ result: 49 total unique chunks
+[GOLD STD] Phase 1c: Diversity-enforced selection: 28 chunks
+[GOLD STD]   Aristotle: 8 chunks
+[GOLD STD]   von Uexkull, Jacob: 5 chunks
+[GOLD STD]   Multiple Authors: 5 chunks
+[GOLD STD]   Rickert, Thomas: 3 chunks
+[GOLD STD]   Heidegger, Martin: 2 chunks
+[GOLD STD]   Burke, Kenneth: 2 chunks
+[GOLD STD]   O'Gorman, Ned: 1 chunks
+[GOLD STD]   Gonzalez, Jose M.: 1 chunks
+[GOLD STD]   Gross, Daniel M.: 1 chunks
+[GOLD STD] Phase 1c+: Primary author ratio: 17/28 = 61% (target: ≥30%)
+[GOLD STD] Phase 1d: Chunk trimming: 4394 → 365 avg chars/chunk (92% reduction)
+[GOLD STD] Phase 1e: Chunks reordered for attention (highest relevance at start/end)
+[GOLD STD] Phase 1f: Retrieval coverage validation
+[GOLD STD]   ✅ Heidegger: 2 chunks
+[GOLD STD]   ✅ Aristotle: 8 chunks
+[GOLD STD]   ✅ Rickert: 3 chunks
+[GOLD STD]   ❌ Frede: 0 chunks (MISSING — will attempt targeted retrieval)
+[GOLD STD]   ❌ Nussbaum: 0 chunks (MISSING — will attempt targeted retrieval)
+[GOLD STD]   ❌ White: 0 chunks (MISSING — will attempt targeted retrieval)
+[GOLD STD]   ⚠️ O'gorman: 1 chunk(s) (weak coverage, min: 2)
+[GOLD STD]   ❌ Hawhee: 0 chunks (MISSING — will attempt targeted retrieval)
+[GOLD STD]   ⚠️ Gonzalez: 1 chunk(s) (weak coverage, min: 2)
+[GOLD STD]   ❌ Caston: 0 chunks (MISSING — will attempt targeted retrieval)
+[GOLD STD]   ❌ Papachristou: 0 chunks (MISSING — will attempt targeted retrieval)
+[GOLD STD]   ✅ Burke: 2 chunks
+[GOLD STD]   ❌ Bowin: 0 chunks (MISSING — will attempt targeted retrieval)
+[GOLD STD] Phase 1f: Attempting targeted retrieval for 9 under-represented author(s)
+[INFO] [SmartRetrievalLayer] Semantic search: "Frede You are writing ONLY Section IV of a dissert..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 0 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "Frede..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.0000 to 0.2837
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[GOLD STD]   Frede: +0 chunks from targeted retrieval
+[INFO] [SmartRetrievalLayer] Semantic search: "Nussbaum You are writing ONLY Section IV of a diss..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 0 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "Nussbaum..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.3433 to 0.4920
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 13
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 13
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 13
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 8
+[GOLD STD]   Nussbaum: +0 chunks from targeted retrieval
+[INFO] [SmartRetrievalLayer] Semantic search: "White You are writing ONLY Section IV of a dissert..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 0 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "White..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.0000 to 0.0092
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[GOLD STD]   White: +0 chunks from targeted retrieval
+[INFO] [SmartRetrievalLayer] Semantic search: "Hawhee You are writing ONLY Section IV of a disser..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 0 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "Hawhee..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.2194 to 0.7738
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 3
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 3
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 3
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 3
+[GOLD STD]   Hawhee: +1 chunks from targeted retrieval
+[INFO] [SmartRetrievalLayer] Semantic search: "Caston You are writing ONLY Section IV of a disser..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 0 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "Caston..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.0837 to 0.2458
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[GOLD STD]   Caston: +0 chunks from targeted retrieval
+[INFO] [SmartRetrievalLayer] Semantic search: "Papachristou You are writing ONLY Section IV of a ..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 0 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "Papachristou..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.4552 to 0.6159
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 16
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 8
+[GOLD STD]   Papachristou: +1 chunks from targeted retrieval
+[INFO] [SmartRetrievalLayer] Semantic search: "Bowin You are writing ONLY Section IV of a dissert..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 0 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "Bowin..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.1198 to 0.4988
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 3
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 3
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 3
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 3
+[GOLD STD]   Bowin: +2 chunks from targeted retrieval
+[INFO] [SmartRetrievalLayer] Semantic search: "O'gorman You are writing ONLY Section IV of a diss..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 0 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "O'gorman..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.2575 to 0.4470
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 8
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 8
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 8
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 8
+[GOLD STD]   O'gorman: +0 chunks from targeted retrieval
+[INFO] [SmartRetrievalLayer] Semantic search: "Gonzalez You are writing ONLY Section IV of a diss..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 0 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 0
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 0
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 0
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 0
+[INFO] [SmartRetrievalLayer] Semantic search: "Gonzalez..." (max: 8)
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.2468 to 0.7599
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 8
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 8
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 8
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 8
+[GOLD STD]   Gonzalez: +5 chunks from targeted retrieval
+[GOLD STD] ⚠️ WARNING: Still missing chunks for: Frede, Nussbaum, White, Caston
+[GOLD STD]   Pipeline will proceed, but claims about these authors cannot be grounded.
+[GOLD STD] Loaded 9 knowledge units (9 domain-relevant)
+[GOLD STD] Style profile: loaded (568 chars)
+[GOLD STD] Knowledge units: 9
+[GOLD STD] Prompt subsections: 3 (from extractRetrievalQueries)
+[GOLD STD] Per-section constraints: 6 rules derived from prompt structure
+[GOLD STD] Prompt assembled (28407 chars, 3 subsections, 37 chunks)
+[GOLD STD] Corpus constraint built: 38 verified sources
+[GOLD STD] Generating content (prompt length: 28407 chars)...
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[API] stop_reason=end_turn, usage={"input_tokens":8308,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":4972,"service_tier":"standard","inference_geo":"global"}, model=claude-opus-4-6, max_tokens=16384
+[GOLD STD] Generation complete: 2944 words
+{"timestamp":"2026-03-11T18:27:24.443Z","level":"INFO","message":"SonaEngine updated for trajectory","context":{"component":"ReasoningBank","trajectoryId":"traj_1773253546723_cede818d"}}
+{"timestamp":"2026-03-11T18:27:24.450Z","level":"info","component":"MemoryClient","message":"Disconnected from memory server"}
+{"timestamp":"2026-03-11T18:27:24.450Z","level":"INFO","message":"Shutting down God Agent...","context":{}}
+{"timestamp":"2026-03-11T18:27:24.455Z","level":"INFO","message":"SoNA weights saved to disk","context":{}}
+{"timestamp":"2026-03-11T18:27:24.455Z","level":"info","component":"MemoryClient","message":"Disconnected from memory server"}
+{"timestamp":"2026-03-11T18:27:24.455Z","level":"INFO","message":"MemoryClient disconnected","context":{}}
+{"timestamp":"2026-03-11T18:27:24.455Z","level":"INFO","message":"God Agent shutdown complete","context":{}}

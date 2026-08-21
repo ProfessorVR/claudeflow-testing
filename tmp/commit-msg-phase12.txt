@@ -1,0 +1,14 @@
+chore(pipeline): logging cleanup + multi-prompt validation harness
+
+Phase 1: Convert all 23 console.log/error calls in icp-orchestrator.ts
+to process.stderr.write with proper newlines and error interpolation.
+Prefixes [ICP-Stage6b], [ICP-Stage8a], [ICP-Stage9a], [ICP-TensionGate],
+[QualityGates] preserved for grep-ability.
+
+Phase 2: New scripts/icp-multi-prompt-test.ts with 4 prompt profiles
+(cross-author, single-author, multi-author, secondary-scholarship).
+Writes regression summary table to tmp/prompt-regression-matrix.md.
+Initial runs: single-author (Aristotle kinesis) and cross-author
+(phantasia + Erschlossenheit) validated successfully.
+
+Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>

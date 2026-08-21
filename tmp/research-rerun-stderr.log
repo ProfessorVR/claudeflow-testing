@@ -1,0 +1,28 @@
+{"timestamp":"2026-03-18T15:56:32.092Z","level":"INFO","message":"Configuration initialized","context":{"service":"config-manager","configPath":null,"version":"2.1.0"}}
+{"timestamp":"2026-03-18T15:56:32.097Z","level":"INFO","message":"Initializing Layer 1: Native Core","context":{}}
+{"timestamp":"2026-03-18T15:56:32.097Z","level":"INFO","message":"Initializing Layer 2: Reasoning","context":{}}
+{"timestamp":"2026-03-18T15:56:32.097Z","level":"INFO","message":"Initializing Layer 3: Memory","context":{}}
+{"timestamp":"2026-03-18T15:56:32.143Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+{"timestamp":"2026-03-18T15:56:32.143Z","level":"INFO","message":"No existing causal graph found, starting fresh","context":{"component":"CausalMemory"}}
+{"timestamp":"2026-03-18T15:56:32.342Z","level":"INFO","message":"Initializing Layer 4: Learning","context":{}}
+{"timestamp":"2026-03-18T15:56:32.345Z","level":"INFO","message":"SonaEngine created with database persistence enabled","context":{}}
+{"timestamp":"2026-03-18T15:56:32.346Z","level":"INFO","message":"SonaEngine persistence verified - DAOs initialized","context":{}}
+{"timestamp":"2026-03-18T15:56:32.346Z","level":"INFO","message":"  Trajectory metadata: {\"totalCount\":2368,\"activeCount\":375,\"completedCount\":747,\"failedCount\":1246,\"abandonedCount\":0,\"avgQualityScore\":0.37680427165174646,\"avgStepCount\":0.31503378378378377,\"totalFileBytes\":0}","context":{}}
+{"timestamp":"2026-03-18T15:56:32.346Z","level":"INFO","message":"  Patterns: {\"totalCount\":22,\"activeCount\":22,\"deprecatedCount\":0,\"totalSuccessCount\":0,\"totalFailureCount\":0,\"averageWeight\":0.9005387990615539,\"successRate\":0}","context":{}}
+{"timestamp":"2026-03-18T15:56:32.346Z","level":"INFO","message":"  Feedback: {\"feedbackCount\":1092,\"processedCount\":607,\"unprocessedCount\":485,\"avgQuality\":0.5563923142916121,\"outcomeBreakdown\":{\"positive\":26,\"negative\":375,\"neutral\":691}}","context":{}}
+[SonaEngine] Trajectory streaming enabled
+{"timestamp":"2026-03-18T15:56:32.350Z","level":"INFO","message":"Loaded SoNA weights from disk","context":{}}
+{"timestamp":"2026-03-18T15:56:32.350Z","level":"INFO","message":"Initializing Layer 5: Orchestration","context":{}}
+{"timestamp":"2026-03-18T15:56:32.350Z","level":"INFO","message":"Initializing Unified Search","context":{}}
+{"timestamp":"2026-03-18T15:56:32.351Z","level":"info","component":"MemoryClient","message":"Connected to memory server at unix:/tmp/god-agent-memory.sock"}
+{"timestamp":"2026-03-18T15:56:32.351Z","level":"INFO","message":"MemoryClient connected for search","context":{}}
+{"timestamp":"2026-03-18T15:56:32.351Z","level":"INFO","message":"UnifiedSearch initialized","context":{}}
+{"timestamp":"2026-03-18T15:56:32.351Z","level":"INFO","message":"God Agent initialized in 254.80ms","context":{}}
+{"timestamp":"2026-03-18T15:56:32.402Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[QualityGauntlet] Stage weights sum to 1.15, not 1.0. Scores will be normalized.
+{"timestamp":"2026-03-18T15:56:32.518Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[CapabilityCache] Computing content hash for 472 files
+[CapabilityCache] Hash computed in 62.67ms: 100bc7caa6905ec6...
+[CapabilityCache] Cache HIT - loaded 253 agents in 82.57ms
+[CapabilityIndex] Cache HIT - loaded 253 agents in 86.50ms
+{"timestamp":"2026-03-18T15:56:32.766Z","level":"info","component":"MemoryClient","message":"Connected to memory server at unix:/tmp/god-agent-memory.sock"}

@@ -1,0 +1,81 @@
+{
+  "id": "10efe7a2-7bdb-4672-8584-51ea97641373",
+  "model": "sonar-pro",
+  "created": 1776579275,
+  "usage": {
+    "prompt_tokens": 166,
+    "completion_tokens": 629,
+    "total_tokens": 795,
+    "search_context_size": "low",
+    "cost": {
+      "input_tokens_cost": 0.0005,
+      "output_tokens_cost": 0.00944,
+      "request_cost": 0.006,
+      "total_cost": 0.01593
+    }
+  },
+  "citations": [
+    "https://arxiv.org/html/2501.10860v1",
+    "https://aclanthology.org/2025.coling-main.650/",
+    "https://learn.microsoft.com/en-us/dotnet/ai/conceptual/zero-shot-learning",
+    "https://pubmed.ncbi.nlm.nih.gov/39177261/",
+    "https://www.newline.co/@zaoyang/zero-shot-vs-few-shot-prompting-key-differences--b4c84775"
+  ],
+  "search_results": [
+    {
+      "title": "Zero-shot and Few-shot Learning with Instruction-following LLMs for ...",
+      "url": "https://arxiv.org/html/2501.10860v1",
+      "date": "2025-01-21",
+      "last_updated": "2026-02-05",
+      "snippet": "We explore the effectiveness of zero- and few-shot approaches to CM with instruction-following LLMs, where state-of-the-art methods (Kazemi et al., 2021, 2022) ...",
+      "source": "web"
+    },
+    {
+      "title": "Zero-shot and Few-shot Learning with Instruction-following LLMs for ...",
+      "url": "https://aclanthology.org/2025.coling-main.650/",
+      "date": "2025-01-29",
+      "last_updated": "2026-03-29",
+      "snippet": "In this work, we are the first to explore zero-shot and few-shot learning approaches to the task. We consider CM as a binary classification task and experiment ...",
+      "source": "web"
+    },
+    {
+      "title": "Zero-shot and few-shot learning - .NET | Microsoft Learn",
+      "url": "https://learn.microsoft.com/en-us/dotnet/ai/conceptual/zero-shot-learning",
+      "date": "2026-03-04",
+      "last_updated": "2026-04-01",
+      "snippet": "However, if your LLM isn't fine-tuned yet, you won't always get good performance with zero-shot prompts, and few-shot learning is warranted.",
+      "source": "web"
+    },
+    {
+      "title": "Harnessing large language models' zero-shot and few-shot learning ...",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39177261/",
+      "date": "2024-07-25",
+      "last_updated": "2026-02-01",
+      "snippet": "Our research shows that some models work well in the context of few- or zero-shot learning, achieving performance comparable, or even better ...",
+      "source": "web"
+    },
+    {
+      "title": "Zero-Shot vs Few-Shot Prompting: Key Differences - newline",
+      "url": "https://www.newline.co/@zaoyang/zero-shot-vs-few-shot-prompting-key-differences--b4c84775",
+      "date": "2025-05-15",
+      "last_updated": "2026-04-13",
+      "snippet": "Zero-shot and few-shot prompting are two ways to guide large language models (LLMs) without retraining. Here's what you need to know:",
+      "source": "web"
+    }
+  ],
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "**2024-2025 literature on LLM-based claim extraction (primarily claim matching, CM) shows few-shot learning generally outperforming zero-shot in standard setups, but results reverse under domain shift, with zero-shot often superior; evidence on 2-8 in-domain exemplars or chain-of-thought (CoT) is absent.** No primary sources (ACL, EMNLP, etc.) directly address classical/non-contemporary prose, OCR-noisy input, or long sentences with embedded quotations.\n\n### Few-Shot vs. Zero-Shot Under Domain Shift\n- In zero- and few-shot CM experiments (10-shot), few-shot typically exceeds zero-shot performance across models like GPT-3.5-turbo, Gemini-1.5-flash, Mistral-7B-Instruct, and Llama-3-8B-Instruct when using single-instruction prompts (\"Zero-shot results... few-shot provides higher scores than zero-shot\"[1]).\n- Under domain transfer to longer texts (Kazemi dataset, ~5k fact-check pairs sampled to 1k), zero-shot outperforms few-shot in most settings (e.g., excluding Gemini NLI-5); few-shot examples appear to distract models (\"In all settings... zero-shot worked much better than few-shot\"[1]).\n- Reformulating CM as paraphrase detection (PD) or natural language inference (NLI) boosts both setups, especially PD templates, but domain shift patterns hold (\"PD and NLI templates outperform CM templates... improvement primarily noticeable with PD\"[1]).\n- General LLM guidance notes few-shot improves over zero-shot when zero-shot underperforms (e.g., non-fine-tuned models), but lacks CM-specific domain shift data (\"if your LLM isn't fine-tuned yet... few-shot learning is warranted\"[3]).\n\n### In-Domain Exemplars (2-8 Shots)\n- No results; experiments use 10-shot few-shot (\"few-shot (10 train examples)\"[1]). Literature suggests scaling to fewer shots (e.g., 2-8) untested for CM domain shift.\n\n### Chain-of-Thought for Ambiguous Cases\n- No mentions of CoT in CM extraction; prompts are template-based (CM/PD/NLI) without reasoning chains (\"prompt templates for zero-shot and few-shot... aimed specifically for CM or... PD and NLI\"[1]).\n\n### Specialized Inputs (Classical Prose, OCR Noise, Long Sentences/Quotations)\n- Evidence thin: Domain transfer tested on longer fact-check texts, not classical/non-contemporary prose (\"Kazemi dataset... long texts & short claims\"[1]).\n- No results on OCR-noisy input or embedded quotations.\n\n**Key papers: \"Zero-shot and Few-shot Learning with Instruction-following LLMs for Claim Matching\" (arXiv 2025.010860v1 [~2025]; COLING-2025 main.650 [2025])[1][2].** 2026 literature unavailable in results; thin evidence beyond CM reformulation limits confident generalization."
+      },
+      "delta": {
+        "role": "assistant",
+        "content": ""
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

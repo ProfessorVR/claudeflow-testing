@@ -1,5 +1,11 @@
 # INDEX OWNERSHIP — read before writing anything in this tree
 
+> **PHASE D IN EFFECT — declared 2026-08-05 (rule 3 update).** Ownership has moved:
+> the authoring home is **archon-cli-v3** (`~/projects/archon-cli-v3/index/` plus the
+> Cozo `corpus_*` relations). THIS tree is **frozen as reference** as of this date —
+> do not author or edit entries here. New entries follow archon-cli-v3
+> `index/AUTHORING-FORMAT.md` (unified corpus-v1 convention).
+
 **Declared 2026-07-29 (index-overhaul plan, step A7).**
 
 | Period | Authoring home (writes) | Read replica |

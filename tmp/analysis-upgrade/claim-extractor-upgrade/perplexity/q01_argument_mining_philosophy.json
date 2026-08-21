@@ -1,0 +1,94 @@
+{
+  "id": "a60bcb1d-1bf0-4483-ac61-94443f811b3d",
+  "model": "sonar-pro",
+  "created": 1776579127,
+  "usage": {
+    "prompt_tokens": 151,
+    "completion_tokens": 584,
+    "total_tokens": 735,
+    "search_context_size": "low",
+    "cost": {
+      "input_tokens_cost": 0.00045,
+      "output_tokens_cost": 0.00876,
+      "request_cost": 0.006,
+      "total_cost": 0.01521
+    }
+  },
+  "citations": [
+    "https://aclanthology.org/volumes/2024.argmining-1/",
+    "https://aclanthology.org/2025.acl-long.1164/",
+    "https://www.tkoref.com/research",
+    "https://argmining-org.github.io",
+    "https://submissions.cljournal.org/index.php/cljournal/article/view/1078",
+    "https://arxiv.org/html/2602.13154v3",
+    "https://www.apaonline.org/page/2024P_Abstracts"
+  ],
+  "search_results": [
+    {
+      "title": "Proceedings of the 11th Workshop on Argument Mining (ArgMining ...",
+      "url": "https://aclanthology.org/volumes/2024.argmining-1/",
+      "last_updated": "2026-04-10",
+      "snippet": "Recent argument mining tools use state-of-the-art deep learning methods to extract and annotate argumentative techniques from various online text corpora ...",
+      "source": "web"
+    },
+    {
+      "title": "State-Of-The-Art Models Learn Datasets, Not Arguments - ACL ...",
+      "url": "https://aclanthology.org/2025.acl-long.1164/",
+      "date": "2025-07-15",
+      "last_updated": "2026-03-15",
+      "snippet": "This study offers the first large-scale re-evaluation of such state-of-the-art models, with a specific focus on their ability to generalize in identifying ...",
+      "source": "web"
+    },
+    {
+      "title": "Research - Tom\u00e1\u0161 Koref",
+      "url": "https://www.tkoref.com/research",
+      "date": "2025-09-08",
+      "last_updated": "2025-10-21",
+      "snippet": "Managing an international & interdisciplinary scholarly project on legal argument mining in court decisions in Central and Eastern Europe. We analyse formalism ...",
+      "source": "web"
+    },
+    {
+      "title": "ArgMining 2026",
+      "url": "https://argmining-org.github.io",
+      "snippet": "The 13th Workshop on Argument Mining and Reasoning. July 3, 2026 - HYBRID format. Co-located with ACL 2026 in San Diego, United States.",
+      "source": "web"
+    },
+    {
+      "title": "Argument Mining | Computational Linguistics - Open Journal Systems",
+      "url": "https://submissions.cljournal.org/index.php/cljournal/article/view/1078",
+      "date": "2024-12-05",
+      "last_updated": "2025-08-09",
+      "snippet": "The submitted file is\u00c2 a summary proposal for a survey article on Argument Mining. Published. 2024-12-05. Issue. Past Publications ...",
+      "source": "web"
+    },
+    {
+      "title": "Decentralized Full Automation for a Society of Universal Care - arXiv",
+      "url": "https://arxiv.org/html/2602.13154v3",
+      "date": "2026-02-17",
+      "last_updated": "2026-03-04",
+      "snippet": "Anarcho-accelerationism does not emerge from a vacuum. It is grounded in a 200-year intellectual tradition of anarchist political philosophy, ...",
+      "source": "web"
+    },
+    {
+      "title": "2024 Pacific Division Abstracts - American Philosophical Association",
+      "url": "https://www.apaonline.org/page/2024P_Abstracts",
+      "snippet": "In this paper, I contrast a philosophy of anger left to us by ancient Western philosophy with a contemporary one offered by Latina feminist Mar\u00eda Lugones.",
+      "source": "web"
+    }
+  ],
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "No specific systems, benchmarks, or evaluation datasets exist in the 2024-2026 literature for argument mining or claim extraction tailored to **academic philosophy papers** or **philosophical primary sources** (e.g., Aristotle, Kant, Heidegger).[1][2][5]\n\n## General ArgMining Advances (2024-2026)\nThe field focuses on general argumentative text (e.g., online debates, dialogues, scientific abstracts), with limited generalizability across domains.[1][2]\n- **ARIES benchmark (2024)**: Standardizes evaluation across 8 datasets for argument relation identification (sequence/token modeling, seq2seq alignment; encoder-only/decoder-only/encoder-decoder Transformers). Reveals cross-dataset challenges and poor generalization; establishes SOTA baselines.[1]\n- **ArguNet (2024)**: Dialogue-act + context model for argumentative relation classification; SOTA on Kialo benchmark (open-domain dialogues).[1]\n- **Multi-task argument mining models (2024)**: Shared representations for technique extraction; meets/exceeds single-task SOTA on user-generated text.[1]\n- **Undercut recognition model (2024)**: F1=38.8% on 400-argument dataset (326 undercuts); comparable to attack recognition SOTA.[1]\n- **Perspective Argument Retrieval system (ArgMining 2024 shared task)**: Sentence-BERT (fine-tuned contrastive/classification) + LLM query augmentation; strong on diversity/relevance for top-k retrieval.[1]\n- **DialAM-2024 shared task**: Best F1=67.05% for multimodal argument map reconstruction (locutions + implicit propositions from speeches).[1]\n- Transformer critiques (ACL 2025): BERT-like models (standard + contrastive pre-training) rely on lexical shortcuts; strong in-domain (17 sentence-level datasets) but drop on unseen data. Joint training improves robustness.[2]\n\nNo 2026 results available (ArgMining 2026 workshop announced for July).[4]\n\n## Domain-Specific Gaps\n- **Legal argument mining**: LLM-based detection of judicial formalism in Czech Supreme Court decisions (in progress, ~2025); not philosophy.[3]\n- Evidence is thin: No primary ACL/EMNLP/NAACL/TACL/CoNLL/arXiv papers address **classical/ancient texts** (e.g., pre-modern language, archaic syntax) vs. **contemporary analytic prose** (e.g., journal clarity). General models show dataset overfitting, unlikely to transfer without adaptation.[1][2]\n- Ongoing surveys proposed (2024),[5] but none philosophy-focused. Multimodal extensions (MAM) and retraction detection via argument quality[1] remain domain-agnostic."
+      },
+      "delta": {
+        "role": "assistant",
+        "content": ""
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

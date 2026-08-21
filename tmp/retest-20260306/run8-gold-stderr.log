@@ -1,0 +1,190 @@
+{"timestamp":"2026-03-07T03:05:41.443Z","level":"INFO","message":"Configuration initialized","context":{"service":"config-manager","configPath":null,"version":"2.1.0"}}
+{"timestamp":"2026-03-07T03:05:41.448Z","level":"INFO","message":"Initializing Layer 1: Native Core","context":{}}
+{"timestamp":"2026-03-07T03:05:41.449Z","level":"INFO","message":"Initializing Layer 2: Reasoning","context":{}}
+{"timestamp":"2026-03-07T03:05:41.449Z","level":"INFO","message":"Initializing Layer 3: Memory","context":{}}
+{"timestamp":"2026-03-07T03:05:41.507Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+{"timestamp":"2026-03-07T03:05:41.507Z","level":"INFO","message":"No existing causal graph found, starting fresh","context":{"component":"CausalMemory"}}
+{"timestamp":"2026-03-07T03:05:41.702Z","level":"INFO","message":"Initializing Layer 4: Learning","context":{}}
+{"timestamp":"2026-03-07T03:05:41.704Z","level":"INFO","message":"SonaEngine created with database persistence enabled","context":{}}
+{"timestamp":"2026-03-07T03:05:41.705Z","level":"INFO","message":"SonaEngine persistence verified - DAOs initialized","context":{}}
+{"timestamp":"2026-03-07T03:05:41.705Z","level":"INFO","message":"  Trajectory metadata: {\"totalCount\":2066,\"activeCount\":146,\"completedCount\":674,\"failedCount\":1246,\"abandonedCount\":0,\"avgQualityScore\":0.3632028612000251,\"avgStepCount\":0.30300096805421106,\"totalFileBytes\":0}","context":{}}
+{"timestamp":"2026-03-07T03:05:41.705Z","level":"INFO","message":"  Patterns: {\"totalCount\":12,\"activeCount\":12,\"deprecatedCount\":0,\"totalSuccessCount\":0,\"totalFailureCount\":0,\"averageWeight\":0.9118452787821458,\"successRate\":0}","context":{}}
+{"timestamp":"2026-03-07T03:05:41.705Z","level":"INFO","message":"  Feedback: {\"feedbackCount\":1014,\"processedCount\":607,\"unprocessedCount\":407,\"avgQuality\":0.5427849541460041,\"outcomeBreakdown\":{\"positive\":15,\"negative\":375,\"neutral\":624}}","context":{}}
+[SonaEngine] Trajectory streaming enabled
+{"timestamp":"2026-03-07T03:05:41.708Z","level":"INFO","message":"Loaded SoNA weights from disk","context":{}}
+{"timestamp":"2026-03-07T03:05:41.708Z","level":"INFO","message":"Initializing Layer 5: Orchestration","context":{}}
+{"timestamp":"2026-03-07T03:05:41.709Z","level":"INFO","message":"Initializing Unified Search","context":{}}
+{"timestamp":"2026-03-07T03:05:41.709Z","level":"info","component":"MemoryClient","message":"Connected to memory server at unix:/tmp/god-agent-memory.sock"}
+{"timestamp":"2026-03-07T03:05:41.709Z","level":"INFO","message":"MemoryClient connected for search","context":{}}
+{"timestamp":"2026-03-07T03:05:41.709Z","level":"INFO","message":"UnifiedSearch initialized","context":{}}
+{"timestamp":"2026-03-07T03:05:41.709Z","level":"INFO","message":"God Agent initialized in 261.48ms","context":{}}
+{"timestamp":"2026-03-07T03:05:41.750Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[QualityGauntlet] Stage weights sum to 1.15, not 1.0. Scores will be normalized.
+[AgentLoader] YAML parse error, using fallback extraction
+[AgentLoader] YAML parse error, using fallback extraction
+[AgentLoader] YAML parse error, using fallback extraction
+{"timestamp":"2026-03-07T03:05:41.846Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[AgentLoader] YAML parse error, using fallback extraction
+[AgentLoader] YAML parse error, using fallback extraction
+[AgentLoader] YAML parse error, using fallback extraction
+[CapabilityCache] Computing content hash for 472 files
+[CapabilityCache] Hash computed in 57.11ms: 100bc7caa6905ec6...
+[CapabilityCache] Cache HIT - loaded 253 agents in 78.74ms
+[CapabilityIndex] Cache HIT - loaded 253 agents in 82.82ms
+{"timestamp":"2026-03-07T03:05:42.075Z","level":"info","component":"MemoryClient","message":"Connected to memory server at unix:/tmp/god-agent-memory.sock"}
+{"timestamp":"2026-03-07T03:06:02.079Z","level":"ERROR","message":"DESC injection failed","context":{"component":"UCMDaemonClient","error_message":"UCM daemon timeout calling desc.inject","error_name":"Error","error_stack":"Error: UCM daemon timeout calling desc.inject\n    at Timeout._onTimeout (/home/dalton/projects/claudeflow-testing/src/god-agent/cli/ucm-daemon-client.ts:187:16)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)"}}
+[GOLD STD] Multi-query retrieval + style + single-shot generation...
+[GOLD STD] Phase 1a: Multi-query retrieval: 10 semantic queries
+[GOLD STD]   Query: "Articulate Aristotle’s understanding"
+[GOLD STD]   Query: "Aristotle Motion"
+[GOLD STD]   Query: "Aristotle Time"
+[GOLD STD]   Query: "Relation Motion Time"
+[GOLD STD]   Query: "Aisthēsis Temporal Awareness"
+[GOLD STD]   Query: "Phantasia Temporal Unification"
+[GOLD STD]   Query: "Heidegger’s Interpretation Aristotle"
+[GOLD STD]   Query: "Aristotle kinesis"
+[GOLD STD]   Query: "Aristotle chronos"
+[GOLD STD]   Query: "Heidegger motion"
+[SmartRetrievalLayer] Semantic search: "Articulate Aristotle’s understanding..." (max: 9)
+[SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.7668 to 0.8929
+[SmartRetrievalLayer] Step 2 after relevance filter: 18
+[SmartRetrievalLayer] Step 3 after diversity boost: 18
+[SmartRetrievalLayer] Step 4 after rerank: 18
+[SmartRetrievalLayer] Step 5 after limit (9): 9
+[SmartRetrievalLayer] Semantic search: "Aristotle Motion..." (max: 9)
+[SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.3683 to 0.4946
+[SmartRetrievalLayer] Step 2 after relevance filter: 18
+[SmartRetrievalLayer] Step 3 after diversity boost: 18
+[SmartRetrievalLayer] Step 4 after rerank: 18
+[SmartRetrievalLayer] Step 5 after limit (9): 9
+[SmartRetrievalLayer] Semantic search: "Aristotle Time..." (max: 9)
+[SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.2912 to 0.4658
+[SmartRetrievalLayer] Step 2 after relevance filter: 9
+[SmartRetrievalLayer] Step 3 after diversity boost: 9
+[SmartRetrievalLayer] Step 4 after rerank: 9
+[SmartRetrievalLayer] Step 5 after limit (9): 9
+[SmartRetrievalLayer] Semantic search: "Relation Motion Time..." (max: 9)
+[SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.1786 to 0.3857
+[SmartRetrievalLayer] Step 2 after relevance filter: 2
+[SmartRetrievalLayer] Step 3 after diversity boost: 2
+[SmartRetrievalLayer] Step 4 after rerank: 2
+[SmartRetrievalLayer] Step 5 after limit (9): 2
+[SmartRetrievalLayer] Semantic search: "Aisthēsis Temporal Awareness..." (max: 9)
+[SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.5867 to 0.7150
+[SmartRetrievalLayer] Step 2 after relevance filter: 18
+[SmartRetrievalLayer] Step 3 after diversity boost: 18
+[SmartRetrievalLayer] Step 4 after rerank: 18
+[SmartRetrievalLayer] Step 5 after limit (9): 9
+[SmartRetrievalLayer] Semantic search: "Phantasia Temporal Unification..." (max: 9)
+[SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.5862 to 0.7190
+[SmartRetrievalLayer] Step 2 after relevance filter: 18
+[SmartRetrievalLayer] Step 3 after diversity boost: 18
+[SmartRetrievalLayer] Step 4 after rerank: 18
+[SmartRetrievalLayer] Step 5 after limit (9): 9
+[SmartRetrievalLayer] Semantic search: "Heidegger’s Interpretation Aristotle..." (max: 9)
+[SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.6377 to 0.6632
+[SmartRetrievalLayer] Step 2 after relevance filter: 18
+[SmartRetrievalLayer] Step 3 after diversity boost: 9
+[SmartRetrievalLayer] Step 4 after rerank: 9
+[SmartRetrievalLayer] Step 5 after limit (9): 9
+[SmartRetrievalLayer] Semantic search: "Aristotle kinesis..." (max: 9)
+[SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.4445 to 0.5728
+[SmartRetrievalLayer] Step 2 after relevance filter: 18
+[SmartRetrievalLayer] Step 3 after diversity boost: 18
+[SmartRetrievalLayer] Step 4 after rerank: 18
+[SmartRetrievalLayer] Step 5 after limit (9): 9
+[SmartRetrievalLayer] Semantic search: "Aristotle chronos..." (max: 9)
+[SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.4882 to 0.5932
+[SmartRetrievalLayer] Step 2 after relevance filter: 18
+[SmartRetrievalLayer] Step 3 after diversity boost: 11
+[SmartRetrievalLayer] Step 4 after rerank: 11
+[SmartRetrievalLayer] Step 5 after limit (9): 9
+[SmartRetrievalLayer] Semantic search: "Heidegger motion..." (max: 9)
+[SmartRetrievalLayer] Found 18 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 18, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.5787 to 0.6851
+[SmartRetrievalLayer] Step 2 after relevance filter: 18
+[SmartRetrievalLayer] Step 3 after diversity boost: 18
+[SmartRetrievalLayer] Step 4 after rerank: 18
+[SmartRetrievalLayer] Step 5 after limit (9): 9
+[GOLD STD] Phase 1a result: 51 unique chunks from 12 sources
+[GOLD STD] Phase 1b: Source-targeted supplementation for: Aristotle, Heidegger
+[SmartRetrievalLayer] Semantic search: "You are generating a scholarly, dissertation-grade..." (max: 16)
+[SmartRetrievalLayer] Found 32 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 32, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.0654 to 0.4538
+[SmartRetrievalLayer] Step 2 after relevance filter: 1
+[SmartRetrievalLayer] Step 3 after diversity boost: 1
+[SmartRetrievalLayer] Step 4 after rerank: 1
+[SmartRetrievalLayer] Step 5 after limit (16): 1
+[GOLD STD]   Aristotle: +0 new chunks (1 retrieved)
+[SmartRetrievalLayer] Semantic search: "Aristotle You are generating a scholarly, disserta..." (max: 10)
+[SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.7242 to 0.8228
+[SmartRetrievalLayer] Step 2 after relevance filter: 20
+[SmartRetrievalLayer] Step 3 after diversity boost: 20
+[SmartRetrievalLayer] Step 4 after rerank: 20
+[SmartRetrievalLayer] Step 5 after limit (10): 10
+[SmartRetrievalLayer] Semantic search: "You are generating a scholarly, dissertation-grade..." (max: 16)
+[SmartRetrievalLayer] Found 0 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 0, minRelevance: 0.35
+[SmartRetrievalLayer] Step 2 after relevance filter: 0
+[SmartRetrievalLayer] Step 3 after diversity boost: 0
+[SmartRetrievalLayer] Step 4 after rerank: 0
+[SmartRetrievalLayer] Step 5 after limit (16): 0
+[GOLD STD]   Heidegger: +0 new chunks (0 retrieved)
+[SmartRetrievalLayer] Semantic search: "Heidegger You are generating a scholarly, disserta..." (max: 10)
+[SmartRetrievalLayer] Found 20 chunks from ChromaDB
+[SmartRetrievalLayer] Step 1 raw results: 20, minRelevance: 0.35
+[SmartRetrievalLayer] Score range: 0.7082 to 0.8125
+[SmartRetrievalLayer] Step 2 after relevance filter: 20
+[SmartRetrievalLayer] Step 3 after diversity boost: 20
+[SmartRetrievalLayer] Step 4 after rerank: 20
+[SmartRetrievalLayer] Step 5 after limit (10): 10
+[GOLD STD] Phase 1b result: 51 total unique chunks
+[GOLD STD] Phase 1c: Diversity-enforced selection: 35 chunks
+[GOLD STD]   Aristotle: 8 chunks
+[GOLD STD]   Burke, Kenneth: 7 chunks
+[GOLD STD]   Rickert, Thomas: 5 chunks
+[GOLD STD]   Gibson, James J.: 4 chunks
+[GOLD STD]   Heidegger, Martin: 3 chunks
+[GOLD STD]   Multiple Authors: 2 chunks
+[GOLD STD]   O'Connor, Timothy and Wong, Hong: 2 chunks
+[GOLD STD]   von Uexkull, Jacob: 2 chunks
+[GOLD STD]   O'Gorman, Ned: 1 chunks
+[GOLD STD]   Bowin, John: 1 chunks
+[GOLD STD] Loaded 9 knowledge units (9 domain-relevant)
+[GOLD STD] Style profile: loaded (568 chars)
+[GOLD STD] Knowledge units: 9
+[GOLD STD] Prompt subsections: 7 (from extractRetrievalQueries)
+[GOLD STD] Prompt assembled (63209 chars, 7 subsections, 35 chunks)
+[GOLD STD] Corpus constraint built: 37 verified sources
+[GOLD STD] Generating content (prompt length: 63209 chars)...
+[GOLD STD] claude CLI failed (1), falling back to Anthropic API...
+[GOLD STD] Generation complete: 2094 words
+{"timestamp":"2026-03-07T03:07:12.669Z","level":"INFO","message":"SonaEngine updated for trajectory","context":{"component":"ReasoningBank","trajectoryId":"traj_1772852762194_599a862f"}}
+{"timestamp":"2026-03-07T03:07:12.675Z","level":"info","component":"MemoryClient","message":"Disconnected from memory server"}
+{"timestamp":"2026-03-07T03:07:12.675Z","level":"INFO","message":"Shutting down God Agent...","context":{}}
+{"timestamp":"2026-03-07T03:07:12.680Z","level":"INFO","message":"SoNA weights saved to disk","context":{}}
+{"timestamp":"2026-03-07T03:07:12.680Z","level":"info","component":"MemoryClient","message":"Disconnected from memory server"}
+{"timestamp":"2026-03-07T03:07:12.680Z","level":"INFO","message":"MemoryClient disconnected","context":{}}
+{"timestamp":"2026-03-07T03:07:12.680Z","level":"INFO","message":"God Agent shutdown complete","context":{}}

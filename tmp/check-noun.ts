@@ -1,0 +1,10 @@
+import { LanhamProseAnalyzer } from '../src/god-agent/cli/style/lanham-prose-analyzer.js';
+const analyzer = new LanhamProseAnalyzer('general');
+const NOUN_HEAVY = 'The implementation of the assessment framework for the evaluation of organizational performance represents a significant development in the field of management studies. The establishment of standardized procedures for the measurement of institutional effectiveness has been the subject of considerable investigation.';
+const result = await analyzer.fullAnalysis(NOUN_HEAVY);
+console.log('nounVerbRatio:', result.nounVerbRatio.toFixed(4));
+console.log('nounVerb label:', result.labels.nounVerb);
+console.log('nominalizationDensity:', result.nominalizationDensity.toFixed(2));
+console.log('beVerbRatio:', result.beVerbRatio.toFixed(4));
+console.log('prepositionalPhraseDensity:', result.prepositionalPhraseDensity.toFixed(2));
+console.log('nounVerb bands: lowBand=0.35, highBand=0.65');

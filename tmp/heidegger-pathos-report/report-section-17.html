@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Heidegger, GA 18 — §17. Ἕξις. A Detailed Analysis</title>
+<style>
+  @page {
+    size: Letter;
+    margin: 0.85in 0.95in 0.95in 0.95in;
+    @bottom-center {
+      content: counter(page) " / " counter(pages);
+      font-family: "EB Garamond", "Linux Libertine O", "Times New Roman", serif;
+      font-size: 9.5pt;
+      color: #555;
+    }
+    @top-right {
+      content: "§17. Ἕξις — Heidegger, GA 18";
+      font-family: "EB Garamond", "Linux Libertine O", "Times New Roman", serif;
+      font-size: 9pt;
+      color: #777;
+      font-style: italic;
+    }
+  }
+  @page :first {
+    @top-right { content: ""; }
+  }
+  html { font-family: "EB Garamond", "Linux Libertine O", "Times New Roman", "DejaVu Serif", serif; }
+  body {
+    font-size: 11pt;
+    line-height: 1.42;
+    color: #111;
+    text-align: justify;
+    hyphens: auto;
+  }
+  h1 {
+    font-size: 17pt;
+    text-align: center;
+    margin: 0 0 0.15em 0;
+    line-height: 1.2;
+    font-weight: 600;
+  }
+  h1.book {
+    font-size: 13.5pt;
+    font-style: italic;
+    font-weight: 400;
+    margin-bottom: 0.2em;
+  }
+  h2 {
+    font-size: 13.5pt;
+    margin: 1.6em 0 0.45em 0;
+    border-bottom: 1px solid #888;
+    padding-bottom: 0.15em;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 12pt;
+    margin: 1.2em 0 0.35em 0;
+    page-break-after: avoid;
+  }
+  h4 {
+    font-size: 11pt;
+    margin: 0.95em 0 0.25em 0;
+    font-style: italic;
+    font-weight: 600;
+    page-break-after: avoid;
+  }
+  h5 {
+    font-size: 10.5pt;
+    margin: 0.7em 0 0.2em 0;
+    font-weight: 600;
+    page-break-after: avoid;
+  }
+  p { margin: 0.35em 0 0.55em 0; }
+  blockquote {
+    margin: 0.6em 1.3em 0.6em 1.3em;
+    padding: 0.15em 0.9em;
+    border-left: 2.5px solid #888;
+    font-size: 10.5pt;
+    color: #222;
+    line-height: 1.38;
+  }
+  blockquote p { margin: 0.3em 0; }
+  em, i { font-style: italic; }
+  strong, b { font-weight: 600; }
+  .greek { font-family: "EB Garamond", "GFS Didot", "Linux Libertine O", "Times New Roman", "DejaVu Serif", serif; }
+  .titlebox {
+    text-align: center;
+    margin-bottom: 1.4em;
+    padding-bottom: 0.7em;
+    border-bottom: 2px double #555;
+  }
+  .titlebox .meta {
+    font-size: 10.5pt;
+    color: #444;
+    margin-top: 0.4em;
+    font-style: italic;
+  }
+  .pages {
+    font-size: 10pt;
+    color: #555;
+    font-style: italic;
+    text-align: center;
+    margin-top: -0.2em;
+    margin-bottom: 0.9em;
+  }
+  table {
+    border-collapse: collapse;
+    margin: 0.6em auto;
+    font-size: 10.3pt;
+    width: 95%;
+  }
+  th, td {
+    border: 1px solid #888;
+    padding: 5px 9px;
+    vertical-align: top;
+    text-align: left;
+  }
+  th { background: #efefef; font-weight: 600; }
+  ul, ol { margin: 0.3em 0 0.55em 1.6em; padding: 0; }
+  li { margin: 0.18em 0; }
+  hr {
+    border: none;
+    border-top: 1px solid #aaa;
+    margin: 1.4em 0;
+  }
+  .small { font-size: 9.8pt; }
+  .nobreak { page-break-inside: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  blockquote, table { page-break-inside: avoid; }
+  code { font-size: 9.5pt; }
+</style>
+</head>
+<body>
+
+<div class="titlebox">
+  <h1 class="book">Martin Heidegger, <i>Basic Concepts of Aristotelian Philosophy</i></h1>
+  <div class="meta">GA 18 · Marburg Lectures, Summer Semester 1924 · trans. Metcalf &amp; Tanzer (Indiana UP, 2009)</div>
+  <h1 style="margin-top: 0.7em;">§17. Ἕξις.</h1>
+  <div class="meta">(<i>Metaphysics</i> Δ23 and 20, <i>Nicomachean Ethics</i> Β 1–5)</div>
+  <div class="pages">Book pp. 116–128 · PDF pp. 131–143</div>
+</div>
+
+<h2>Orienting Thesis of §17</h2>
+
+<p>§17 is the ontological pivot of Chapter 3 of the First Part. Having shown in §15–16 that <span class="greek">ἦθος</span> (<i>ēthos</i>, &ldquo;character&rdquo;) and <span class="greek">πάθος</span> (<i>pathos</i>, &ldquo;being-affected&rdquo;) function as <span class="greek">πίστεις</span> (<i>pisteis</i>, &ldquo;means of credence&rdquo;) in Aristotle&rsquo;s <i>Rhetoric</i>, Heidegger now argues that the proper grasp of <span class="greek">πάθος</span> (<i>pathos</i>) requires a prior grasp of <span class="greek">ἕξις</span> (<i>hexis</i>, &ldquo;having,&rdquo; &ldquo;composure,&rdquo; &ldquo;being-composed-as-to&rdquo;). His thesis: <span class="greek">ἕξις</span> (<i>hexis</i>) is not a &ldquo;habit&rdquo; in the ordinary moralistic sense, but a <i>fundamental concept of being</i>&mdash;<strong>the determination of the genuineness of being-there in a moment of being-composed as to something</strong> (p. 119). The four senses of <span class="greek">ἔχειν</span> (<i>echein</i>, &ldquo;to have&rdquo;) in <i>Metaphysics</i> Δ 23 all converge on a single ontological structure: <i>being after a definite being-possibility, or its negation</i>. <span class="greek">Ἀρετή</span> (<i>aretē</i>, &ldquo;virtue,&rdquo; &ldquo;excellence&rdquo;) is then articulated as <span class="greek">ἕξις προαιρετική</span> (<i>hexis proairetikē</i>, &ldquo;a being-composed in the ability-to-resolve-oneself&rdquo;), structured as <span class="greek">μεσότης</span> (<i>mesotēs</i>, &ldquo;mean&rdquo;) and oriented toward <span class="greek">καιρός</span> (<i>kairos</i>, &ldquo;the right moment&rdquo;). The result is an analysis of human being-there as <i>temporally cultivated composure</i>&mdash;a 1924 anticipation of the temporality and historicality of <i>Being and Time</i>.</p>
+
+<hr>
+
+<h2>§17a. Ἔχειν (<i>echein</i>) and Ἕξις (<i>hexis</i>)</h2>
+<div class="pages">pp. 116–119</div>
+
+<h3>The Methodological Opening</h3>
+
+<p>Heidegger transitions from §16 by carrying forward a decisive insight: <span class="greek">πάθος</span> (<i>pathos</i>) &ldquo;already has within itself the relation to <span class="greek">ἕξις</span> (<i>hexis</i>)&rdquo; (p. 116). The two concepts &ldquo;lend themselves to being characterized by Aristotle as <i>fundamental concepts of being</i>.&rdquo; <span class="greek">Πάθος</span> (<i>pathos</i>) is indicated as a being-concept since <span class="greek">πάσχειν</span> (<i>paschein</i>, &ldquo;to undergo&rdquo;)&mdash;in contrast to <span class="greek">ποιεῖν</span> (<i>poiein</i>, &ldquo;to do&rdquo;)&mdash;represents a basic aspect of the analysis of <span class="greek">κίνησις</span> (<i>kinēsis</i>, &ldquo;motion&rdquo;), of being in the sense of being-moved. <span class="greek">Ἕξις</span> (<i>hexis</i>) refers back to <span class="greek">ἔχειν</span> (<i>echein</i>, &ldquo;to have&rdquo;)&mdash;and Aristotle himself recognizes <span class="greek">ἔχειν</span> (<i>echein</i>) as a mode of being, as is shown by the fact that it appears among the ten categories.</p>
+
+<blockquote>&ldquo;<span class="greek">Ἔχειν</span> (<i>echein</i>) is the being-structure to be set forth in the two salient phenomena, <span class="greek">πάθος</span> (<i>pathos</i>) and <span class="greek">ἕξις</span> (<i>hexis</i>).&rdquo; (p. 116)</blockquote>
+
+<h3>The Four Senses of Ἔχειν (<i>echein</i>) in <i>Metaphysics</i> Δ 23</h3>
+
+<p>Aristotle says, by way of introduction, that <span class="greek">τὸ ἔχειν λέγεται πολλαχῶς</span> (<i>to echein legetai pollachōs</i>, &ldquo;&lsquo;having&rsquo; is said in many ways&rdquo;)&mdash;but the meanings are &ldquo;not an arbitrary jumble&rdquo; (p. 116): they relate to a basic meaning that becomes visible by working through the individual senses.</p>
+
+<h4>1. Ἄγειν κατὰ τὴν αὑτοῦ φύσιν ἢ κατὰ τὴν αὑτοῦ ὁρμήν</h4>
+<p class="small"><i>(agein kata tēn hautou physin ē kata tēn hautou hormēn, &ldquo;leading according to one&rsquo;s own nature or impulse&rdquo;)</i></p>
+
+<blockquote><span class="greek">&ldquo;τὸ ἄγειν κατὰ τὴν αὑτοῦ φύσιν ἢ κατὰ τὴν αὑτοῦ ὁρμήν, διὸ λέγεται πυρετός τε ἔχειν τὸν ἄνθρωπον καὶ οἱ τύραννοι τὰς πόλεις καὶ τὴν ἐσθῆτα οἱ ἀμπεχόμενοι&rdquo;</span> (<i>Met.</i> Δ23, 1023a 8)</blockquote>
+
+<p>Translation: &ldquo;leading according to its own fully determined possibility of being-there&mdash;<span class="greek">φύσις</span> (<i>physis</i>, &lsquo;nature&rsquo;)&mdash;or according to the impetus that is lying within the beings in question as such.&rdquo; Heidegger&rsquo;s examples (Aristotle&rsquo;s): &ldquo;<i>fever has the person</i> [sickness has attacked him &lsquo;whom it has&rsquo; or &lsquo;whom it has seized&rsquo;]; the tyrants <i>have</i> the towns [they rule over them]; the ones who are dressed <i>have</i> clothes (<span class="greek">ὄν</span>).&rdquo; This first sense is <span class="greek">ἔχειν</span> (<i>echein</i>) in the sense of <span class="greek">ἄγειν</span> (<i>agein</i>, &ldquo;leading,&rdquo; &ldquo;directing&rdquo;)&mdash;directing according to <span class="greek">φύσις</span> (<i>physis</i>) or <span class="greek">ὁρμή</span> (<i>hormē</i>, &ldquo;impulse,&rdquo; &ldquo;impetus&rdquo;).</p>
+
+<h4>2. Ἐν ᾧ ἂν ὑπάρχῃ ὡς δεκτικῷ</h4>
+<p class="small"><i>(en hō an hyparchē hōs dektikō, &ldquo;in which something is present as in that which is receptive&rdquo;)</i></p>
+
+<blockquote><span class="greek">&ldquo;ἐν ᾧ ἂν ὑπάρχῃ ὡς δεκτικῷ, οἷον ὁ χαλκὸς ἔχει τὸ εἶδος τοῦ ἀνδριάντος καὶ τὴν νόσον τὸ σῶμα&rdquo;</span> (<i>Met.</i> Δ23, 1023a 11)</blockquote>
+
+<p>Translation: &ldquo;<i>The metal has the look of a statue</i> [has the look, <i>is</i> a statue]. The body has the illness [it <i>is</i> sick].&rdquo; The more precise determination of this sense of <i>having</i> is <i>being</i>: in itself something is present, &ldquo;for which being-present the being in question itself has the readiness (<span class="greek">δεκτικόν</span>, <i>dektikon</i>)&rdquo; (p. 117). The metal is determined as metal on account of the <span class="greek">δεκτικόν</span> (<i>dektikon</i>, &ldquo;the receptive,&rdquo; &ldquo;the able-to-take-in&rdquo;); it is determined in its being such that it can become a statue.</p>
+
+<p>Heidegger now makes a crucial conceptual disambiguation:</p>
+
+<blockquote>&ldquo;The metal is determined as <span class="greek">ὕλη</span> (<i>hylē</i>, &lsquo;matter&rsquo;). In this context, <span class="greek">ὕλη</span> (<i>hylē</i>) does not mean an indeterminate &lsquo;material,&rsquo; but rather <i>a positive character of a mode of being-there</i>. Being in preparedness for &hellip; is a positive determination of a being. Having means nothing other than being the wherein of a being-present of something out of preparedness.&rdquo; (p. 117)</blockquote>
+
+<p>This is one of the most ontologically significant passages in §17: <span class="greek">ὕλη</span> (<i>hylē</i>) is not &ldquo;stuff&rdquo; awaiting form&mdash;it is <i>being-in-preparedness</i>, an active mode of being-there. [Note: this positive sense of <span class="greek">ὕλη</span> (<i>hylē</i>) will return, in transformed shape, in §18d, where <span class="greek">ὕλη</span> (<i>hylē</i>) of the <span class="greek">πάθη</span> [<i>pathē</i>] is identified with <span class="greek">σῶμα</span> (<i>sōma</i>, &ldquo;body,&rdquo; corporeality).]</p>
+
+<h4>3. Ὡς τὸ περιέχον τὰ περιεχόμενα</h4>
+<p class="small"><i>(hōs to periechon ta periechomena, &ldquo;as that which contains what is contained&rdquo;)</i></p>
+
+<blockquote><span class="greek">&ldquo;ὡς τὸ περιέχον τὰ περιεχόμενα: ἐν ᾧ γάρ ἐστι περιεχόμενόν τι, ἔχεσθαι ὑπὸ τούτου λέγεται, οἷον τὴν ὑγρὸν ἔχειν τὸ ἀγγεῖόν φαμεν καὶ τὴν πόλιν ἀνθρώπους καὶ τὴν ναῦν ναύτας: οὕτω δὲ καὶ τὸ ὅλον ἔχειν τὰ μέρη&rdquo;</span> (<i>Met.</i> Δ23, 1023a 13)</blockquote>
+
+<p>Translation: &ldquo;The enclosing has that which is enclosed [in the sense of containing, of being all around it]; wherein something is as contained therein, of which we say that something is had from the start, as the basin has, or contains, water, the town has people, the ship has sailors. In this way too the whole has parts.&rdquo; Being-part &ldquo;is always being-part-of-something, part of a whole, belonging to something. The whole is the wherein of the determinate belongingness of a part&rdquo; (p. 118).</p>
+
+<h4>4. Τὸ κωλῦον κατὰ τὴν αὑτοῦ ὁρμήν τι κινεῖσθαι ἢ πράττειν</h4>
+<p class="small"><i>(to kōlyon kata tēn hautou hormēn ti kineisthai ē prattein, &ldquo;hindering something from being-moved or acting according to its own impulse&rdquo;)</i></p>
+
+<blockquote><span class="greek">&ldquo;ἔτι τὸ κωλῦον κατὰ τὴν αὑτοῦ ὁρμήν τι κινεῖσθαι ἢ πράττειν ἔχειν λέγεται τοῦτο αὐτό, οἷον καὶ οἱ κίονες οἱ ἐπικείμενα βάρη, καὶ ὡς οἱ ποιηταὶ τὸν Ἀτλαντα ποιοῦσι τὸν οὐρανὸν ἔχειν ὡς συμπεσόντ᾽ ἂν ἐπὶ τὴν γῆν&rdquo;</span> (<i>Met.</i> Δ23, 1023a 17)</blockquote>
+
+<p>Translation: &ldquo;Pillars hold, have the weight lying upon them, and, as the poets say, <i>Atlas holds the vault of heaven</i>&rdquo;: having in the sense of holding, and indeed as <span class="greek">κωλύειν</span> (<i>kōlyein</i>, &ldquo;holding off&rdquo;)&mdash;&ldquo;holding off another being, hindering it from being as it would like to be according to its own being, &lsquo;according to its genuine <span class="greek">ὁρμή</span> (<i>hormē</i>, &lsquo;impulse&rsquo;).&rsquo;&rdquo; The <span class="greek">ὁρμή</span> (<i>hormē</i>) of the weight is to fall downward; the vault of heaven &ldquo;has the tendency to fall down upon the earth.&rdquo; Having in this sense of holding is the holding off of another from its determinate being-possibility, which lies in its <span class="greek">ὁρμή</span> (<i>hormē</i>), is the <span class="greek">συνέχον</span> (<i>synechon</i>, &ldquo;holding-together&rdquo;). <span class="greek">Συνεχές</span> (<i>syneches</i>), &ldquo;continuum,&rdquo; &ldquo;constancy,&rdquo; is &ldquo;a basic aspect of the being of things moved&rdquo; (<i>Physics</i>, Book 5).</p>
+
+<h3>The Common Ontological Structure</h3>
+
+<blockquote>&ldquo;These four kinds of <span class="greek">ἔχειν</span> (<i>echein</i>) always mark beings with the being-character of <i>being after a definite being-possibility</i>, or its negation, which, in the case of negation, is the same as that of <i>holding off something from being genuinely as it would like to be</i>.&rdquo; (p. 118)</blockquote>
+
+<p>It is no accident, Heidegger notes, that Aristotle says in conclusion: <span class="greek">καὶ τὸ ἕν τινι δὲ εἶναι ὁμοτρόπως λέγεται καὶ ἑπομένως τῷ ἔχειν</span> (<i>kai to en tini de einai homotropōs legetai kai hepomenōs tō echein</i>, <i>Met.</i> Δ23, 1023a 21)&mdash;&ldquo;<i>Having is said in the same way as being-in-something</i>.&rdquo; <span class="greek">Ἑπομένως</span> (<i>hepomenōs</i>, &ldquo;following along&rdquo;): &ldquo;this meaning of being-in-something is already co-given with having; the character of having and being had has that of being-in-something&rdquo; (p. 118).</p>
+
+<h3>Ἕξις (<i>hexis</i>) Among the Categories: <i>Metaphysics</i> Δ 20</h3>
+
+<p>It is therefore justifiable, Heidegger argues, that <span class="greek">ἔχειν</span> (<i>echein</i>) appears among the categories alongside <span class="greek">κεῖσθαι</span> (<i>keisthai</i>, &ldquo;being-positioned&rdquo;)&mdash;and that <span class="greek">ἕξις</span> (<i>hexis</i>) is to be elucidated as a mode of being-there. Aristotle in <i>Metaphysics</i> Δ 20:</p>
+
+<blockquote><span class="greek">&ldquo;ἕξις δὲ λέγεται ἕνα μὲν τρόπον οἷον ἐνέργειά τις τοῦ ἔχοντος καὶ ἐχομένου, ὥσπερ πρᾶξίς τις ἢ κίνησις&rdquo;</span> (<i>Met.</i> Δ20, 1022b 4)</blockquote>
+
+<p>Translation: &ldquo;<span class="greek">Ἕξις</span> (<i>hexis</i>) is the <span class="greek">ἐνέργεια</span> (<i>energeia</i>, &lsquo;being-at-work,&rsquo; &lsquo;actuality&rsquo;), the genuine there, the being-present of the having and of what is had&rdquo; (p. 118). The <i>there</i> is related to having&mdash;having as the having of what is having and of what is had. Within this being-context, <span class="greek">ἕξις</span> (<i>hexis</i>) means the <i>genuine being-present of having as such</i>.</p>
+
+<h4>The Μεταξύ (<i>metaxy</i>, &ldquo;the between&rdquo;)</h4>
+
+<blockquote><span class="greek">&ldquo;ὅταν γὰρ τὸ μὲν ποιῇ τὸ δὲ ποιῆται, ἔστι ποίησις μεταξύ: οὕτω καὶ τοῦ ἔχοντος ἐσθῆτα καὶ τῆς ἐχομένης ἐσθῆτος ἐστι μεταξὺ ἕξις&rdquo;</span> (<i>Met.</i> Δ20, 1022b 5)</blockquote>
+
+<p>Translation: &ldquo;When the one does something, the other is done; thus the <i>doing</i> as such is the <span class="greek">μεταξύ</span> (<i>metaxy</i>), the <i>between</i>. There is also a between in the case of having clothes on, having-on on the one side, the clothes that are put on on the other side.&rdquo; The having-on as such is the <span class="greek">ἕξις</span> (<i>hexis</i>). This having is something <i>ultimate</i>: nothing more can be had on its part&mdash;Aristotle observes that we cannot say that the having of clothes leads to a new being-determination, &ldquo;but rather simply the there, the being-present.&rdquo; The clothes &ldquo;<i>are</i> what constitutes the genuine there of the clothes,&rdquo; in being put on, when they reach their <span class="greek">τέλος</span> (<i>telos</i>, &ldquo;end,&rdquo; &ldquo;completion&rdquo;).</p>
+
+<h3>Ἕξις (<i>hexis</i>) as Διάθεσις (<i>diathesis</i>) and Τάξις (<i>taxis</i>): <i>Metaphysics</i> Δ 19</h3>
+
+<p>Aristotle further characterizes <span class="greek">ἕξις</span> (<i>hexis</i>) as <span class="greek">διάθεσις καθ᾽ ἣν ἢ εὖ ἢ κακῶς διάκειται</span> (<i>diathesis kath&rsquo; hēn ē eu ē kakōs diakeitai</i>, <i>Met.</i> Δ20, 1022b 10)&mdash;&ldquo;an allotment according to which something is well or badly disposed.&rdquo; <span class="greek">Διάθεσις</span> in Chapter 19 is having as a <span class="greek">τάξις</span> (<i>taxis</i>, &ldquo;allotment,&rdquo; &ldquo;ordering&rdquo;): &ldquo;an allotment that has the character of <span class="greek">θέσις</span> (<i>thesis</i>, &lsquo;positing&rsquo;)&rdquo;&mdash;a <i>posited</i> allotment, &ldquo;not a merely accidental being-thrown-together, but a being-posited.&rdquo; <span class="greek">Διακεῖσθαι</span> (<i>diakeisthai</i>) is related to <span class="greek">μεταβάλλειν</span> (<i>metaballein</i>, &ldquo;changing-over&rdquo;), &ldquo;which happens through the <span class="greek">πάθη</span> (<i>pathē</i>)&rdquo; (p. 119).</p>
+
+<blockquote>&ldquo;The <span class="greek">ἕξις</span> (<i>hexis</i>) as <span class="greek">διάθεσις</span> (<i>diathesis</i>), as <span class="greek">τάξις</span> (<i>taxis</i>), springs from <span class="greek">προαίρεσις</span> (<i>proairesis</i>, &lsquo;resolution,&rsquo; &lsquo;choice&rsquo;): the proper finding-oneself in the being-allotted of the moment.&rdquo; (p. 119)</blockquote>
+
+<h3>The Culminating Definition of §17a</h3>
+
+<blockquote>&ldquo;<strong><span class="greek">Ἕξις</span> (<i>hexis</i>) is the <i>determination of the genuineness of being-there in a moment of being-composed as to something</i>: the various <span class="greek">ἕξεις</span> (<i>hexeis</i>) as the various modes of being able to be composed.</strong> <span class="greek">Ἕξις</span> (<i>hexis</i>) is, in an entirely fundamental way, the being-determination of genuine being, here in relation to human <span class="greek">πρᾶξις</span> (<i>praxis</i>, &lsquo;action&rsquo;). <span class="greek">Πρᾶξις</span> (<i>praxis</i>) is characterized through <span class="greek">ἀρετή</span> (<i>aretē</i>), and <span class="greek">ἀρετή</span> (<i>aretē</i>) is characterized as <span class="greek">ἕξις προαιρετική</span> (<i>hexis proairetikē</i>). <span class="greek">Πρᾶξις</span> (<i>praxis</i>), as the how of being-in-the-world, appears here as the being-context that we can also designate in another sense as <i>existence</i>.&rdquo; (p. 119)</blockquote>
+
+<p>The orientation toward <span class="greek">καιρός</span> (<i>kairos</i>, &ldquo;the right moment&rdquo;) emerges directly:</p>
+
+<blockquote>&ldquo;Being-composed is not something optional and indeterminate, for in <span class="greek">ἕξις</span> (<i>hexis</i>) lies the primary orientation toward the <span class="greek">καιρός</span> (<i>kairos</i>): &lsquo;<strong>I am there, come what may!</strong>&rsquo; This being-there, being-on-the-alert in one&rsquo;s situation, in relation to its matter, characterizes <span class="greek">ἕξις</span> (<i>hexis</i>).&rdquo; (p. 119)</blockquote>
+
+<p>And&mdash;decisively for the link to §18&mdash;<span class="greek">ἕξις</span> (<i>hexis</i>) is intrinsically related to its negation:</p>
+
+<blockquote>&ldquo;<span class="greek">Ἕξις</span> (<i>hexis</i>) is, therefore, a being-possibility that is <i>related in itself to another possibility</i>, to the possibility of my being, <i>that within my being something comes over me, which brings me out of composure</i>.&rdquo; (p. 119)</blockquote>
+
+<hr>
+
+<h2>§17b. Presentation of the Context of the Treatment of Ἕξις (<i>hexis</i>)</h2>
+<div class="pages">pp. 119–121 (Presentation) · §17c. Ἕξις and Ἀρετή · pp. 121–122 (Four Basic Aspects)</div>
+
+<p class="small">[Translator&rsquo;s note: Heidegger&rsquo;s lecture-text labels this transitional material as &ldquo;b) Presentation of the Context of the Treatment of <span class="greek">ἕξις</span>&rdquo; (p. 119) and then &ldquo;c) <span class="greek">ἕξις</span> and <span class="greek">ἀρετή</span>&rdquo; (p. 121). The structured manifest collapses these into §17b. Both sub-rubrics are preserved here.]</p>
+
+<h3>The Hermeneutic Function of Ἕξις (<i>hexis</i>)</h3>
+
+<p>Heidegger summarizes: <span class="greek">ἕξις</span> (<i>hexis</i>) plays a fundamental role in the Aristotelian analysis of being but also becomes important for another basic determination&mdash;Aristotle discusses <span class="greek">στέρησις</span> (<i>sterēsis</i>, &ldquo;privation&rdquo;) in opposition to <span class="greek">ἕξις</span> (<i>hexis</i>) and in detail with <span class="greek">κίνησις</span> (<i>kinēsis</i>). The task is to understand the <span class="greek">πάθη</span> (<i>pathē</i>) as those determinations that &ldquo;characterize the audience in a definite situation&rdquo; (p. 120). The audience is in a definite situation over against the speaker; this situation becomes co-determinative of how the audience understands. The <span class="greek">πάθη</span> (<i>pathē</i>) are topics insofar as they are co-decisive for the manner and mode of <span class="greek">λέγειν</span> (<i>legein</i>, &ldquo;speaking&rdquo;); the <span class="greek">λόγος</span> (<i>logos</i>) has its basis in the <span class="greek">πάθη</span> (<i>pathē</i>) themselves.</p>
+
+<blockquote>&ldquo;To take hold of what is meant by <span class="greek">πάθη</span> (<i>pathē</i>) in the right way, we are choosing a roundabout path toward <span class="greek">ἕξις</span> (<i>hexis</i>), by way of a general hermeneutic guide.&rdquo; (p. 120)</blockquote>
+
+<h3>Three Questions for Every Πάθος (<i>pathos</i>): Rhetoric Β 1, 1378a 24</h3>
+
+<p>Aristotle, Heidegger notes, &ldquo;considers the affectus in three respects&rdquo; (p. 121):</p>
+
+<ol>
+  <li><strong><span class="greek">Πῶς διακείμενοι εἰσίν</span></strong> (<i>pōs diakeimenoi eisin</i>): &ldquo;How do we find ourselves genuinely? What sort is our being-in-the-world, when we are in a rage, when we are in fear, when we feel pity?&rdquo;</li>
+  <li><strong><span class="greek">Ποίαις</span></strong> (<i>poiais</i>): &ldquo;About what do we get angry, lose composure?&rdquo;</li>
+  <li><strong><span class="greek">Ἐπὶ ποίοις</span></strong> (<i>epi poiois</i>): &ldquo;In relation to whom, in encountering which sort of human beings, are we there in this way?&rdquo;</li>
+</ol>
+
+<p>The three questions disclose &ldquo;the basic structure of the <span class="greek">πάθη</span> (<i>pathē</i>)&rdquo;: the orientation toward being-with-one-another of being-there as being-in-the-world (p. 121). [This threefold structure is the proto-form of the threefold structure of attunement (<i>Stimmung</i>) in <i>Being and Time</i> §29: how one finds oneself, what one is attuned to, with respect to whom.]</p>
+
+<h3>Historical Excursus: The Doctrine of the Affects from Aristotle to Dilthey</h3>
+
+<p>Heidegger interrupts the systematic argument with a substantial historical aside (pp. 120–121). The Aristotelian doctrine of the <span class="greek">πάθη</span> (<i>pathē</i>) had &ldquo;quite an effect on subsequent philosophers and theologians (e.g., Thomas&rsquo;s doctrine of affects), both for its fundamental orientation and its selection of phenomena. Generally, the <span class="greek">πάθη</span> (<i>pathē</i>) are a basic question of theology&rdquo; (p. 120).</p>
+
+<table>
+  <tr><th>Figure</th><th>Locus / Contribution</th></tr>
+  <tr><td>Thomas Aquinas</td><td>Doctrine of <i>affectus</i>; medieval theological orientation</td></tr>
+  <tr><td>Luther</td><td><span class="greek">Φόβος</span> (<i>phobos</i>) connected to faith; <i>Sermo de poenitentia</i>; <i>timor servilis</i> (servile fear) vs. <i>timor castus</i> (chaste fear); <i>attritio</i> vs. <i>contritio</i>. <i>Timor castus</i>: &ldquo;pure fear in the presence of God&rdquo;; <i>timor servilis</i>: fear of punishment, of hell.</td></tr>
+  <tr><td>Augustine</td><td><i>De diversis quaestionibus octoginta tribus</i>, qu. 33; <i>De civitate Dei</i> XIV.5 ff.; the writings on Pelagianism</td></tr>
+  <tr><td>Johannes Damascenus</td><td><i>De fide orthodoxa</i> II</td></tr>
+  <tr><td>Gregory of Nyssa</td><td><span class="greek">Περὶ φύσεως ἀνθρώπου</span> (<i>Peri physeōs anthrōpou</i>, &ldquo;On the Nature of the Human Being&rdquo;)</td></tr>
+  <tr><td>Nemesius</td><td><span class="greek">Περὶ κατασκευῆς ἀνθρώπου</span> (<i>Peri kataskeuēs anthrōpou</i>); contains the doctrine of the <span class="greek">πάθη</span> from the Stoa; one of the primary sources for the medieval era</td></tr>
+  <tr><td>Dionysius the Areopagite</td><td><i>De divinis nominibus</i></td></tr>
+  <tr><td>Dilthey</td><td><i>Weltanschauung und Analyse des Menschen seit Renaissance und Reformation</i> &mdash; the sole modern author to have given the <span class="greek">πάθη</span> &ldquo;thorough treatment&rdquo;</td></tr>
+</table>
+
+<p>Heidegger&rsquo;s polemical conclusion: &ldquo;The whole development of the doctrine of the affects, up to the present, has not been analyzed philosophically&rdquo; (p. 120). The <span class="greek">πάθη</span> (<i>pathē</i>), &ldquo;in an entirely general way, are characteristic of a disposition of human beings, a how of being-in-the-world&rdquo; (p. 120).</p>
+
+<h3>Ἕξις (<i>hexis</i>) and Ἀρετή (<i>aretē</i>): Four Basic Aspects of Being-There</h3>
+
+<p>Heidegger now turns to <i>Nicomachean Ethics</i> Book 2, Chapters 1–5: &ldquo;only that which is most important for demonstrating <span class="greek">ἕξις</span> (<i>hexis</i>) to you, and at the same time, for clarifying a basic concept of the <i>Nicomachean Ethics</i>, the <span class="greek">μεσότης</span> (<i>mesotēs</i>)&rdquo; (p. 121). The crucial preliminary disambiguation:</p>
+
+<blockquote>&ldquo;<span class="greek">Μεσότης</span> (<i>mesotēs</i>) is not some kind of &lsquo;mediocrity,&rsquo; not a determination of human actions in which it would amount to mediocrity, not a so-called &lsquo;bourgeois morality,&rsquo; not a principle of &lsquo;ranking values&rsquo;; but rather <i>a basic relation to <span class="greek">ἕξις</span> (hexis)</i>, and so to the being-there of human beings, to <span class="greek">πρᾶξις</span> (<i>praxis</i>), and so to the <span class="greek">καιρός</span> (<i>kairos</i>). The <i>Nicomachean Ethics</i> is altogether different from the ethics of a mediocre averageness and from the conventional.&rdquo; (p. 121)</blockquote>
+
+<p>From the connection between <span class="greek">ἕξις</span> (<i>hexis</i>) and <span class="greek">ἀρετή</span> (<i>aretē</i>), &ldquo;four basic aspects of being-there result&rdquo; (pp. 121–122):</p>
+
+<ol>
+  <li><strong><span class="greek">Πρᾶξις</span> (<i>praxis</i>) is concern.</strong> &ldquo;<span class="greek">Πρᾶξις</span> (<i>praxis</i>), &lsquo;action,&rsquo; concern is in itself the concern of the being-there which is concerned. In being involved in the world, in dealing with it, in occupying oneself with other human beings, being-there itself, which is involved in this way, is concerned with itself, with its being. <i>Being-there as concern is care about itself</i>, for the most part inexplicitly. This basic phenomenon is hidden in the concept of <span class="greek">ἕξις</span> (<i>hexis</i>)&mdash;<span class="greek">ἕξις</span> as the having of something, the mode of being in having, the mode of being-positioned in relation to what is had.&rdquo; [proto-<i>Sorge</i>]</li>
+  <li><strong>Particularity.</strong> &ldquo;In <span class="greek">ἕξις</span> (<i>hexis</i>), being-there will show itself more precisely in its <i>particularity</i>. The being of human beings, human being as being-there, is <i>particular, at the moment</i>: <span class="greek">ἕξις</span> (<i>hexis</i>) is a being-composed of being-there, oriented toward the moment.&rdquo; [proto-<i>Jemeinigkeit</i>]</li>
+  <li><strong>Being-oriented toward the moment within &ldquo;more or less.&rdquo;</strong> &ldquo;This being-composed, this being-oriented toward the moment, is the sort of possibility that has seized being-there itself <i>on the basis of its particular situation</i>. In an average way and for the most part, being-there stays within the degrees of &lsquo;more or less,&rsquo; too much and too little.&rdquo;</li>
+  <li><strong>Self-cultivation in being-there itself.</strong> &ldquo;On the basis of this three-fold basic structure, it is also evident that <span class="greek">ἕξις</span> (<i>hexis</i>) is a basic determination of being-there itself, that the <span class="greek">γένεσις</span> (<i>genesis</i>) of this <span class="greek">ἕξις</span> (<i>hexis</i>), the manner and mode in which being-there itself comes to a being-composed in relation to itself, can have the opportunity and the type of its cultivation only, again, <i>in being-there itself</i>. Being-there must, <i>for itself</i>, take the opportunity to cultivate this being-composed as a possibility.&rdquo;</li>
+</ol>
+
+<hr>
+
+<h2>§17b–α. The Γένεσις (<i>genesis</i>) of Ἀρετή (<i>aretē</i>)</h2>
+<div class="pages">pp. 122–124</div>
+
+<h3>Ἀρετή (<i>aretē</i>) as Mode of Being-There, Not Property</h3>
+
+<blockquote>&ldquo;<span class="greek">Ἀρετή</span> (<i>aretē</i>) as <span class="greek">ἕξις</span> (<i>hexis</i>) is not a property, not a possession brought to being-there from without, but is rather <i>a mode of being-there itself</i>. We are encountering once again, as always, the peculiar category of the <i>how</i>. <span class="greek">Ἀρετή</span> (<i>aretē</i>) is a how of being-there, not as a fixed property, but rather as the how of being-there <i>determined by its being</i>, characterized by <i>temporality</i>, by the stretching across time. For this reason, <span class="greek">ἀρετή</span> (<i>aretē</i>) is and comes to be <span class="greek">δι᾽ ἔθους</span> (<i>di&rsquo; ethous</i>), &lsquo;through habit&rsquo;.&rdquo; (p. 122; cit. <i>NE</i> Β 1, 1103a 25)</blockquote>
+
+<h3>Cultivation Through Χρησάμενοι Ἔσχομεν (<i>chrēsamenoi eschomen</i>)</h3>
+
+<p>The possibilities of being-composed are graspable &ldquo;only by way of <i>undergoing</i> various situations involving risk&rdquo; (p. 122). The opportunity of cultivating this how of being-there is called for &ldquo;only by way of not retreating from life&rsquo;s possibilities and risks.&rdquo;</p>
+
+<blockquote>&ldquo;We make use of <span class="greek">ἕξις</span> (<i>hexis</i>) since we make use of actions and of concern in the manner and mode of <i>finding</i>, first and foremost we appropriate <span class="greek">ἕξις</span> (<i>hexis</i>), and not the other way around, having it as a possession so as to then make use of it, but rather <span class="greek">χρησάμενοι ἔσχομεν</span> (<i>chrēsamenoi eschomen</i>, &lsquo;using, taking-opportunities&rsquo;). This undergoing, taking-opportunities or seeking-out-opportunities, is a process. Since we are with-one-another, in the process of dealing with human beings, we come to be steady and level-headed. Since we bring ourselves into situations involving risks, we have the possibility of learning courage, of leaving cowardice behind, not in a fantasized reflection upon being-there, but rather in <i>venturing-out into being-there</i> according to the possibilities of existence as encountered.&rdquo; (pp. 122–123; cit. <i>NE</i> Β 1, 1103a 30)</blockquote>
+
+<h3>No Παραγγελία (<i>paraggelia</i>) — No Universal Prescription</h3>
+
+<blockquote><span class="greek">&ldquo;οὔτε γὰρ ὑπὸ τέχνῃ οὐθ᾽ ὑπὸ παραγγελίαν οὐδεμίαν πίπτει, δεῖ δ᾽ αὐτοὺς ἀεὶ τοὺς πράττοντας τὰ πρὸς τὸν καιρὸν σκοπεῖν&rdquo;</span> (<i>NE</i> Β 2, 1104a 7)</blockquote>
+
+<p>Translation: &ldquo;Nor is there a <span class="greek">παραγγελία</span> (<i>paraggelia</i>) for this&mdash;something like a universal military field order, an a priori ethics, by which humanity becomes better <i>eo ipso</i>. <strong>Everyone must have, for himself, his eyes trained on that which is at the moment and which matters to him.</strong>&rdquo; (p. 123)</p>
+
+<h3>The Circularity Problem and the Τέχνη Analogy</h3>
+
+<p>Heidegger acknowledges the difficulty: &ldquo;what, in general, does it mean to become just through acting justly? Of course, I must already be just to act justly&rdquo; (p. 123). Aristotle resolves this in <i>NE</i> Β 3 by recourse to relations of a different sort, in <span class="greek">τέχνη</span> (<i>technē</i>, &ldquo;craft,&rdquo; &ldquo;skill&rdquo;): in <span class="greek">τέχνη</span> (<i>technē</i>), it depends upon the <span class="greek">γιγνόμενα</span> (<i>gignomena</i>, &ldquo;things that come to be&rdquo;) behaving in the right manner. Shoemaking depends upon the shoe, the <span class="greek">τέλος</span> (<i>telos</i>), the <span class="greek">ἔργον</span> (<i>ergon</i>, &ldquo;work,&rdquo; &ldquo;product&rdquo;), behaving in the right manner.</p>
+
+<p>The decisive disanalogy:</p>
+
+<blockquote>&ldquo;The being of human beings is determined in its <span class="greek">ἔργον</span> (<i>ergon</i>) as <span class="greek">πρᾶξις</span> (<i>praxis</i>). This has the <span class="greek">τέλος</span> (<i>telos</i>) in itself, comes to its end through itself. For this reason, the basic conditions governing the <span class="greek">ἔργον</span> (<i>ergon</i>) of human beings are entirely different from those in the case of a <span class="greek">τέχνη</span> (<i>technē</i>). For this <span class="greek">πρᾶξις</span> (<i>praxis</i>), it depends on how the one acting, as such, behaves toward himself.&rdquo; (p. 123)</blockquote>
+
+<h3>Three Aspects of the Πῶς Ἔχον τοῦ Πράττων (<i>pōs echon tou prattōn</i>): NE Β 3</h3>
+
+<p>The &ldquo;how&rdquo; of the &ldquo;one acting&rdquo; is defined in three aspects:</p>
+
+<ol>
+  <li><strong><span class="greek">Εἰδώς — φρόνησις</span></strong> (<i>eidōs — phronēsis</i>, &ldquo;knowing — prudence&rdquo;): &ldquo;he must be &lsquo;knowing,&rsquo; must act in the right &lsquo;condition of looking around,&rsquo; which is oriented toward the <span class="greek">καιρός</span> (<i>kairos</i>) with respect to the subject matter.&rdquo; (<i>NE</i> Β 3, 1105a 31)</li>
+  <li><strong><span class="greek">Προαιρούμενος</span></strong> (<i>proairoumenos</i>, &ldquo;resolving-oneself&rdquo;): &ldquo;he must act out of himself &lsquo;on the basis of an actual being-resolved to&hellip;&rsquo;&rdquo; (<i>NE</i> Β 3, 1105a 31)</li>
+  <li><strong><span class="greek">Βεβαίως καὶ ἀμετακινήτως ἔχων</span></strong> (<i>bebaiōs kai ametakinētōs echōn</i>, &ldquo;stably and unshakeably having&rdquo;): &ldquo;Acting in such a way that he is thereby stable and not to be brought out of composure. <i>This recalls the determination of <span class="greek">πάθος</span> (pathos) through <span class="greek">δι᾽ ὅσα μεταβάλλοντες</span> (di&rsquo; hosa metaballontes); we are brought out of one frame of mind into another</i>.&rdquo; (<i>NE</i> Β 3, 1105a 33; <i>Rhet.</i> Β 1, 1378a 20)</li>
+</ol>
+
+<p>What is characteristic, Heidegger underlines, &ldquo;is not the resulting condition, the having-come-into-another-frame-of-mind, but rather <i>the having-lost-composure</i>, being on the way from one state to another, the peculiar unrest that is given with <span class="greek">πάθος</span> (<i>pathos</i>) itself in relation to <span class="greek">φόβος</span> (<i>phobos</i>) characterized as <span class="greek">ταραχή</span> (<i>tarachē</i>, &lsquo;tumult,&rsquo; &lsquo;getting mixed up&rsquo;)&rdquo; (p. 124; cit. <i>Rhet.</i> Β 4, 1382a 21).</p>
+
+<h3>The Polemic Against Sophistical Λέγειν (<i>legein</i>)</h3>
+
+<p>These three determinations, especially the third (<span class="greek">προαίρεσις</span> [<i>proairesis</i>] is <span class="greek">βεβαίως</span> [<i>bebaiōs</i>]), &ldquo;are <i>not ascribed</i> to a <span class="greek">τέχνη</span> (<i>technē</i>)&rdquo; (<i>NE</i> Β 3, 1105b 1). Heidegger reads Aristotle&rsquo;s polemic at <i>NE</i> Β 3, 1105b 5 sqq.:</p>
+
+<blockquote><span class="greek">&ldquo;ἀλλ᾽ οἱ πολλοὶ ταῦτα μὲν οὐ πράττουσιν, ἐπὶ δὲ τὸν λόγον καταφεύγοντες οἴονται φιλοσοφεῖν καὶ οὕτως ἔσεσθαι σπουδαῖοι&rdquo;</span></blockquote>
+
+<p>Translation: &ldquo;Most do not show concern for this [being-<span class="greek">προαιρούμενος</span>-<span class="greek">βεβαίως</span>], but instead they resort to babble and deceive themselves, thereby, to philosophize and to be serious in the right manner. They resemble those who, while listening carefully to the doctor [and talking things over with him], nonetheless do nothing to follow his orders. Just as these others do not become healthy by sharing concern in this manner, neither do they who only moralize appropriate genuine existence for themselves [except in conversation].&rdquo; (p. 124)</p>
+
+<blockquote>&ldquo;What is characteristic is the sharp contrast between <i>λέγειν about ethics-related problems</i> and <i>real philosophizing</i>&mdash;an advance against the misuse of Socratic method in the claim that he understood Socrates correctly, and this will not easily be contested.&rdquo; (p. 124)</blockquote>
+
+<hr>
+
+<h2>§17b–β. Ἀρετή (<i>aretē</i>) as Μεσότης (<i>mesotēs</i>)</h2>
+<div class="pages">pp. 124–127</div>
+
+<h3>The Sharpening: Ἕξις as &ldquo;a How of Πάθος&rdquo;</h3>
+
+<p>The relation of <span class="greek">ἕξις</span> (<i>hexis</i>) and <span class="greek">ἀρετή</span> (<i>aretē</i>) is now sharpened in order to clarify, on that basis, &ldquo;how <span class="greek">ἕξις</span> (<i>hexis</i>) itself can be the how of our comportment toward the <span class="greek">πάθη</span> (<i>pathē</i>)&rdquo; (p. 125).</p>
+
+<blockquote>&ldquo;<strong><span class="greek">Ἕξις</span> (<i>hexis</i>) is nothing other than a how of <span class="greek">πάθος</span> (<i>pathos</i>), being-out-of-composure, in relation to being-composed-as-to&hellip;</strong>&rdquo; (p. 125)</blockquote>
+
+<p>Aristotle says, <i>NE</i> Β 5, 1106a 13: &ldquo;according to its being-origin, <span class="greek">ἀρετή</span> (<i>aretē</i>) is a <span class="greek">ἕξις</span> (<i>hexis</i>), a being-composed as to&hellip;.&rdquo; <span class="greek">Ἕξις</span> (<i>hexis</i>) is to be understood &ldquo;in relation to the concrete being of human beings.&rdquo; <span class="greek">Ἕξις</span> (<i>hexis</i>) also has the further meaning that it is the same as <span class="greek">δύναμις</span> (<i>dynamis</i>, &ldquo;possibility,&rdquo; &ldquo;potency&rdquo;) of any being at all. Here, <span class="greek">ἕξις</span> (<i>hexis</i>) has &ldquo;the definite orientation toward the being of human beings&rdquo; (p. 125).</p>
+
+<h3>Ζωὴ Πρακτικὴ Μετὰ Λόγου (<i>zōē praktikē meta logou</i>) and the Four-fold Encountering of the World</h3>
+
+<blockquote>&ldquo;In itself, <span class="greek">ἕξις</span> (<i>hexis</i>) is related to the <span class="greek">ζωὴ πρακτικὴ μετὰ λόγου</span> (<i>zōē praktikē meta logou</i>, &lsquo;practical life with speech/reason&rsquo;), the sort of being-in-the-world in which the world is encountered in the character of <span class="greek">συμφέρον</span> (<i>sumpheron</i>, &lsquo;the conducive&rsquo;), <span class="greek">βλαβερόν</span> (<i>blaberon</i>, &lsquo;the harmful&rsquo;), <span class="greek">ἡδύ</span> (<i>hēdy</i>, &lsquo;the pleasant&rsquo;), and <span class="greek">λυπηρόν</span> (<i>lypēron</i>, &lsquo;the painful&rsquo;). Our being-in-the-world is always characterized by this disposition-of-being-elevated and being-burdened, specifically in a way that we find ourselves within the degrees of a bad mood or an elevated mood. <span class="greek">Ἕξις</span> (<i>hexis</i>) is the determinate being-composed within this way of being. In this way, <span class="greek">ἀρετή</span> (<i>aretē</i>) is determined in its being-character.&rdquo; (p. 125)</blockquote>
+
+<h3>Excursus: Ἕξις (<i>hexis</i>) as Δύναμις (<i>dynamis</i>) — Heidegger&rsquo;s Three-Layered Claim</h3>
+
+<p>The compressed sentence at p. 125 in which Heidegger writes that &ldquo;<span class="greek">ἕξις</span> (<i>hexis</i>) also has the further meaning that it is the same as the <span class="greek">δύναμις</span> (<i>dynamis</i>) of any being at all&rdquo; — and that, &ldquo;here, <span class="greek">ἕξις</span> (<i>hexis</i>) has the definite orientation toward the being of human beings&rdquo; — performs a tightly compressed <strong>three-layered ontological move</strong> that warrants explicit unpacking. The three layers are not optional embellishments; they are load-bearing for everything that follows in §17b–γ and §18.</p>
+
+<h4>Layer 1: Ἕξις (<i>hexis</i>) is a being-determination of <i>anything that is at all</i></h4>
+
+<p>The first layer is a claim of <i>universal ontological scope</i>. <span class="greek">Ἕξις</span> (<i>hexis</i>) is not a moralist&rsquo;s concept restricted to ethics; it is a structure of <i>being</i> as such. This is why it appears among the categories (<i>Met.</i> Δ20, 1022b 4) and why Heidegger has spent §17a working through the four senses of <span class="greek">ἔχειν</span> (<i>echein</i>) in <i>Metaphysics</i> Δ23: metals, towns, basins, the vault of heaven all <i>have</i> in determinate ways. <span class="greek">Ἕξις</span> (<i>hexis</i>) names the settled, structural way in which any being &ldquo;is after a definite being-possibility, or its negation&rdquo; (p. 118).</p>
+
+<h4>Layer 2: <i>Aristotle&rsquo;s own equation</i> — Ἕξις (<i>hexis</i>) <i>is the same as</i> Δύναμις (<i>dynamis</i>)</h4>
+
+<p>The second, decisive layer is that this universal ontological structure <strong>coincides with what Aristotle calls δύναμις (<i>dynamis</i>)</strong>. The equation is not Heidegger&rsquo;s editorial gloss; it is Aristotle&rsquo;s own. In <i>Metaphysics</i> Δ20, 1022b 10 (which Heidegger has been working through immediately preceding this passage), Aristotle explicitly identifies one sense of <span class="greek">ἕξις</span> (<i>hexis</i>) with <span class="greek">διάθεσις καθ᾽ ἣν ἢ εὖ ἢ κακῶς διάκειται</span> (<i>diathesis kath&rsquo; hēn ē eu ē kakōs diakeitai</i>) — &ldquo;a disposition according to which something is well or badly disposed (<span class="greek">διάκειται</span>, <i>diakeitai</i>).&rdquo; A <span class="greek">διάθεσις</span> (<i>diathesis</i>) is a <i>settled way of being-able-to-be-affected</i>: precisely a <span class="greek">δύναμις</span> (<i>dynamis</i>). And in <i>Metaphysics</i> Δ12, 1019a 15 ff. — the locus classicus for the senses of <span class="greek">δύναμις</span> (<i>dynamis</i>) — Aristotle distinguishes the principal senses that converge with <span class="greek">ἕξις</span> (<i>hexis</i>):</p>
+
+<ul>
+  <li><span class="greek">δύναμις τοῦ ποιεῖν</span> (<i>dynamis tou poiein</i>) — the <i>being-able-to-do</i> (active power);</li>
+  <li><span class="greek">δύναμις τοῦ παθεῖν</span> (<i>dynamis tou pathein</i>) — the <i>being-able-to-undergo</i> (passive power);</li>
+  <li>the <i>fitness</i> or <i>aptitude</i> of a thing to do or undergo <i>well</i> — a normative <span class="greek">δύναμις</span>.</li>
+</ul>
+
+<p>Three structural features of <span class="greek">δύναμις</span> (<i>dynamis</i>) make this Aristotelian equation indispensable for Heidegger&rsquo;s argument:</p>
+
+<ol>
+  <li><strong>Standing capacity, not occurrent state.</strong> A <span class="greek">δύναμις</span> is what a being <i>has at its disposal</i> even when not currently exercising it. The courageous person <i>is</i> courageous when asleep; the metal <i>is</i> in preparedness for becoming a statue even before it is cast. <span class="greek">Δύναμις</span> is settled <i>being-able-to</i>, not unrealized possibility waiting to happen. This is why <span class="greek">ἕξις</span> (<i>hexis</i>) can be the <span class="greek">ἐνέργεια</span> (<i>energeia</i>, &ldquo;being-at-work,&rdquo; <i>Met.</i> Δ20, 1022b 4) of having: the &ldquo;being-there&rdquo; of the having itself, even before any further act.</li>
+  <li><strong>Bivalence: receptivity and activity together.</strong> <span class="greek">Δύναμις</span> is <i>both</i> power-to-do <i>and</i> power-to-undergo — the same settled capacity is exercised in <span class="greek">πρᾶξις</span> (<i>praxis</i>) and is liable to be struck or displaced in <span class="greek">πάθος</span> (<i>pathos</i>). This bivalence is structurally essential: a purely active &ldquo;habit&rdquo; could not be brought-out-of-composure; a δύναμις-sense <span class="greek">ἕξις</span> (<i>hexis</i>) precisely <i>can</i>. Without this Aristotelian equation, <span class="greek">ἕξις</span> (<i>hexis</i>) and <span class="greek">πάθος</span> (<i>pathos</i>) would have to come from different sources; with it, they are two faces of one structural capacity.</li>
+  <li><strong>Preparedness toward a determinate range.</strong> <span class="greek">Δύναμις</span> is never bare possibility — it is always <span class="greek">δύναμις τοῦ τοιοῦδε</span> (<i>dynamis tou toioude</i>), &ldquo;capacity for <i>such-and-such</i>.&rdquo; The metal&rsquo;s <span class="greek">δύναμις</span> to become a statue (the §17a example on p. 117) <i>is</i> its <span class="greek">δεκτικόν</span> (<i>dektikon</i>) — its being-in-preparedness for that determinate <span class="greek">εἶδος</span> (<i>eidos</i>, &ldquo;look&rdquo;). <span class="greek">Δύναμις</span> and <span class="greek">δεκτικόν</span> are two angles on the same ontological positivity that Heidegger insisted on at p. 117 (the <span class="greek">ὕλη</span> [<i>hylē</i>] is &ldquo;not an indeterminate &lsquo;material&rsquo; but a positive character of a mode of being-there&rdquo;).</li>
+</ol>
+
+<h4>Layer 3: The narrowing &mdash; &ldquo;<i>here</i>, <span class="greek">ἕξις</span> has the definite orientation toward the being of human beings&rdquo;</h4>
+
+<p>The third layer narrows the universal δύναμις-structure to the specific case Heidegger and Aristotle are pursuing. <span class="greek">Ἕξις</span> qua <span class="greek">δύναμις</span> is universally ontological; it applies to metals, plants, animals, anything that &ldquo;has&rdquo; a settled capacity. But the analysis of <span class="greek">πρᾶξις</span> (<i>praxis</i>) and <span class="greek">ἀρετή</span> (<i>aretē</i>) requires that this universal structure be taken <i>with reference to the determinate kind of being the human being is</i> — namely, <span class="greek">ζωὴ πρακτικὴ μετὰ λόγου</span> (<i>zōē praktikē meta logou</i>). The narrowing adds three specifically human-ontological features:</p>
+
+<ul>
+  <li>The <span class="greek">δύναμις</span> in question is one that can be <i>cultivated through</i> <span class="greek">ἔθος</span> (<i>ethos</i>, &ldquo;habit&rdquo;) — unlike, say, the metal&rsquo;s preparedness, which is given by <span class="greek">φύσις</span> (<i>physis</i>, &ldquo;nature&rdquo;) and not subject to ethical <span class="greek">γένεσις</span> (<i>genesis</i>).</li>
+  <li>The <span class="greek">δύναμις</span> is structured by <span class="greek">λόγος</span> (<i>logos</i>) — speech, articulation, deliberation — which is why <span class="greek">ἀρετή</span> (<i>aretē</i>) will turn out to be <span class="greek">ἕξις προαιρετική</span> (<i>hexis proairetikē</i>): a δύναμις borne specifically by <span class="greek">προαίρεσις</span> (<i>proairesis</i>, &ldquo;resolution&rdquo;).</li>
+  <li>The <span class="greek">δύναμις</span> is bound to <span class="greek">καιρός</span> (<i>kairos</i>, &ldquo;the right moment&rdquo;) — it is a <span class="greek">δύναμις</span> <i>for seizing the situation</i>, not a <span class="greek">δύναμις</span> for producing a fixed result. This is why, ten pages later (p. 126), Heidegger glosses the <span class="greek">μέσον</span> (<i>meson</i>) of <span class="greek">ἀρετή</span> (<i>aretē</i>) as a <span class="greek">δύναμις</span> in the sense of <span class="greek">κριτική</span> (<i>kritikē</i>) — the &ldquo;ability-to-separate&rdquo; that <span class="greek">αἴσθησις</span> (<i>aisthēsis</i>) itself displays at <i>De Anima</i> Β 11, 424a 4.</li>
+</ul>
+
+<h4>Why the Three-Layered Claim Carries the Whole §17 → §18 Transition</h4>
+
+<p>The δύναμις-equation is not a marginal aside — it is the <i>load-bearing concept</i> that licenses the formula a few lines later (p. 125):</p>
+
+<blockquote>&ldquo;<span class="greek">Ἕξις</span> (<i>hexis</i>) is nothing other than a how of <span class="greek">πάθος</span> (<i>pathos</i>), being-out-of-composure, in relation to being-composed-as-to&hellip;&rdquo; (p. 125)</blockquote>
+
+<p>This sentence only works if <span class="greek">ἕξις</span> (<i>hexis</i>) is read as a <span class="greek">δύναμις</span> (<i>dynamis</i>) in the bivalent Aristotelian sense. Because <span class="greek">δύναμις</span> is intrinsically <i>both</i> active power and passive power, <span class="greek">ἕξις</span> (<i>hexis</i>) and <span class="greek">πάθος</span> (<i>pathos</i>) can be <i>co-originary structures of the same human being-in-the-world</i>: the same settled capacity that is exercised as <span class="greek">πρᾶξις</span> (<i>praxis</i>, the <span class="greek">ἐνέργεια</span> of having) is what is <i>struck</i>, <i>displaced</i>, or <i>brought out of composure</i> in <span class="greek">πάθος</span> (<i>pathos</i>, the <span class="greek">πάσχειν</span> of having). Heidegger&rsquo;s entire interpretation of human being-there as the dialectic of composure and being-taken depends on Aristotle having already, in <i>Metaphysics</i> Δ20, treated <span class="greek">ἕξις</span> and <span class="greek">δύναμις</span> as the same ontological region.</p>
+
+<p><strong>Compressed reformulation of the p. 125 sentence:</strong> <i><span class="greek">Ἕξις</span> (hexis) is, in its widest sense, the same structural region that Aristotle calls <span class="greek">δύναμις</span> (dynamis) — the settled, bivalent capacity-to-be-such-and-such that any being possesses; in the present context, this universal capacity-structure is taken specifically as the capacity-structure of <span class="greek">ζωὴ πρακτικὴ μετὰ λόγου</span> (zōē praktikē meta logou): a <span class="greek">δύναμις</span> cultivated through <span class="greek">ἔθος</span> (ethos), articulated by <span class="greek">λόγος</span> (logos), and oriented toward <span class="greek">καιρός</span> (kairos).</i> This is what licenses everything that follows: <span class="greek">ἀρετή</span> as <span class="greek">ἕξις προαιρετική</span>, <span class="greek">μεσότης</span> as <span class="greek">ἕξις βλέπουσα</span> (&ldquo;the seeing being-composed&rdquo;), and the eventual co-originary pairing with <span class="greek">πάθος</span>.</p>
+
+<h3>Μεσότης (<i>mesotēs</i>): The Medical Origin and Ethical Transposition</h3>
+
+<p>Aristotle seeks to sharpen the being-determination of <span class="greek">ἀρετή</span> (<i>aretē</i>) by taking it as <span class="greek">μεσότης</span> (<i>mesotēs</i>)&mdash;by taking the <span class="greek">οὐσία</span> (<i>ousia</i>, &ldquo;substance,&rdquo; &ldquo;being&rdquo;) of <span class="greek">ἀρετή</span> (<i>aretē</i>) as <span class="greek">μεσότης</span> (<i>mesotēs</i>). &ldquo;In the expression <span class="greek">μεσότης</span> (<i>mesotēs</i>), <span class="greek">μέσον</span> (<i>meson</i>) comes from medicine&rdquo; (p. 125): the medical concept of health as <span class="greek">μέσον</span> (<i>meson</i>, &ldquo;mean,&rdquo; &ldquo;middle&rdquo;) orienting medical concept formation. Aristotle &ldquo;transposed this basic concept of medicine to ethics, with a concrete glance toward the specific difference in the basic sense of being dealt with. In previous ethical questioning, the concept of the <span class="greek">μεσότης</span> (<i>mesotēs</i>) did not come up&rdquo; (p. 125).</p>
+
+<h3>Two Senses of Μέσον (<i>meson</i>): Κατ᾽ Αὐτὸ vs. Πρὸς Ἡμᾶς</h3>
+
+<blockquote><span class="greek">&ldquo;ἐν παντὶ δὴ συνεχεῖ καὶ διαιρετῷ ἐστιν λαβεῖν τὸ μὲν πλεῖον τὸ δ᾽ ἔλαττον τὸ δ᾽ ἴσον&rdquo;</span> (<i>NE</i> Β 5, 1106a 26)</blockquote>
+
+<p>Translation: &ldquo;In all that holds together in itself, in all that is stable, the more or less and correspondingly the equal can be distinguished&rdquo; (p. 125). And these distinctions are:</p>
+
+<ol>
+  <li><span class="greek">κατ᾽ αὐτὸ τὸ πρᾶγμα</span> (<i>kat&rsquo; auto to pragma</i>) — &ldquo;<i>with regard to the matter itself</i>,&rdquo; arithmetical/geometrical;</li>
+  <li><span class="greek">πρὸς ἡμᾶς</span> (<i>pros hēmas</i>) — &ldquo;<i>in relation to us</i>.&rdquo;</li>
+</ol>
+
+<p><span class="greek">Τὸ δὲ ἴσον μέσον τι ὑπερβολῆς καὶ ἐλλείψεως</span> (<i>to de ison meson ti hyperbolēs kai elleipseōs</i>): &ldquo;<i>that which is equally far removed from both ends</i> is addressed as <span class="greek">μέσον</span> (<i>meson</i>) of the matter itself&rdquo; (<i>NE</i> Β 5, 1106a 29). One can determine the mean of a thing geometrically. But insofar as the <span class="greek">μέσον</span> (<i>meson</i>) is to be related to the interpretation of the being of human beings, it does not pertain to a <span class="greek">πρᾶγμα</span> (<i>pragma</i>) in itself, but rather insofar as it is <span class="greek">πρὸς ἡμᾶς</span> (<i>pros hēmas</i>), &ldquo;<i>in relation to us</i>&rdquo; (<i>NE</i> Β 5, 1106a 32).</p>
+
+<h3>The Decisive Result: No Universal Norm</h3>
+
+<blockquote>&ldquo;<i>For our being, characterized by particularity, no unique and absolute norm can be given.</i> It depends on cultivating the being of human beings, so that it is transposed into the <i>aptitude for maintaining the mean</i>. But that means nothing other than <strong>seizing the moment</strong>. It depends on <span class="greek">ὅτε [δεῖ] καὶ ἐφ᾽ οἷς καὶ πρὸς οὓς καὶ οὗ ἕνεκα καὶ ὡς δεῖ</span> (<i>hote dei kai eph&rsquo; hois kai pros hous kai hou heneka kai hōs dei</i>, &lsquo;when, in relation to which, with regard to whom, for the sake of what, and how it is necessary&rsquo;).&rdquo; (p. 126; cit. <i>NE</i> Β 5, 1106b 21)</blockquote>
+
+<h3>Μεσότης (<i>mesotēs</i>) as Τάξις: The &ldquo;Being-Apportioned&rdquo; of What Comes Up for Decision</h3>
+
+<p>In relation to this manifoldness of being-determinations, &ldquo;maintaining the mean is what counts&mdash;not an arithmetical or geometrical mean, but mean now taken in the sense of <span class="greek">ἕξις</span> (<i>hexis</i>) as <span class="greek">τάξις</span> (<i>taxis</i>), the &lsquo;being-apportioned&rsquo; of that which comes up for a decision. Apportioning is a matter that arises from the resolution itself: the mean is, here, not a fixed property, but a way of comporting oneself in the world&rdquo; (p. 126). Aristotle designates <span class="greek">ἀρετή</span> (<i>aretē</i>) as <span class="greek">τοῦ μέσου στοχαστική</span> (<i>tou mesou stochastikē</i>): &ldquo;it &lsquo;aims at&rsquo; what maintains the mean, as being-oriented to the right apportioning, the right seizing of the moment. <span class="greek">Μεσότης: ἕξις βλέπουσα</span> (<i>mesotēs: hexis blepousa</i>), &lsquo;the being-composed that <i>sees</i>&rsquo; and is open to the situation&rdquo; (p. 126; cit. <i>NE</i> Β 5, 1106b 9; 1106b 28).</p>
+
+<h3>Αἴσθησις (<i>aisthēsis</i>) as Μεσότης: De Anima Β 11</h3>
+
+<p>In Book 2, Chapter 11 of <i>De Anima</i>, in his interpretation of <span class="greek">αἴσθησις</span> (<i>aisthēsis</i>, &ldquo;perception&rdquo;), Aristotle characterizes <span class="greek">αἴσθησις</span> (<i>aisthēsis</i>) itself as a <span class="greek">μεσότης</span> (<i>mesotēs</i>)&mdash;&ldquo;perception as a <span class="greek">μέσον</span> (<i>meson</i>) with the character of <span class="greek">κριτικόν</span> (<i>kritikon</i>), of the &lsquo;ability-to-separate&rsquo; one thing from another&rdquo; (p. 126; cit. <i>De an.</i> Β 11, 424a 4). This conception arises from the fact that Aristotle recognizes that the seeing of colors is always separating one definite color from another. The ability-to-see &ldquo;must be a possibility that is not related to <i>one</i> object in its vicinity, but a possibility that can see both ends, dark-light, and therefore the entire range of the color manifold. It is a definite being-positioned toward possible objects, which is a <span class="greek">δύναμις</span> (<i>dynamis</i>) in the sense of <span class="greek">κριτική</span> (<i>kritikē</i>)&rdquo; (p. 126).</p>
+
+<hr>
+
+<h2>§17b–γ. The Orientation of Ἀρετή (<i>aretē</i>) toward the Moment (Καιρός)</h2>
+<div class="pages">pp. 127–129</div>
+
+<h3>The Definition of Ἀρετή (<i>aretē</i>): NE Β 6, 1106b 36</h3>
+
+<blockquote><span class="greek">&ldquo;ἔστιν ἄρα ἡ ἀρετὴ ἕξις προαιρετική, ἐν μεσότητι οὖσα τῇ πρὸς ἡμᾶς, ὡρισμένῃ λόγῳ καὶ ὡς ἂν ὁ φρόνιμος ὁρίσειε&rdquo;</span> (<i>NE</i> Β 6, 1106b 36)</blockquote>
+
+<p>Translation: &ldquo;<span class="greek">Ἀρετή</span> (<i>aretē</i>) is a being-composed in the ability-to-resolve-oneself, in terms of the moment, as the <span class="greek">φρόνιμος</span> (<i>phronimos</i>, &lsquo;the prudent one&rsquo;) would define it.&rdquo; In this sense, &ldquo;<span class="greek">ἀρετή</span> (<i>aretē</i>) as <span class="greek">μεσότης</span> (<i>mesotēs</i>) is such that it is &lsquo;delimited,&rsquo; that it delimits itself &lsquo;through speaking&rsquo; with the world in the mode of a <i>deliberating in advance of the moment</i>, through the how of talking through the circumstances, so that in this delimitation the right apportionment of the moment results&rdquo; (p. 127).</p>
+
+<p>On the basis of <span class="greek">μεσότης</span> (<i>mesotēs</i>) and <span class="greek">καιρός</span> (<i>kairos</i>), thus understood, &ldquo;it can be made clear that it is a mistake to conceive of <span class="greek">ἀρετή</span> (<i>aretē</i>) as completedness, as this contradicts the sense of <span class="greek">ἀρετή</span> (<i>aretē</i>)&rdquo; (p. 127).</p>
+
+<h3>The Two-fold Differentiation of Ἀρετή: Διανοητική / Ἠθική</h3>
+
+<p>What does it genuinely mean to come into a determinate <span class="greek">ἕξις</span> (<i>hexis</i>)? <span class="greek">Ἕξεις</span> are not properties brought along with us by nature; rather, they have a determinate <span class="greek">γένεσις</span> (<i>genesis</i>): &ldquo;<span class="greek">δι᾽ ἔθους</span> (<i>di&rsquo; ethous</i>, &lsquo;through habit&rsquo;).&rdquo; &ldquo;<i>Habituation</i> is the path on which we come to <span class="greek">ἕξις</span> (<i>hexis</i>), to <span class="greek">ἀρετή</span> (<i>aretē</i>)&rdquo; (p. 127). Aristotle, at the beginning of <i>NE</i> Book 2, draws the essential distinction within the manifoldness of the <span class="greek">ἀρεταί</span> (<i>aretai</i>):</p>
+
+<blockquote><span class="greek">&ldquo;ἡ μὲν διανοητικὴ [ἀρετή] τὸ πλεῖον ἐκ διδασκαλίας ἔχει [&hellip;] διόπερ ἐμπειρίας δεῖται καὶ χρόνου&rdquo;</span> (<i>NE</i> Β 1, 1103a 15)</blockquote>
+
+<p>Translation: &ldquo;Those possibilities of comportment that also cultivate <span class="greek">διανοεῖν</span> (<i>dianoein</i>, &lsquo;thinking-through&rsquo;) have that which is more on the basis of communication; therefore, they require experience and time. <span class="greek">ἡ δὲ ἠθικὴ ἐξ ἔθους περιγίνεται</span>: <i>On the other hand, being-composed in a determinate passion is made our own through habituation</i>&rdquo; (<i>NE</i> Β 1, 1103a 17).</p>
+
+<h3>Ἐθίζειν (<i>ethizein</i>) as &ldquo;Bringing-Oneself-Into-a-Determinate-Possibility&rdquo;</h3>
+
+<blockquote>&ldquo;<span class="greek">Ἐθίζειν</span> (<i>ethizein</i>): <strong>bringing-oneself-into-a-determinate-possibility by way of frequently-undergoing-it</strong>. The possibility is thus, in each case, a determinate possibility, for example, in a <span class="greek">ποίησις</span> (<i>poiēsis</i>): the appropriation of the possibility of a completion, technique. The possibility for <span class="greek">πρᾶξις</span> (<i>praxis</i>), <span class="greek">πρᾶξις</span> not taken in the wide sense of &lsquo;action&rsquo; as such, but as determination of the being of human beings.&rdquo; (p. 127)</blockquote>
+
+<h3>Γραμματικός (<i>grammatikos</i>): The Test Case</h3>
+
+<p>Aristotle speaks of the <span class="greek">γραμματικός</span> (<i>grammatikos</i>, &ldquo;writer/grammarian&rdquo;) at <i>NE</i> Β 4, 1105a 22. He says: one can write correctly, at first by chance or with outside help. But whoever writes by chance cannot simply write. He must write in the way demanded by <span class="greek">τέχνη</span> (<i>technē</i>); he must write, not by chance, but according to a prescription; and without outside help, he must be able to write from out of himself. &ldquo;Through practice, by frequently-undergoing, it comes about that being-oriented puts the prescription further and further out of play. Training has the precise sense of reducing deliberation insofar as it is through training that the completedness of attaining a <i>result</i> comes about. With <span class="greek">τέχνη</span> (<i>technē</i>), the <span class="greek">ἔργον</span> (<i>ergon</i>) is decisive&rdquo; (p. 127).</p>
+
+<h3>Πρᾶξις vs. Τέχνη: The How vs. the Result</h3>
+
+<blockquote>&ldquo;In the case of an <i>action</i>&mdash;in the narrow sense in which it is opposed to <span class="greek">ποίησις</span> (<i>poiēsis</i>)&mdash;it does not, according to its sense, depend on the action simply ending, on a result coming about; instead, <span class="greek">προαίρεσις</span> (<i>proairesis</i>) is decisive, the manner and mode of &lsquo;resolving oneself.&rsquo; It belongs to action that it arise in each case out of a <i>resolution</i>. Action itself has its <span class="greek">τέλος</span> (<i>telos</i>) in the <span class="greek">καιρός</span> (<i>kairos</i>). Therefore, it belongs to action that it <i>proceed by way of deliberating and as such be fulfilled</i>. In <span class="greek">ὀρθότης</span> (<i>orthotēs</i>, &lsquo;correctness&rsquo;), the action is fulfilled in the &lsquo;correctness&rsquo; of deliberation. With training, the possibility of action is put out of play, deliberating and resolving, the how of action&mdash;precisely that on which it depends. Therefore, to be able to be brought into the possibility of right action does <i>not</i> mean to appropriate a completedness.&rdquo; (pp. 127–128)</blockquote>
+
+<h3>Repetition vs. Routine</h3>
+
+<blockquote>&ldquo;<strong>Repetition does not mean the bringing-into-play of a settled completedness, but rather <i>acting anew in every moment on the basis of the corresponding resolution</i>.</strong>&rdquo; (p. 128)</blockquote>
+
+<blockquote>&ldquo;Cultivating <span class="greek">ἕξις</span> (<i>hexis</i>) <strong>never depends on an operation, a routine</strong>. <i>In an operation, the moment is destroyed.</i> Every completedness, as settled routine, breaks down in the face of the moment. Appropriation and cultivation of <span class="greek">ἕξις</span> (<i>hexis</i>) through habituation means nothing other than <i>correct repetition</i>.&rdquo; (p. 128)</blockquote>
+
+<h3>Πρᾶξις Demands Constant Re-appropriation</h3>
+
+<p>Aristotle sharply distinguishes <span class="greek">ἀρετή</span> (<i>aretē</i>) and action from <span class="greek">τέχνη</span> (<i>technē</i>) in <i>NE</i> Β 3, although he initially groups them together when demarcating them in opposition to <span class="greek">ἐπιστήμη</span> (<i>epistēmē</i>, &ldquo;science&rdquo;). To appropriation <span class="greek">ἐκ διδασκαλίας</span> (<i>ek didaskalias</i>, &ldquo;through teaching&rdquo;) belong <span class="greek">ἐμπειρία</span> (<i>empeiria</i>, &ldquo;experience&rdquo;) and <span class="greek">χρόνος</span> (<i>chronos</i>, &ldquo;time&rdquo;) (<i>NE</i> Β 1, 1103a 15). For Aristotle, &ldquo;science,&rdquo; <span class="greek">ἐπιστήμη</span> (<i>epistēmē</i>), &ldquo;is a determinate <span class="greek">ἕξις</span> (<i>hexis</i>), a determinate being-positioned toward the matter that is there as such, in such a way that I have information about it. This <span class="greek">ἕξις</span> (<i>hexis</i>) carries in itself a measure for concrete knowing&rdquo; (p. 128). According to its content, this concrete knowing &ldquo;can only be brought forward little by little. It is dependent upon the extent of knowing. It requires in itself a fully determinate duration.&rdquo; By contrast, <span class="greek">πράττειν</span> (<i>prattein</i>), &ldquo;action,&rdquo; as well as <span class="greek">ποιεῖν</span> (<i>poiein</i>), &ldquo;completing,&rdquo; must be cultivated as such in <span class="greek">πρᾶξις</span> (<i>praxis</i>) and <span class="greek">τέχνη</span> (<i>technē</i>). They do not take up a definite material, but rather <i>cultivate the how of dealing itself</i>.</p>
+
+<blockquote>&ldquo;The how is only appropriated in such a way that the human being enables himself <i>to be composed at each moment</i>; not routine but holding-oneself-open, <span class="greek">δύναμις</span> (<i>dynamis</i>) in the <span class="greek">μεσότης</span> (<i>mesotēs</i>). All of human living cannot be there constantly. The possibilities that a human existence has at its disposal are not constantly there within the stretching of being-there; it loses itself. The possibility deteriorates, and being-there requires ever new and constantly repeated appropriation.&rdquo; (p. 128)</blockquote>
+
+<h3>The Always (Ἀεί) of Being-There as the Frequently (Πολλάκις) of Repetition</h3>
+
+<p>The peculiarity of that upon which it depends in repetition as a determinate practice can be characterized by the fact that all action, and all non-action, is oriented toward the <span class="greek">μεσότης</span> (<i>mesotēs</i>). &ldquo;Aristotle emphasizes, again and again, that the <span class="greek">μέσον</span> (<i>meson</i>) is hard to find and easy to miss; errors are easy. To fly off the handle is easy, but to be angry at the right moment is difficult. This requires the possibility of being able to seize the moment as a whole. Therefore, acting seldom occurs on the basis of the <span class="greek">μεσότης</span> (<i>mesotēs</i>) and in the <span class="greek">μεσότης</span> (<i>mesotēs</i>)&rdquo; (p. 128; cit. <i>NE</i> Β 9, 1109a 26).</p>
+
+<h3>The Closing Formulation: Historicality</h3>
+
+<blockquote>&ldquo;The whole question of self-habituating must be seen from the look of the possibility on which appropriation depends. It depends on being-resolved at each moment, and on the appropriating of the moment. Aristotle&rsquo;s saying &lsquo;on the basis of acting-frequently&rsquo; [<span class="greek">ἐκ τοῦ πολλάκις πράττειν</span>, <i>ek tou pollakis prattein</i>; <i>NE</i> Β 3, 1105b 4] is also to be understood in this way. Here, this acting-frequently does not mean often in the sense of a duration, such that it would have ultimately become routine after a determinate amount of time. Rather, it is related to <span class="greek">πρᾶξις</span> (<i>praxis</i>) as <span class="greek">προαίρεσις</span> (<i>proairesis</i>): continual-repeating of <span class="greek">προαίρεσις</span> (<i>proairesis</i>). The frequently is, precisely, that which characterizes the temporality of being-there. Aristotle cannot say <span class="greek">ἀεί</span> (<i>aei</i>, &lsquo;always&rsquo;) insofar as human being-there does not so comport itself constantly and always. It can constantly be otherwise. <strong>The <i>always</i> of a being like being-there is the <i>frequently of repetition</i>. It is the being-there of human beings, as determined by <i>historicality</i>, to see entirely different time-contexts in relation to which the remaining time-determinations break down.</strong>&rdquo; (p. 129)</blockquote>
+
+<p>This closing sentence is the philological point of origin for the existential analysis of historicality (<i>Geschichtlichkeit</i>) in <i>Being and Time</i> §72–77.</p>
+
+<hr>
+
+<h2>Synthetic Reading of §17</h2>
+
+<h3>Architectural Position</h3>
+
+<p>§17 is the systematic hinge of Chapter 3. §13–14 established <span class="greek">πίστις</span> (<i>pistis</i>, &ldquo;credence&rdquo;) and the rhetorical analytic; §15–16 located <span class="greek">ἦθος</span> (<i>ēthos</i>) and <span class="greek">πάθος</span> (<i>pathos</i>) as <span class="greek">πίστεις</span>; §17 now grounds <span class="greek">πάθος</span> (<i>pathos</i>) ontologically by working through its co-originary structure, <span class="greek">ἕξις</span> (<i>hexis</i>). §18 will then return to <span class="greek">πάθος</span> (<i>pathos</i>) with the &ldquo;hermeneutic clue&rdquo; that §17 has provided. The key formula linking the two: <strong>&ldquo;<span class="greek">Ἕξις</span> (<i>hexis</i>) is nothing other than a how of <span class="greek">πάθος</span> (<i>pathos</i>)&rdquo;</strong> (p. 125).</p>
+
+<h3>Six Theses Heidegger Establishes</h3>
+
+<ol>
+  <li><strong><span class="greek">Ἕξις</span> (<i>hexis</i>) is a fundamental concept of being</strong>, derived from <span class="greek">ἔχειν</span> (<i>echein</i>) as a category. The four senses of <span class="greek">ἔχειν</span> (<i>echein</i>) (<i>Met.</i> Δ23) all express <i>being after a definite being-possibility</i>. (§17a)</li>
+  <li><strong><span class="greek">Ὕλη</span> (<i>hylē</i>) is not indeterminate &ldquo;material&rdquo;</strong> but a <i>positive mode of being-there</i>: being-in-preparedness (<span class="greek">δεκτικόν</span>, <i>dektikon</i>). (§17a)</li>
+  <li><strong><span class="greek">Ἕξις</span> (<i>hexis</i>) is the determination of the genuineness of being-there in a moment of being-composed</strong>; it carries the orientation toward <span class="greek">καιρός</span> (<i>kairos</i>) and is intrinsically related to its negation in <span class="greek">πάθος</span> (<i>pathos</i>). (§17a)</li>
+  <li><strong><span class="greek">Ἀρετή</span> (<i>aretē</i>) is not a property but a mode of being-there</strong>, characterized by temporality, with its <span class="greek">γένεσις</span> (<i>genesis</i>) only in being-there itself&mdash;not deliverable by <span class="greek">τέχνη</span> (<i>technē</i>) or <span class="greek">παραγγελία</span> (<i>paraggelia</i>). (§17b–α)</li>
+  <li><strong><span class="greek">Μεσότης</span> (<i>mesotēs</i>) is not mediocrity</strong> but the structural relation <span class="greek">πρὸς ἡμᾶς</span> (<i>pros hēmas</i>); for human being there is no mean <span class="greek">κατ᾽ αὐτὸ</span> (<i>kat&rsquo; auto</i>); the mean is a <i>seizing of the moment</i>, an <span class="greek">ἕξις βλέπουσα</span> (<i>hexis blepousa</i>, &ldquo;seeing being-composed&rdquo;). (§17b–β)</li>
+  <li><strong>The always of being-there is the frequently of repetition</strong>; <span class="greek">ἀρετή</span> (<i>aretē</i>) demands acting-anew at each moment, not routine; the temporal character of being-there is <i>historicality</i>. (§17b–γ)</li>
+</ol>
+
+<h3>Connections to <i>Being and Time</i> (1927)</h3>
+
+<ul>
+  <li><strong><span class="greek">Ἕξις</span> &rarr; Befindlichkeit</strong> (BT §29): &ldquo;the determination of the genuineness of being-there in a moment of being-composed&rdquo; (p. 119) is the proto-formulation of attunement.</li>
+  <li><strong>The four basic aspects &rarr; Sorge / Jemeinigkeit</strong> (BT §9, §41): being-there as concern hidden in the concept of having; particularity at the moment.</li>
+  <li><strong><span class="greek">Καιρός</span> &rarr; Augenblick</strong> (BT §68): &ldquo;in an operation, the moment is destroyed&rdquo; (p. 128) is the 1924 form of the contrast between authentic moment-of-vision and inauthentic now.</li>
+  <li><strong>The frequently of repetition &rarr; Wiederholung / Geschichtlichkeit</strong> (BT §74, §72–77): the closing formulation on historicality (p. 129) is a direct anticipation.</li>
+  <li><strong><span class="greek">Πρᾶξις</span> as existence</strong> (p. 119): explicit equivalence; <i>Existenz</i> as &ldquo;the how of being-in-the-world.&rdquo;</li>
+</ul>
+
+<h3>Two Tensions Worth Flagging</h3>
+
+<ol>
+  <li><strong>Circularity in the genesis of <span class="greek">ἀρετή</span> (<i>aretē</i>)</strong>: how does the initial <span class="greek">ἕξις</span> (<i>hexis</i>) become possible if <span class="greek">ἕξις</span> (<i>hexis</i>) requires prior <span class="greek">ἕξις</span> (<i>hexis</i>)? Aristotle&rsquo;s <span class="greek">τέχνη</span>-analogy is acknowledged as inadequate by Heidegger, but the circle is left unresolved.</li>
+  <li><strong>Repetition vs. routine</strong>: Heidegger insists that <i>genesis</i> is &ldquo;acting anew in every moment,&rdquo; not the building of routine&mdash;yet Aristotle&rsquo;s <span class="greek">ἐθίζειν</span> (<i>ethizein</i>) and the <span class="greek">γραμματικός</span> (<i>grammatikos</i>) example seem to involve precisely the kind of routine-building Heidegger rejects. The tension between Heidegger&rsquo;s existential reading and Aristotle&rsquo;s practical pedagogy persists.</li>
+</ol>
+
+<hr>
+
+<h2>Source Inventory</h2>
+
+<table>
+  <tr><th>Source</th><th>Path</th></tr>
+  <tr><td>Primary text (book pp. 116–128; PDF pp. 131–143)</td><td class="small"><code>corpus/rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf</code></td></tr>
+  <tr><td>Phase 2 structured analysis</td><td class="small"><code>corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/phase2-u-fp3c.md</code></td></tr>
+  <tr><td>Structured manifest (§17–§18)</td><td class="small"><code>corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-structured/u-fp3c.json</code></td></tr>
+</table>
+
+<p class="small"><strong>Aristotelian primary texts cited in §17 (per Heidegger&rsquo;s footnotes 181–231):</strong> <i>Rhet.</i> Β 1, 1378a 24; <i>Rhet.</i> Β 4, 1382a 21; <i>Rhet.</i> Β 4, 1105b 20; <i>Met.</i> Δ 19, 1022b 1–2; <i>Met.</i> Δ 20, 1022b 4–10; <i>Met.</i> Δ 23, 1023a 8–23; <i>Phys.</i> Ε 3, 226b 18; <i>NE</i> Β 1, 1103a 15–30; <i>NE</i> Β 2, 1104a 7; <i>NE</i> Β 3, 1105a 17–b 5; <i>NE</i> Β 5, 1105b 19; <i>NE</i> Β 5, 1106a 13–b 28; <i>NE</i> Β 6, 1106b 36; <i>NE</i> Β 9, 1109a 26; <i>De an.</i> Β 11, 424a 4.</p>
+
+</body>
+</html>

@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Heidegger, GA 18 — §18. Πάθος. A Detailed Analysis</title>
+<style>
+  @page {
+    size: Letter;
+    margin: 0.85in 0.95in 0.95in 0.95in;
+    @bottom-center {
+      content: counter(page) " / " counter(pages);
+      font-family: "EB Garamond", "Linux Libertine O", "Times New Roman", serif;
+      font-size: 9.5pt;
+      color: #555;
+    }
+    @top-right {
+      content: "§18. Πάθος — Heidegger, GA 18";
+      font-family: "EB Garamond", "Linux Libertine O", "Times New Roman", serif;
+      font-size: 9pt;
+      color: #777;
+      font-style: italic;
+    }
+  }
+  @page :first {
+    @top-right { content: ""; }
+  }
+  html { font-family: "EB Garamond", "Linux Libertine O", "Times New Roman", "DejaVu Serif", serif; }
+  body {
+    font-size: 11pt;
+    line-height: 1.42;
+    color: #111;
+    text-align: justify;
+    hyphens: auto;
+  }
+  h1 {
+    font-size: 17pt;
+    text-align: center;
+    margin: 0 0 0.15em 0;
+    line-height: 1.2;
+    font-weight: 600;
+  }
+  h1.book {
+    font-size: 13.5pt;
+    font-style: italic;
+    font-weight: 400;
+    margin-bottom: 0.2em;
+  }
+  h2 {
+    font-size: 13.5pt;
+    margin: 1.6em 0 0.45em 0;
+    border-bottom: 1px solid #888;
+    padding-bottom: 0.15em;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 12pt;
+    margin: 1.2em 0 0.35em 0;
+    page-break-after: avoid;
+  }
+  h4 {
+    font-size: 11pt;
+    margin: 0.95em 0 0.25em 0;
+    font-style: italic;
+    font-weight: 600;
+    page-break-after: avoid;
+  }
+  h5 {
+    font-size: 10.5pt;
+    margin: 0.7em 0 0.2em 0;
+    font-weight: 600;
+    page-break-after: avoid;
+  }
+  p { margin: 0.35em 0 0.55em 0; }
+  blockquote {
+    margin: 0.6em 1.3em 0.6em 1.3em;
+    padding: 0.15em 0.9em;
+    border-left: 2.5px solid #888;
+    font-size: 10.5pt;
+    color: #222;
+    line-height: 1.38;
+  }
+  blockquote p { margin: 0.3em 0; }
+  em, i { font-style: italic; }
+  strong, b { font-weight: 600; }
+  .greek { font-family: "EB Garamond", "GFS Didot", "Linux Libertine O", "Times New Roman", "DejaVu Serif", serif; }
+  .titlebox {
+    text-align: center;
+    margin-bottom: 1.4em;
+    padding-bottom: 0.7em;
+    border-bottom: 2px double #555;
+  }
+  .titlebox .meta {
+    font-size: 10.5pt;
+    color: #444;
+    margin-top: 0.4em;
+    font-style: italic;
+  }
+  .pages {
+    font-size: 10pt;
+    color: #555;
+    font-style: italic;
+    text-align: center;
+    margin-top: -0.2em;
+    margin-bottom: 0.9em;
+  }
+  .citation {
+    font-size: 9.8pt;
+    color: #333;
+  }
+  table {
+    border-collapse: collapse;
+    margin: 0.6em auto;
+    font-size: 10.3pt;
+    width: 95%;
+  }
+  th, td {
+    border: 1px solid #888;
+    padding: 5px 9px;
+    vertical-align: top;
+    text-align: left;
+  }
+  th { background: #efefef; font-weight: 600; }
+  ul, ol { margin: 0.3em 0 0.55em 1.6em; padding: 0; }
+  li { margin: 0.18em 0; }
+  hr {
+    border: none;
+    border-top: 1px solid #aaa;
+    margin: 1.4em 0;
+  }
+  .small { font-size: 9.8pt; }
+  .nobreak { page-break-inside: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  blockquote, table { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<div class="titlebox">
+  <h1 class="book">Martin Heidegger, <i>Basic Concepts of Aristotelian Philosophy</i></h1>
+  <div class="meta">GA 18 · Marburg Lectures, Summer Semester 1924 · trans. Metcalf &amp; Tanzer (Indiana UP, 2009)</div>
+  <h1 style="margin-top: 0.7em;">§18. Πάθος.</h1>
+  <h1 style="font-size: 14pt; font-weight: 400; font-style: italic;">Its General Meanings and Its Role in Human Being-There</h1>
+  <div class="meta">(<i>Metaphysics</i> Δ21, <i>De Anima</i> Α1)</div>
+  <div class="pages">Book pp. 129–139 · PDF pp. 144–154</div>
+</div>
+
+<h2>Orienting Thesis of §18</h2>
+
+<p>§18 is the systematic centerpiece of Chapter 3 of the First Part. Where §17 unfolded <span class="greek">ἕξις</span> (<i>hexis</i>, &ldquo;having,&rdquo; &ldquo;composure&rdquo;) as a fundamental concept of being, §18 turns to <span class="greek">πάθος</span> (<i>pathos</i>, &ldquo;being-taken,&rdquo; &ldquo;being-affected&rdquo;) and shows that the two are co-originary structures of being-there (<i>Da-sein</i>). Heidegger&rsquo;s overarching claim: <span class="greek">πάθος</span> (<i>pathos</i>) is <strong>not</strong> a &ldquo;psychic experience,&rdquo; not an &ldquo;affect&rdquo; lodged inside consciousness, and not a &ldquo;bodily symptom&rdquo; attached to a soul. It is a <i>determination of the being of living things</i>&mdash;specifically, a way in which human being-there is <i>taken</i> by the world as the wherein of its own being. Read against Aristotle&rsquo;s <i>Metaphysics</i> Δ21 and <i>De Anima</i> Α1, <span class="greek">πάθος</span> (<i>pathos</i>) discloses that the human being is to be understood as a <i>bodily being-in-the-world</i> (<span class="greek">σῶμα</span>, <i>sōma</i>, &ldquo;body&rdquo; / corporeality)&mdash;and this discovery overturns the entire Cartesian distinction between <i>res cogitans</i> (thinking thing) and <i>res extensa</i> (extended thing) which, Heidegger insists, is <i>not</i> found in Aristotle.</p>
+
+<hr>
+
+<h2>§18a. Ἕξις (<i>hexis</i>) as Clue to the Conception of the Being-Structure of πάθος (<i>pathos</i>)</h2>
+<div class="pages">pp. 129–131</div>
+
+<h3>The Methodological Move</h3>
+
+<p>Heidegger transitions from §17 by carrying forward two results: (1) <span class="greek">ἕξις</span> (<i>hexis</i>, &ldquo;composure,&rdquo; &ldquo;being-composed-as-to&rdquo;) is <i>not</i> completeness in the sense of routine; and (2) <span class="greek">ἕξις</span> (<i>hexis</i>) is intrinsically related to its negation&mdash;to being-brought-out-of-composure, which is precisely <span class="greek">πάθος</span> (<i>pathos</i>). Because <span class="greek">ἕξις</span> (<i>hexis</i>) is the more accessible structure (we can read it through <span class="greek">ἀρετή</span> [<i>aretē</i>, &ldquo;virtue,&rdquo; &ldquo;excellence&rdquo;] and the analyses of <i>Nicomachean Ethics</i> B), it serves as a <strong>hermeneutic clue</strong> to the more elusive being-structure of <span class="greek">πάθος</span> (<i>pathos</i>). The path is deliberately roundabout: we approach <span class="greek">πάθος</span> (<i>pathos</i>) only after <span class="greek">ἕξις</span> (<i>hexis</i>) has shown us what the <i>how</i> of being-composed looks like.</p>
+
+<h3>What πάθη (<i>pathē</i>) Are NOT</h3>
+
+<p>Heidegger executes a sharp negative determination&mdash;three rejections that frame the entire section:</p>
+<ol>
+  <li><strong>Not &ldquo;spiritual states&rdquo;</strong> (<i>geistige Zustände</i>): <span class="greek">πάθη</span> (<i>pathē</i>) are not interior episodes of a soul thought of as an inward chamber.</li>
+  <li><strong>Not &ldquo;bodily symptoms&rdquo;</strong>: they are not somatic accompaniments to mental events.</li>
+  <li><strong>Not the dualistic compound of the two</strong>: the very framing&mdash;psychic state plus bodily symptom&mdash;already presupposes a Cartesian split that Aristotle does not make.</li>
+</ol>
+
+<p>Instead, <span class="greek">πάθη</span> (<i>pathē</i>) &ldquo;characterize the entire human being in its <i>disposition in the world</i>&rdquo; (p. 129). The German <i>Befindlichkeit</i>&mdash;Heidegger&rsquo;s later term in <i>Being and Time</i> §29&mdash;is already in view here: <span class="greek">πάθη</span> (<i>pathē</i>) are how the whole being-there finds itself in its world.</p>
+
+<h3>The <i>De Anima</i> Reframing</h3>
+
+<p>Heidegger reads <i>De Anima</i> (<span class="greek">Περὶ ψυχῆς</span>, <i>Peri psychēs</i>, &ldquo;On the Soul&rdquo;) not as a psychology but as ontology:</p>
+<blockquote>&ldquo;The entire human being is the primary object dealt with in the Aristotelian psychology of <i>De Anima</i>, Book 1. The entire human being must be understood with regard to its being as <span class="greek">ζωή</span> (<i>zōē</i>, &lsquo;life&rsquo;), as being-in-a-world&mdash;thus grasped as a genuine topic not of psychology but of the <i>discussion of the being of this being</i>.&rdquo; (p. 129)</blockquote>
+
+<h3>Φόβος (<i>phobos</i>, &ldquo;fear&rdquo;) as Test Case</h3>
+
+<p>Heidegger introduces fear (<span class="greek">φόβος</span>, <i>phobos</i>) here as the leading example because Aristotle&rsquo;s analysis of fear is so broad that Aristotle &ldquo;becomes attentive to the fact that there is fear even if nothing is there that would be the direct inducement of a fear&mdash;<i>fear in the face of the nothing</i>&rdquo; (p. 129). This is a striking proto-formulation of the analytic that will return as <i>Angst</i> (anxiety) in <i>Being and Time</i> §40. From this, Heidegger draws a programmatic conclusion: &ldquo;the way the Greeks view being as genuinely in the <i>present</i>, being as cared for in the mode of <i>presentness</i>, becomes intelligible&rdquo; (p. 129)&mdash;i.e., the Greek ontology of presence (<i>Anwesenheit</i>) is itself rooted in the structure of disposed being-in-the-world which <span class="greek">πάθος</span> (<i>pathos</i>) discloses.</p>
+
+<h3>The ἀρετή (<i>aretē</i>) Bridge</h3>
+
+<p>Before he leaves §18a, Heidegger reactivates the <i>Nicomachean Ethics</i> B 6 definition: <span class="greek">ἀρετή</span> (<i>aretē</i>) is a <span class="greek">ἕξις προαιρετική</span> (<i>hexis proairetikē</i>, &ldquo;a composure-of-resolve&rdquo;), a <span class="greek">μεσότης</span> (<i>mesotēs</i>, &ldquo;mean&rdquo;) &ldquo;as the <span class="greek">φρόνιμος</span> (<i>phronimos</i>, &lsquo;the prudent one&rsquo;) would resolve it.&rdquo; The point: <span class="greek">ἕξις</span> (<i>hexis</i>) in relation to the <span class="greek">πάθη</span> (<i>pathē</i>) is &ldquo;to be our clue to the more precise conception of the being-structure of the <span class="greek">πάθη</span> themselves&rdquo; (p. 131). What <span class="greek">ἀρετή</span> (<i>aretē</i>) does to <span class="greek">πάθη</span> (<i>pathē</i>)&mdash;namely, hold them in the moment (<span class="greek">καιρός</span>, <i>kairos</i>, &ldquo;the right moment&rdquo;)&mdash;already shows that <span class="greek">πάθη</span> (<i>pathē</i>) are precisely <i>that which is held</i> in being-composed.</p>
+
+<hr>
+
+<h2>§18b. The Four General Meanings of πάθος (<i>pathos</i>)</h2>
+<div class="pages">(<i>Metaphysics</i> Δ21, 1022b 15–21) · pp. 131–132</div>
+
+<p>Heidegger walks through Aristotle&rsquo;s four senses of <span class="greek">πάθος</span> (<i>pathos</i>) in <i>Metaphysics</i> Δ Chapter 21, in the order they appear, and shows that they form a <i>progressive narrowing</i> from the broadest ontological sense to the specifically harmful.</p>
+
+<h3>1. πάθος as ποιότης κάθ&rsquo; ἣν ἀλλοιοῦσθαι ἐνδέχεται</h3>
+<p class="small"><i>(poiotēs kath&rsquo; hēn alloiousthai endechetai, &ldquo;a being-constituted regarding which alteration is possible&rdquo;)</i></p>
+
+<blockquote><span class="greek">&ldquo;πάθος λέγεται ἕνα μὲν τρόπον ποιότης καθ᾽ ἣν ἀλλοιοῦσθαι ἐνδέχεται&rdquo;</span> (<i>Met.</i> Δ21, 1022b 15)</blockquote>
+
+<p>Translation: &ldquo;<span class="greek">πάθος</span> is said in one way as a being-constituted, regarding which something underlies alteration.&rdquo; Examples: white&ndash;black, sweet&ndash;bitter, heavy&ndash;light. The crucial phrase is <i>not just</i> &ldquo;any property&rdquo; but a property &ldquo;characterized in itself such that it offers the possibility of what was thus constituted being reversed.&rdquo; This is the <i>broadest</i> sense: <span class="greek">πάθος</span> (<i>pathos</i>) here means <i>alterability as such</i>&mdash;being-such-that-one-can-become-otherwise.</p>
+
+<p>Heidegger&rsquo;s key gloss: &ldquo;Something can <i>happen</i> to such a being.&rdquo; The German <i>geschehen</i> (&ldquo;to happen&rdquo;) here is the precise rendering of <span class="greek">πάσχειν</span> (<i>paschein</i>, &ldquo;to undergo&rdquo;). And&mdash;decisively&mdash;&ldquo;to happen&rdquo; does not mean <i>passive</i>; it means <i>something occurs for me</i> (<i>es widerfährt mir</i>). The first sense of <span class="greek">πάθος</span> (<i>pathos</i>) is therefore: <strong>possibility of <span class="greek">ἀλλοίωσις</span> (<i>alloiōsis</i>, &ldquo;becoming-otherwise&rdquo;)</strong>; &ldquo;<span class="greek">πάθος</span> is a determination of beings with the character of alterability&rdquo; (p. 131).</p>
+
+<h3>2. πάθος as ἐνέργειαι καὶ ἀλλοιώσεις ἤδη</h3>
+<p class="small"><i>(energeiai kai alloiōseis ēdē, &ldquo;actualizations and already-occurring alterations&rdquo;)</i></p>
+
+<blockquote><span class="greek">&ldquo;ἕνα δὲ αἱ τούτων ἐνέργειαι καὶ ἀλλοιώσεις ἤδη&rdquo;</span> (<i>Met.</i> Δ21, 1022b 18)</blockquote>
+
+<p>Translation: &ldquo;another sense [of <span class="greek">πάθος</span>]: the actualization and already-occurring alterations of those (constitutions).&rdquo; The second sense narrows from <i>possibility</i> to <i>actuality</i>: <span class="greek">πάθος</span> (<i>pathos</i>) is now the &ldquo;being-there of such a shifting occurring-to-one.&rdquo; Where (1) gave us alterability-as-possibility, (2) gives us the <i>event</i> of alteration as <span class="greek">ἐνέργεια</span> (<i>energeia</i>, &ldquo;actuality,&rdquo; &ldquo;being-at-work&rdquo;). Beings of this kind are characterized by carrying within themselves the possibility of something occurring to them&mdash;perhaps in relation to a color (Heidegger&rsquo;s example tracking Aristotle).</p>
+
+<h3>3. πάθος as βλαβεραὶ ἀλλοιώσεις καὶ κινήσεις, καὶ μάλιστα αἱ λυπηραὶ βλάβαι</h3>
+<p class="small"><i>(blaberai alloiōseis kai kinēseis, kai malista hai lypērai blabai, &ldquo;harmful alterations and motions, and especially harmful pains&rdquo;)</i></p>
+
+<blockquote><span class="greek">&ldquo;ἔτι ἐπὶ τούτων μᾶλλον ἢ βλαβεραὶ ἀλλοιώσεις καὶ κινήσεις, καὶ μάλιστα αἱ λυπηραὶ βλάβαι&rdquo;</span> (<i>Met.</i> Δ21, 1022b 19)</blockquote>
+
+<p>Translation: still further: harmful alterations and motions, and most of all painful damages. The third sense narrows again&mdash;now to <i>the unpleasant</i> (<span class="greek">τὸ βλαβερόν</span>, <i>to blaberon</i>, &ldquo;the harmful&rdquo;): &ldquo;<span class="greek">πάθος</span> as the occurring-to-one that has the character of the unpleasant.&rdquo; Aristotle restricts the meaning further: harmfulness is referred most of all to <span class="greek">λύπη</span> (<i>lypē</i>, &ldquo;pain&rdquo;). Heidegger&rsquo;s translation: &ldquo;my attunement to this occurring affects me&rdquo;&mdash;a <i>becoming-otherwise in the sense of becoming-depressed</i>. The word &ldquo;attunement&rdquo; (<i>Gestimmtheit</i>) is again the proto-<i>Stimmung</i> of <i>Being and Time</i>.</p>
+
+<h3>4. πάθος as τὰ μεγέθη τῶν συμφορῶν καὶ λυπηρῶν</h3>
+<p class="small"><i>(ta megethē tōn sumphorōn kai lypērōn, &ldquo;the magnitudes of misfortunes and pains&rdquo;)</i></p>
+
+<blockquote><span class="greek">&ldquo;ἔτι τὰ μεγέθη τῶν συμφορῶν καὶ λυπηρῶν πάθη λέγεται&rdquo;</span> (<i>Met.</i> Δ21, 1022b 20)</blockquote>
+
+<p>Translation: &ldquo;further, the magnitudes of misfortunes and griefs are called <span class="greek">πάθη</span>.&rdquo; The narrowest sense: <span class="greek">πάθος</span> (<i>pathos</i>) as the <strong>size</strong>, the <i>measure</i> of what occurs harmfully. Heidegger&rsquo;s idiomatic German equivalent: <i>&ldquo;das ist ein Schlag für mich&rdquo;</i>&mdash;&ldquo;that is a blow to me.&rdquo; Here <span class="greek">πάθος</span> (<i>pathos</i>) names the <i>intensity</i> of the affective event.</p>
+
+<h3>The Synthesis Heidegger Draws</h3>
+
+<blockquote>&ldquo;From these four meanings, the <i>genuine relatedness</i> of <span class="greek">πάθος</span> (<i>pathos</i>) becomes visible: it is related to the <i>being of living things</i>.&rdquo; (p. 132)</blockquote>
+
+<p>The four senses converge on a single ontological discovery:</p>
+<ul>
+  <li><span class="greek">πάθος</span> (<i>pathos</i>) is the structure of <strong>occurring-to-oneself-again-and-again</strong> (<i>Sichereignen</i>).</li>
+  <li>This occurring has in itself the character of the <strong>harmful</strong>&mdash;connected to <span class="greek">φθορά</span> (<i>phthora</i>, &ldquo;destruction&rdquo;).</li>
+  <li>But it <i>also</i> has the character of <span class="greek">σωτηρία</span> (<i>sōtēria</i>, &ldquo;preservation,&rdquo; &ldquo;saving&rdquo;): &ldquo;Something occurs to me by which I do not lose composure but, on the contrary, gain it more genuinely&rdquo; (p. 132).</li>
+  <li>Aristotle thus recognizes <span class="greek">πάθος</span> (<i>pathos</i>) as comprising <span class="greek">μεταβολή</span> (<i>metabolē</i>, &ldquo;change&rdquo;), <span class="greek">κίνησις</span> (<i>kinēsis</i>, &ldquo;motion&rdquo;), and <span class="greek">ἀλλοίωσις</span> (<i>alloiōsis</i>, &ldquo;alteration&rdquo;).</li>
+</ul>
+
+<h3>Excursus: What &ldquo;the Single Ontological Discovery&rdquo; Names</h3>
+
+<p>The bullets above list four <i>features</i> of the convergence; they do not yet state the <i>one thing</i> that the four senses converge <i>on</i>. The convergence-point can be named directly:</p>
+
+<blockquote><strong>The four senses of <span class="greek">πάθος</span> (<i>pathos</i>) converge on the discovery that <i>to be a living being just is to be ontologically structured as occurrable-to</i>: the being of <span class="greek">ζωή</span> (<i>zōē</i>, &ldquo;life&rdquo;) is itself the structure of <i>being-able-to-have-something-happen-to-one</i>, <span class="greek">μεταβλητόν</span> (<i>metablēton</i>, &ldquo;the changeable&rdquo;).</strong></blockquote>
+
+<p><span class="greek">Πάθος</span> (<i>pathos</i>) is <i>not</i> one thing among others that living beings happen to undergo; <span class="greek">πάθος</span> <i>names what it is to be alive</i>. Read top-to-bottom, the four Δ21 senses are not a list of distinct meanings but four progressively-narrowing optics on a <i>single</i> ontological structure:</p>
+
+<ol>
+  <li><strong>Sense (1) &mdash; Alterability</strong> isolates the <i>bare ontological fact</i>: this kind of being has the possibility of becoming-otherwise built into its constitution. This establishes <span class="greek">πάθος</span> (<i>pathos</i>) as a <i>structural-ontological</i> category, not an accidental episode.</li>
+  <li><strong>Sense (2) &mdash; Actualization</strong> shows the same structure <i>in its being-at-work</i> (<span class="greek">ἐνέργεια</span>, <i>energeia</i>): the structure of (1) is not idle potency but is constantly being exercised in the life of the living.</li>
+  <li><strong>Sense (3) &mdash; Harmful alteration</strong> reveals that the alterability of (1) is <i>vulnerability</i>: a living being is not just changeable but <i>exposed</i>.</li>
+  <li><strong>Sense (4) &mdash; Magnitude of misfortune</strong> shows that the structure of (1)&ndash;(3) is felt-as-mattering: <span class="greek">πάθος</span> (<i>pathos</i>) <i>carries weight</i> in the being of the one who undergoes it.</li>
+</ol>
+
+<p>Read together, the four senses describe a <i>single</i> being: a being whose mode of being is <strong>to be openable, alterable, vulnerable, and weight-bearing-of-its-own-occurrings</strong> &mdash; i.e., a <i>living being</i>. That convergent structure is what Heidegger means at p. 132:</p>
+
+<blockquote>&ldquo;From these four meanings, the <i>genuine relatedness</i> of <span class="greek">πάθος</span> (<i>pathos</i>) becomes visible: it is related to the <i>being of living things</i>, which is characterized by a thus-finding-oneself-again-and-again.&rdquo;</blockquote>
+
+<p>The phrase &ldquo;<i>thus-finding-oneself-again-and-again</i>&rdquo; (<i>Sichereignen</i>, &ldquo;the occurring-to-oneself&rdquo;) is the precise name of the discovery. Three claims are made at once:</p>
+
+<ul>
+  <li><strong>Occurring</strong> &mdash; <span class="greek">πάθος</span> (<i>pathos</i>) is <i>event-structured</i>: not a state, not a property, but a happening.</li>
+  <li><strong>To oneself</strong> &mdash; the event is not external. The very being to which it happens is constituted <i>as</i> the one to whom it can happen. There is no living being that <i>first</i> exists and <i>then</i> gets affected; to be alive is to be already constituted as affectable.</li>
+  <li><strong>Again and again</strong> &mdash; this is not a one-time origin-event but the ongoing texture of life itself. Living <i>is</i> this repeating-structure of being-occurred-to. (This is why §17 linked <span class="greek">ἕξις</span> (<i>hexis</i>) to &ldquo;the frequently of repetition&rdquo;: the <span class="greek">ἀεί</span> (<i>aei</i>, &ldquo;always&rdquo;) of being-there is the <span class="greek">πολλάκις</span> (<i>pollakis</i>, &ldquo;frequently&rdquo;) of <span class="greek">πάθος</span>.)</li>
+</ul>
+
+<h4>Concrete real-world example: hearing your name called</h4>
+
+<p>Walk into a crowded room. Someone behind you says your name. Before you decide anything, you <i>turn</i>. That turn is not a choice; it is the structure of being-a-living-thing-in-a-world becoming visible in a single instant.</p>
+
+<ul>
+  <li><i>Sense 1 (alterability)</i>: You <i>are the kind of being</i> for whom the sound of your name is a possible alteration &mdash; your nervous system is constituted to be structurally re-arrangeable by a phoneme-pattern. This is not contingent; it is <i>what you are</i>.</li>
+  <li><i>Sense 2 (actualization)</i>: The alteration is now <i>actual</i> &mdash; the turning, the heart-rate change, the redirection of attention. The structure of (1) at work, <span class="greek">ἐνέργεια</span> (<i>energeia</i>).</li>
+  <li><i>Sense 3 (the unpleasant / weighted in the broad sense)</i>: Even before you know who is calling, your body has already registered a <i>concerned weighting</i> &mdash; is this a friend? a creditor? someone I owe an apology? The affection is already <i>toned</i>, already mattering.</li>
+  <li><i>Sense 4 (magnitude)</i>: The intensity of the turn is <i>proportioned to who you are</i>. If it is your boss whom you have been avoiding, &ldquo;this is a blow to me.&rdquo; If it is a friend, the same call has a different <span class="greek">μέγεθος</span> (<i>megethos</i>, &ldquo;magnitude&rdquo;). <span class="greek">Πάθος</span> (<i>pathos</i>) here measures <i>how much you are taken</i>.</li>
+</ul>
+
+<p>What the four senses show <i>together</i>: there is no neutral pre-affective &ldquo;you&rdquo; who <i>then</i> gets affected. The you that turns <i>is constituted by</i> its capacity to be turned. To be alive is to be the kind of being whose name <i>can</i> call you &mdash; and whose constitution is therefore the constitution of being-occurrable-to. <strong><span class="greek">Πάθος</span> (<i>pathos</i>) is not what happens to a living being; <span class="greek">πάθος</span> (<i>pathos</i>) is the <i>being-structure</i> of a living being.</strong> The four senses are four ways of saying this one thing.</p>
+
+<h3>The Hegelian Footnote</h3>
+
+<p>Heidegger interjects what is one of the most-cited remarks of GA 18: &ldquo;<strong>Hegel took the phenomenon of <span class="greek">σῴζειν</span> (<i>sōzein</i>, &lsquo;to save,&rsquo; &lsquo;to preserve&rsquo;) from Aristotle in the expression <i>Aufhebung</i> (sublation)</strong>&rdquo; (p. 132). The triple sense of <i>Aufhebung</i>&mdash;to negate, to preserve, to elevate&mdash;is supposedly already operative in Aristotelian <span class="greek">σωτηρία</span> (<i>sōtēria</i>). [The Phase 2 commentary flags this as <strong>INTERP-high</strong>: it is contestable whether Aristotle&rsquo;s <span class="greek">σῴζειν</span> (<i>sōzein</i>) genuinely supports the Hegelian triadic structure or whether Heidegger is retrojecting.]</p>
+
+<h3>The Steretic Counterpart</h3>
+
+<p>Against the <span class="greek">μεταβολή</span> (<i>metabolē</i>) through which <span class="greek">ἕξις</span> (<i>hexis</i>) is <i>saved</i>, Heidegger sets a kind of <span class="greek">πάσχειν</span> (<i>paschein</i>) &ldquo;that has the character of <span class="greek">στερητικόν</span> (<i>sterētikon</i>, &lsquo;deprivative&rsquo;)&rdquo;&mdash;&ldquo;something happens to me by which I lose the <span class="greek">ἕξις</span> (<i>hexis</i>)&mdash;for example, becoming-old&rdquo; (p. 132). The full ontological signature of <span class="greek">πάθος</span> (<i>pathos</i>) is therefore <i>bivalent</i>: it both deprives (<span class="greek">φθορά</span>, <i>phthora</i>) and preserves/elevates (<span class="greek">σωτηρία</span>, <i>sōtēria</i>)&mdash;&ldquo;a saving in the sense of safekeeping, of raising to a higher genuine being of <span class="greek">ἐνέργεια</span> (<i>energeia</i>)&rdquo; (p. 132).</p>
+
+<h3>Excursus: The Bivalent Character of Πάθος (<i>pathos</i>) &mdash; Deprivation and Preservation</h3>
+
+<p>The bivalence claim turns on Aristotle&rsquo;s pair <strong><span class="greek">φθορά</span> (<i>phthora</i>, &ldquo;destruction&rdquo;) / <span class="greek">σωτηρία</span> (<i>sōtēria</i>, &ldquo;preservation,&rdquo; &ldquo;saving-through&rdquo;)</strong> at <i>De Anima</i> Β 5, 417b 2 (Heidegger&rsquo;s footnote 242). Heidegger reads this pair as expressing a single insight: <i>the same structure of being-affected can either tear down a <span class="greek">ἕξις</span> (hexis) or build it up</i>. To be a living being is to be the kind of thing that <i>can be touched, struck, moved</i> &mdash; and <i>this very capacity to be touched</i> is precisely what allows the being either to lose what it has or to come more genuinely into what it is.</p>
+
+<h4>The Two Senses Formally</h4>
+
+<ul>
+  <li><strong><span class="greek">Πάθος</span> as <span class="greek">φθορά</span> (<i>phthora</i>)</strong> &mdash; Something happens to me, and I <i>lose</i> a <span class="greek">ἕξις</span> (<i>hexis</i>). The example Heidegger gives &mdash; <i>becoming-old</i> &mdash; is the case where the very same exposure-to-the-world that kept me composed (a <span class="greek">ἕξις</span> of strength, of stamina, of memory, of bodily competence) is now the medium by which that <span class="greek">ἕξις</span> is dismantled. <span class="greek">Στερητικόν</span> (<i>sterētikon</i>, &ldquo;deprivative&rdquo;) is the technical word: the body&rsquo;s openness to the world is here functioning <i>negatively</i>.</li>
+  <li><strong><span class="greek">Πάθος</span> as <span class="greek">σωτηρία</span> (<i>sōtēria</i>)</strong> &mdash; Something happens to me, and I do <i>not</i> lose composure; <i>on the contrary</i> (Heidegger&rsquo;s emphasis at p. 132), I am <i>brought more genuinely into</i> what I am, lifted to a higher <span class="greek">ἐνέργεια</span> (<i>energeia</i>). The very same capacity-to-be-affected is here functioning <i>positively</i>: it is the medium by which the <span class="greek">ἕξις</span> (<i>hexis</i>) is sealed in, raised up, consolidated.</li>
+</ul>
+
+<p>The point Heidegger is hammering on: it is the <i>one</i> structure &mdash; being-affectable, being-takable, <span class="greek">μεταβολή</span> (<i>metabolē</i>) &mdash; that does both. <span class="greek">Πάθος</span> (<i>pathos</i>) is not &ldquo;the bad thing that happens to good <span class="greek">ἕξις</span>&rdquo;; <span class="greek">πάθος</span> is the <i>ontological condition</i> of any living being whatsoever, and <i>what it does to the <span class="greek">ἕξις</span> depends on the case</i>.</p>
+
+<h4>Why &ldquo;Becoming-Old&rdquo; Alone is Unclear</h4>
+
+<p>Aristotle&rsquo;s becoming-old example is doing only half the work: it shows the <span class="greek">φθορά</span>-side. To see the bivalence one needs to <i>pair</i> it with a <span class="greek">σωτηρία</span>-case &mdash; and Aristotle himself supplies one in the same passage of <i>De Anima</i> Β 5: the case of <i>learning</i>, where the soul &ldquo;is acted upon&rdquo; by what it learns, but rather than being destroyed by this affection it is <i>preserved and perfected</i> by it. This is the <span class="greek">ἑτέρου γένους ἀλλοιώσεως</span> (<i>heterou genous alloiōseōs</i>, &ldquo;another kind of alteration&rdquo;) that Aristotle explicitly distinguishes at <i>De an.</i> Β 5, 417b 14 &mdash; the very passage Heidegger cites in note 244 of GA 18.</p>
+
+<h4>Concrete Real-World Example: The Cellist</h4>
+
+<p>Take a serious cellist who has cultivated, over decades, a <span class="greek">ἕξις</span> (<i>hexis</i>) of playing &mdash; composure-toward-the-instrument. Now consider two kinds of event that &ldquo;happen to&rdquo; her:</p>
+
+<p><strong>Case A &mdash; <span class="greek">Πάθος</span> as <span class="greek">φθορά</span> (<i>phthora</i>).</strong> She develops focal dystonia in her left hand. The hand is <i>taken-by-the-world</i>: tendons, nerves, and motor-cortex are <i>struck</i> in a way she did not author. <i>The same bodily openness that made her a cellist</i> &mdash; the fact that her hand <i>can</i> be affected, trained, shaped, moved by the music &mdash; is now the medium through which the <span class="greek">ἕξις</span> is <i>taken away</i>. She loses composure-toward-the-instrument. This is <span class="greek">πάσχειν</span> (<i>paschein</i>) in the <span class="greek">στερητικόν</span> mode: a <span class="greek">μεταβολή</span> by which she <i>loses the</i> <span class="greek">ἕξις</span>. Aristotle would call this exactly parallel to becoming-old.</p>
+
+<p><strong>Case B &mdash; <span class="greek">Πάθος</span> as <span class="greek">σωτηρία</span> (<i>sōtēria</i>).</strong> Years earlier, the same cellist sat in a lesson with a great teacher who, mid-phrase, <i>struck her</i> with a single observation: <i>&ldquo;You are gripping the bow like an enemy.&rdquo;</i> The remark <i>takes her</i>. She is brought-out-of-her-current-composure (this is genuinely a <span class="greek">πάθος</span>, a being-affected, not a self-initiated thought). She does <i>not</i> lose her <span class="greek">ἕξις</span>-of-playing; on the contrary, the having-been-struck is the <i>very means</i> by which the <span class="greek">ἕξις</span> is <i>sealed, deepened, raised to a higher <span class="greek">ἐνέργεια</span></i>. She emerges from the encounter <i>more genuinely the cellist she already was</i>. <strong>This is <span class="greek">σωτηρία</span> in the precise Aristotelian sense</strong>: a <span class="greek">μεταβολή</span> through which the <span class="greek">ἕξις</span> is <i>saved</i> &mdash; preserved by being brought to a higher actuality.</p>
+
+<p>The two cases are <i>the same structure, the same capacity-to-be-affected, the same openness to <span class="greek">μεταβολή</span></i>. The dystonia-event and the lesson-event are both <span class="greek">πάθη</span> in the strict sense. They differ only in their <i>direction</i>: one tears down the <span class="greek">ἕξις</span>, the other builds it up. This is what Heidegger means at p. 132 when he says <span class="greek">πάθος</span> is &ldquo;<strong>that which deprives one of a matter, and a preserving, a saving &mdash; preserving in the sense of safekeeping, of raising to a higher, genuine being of <span class="greek">ἐνέργεια</span> (<i>energeia</i>).</strong>&rdquo;</p>
+
+<h4>Why Heidegger Then Invokes Hegel</h4>
+
+<p>The Hegelian footnote at p. 132 follows immediately from the bivalence: <i>Aufhebung</i> in Hegel has exactly this triadic structure &mdash; to <i>negate</i> (<span class="greek">φθορά</span>: the dystonia takes away her old playing), to <i>preserve</i> (<span class="greek">σωτηρία</span>: the lesson-comment does not dissolve her playing but holds it fast in a new form), and to <i>elevate</i> (raising to a higher <span class="greek">ἐνέργεια</span>: she now plays with a depth she did not have before). Hegel&rsquo;s claim, on Heidegger&rsquo;s reading, is that the German <i>Aufhebung</i> simply names what <span class="greek">σῴζειν</span> (<i>sōzein</i>) had already named in Aristotle.</p>
+
+<h4>Why the Bivalence Matters Ontologically</h4>
+
+<p>The bivalence is <i>not</i> a moral observation (&ldquo;life has ups and downs&rdquo;); it is a <strong>structural ontological</strong> point. Without it, <span class="greek">πάθος</span> would be merely the privative complement to <span class="greek">ἕξις</span> &mdash; pure loss. <i>With</i> it, <span class="greek">πάθος</span> is shown to be <strong>the structural medium through which the human being either becomes-itself or unbecomes-itself</strong>. Being-takable-by-the-world is the very condition for being-able-to-grow into one&rsquo;s own being. This is why §18 will close with the recognition that the <span class="greek">πάθη</span> force us to take the human being <i>in its fullness</i> &mdash; because everything that matters about who I am is decided in <i>how I am taken</i> by what happens.</p>
+
+<hr>
+
+<h2>§18c. Πάθος (<i>pathos</i>) as the Being-Taken of Human Being-There in Its Full Bodily Being-in-the-World</h2>
+<div class="pages">pp. 132–137</div>
+
+<p>This is the longest and ontologically most ambitious subsection. Heidegger pushes beyond Aristotle&rsquo;s textual articulation to argue that <span class="greek">πάθος</span> (<i>pathos</i>) names the <i>fundamental phenomenon</i> of human bodily being-in-the-world.</p>
+
+<h3>The Core Definition</h3>
+
+<blockquote>&ldquo;<span class="greek">Πάθος</span> (<i>pathos</i>), in relation to the <span class="greek">ζωὴ πρακτικὴ μετὰ λόγου</span> (<i>zōē praktikē meta logou</i>, &lsquo;practical life with speech/reason&rsquo;), is thus a <i>being-taken</i> of being-there. Being-there is taken with that which is there in the world&mdash;<i>from without</i>, but from without <i>in the sense of the world as the wherein of my being</i>.&rdquo; (p. 133)</blockquote>
+
+<p>The phrase &ldquo;from without&rdquo; (<i>von außen</i>) is <strong>not</strong> spatial exteriority of object-to-subject. The &ldquo;without&rdquo; is precisely the world <i>as already mine</i>&mdash;the world <i>as the wherein of my being</i>. So <span class="greek">πάθος</span> (<i>pathos</i>) is being-taken-by-the-world-from-the-world-as-mine. There is no Cartesian gap to be bridged because the bridge is the original phenomenon.</p>
+
+<h3>Refusing the &ldquo;Spiritual&rdquo;</h3>
+
+<blockquote>&ldquo;This being-taken of being-there as being-in-its-world does not involve anything like what we could designate as the &lsquo;spiritual,&rsquo; which invites the conception of <span class="greek">πάθος</span> (<i>pathos</i>) as affect. Instead, it is always a being-taken of beings as living things as such.&rdquo; (p. 133)</blockquote>
+
+<p>The polemic targets the entire post-Cartesian inheritance: faculty psychology, the affect-tradition (Spinoza, Hume), and even Brentano&rsquo;s intentional-content model. None of these fits Aristotle.</p>
+
+<h3>The Anti-Locutionary Argument</h3>
+
+<p>Heidegger advances a remarkable linguistic-phenomenological observation:</p>
+
+<blockquote>&ldquo;I cannot say that the soul hopes, has fears, has pity; instead, I can only say that the human being hopes, is brave.&rdquo; (p. 133)</blockquote>
+
+<p>He cites <i>De Anima</i> A 4, 408b 11: <span class="greek">&ldquo;τὸ δὴ λέγειν ὀργίζεσθαι τὴν ψυχὴν ὅμοιον κἂν εἴ τις λέγοι τὴν ψυχὴν ὑφαίνειν ἢ οἰκοδομεῖν&rdquo;</span>&mdash;&ldquo;<strong>To say that the soul gets angry is the same as saying that the soul builds a house</strong>.&rdquo; It would be better to say not that the soul has pity, learns, or believes something, but that <i>the human being does so <span class="greek">τῇ ψυχῇ</span></i> (<i>tē psychē</i>, &ldquo;with the soul,&rdquo; dative of instrument or of respect). Soul (<span class="greek">ψυχή</span>, <i>psychē</i>) is here grasped as <span class="greek">οὐσία</span> (<i>ousia</i>, &ldquo;substance,&rdquo; &ldquo;being&rdquo;)&mdash;i.e., as that-by-which-the-living-thing-is, <i>not</i> as a self-standing inner subject.</p>
+
+<h3>What This Means for the πάθη (<i>pathē</i>)</h3>
+
+<blockquote>&ldquo;The <span class="greek">πάθη</span> (<i>pathē</i>) are not &lsquo;psychic experiences,&rsquo; are not &lsquo;in consciousness,&rsquo; but are a being-taken of human beings <i>in their full being-in-the-world</i>. That is expressed by the fact that the whole, the full occurrence-context, which is found in this happening, in being-taken, belongs to the <span class="greek">πάθη</span>. The so-called &lsquo;bodily states&rsquo; of anxiety, joy, and so forth, are not symptoms, but also belong to the characteristic being of beings, of human beings.&rdquo; (p. 133)</blockquote>
+
+<p>The &ldquo;occurrence-context&rdquo; (<i>Vorkommniszusammenhang</i>) is the <i>whole worldly situation</i> in which the human is taken&mdash;so anxiety is not &ldquo;an inner state with bodily accompaniment&rdquo; but is <i>the whole disposed being-in-the-world</i>, body and world inseparably included.</p>
+
+<h3><i>De Anima</i> Α 1 — the Aporia (403a 3 sqq.)</h3>
+
+<p>Heidegger now reads Aristotle&rsquo;s opening aporia of <i>De Anima</i> Α 1 directly:</p>
+
+<blockquote><span class="greek">&ldquo;ἀπορίαν δ᾽ ἔχει καὶ τὰ πάθη τῆς ψυχῆς, πότερόν ἐστι πάντα κοινὰ καὶ τοῦ ἔχοντος ἢ ἔστι τι καὶ τῆς ψυχῆς ἴδιον αὐτῆς&rdquo;</span> (<i>De an.</i> A 1, 403a 3)</blockquote>
+
+<p>Translation: &ldquo;There is also an aporia regarding the <span class="greek">πάθη</span> (<i>pathē</i>) of the soul: whether they are all common to that-which-has [the soul, i.e., the human being] or whether some are proper to the soul itself.&rdquo; Aristotle&rsquo;s answer (provisional): &ldquo;It seems that of most <span class="greek">πάθη</span> (<i>pathē</i>), the soul does not undergo or do anything without the body&mdash;for example, getting-angry, having-courage, desiring, perceiving in general.&rdquo;</p>
+
+<p>Heidegger&rsquo;s gloss: the term <span class="greek">ἄνθρωπος</span> (<i>anthrōpos</i>, &ldquo;human being&rdquo;) is what <span class="greek">κοινόν</span> (<i>koinon</i>, &ldquo;common&rdquo;) means here. The body&mdash;corporeality, <span class="greek">σῶμα</span> (<i>sōma</i>)&mdash;&ldquo;somehow takes part in all having-courage, in all perceiving.&rdquo;</p>
+
+<h3>Αἰσθάνεσθαι (<i>aisthanesthai</i>) Recast</h3>
+
+<p>Aristotle&rsquo;s <span class="greek">αἰσθάνεσθαι</span> (<i>aisthanesthai</i>, &ldquo;to perceive&rdquo;) is mistranslated, Heidegger argues, when rendered &ldquo;perception&rdquo; in the narrow epistemological sense. It is &ldquo;<strong>awareness in the sense of having-there of the world</strong>&rdquo; (p. 133)&mdash;a <i>having-itself-toward</i> the world that is constitutive of being-in-the-world. Even <span class="greek">νοεῖν</span> (<i>noein</i>, &ldquo;thinking&rdquo;) &ldquo;seems to be peculiar to the soul&rdquo; only on a superficial reading; in fact, even <span class="greek">νοεῖν</span> (<i>noein</i>) requires <span class="greek">φαντασία</span> (<i>phantasia</i>, &ldquo;making-present,&rdquo; &ldquo;imagination&rdquo;). And &ldquo;if even <span class="greek">νοεῖν</span> (<i>noein</i>), the thorough deliberating of a matter when I do not have it perceptually present, is something like a <span class="greek">φαντασία</span> (<i>phantasia</i>) or cannot be without <span class="greek">φαντασία</span> (<i>phantasia</i>), then thinking too cannot be without participation in the context of the entire life of a human being&rdquo; (p. 134).</p>
+
+<h3>Φαντασία (<i>phantasia</i>) as Bodily Making-Present</h3>
+
+<blockquote>&ldquo;<i>Thinking</i>: this is not an appeal to a brain process, but to <span class="greek">φαντασία</span> (<i>phantasia</i>), the &lsquo;making-present-to-itself&rsquo; of the world, in which what is made present is not actually there, but instead is, say, in memory or in a merely faint making-present. Even in thinking about something, the matters are there in the making-present. <span class="greek">Φαντασία</span> (<i>phantasia</i>) is the ground for <span class="greek">νοεῖν</span> (<i>noein</i>). Insofar as <span class="greek">νόησις</span> (<i>noēsis</i>, &lsquo;thinking&rsquo;) is the highest possibility for the being of human beings, the entire being of human beings is determined so that it must be apprehended as the <i>bodily being-in-the-world</i> of human beings.&rdquo; (p. 134)</blockquote>
+
+<p>This is the section&rsquo;s high-water-mark thesis: <i>bodily being-in-the-world is the determination of the entire human being</i>, including its highest cognitive activity. <span class="greek">Φαντασία</span> (<i>phantasia</i>) is the <i>bodily ground</i> that makes <span class="greek">νοεῖν</span> (<i>noein</i>) possible.</p>
+
+<h3>The Programmatic Indictment of the Tradition</h3>
+
+<blockquote>&ldquo;What was, here, provided by Aristotle, is still not taken advantage of today. Only in <i>phenomenology</i> has this begun. No division between &lsquo;psychic&rsquo; and &lsquo;bodily acts&rsquo;! &hellip; One must note that <i>the primary being-there-function of bodiliness secures the ground for the full being of human beings</i>. The beginnings of the entire tradition&rsquo;s erroneous orientation toward the biological (<i>Descartes&rsquo;s res cogitans &mdash; res extensa</i>) is also found in Aristotle.&rdquo; (p. 134)</blockquote>
+
+<p>Heidegger explicitly frames the entire Cartesian metaphysics as a <i>misreading</i> of Aristotelian roots&mdash;phenomenology recovers what Cartesianism distorted.</p>
+
+<h3>Recapitulation of the Four Senses (p. 134)</h3>
+
+<p>Heidegger summarizes:</p>
+<ul>
+  <li>(1) <strong>changeable constitution</strong> [the broadest sense];</li>
+  <li>(2) <strong>special meaning</strong> [actualization of alteration];</li>
+  <li>(3) <strong>that which tones life down</strong> [the unpleasant];</li>
+  <li>(4) <span class="greek">πάθος</span> (<i>pathos</i>) <strong>especially as harmful</strong> [adversity, &ldquo;a blow&rdquo;].</li>
+</ul>
+
+<p>He then poses the central ontological question: to what extent are phenomena like fear, anger, etc., set forth as general determinations of <span class="greek">πάθος</span> (<i>pathos</i>); and in what sense are the <span class="greek">πάθη</span> (<i>pathē</i>) to be considered as <span class="greek">γινόμενα τῆς ψυχῆς</span> (<i>ginomena tēs psychēs</i>, &ldquo;occurrences of the soul&rdquo;)?</p>
+
+<h3>The Definition of Ψυχή (<i>psychē</i>) as οὐσία (<i>ousia</i>)</h3>
+
+<blockquote>&ldquo;<span class="greek">Ψυχή</span> (<i>psychē</i>) means all that constitutes the being of a living thing, as that which constitutes being.&rdquo; (p. 134)</blockquote>
+
+<p>Soul is <i>the being-determination</i> of the living thing&mdash;not an entity, not an inner room, but the <span class="greek">οὐσία</span> (<i>ousia</i>, &ldquo;being&rdquo;) of the living. The manifoldness of being-contexts is therefore subordinated to a &ldquo;determinate manifoldness of determinate object-categories&rdquo;&mdash;the categorial articulation of what it is to be a living being.</p>
+
+<h3>Νοῦς (<i>nous</i>, &ldquo;intellect&rdquo;): The Limit Question</h3>
+
+<p>Heidegger now takes the discussion to its limit case&mdash;the question of <span class="greek">νοῦς</span> (<i>nous</i>, &ldquo;intellect&rdquo;) in <i>De Anima</i> Γ 4–5:</p>
+
+<h4>Νοῦς (<i>nous</i>) Likened to φῶς (<i>phōs</i>, &ldquo;light&rdquo;)</h4>
+
+<blockquote>&ldquo;Aristotle likens <span class="greek">νοῦς</span> (<i>nous</i>) to <span class="greek">φῶς</span> (<i>phōs</i>). Just as it is through light that a color first comes to its being-there, is in there [present] insofar as it stands in illumination&mdash;being-there as the characteristic illumination&mdash;so <i>every being that is there as a being requires a fundamental illumination in order to be there</i>.&rdquo; (p. 135)</blockquote>
+
+<p>The metaphysical weight: <span class="greek">νοῦς</span> (<i>nous</i>) is <strong>the basic condition of the possibility of being-in-the-world</strong> (p. 135). It is the <i>medium of disclosedness</i>. Heidegger&rsquo;s German rendering of being-in-the-world as <i>Erschlossenheit</i> (&ldquo;disclosedness&rdquo;) begins to crystallize here.</p>
+
+<h4>Three Determinations of νοῦς (<i>nous</i>)</h4>
+
+<ol>
+  <li><strong><span class="greek">δυνατόν</span> (<i>dynaton</i>, &ldquo;possibility&rdquo;)</strong>: <span class="greek">νοῦς</span> (<i>nous</i>) is &ldquo;the possibility of simply being-opened-up, of the there of something.&rdquo; Every concrete grasping operates and maintains itself within <span class="greek">νοῦς</span> (<i>nous</i>).</li>
+  <li><strong><span class="greek">ἀπαθές</span> (<i>apathes</i>, &ldquo;that which nothing can touch&rdquo;)</strong>: <span class="greek">νοῦς</span> (<i>nous</i>), as condition of possibility, cannot itself <i>be</i> a <span class="greek">πάθος</span> (<i>pathos</i>) in the ordinary sense. It is &ldquo;that which nothing can touch.&rdquo;</li>
+  <li><strong><span class="greek">δεκτικὸν τοῦ εἴδους</span> (<i>dektikon tou eidous</i>, &ldquo;being-able-to-take-up the <span class="greek">εἶδος</span>&rdquo;)</strong>: <span class="greek">νοῦς</span> (<i>nous</i>) is <i>able to receive the look of a being at the moment</i> (<i>De an.</i> Γ 4, 429a 15).</li>
+</ol>
+
+<h4>Excursus: Is νοῦς (<i>nous</i>) Really Untouched? The (A)/(B) Distinction and the Phantasia Question</h4>
+
+<p>The three determinations above generate a tension that Heidegger himself half-acknowledges and never fully closes. The tension is this: if <span class="greek">νοῦς</span> (<i>nous</i>) is <span class="greek">ἀπαθές</span> (<i>apathes</i>, &ldquo;that which nothing can touch&rdquo;), how can it also be the case &mdash; as Aristotle insists at <i>De an.</i> Γ 7, 431a 16 and Γ 8, 432a 8, and as Heidegger reaffirms at p. 134 &mdash; that <strong><span class="greek">φαντασία</span> (<i>phantasia</i>) is the ground for <span class="greek">νοεῖν</span> (<i>noein</i>)</strong>? If <span class="greek">νοῦς</span> ontologically depends on <span class="greek">φαντασία</span>, and <span class="greek">φαντασία</span> is the bodily making-present of the world, then <span class="greek">νοῦς</span> would seem to be touched by the world through and through.</p>
+
+<p>The resolution Heidegger is implicitly using &mdash; following Aristotle&rsquo;s own internal distinction in <i>De an.</i> Γ 5 &mdash; turns on keeping two νοῦς-claims apart:</p>
+
+<h5>The Distinction Aristotle is Using (and Heidegger Inherits)</h5>
+
+<ul>
+  <li><strong>(A) <span class="greek">νοῦς</span> as the <i>structural-ontological</i> condition of being-encounterable.</strong> This is <span class="greek">νοῦς</span> as <span class="greek">δύναμις</span>/<span class="greek">ἀπαθές</span>/<span class="greek">δεκτικόν</span> &mdash; what Aristotle in <i>De an.</i> Γ 5, 430a 14 calls the <span class="greek">νοῦς</span> &ldquo;that makes all things&rdquo; (<span class="greek">ποιητικός</span>), the condition for there being a clearing at all. <i>This</i> <span class="greek">νοῦς</span> is <span class="greek">ἀπαθές</span> (<i>apathes</i>) because it is the <i>medium of affectability</i>, not an item within it.</li>
+  <li><strong>(B) <span class="greek">νοῦς</span> as the <i>concrete cognitive exercise</i> of a particular human being</strong> &mdash; what Aristotle calls the <span class="greek">νοῦς</span> &ldquo;that becomes all things&rdquo; (<span class="greek">παθητικός</span>, <i>De an.</i> Γ 5, 430a 24), the <span class="greek">νοῦς</span> that <i>does</i> require <span class="greek">φαντάσματα</span> (<i>phantasmata</i>, &ldquo;images&rdquo;), that <i>is</i> embodied, that <i>is</i> gripped by what shows up.</li>
+</ul>
+
+<p>The phantasia-claim &mdash; entirely correct as Aristotle-exegesis &mdash; applies precisely to <strong>(B)</strong>. Heidegger affirms it without reservation: &ldquo;the noein of human beings is <i>not pure</i>; it is grounded in phantasia&rdquo; (p. 136). Human <span class="greek">νοεῖν</span> (<i>noein</i>) <i>is</i> touched, it <i>is</i> <span class="greek">μετὰ σώματος</span> (<i>meta sōmatos</i>), it <i>is</i> embodied through and through.</p>
+
+<p>The <span class="greek">ἀπαθές</span>-claim is reserved for <strong>(A)</strong>. Just as light is what lets colors be seen but is not itself colored, <span class="greek">νοῦς</span> in this structural sense is what lets beings be encountered but is not itself one of the encounterable beings. It is &ldquo;untouchable&rdquo; <i>not because it is insulated from the world</i> but because <i>it is the clearing in which touching happens</i>. To call the clearing &ldquo;touched&rdquo; would be a category mistake &mdash; not because it sits above the fray but because <i>it is not the kind of thing to which affection-and-non-affection apply</i>.</p>
+
+<h5>Concrete Real-World Example: Reading This Sentence</h5>
+
+<p>Consider what happens as you read this sentence. The words on the page <i>strike</i> your eye; the visual impressions are organized through <span class="greek">φαντασία</span> (<i>phantasia</i>) into making-present the meanings; the meanings are taken-as-meanings and tracked through their argumentative connections. All of this is happening in your concrete embodied <span class="greek">νοεῖν</span> (<i>noein</i>) &mdash; the (B)-<span class="greek">νοῦς</span>, which is fully bodily, fully temporal, fully <span class="greek">μετὰ σώματος</span>.</p>
+
+<p>But ask: <i>what makes it possible that the marks on the page can be encountered as words at all?</i> Not your retina, which only handles photons. Not your brain&rsquo;s pattern-recognition, which is itself an embodied process. The condition of possibility for there being any &ldquo;encountering of words as words&rdquo; is the <i>standing intelligibility-character</i> of any encounter whatsoever &mdash; the (A)-<span class="greek">νοῦς</span>. <i>That</i> condition is not itself something that gets struck by photons or processed by neurons. It is the <i>clearing within which</i> photon-striking and neuron-processing become an event of meaning at all. To ask whether <i>this</i> condition is &ldquo;touched&rdquo; is to make a category mistake &mdash; like asking whether the visibility-of-the-visible is itself visible.</p>
+
+<p>So the answer to your question &ldquo;is <span class="greek">νοῦς</span> touched?&rdquo; depends on which <span class="greek">νοῦς</span> one is asking about:</p>
+
+<ul>
+  <li><i>Concrete human <span class="greek">νοεῖν</span></i> (the embodied act of reading): <strong>yes</strong>, deeply, ineradicably &mdash; through <span class="greek">φαντασία</span>, through <span class="greek">σῶμα</span>, through being-in-the-world. This is exactly what §18c argues at p. 134 (&ldquo;the entire being of human beings is determined so that it must be apprehended as the <i>bodily being-in-the-world</i>&rdquo;).</li>
+  <li><i><span class="greek">νοῦς</span> as the structural condition-of-encounter</i> (the <span class="greek">ἀπαθές</span> claim): <strong>no</strong> &mdash; but only because affection is the wrong category for it. The clearing is not &ldquo;above&rdquo; affection; affection is what <i>happens within</i> it.</li>
+</ul>
+
+<h5>The Genuine Residual Problem</h5>
+
+<p>This (A)/(B) distinction <i>almost</i> dissolves the tension. Where it does not is at the precise point where Heidegger reads the (A)-<span class="greek">νοῦς</span> partly through Aristotle&rsquo;s <i>active intellect</i> doctrine (<i>De an.</i> Γ 5, 430a 17–18: <span class="greek">χωριστὸς καὶ ἀπαθὴς καὶ ἀμιγής</span>, &ldquo;separable, impassive, unmixed&rdquo;; 430a 22–23: <span class="greek">ἀθάνατον καὶ ἀΐδιον</span>, &ldquo;immortal and eternal&rdquo;). Heidegger himself flags at p. 135–136 that this is precisely the place where Aristotle &ldquo;did not pursue this doctrine to the extent that he in fact saw the matter. He allowed the investigation of <span class="greek">νοῦς</span> to stand because he went no further with respect to the matter.&rdquo;</p>
+
+<p>What Heidegger does <i>not</i> do in 1924 is reconcile his own commitment to the bodily-being-in-the-world thesis (the entire thrust of §18c) with the (A)-<span class="greek">νοῦς</span> claim that something in <span class="greek">νοῦς</span> <i>escapes</i> corporeality. Three live possibilities remain unadjudicated:</p>
+
+<ol>
+  <li><strong>(i)</strong> The (A)-<span class="greek">νοῦς</span> is genuinely something <i>more than</i> human concrete being &mdash; Aristotle&rsquo;s &ldquo;from outside&rdquo; (<span class="greek">θύραθεν</span>, <i>thyrathen</i>; <i>GA</i> Β 3, 736b 27) &mdash; and the (B)-<span class="greek">νοῦς</span> is its bodily inflection in finite human beings. (The orthodox medieval reading.)</li>
+  <li><strong>(ii)</strong> The (A)-<span class="greek">νοῦς</span> is just the <i>structural feature</i> of (B)-<span class="greek">νοῦς</span> viewed transcendentally: there is no <span class="greek">νοῦς</span> apart from human <span class="greek">νοεῖν</span>; the <span class="greek">ἀπαθές</span> is a description of the clearing-character intrinsic to embodied disclosure. (The proto-Heideggerian reading; closer to <i>Being and Time</i>.)</li>
+  <li><strong>(iii)</strong> Aristotle is genuinely undecided &mdash; <i>De an.</i> Γ 5 is sketching a problem he does not solve.</li>
+</ol>
+
+<h5>The Ontological Payoff</h5>
+
+<p>What this excursus secures: the <span class="greek">ἀπαθές</span>-claim is preserved at the <i>transcendental-structural</i> level (the disclosedness-character of disclosure is not itself a disclosed item) but is rejected at the <i>ontic-dualist</i> level (there is no separable faculty of <span class="greek">νοῦς</span> insulated from bodily being-in-the-world). The 1924 lectures are <i>transitional</i> on this question: Heidegger is still reading Aristotle in a way that lets (A)-<span class="greek">νοῦς</span> have its untouchable structure, but the trajectory of his own thinking is pushing toward option (ii). By 1927, in <i>Being and Time</i> §28 (H. 132–133), this trajectory is completed: &ldquo;<i>Da-sein is its disclosedness</i>&hellip; <i>it is itself the clearing</i> [<i>es selbst die Lichtung ist</i>].&rdquo; There is no clearing apart from the bodily-finite-thrown disclosedness of Da-sein. The 1924 <span class="greek">ἀπαθές</span> gets reabsorbed into the structural feature of finite existence rather than remaining a separable transcendent.</p>
+
+<p>The cleanest single-sentence rejoinder to anyone who presses the phantasia-objection: <strong>Heidegger means that <span class="greek">νοῦς</span> is <span class="greek">ἀπαθές</span> as the clearing-character of encounter, not as a separable faculty insulated from the world; the insight that human <span class="greek">νοεῖν</span> is bodily is correct, and Heidegger is in the process of working out &mdash; and will fully work out, in BT &mdash; that the clearing-character of disclosure has no existence apart from the embodied, finite Da-sein in which it is realized.</strong></p>
+
+<h4>Νοῦς (<i>nous</i>) Goes Toward τὰ πάντα (<i>ta panta</i>, &ldquo;all things&rdquo;)</h4>
+
+<blockquote>&ldquo;<span class="greek">Νοῦς</span> (<i>nous</i>), in relation to the being-opened-up of being-in, is more than the human being can be since the way that the human being takes up this possibility, <span class="greek">νοῦς</span> (<i>nous</i>), is <span class="greek">διανοεῖσθαι</span> (<i>dianoeisthai</i>, &lsquo;to think-through&rsquo;). Insofar as <span class="greek">νοῦς</span> (<i>nous</i>) constitutes the being-opened-up of the human being, it is <span class="greek">διά</span> (<i>dia</i>, &lsquo;through-by-means-of&rsquo;), insofar as living is determined by <span class="greek">λύπη</span> (<i>lypē</i>, &lsquo;pain&rsquo;) and <span class="greek">ἡδονή</span> (<i>hēdonē</i>, &lsquo;pleasure&rsquo;). <span class="greek">Νοῦς</span> (<i>nous</i>) is the basic condition of the possibility of being-in-the-world, and as such stands beyond the particular concrete being of individual human beings.&rdquo; (p. 135)</blockquote>
+
+<h4>The Open Question: ἴδιον πάθος (<i>idion pathos</i>) or θύραθεν (<i>thyrathen</i>, &ldquo;from outside&rdquo;)?</h4>
+
+<p>Aristotle&rsquo;s question, which Heidegger highlights at p. 136: is <span class="greek">νοῦς</span> (<i>nous</i>) an <span class="greek">ἴδιον πάθος τῆς ψυχῆς</span> (<i>idion pathos tēs psychēs</i>, &ldquo;a proper <span class="greek">πάθος</span> of the soul&rdquo;), or does it enter from outside (<span class="greek">θύραθεν</span>, <i>thyrathen</i>)? The aporia: does <span class="greek">νοῦς</span> (<i>nous</i>) constitute the being of human beings <i>as proper to such a being</i>, or <i>enter into</i> human beings from outside?</p>
+
+<p>Heidegger reads Aristotle&rsquo;s evidence as showing: a living thing, insofar as it is encountered by the world, <i>is also encountered with a view to its corporeality</i>&mdash;&ldquo;everything aims at the living thing in its full being-there&rdquo; (p. 136). Even <span class="greek">νοῦς</span> (<i>nous</i>) is therefore <i>not pure</i> in the human case: &ldquo;the supposing of something that I do not actually have there is grounded in <span class="greek">φαντασία</span> (<i>phantasia</i>); it is only possible on the basis of making-present, and making-present is, as such, nothing other than the retrieval of that which was at one time present&rdquo; (p. 136). <span class="greek">Φαντασία</span> (<i>phantasia</i>) is &ldquo;a special making-present&rdquo;&mdash;a making-present in which the knowing of the having-once-been-experienced of that which is retrieved.</p>
+
+<p>The verdict: even at the limit case of <span class="greek">νοῦς</span> (<i>nous</i>), the <span class="greek">πάθος</span> (<i>pathos</i>)-structure (<span class="greek">πάσχειν τοῦ σώματος</span>, <i>paschein tou sōmatos</i>, &ldquo;the undergoing of the body&rdquo;) asserts itself.</p>
+
+<p class="small">[Phase 2 commentary flags this as a <strong>genuine textual tension</strong>: <span class="greek">νοῦς</span> (<i>nous</i>) is characterized as <span class="greek">ἀπαθές</span> (<i>apathes</i>, &ldquo;untouchable&rdquo;), yet the entire argument of §18c is that all <span class="greek">πάθη</span> (<i>pathē</i>) are <span class="greek">μετὰ σώματος</span> (<i>meta sōmatos</i>, &ldquo;with the body&rdquo;). Whether Heidegger fully reconciles this, or whether he leaves Aristotle&rsquo;s <i>De Anima</i> Γ 5 doctrine of the active intellect as a residual problem, is debated. Heidegger himself admits Aristotle &ldquo;did not pursue this doctrine to the extent that he in fact saw the matter. He allowed the investigation of <span class="greek">νοῦς</span> to stand because he went no further with respect to the matter&rdquo; (p. 135).]</p>
+
+<hr>
+
+<h2>§18d. The Double-Type of Consideration of πάθος (<i>pathos</i>) according to εἶδος (<i>eidos</i>) and ὕλη (<i>hylē</i>), and the Question Concerning the Task of the φυσικός (<i>phusikos</i>)</h2>
+<div class="pages">(<i>De Anima</i> Α 1, 403a 24 sqq.) · pp. 137–139</div>
+
+<p>This subsection draws the methodological conclusions: if <span class="greek">πάθος</span> (<i>pathos</i>) is bodily being-in-the-world, then the <i>investigation</i> of <span class="greek">πάθος</span> (<i>pathos</i>) is itself doubly determined&mdash;it must address both the <span class="greek">εἶδος</span> (<i>eidos</i>, &ldquo;look,&rdquo; &ldquo;form&rdquo;) and the <span class="greek">ὕλη</span> (<i>hylē</i>, &ldquo;matter&rdquo;) of the phenomenon. This grounds Aristotle&rsquo;s distinction among the <span class="greek">φυσικός</span> (<i>phusikos</i>, &ldquo;natural philosopher&rdquo;), the <span class="greek">διαλεκτικός</span> (<i>dialektikos</i>, &ldquo;dialectician&rdquo;) / rhetorician, and the <span class="greek">φιλόσοφος</span> (<i>philosophos</i>, &ldquo;philosopher proper&rdquo;).</p>
+
+<h3>The Definitional Move</h3>
+
+<blockquote>&ldquo;The addressing of this phenomenon, which should hit upon the <span class="greek">πάθη</span> (<i>pathē</i>) as to what they are, must proceed toward that on the basis of which the <span class="greek">πάθη</span> (<i>pathē</i>) are, that wherein they are found. Their <span class="greek">ὕλη</span> (<i>hylē</i>) is nothing other than <span class="greek">σῶμα</span> (<i>sōma</i>), the corporeality of the human being.&rdquo; (p. 137)</blockquote>
+
+<p>A crucial conceptual move: <span class="greek">ὕλη</span> (<i>hylē</i>) here = <span class="greek">σῶμα</span> (<i>sōma</i>). [Phase 2 commentary marks this as a <strong>possible tension</strong> with §17a, where Heidegger insisted that <span class="greek">ὕλη</span> (<i>hylē</i>) &ldquo;does not mean an indeterminate &lsquo;material&rsquo; but rather a positive character of a mode of being-there&rdquo;&mdash;being-in-preparedness (<span class="greek">δεκτικόν</span>, <i>dektikon</i>). The two senses can be reconciled only by reading the <span class="greek">σῶμα</span> (<i>sōma</i>) of §18d <i>through</i> the <span class="greek">δεκτικόν</span> (<i>dektikon</i>) of §17a&mdash;i.e., the body is itself <i>being-in-preparedness for</i> <span class="greek">πάθος</span> (<i>pathos</i>). The Phase 2 analyst rates this reconciliation as <strong>INTERP-low</strong> (likely Heidegger&rsquo;s intent).]</p>
+
+<h3>The ὅροι (<i>horoi</i>) of ὀργή (<i>orgē</i>, &ldquo;anger&rdquo;)</h3>
+
+<p>Heidegger then takes up Aristotle&rsquo;s example of <i>De Anima</i> Α 1, 403a 25 sqq. The <span class="greek">ὅροι</span> (<i>horoi</i>, &ldquo;definitional boundaries&rdquo;) of <span class="greek">ὀργή</span> (<i>orgē</i>) must be of a specific kind:</p>
+
+<blockquote>&ldquo;<strong>Being-angry is something like a being-in-motion of the body constituted thus and so</strong>&rdquo; (<i>De an.</i> A 1, 403a 26)</blockquote>
+
+<p>&mdash;a fully determinate motion from definite circumstances. At one and the same time:</p>
+<ul>
+  <li><span class="greek">ἡ ὕλη</span> (<i>hē hylē</i>, &ldquo;the matter&rdquo;) is seen&mdash;<span class="greek">ἐν τοιῳδὶ σώματι</span> (<i>en toiōdi sōmati</i>, &ldquo;in such-and-such a body&rdquo;)&mdash;and</li>
+  <li><span class="greek">τὸ εἶδος</span> (<i>to eidos</i>, &ldquo;the form&rdquo;) is addressed&mdash;in the being-so of being-of-concern: <span class="greek">ὑπὸ τοῦδε ἕνεκα τοῦδε</span> (<i>hypo toude heneka toude</i>, &ldquo;by this for the sake of this&rdquo;) (<i>De an.</i> A 1, 403a 27).</li>
+</ul>
+
+<p>With that, <span class="greek">λόγος</span> (<i>logos</i>) is simultaneously addressed&mdash;speech, the articulating &ldquo;by-this-for-the-sake-of-this.&rdquo; This yields a <i>fundamental epistemological definition</i>:</p>
+
+<blockquote>&ldquo;Therefore, it is already a matter of the <span class="greek">φυσικός</span> (<i>phusikos</i>) to take into view that which lies within the thematic circle of the being of living things.&rdquo; (p. 137)</blockquote>
+
+<h3>Φυσικός (<i>phusikos</i>), Διαλεκτικός (<i>dialektikos</i>), Τεχνίτης (<i>technitēs</i>), Μαθηματικός (<i>mathēmatikos</i>), Φιλόσοφος (<i>philosophos</i>)</h3>
+
+<p>Heidegger then deploys Aristotle&rsquo;s stratification of disciplines (cf. <i>De Anima</i> Α 1, 403a 29 sqq.):</p>
+
+<h4>The Two Definitions of ὀργή (<i>orgē</i>, &ldquo;anger&rdquo;):</h4>
+
+<ol>
+  <li>The <strong><span class="greek">διαλεκτικός</span> (<i>dialektikos</i>)</strong> / rhetorician defines anger as <strong><span class="greek">ὄρεξις ἀντιλυπήσεως</span> (<i>orexis antilypēseōs</i>)</strong>&mdash;&ldquo;an aiming-after pay-back,&rdquo; a &ldquo;being-toward-others&rdquo; in the mode of comporting-oneself toward other human beings. This grasps the <strong><span class="greek">εἶδος</span> (<i>eidos</i>)</strong>.</li>
+  <li>The <strong><span class="greek">φυσικός</span> (<i>phusikos</i>)</strong> defines anger as <strong><span class="greek">ζέσις τοῦ περὶ καρδίαν αἵματος καὶ θερμοῦ</span></strong>&mdash;&ldquo;a boiling up of blood in the heart and of the temperature&rdquo; (<i>De an.</i> A 1, 403a 31). This grasps the <strong><span class="greek">ὕλη</span> (<i>hylē</i>)</strong> as <span class="greek">σῶμα</span> (<i>sōma</i>).</li>
+</ol>
+
+<p>The first <span class="greek">λόγος</span> (<i>logos</i>) yields the <i>genuine</i> <span class="greek">εἶδος</span> (<i>eidos</i>)&mdash;the comporting-toward-other-human-beings&mdash;but as a determination of the being of human beings <i>in the world</i>, it is necessarily co-determined by the <span class="greek">ζέσις</span> (<i>zesis</i>, &ldquo;boiling-up&rdquo;) of the blood. <strong>Both <span class="greek">λόγοι</span> (<i>logoi</i>) are <span class="greek">λόγοι ἔνυλοι</span> (<i>logoi enyloi</i>, &ldquo;enmattered <span class="greek">λόγοι</span>&rdquo;)</strong>, but in entirely different senses (p. 139).</p>
+
+<blockquote>&ldquo;If that is so, then it is clear that the <span class="greek">πάθη</span> (<i>pathē</i>) are <span class="greek">λόγοι ἔνυλοι</span> (<i>logoi enyloi</i>).&rdquo; (<i>De an.</i> A 1, 403a 24, quoted at p. 137)</blockquote>
+
+<p>This is the formula Heidegger underlines. <span class="greek">Πάθη</span> (<i>pathē</i>) are <i>enmattered <span class="greek">λόγοι</span> (logoi)</i>: their meaning-articulation (<i>Logos-Charakter</i>) is inseparable from their bodily occurrence. To strip a <span class="greek">πάθος</span> (<i>pathos</i>) of its corporeality is to lose the phenomenon itself.</p>
+
+<h3>The Hierarchy of Disciplines</h3>
+
+<p>Heidegger constructs a hierarchy by way of the example of a house (<span class="greek">λόγος οἰκίας</span>, <i>logos oikias</i>, &ldquo;definition of a house&rdquo;; <i>De an.</i> A 1, 403b 3):</p>
+
+<table>
+  <tr><th>Inquirer</th><th>Mode of Definition</th></tr>
+  <tr>
+    <td>One inquirer</td>
+    <td>Speaks of the <span class="greek">εἶδος</span> (<i>eidos</i>)&mdash;&ldquo;shelter, protection that keeps away the possibility of being harmed by wind, rain, heat&rdquo;&mdash;the <span class="greek">σκέπασμα</span> (<i>skepasma</i>, &ldquo;covering&rdquo;).</td>
+  </tr>
+  <tr>
+    <td>Another</td>
+    <td>Speaks of the <span class="greek">ὕλη</span> (<i>hylē</i>)&mdash;stones, brick, wood.</td>
+  </tr>
+  <tr>
+    <td>The genuine <span class="greek">φυσικός</span> (<i>phusikos</i>)</td>
+    <td>Speaks <span class="greek">ἐξ ἀμφοῖν</span> (<i>ex amphoin</i>, &ldquo;from both&rdquo;)&mdash;addresses the house &ldquo;in terms of the look that in itself is related to what the house consists of.&rdquo;</td>
+  </tr>
+</table>
+
+<blockquote>&ldquo;He who only speaks about the material has no knowledge of the matter in question is genuinely selected. Or is it he who only speaks about the <span class="greek">εἶδος</span> (<i>eidos</i>)? Or is it he who speaks <span class="greek">ἐξ ἀμφοῖν</span> (<i>ex amphoin</i>)?&rdquo; (p. 138, quoting <i>De an.</i> A 1, 403b 6 sqq.)</blockquote>
+
+<p>The decisive move:</p>
+
+<blockquote>&ldquo;<strong>The being of nature is determined in its look not simply by <span class="greek">ὕλη</span> (<i>hylē</i>) but primarily by being-moved.</strong>&rdquo; (p. 138)</blockquote>
+
+<p><span class="greek">Φύσις</span> (<i>physis</i>, &ldquo;nature&rdquo;) is grasped through <i>being-moved</i>&mdash;<span class="greek">κίνησις</span> (<i>kinēsis</i>)&mdash;and only beings determined by being-moved are the genuine and definite topic of the <span class="greek">φυσικός</span> (<i>phusikos</i>).</p>
+
+<ul>
+  <li>The <span class="greek">φυσικός</span> (<i>phusikos</i>) takes <span class="greek">σώματα</span> (<i>sōmata</i>, &ldquo;bodies&rdquo;) <i>as constituted</i> thus and so&mdash;i.e., as <span class="greek">ἔργα καὶ πάθη</span> (<i>erga kai pathē</i>, &ldquo;works and <span class="greek">πάθη</span>&rdquo;)&mdash;<span class="greek">πάθη</span> (<i>pathē</i>) in the very broad sense of <i>Metaphysics</i> Δ 21 (sense 1).</li>
+  <li>The <span class="greek">τεχνίτης</span> (<i>technitēs</i>, &ldquo;craftsman&rdquo;) considers wood, e.g., insofar as it possesses hardness apt to serve as a rudder&mdash;i.e., considers <span class="greek">σῶμα</span> (<i>sōma</i>) <i>under a τέχνη-perspective</i>.</li>
+  <li>The doctor considers <span class="greek">σώματα</span> (<i>sōmata</i>) differently&mdash;in accordance with <span class="greek">τέχνη</span> (<i>technē</i>) but oriented to therapy.</li>
+  <li>The <span class="greek">μαθηματικός</span> (<i>mathēmatikos</i>, &ldquo;mathematician&rdquo;) takes <span class="greek">σώματα</span> (<i>sōmata</i>) &ldquo;not as constituted thus and so, not as tree-trunk, as the stable part of a plant, not as material; but solely insofar as it is extended&rdquo; (p. 138). This abstraction will become Heidegger&rsquo;s key example for what <span class="greek">πάθος</span> (<i>pathos</i>) is <i>not</i>.</li>
+</ul>
+
+<h4>The πρῶτος φιλόσοφος (<i>prōtos philosophos</i>, &ldquo;first philosopher&rdquo;)</h4>
+
+<blockquote>&ldquo;Beyond these ways of considering, there is yet another way, which takes every being with a view to its being-determinations; not with a view to, say, being-extended alone, but taking all possible beings together in the fundamental question concerning being as such. <strong>This is the object of the <span class="greek">πρῶτος φιλόσοφος</span> (<i>prōtos philosophos</i>).</strong>&rdquo; (p. 138)</blockquote>
+
+<p>This is Aristotle&rsquo;s own definition of <span class="greek">πρώτη φιλοσοφία</span> (<i>prōtē philosophia</i>, &ldquo;first philosophy&rdquo;)&mdash;i.e., metaphysics&mdash;as the science of being qua being.</p>
+
+<h3>The &ldquo;Mathematical&rdquo; Counter-Example</h3>
+
+<p>Heidegger uses the mathematical-objectivity case to consolidate his doctrine of bodily inseparability:</p>
+
+<blockquote>&ldquo;There is nothing like a pure fear in the sense of an abstract comporting-oneself toward something. In itself, it is a comporting of the full human being in its corporeality. But this inability-to-be-abstracted is different from that of mathematical objectivities. The <span class="greek">πάθη</span> cannot be identified with the lines and surfaces of bodies in the mathematical sense. The Greek does not see a line primarily in itself, but instead <span class="greek">γραμμή</span> (<i>grammē</i>, &lsquo;line&rsquo;) is always the limit of a surface, and surface the limit of a body. The surface has no being without the body&mdash;thus, here too, an inability-to-become-separated. In this way, the <span class="greek">εἶδος</span> (<i>eidos</i>) of fearing also has the primary relatedness to a finding-oneself of the body. The difference lies in the fact that the determinate constitution of <span class="greek">σώματα</span> (<i>sōmata</i>) plays no role in mathematical inseparability, for instance in the being-brown or being-scratched of the body; the thus and so constituted way of being is essential. Both are <span class="greek">λόγοι ἔνυλοι</span> (<i>logoi enyloi</i>), but in an entirely different sense.&rdquo; (p. 139)</blockquote>
+
+<p>The key result: <span class="greek">πάθη</span> (<i>pathē</i>) and mathematical objects are <i>both</i> enmattered, but only <span class="greek">πάθη</span> (<i>pathē</i>) require the <i>determinate</i> constitution of the body as essential. The geometer&rsquo;s body-as-extended could be any body; the angry person&rsquo;s body must be <i>this</i> body, in <i>this</i> condition (boiling blood, heat in the heart).</p>
+
+<h3>Conclusion of §18 — and the Bridge to the <i>Rhetoric</i></h3>
+
+<blockquote>&ldquo;This is the ground for the type of consideration of the <span class="greek">πάθη</span> (<i>pathē</i>), with a view to the <span class="greek">εἶδος</span> (<i>eidos</i>), which is found in the <i>Rhetoric</i>. It is important that Aristotle does not obtain a basic determination of a living thing from physiological considerations. The <span class="greek">εἶδος</span> (<i>eidos</i>) of the <span class="greek">πάθη</span> (<i>pathē</i>) is a comporting-oneself to other human beings, a being-in-the-world. <strong>Only from this standpoint can the <span class="greek">ὕλη</span> (<i>hylē</i>) of the <span class="greek">πάθη</span> (<i>pathē</i>) be genuinely examined.</strong>&rdquo; (p. 139)</blockquote>
+
+<p>This sentence vindicates the <i>Rhetoric</i> (which §15–16 set up) as the proper scientific treatment of <span class="greek">πάθη</span> (<i>pathē</i>) qua <span class="greek">εἶδος</span> (<i>eidos</i>)&mdash;i.e., as comportments-toward-others. Aristotle&rsquo;s <i>Rhetoric</i> B 1–11 (the catalog of <span class="greek">πάθη</span>: <span class="greek">ὀργή</span> [<i>orgē</i>], <span class="greek">φόβος</span> [<i>phobos</i>], <span class="greek">ἔλεος</span> [<i>eleos</i>], etc.) is precisely this <span class="greek">εἶδος</span>-treatment, and Heidegger has now justified its priority over physiology.</p>
+
+<h3>The Coda on νοῦς (<i>nous</i>) and τὰ πάντα (<i>ta panta</i>)</h3>
+
+<p>Heidegger ends §18 with a brief return to <i>De Anima</i> Α 1&rsquo;s <span class="greek">νοῦς</span> (<i>nous</i>)-question:</p>
+
+<blockquote>&ldquo;<span class="greek">Νοῦς</span> (<i>nous</i>), &lsquo;supposing,&rsquo; in contrast with all other ways of grasping, is a possibility of grasping that is not limited to a determinate region of being, as is hearing, seeing, and so on. Instead, <span class="greek">νοῦς</span> (<i>nous</i>) goes toward <span class="greek">τὰ πάντα</span> (<i>ta panta</i>, &lsquo;all things&rsquo;); it is a possibility of grasping that grasps all possible beings, so that the being in question need not necessarily be present. This universality of the possibility of grasping is something that is not to be equated with the concrete being of the human being, which is always at the moment. What grounds this possibility of grasping everything, which grows out beyond the human being and its concrete being? In connection with this question, Aristotle discusses the <span class="greek">πάθη</span> (<i>pathē</i>) as those phenomena in which it is shown that the concrete being of human beings can only be understood if one takes it in its fullness, and so on the basis of various considerations. It is, above all, decisive that we lose composure in the case [&hellip;]&rdquo; (p. 139, end of §18)</blockquote>
+
+<p>§18 thus closes by re-binding the <span class="greek">νοῦς</span>-question to the <span class="greek">πάθος</span>-question: the <span class="greek">πάθη</span> (<i>pathē</i>) are the phenomena that <i>force</i> us to take the human in its <i>fullness</i>&mdash;precisely because they show that &ldquo;we lose composure&rdquo; (<i>verlieren die Fassung</i>), i.e., that the <span class="greek">ἕξις</span>/<span class="greek">πάθος</span> dialectic is the very texture of human being-in-the-world.</p>
+
+<hr>
+
+<h2>Synthetic Reading of §18</h2>
+
+<h3>Architectural Position</h3>
+
+<p>§18 stands at the structural center of GA 18. Chapter 3 of the First Part has progressed: §13–14 (speaking-being, rhetoric, <span class="greek">πίστις</span> [<i>pistis</i>, &ldquo;credence&rdquo;]); §15–16 (<span class="greek">δόξα</span> [<i>doxa</i>, &ldquo;opinion&rdquo;], <span class="greek">ἦθος</span> [<i>ēthos</i>, &ldquo;character&rdquo;] / <span class="greek">πάθος</span> [<i>pathos</i>] as <span class="greek">πίστεις</span> [<i>pisteis</i>]); §17 (<span class="greek">ἕξις</span> [<i>hexis</i>] as fundamental concept of being); §18 now consolidates the whole by giving <span class="greek">πάθος</span> (<i>pathos</i>) its full ontological articulation. From here, §19–22 deploy specific <span class="greek">πάθη</span> (<span class="greek">φύσις</span> [<i>physis</i>], <span class="greek">ἡδονή</span>/<span class="greek">λύπη</span> [<i>hēdonē/lypē</i>, &ldquo;pleasure/pain&rdquo;], <span class="greek">φόβος</span> [<i>phobos</i>, &ldquo;fear&rdquo;]).</p>
+
+<h3>Five Theses Heidegger Establishes</h3>
+
+<ol>
+  <li><strong><span class="greek">Πάθος</span> (<i>pathos</i>) is a fundamental concept of being</strong>, not an ethical or psychological category. (§18a)</li>
+  <li><strong><span class="greek">Πάθη</span> (<i>pathē</i>) are bodily being-in-the-world</strong>&mdash;the disposition of the entire human being in the world, not &ldquo;spiritual states&rdquo; with &ldquo;bodily symptoms.&rdquo; (§18a, §18c)</li>
+  <li><strong>The four general meanings (<i>Met.</i> Δ21) form a progressive narrowing</strong> from alterability-as-such to the harmful-as-blow, all converging on <span class="greek">πάθος</span> (<i>pathos</i>) as the ontological structure of <i>occurring-to-the-living-being</i>. (§18b)</li>
+  <li><strong>The <span class="greek">πάθη</span> are <span class="greek">λόγοι ἔνυλοι</span> (<i>logoi enyloi</i>, &ldquo;enmattered <span class="greek">λόγοι</span>&rdquo;)</strong>&mdash;their <span class="greek">λόγος</span> (<i>logos</i>) is inseparable from their <span class="greek">σῶμα</span> (<i>sōma</i>). (§18d)</li>
+  <li><strong>The double consideration (<span class="greek">εἶδος</span> / <span class="greek">ὕλη</span>) defines a hierarchy of inquiry</strong>: the <span class="greek">διαλεκτικός</span> (<i>dialektikos</i>) / rhetorician handles the <span class="greek">εἶδος</span> (Aristotle&rsquo;s <i>Rhetoric</i>), the <span class="greek">φυσικός</span> (<i>phusikos</i>) handles the <span class="greek">ὕλη</span> as <span class="greek">κινούμενον σῶμα</span> (<i>kinoumenon sōma</i>, &ldquo;moved body&rdquo;), and only the <span class="greek">πρῶτος φιλόσοφος</span> (<i>prōtos philosophos</i>) addresses being as such. (§18d)</li>
+</ol>
+
+<h3>Connections to <i>Being and Time</i> (1927)</h3>
+
+<p>§18 is the philological-systematic source for several signature doctrines of <i>Being and Time</i>:</p>
+
+<ul>
+  <li><strong><span class="greek">Πάθος</span> &rarr; Befindlichkeit / Stimmung</strong> (BT §29): the threefold structure of every <span class="greek">πάθος</span> (<span class="greek">πῶς διακείμενοι</span> [<i>pōs diakeimenoi</i>, &ldquo;how they are disposed&rdquo;], <span class="greek">ποίαις</span> [<i>poiais</i>, &ldquo;in what manner&rdquo;], <span class="greek">ἐπὶ ποίοις</span> [<i>epi poiois</i>, &ldquo;with respect to what&rdquo;]) (<i>Rhet.</i> B 1, 1378a 24, cited in §16) prefigures the threefold of attunement: how one finds oneself, what one is attuned to, in respect to whom.</li>
+  <li><strong><span class="greek">Φόβος</span> &rarr; Furcht / Angst</strong> (BT §30, §40): the §18a remark on &ldquo;fear in the face of the nothing&rdquo; is the proto-formulation of the <i>Angst</i>-analytic.</li>
+  <li><strong>Bodily being-in-the-world &rarr; In-der-Welt-sein</strong> (BT §12 ff.): &ldquo;the primary being-there-function of bodiliness secures the ground for the full being of human beings&rdquo; (p. 134) is the 1924 articulation of what BT will call the worldhood of the world.</li>
+  <li><strong><span class="greek">Νοῦς</span> / <span class="greek">φῶς</span> &rarr; Erschlossenheit</strong> (BT §28): <span class="greek">νοῦς</span> (<i>nous</i>) as the &ldquo;fundamental illumination&rdquo; required for any being to be there is the ancestor of the &ldquo;clearing&rdquo; (<i>Lichtung</i>) doctrine.</li>
+</ul>
+
+<h3>Three Tensions Worth Flagging</h3>
+
+<ol>
+  <li><strong>The dual sense of <span class="greek">ὕλη</span> (<i>hylē</i>)</strong>: in §17a it is <i>positive being-in-preparedness</i> (<span class="greek">δεκτικόν</span>, <i>dektikon</i>); in §18d it is <span class="greek">σῶμα</span> (<i>sōma</i>) as material substrate. Reconcilable, but Heidegger does not explicitly thematize the reconciliation.</li>
+  <li><strong><span class="greek">Νοῦς</span> (<i>nous</i>) as <span class="greek">ἀπαθές</span> (<i>apathes</i>)</strong>: the limit-claim that <span class="greek">νοῦς</span> (<i>nous</i>) is &ldquo;untouchable&rdquo; stands in tension with the universal claim that all <span class="greek">πάθη</span> (<i>pathē</i>) are <span class="greek">μετὰ σώματος</span> (<i>meta sōmatos</i>). Aristotle&rsquo;s deferral to <i>De Anima</i> Γ 4–5 is left unsealed.</li>
+  <li><strong>The Hegelian <span class="greek">σῴζειν</span> (<i>sōzein</i>) &rarr; <i>Aufhebung</i> claim</strong>: Heidegger&rsquo;s parenthetical reading of Aristotle through Hegel (p. 132) is a strong interpretive gesture; whether <span class="greek">σωτηρία</span> (<i>sōtēria</i>) genuinely supports the triadic <i>Aufhebung</i> is not argued.</li>
+</ol>
+
+<hr>
+
+<h2>Source Inventory</h2>
+
+<table>
+  <tr><th>Source</th><th>Path</th></tr>
+  <tr><td>Primary text (PDF pp. 144–154; book pp. 129–139)</td><td class="small"><code>corpus/rhetorical_ontology/Heidegger, Martin - Basic Concepts of Aristotelian Philosophy_(2009)_[Clean Copy].pdf</code></td></tr>
+  <tr><td>Phase 2 structured analysis</td><td class="small"><code>corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-analysis/phase2-u-fp3c.md</code></td></tr>
+  <tr><td>Structured manifest (§17–§18)</td><td class="small"><code>corpus/index/Heidegger - Basic Concepts of Aristotelian Philosophy/bcap-structured/u-fp3c.json</code></td></tr>
+  <tr><td>New index (<code>heidegger-bcap-4-5</code>)</td><td class="small"><code>tmp/analysis-upgrade/&hellip;/claims.jsonl</code>, <code>concept-mentions.jsonl</code> &mdash; <i>does not cover §18</i> (only PDF pp. 25–30)</td></tr>
+</table>
+
+<p class="small"><strong>Aristotelian primary texts cited in §18 (per Heidegger&rsquo;s footnotes 232–271):</strong> <i>Met.</i> Δ21 1022b 15–21; <i>De an.</i> A 1, 403a 3, 403a 8, 403a 16, 403a 18–25, 403a 27–b 17, 403b 19; <i>De an.</i> Γ 4, 429a 15, 429a 22; <i>De an.</i> Γ 5, 430a 14; <i>NE</i> B 3, 1105b 4; <i>NE</i> B 5, 417b 2–14; <i>De an.</i> B 5, 417b 2–14; <i>De an.</i> A 4, 408b 11.</p>
+
+</body>
+</html>

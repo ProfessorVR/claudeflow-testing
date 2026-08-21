@@ -1,0 +1,165 @@
+{
+  "Name": "God Agent",
+  "Version": "1.0",
+  "Device": "Stream Deck MK.2",
+  "Keys": 15,
+  "Layout": "5x3",
+  "Description": "God Agent command shortcuts for Stream Deck MK.2",
+  "Notes": "Each button runs a shell script via Terminal. Set GOD_AGENT_DIR env var to your installation path.",
+
+  "Buttons": [
+
+    {
+      "Position": { "row": 1, "col": 1, "index": 0 },
+      "Label": "STATUS",
+      "Icon": "📊",
+      "Color": "#00c8ff",
+      "Script": "scripts/god-status.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "Terminal",
+      "Description": "Show God Agent system status and learning stats"
+    },
+    {
+      "Position": { "row": 1, "col": 2, "index": 1 },
+      "Label": "ASK",
+      "Icon": "💬",
+      "Color": "#00c8ff",
+      "Script": "scripts/god-ask.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "Terminal",
+      "Description": "Ask a question — prompts for input via dialog"
+    },
+    {
+      "Position": { "row": 1, "col": 3, "index": 2 },
+      "Label": "CODE",
+      "Icon": "⚙️",
+      "Color": "#00c8ff",
+      "Script": "scripts/god-code.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "Terminal",
+      "Description": "Generate code — prompts for task description"
+    },
+    {
+      "Position": { "row": 1, "col": 4, "index": 3 },
+      "Label": "RESEARCH",
+      "Icon": "🔬",
+      "Color": "#00c8ff",
+      "Script": "scripts/god-research.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "Terminal",
+      "Description": "Deep research via DAI-002 pipeline — prompts for topic"
+    },
+    {
+      "Position": { "row": 1, "col": 5, "index": 4 },
+      "Label": "WRITE",
+      "Icon": "✍️",
+      "Color": "#00c8ff",
+      "Script": "scripts/god-write.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "Terminal",
+      "Description": "Generate documents — prompts for task"
+    },
+
+    {
+      "Position": { "row": 2, "col": 1, "index": 5 },
+      "Label": "LEARN",
+      "Icon": "🧠",
+      "Color": "#7b2fff",
+      "Script": "scripts/god-learn.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "Terminal",
+      "Description": "Store knowledge in God Agent — prompts for content"
+    },
+    {
+      "Position": { "row": 2, "col": 2, "index": 6 },
+      "Label": "QUERY",
+      "Icon": "🔍",
+      "Color": "#7b2fff",
+      "Script": "scripts/god-query.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "Terminal",
+      "Description": "Search stored knowledge — prompts for query"
+    },
+    {
+      "Position": { "row": 2, "col": 3, "index": 7 },
+      "Label": "STYLE IN",
+      "Icon": "📄",
+      "Color": "#7b2fff",
+      "Script": "scripts/god-learn-style.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "Terminal",
+      "Description": "Learn writing style from PDF — opens file picker"
+    },
+    {
+      "Position": { "row": 2, "col": 4, "index": 8 },
+      "Label": "STYLES",
+      "Icon": "🎨",
+      "Color": "#7b2fff",
+      "Script": "scripts/god-style-status.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "Terminal",
+      "Description": "Show available writing style profiles"
+    },
+    {
+      "Position": { "row": 2, "col": 5, "index": 9 },
+      "Label": "FEEDBACK",
+      "Icon": "⭐",
+      "Color": "#7b2fff",
+      "Script": "scripts/god-feedback.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "Terminal",
+      "Description": "Submit quality feedback to improve trajectory learning"
+    },
+
+    {
+      "Position": { "row": 3, "col": 1, "index": 10 },
+      "Label": "—",
+      "Empty": true,
+      "Description": "Reserved — assign a custom command"
+    },
+    {
+      "Position": { "row": 3, "col": 2, "index": 11 },
+      "Label": "—",
+      "Empty": true,
+      "Description": "Reserved — assign a custom command"
+    },
+    {
+      "Position": { "row": 3, "col": 3, "index": 12 },
+      "Label": "—",
+      "Empty": true,
+      "Description": "Reserved — assign a custom command"
+    },
+    {
+      "Position": { "row": 3, "col": 4, "index": 13 },
+      "Label": "—",
+      "Empty": true,
+      "Description": "Reserved — assign a custom command"
+    },
+    {
+      "Position": { "row": 3, "col": 5, "index": 14 },
+      "Label": "DASHBOARD",
+      "Icon": "🖥️",
+      "Color": "#ff6b35",
+      "Script": "scripts/god-dashboard.sh",
+      "StreamDeckAction": "com.elgato.streamdeck.system.open",
+      "Application": "Terminal",
+      "Description": "Open the God Agent companion web dashboard"
+    }
+
+  ],
+
+  "StreamDeckSetupInstructions": {
+    "Step1": "Open Stream Deck app → Create new Profile named 'God Agent'",
+    "Step2": "For each button: drag 'Open' action onto the key slot",
+    "Step3": "Set App to 'Terminal', set Title to the label (e.g. STATUS)",
+    "Step4": "In the path field, set: /path/to/god-agent-streamdeck/scripts/god-<name>.sh",
+    "Step5": "Optional: right-click → set Icon for visual reference",
+    "Step6": "Row 3 buttons 1-4 are empty — assign anything you want",
+    "Tip": "Set GOD_AGENT_DIR in your shell profile to avoid hardcoding the path"
+  },
+
+  "EnvironmentVariables": {
+    "GOD_AGENT_DIR": "Path to your god-agent-package directory (default: ~/god-agent-package)",
+    "GOD_AGENT_DASHBOARD": "Path to dashboard/index.html (default: ~/god-agent-streamdeck/dashboard/index.html)"
+  }
+}

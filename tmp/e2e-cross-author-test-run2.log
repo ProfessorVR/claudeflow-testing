@@ -1,0 +1,195 @@
+=== ICP Pipeline Runner ===
+
+API key: ...qVgJZAAA (108 chars)
+Embedding: online (gte-Qwen2-1.5B-instruct (1536D))
+
+Corpus folder: rhetorical_ontology
+Building pipeline providers...
+Available backends: anthropic, vllm
+ClaimProvider wired: false
+
+--- Running ICP Pipeline ---
+
+Prompt: The role of phantasia and Erschlossenheit in disclosing the environment:
+how Aristotle's account of phantasia in De Anim...
+
+Source priority: primary=[Aristotle - On The Soul (De Anima), Aristotle - Physics], secondary=[Heidegger, Martin - Basic Concepts of Aristotelian Philosophy], searchAll=true
+[INFO] ChromaDB collection "knowledge_chunks" resolved to 2351bc36-0847-4071-ac16-31da2b634a22
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle phantasia De Anima III.3 phainomena appe..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "Aristotle phantasia De Anima III.3 phainomena appearance disclosure phantasia aisthesis noesis imagination faculty psych..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.8178 to 0.8805
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 4
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 4
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "Heidegger Erschlossenheit Being and Time disclosed..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "Heidegger Erschlossenheit Being and Time disclosedness Befindlichkeit Verstehen Being-in-the-world Lichtung clearing Das..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7892 to 0.8276
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "Heidegger Aristotle phenomenology phantasia Erschl..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "Heidegger Aristotle phenomenology phantasia Erschlossenheit comparison pre-theoretical disclosure mediation faculty exis..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7430 to 0.7766
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 5
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 5
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle hylomorphism faculty psychology Heidegge..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "Aristotle hylomorphism faculty psychology Heidegger critique substance metaphysics existential analytic vs faculty psych..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7269 to 0.8107
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "Heidegger Aristotle interpretation Heidegger lectu..." (max: 3)
+[INFO] [SmartRetrievalLayer] Query expanded: "Heidegger Aristotle interpretation Heidegger lectures Aristotle 1920s phenomenological appropriation Aristotle scholarly..."
+[INFO] [SmartRetrievalLayer] Found 6 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 6, minRelevance: 0.5
+[INFO] [SmartRetrievalLayer] Score range: 0.7543 to 0.7760
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 6
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 6
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 6
+[INFO] [SmartRetrievalLayer] Step 5 after limit (3): 3
+[INFO] [SmartRetrievalLayer] Semantic search: "How does Aristotle theorize phantasia in De Anima ..." (max: 20)
+[INFO] [SmartRetrievalLayer] Query expanded: "How does Aristotle theorize phantasia in De Anima Book III Chapter 3 as the psychological faculty that mediates between ..."
+[INFO] [SmartRetrievalLayer] Keyword search: Aristotle phantasia De Anima III.3, phainomena appearance disclosure, phantasia aisthesis noesis, imagination faculty psychology, Aristotle mental representation, phantasia kinesis sensation, De Anima 428a-429a, phantasia doxa belief
+[INFO] [SmartRetrievalLayer] Found 40 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Keyword search found 0 chunks
+[INFO] [SmartRetrievalLayer] Semantic search: "How does Heidegger articulate Erschlossenheit (dis..." (max: 20)
+[INFO] [SmartRetrievalLayer] Query expanded: "How does Heidegger articulate Erschlossenheit (disclosedness) in Being and Time as the fundamental existential structure..."
+[INFO] [SmartRetrievalLayer] Keyword search: Heidegger Erschlossenheit Being and Time, disclosedness Befindlichkeit Verstehen, Being-in-the-world Lichtung clearing, Dasein existential analytic, Heidegger ontological disclosure, Zuhandenheit Vorhandenheit, Being and Time sections 28-34, Heidegger world-disclosure
+[INFO] [SmartRetrievalLayer] Found 40 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Keyword search found 0 chunks
+[INFO] [SmartRetrievalLayer] Semantic search: "What are the structural and phenomenological paral..." (max: 20)
+[INFO] [SmartRetrievalLayer] Query expanded: "What are the structural and phenomenological parallels between Aristotle's phantasia and Heidegger's Erschlossenheit as ..."
+[INFO] [SmartRetrievalLayer] Keyword search: Heidegger Aristotle phenomenology, phantasia Erschlossenheit comparison, pre-theoretical disclosure, mediation faculty existential, Heidegger appropriation Aristotle, phenomenological parallels, disclosure representation, Aristotelian Heideggerian continuity
+[INFO] [SmartRetrievalLayer] Found 40 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Keyword search found 0 chunks
+[INFO] [SmartRetrievalLayer] Semantic search: "Where and how do Aristotle's faculty-psychological..." (max: 20)
+[INFO] [SmartRetrievalLayer] Query expanded: "Where and how do Aristotle's faculty-psychological framework and Heidegger's existential analytic fundamentally diverge ..."
+[INFO] [SmartRetrievalLayer] Keyword search: Aristotle hylomorphism faculty psychology, Heidegger critique substance metaphysics, existential analytic vs faculty psychology, Dasein psyche soul ontology, Heidegger Destruktion Aristotle, substance ontology Being-in-the-world, faculty powers dynameis, Cartesian subject Heidegger
+[INFO] [SmartRetrievalLayer] Found 40 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Keyword search found 0 chunks
+[INFO] [SmartRetrievalLayer] Semantic search: "How have contemporary scholars in phenomenology, a..." (max: 20)
+[INFO] [SmartRetrievalLayer] Query expanded: "How have contemporary scholars in phenomenology, ancient philosophy, and Heidegger studies interpreted the relationship ..."
+[INFO] [SmartRetrievalLayer] Keyword search: Heidegger Aristotle interpretation, Heidegger lectures Aristotle 1920s, phenomenological appropriation Aristotle, scholarly debate Heidegger Aristotle, Kisiel Sheehan Brogan Aristotle, Heidegger misreading Aristotle, Continental reception Aristotle, existential phenomenology ancient philosophy
+[INFO] [SmartRetrievalLayer] Keyword search found 0 chunks
+[INFO] [SmartRetrievalLayer] Found 40 chunks from ChromaDB
+[ICP-Stage6b] Bridge activated: hook-metaphysics-10 — ἐνέργεια / δύναμις and the Functional Circle ↔ ?
+[ICP-Stage6b] Required: [Aristotle,von Uexkull, Jacob] | Present: [] | Missing: [Aristotle,von Uexkull, Jacob]
+[INFO] [SmartRetrievalLayer] Semantic search: "Aristotle's Phantasia as Disclosure of Phainomena ..." (max: 8)
+[INFO] [SmartRetrievalLayer] Query expanded: "Aristotle's Phantasia as Disclosure of Phainomena How does Aristotle theorize phantasia in De Anima Book III Chapter 3 a..."
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.6090 to 0.6887
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 16
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 12
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 12
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 8
+[ICP-Stage6b] Added 8 bridge-enforced spans for Aristotle
+[ICP-Stage6b] Added 8 bridge-enforced spans for von Uexkull, Jacob
+[ICP-Stage6b] Bridge activated: hook-de-anima-03 — αἴσθησις ↔ Befindlichkeit
+[ICP-Stage6b] Required: [Aristotle,Heidegger, Martin] | Present: [Aristotle] | Missing: [Heidegger, Martin]
+[INFO] [SmartRetrievalLayer] Semantic search: "Heidegger's Erschlossenheit and Being-in-the-World..." (max: 8)
+[INFO] [SmartRetrievalLayer] Query expanded: "Heidegger's Erschlossenheit and Being-in-the-World How does Heidegger articulate Erschlossenheit (disclosedness) in Bein..."
+[INFO] [SmartRetrievalLayer] Found 16 chunks from ChromaDB
+[INFO] [SmartRetrievalLayer] Step 1 raw results: 16, minRelevance: 0.35
+[INFO] [SmartRetrievalLayer] Score range: 0.7261 to 0.7946
+[INFO] [SmartRetrievalLayer] Step 2 after relevance filter: 16
+[INFO] [SmartRetrievalLayer] Step 3 after diversity boost: 16
+[INFO] [SmartRetrievalLayer] Step 4 after rerank: 16
+[INFO] [SmartRetrievalLayer] Step 5 after limit (8): 8
+[ICP-Stage6b] Added 8 bridge-enforced spans for Heidegger, Martin
+[ICP-Stage6b] Bridge activated: hook-de-anima-02 — φαντασία ↔ Erschlossenheit / Being-in-the-World
+[ICP-Stage6b] Required: [Aristotle,Heidegger, Martin] | Present: [Aristotle,Heidegger, Martin] | Missing: []
+[ICP-Stage6b] Bridge activated: hook-de-anima-02 — φαντασία ↔ Erschlossenheit / Being-in-the-World
+[ICP-Stage6b] Required: [Aristotle,Heidegger, Martin] | Present: [Aristotle,Heidegger, Martin] | Missing: []
+[ICP-Stage6b] Bridge activated: hook-de-anima-02 — φαντασία ↔ Erschlossenheit / Being-in-the-World
+[ICP-Stage6b] Required: [Aristotle,Heidegger, Martin] | Present: [Aristotle,Heidegger, Martin] | Missing: []
+[QualityGauntlet] Stage weights sum to 1.15, not 1.0. Scores will be normalized.
+{"timestamp":"2026-04-08T20:40:05.747Z","level":"INFO","message":"Starting endnote generation","context":{"component":"EndnoteGenerator"}}
+{"timestamp":"2026-04-08T20:40:05.748Z","level":"INFO","message":"Found 0 citations to process","context":{"component":"EndnoteGenerator"}}
+{"timestamp":"2026-04-08T20:40:05.748Z","level":"INFO","message":"Generated 0 endnotes with 0 supporting quotations","context":{"component":"EndnoteGenerator"}}
+
+--- Pipeline Complete (47.6s) ---
+
+Success: true
+Block reasons: 6
+Quote spans: 49
+Claims: 0
+Atoms: 0
+Bindings: 0
+Hypothesis claims: 0
+Paragraphs planned: 0
+Generated text sections: 0
+Events: 32
+
+Quality Gates:
+  Quality gauntlet: FAIL (score: 0.95, 8/9 stages)
+  Style profile: dalton-academic-mkn82c3v (applied: true)
+
+Bridge-enforced spans: 24
+  [flagged] Aristotle (bridge-enforced): "are all productive of one effect each, but the rational produce contrary effects..."
+  [flagged] Aristotle (bridge-enforced): "What in the case of thinking or understanding leads from potentiality to actuali..."
+  [flagged] Aristotle (bridge-enforced): "whether it is everywhere homogeneous or not; and if not homogeneous, whether its..."
+  [flagged] Aristotle (bridge-enforced): "other advantage; but as the man is free, we say, who exists for himself and not ..."
+  [flagged] Aristotle (bridge-enforced): "• The next question is whether the principles are two or three or more in number..."
+  [flagged] Aristotle (bridge-enforced): "The fallacy of elissus is obvious. For he supposes that the assumption ‘what has..."
+  [flagged] Aristotle (bridge-enforced): "Retaining the S text; Ross reads: mx^piopivcr ptmoi Ax’ AXAf/Xwv (oil) (‘not, ho..."
+  [flagged] Aristotle (bridge-enforced): "10 • Since contraries are other in form, and the perishable and the imperish­ ab..."
+  [flagged] von Uexkull, Jacob (bridge-enforced): "are all productive of one effect each, but the rational produce contrary effects..."
+  [flagged] von Uexkull, Jacob (bridge-enforced): "What in the case of thinking or understanding leads from potentiality to actuali..."
+  [flagged] von Uexkull, Jacob (bridge-enforced): "whether it is everywhere homogeneous or not; and if not homogeneous, whether its..."
+  [flagged] von Uexkull, Jacob (bridge-enforced): "other advantage; but as the man is free, we say, who exists for himself and not ..."
+  [flagged] von Uexkull, Jacob (bridge-enforced): "• The next question is whether the principles are two or three or more in number..."
+  [flagged] von Uexkull, Jacob (bridge-enforced): "The fallacy of elissus is obvious. For he supposes that the assumption ‘what has..."
+  [flagged] von Uexkull, Jacob (bridge-enforced): "Retaining the S text; Ross reads: mx^piopivcr ptmoi Ax’ AXAf/Xwv (oil) (‘not, ho..."
+  [flagged] von Uexkull, Jacob (bridge-enforced): "10 • Since contraries are other in form, and the perishable and the imperish­ ab..."
+  [flagged] Heidegger, Martin (bridge-enforced): "OuR analysis of the worldhood of the world has constantly been bringing the whol..."
+  [flagged] Heidegger, Martin (bridge-enforced): "1 'Entwurf'. The basic meaning of this noun and the cognate verb 'entwerfen' is ..."
+  [flagged] Heidegger, Martin (bridge-enforced): "1 ' • • . wie das Dazu, als wobei es die Bewandtnis hat, das Worum-willen, darau..."
+  [flagged] Heidegger, Martin (bridge-enforced): "The question of the meaning of Being is the most universal and the emptiest of q..."
+  [flagged] Heidegger, Martin (bridge-enforced): "Being and Time I. s That which is understood gets Articulated when the entity to..."
+  [flagged] Heidegger, Martin (bridge-enforced): "temporality would be to say that it is something which is 'earlier' and
+
+'later'..."
+  [flagged] Heidegger, Martin (bridge-enforced): "along with it. If it lacks its "there", it is not factically the entity which is..."
+  [flagged] Heidegger, Martin (bridge-enforced): ". . . bei . . . " soil durch den Terminus Verweisung angezeigt werden.' Here the..."
+
+Final prose: 0 words
+
+Saved to: /home/dalton/projects/claudeflow-testing/tmp/icp-output-2026-04-08T20-40-05.md
+
+========== GENERATED PROSE ==========
+
+(empty)
+
+03e0139db7ac3f52
+11fdf613d40f9939
+49fa185fb6e11943
+527bac6664a1cf16
+68e5873d3593fbea
+746585ac7140c19c
+8662a2c3d5da7ce2
+9ae14153cdb6ed0e
+b811388f4f1d7863
+f03980fa5d95360d
+f6041c1a815c83f1
+
+=====================================
+
+{"timestamp":"2026-04-08T20:40:05.774Z","level":"INFO","message":"Configuration initialized","context":{"service":"config-manager","configPath":null,"version":"2.1.0"}}
+{"timestamp":"2026-04-08T20:40:05.814Z","level":"INFO","message":"Using local gte-Qwen2-1.5B-instruct API","context":{"service":"embedding-provider"}}
+[SonaEngine] Trajectory icp-20aad91b-56bf-40a9-afc1-78a3b192472b has no steps for pattern creation
+[SonaEngine] Created pattern pattern_1775680805815_nt72auraf9o from trajectory icp-20aad91b-56bf-40a9-afc1-78a3b192472b (quality: 0.952, steps: 0)
+[SonaEngine] Auto-created pattern pattern_1775680805815_nt72auraf9o from high-quality trajectory icp-20aad91b-56bf-40a9-afc1-78a3b192472b (no prior patterns - bootstrap)

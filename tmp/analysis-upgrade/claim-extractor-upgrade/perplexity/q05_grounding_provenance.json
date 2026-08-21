@@ -1,0 +1,91 @@
+{
+  "id": "c65cffca-47cd-484d-b546-7b9f7e705305",
+  "model": "sonar-pro",
+  "created": 1776579158,
+  "usage": {
+    "prompt_tokens": 159,
+    "completion_tokens": 459,
+    "total_tokens": 618,
+    "search_context_size": "low",
+    "cost": {
+      "input_tokens_cost": 0.00048,
+      "output_tokens_cost": 0.00689,
+      "request_cost": 0.006,
+      "total_cost": 0.01336
+    }
+  },
+  "citations": [
+    "https://paperpile.com/s/methods-and-protocols-citation-style/",
+    "https://arxiv.org/html/2602.21045v1",
+    "https://journals.sagepub.com/doi/10.3233/FAIA241241",
+    "https://www.socialscienceregistry.org/trials/11396",
+    "https://stoptheriverwalk.com/2026/01/20/river-walk-riverbank-and-the-paper-trail-what-the-public-record-shows-and-how-to-follow-it/",
+    "https://provost.ncsu.edu/ofe/about-ofe/mission-statement/",
+    "https://www.tagitm.org/page/ac2026speakers"
+  ],
+  "search_results": [
+    {
+      "title": "Methods and Protocols citation style [Update March 2026] - Paperpile",
+      "url": "https://paperpile.com/s/methods-and-protocols-citation-style/",
+      "last_updated": "2026-03-31",
+      "snippet": "Methods and Protocols citation style guide with bibliography and in-text referencing examples: \u2713Journal articles \u2713Books \u2713Book chapters \u2713Reports \u2713Web pages.",
+      "source": "web"
+    },
+    {
+      "title": "PaperTrail: A Claim-Evidence Interface for Grounding Provenance in ...",
+      "url": "https://arxiv.org/html/2602.21045v1",
+      "date": "2026-02-24",
+      "last_updated": "2026-04-11",
+      "snippet": "From these anchor papers, we selected two additional papers from their reference lists that addressed the same topic but used different ...",
+      "source": "web"
+    },
+    {
+      "title": "Citation Anchor Text for Improving Precedent Retrieval",
+      "url": "https://journals.sagepub.com/doi/10.3233/FAIA241241",
+      "snippet": "First published online March 24, 2026. Citation Anchor Text for Improving Precedent Retrieval: An Experimental Study on Indian Legal Documents.",
+      "source": "web"
+    },
+    {
+      "title": "Anchoring and Subjective Belief Distributions - AEA RCT Registry",
+      "url": "https://www.socialscienceregistry.org/trials/11396",
+      "snippet": "The purpose of this project is to study how anchors affect estimations of subjective belief distributions (SBDs). Anchoring is a well-known judgment bias in ...",
+      "source": "web"
+    },
+    {
+      "title": "River Walk, Riverbank, and the Paper Trail: What the Public Record ...",
+      "url": "https://stoptheriverwalk.com/2026/01/20/river-walk-riverbank-and-the-paper-trail-what-the-public-record-shows-and-how-to-follow-it/",
+      "date": "2026-01-20",
+      "last_updated": "2026-03-08",
+      "snippet": "How to Track This in 2026 Without Drowning in Paper. Use a repeatable method: Step 1: Start with the city's project hub. The City of ...",
+      "source": "web"
+    },
+    {
+      "title": "Mission and Values | Office for Faculty Excellence",
+      "url": "https://provost.ncsu.edu/ofe/about-ofe/mission-statement/",
+      "last_updated": "2026-03-26",
+      "snippet": "The Office for Faculty Excellence provides support and guidance to all NC State faculty, as we foster and facilitate professional success and growth.",
+      "source": "web"
+    },
+    {
+      "title": "2026 Speaker - Annual Conference - tagitm",
+      "url": "https://www.tagitm.org/page/ac2026speakers",
+      "snippet": "This session examines the findings of current global threat research, detailing how modern attack trends and evolving intrusion methods are redefining risk for ...",
+      "source": "web"
+    }
+  ],
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "**PaperTrail (2026)** extracts claims and evidence from scholarly papers offline, storing them in a JSON knowledge base with associated **citations**, **section names**, and evidence snippets to anchor provenance at claim granularity, enabling real-time matching to LLM answers without relying on query-based retrieval.[2]\n\n**Citation-anchored extraction** formalizes attribution by mapping statements to cited passages, evaluating via citation coverage (recall) and sufficiency (precision); PaperTrail refines this by decomposing papers and answers into discrete claims for finer alignment, contrasting coarser RAG passage retrieval.[2]\n\n**Span prediction with LLMs** appears in PaperTrail's model-agnostic pipeline: offline paper-level extraction preprocesses entire corpora into claim-evidence units (potentially including spans via sections), while real-time answer extraction decomposes LLM outputs for similarity-based matching using SPECTER embeddings on scientific text; exact **page/paragraph/line** anchoring (e.g., **Bekker** or **Stephanus**) is not explicitly detailed, though section names and evidence snippets imply span-level grounding.[2]\n\n**Verification pipelines** in PaperTrail use a three-stage process\u2014offline paper extraction, real-time answer extraction, and claim-evidence matching\u2014to expose **omissions**, **mismatches**, and grounding, verifying if answer claims align with source claims rather than entire passages; this differs from baseline citation interfaces that show verbatim source text without decomposition.[2]\n\n**Pitfalls** like **citation drift** (where citations become imprecise over time) and **hallucinated Bekker numbers** are unaddressed in available 2024-2026 literature; evidence on anchoring to exact spans (e.g., **page**, **paragraph**, **Bekker**, **Stephanus**, **line**) in philosophy/classical texts is thin, with PaperTrail focusing on modern scholarly articles via sections rather than pagination systems.[2]\n\nNo primary ACL/EMNLP/NAACL/TACL/CoNLL/arXiv sources beyond PaperTrail (arXiv 2026) directly cover these; related works like Li et al. (2023) and Pang et al. (2025) inform sourcing but lack span specifics.[2]"
+      },
+      "delta": {
+        "role": "assistant",
+        "content": ""
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}
