@@ -1,0 +1,148 @@
+# EXCLUSIONS AND COERCIONS
+
+Every row, file, subject-stimulus cell or survey item dropped or interpreted,
+with its reason. Silent exclusions are the failure mode this analysis exists to
+prevent, so this file is generated from the run journal rather than by hand.
+
+- exclusions recorded: **86**
+- values interpreted rather than read directly: **14**
+
+## Exclusions by scope
+
+### `channel` - 63 entries (59 recoverable)
+
+| item | rows | recoverable | reason |
+|---|---|---|---|
+| R2-01 BOR HR |  | False | HR stream present but every value is a vendor sentinel |
+| R2-01 HRV-2024-03-21-142102.csv |  | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| R2-01 HRV-2024-03-21-145916.csv |  | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| R2-01 HRV-2024-03-21-153006.csv |  | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| R2-01 INT IMU |  | False | no IMU stream in this cell (recorder tree excluded by author ruling, so no substitute is sought) |
+| R2-02 BOR IMU |  | False | no IMU stream in this cell (recorder tree excluded by author ruling, so no substitute is sought) |
+| R2-02 HRV-2024-03-13-160644.csv |  | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| R2-02 HRV-2024-03-13-164043.csv |  | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| R2-03 HRV-2024-03-15-140102.csv |  | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| R2-03 HRV-2024-03-18-162231.csv |  | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| R2-03 HRV-2024-03-18-165015.csv |  | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| R2-03 INT IMU |  | False | no IMU stream in this cell (recorder tree excluded by author ruling, so no substitute is sought) |
+| R2-04 HRV-2024-03-21-161025.csv |  | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| R2-04 HRV-2024-03-21-164339.csv |  | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| R2-04 HRV-2024-03-21-171419.csv |  | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S01 BOR HRV | 2178 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S01 BOR HRV | 2178 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S01 CLC HRV | 2179 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S01 CLC HRV | 2179 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S01 INT HRV | 1964 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S01 INT HRV | 1964 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S02 BOR HRV | 2734 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S02 BOR HRV | 2734 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S02 CLC HRV | 2716 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S02 CLC HRV | 2716 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S02 INT HRV | 2648 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S02 INT HRV | 2648 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S03 BOR HRV | 2115 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S03 BOR HRV | 2115 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S03 CLC HRV | 2403 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S03 CLC HRV | 2403 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S03 INT HRV | 2047 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S03 INT HRV | 2047 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S04 BOR HRV | 2473 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S04 BOR HRV | 2473 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S04 CLC HRV | 2539 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S04 CLC HRV | 2539 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S04 INT HRV | 2649 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S04 INT HRV | 2649 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S05 BOR HRV | 2192 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S05 BOR HRV | 2192 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S05 CLC HRV | 1488 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S05 CLC HRV | 1488 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S05 INT HRV | 2439 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S05 INT HRV | 2439 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S06 BOR HRV | 2434 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S06 BOR HRV | 2434 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S06 CLC HRV | 2280 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S06 CLC HRV | 84354 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S06 INT HRV | 95079 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S06 INT HRV | 2264 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S07 BOR HRV | 2545 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S07 BOR HRV | 2545 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S07 CLC HRV | 2440 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S07 CLC HRV | 2440 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S07 INT HRV | 2897 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S07 INT HRV | 2897 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S08 BOR HRV | 2307 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S08 BOR HRV | 2307 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S08 CLC HRV | 816 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S08 CLC HRV | 816 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S08 INT HRV | 502 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+| S08 INT HRV | 502 | True | author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent. |
+
+### `non-wear` - 20 entries (20 recoverable)
+
+| item | rows | recoverable | reason |
+|---|---|---|---|
+| R2-01 BOR lead-in |  | True | closure of 32.8 s beginning at 11.2 s: headset not yet worn (openness=0 with a good quality flag) |
+| R2-01 BOR tail |  | True | closure of 30.2 s beginning at 1076.3 s of 1106.5 s: headset removed |
+| R2-01 CLC lead-in |  | True | closure of 33.1 s beginning at 4.5 s: headset not yet worn (openness=0 with a good quality flag) |
+| R2-01 CLC tail |  | True | closure of 36.3 s beginning at 1077.0 s of 1113.3 s: headset removed |
+| R2-01 INT tail |  | True | closure of 34.4 s beginning at 1132.8 s of 1167.2 s: headset removed |
+| R2-02 BOR lead-in |  | True | closure of 33.0 s beginning at 14.2 s: headset not yet worn (openness=0 with a good quality flag) |
+| R2-02 BOR tail |  | True | closure of 33.7 s beginning at 1073.3 s of 1107.0 s: headset removed |
+| R2-02 CLC lead-in |  | True | closure of 30.7 s beginning at 17.6 s: headset not yet worn (openness=0 with a good quality flag) |
+| R2-02 CLC tail |  | True | closure of 32.4 s beginning at 1078.7 s of 1111.0 s: headset removed |
+| R2-02 INT lead-in |  | True | closure of 32.5 s beginning at 8.6 s: headset not yet worn (openness=0 with a good quality flag) |
+| R2-02 INT tail |  | True | closure of 35.5 s beginning at 1073.6 s of 1109.2 s: headset removed |
+| R2-03 BOR tail |  | True | closure of 31.9 s beginning at 1206.6 s of 1238.5 s: headset removed |
+| R2-03 CLC tail |  | True | closure of 32.6 s beginning at 1269.9 s of 1302.6 s: headset removed |
+| R2-03 INT tail |  | True | closure of 32.3 s beginning at 2396.2 s of 2428.5 s: headset removed |
+| R2-04 BOR lead-in |  | True | closure of 30.3 s beginning at 9.4 s: headset not yet worn (openness=0 with a good quality flag) |
+| R2-04 BOR tail |  | True | closure of 32.0 s beginning at 1059.9 s of 1091.9 s: headset removed |
+| R2-04 CLC lead-in |  | True | closure of 27.5 s beginning at 6.5 s: headset not yet worn (openness=0 with a good quality flag) |
+| R2-04 CLC tail |  | True | closure of 23.0 s beginning at 1106.3 s of 1129.3 s: headset removed |
+| R2-04 INT lead-in |  | True | closure of 31.2 s beginning at 15.8 s: headset not yet worn (openness=0 with a good quality flag) |
+| R2-04 INT tail |  | True | closure of 32.0 s beginning at 1079.5 s of 1111.5 s: headset removed |
+
+### `rate-harmonisation` - 2 entries (2 recoverable)
+
+| item | rows | recoverable | reason |
+|---|---|---|---|
+| S06 CLC | 82074 | True | D1: cell sampled at 111.1 Hz against the cohort's 2.994 Hz; decimated by taking every 37th row (84354 -> 2280) so gaze variance is one instrument across Round 1 |
+| S06 INT | 92815 | True | D1: cell sampled at 125.0 Hz against the cohort's 2.994 Hz; decimated by taking every 42th row (95079 -> 2264) so gaze variance is one instrument across Round 1 |
+
+### `row` - 1 entry (1 recoverable)
+
+| item | rows | recoverable | reason |
+|---|---|---|---|
+| R2-01 INT ts/sys | 1 | True | D4: 1 timestamp row(s) more than 1e12 us from the median - rebasing on the raw minimum would collapse this cell's time axis and report a 1.7e9 s duration |
+
+## Interpreted values
+
+Every one of these was a free-text answer that could not be read as a bare
+number. The raw string is preserved so each can be reviewed by hand.
+
+| item | raw | parsed | confidence | reason |
+|---|---|---|---|---|
+| R2-01 prior_exposure | `previous experience with medical footage.` | 1.0 | flagged | value carried entirely by the presence or absence of a leading 'no'; the item has no yes/no answer token |
+| R2-03 BOR minutes_until_bored | `NA` | nan | semantic | NA on minutes-until-bored = never became bored; retained as a category, NOT imputed and NOT treated as zero |
+| R2-03 CLC minutes_until_bored | `` | nan | missing | no answer present |
+| R2-03 CLC sleep_fight | `NA` | nan | missing | non-numeric answer on a 1-9 item |
+| R2-03 INT minutes_until_bored | `NA` | nan | semantic | NA on minutes-until-bored = never became bored; retained as a category, NOT imputed and NOT treated as zero |
+| R2-04 INT minutes_until_bored | `Halfway` | 8.5 | converted | author-approved 2026-07-30: 'Halfway' read as half of the 17-minute stimulus = 8.5 min |
+| R2-04 prior_exposure | `no previous experience with medical footage.` | 0.0 | flagged | value carried entirely by the presence or absence of a leading 'no'; the item has no yes/no answer token |
+| S01 INT minutes_until_bored | `NA` | nan | semantic | NA on minutes-until-bored = never became bored; retained as a category, NOT imputed and NOT treated as zero |
+| S02 INT minutes_until_bored | `NA` | nan | semantic | NA on minutes-until-bored = never became bored; retained as a category, NOT imputed and NOT treated as zero |
+| S03 BOR felt_duration_min | `1 hour` | 60.0 | converted | hours -> minutes (1 h = 60 min) |
+| S03 BOR minutes_until_bored | `25 sec` | 0.417 | converted | seconds -> minutes (25 s = 0.417 min) |
+| S05 BOR felt_duration_min | `5 min (fell asleep)` | 5.0 | flagged | number recovered from free text: '5 min (fell asleep)' |
+| S07 INT felt_duration_min | `10-12 minutes` | 11.0 | converted | range midpoint (10.0-12.0 -> 11.0) |
+| S08 BOR minutes_until_bored | `30 sec` | 0.5 | converted | seconds -> minutes (30 s = 0.500 min) |
+
+## Run notes
+
+- **blink resolvability** - Round 1's median sampling interval is ~334 ms, which is the mean spontaneous blink duration (334 ms, VanderWerf et al. 2003, J Neurophysiol 89(5):2784-96, doi:10.1152/jn.00557.2002 - spontaneous blink 334 +/- 67 ms). A blink therefore occupies 0-1 samples and blink RATE is not recoverable in Round 1 at any threshold; only extended closures are. Blink rate is reported for Round 2 (120 Hz) only.
+- **viewing order** - 3/3 episodes whose heading states an order are reproduced by the recording timestamps; order for all 36 episodes is therefore taken from timestamps.
+- **keystone composite** - engaged composite = mean within-subject z of pupil dilation, cognitive load, eye openness; gaze-deviation variance excluded because it is rate-dependent and the composite spans both rounds
+- **keystone composite** - engaged composite = mean within-subject z of pupil dilation, cognitive load, eye openness; gaze-deviation variance excluded because it is rate-dependent and the composite spans both rounds
+- **keystone composite** - engaged composite = mean within-subject z of pupil dilation, cognitive load, eye openness; gaze-deviation variance excluded because it is rate-dependent and the composite spans both rounds
+- **EEG** - Every cell is reported regardless of retention. No cell is excluded for being noisy, because the retention and SNR figures ARE the evidence for the ruling that EEG was dropped as too noisy; removing the worst cells would remove the justification.
+

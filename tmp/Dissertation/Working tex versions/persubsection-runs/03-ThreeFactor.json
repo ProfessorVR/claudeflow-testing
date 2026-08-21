@@ -1,0 +1,429 @@
+{
+  "command": "write",
+  "selectedAgent": "god-write",
+  "prompt": "================================================================\nPER-SUBSECTION PROMPT — SHARED PRELUDE\n================================================================\n\n**Concatenate with one of the 9 per-subsection delta files at invocation time.**\n\nThis prelude provides dissertation-specific context that the `/god-write` pipeline cannot derive from the corpus alone: §§1.0-1.4 inheritance, dissertation coinages, advisor-rigor blacklist, supplementary evidence pack (Sources A-E).\n\nThe pipeline's `--subsection-mode` flag handles output format (LaTeX `\\subsubsection*{...}`), word target, quotation density, section structure, and most stylistic constraints automatically. This prelude does NOT duplicate those mandates.\n\n================================================================\nARCHITECTURAL INHERITANCE FROM §§1.0–1.4\n================================================================\n\nThe dissertation's overarching thesis: the soul is constitutively rhetorical, with *phantasia* as the temporal-kinetic medium that generates a continuous, affectively charged narrative of experience across past, present, and future.\n\nThe five-node actualization chain (established in §1.0):\n\n- **A_0** — dyadic first actuality of sensible object + *aisthētikon* within the encompassing horizon of motion and time\n- **A_1** — completed perception with dual residual trace: *resonant aisthēma* (formal-eidetic) + *resonant epithymia* (affective-orectic)\n- **A_2** — the *phantasma* proper\n- **A_3** — completed cognitive actuality: three orientational modes (intellection, memory, deliberative *phantasia bouleutikē*) + orthogonal committal *doxa*\n- **A_4** — completed *praxis*\n\nEach completed actuality is simultaneously terminus of its antecedent motion and unmoved originator of its successor.\n\n§1.1 (Motion and Time as Horizon): *kinēsis* and *chronos* co-eternal (*Metaphysics* XII.6, 1071b6–11); motion as *energeia ateles* (*Physics* III.1, 201a10–14); Heidegger's *Bewegtheit* (BCAP §§25–26). Synchronic / diachronic dual register announced.\n\n§1.2 (M_0 → A_1, Actualization of *Aisthēsis*): *aisthēsis* IS a *kinēsis* (*De Anima* II.5, 416b33–417a1); three-factor schema of *De Anima* III.10, 433b13–18 applies directly; hylomorphic reception (*De Anima* II.12, 424a17–24); one-in-substrate-different-in-being. Coining of *resonant kinēsis* + dual-resonance thesis (one residue, two beings: *resonant aisthēma* + *resonant epithymia*).\n\n§1.3 (A_3, Completed Cognitive Actuality): A_3 = four-dimensional cognitive achievement converging on the *phantasma* stabilized at A_2. Three orientational modes (intellection / memory / discursive). *Doxa* enters as orthogonal committal dimension (involuntary, *logos*-dependent, exclusive to rational beings). Settled *doxai* as species of *hexis* (*Categories* 8, 8b25–9a13) function as additional unmoved originators feeding M_2 → A_3.\n\n§1.4 (Emotion as Form of Desire Under Evaluative Disclosure): higher-order *pathē* (anger, fear, pity, shame from *Rhetoric* II) and basic *resonant epithymia* are two articulational concretions of one ontological structure (preservative *paschein* / *sōtēria*, *De Anima* II.5, 417b2–7). The doxa-gate: bare *phantasma* leaves the soul \"unaffected\" of higher-order *pathē*; *doxa* propositionally ratifies the *phantasma*, producing the higher-order *pathē* *euthys* (*De Anima* III.3, 427b21–24). The *pathetic* loop has two registers: synchronic + diachronic. *Hexis* bivalence (BCAP §17): *technē*-hexis (training reduces deliberation toward transparent routine) vs *praxis*-hexis (holding-oneself-open for fresh *kairos*-resolution).\n\n§1.5 closes Chapter 1: integrative work, typology delivery, loop articulation, chapter synthesis.\n\n================================================================\nDISSERTATION COINAGES (italicized as units; deploy consistently)\n================================================================\n\n- ***resonant kinēsis*** — residual motion in the sensory apparatus persisting after object-withdrawal\n- ***resonant aisthēma*** — formal-eidetic aspect of the residual motion\n- ***resonant epithymia*** — affective-orectic aspect; basic-orectic-charge residue at A_1\n- ***pathetic* loop** — judgement-modifying recursive structure of pathos (RETIRED: \"pathos feedback loop\")\n- **articulational concretion** — axis along which generic *pathos* becomes determinate higher-order *pathē*\n- **dual-resonance thesis** — A_1 deposits both formal-eidetic and affective-orectic residues simultaneously (RETIRED: \"dual-trace\")\n- **content-conditional doxa-gate** — rule that *doxa* alone is necessary but not sufficient for higher-order *pathē*; the *doxa*'s content must engage evaluatively complex categories\n- **synchronic / diachronic register** — synchronic = single chain-pass within one event; diachronic = cumulative trajectory reshaping dispositional ground\n- ***technē*-hexis** / ***praxis*-hexis** — Heidegger's BCAP §17 bivalent reading of *hexis*\n- **affective architecture of being-in-the-world** — closing synthesis term for emotion's ontological function\n\nGreek faculty-names (preferred over English): *aisthētikon*, *aisthētērion*, *orektikon*, *kritikon*, *kinētikon*, *phantastikon*.\n\nAristotle work titles use Latin/Greek standard form: *De Anima* (NEVER *On the Soul*); *De Motu Animalium* (NEVER *Movement of Animals*); *De Insomniis* (NEVER *On Dreams*); *De Memoria* (NEVER *On Memory*); *De Sensu* (NEVER *Sense and Sensibilia*).\n\nHeideggerian German (untranslated): *Bewegtheit*, *Befindlichkeit* (NOT \"state-of-mind\"; \"disposedness\" — Kisiel), *Stimmung* (NOT \"mood\" in ontological-atmospheric register; \"attunement\" — Rickert), *Sorge*, *Geworfenheit*, *Geschichtlichkeit*, *Zeitlichkeit*, *Ekstasen*, *Gewesenheit*, *Gegenwart*, *Zukunft*, *Mitsein*, *Augenblick*, Dasein.\n\n================================================================\nFORBIDDEN PHRASES (advisor-rigor blacklist; dissertation-specific)\n================================================================\n\nThese patterns will be removed if they appear in output — the model should not generate them:\n\n- \"underwrites\" (in any meta-narrative function — \"X underwrites Y\")\n- \"rests on\" (as in \"the dissertation's claim rests on...\")\n- \"supplies the canonical / textual / philological anchor for\"\n- \"supervenient\" / \"supervenes on\"\n- \"interpretive\" qualifier on author's own readings\n- \"the chapter\" / \"this chapter\" / \"the present chapter\"\n- \"the user\" / \"the reader\" (academic monograph, not user-facing documentation)\n- \"the dissertation's claim ... rests on this structural reading\"\n- \"X is necessary for Y to be the case\" (as meta-narrative)\n- \"§1.X has already developed/established...\"\n- \"as we have seen at...\"\n- \"as we have discussed\"\n- \"to reiterate\"\n- \"before we can analyze\"\n- \"I should clarify here\"\n- \"as we will see\"\n- Adverbs: \"poignantly\", \"strategically qualified\", \"interestingly\", \"it is worth appreciating\"\n- `\\textit{Framing}:` or \"Framing:\" footnote prefixes\n- \"faculty of X\" English (use Greek faculty-names)\n- Back-references to prior subsections by number\n- Forward-references to subsequent subsections by number\n\nCitation discipline:\n\n- Aristotle: **Bekker notation ONLY**. NEVER `(Aristotle 2014, p. N)`, NEVER `On The Soul`, NEVER `[PAGE NEEDED]`.\n- *Being and Time*: `(BT \\S<n>, H.<page>; Eng.~p.~<page>)`\n- BCAP: `(BCAP p.~<n>)`\n- Gross (ADVISOR — UTMOST PRIORITY): exact page numbers, exact italics, perfectly verbatim quotations. Mark uncertain quotes `****** UNVERIFIED:`.\n- Work-in-narrative, locus-in-parens convention.\n- Author-prominent citations at ~99% (introduce author as agent before quote).\n\n================================================================\nSOURCE HIERARCHY (consultation order for any quoted material)\n================================================================\n\n1. **Tier 0** — `tmp/Dissertation/verbatim_passages.md` — 74KB PDF-verbatim-verified quotations catalog (Aristotle works, BCAP, BT, FCM, Gibson, Coope, Broadie). Authoritative for any quote it contains.\n2. **Tier 1** — `corpus/index/` — locus identification + chunk metadata. Use `phase05-offset-validation.md` for Bekker↔PDF page formulas (the standalone Bekker index page numbers are NOT reliable for mid-/late-work loci).\n3. **Tier 2** — `corpus/rhetorical_ontology/` source PDFs — fallback when neither catalog nor index resolves.\n4. **Tier 3** — training-data recall — LAST RESORT, only for non-load-bearing material; mark `****** UNVERIFIED:`.\n\n**Catalog gaps**: Gross (*Uncomfortable Situations*, *Heidegger and Rhetoric*) and *Rhetoric* I.11 1370a27–30 are not yet in `verbatim_passages.md`. For Gross specifically, the four verbatim-verified quotes are in **Source E** below (§1.4 walkthrough 2026-05-24 audit).\n\n================================================================\nSOURCE A — Aristotle direct deployments (filter to subsection-relevant)\n================================================================\n\n**De Motu Animalium 7, 701a29–b1** (Subsection 4 Type 1 load-bearing block-quote):\n> \"And so what we do without reflection, we do quickly. For when a man is actually using perception or imagination or thought in relation to that for the sake of which, what he desires he does at once. For the actualizing of desire is a substitute for inquiry or thinking. I want to drink, says appetite; this is drink, says sense or imagination or thought: straightaway I drink. In this way living creatures are impelled to move and to act, and desire is the last cause of movement, and desire arises through perception or through imagination and thought. And things that desire to act make and act sometimes from appetite or impulse and sometimes from wish.\"\n\n**De Motu Animalium 7, 701a7–16** (Subsection 4 Type 2 load-bearing block-quote):\n> \"But how is it that thought is sometimes followed by action, sometimes not; sometimes by movement, sometimes not? What happens seems parallel to the case of thinking and inferring about the immovable objects. There the end is the truth seen (for, when one thinks the two propositions, one thinks and puts together the conclusion), but here the two propositions result in a conclusion which is an action---for example, whenever one thinks that every man ought to walk, and that one is a man oneself, straightaway one walks; or that, in this case, no man should walk, one is a man: straightaway one remains at rest. And one so acts in the two cases provided that there is nothing to compel or to prevent.\"\n\n**De Motu Animalium 7, 702a17–19** (Subsection 1 single-sentence chain concentration; inline):\n> \"the organic parts are suitably prepared by the affections, these again by desire, and desire by imagination\"\n\n**De Anima III.10, 433b10–18** (Subsection 3 three-factor schema backbone):\n> \"It follows that while that which originates movement must be specifically one, viz. the faculty of appetite as such (or rather farthest back of all the object of that faculty; for it is it that itself remaining unmoved originates the movement by being apprehended in thought or imagination), the things that originate movement are numerically many. All movement involves three factors, (1) that which originates the movement, (2) that by means of which it originates it, and (3) that which is moved. The expression 'that which originates the movement' is ambiguous: it may mean either something which itself is unmoved or that which at once moves and is moved. Here that which moves without itself being moved is the realizable good, that which at once moves and is moved is the faculty of appetite (for that which is moved is moved insofar as it desires, and appetite in the sense of actual appetite *is* a kind of movement).\"\n\n**De Anima III.3, 429a1–2** (Subsection 2 anchor):\n> *Phantasia* is \"a movement resulting from actual perception.\"\n\n**Rhetoric I.11, 1370a28–30** (Subsection 2 anchor):\n> \"Both the man who remembers and the man who hopes will be attended by an imagination of what he remembers or hopes.\"\n\n**De Insomniis 2, 460b1–10** (Subsection 7 diachronic anchor):\n> \"even when the external object of perception has departed, the impressions it has made persist, and are themselves objects of perception; and let us assume, besides, that we are easily deceived respecting the operations of sense-perception when we are excited by emotions, and different persons according to their different emotions; for example, the coward when excited by fear, the amorous person by amorous desire; so that, with but little resemblance to go upon, the former thinks he sees his foes approaching, the latter, that he sees the object of his desire; and the more deeply one is under the influence of the emotion, the less similarity is required to give rise to these impressions.\"\n\n**De Anima III.3, 427b21–24** (Subsection 5 doxa-gate anchor):\nAristotle's distinction: bare *phantasma* leaves soul unaffected; *doxa* produces *euthys paschomen*.\n\n**De Anima III.3, 428b10–17** (Subsection 2 *phantasia* as movement):\n*Phantasia* as movement produced by actual sensation.\n\n**Rhetoric II.1, 1378a21–22** (Subsection 5 canonical *pathē* definition):\n> *pathē* as \"judgement-modifying\" — the *Rhetoric*'s canonical definition.\n\n**Rhetoric II.2, 1378a31–b5** (Subsection 4 Type 3 example):\n> anger as definitionally arising from perceived slight.\n\n**Rhetoric II.5, 1382a21–22** (Subsection 4 Type 3 example):\n> fear as \"a pain or disturbance due to imagining some destructive or painful evil in the future.\"\n\n**De Anima III.7, 431a8–14** (Subsection 5 perception-as-discrimination):\n> perception is like bare asserting; pursues/avoids when object is pleasant/painful; perception and appetite one in substrate, different in being.\n\n**Categories 8, 8b25–9a13** (Subsection 4 Type 2 + Subsection 6 hexis grounding):\n> *hexis* vs *diathesis*; *hexis* as more stable, longer-lasting; knowledge and virtue as paradigmatic *hexeis*.\n\n**Metaphysics Δ.20, 1022b4** (Subsection 6 hexis as activity of haver and had):\n> *hexis* as activity of haver and had; disposition for being well or ill disposed.\n\n================================================================\nSOURCE B — Heidegger BCAP (Subsection 6 load-bearing)\n================================================================\n\n**BCAP p. 127** (training reduces deliberation):\n> \"Through practice, by frequently-undergoing, it comes about that being-oriented puts the prescription further and further out of play. Training has the precise sense of reducing deliberation insofar as it is through training that the completedness of attaining a result comes about.\"\n\n**BCAP p. 128** (*praxis*-hexis as holding-oneself-open):\n> \"Cultivating *hexis* never depends on an operation, a routine. In an operation, the moment is destroyed. Every completedness, as settled routine, breaks down in the face of the moment. Appropriation and cultivation of *hexis* through habituation means nothing other than correct repetition.... The distinction lies in the fact that *praxis* depends on the *how*. The how is only appropriated in such a way that the human being enables himself *to be composed at each moment*; not routine but holding-oneself-open, *dynamis* in the *mesotēs*.\"\n\n**BCAP p. 125** (*hexis* as how-of-*pathos*):\n> \"*Hexis* is nothing other than a how of *pathos*, being-out-of-composure, in relation to being-composed-as-to . . . Insofar as we can define *hexis* according to its basic structure, we will also clarify the possible-structure of *pathē*.\"\n\n**BCAP pp. 122–123** (no *technē* for the *kairos*):\n> \"For this determination should not be conceived as though there were a *technē* for this taking-opportunities and venturing-out into the *deina* of life.\"\n\n**BCAP pp. 133–134** (Subsection 8 anti-internalist closing):\n> *pathē* are \"not psychic experiences and not in consciousness\" but \"a being-taken of human beings *in their full being-in-the-world*.\"\n\n================================================================\nSOURCE C — Heidegger BT (Subsections 7 and 8 load-bearing)\n================================================================\n\n**BT §29, H.137 (Eng.~p.~176)** — *Stimmung* as ontological-atmospheric:\n> \"A mood assails us. It comes neither from `outside' nor from `inside', but arises out of Being-in-the-world, as a way of such Being.\"\n\n**BT §74, H.385–386 (Eng.~p.~437)** — *Geschichtlichkeit* as ecstatic-horizonal:\n> \"As historical, Dasein is possible only by reason of its temporality, and temporality temporalizes itself in the ecstatico-horizonal unity of its raptures.\"\n\n**FCM (GA 29/30), p. 67** — *Stimmung* as atmosphere:\n> \"[*Stimmung* is] like an atmosphere in which we first immerse ourselves in each case and which then attunes us through and through.\"\n\n================================================================\nSOURCE D — Secondary touchstones (Subsection 2 integration)\n================================================================\n\n- O'Gorman (\"Aristotle's *Phantasia* in the *Rhetoric*,\" p. 34): *phantasia* \"forms the objects of belief and desire, even gives birth to belief and desire and provides the images that are the objects of deliberative desire, ethical choice, and political judgment.\"\n- Hawhee (*Looking Into Aristotle's Eyes*, p. 145): rhetor's task is to \"supply images concrete, narrative, and affectively charged enough to allow the audience to see what the rhetor wants them to see.\"\n- Nussbaum (*Fragility of Goodness*; *MA* commentary): *phantasia* as material-supplier for practical reasoning; the *phantasia* operated upon by deliberative reasoning synthesizes alternatives into unrealized possibilities and measures them against a single standard.\n- White (\"The Meaning of *Phantasia*,\" p. 498): residual motion as \"lingering, resonating, echoing presence of sensible forms freed from their original matter.\"\n- Frede (\"The Cognitive Role of *Phantasia*,\" pp. 282–285): residual motion has \"a life of its own\"; *phantasma* produced while sense-perception still in operation.\n- Caston (1996): *aisthēma* as direct effect of sensory stimulation; *doxa* as ratification of *phantasma*.\n- Gibson (*Ecological Approach to Visual Perception*, pp. 45–46, 119–120): ambient optic array; affordance complementarity.\n- Rickert (*Ambient Rhetoric*, pp. 131, 146, 243–244, 285): *Stimmung* as attunement; disclosure / withdrawal; rhetorical being-in-the-world.\n\n================================================================\nSOURCE E — Gross verbatim quotes (ADVISOR; §1.4 audit-verified 2026-05-24)\n================================================================\n\n**These four quotes are verbatim-verified against the source PDFs.** When a subsection's delta specifies Gross deployment, use these exact texts. Do NOT paraphrase, do NOT silently re-italicize, do NOT silently correct page numbers.\n\n**Gross, \"Introduction: Being-Moved: The Pathos of Heidegger's Rhetorical Ontology,\" in *Heidegger and Rhetoric* (ed. Gross & Kemmann, SUNY, 2005), p. 4** (anti-internalist anchor):\n> \"Heidegger characterizes *pathos* (variously 'passion,' 'affect,' 'mood,' or 'emotion') as the very condition for the possibility of rational discourse, or *logos*. No cynical and crowd-pleasing addition to *logos*, *pathos* is the very substance in which propositional thought finds its objects and its motivation. Without affect our disembodied minds would have no heart, and no legs to stand on.\"\n\n**Gross, \"Introduction,\" in *Heidegger and Rhetoric* (2005), p. 26** (translating GA 18, 206–207; enmattered-*eidos*):\n> \"the *eidos* of fear draws primarily upon a body's condition. The difference lies in the fact that the particular condition of the body (being, say, brown or scratched) plays no role in mathematical inseparability, while for the *pathe* Being in such and such a condition is essential. Both are *logoi enyloi*, but in quite different senses of the term... The *eidos* of the *pathe* is a disposition toward other humans, a Being-in-the-world.\"\n\n**Gross, *Uncomfortable Situations* (Chicago, 2017), p. 3** (Aristotle as social-phenomenon humanism):\n> \"Aristotle's *Rhetoric* offers alternatives for understanding emotions as social phenomena, which is something that leading humanists like Martha Nussbaum and Richard Sorabji should have remembered as they rushed toward the latest brain science.\"\n\n**Gross, *Uncomfortable Situations* (Chicago, 2017), p. 20** (rhetoric-as-affordance-theory; Subsection 8 close):\n> \"Rhetoric, as a humanistic form of affordance theory, posits a situation that is not neutral but is rather 'persuasive,' threatening and promising with respect to our human being-in-the-world.\"\n\n**Bonus epigraph from Gross's editor-Introduction (SUNY 2005, p. 1):**\n> \"the self-elaboration of Dasein is expressly executed\" (Heidegger, SS 1924, GA 18.110, epigraph in Gross ed., *Heidegger and Rhetoric*, p. 1)\n\n================================================================\nEND OF SHARED PRELUDE — per-subsection delta file follows below\n================================================================\n================================================================\nSUBSECTION 3 of 9 — The Three-Factor Schema, the Three Entry Points\n================================================================\n\n(The CLI invocation passes the LaTeX heading, word target ~600, quotation count, and output format via subsection-mode flags. This delta supplies the topical content + dissertation-specific deployment guidance.)\n\n**Subsection role.** Deploy the three-factor schema of *De Anima* III.10 as the architectural backbone of action: every action involves (1) that which originates the movement; (2) that by means of which it originates it; (3) that which is moved. Specify each factor in the case of action: the unmoved originator is \"the realizable good\" (*to orekton* / *to prakton agathon*); that by means of which is the faculty of appetite (*to orektikon*), which is \"moved-mover\" (moves the body while being itself moved by the realizable good); that which is moved is the animal, via the bodily instrument.\n\nThen deploy the three entry-points per *De Motu Animalium* 7, 701a32–33: sense, imagination, and thought can each initiate the chain — \"I want to drink, says appetite; this is drink, says sense or imagination or thought: straightaway I drink.\" This is the conceptual hinge for the typology. Each of the three entry-points can fire the chain in the appetitive case (Type 1), but in the rational-animal case the same chain can also be entered through habit-grounded *doxa* (Type 2) or through evaluatively complex *doxa* (Type 3).\n\nEmphasize: the three entry-points are NOT three parallel chains; they are three modes by which the SAME chain is entered. The three-factor schema applies in every case; what varies is which entry-point activates the unmoved originator (the realizable good) and at what level of *doxastic* articulation.\n\nIntegrate *De Anima* III.10, 433a9–12: \"These two at all events appear to be sources of movement: appetite and thought (if one may venture to regard imagination as a kind of thinking; for many men follow their imaginations contrary to knowledge, and in all animals other than man there is no thinking or calculation but only imagination).\" The bracketed clause about non-rational animals matters: they have *phantasia* but not the *logos*-dependent operations of *doxa*, which is why their chains never enter Type 2 or Type 3 — they remain in the pre-rational analogue of Type 1.\n\nClose with the typological foreshadowing: which entry-point is operative, and at what level of *doxastic* articulation, determines which of three types of action results. The full typology is the load-bearing work of the next subsection.\n\n**Required deployments (Aristotle, Bekker, minimum).**\n\n- *De Anima* III.10, 433b10–18 — the three-factor schema (the architectural backbone)\n- *De Anima* III.10, 433a9–12 — appetite and thought as sources of movement; the bracketed non-rational-animals clause\n- *De Motu Animalium* 7, 701a32–33 — \"I want to drink, says appetite; this is drink, says sense or imagination or thought: straightaway I drink\" (INLINE citation only, NOT block-quote — the block-quote is reserved for §4)\n\n**Heidegger.** Light or none. The schema is Aristotelian; Heidegger's contribution to the chain-architecture comes through *Bewegtheit* (already established at §1.1) and does not need to be re-introduced here.\n\n**Secondary.** None. This subsection is structural and should run on Aristotelian text alone.\n\n**Forbidden for this subsection.**\n\n- Do NOT use *De Motu Animalium* 7, 701a32–33 as a block-quote. The full block-quote (701a29–b1, which surrounds 701a32–33) is reserved for §4 Type 1. Cite 701a32–33 inline only.\n- Do NOT use *De Motu Animalium* 7, 701a7–16 as a block-quote. That is §4 Type 2.\n- Do NOT develop the three types of action in detail (only foreshadow). The typology proper is §4.\n- Do NOT develop the doxa-gate articulation. That is §5.\n- Do NOT redevelop *Bewegtheit* (already established at §1.1).\n- Do NOT redevelop the relational structure of *kinēsis* (already established at §1.2 hylomorphic-reception analysis).\n- Do NOT redevelop secondary-source readings of *phantasia* (those were deployed in §2 and §1.0).\n- Do NOT include any Heidegger block-quotes. The two BCAP block-quotes (p. 127, p. 128) are reserved for §6.\n\n**Opening pattern.** Open with the schema directly. Example pattern (do not use verbatim): *Aristotle's three-factor schema of motion supplies the backbone for the chain's terminus at A_4: every action involves an unmoved originator, a moved mover, and that which is moved (De Anima III.10, 433b13–18).*\n\n**Closing pattern.** Close with the typological-foreshadowing claim — that the three entry-points and the variable *doxastic* articulation yield three distinct types of action. Do NOT name the three types here (\"simple appetition / habitual-rational / evaluatively complex\"); that naming is the opening of §4.\n\n**Pre-output self-audit (subsection-specific).**\n\n- *De Anima* III.10, 433b10–18 deployed with the three factors named\n- *De Anima* III.10, 433a9–12 deployed (the appetite-and-thought / non-rational-animals clause)\n- *De Motu Animalium* 7, 701a32–33 cited INLINE (not block-quote)\n- The three-factor schema and the three entry-points are clearly distinguished (schema = the architectural backbone; entry-points = the three modes by which the SAME chain is entered)\n- The typological foreshadowing closes the subsection without naming the three types\n- No block-quotes in this subsection",
+  "isPipeline": false,
+  "qualityScore": 0.5,
+  "wordCount": 714,
+  "bodyWordCount": 714,
+  "provenanceLedger": {
+    "sources": [
+      {
+        "title": "Heidegger, Martin (2009), p.159",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.191",
+        "confidence": 0.85
+      },
+      {
+        "title": "Multiple Authors (2005), p.113",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.421",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.213",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.498",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.149",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.277",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.218",
+        "confidence": 0.85
+      },
+      {
+        "title": "Burke, Kenneth (1945), p.311",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.106",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.114",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.511",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.202",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.88",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.83",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.6",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.26",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.18",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.70",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.181",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.409",
+        "confidence": 0.85
+      },
+      {
+        "title": "Papachristou, Christina (2013), p.9",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.241",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.37",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.43",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.78",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.16",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.4",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.44",
+        "confidence": 0.85
+      }
+    ],
+    "claims": []
+  },
+  "retrievalStats": {
+    "chunksRetrieved": 30,
+    "averageRelevance": 0.85
+  },
+  "endnotes": null,
+  "result": {
+    "content": "\\subsubsection*{The Three-Factor Schema, the Three Entry Points}\n\nAristotle's analysis of animal movement in \\textit{De Anima} III.10 culminates in a triadic schema that governs every instance of action without exception. Every movement, Aristotle insists, involves three factors: ``(1) that which originates the movement, (2) that by means of which it originates it, and (3) that which is moved. The expression `that which originates the movement' is ambiguous: it may mean either something which itself is unmoved or that which at once moves and is moved. Here that which moves without itself being moved is the realizable good, that which at once moves and is moved is the faculty of appetite (for that which is moved is moved insofar as it desires, and appetite in the sense of actual appetite \\textit{is} a kind of movement)'' (Aristotle, \\textit{De Anima}, 433b10--18). The schema thus distributes the causal work of action across three structurally distinct roles. The unmoved originator is \\textit{to orekton}---the realizable good, \\textit{to prakton agathon}---which, precisely by being apprehended in thought or \\textit{phantasia}, sets the chain in motion while itself remaining unmoved (Aristotle, \\textit{De Anima}, 433b11--12). The moved mover is the \\textit{orektikon}, the desiderative capacity of the soul, which is itself moved by the realizable good and in turn moves the animal body through the organic instrument (Aristotle, \\textit{De Anima}, 433b13--17). That which is moved is the animal as bodily being, the terminus of the chain at A\\textsubscript{4}. Hence the three-factor schema is not merely a classificatory device but the very architecture of completed \\textit{praxis}: it specifies how the unmoved originator, the moved mover, and the moved body stand in a determinate relational order that holds across every case of action, whether the agent is a rational animal or not.\n\nWhat varies across cases, however, is the mode by which this invariant architecture is entered. Aristotle identifies two sources of movement earlier in the same chapter: ``appetite and thought (if one may venture to regard imagination as a kind of thinking; for many men follow their imaginations contrary to knowledge, and in all animals other than man there is no thinking or calculation but only imagination)'' (Aristotle, \\textit{De Anima}, 433a9--12). The parenthetical clause is decisive. Non-rational animals possess \\textit{phantasia} but not the \\textit{logos}-dependent operations of \\textit{doxa}; accordingly, their chains are initiated exclusively through sense-perception and \\textit{phantasia}, never through the evaluatively complex judgements that characterize rational action. The \\textit{De Motu Animalium} confirms and extends this point by specifying three entry-points---sense, imagination, and thought---through which the chain can be fired: ``I want to drink, says appetite; this is drink, says sense or imagination or thought: straightaway I drink'' (Aristotle, \\textit{De Motu Animalium}, 701a32--33). The triad of entry-points is not a set of three parallel chains but rather three modes by which the \\textit{same} chain is activated; what differs is which cognitive capacity presents the realizable good to the \\textit{orektikon} and thereby initiates the movement toward A\\textsubscript{4}.\n\nThis structural distinction between the invariant three-factor schema and the variable entry-points is, it is likely that, the conceptual hinge upon which a typology of action turns. Heidegger, glossing Aristotle's account of the soul's two fundamental capacities, characterizes them as \\textit{krinein}---``separating from something other, orienting itself in a world''---and \\textit{kinein}---``moving itself therein, being-involved-therein, going-around-and-knowing-its-way-around-therein'' (Heidegger, \\textit{Basic Concepts of Aristotelian Philosophy}, p.~37). The receptive, discriminating character of \\textit{aisthēsis} that Heidegger here foregrounds bears a structural kinship with his own concept of \\textit{Befindlichkeit}---the fundamental disclosedness through which Dasein finds itself already disposed toward a world---inasmuch as both capacities disclose rather than construct the field within which movement becomes possible (Heidegger, \\textit{Being and Time}, \\S29, H.~137; Eng.~p.~176). Similarly, each entry-point---sense, \\textit{phantasia}, thought---is itself a mode of receptive disclosure through which the realizable good becomes available to the \\textit{orektikon}; and the level of \\textit{doxastic} articulation operative at each entry-point determines, perhaps decisively, the kind of action that results. Where sense or bare \\textit{phantasia} alone activates the chain, the action remains at the pre-rational register; where settled \\textit{doxai} functioning as dispositional \\textit{hexeis} mediate the entry, the chain passes through a habitual-rational register; and where evaluatively complex \\textit{doxa} engages the \\textit{phantasma}, a third and distinctly different register of action emerges. Thus the three-factor schema supplies the invariant backbone, while the three entry-points and their variable \\textit{doxastic} articulation yield a differentiated typology whose full elaboration is the task immediately ahead.",
+    "style": "academic",
+    "wordCount": 714,
+    "sourcesCount": 30,
+    "qualityScore": 0.5,
+    "corpusContext": {
+      "used": true,
+      "chunkCount": 30,
+      "collections": [],
+      "citations": [
+        "Heidegger, Martin (2009), p.159",
+        "Heidegger, Martin (1962), p.191",
+        "Multiple Authors (2005), p.113",
+        "Heidegger, Martin (1962), p.421",
+        "Heidegger, Martin (2009), p.213",
+        "Heidegger, Martin (1962), p.498",
+        "Heidegger, Martin (2009), p.149",
+        "Heidegger, Martin (2009), p.277",
+        "Heidegger, Martin (1962), p.218",
+        "Burke, Kenneth (1945), p.311",
+        "Aristotle (2014), p.106",
+        "Aristotle (2014), p.114",
+        "Heidegger, Martin (1962), p.511",
+        "Heidegger, Martin (1962), p.202",
+        "Aristotle (2014), p.88",
+        "Aristotle (2014), p.83",
+        "Aristotle (2014), p.6",
+        "Aristotle (2014), p.26",
+        "Aristotle (2014), p.18",
+        "Aristotle (2014), p.70",
+        "Heidegger, Martin (1962), p.181",
+        "Heidegger, Martin (1962), p.409",
+        "Papachristou, Christina (2013), p.9",
+        "Heidegger, Martin (2009), p.241",
+        "Heidegger, Martin (2009), p.37",
+        "Heidegger, Martin (2009), p.43",
+        "Heidegger, Martin (2009), p.78",
+        "Aristotle (2014), p.16",
+        "Aristotle (2014), p.4",
+        "Aristotle (2014), p.44"
+      ],
+      "whitelistMode": true
+    },
+    "qualityMetrics": {
+      "overallScore": 0.5,
+      "stageScores": {
+        "argumentCoherence": 0.5,
+        "citationCompleteness": 0.5,
+        "styleConsistency": 0.5,
+        "factualAccuracy": 0.5
+      },
+      "issueCounts": {
+        "critical": 0,
+        "major": 0,
+        "minor": 0
+      },
+      "autoFixableCount": 0,
+      "revisionIterations": 0,
+      "passed": false
+    },
+    "revisionIterations": 0,
+    "citationEnforcement": {
+      "action": "pass",
+      "totalCitations": 0,
+      "validCitations": 0,
+      "hallucinatedCitations": 0,
+      "correctionsMade": 0,
+      "missingPageNumbers": 0,
+      "passRate": 1,
+      "report": "## Citation Enforcement Report\n\n**Action:** PASS\n**Total Citations:** 0\n**Valid:** 0\n**Hallucinated:** 0\n**Missing Page Numbers:** 0\n**Pass Rate:** 100.0%\n"
+    },
+    "proseSanitization": {
+      "sanitized": true,
+      "artifactsRemoved": 0,
+      "cleanRate": 1,
+      "violations": []
+    },
+    "inlineValidation": null,
+    "multiStepDiagnostics": {
+      "v1Diagnostics": {
+        "wordCount": 688,
+        "citationCount": 0,
+        "quotationCount": 0,
+        "claimsWithoutCitation": 22,
+        "factualClaimsWithoutCitation": 0,
+        "interpretiveClaimsWithoutCitation": 22,
+        "uniqueAuthors": [],
+        "issues": [
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"\\subsubsection*{The Three-Factor Schema, the Three Entry Poi...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Every instance of locomotive movement, he argues, involves `...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The schema is not a contingent observation about particular ...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Each factor occupies a determinate position within the actua...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The moved mover is the \\textit{orektikon}, the desiderative ...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Aristotle is explicit that ``appetite in the sense of actual...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The third factor---that which is moved---is the animal as em...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"What gives this schema its full analytical force, however, i...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Aristotle isolates two apparent sources of practical movemen...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Non-rational animals possess \\textit{phantasia} but lack the...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The practical syllogism of \\textit{De Motu Animalium} dramat...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The three cognitive modes---\\textit{aisth\\=esis}, \\textit{ph...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The three-factor architecture remains invariant; what varies...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"This structural invariance is philosophically significant be...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Whether the chain is entered through immediate sensory conta...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Heidegger, lecturing on Aristotle's practical philosophy, ca...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The three-factor schema formalizes the junction between thes...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The critical consequence for the actualization chain is that...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"When sense or \\textit{phantasia} alone presents the object a...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"When settled \\textit{doxai} functioning as \\textit{hexeis} f...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"When the \\textit{phantasma} is propositionally ratified by a...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Which entry point is operative, and at what degree of \\texti...\""
+          },
+          {
+            "type": "under-cited-source",
+            "severity": "minor",
+            "detail": "Chunk author \"heidegger, martin\" has 0 citations despite being in retrieved set"
+          },
+          {
+            "type": "under-cited-source",
+            "severity": "minor",
+            "detail": "Chunk author \"multiple authors\" has 0 citations despite being in retrieved set"
+          },
+          {
+            "type": "under-cited-source",
+            "severity": "minor",
+            "detail": "Chunk author \"burke, kenneth\" has 0 citations despite being in retrieved set"
+          },
+          {
+            "type": "under-cited-source",
+            "severity": "minor",
+            "detail": "Chunk author \"aristotle\" has 0 citations despite being in retrieved set"
+          },
+          {
+            "type": "under-cited-source",
+            "severity": "minor",
+            "detail": "Chunk author \"papachristou, christina\" has 0 citations despite being in retrieved set"
+          }
+        ]
+      },
+      "preventionPlan": {
+        "blacklistedAuthors": [],
+        "strengthenedConstraints": [
+          "Deliberately cite these under-represented sources: heidegger, martin, multiple authors, burke, kenneth, aristotle, papachristou, christina"
+        ],
+        "underCitedSources": [
+          "heidegger, martin",
+          "multiple authors",
+          "burke, kenneth",
+          "aristotle",
+          "papachristou, christina"
+        ],
+        "overCitedSources": []
+      },
+      "v2Diagnostics": {
+        "blacklistedAuthorsUsedInV2": 0,
+        "blacklistedAuthorsInMainText": 0,
+        "blacklistedAuthorsInAppendix": 0
+      }
+    },
+    "rollingContext": null,
+    "pipelineHealth": "clean",
+    "injectedBridges": [
+      {
+        "id": "hook-de-anima-03",
+        "sourceAuthor": "Aristotle",
+        "sourceConcept": "αἴσθησις",
+        "targetAuthor": "Heidegger, Martin",
+        "targetConcept": "Befindlichkeit",
+        "bridgeText": "The critical parallel lies in the *receptive* character of both *aisthēsis* and *Befindlichkeit*."
+      }
+    ],
+    "corpusIndexContributions": {
+      "ontologyNodesUsed": [
+        "- **αἴτιον / αἰτία** (aition): That which accounts for a thing's being, spoken of in four senses: (1) material — that from which a thing comes to be; (2) formal — the formula or pattern; (3) efficient — the primary source of change [DA-02, META-01, META-01-06, META-02, META-04]",
+        "- **Attunement / Stimmung**: Heidegger's ontological concept of mood (*Stimmung*) reconceived as the fundamental disclosure of the world that precedes cognition, volition, and intention. Attunement is not a subjective state of mi [Intro, Ch2, Ch3, Ch4, Ch5]",
+        "- **Phänomenologie**: The method of the treatise: \"To let that which shows itself be seen from itself in the very way in which it shows itself from itself.\" Composed of phenomenon (that which shows itself) and logos (letti [Intro-U2]",
+        "- **εἶδος** (eidos): The determinate structure or actuality that makes matter into a \"this\" (*tode ti*). Not itself generated — only the composite comes into being (Z.viii). Identified as substance in the primary sense at [DA-02-03, META-01, META-01-10, META-02, META-04]",
+        "- **Periechon**: Greek term meaning \"that which surrounds, encompasses, or makes room for.\" Appears alongside *chora* in Plato's *Timaeus* and connects to the sense of a surrounding cosmos that is itself alive. Ricker [Intro, Ch1, Ch6, Conclusion]",
+        "- **Dasein**: The entity that each of us is, distinguished by the fact that in its Being this Being is an issue for it. Dasein exists — its essence lies in its existence (to-be). It is characterized by mineness (Je [all, 17, units]",
+        "- **Chora**: The Platonic \"third kind\" (*triton genos*) from the *Timaeus* -- neither Form nor material copy but a generative, withdrawing matrix or receptacle from which all becoming, beginning, and creation emer [Intro, Ch1, Ch2, Ch3, Ch7]",
+        "- **Befindlichkeit**: An equiprimordial existentiale of disclosedness that discloses Dasein's thrownness and facticity. Ontically manifested as mood (Stimmung). Every state-of-mind discloses Dasein as already delivered ove [D1-U5, D1-U7, D1-U8, D2-U3, D2-U4]",
+        "- **τὸ πρῶτον κινοῦν ἀκίνητον** (to prōton kinoun akinēton): That which first imparts motion without itself being moved. Eternal, exempt from all change (both unqualified and accidental), without parts and without magnitude (VIII.6, 258b11--12; VIII.10, 267b25- [PHYS-07, PHYS-08]",
+        "- **Withdrawal**: The ontological condition whereby objects, meanings, and the world itself are never fully present to any relation. Things always reserve depths that exceed human knowledge, use, and attribution. Withd [Ch1, Ch6, Ch7, Ch8, Conclusion]",
+        "- **ὕλη** (hyle): That out of which a thing comes to be and which persists; the substratum capable of receiving form; the capacity for being and not-being in each generated thing. In Delta, the primary immanent constit [DA-02-03, META-01, META-01-10, META-04, META-05]",
+        "- **ὄρεξις** (orexis): That which is moved toward the good. The unmoved mover produces motion *as* the object of desire (Lambda.7). Desire is consequent on thinking, not vice versa. In Theta.5, desire/choice (*proairesis*)  [DA-04, MA-01, META-07, META-07-09, META-09]"
+      ],
+      "hooksInjected": [
+        "- HOOK [Aristotle - Physics → Uexkull]: Integration points ↔ ? — [INTERP-high] — Uexkull's Naturtechnik challenges the Aristotelian phusis/technē distinction by arguing that organisms exhibit a technical character t [INTERP-high]",
+        "- HOOK [Aristotle - Physics → De Anima]: Connection ↔ ? — Physics VII.2 argues that the mover and the moved must always be in contact, and demonstrates this for alteration by induction from sense-perception:  [INTERP-high]",
+        "- HOOK [Aristotle - On Memory → Sense and Sensibilia]: τὸ πρῶτον αἰσθητικόν (common sense) ↔ Sense and Sensibilia [INTERP-med] — **Aristotelian concept**: τὸ πρῶτον αἰσθητικόν (I1) — the primary perceptive faculty / common sense, which cognizes time, magnitude, and motion; the o [INTERP-med]"
+      ],
+      "tensionEdgesUsed": [
+        "- TENSION [T5]: magische_Umwelt ↔ Funktionskreis — The magical environment contradicts the stimulus-response architecture of the Funktionskreis. Early chapters build the functional cycle on perception marks from external objects; the magical chapter s [U-F6, U-F7]",
+        "- TENSION [T2]: nonhuman_agency ↔ rhetorical_being — Rickert does not eliminate subjectivity but reconceives it as emplaced and distributed, preventing ambient rhetoric from collapsing into undifferentiated flat ontology while insisting that agency is n",
+        "- TENSION [T5]: Burke_symbolic_action ↔ Heidegger_language — Rickert harvests Burke for the richness of social drama and embodied rhetoric while correcting him with Heidegger's more radical decentering; together they establish that meaning inheres in the world ",
+        "- TENSION [T3]: λόγος (disclosure / ἀποφαίνεσθαι) ↔ λόγος (concealment / Gerede / ψεῦδος) — Conceptuality has a 'double sense' precisely because the same λόγος that discloses also conceals. The fore-structures must be both overcome and appropriated. This tension drives the entire Second Part [U-FP1a, U-FP1b, U-SP1]",
+        "- TENSION [CT-08]: noesis (Met Lambda.9: thought thinking itself) ↔ to_agathon (Met Lambda.10: the good as both separate principle and immanent cosmic order) — How a self-thinking god can govern worldly order without cognizing it. If God thinks only himself, the mechanism by which divine thought structures cosmic order is opaque. [META-09]"
+      ],
+      "queryExpansions": []
+    }
+  },
+  "success": true,
+  "trajectoryId": "traj_1779751423845_1b056e18"
+}

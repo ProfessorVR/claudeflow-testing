@@ -1,0 +1,62 @@
+# Paste this into a clean session
+
+Copy everything inside the fenced block below.
+
+---
+
+```
+I'm continuing the empirical-chapter analysis for my VR attention study — 12 participants, sensor
+recordings across three video conditions, plus a short questionnaire after each. This session is
+analysis, statistics and figures. No chapter prose.
+
+Read these two documents first, in full, before doing anything else:
+
+1. The handoff, which is authoritative on current state:
+   tmp/Dissertation/Part_III/boredom-analysis-2026-07-30/HANDOFF-ANALYSIS-2026-07-30.md
+
+2. The execution specification, which is authoritative on requirements — where it and the handoff
+   disagree, the specification wins:
+   plans/boredom-eyetracking-full-analysis-execution-2026-07-30.md
+
+Then read the code you'll be extending:
+   tmp/Dissertation/Part_III/boredom-analysis-2026-07-30/analysis/
+   — start with config.py, then run.py, then figures.py and report.py (both are STUBS with the
+     required output documented in their docstrings).
+
+Where we are: Phases 0–5 are complete and verified. The four locked verification checks pass at two
+independent gates on every run, 21 output tables are written to out/, and two consecutive runs produce
+byte-identical CSVs. scripts/boredom-o9/ is the methodology of record and is untouched — confirm with
+`git status --porcelain scripts/boredom-o9/` (must be empty).
+
+What remains is Phase 6 (the figure suite) and Phase 7 (the reproducibility artefacts). Both are
+specified in the docstrings of analysis/figures.py and analysis/report.py respectively.
+
+Start by running the pipeline to confirm the environment reproduces, and tell me what the four
+verification checks returned:
+
+    cd tmp/Dissertation/Part_III/boredom-analysis-2026-07-30/analysis
+    /home/dalton/.venv/bin/python run.py --no-figures
+
+Then give me your plan for Phase 6 before writing figure code.
+
+Standing constraints, non-negotiable:
+- Interpreter is /home/dalton/.venv/bin/python for everything. It is the only one with matplotlib.
+- PII: S01–S08 / R2-01–R2-04 only. No participant name in any output, log, figure, caption or
+  filename. Redact BY CONSTRUCTION — never emit a subject folder name or subject-resident filename
+  and then try to scrub it. journal.emit_guard() is a backstop, not the mechanism.
+- Never edit scripts/boredom-o9/. Wrap, don't edit, and record every wrapper in METHODS.md.
+- Never pool a rate-dependent feature across rounds; every pooled statistic carries a poolable flag
+  and a one-line reason.
+- Nothing is omitted for being non-significant. Label every n<6 result descriptive.
+- No chapter prose, no commits, no video processing. Back up before touching any existing file and
+  tell me first.
+
+Two things I want you to carry forward rather than rediscover:
+- The reverse case (R2-03) breaks the zero-reverse asymmetry at N=12. It is sensitive to how the
+  engaged composite is built and it is a within-subject relative statement, not an absolute one. See
+  handoff section 8 — report it honestly, don't let it quietly disappear.
+- There is one open question waiting on me in handoff section 12, about whether the HRV exclusion was
+  meant to cover Round 1 as well as Round 2. Raise it, don't decide it.
+
+Keep me updated as you move through each phase.
+```

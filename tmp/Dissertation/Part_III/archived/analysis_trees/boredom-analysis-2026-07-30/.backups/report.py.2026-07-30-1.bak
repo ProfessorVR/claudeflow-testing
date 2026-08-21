@@ -1,0 +1,59 @@
+"""Reproducibility artefacts -- NOT YET IMPLEMENTED (Phase 7).
+
+Deliberate stub. `write_all()` does nothing and `run.py` reports that honestly.
+Nothing in out/ depends on this module; the tables are already written.
+
+Phase 7 must generate, per spec section 5 -- all FROM THE RUN, none hand-written:
+
+  RUN-MANIFEST.json   UTC timestamp, git commit, Python version, numpy/pandas/
+                      scipy/matplotlib versions, the exact interpreter path, every
+                      input file's size + md5 + REDACTED label (never a name), row
+                      counts read, and every parameter from config.py.
+                      adapters.source_versions() already returns the md5/size of
+                      each imported methodology-of-record module -- use it.
+
+  METHODS.md          For each derived quantity: the formula, the masking rules,
+                      the window, and the sample count surviving each filter.
+                      MUST print adapters.WRAPPERS verbatim (8 entries), each with
+                      its reason, since the spec requires every wrapper recorded.
+                      Must be complete enough to reimplement from alone.
+
+  EXCLUSIONS.log      journal.exclusions() + journal.coercions(). Every row, file,
+                      cell or survey item dropped or coerced, with its reason.
+
+  QC-REPORT.md        Per subject x stimulus: sampling rate mean AND median,
+                      duration, validity %, retention %, sentinel counts, format
+                      variant, and every flag. journal.qc_rows() plus the wide
+                      frames.
+
+  FINDINGS.md         Every result with n, test, statistic, effect size and an
+                      explicit poolability statement. Negatives included.
+
+  SOURCES.md          MLA-form works-cited entries for every external source the
+                      analysis depends on. Minimum set, all verified this session:
+                        - VanderWerf, Brassinga, Reits, Aramideh, Ongerboer de
+                          Visser. "Eyelid movements: behavioral studies of blinking
+                          in humans under different stimulus conditions." Journal of
+                          Neurophysiology 89.5 (2003): 2784-96.
+                          doi:10.1152/jn.00557.2002  -- the 334 +/- 67 ms blink
+                          duration behind config.BLINK_MAX_MS.
+                        - King, Feeney, Tang, Das, Salvo. ASEE 2023, paper #37129
+                          -- F3/F4/P3/P4 montage, DMN alpha+theta boredom marker,
+                          implemented by ch_eeg.py.
+                        - King, Lo, Das, Salvo. ASEE 2024, paper #44685 -- the
+                          gaze-deviation-variance feature implemented by ch_hmd.py.
+
+  RECONCILIATION.md   Short note on the VR Data Recorder tree (author-ruled out of
+                      scope 2026-07-30, so: excluded entirely, 27 non-duplicate
+                      CSVs unprocessed) and the three _Test sessions, reported as
+                      instrument validation with their measured durations
+                      (3.64 / 11.24 / 8.75 min against 17-min stimuli).
+
+Use journal.write_text() for every file so the PII guard runs on the way out.
+"""
+
+IMPLEMENTED = False
+
+
+def write_all(ctx):
+    return False

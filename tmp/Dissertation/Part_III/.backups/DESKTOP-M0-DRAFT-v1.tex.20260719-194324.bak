@@ -1,0 +1,267 @@
+% ============================================================
+% Part III — Desktop Section — M0 (Introduction) — DRAFT v1 (rev 2, 2026-07-19)
+% Mode: Stage 3 guided drafting (per-paragraph protocol; NOT FCDP)
+% Blueprint: PART-III-DESKTOP-SECTION-OUTLINE-v1-2026-07-15.md
+% Sectioning level provisional pending Open decision #1 (arc placement).
+%
+% CITATION CONVENTION (user 2026-07-19): MLA throughout the dissertation.
+%   Full entries -> Works Cited. Substantive footnotes only. King & Salvo 2024
+%   cited parenthetically by abbreviated title: ("Phenomenological Evaluation" NN),
+%   bare page numbers on subsequent same-work cites within a paragraph.
+%   First-person (we/our) for all of the author's own publications.
+% Quote pages PDF-verified: "a hassle" (results wording) 388; "not a single
+%   student" 389; restraint quote 390; figures 388; reasons breakdown 389;
+%   hypothesis + unlikely-quote 383; phenomenological framing 387; scarcity 381.
+%   Heim, Virtual Realism: AWS definition 182, mixing/distortion 185 (2-up scan,
+%   pages mapped via edge tokens; OCR noisy — ligature/garble restored silently).
+% AUTHOR-CONFIRMED 2026-07-19: Unreal Engine 4 for the PC build; occasional
+%   in-class VR-headset use in the pilot; Cardboard = most AWS-prone of the
+%   formats used.
+% M0.1 LOCKED 2026-07-19 (all footnotes and NOTES ruled on by user; hassle cite
+%   = 388 per user ruling — results-section wording; Guilford/Moravec parenthetical
+%   pages = article ranges from the K&S reference list, pin-cites possible later
+%   if the PDFs are obtained).
+% ============================================================
+
+\section{From the Pilot to the Deployment}
+
+% --- M0.1 The access problem and the pilot's restraint (batch 1; user-revised rev 2)
+
+Clinical immersion for non-medical staff within operating rooms and other
+restricted medical spaces is scarce by structure. The programs that admit
+undergraduates to such clinical settings draw substantially more applicants than
+they can serve, so that a majority of the students who seek a clinical-immersion
+experience will not have one---an inequity the biomedical-engineering literature
+documents against a clear demand.\footnote{Guilford, Kotche, and Schmedlen,
+surveying clinical-immersion experiences across biomedical-engineering programs,
+find that only 48\% of applicants to clinical-immersion courses and 24\% of
+applicants to immersion programs are able to participate annually (113--22).
+Moravec et al.\ report on one such program---a short-term clinical immersion for
+undergraduate biomedical engineering students---and the best practices such
+programs have developed under the same constraint of scarce placements and clear
+demand (217--23).} The virtual clinical-immersion
+platform whose deployment this section reads was built against that scarcity:
+filmed operations, physician and engineer interviews, and explorable procedure
+rooms, delivered so that any enrolled student could be emplaced where only a
+limited few traditionally have access. Its first published
+test\footnote{Part III draws on several of my previous publications; the article
+referenced here---which is reproduced in Appendix~\ref{app:vr-pilot}---is the
+following, and will be cited parenthetically by abbreviated title and page number
+hereafter: King, Christine E., and Dalton Salvo. ``Phenomenological Evaluation of
+an Undergraduate Clinical Needs Finding Skills Through a Virtual Reality Clinical
+Immersion Platform.'' \textit{Biomedical Engineering Education}, vol.~4, 2024,
+pp.~381--97, https://doi.org/10.1007/s43683-024-00139-5.} came in the spring of
+2022, when a pilot cohort of twenty-two met the same operating-room footage in
+four competing formats: 2D video on YouTube, an interactive computer
+build,\footnote{The interactive computer build was developed in Unreal Engine~4
+for standard PCs: essentially the same explorable virtual environment as the
+Meta Quest 2 build, but navigated by mouse and keyboard on a flat monitor, and
+delivering the traditional 2D videos rather than the stereoscopic footage
+(``Phenomenological Evaluation'' 383).} a Google Cardboard head mounted display
+(HMD),\footnote{Google Cardboard is a minimal head-mounted display: a folded cardboard or
+plastic viewer holding two lenses, into which the user inserts a smartphone. The
+phone's screen, split into a stereoscopic pair and viewed through the lenses,
+produces a three-dimensional image, and the phone's own motion sensors track the
+rotation of the head. In this course the Cardboard route delivered the
+operating-room footage through YouTube's VR mode---video only, with none of the
+interactive environment of the PC and Meta Quest 2 builds (``Phenomenological
+Evaluation'' 383). Given the nature of this setup, of all VR methods it is the
+most prone to producing Alternate World Syndrome (AWS): motion sickness,
+physical disorientation, and physical discomfort. In Michael Heim's definition,
+``AWS is the relativity sickness that comes from switching back-and-forth
+between the primary and virtual worlds'' (\textit{Virtual Realism} 182); the VR
+experience ``can mix images and expectations from alternate worlds so as to
+distort our perception of the primary world, making us prone to errors in
+mismatched contexts'' (185).} and a Meta Quest 2 virtual reality (VR) HMD.
+Interestingly, across twenty post-course responses we discovered a two-part
+verdict that would not line up. The highest level of presence\footnote{We do not
+stipulate a formal definition of presence in the article; it uses the term in
+the sense standard to the VR-pedagogy literature it draws on---the felt sense of
+being physically present in the virtual rather than the actual environment---and
+treats it, alongside embodiment, as one of the ``intensely subjective
+experiential phenomena'' a phenomenological method is fitted to assess
+(``Phenomenological Evaluation'' 382, 387). The construct is anchored to
+Makransky and Lilleholt (2018) and Makransky, Terkildsen, and Mayer (2019) and
+measured throughout by self-report.} went to the headset: seventy percent
+reported that the Meta Quest VR version elicited a greater felt sense of
+presence. Student preference, on the other hand, went the other way: forty
+percent judged the traditional 2D YouTube videos most educationally beneficial.
+The two VR HMD formats together drew only that same share---twenty percent
+choosing the Google Cardboard and twenty percent the Meta Quest 2---while ten
+percent selected the PC build and twenty percent judged all versions equally
+beneficial (``Phenomenological Evaluation'' 388). The students' explanation as
+to why the 2D videos were perceived as being more educationally beneficial was
+largely grounded in physical discomfort\footnote{The discomfort belonged
+overwhelmingly to the Google Cardboard rather than the Meta Quest 2: asked which
+version was \textit{least} educationally beneficial, 40\% of students named the
+Cardboard against only 5\% for the Quest (``Phenomenological Evaluation'' 388).
+Among the students who judged the 2D videos most beneficial, 38.9\% cited
+physical discomfort---disorientation, the weight of the headset over long
+viewing periods, the difficulty of wearing glasses inside an HMD---a figure that
+pools the two VR formats (389). Our own judgment in the article is that some of
+these issues ``would have been less relevant'' had students used the Meta
+Quest 2 rather than the Cardboard, ``which is a relatively horrible experience
+by comparison'' (390).} and convenience.\footnote{Among the students who judged
+the 2D videos most beneficial, 44.5\% named ease of use as the ground:
+convenience and accessibility of access, and the quality-of-life controls the VR
+formats lacked---variable playback speed, better volume and playback control,
+and the ability to zoom in on the footage (``Phenomenological Evaluation'' 389).
+The rest of the students' reasoning is broken down as follows: 11.1\% cited the
+inability to take notes while wearing an HMD, and 5.6\% had never tried a VR
+version at all (389).} Despite making several Meta Quest HMDs available for
+checkout through UCI's library, not a single student went to the library
+because, as one student described it, having to go to the library to check out
+the VR headset is ``a hassle'' (388).
+
+In our previous article, we stated our expectations at the start. We did not
+expect virtual clinical immersion to rival physical presence in the operating
+room: ``[i]t is unlikely that VR clinical immersion programs will be as
+pedagogically effective as in-person observation'' (``Phenomenological
+Evaluation'' 383). We hypothesized instead that the first-person perspective
+enabled by VR, ``and the enhanced sense of presence and agency it generates, has
+the potential to be more beneficial to students' development of such [clinical
+needs-finding] skills than 2D videos as it more closely simulates the experience
+of being physically present in the operating room'' (383). The results
+substantiated half of that initial hypothesis---presence was at its highest in
+the Meta Quest VR environment, but student preference did not follow suit---and
+on the perceived pedagogical benefit, we were unable to render a verdict.
+Because the course's commitment to open access let every student default to the
+most convenient format,\footnote{Other than the occasional in-class use of the
+VR headsets, students were not required to use any particular format and were
+allowed to use whichever of the four versions of the video content they wanted:
+YouTube, the PC version, Google Cardboard, or Meta Quest 2.} the four versions
+could not compete on equal grounds: while a majority of students undeniably felt
+more present in virtual reality, we could not ``conclusively claim that
+interactive VR learning environments are more or less pedagogically efficacious
+compared to 2D videos'' (390).\footnote{Our inability to render a verdict places
+the pilot within a larger evidential pattern. Comparative studies that hold
+content constant repeatedly find that added immersion raises felt presence
+without raising learning: Makransky, Terkildsen, and Mayer, porting an identical
+science simulation from desktop to headset, measured more presence and less
+tested learning; Parong and Mayer's content-matched comparison found a slideshow
+outperforming immersive VR on factual learning even as VR won every affective
+measure; and Mayer, Makransky, and Parong's review of two decades of media
+comparisons finds no reliable learning advantage for immersive VR as a medium.} The pilot thus established two aspects and
+clearly drew a separation between them: presence was achieved to a much higher
+extent in VR, but was not enough to override the students' preference for
+convenience when having to view the educational content at home on their own
+time. Whether the interactive virtual world was more pedagogically
+effective---whether felt presence converts into pedagogical worth---was left
+standing as a question our pilot's own conditions could not answer. The question
+our pilot left open is the question this section, in part, takes up and
+addresses. Since the article's publication, the platform has been greatly
+developed and redeployed at a much larger scale: three terms of the live course
+have been conducted using the updated VLE, 241 enrolled students have
+experienced it, and we have a total of 873 open-ended survey responses. These
+accumulated datasets are the evidence this current section will evaluate and
+discuss.
+
+% --- M0.2 The institutional resolution as ontological fact (batch 2, 2026-07-19)
+% P1/P2 + footnotes = user's language (2026-07-19) with flagged mechanical fixes;
+% P3 = Claude proposal per user's directions (VLE terminology; access tied to
+% clinical scarcity; "discussed later" only; time language pre-theoretical,
+% foldable into the boredom section's Heideggerian apparatus).
+% AUTHOR-CONFIRMED 2026-07-19: 180/360-degree videos in the 2D-PC build (earlier
+% footage = 180-degree stereoscopic camera, later = 360-degree camera); class
+% sizes up to 120 per offering; Apple version in development, VR-headset
+% development to follow it; UCSF exclusion (graduate-only); students are clearly
+% informed of the multiplayer/proximity-chat capability and encouraged to meet
+% in assigned groups (solitary entry is the default outcome, NOT the design
+% intent). M0.2 LOCKED 2026-07-19.
+% Radianti et al. 2020 claim PDF-verified: abstract p.1 ("mostly ... experimental
+% and development work rather than being applied regularly in actual teaching");
+% body p.22 ("still in its experimental stages---prototyping and testing").
+% Internal pagination = PDF pagination (no offset).
+
+After the pilot, we moved the course to a 2D-PC primary
+deployment; while students cannot experience stereoscopic 3D video without a VR
+headset, the videos in this interactive space are still 180- and 360-degree
+presentations. Our primary reason for moving away from the 3D stereoscopic VR
+development was due to logistics, feasibility, and necessary scale. This class
+needed to be made available to undergraduate students across the entire
+University of California (UC) system, with class sizes up to 120 students each
+offering. Acquiring and distributing 120 Meta Quest headsets to each student
+every quarter was simply not possible. Secondly, we chose to prioritize the
+Windows PC-based version first as it was the largest student platform population
+(compared to Apple laptops).\footnote{While we prioritized development for the
+PC version, we are currently in the process of developing a version for Apple
+computers, and development for VR headsets will commence once the Apple version
+is operational.}
+
+As just noted, this class (******) is offered systemwide to undergraduate
+biomedical engineering (BME) students across the UCs.\footnote{This class is
+available to undergraduate BME students at every UC except the University of
+California, San Francisco (UCSF), as UCSF is exclusively graduate-level health
+sciences.} Students arrive with different course schedules and even different
+academic calendars (Berkeley and Merced on semesters while the rest of the
+universities are on quarters), so a fully asynchronous online format is not a
+convenience of choice, but the condition of the class's systemwide existence, as
+a synchronous version would be nearly impossible to logistically organize. An
+in-person version was never possible at all, and cohort-wide scheduled
+simultaneity was never in the design space: the deployment maximized the only
+availability there was.
+% AUTHOR FOLLOW-UP (******): (1) class name/number + catalog details from the
+% instructor; (2) how is enrollment handled for Berkeley/Merced students given
+% the semester calendar?
+
+These constraints are more than administrative history; they define what kind of
+thing the virtual learning environment is. The virtual world was built, in the
+first place, because the actual clinical world admits so few---the operating
+room's structural scarcity was the problem, and universal access was the
+solution the virtual environment promised. A virtual world that students cannot
+enter would therefore fail in a specific and instructive way: it would
+reproduce, in software, the very exclusion it was built to overcome.
+Availability is thus not a logistical afterthought but the primary pedagogical
+property of this course and VLE: before a virtual world can show,
+teach, or immerse, it must be enterable, and whatever a student cannot enter can
+disclose nothing to them (an A\textsubscript{0}-level condition, in the
+vocabulary of the actualization chain). Nor is the scaling wall we hit peculiar
+to this course. Immersive VR in higher education remains largely at the
+prototype stage---experimental and development work rather than a regular part
+of teaching (Radianti et al.\ 1, 22)---a pattern that will be discussed in
+greater detail later. One further consequence of the deployment should be noted
+now and developed later: a fully asynchronous format changes the time of the
+course. There is no shared class hour; each student meets the virtual world on
+their own schedule and at their own pace. The VLE itself is built for
+company---it is multiplayer, with spatial proximity voice chat---and we clearly
+inform students of this capability and encourage them to meet there in their
+assigned groups. But with no scheduled hour to gather them, convening is left to
+each group's own initiative, and the default is that a student enters the
+virtual hospital alone. Whether students take up the invitation to meet---and
+what solitary viewing does to their experience of the virtual world when they do
+not---are questions the three terms of survey responses will answer.
+
+% --- M0.3 The claim (batch 3, 2026-07-19) — the section's thesis statement.
+% No-collaboration passage PDF-verified at printed p. 389 ("the lack of any
+% real-time collaborative features ... Students could only enter the VR
+% environments by themselves"). Voice: "I" for the dissertation's argumentative
+% claims, "we/our" for King--Salvo team actions. De facto scoping of the WE
+% claim included per approved plan flag.
+
+The claim this section will substantiate can be stated at the outset, in three
+connected parts. First: the deployed desktop world succeeds where our pilot said
+screens could succeed. Across three terms, students attest to presence on
+ordinary monitors at rates matching what the pilot measured in VR headsets; a
+virtual world on a flat screen can still place its student somewhere. But
+presence, I will show, is not the finish line: as deployed, the virtual hospital
+gives students a great deal to see and too little to do, so that engagement is
+solicited but not completed---in the chain's terms, a stall at the passage from
+A\textsubscript{3} to A\textsubscript{4}. Second: because every video housed in
+the virtual hospital also exists one click away on YouTube, the desktop world
+carries a standing burden of justification. It must be different enough from the
+video of itself to justify existing, and that difference can only be made of
+what video cannot render: a place to be in, a task to do, and others to be there
+with. Third: of those three materials, the last is the one this deployment alone
+possesses. Watching together in the same virtual space, within earshot of one
+another, is a capability no other route in this program's history has
+offered---the published VR version had no real-time collaborative features at
+all, and students could only enter it alone (``Phenomenological Evaluation''
+389)---and I will argue that it is at once the desktop world's deepest answer to
+``why not just YouTube?'' and, as the record will show, its deepest unrealized
+asset. The scope of this claim is a matter of development history rather than
+principle: nothing in a headset forbids company; it is on the desktop route that
+company was built. What the section owes, then, is evidence for each part: that
+presence happened, that completion stalled, and that the one capability that
+could justify the world went largely unused.
+
+% --- M0.4 Jurisdiction and roadmap (next batch)

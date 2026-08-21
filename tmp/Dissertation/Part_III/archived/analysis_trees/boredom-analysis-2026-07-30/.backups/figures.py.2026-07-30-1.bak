@@ -1,0 +1,41 @@
+"""Figure suite -- NOT YET IMPLEMENTED (Phase 6).
+
+Deliberate stub. `make_all()` returns 0 so `run.py` completes and reports honestly
+that no figures were produced. A zero here does NOT mean "no figures needed".
+
+Phase 6 must produce, per spec section 6:
+  6a  per subject, one set for each of the 12:
+        - subject summary card (all channels x 3 stimuli, self-report overlaid)
+        - per-stimulus time series, 3 panels sharing an axis, closures shaded
+        - self-report vs physiology panel (ratings beside physiological z-scores)
+        - felt vs actual duration
+  6b  all subjects combined, one set per stimulus (BOR / CLC / INT):
+        - distribution per channel, violin/box with every subject as a point,
+          Round 1 and Round 2 by marker (config.ROUND_MARKER)
+        - paired-difference slope plot, one line per subject
+        - cohort time-series envelope, median + IQR band
+  6c  cross-cutting:
+        - forest plot of effect sizes with the significance threshold marked
+        - keystone scatter: engaged composite (x) vs self-reported boredom (y),
+          clinical highlighted, divergent quadrant labelled
+        - per-subject keystone decomposition strip, N=12
+        - eye-closure heatmap, subject x time, faceted by stimulus
+          (S05's 449 s sleep closure must be visible at a glance)
+        - Round 1 vs Round 2 replication plot
+        - felt-duration dilation, all 36 episodes, 17-minute line marked
+        - channel correlation matrix incl. the openness<->validity r=0.998 check
+        - EEG justification figure: retention and artifact ratio per subject
+
+Every figure: colour-blind-safe fixed stimulus colours (config.STIM_COLOR), PDF and
+PNG (config.FIG_FORMATS), a sibling .csv with the same stem carrying its source
+data, and a caption stub naming n, test, statistic and effect size.
+
+Source data for every figure is already computed and sits in out/ -- see the ctx
+dict assembled at the end of run.main().
+"""
+
+IMPLEMENTED = False
+
+
+def make_all(ctx):
+    return 0

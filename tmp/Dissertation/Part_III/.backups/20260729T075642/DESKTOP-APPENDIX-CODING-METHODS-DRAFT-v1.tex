@@ -1,0 +1,134 @@
+% ============================================================
+% Part III — Desktop Section — APPENDIX: Survey-Coding Methods — DRAFT v1
+% Approved as "minimal appendix" at coding review Station 12 (2026-07-23).
+% Scope ruling: codebook family table + per-code agreement table + merge rules
+% + provenance note. 2–3 pages. Numbering/placement decided at assembly.
+% Sources: methodology-application/codebook-v1.md · survey-analysis/02-codebook-final.md
+% · coding/agreement-stats.txt (annotated 2026-07-23) · scripts/merge-adjudicate.py.
+% All figures reflect the post-2026-07-23 all-Fable corpus.
+% ============================================================
+
+\section*{Appendix: Survey-Coding Methods}
+
+This appendix documents the coding instrument summarized in the methods
+discussion: the codebook's family structure, the reliability results in full,
+and the merge rules. The complete codebook, all pass files, cross-model
+comparison reports, and adjudication records are retained in the project
+archive.
+
+\subsection*{A. Codebook families}
+
+The codebook was fixed before coding began and required no structural revision
+through coding. Counts are total applications in the final corpus of 873
+responses.
+
+\begin{center}
+\begin{tabular}{llrl}
+\hline
+Family & Scope & Applications & Principal codes \\
+\hline
+A & Boredom-form signatures & 155 & determinate-culprit frictions (9 sub-tags), \\
+  &                          &     & diffuse dissatisfaction, monotony, \\
+  &                          &     & divergence flags, withdrawal \\
+B & Flight patterns & 50 & video fallback, minimal compliance \\
+C & Temporal texture & 14 & time-drag, time-vanishing, objective length \\
+D & Design-node codes (evaluation chain) & 256 & perceptual conditions, image quality, \\
+  &                          &     & interest/meaning, action affordances, return-use \\
+E & Involvement channels & 259 & kinesthetic, spatial, shared, narrative, \\
+  &                          &     & affective, ludic \\
+F & Incorporation-positive signatures & 30 & presence, world-language, carry-over \\
+G & Suggestion taxonomy & 399 & provision, optimization, content, \\
+  &                          &     & interactivity, guidance, use-cases \\
+H & Emergent (open) & 38 & coder-invented, dispositioned post-run \\
+X & Housekeeping & 269 & non-use, contentless, off-topic \\
+\hline
+\end{tabular}
+\end{center}
+
+% NOTE (assembly): family totals computed from the rebuilt corpus 2026-07-23;
+% recompute at assembly if any further adjudication lands. A-family total =
+% A1.* 158? — VERIFY totals against t3-stats before final typeset. [DRAFT-v1
+% totals are indicative; the per-code table below is authoritative.]
+
+Two structural rules governed application. Multi-coding was permitted across
+families, with best fit chosen per codable idea within a family; and codes
+name signatures in student talk, never certified inner states.
+
+\subsection*{B. Reliability}
+
+Reliability was estimated on a 143-response subsample (16.4\% of the corpus),
+drawn from the term the codebook had least seen and coded by two independent
+blind passes. Mean Jaccard agreement over full code sets was .878;
+Krippendorff's $\alpha$ with MASI set-distance over the same pairs was .82.
+Per-code agreement (both passes / one pass only):
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\hline
+Code & Both & Pass 1 only & Pass 2 only & Agreement \\
+\hline
+G6-USECASE & 29 & 0 & 0 & 100\% \\
+D2-A3 & 30 & 0 & 12 & 71\% \\
+X-OFFTOPIC & 25 & 2 & 0 & 93\% \\
+X-EMPTY & 15 & 1 & 0 & 94\% \\
+E-SHA & 11 & 1 & 2 & 79\% \\
+G3-CONTENT & 9 & 0 & 0 & 100\% \\
+E-NAR & 8 & 6 & 1 & 53\% \\
+A1.other & 7 & 1 & 1 & 78\% \\
+E-LUD & 6 & 2 & 0 & 75\% \\
+G4-INTERACT & 6 & 0 & 2 & 75\% \\
+D3-A3A4 & 6 & 1 & 0 & 86\% \\
+A1.lag & 6 & 0 & 0 & 100\% \\
+B1-FALLBACK & 6 & 0 & 0 & 100\% \\
+G2-OPTIMIZE & 5 & 0 & 0 & 100\% \\
+G5-GUIDE & 4 & 0 & 0 & 100\% \\
+F1-PRESENCE & 4 & 0 & 0 & 100\% \\
+E-AFF & 3 & 1 & 1 & 60\% \\
+E-SPA & 3 & 1 & 0 & 75\% \\
+D4-LOOP & 3 & 1 & 0 & 75\% \\
+A2-DIFFUSE & 3 & 0 & 0 & 100\% \\
+A1.install & 3 & 0 & 0 & 100\% \\
+D1-A2 & 2 & 1 & 0 & 67\% \\
+A1.nav & 2 & 0 & 0 & 100\% \\
+D0-A0A1 & 2 & 0 & 0 & 100\% \\
+C3-LENGTH & 2 & 0 & 0 & 100\% \\
+A5-WITHDRAWN & 1 & 0 & 1 & 50\% \\
+A1.crash & 1 & 0 & 0 & 100\% \\
+\hline
+\end{tabular}
+\end{center}
+
+% Rows with zero both-pass instances (H-NEW inventions, F2-WORLD, B2-MINIMAL)
+% omitted for space; full table in coding/agreement-stats.txt.
+
+Agreement is weakest on the mention-level channel codes, which the merge
+handles by union, and strongest on the load-bearing families, which the merge
+handles by intersection: the design concentrates coder disagreement exactly
+where it is least consequential.
+
+\subsection*{C. Merge rules}
+
+Merging the two passes was deterministic under four rules. (1) Mention-level
+families (design nodes, involvement channels, suggestions, incorporation
+signatures, housekeeping, emergent codes) merged by union: for a mention, an
+omission by one coder is likelier than an invention by the other. (2) The
+analytically load-bearing families (boredom-form, flight, temporal) merged by
+intersection, with a one-pass-only code otherwise queued for manual
+adjudication; a keyword-warrant path for auto-acceptance existed but never
+fired---every load-bearing dispute reached manual ruling. (3) Friction
+sub-tags: all text-warranted sub-tags kept; the generic sub-tag dropped
+whenever a specific one survived. (4) Divergence flags kept at either-pass
+sensitivity, with precision enforced by manual review of the resulting
+register.
+
+\subsection*{D. Provenance}
+
+All coding passes in the final corpus were performed by Anthropic's Claude
+Fable 5 model, blind and independent, under fixed written instructions.
+Three batches initially single-coded by a smaller model were discarded and
+recoded after a measured cross-model comparison (mean Jaccard .51--.67 against
+the .878 same-model benchmark); no coding from the smaller model remains. The
+author adjudicated all seven manual corrections and reviewed the apparatus
+rule by rule. A dedicated two-pass recount of the shared-involvement evidence
+followed the same protocol (93\% exact single-bin agreement, eight boundary
+disputes author-adjudicated).

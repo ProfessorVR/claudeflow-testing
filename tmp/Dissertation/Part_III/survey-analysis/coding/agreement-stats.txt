@@ -1,0 +1,66 @@
+# =========================================================================
+# ANNOTATION 2026-07-23 (Station 8 ruling; file otherwise preserved as
+# generated 2026-07-06)
+# 1. The 0.878 mean Jaccard below is the corpus reliability estimate:
+#    batch 6 only, two blind Fable 5 passes (pass1-6 vs pass2-6), full
+#    code-sets, hardest (mostly-W26) material.
+# 2. Chance-corrected companion (Station 8 add-on ruling): Krippendorff's
+#    alpha with MASI set-distance over the same 143 pairs = 0.820
+#    (0.825 with H-NEW slugs normalized) — above the .800 reliability
+#    convention. Script: session scratchpad alpha_masi.py.
+# 3. The "MISSING FILE pass2-{1,2,3,5}" lines below are HISTORICAL (the
+#    lean single-pass design). pass2-1/2/5 now EXIST but are the
+#    2026-07-23 Fable REPLACEMENT passes superseding the Haiku
+#    pass1-1/2/5 (Station 7 ruling) — NOT second passes for merging.
+#    Cross-model comparisons: xmodel-batch{1,2,5}-compare.txt.
+# 4. WARNING — do NOT re-run scripts/merge-adjudicate.py as-is: its loader
+#    globs pass1/pass2 for ALL batches, so it would now merge the
+#    superseded Haiku passes with the replacement passes on batches 1/2/5
+#    and overwrite the canonical replaced corpus (03 rebuilt 2026-07-23).
+# =========================================================================
+responses: 873  coverage p1: 727  p2: 289  single-pass: 730  double-coded: 143
+mean jaccard agreement (reliability subsample, batch 6 only): 0.878
+manual-adjudication queue: 4
+parse problems: 5
+  MISSING FILE tmp/Dissertation/Part_III/survey-analysis/coding/pass1-4.txt
+  MISSING FILE tmp/Dissertation/Part_III/survey-analysis/coding/pass2-1.txt
+  MISSING FILE tmp/Dissertation/Part_III/survey-analysis/coding/pass2-2.txt
+  MISSING FILE tmp/Dissertation/Part_III/survey-analysis/coding/pass2-3.txt
+  MISSING FILE tmp/Dissertation/Part_III/survey-analysis/coding/pass2-5.txt
+
+code  both  p1only  p2only  agree%
+D2-A3               30      0     12  71%
+G6-USECASE          29      0      0  100%
+X-OFFTOPIC          25      2      0  93%
+X-EMPTY             15      1      0  94%
+E-NAR                8      6      1  53%
+E-SHA               11      1      2  79%
+H-NEW-skeptic        0      9      0  0%
+G3-CONTENT           9      0      0  100%
+A1.other             7      1      1  78%
+E-LUD                6      2      0  75%
+G4-INTERACT          6      0      2  75%
+D3-A3A4              6      1      0  86%
+A1.lag               6      0      0  100%
+B1-FALLBACK          6      0      0  100%
+G2-OPTIMIZE          5      0      0  100%
+E-AFF                3      1      1  60%
+G5-GUIDE             4      0      0  100%
+F1-PRESENCE          4      0      0  100%
+E-SPA                3      1      0  75%
+D4-LOOP              3      1      0  75%
+D1-A2                2      1      0  67%
+A2-DIFFUSE           3      0      0  100%
+A1.install           3      0      0  100%
+A1.nav               2      0      0  100%
+A5-WITHDRAWN         1      0      1  50%
+D0-A0A1              2      0      0  100%
+C3-LENGTH            2      0      0  100%
+H-NEW-optional       0      0      2  0%
+H-NEW-playback       1      0      0  100%
+A1.crash             1      0      0  100%
+F2-WORLD             0      1      0  0%
+X-NONUSE             1      0      0  100%
+G1-PROVISION         1      0      0  100%
+A4-DIV               1      0      0  100%
+B2-MINIMAL           0      0      1  0%

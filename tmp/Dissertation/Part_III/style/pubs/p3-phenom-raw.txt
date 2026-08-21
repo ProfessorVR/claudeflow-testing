@@ -1,0 +1,805 @@
+Biomedical Engineering Education (2024) 4:381–397                                                                               BIOMEDICAL
+                                                                                                                                ENGINEERING
+https://doi.org/10.1007/s43683-024-00139-5                                                                                      SOCIETY
+
+
+    INNOVATION ARTICLE
+
+
+
+Phenomenological Evaluation of an Undergraduate Clinical Needs
+Finding Skills Through a Virtual Reality Clinical Immersion Platform
+Christine E. King1       · Dalton Salvo2
+
+Received: 30 August 2023 / Accepted: 22 January 2024 / Published online: 5 March 2024
+© The Author(s) 2024
+
+
+Abstract
+Clinical immersion programs have been widely used in higher education, particularly in biomedical engineering (BME)
+programs, to allow students to identify and evaluate the unmet clinical needs. However, due to limited space and extensive
+safety protocols required to enter hospitals, access for undergraduate students to shadow physicians is limited. BME students
+need to be trained to identify and evaluate unmet clinical needs through observation and experience to remain competitive in
+the medical device landscape. To be able to allow students to immerse themselves into clinical environments remotely and
+be able to visualize the full spectrum of healthcare workers and equipment that support a procedure beyond what is avail-
+able through online video records, we have developed a virtual reality (VR) clinical immersion platform. The applicability
+and overall student satisfaction of using VR learning environments was investigated through a pilot undergraduate BME
+unmet clinical needs finding course in the spring of 2022. Pre- and post-course survey analyses revealed that the VR clinical
+immersion experiences did greatly increase immersion within a medical procedure, and students felt sensations of presence
+and embodiment. Given the results of this study, VR learning environments can provide a means for students to perform
+unmet clinical needs through virtual clinical immersion. However, these technologies to support environments should be
+readily accessible within the classroom.
+
+Keywords Biomedical engineering education · Clinical immersion · Design ideation · Unmet clinical needs finding ·
+Virtual reality
+
+
+Introduction                                                                these programs continue to have substantially more appli-
+                                                                            cants than can be served, programs such as those described
+In the realm of biomedical engineering (BME) curricula,                     in Guilford et al. [4] and Moravec et al. [6] illustrate that an
+the discovery of unmet clinical needs and the adoption of                   inequitable situation exists wherein a majority of students
+clinical immersion programs have become more widespread                     will be unable to participate in any clinical immersion expe-
+[1–3]. Regrettably, studies have found that only 48% of                     rience despite clear demand for such.
+applicants to clinical immersion courses and 24% of appli-                     To allow BME students to fully engage with clinical
+cants to immersion programs are able to participate annu-                   settings, they must cultivate an understanding of the daily
+ally [4]. The current situation leaves a majority of students               operations and necessities of the customers and consumers
+unable to participate in any clinical immersion course or                   who will rely on their engineering solutions [7]. A lack of
+program. Given increasing cohort sizes and numbers of                       insight into how medical professionals employ these tools in
+BME undergraduate programs [5], this suggests an increase                   their routine for diagnosis and treatment puts our students at
+in applicants to such clinical immersion experiences. As                    a disadvantage. Though not an inevitability, a pervasive lack
+                                                                            of human-centered design knowledge and understanding of
+* Christine E. King                                                         how such devices are used in practice has the potential to
+  kingce@uci.edu                                                            hinder human-centered medical device innovation [8]. To
+                                                                            stay ahead in the medical device domain, it’s imperative
+1
+     Department of Biomedical Engineering, University                       for BME undergraduates to be well-versed in spotting and
+     of California Irvine, Irvine, CA, USA
+                                                                            addressing unseen clinical needs via direct observation and
+2
+     Department of English, University of California Irvine,                hands-on experiences [9]. Given the hurdles in accessibility
+     Irvine, CA, USA
+
+
+                                                                                                                            Vol.:(0123456789)
+382                                                                                                             C. E. King, D. Salvo
+
+
+and the recent pivot toward remote instruction, some educa-       A prior study that compared 2D videos to an immersive
+tional bodies have turned to digital video sessions to achieve    and physically interactive 3D simulation demonstrated that
+some degree of clinical immersion experience [10, 11]. Yet,       students had increased levels of engagement, more posi-
+these video resources don’t equate to the depth of immersion      tive attitudes toward the educational material, and the 3D
+as in-person clinical environment exposure, neither do they       environment had an overall greater pedagogical effective-
+present a comprehensive view of the myriad health profes-         ness [29]. While this study was conducted using a Mixed
+sionals and apparatus involved in surgical processes. Thus,       Reality simulation, it is likely the same would be true of
+the onus is on educators to integrate technological tools that    a VR simulation given the underlying pedagogical prin-
+not only meet these academic aspirations but also amplify         ciples remain the same. Consequently, in response to the
+the students’ learning experience by focusing on enriching        aforementioned educational needs, the authors are crafting
+remote pedagogical materials and apparatuses.                     a VR-based clinical immersion curriculum for undergradu-
+   The use of virtual reality (VR) technology has become          ate BME students. This equips them to identify and evalu-
+increasingly popular in medical education and other educa-        ate unaddressed clinical needs before embarking on their
+tional settings within the last few years [12]. Such technolo-    yearlong senior entrepreneurial capstone course, referred to
+gies use computationally rendered virtual places or virtual-      as the BioENGineering INnovation and Entrepreneurship
+izations of physical locations that allow the user to dive into   (BioENGINE) program [30].
+these virtual worlds and experience them through a first-            In this study, we investigate the practical application,
+person perspective [13]. These virtual environments (VEs)         potential pedagogical benefit, and overall student satisfac-
+immerse the user in a simulated reality through the use of        tion of using VR learning environments to perform clinical
+interactive devices such as Head Mounted Displays (HMDs),         immersion for unmet clinical needs finding among BME
+controllers, and data gloves. In the most common VR format        undergraduate students prior to entering the BioENGINE
+the user dons a HMD through which they stereoscopically           program. By assessing our students’ responses as to the edu-
+view a virtual or virtualized space and the HMD/controllers       cational efficacy of VR learning environments and whether
+track the user’s movement, allowing them to “physically"          they generate a greater degree of felt presence, we hope to
+navigate that virtual space and interact with any manipulable     discover if VR clinical immersion experiences are a viable
+objects that may be present.                                      and more effective alternative to traditional 2D videos. In
+   Early investigations indicate mixed outcomes from uti-         the spring of 2022, the Biomedical Engineering Department
+lizing VR in educational settings [14]. Yet, newer stud-          at the University of California Irvine (UCI) introduced a
+ies contrasting VR with traditional video-based instruc-          unique clinical needs program available to all engineering
+tion reveal that VR learners display superior outcomes in         departments. Drawing from insights provided by nursing
+terms of knowledge transfer and self-efficacy compared to         and allied health experts, our material was designed to be
+their video-learning counterparts [15, 16]. This enhanced         universally accessible from any device, be it a phone, tablet,
+outcome can be attributed to VR’s capability to foster a          computer, or VR headset. With a blended online curricu-
+heightened state of presence [17, 18]. By facilitating physi-     lum, encompassing VR immersive settings, video content,
+cal locomotion and interaction within the virtual space,          physician dialogues, educational modules, and collabora-
+VR technology aids in honing both hands-on procedural             tive classroom activities, we catered the learning modules
+and declarative knowledge [19, 20]. The heightened sense          to around 150 students given our current undergraduate pro-
+of agency emerging from immersive VR interactions [21]            gram size. To assess and improve these learning modules
+has been linked to improving both memory and knowledge            prior to making the course a required course in the under-
+retention [22]. This amplified experiential sensation or          graduate BME curriculum, it was piloted among 22 students
+embodiment correlates with an increase in the total con-          as an elective course. Our mission is to instruct students on
+tent retained by students [23]. Such profound involvement         identifying and evaluating unmet clinical needs that have
+within a dynamic virtual realm, where users hold a degree         the potential for commercialization, hone their teamwork
+of autonomy, intensifies immersion and, therefore, presence.      competencies, and harness existing clinical and behavioral
+This enhanced sense of agency and presence can increase           research instruments to enhance healthcare [31]. Effective
+students’ understanding of the content as well as introduce       clinical needs finding skills go beyond information retention
+and prepare them for various career paths in future [24].         and require the development of a critical awareness that can
+   Such student-centric pedagogical approaches encourage          evaluate potential problems and create a solution to those
+active learning by generating a greater felt sense of embodi-     problems. Given this, it must be noted that the aforemen-
+ment and agency through an integration of digital technolo-       tioned research results do not provide direct support that VR
+gies and can increase levels of student engagement [25–28].       learning environments will be more effective in developing
+Phenomenological Evaluation of an Undergraduate Clinical Needs Finding Skills Through a Virtual…                                              383
+
+students' clinical needs finding skills versus 2D videos. It               rooms. Given the limitations of the game design software
+is unlikely that VR clinical immersion programs will be as                 used, we were unable to house multiple videos within the
+pedagogically effective as in-person observation. However,                 same space. To resolve this issue, each room serves as a
+we hypothesize that the first-person perspective allowed by                launching point that will transfer the user to a new environ-
+VR, and the enhanced sense of presence and agency it gen-                  ment wherein they can review the learning materials located
+erates, has the potential to be more beneficial to students’               in that room.
+development of such skills than 2D videos as it more closely                  Given our goal to maintain the highest level of acces-
+simulates the experience of being physically present in the                sibility, we created both a 2D traditional video version and
+operating room. That said, and as we will discuss in greater               3D VR version of each experience deployed across a range
+length in our Discussions section, we were unable to objec-                of platforms and devices using the same footage described
+tively evaluate the pedagogical effectiveness of each ver-                 above. Our 2D experiences consisting of the operating room
+sion on equal grounds; rather, we focused on discovering                   footage with the physician’s POV overlaid, and the physi-
+our students’ opinions on both the 2D and 3D VR versions                   cian and engineer interviews were uploaded to our YouTube
+derived from their subjective experiences with the content.                channel (https://w
+                                                                                            ​ ww.y​ outub​ e.c​ om/c​ hanne​ l/U
+                                                                                                                               ​ CAwi0​ hckut​ h-​
+                                                                           OGOAO​IB8YEg) so that anyone with a digital device and
+                                                                           internet connection can view them. We also created a 2D PC
+Methods                                                                    version using the Unreal Engine game development software
+                                                                           (Unreal Engine, Cary, NC), which allowed us to embed all
+Preparation Before the Experimental VR Course                              of our content within a single interactive and explorable vir-
+                                                                           tual space similar to contemporary PC video games. For our
+Prior to our experimental course, we recorded our medi-                    3D VR versions, we uploaded the operating room footage
+cal footage and constructed our virtual infrastructure. We                 to YouTube so they could be viewed using a Google Card-
+filmed various medical procedures, but chose five opera-                   board VR headset (Google, Mountain View, CA) or Meta
+tions in specific to evaluate our course and VR environ-                   Quest 2 VR headsets (Meta, Menlo Park CA), which could
+ments: Deep Brain Stimulation (DBS), Transcatheter Aortic                  be checked out from our library [32]. Additionally, we devel-
+Valve Replacement (TAVR), Spinal Deformation Surgery,                      oped an immersive and interactive version using the Unreal
+Cataract Surgery, and a Corneal Transplant operation. These                Engine specifically for the Meta Quest 2 headsets, allowing
+procedures were filmed using a 180-degree stereoscopic                     us to include all the relevant materials for a specific opera-
+camera to capture the entirety of the operating room as well               tion within a single virtual environment. For both the 2D
+as recording footage from the primary physician’s point of                 PC and interactive VR experiences, we created one version
+view (POV) through a head mounted camera worn during                       that relied on streaming videos from our AWS servers for
+the operation. The filming of these procedures was approved                the highest quality content, but also a downloadable version
+as exempt under UCI Institutional Review Board (IRB) (IRB                  for those who do not have the necessary bandwidth to stream
+Exempt No. 15531 for UCI Medical Center filming and 1184                   high-quality video content. By developing various versions
+for UCI School of Medicine and School of Nursing filming                   of each experience and deploying our content across differ-
+locations), and all physicians, patients, and staff provided               ent platforms and devices, we ensured that any student with
+informed consent prior to filming. Additionally, we inter-                 a smartphone, tablet, computer, or VR headset with internet
+viewed the primary acting physicians of each procedure as                  access could view our educational content.
+well as some engineers and entrepreneurs involved in the                      Our participants consisted of undergraduate BME stu-
+development of the medical devices used to provide sup-                    dents enrolled in a pilot elective course, BME 179: Bio-
+plemental learning materials. Once collected, the videos of                medical Engineering Design: Addressing Unmet Clinical
+the respective procedure and all the supplementary materi-                 Needs. This class is an upper division elective BME course
+als were included in the VR experience for that procedure.                 consisting primarily of juniors and seniors with the occa-
+For example, in the TAVR environment, we included inter-                   sional freshman and sophomore. This course is designed
+views from cardiologist Dr. Pranav Patel, engineer and VP                  to introduce undergraduates to the non-technical aspects of
+of R&D at Edwards Lifesciences Sean Chow, an animation                     medical device development by performing unmet clinical
+of a TAVR procedure, an overview of Edwards Lifesci-                       needs identification and evaluation. The goal is to use the
+ence’s SAPIEN XT Transcathether valve that is used in this                 virtual experiences to help our undergraduates develop their
+procedure, and the video footage of the operation itself. As               clinical needs finding and screening skills by exposing them
+described in “Unmet Clinical Needs Evaluation” section,                    to actual medical procedures, and using these procedures
+we built a rudimentary hospital environment with various
+384                                                                                                             C. E. King, D. Salvo
+
+to evaluate identified needs for potential commercialization     1. Identify medical, technical, and market needs in formu-
+and further development in their senior capstone program.           lating biomedical engineering solutions to unmet clini-
+                                                                    cal needs (EAC 7).
+Stages of the Experimental VR Course                             2. Employ the various steps in bringing a biomedical prod-
+                                                                    uct from ideation to invention (EAC 2).
+At the start of the course, we explained the nature of the       3. Identify the realistic constraints of a medical innovation
+experiment to the students and then asked them to fill out an       product, with consideration of public health, safety and
+optional survey to establish demographics, and their usage          welfare, as well as global, cultural, social, environmen-
+of both VR and traditional video games prior to them start-         tal, and economic factors (EAC 2).
+ing the class. All students were provided with an Informa-       4. Articulate the impacts of the project in a global, eco-
+tion Study Sheet made available on the course website (UCI          nomic, environmental, and societal context (EAC 4).
+IRB Exempt No. 904). Additionally, this first survey also        5. Communicate unmet clinical needs, concept generation,
+asked students how they think VR could be either beneficial         and concept screening of medical innovation and inven-
+or an impedance to developing clinical needs finding skills         tions to a wide range of audiences (EAC 3).
+and gauge their overall interest in using VR for educational
+purposes (to view Survey 1’s Questions, see Appendix B.1).       It can be noted that each course learning objective described
+   During the course, the students watched guided video          above meets ABET’s Engineering Accreditation Commis-
+interviews from physicians and online virtual reality immer-     sion (EAC) student learning outcomes for BME programs.
+sive surgeries and procedures that displayed how physi-          In particular, course learning objective 1 meets EAC 7: “an
+cians and support staff conduct themselves during such           ability to acquire and apply new knowledge as needed, using
+procedures. They then identified potential unmet clinical        appropriate learning strategies,” while learning outcomes 2
+needs and issues that engineering principles of design can       and 3 meet EAC 2: “an ability to apply engineering design
+be applied to. Prior to this, they formed teams based upon       to produce solutions that meet specified needs with con-
+their interests and active learning modules within the class-    sideration of public health, safety, and welfare, as well as
+room that enhanced team cohesion and effective teamwork          global, cultural, social, environmental, and economic fac-
+[33]. The students then performed gap analyses as well as        tors.” Course learning outcome 4 meets EAC 4: “an abil-
+virtually interviewed potential customers, strategic partners,   ity to recognize ethical and professional responsibilities
+and stakeholders in the value chain using online surveys         in engineering situations and make informed judgments,
+to evaluate whether there was any potential commercializa-       which must consider the impact of engineering solutions
+tion for their proposed solution. In addition, to gain further   in global, economic, environmental, and societal contexts,”
+insight from stakeholders, students were able to interview       while course learning outcome 5 meets EAC 3: “an ability
+healthcare professionals through zoom interviews with phy-       to communicate effectively with a range of audiences” [35].
+sicians and staff from UCI Medical Center and Children’s
+Hospital of Orange County that have ongoing collaborations       Technical Skills Development Through Reverse Engineering
+with the course instructor (to view a sample of one team’s
+interview questions and answers, see Appendix C). They           To understand how medical devices are designed, the sec-
+also performed online surveys with patients through patient      ond two weeks of the course focused on reverse engineering
+advocacy groups. By the end of the quarter, the students         medical devices by the student teams to understand how
+drafted a strategic plan to develop their product throughout     devices work and are designed. This consisted of identify-
+the BioENGINE program [30]. The following sections high-         ing an existing medical device in their team’s medical field
+light how the course provides hands-on learning, VR clinical     of interest. Subsequently, they were tasked with grasping
+immersion experiences, business model canvas development         and elaborating on: 1) the context in which the device is
+for students to be able to identify and evaluate an unmet        employed (such as its application location, the target user,
+need, and how to create a viable design plan for their senior    frequency of use, and duration), 2) its comprehensive
+capstone course [34], which they perform the following year      functionality (e.g., dismantling and reassembling it), 3)
+in a 9-month mentored entrepreneurial design program [30].       intentional design choices (like choice of materials, safety
+These learning modules are conducted to achieve the follow-      features, electrical needs, and software specifications), 4)
+ing major course learning outcomes:                              potential points of breakdown through a failure mode effects
+                                                                 analysis, 5) user-friendliness (including aspects like comfort,
+                                                                 recyclability, simplicity of implementation, and operation
+Phenomenological Evaluation of an Undergraduate Clinical Needs Finding Skills Through a Virtual…                                              385
+
+                                                                           Virtual Unmet Clinical Needs Identification
+
+                                                                           After the reverse engineering exercises were performed, stu-
+                                                                           dents used immersive virtual reality software that is compat-
+                                                                           ible with all phones, computers, and virtual reality headsets,
+                                                                           and google cardboard and Meta Quest 2 headsets (Fig. 2)
+                                                                           were provided to them as part of their course materials and
+                                                                           were available for loan at the school science library. These
+                                                                           environments were designed to be able to allow students to
+                                                                           perform clinical needs identification virtually by being able
+                                                                           to go into a surgical suite to see the physician’s viewpoint
+                                                                           as well as a 180-degree 3D view of the operating room. The
+                                                                           students could also travel to other rooms to view the supple-
+                                                                           mentary interviews and information (Fig. 3). Note that the
+                                                                           full game-like environment presented in Fig. 3 was available
+Fig. 1  Image of students reverse engineering a BP cuff to learn how       in the 2D PC version and Meta Quest VR headset version,
+medical devices are designed                                               but was not possible to be used in the Google Cardboard’s
+                                                                           version, as this required students to use their phones and
+                                                                           YouTube videos. For the Google Cardboard version, stu-
+through human-centered design learning modules), and 6)                    dents watched these videos through YouTube playlists, such
+potential design enhancements. Each group member pre-                      as the interview playlist described below.
+sented insights based on their respective “specialty” regard-                  Alongside their virtual “tours” (Fig. 3, an example clip
+ing the design criteria of the current medical tool. As an                 of the DBS procedure shown in the figure can be found
+illustration, a student representing the “electrical engineer”             here: https://​www.​youtu​be.​com/​shorts/​ttDVA​xnOQzU),
+role detailed the circuitry and electrical evaluations of a                they attended lectures and watched several online videos
+blood pressure (BP) cuff required to take BP measurements                  consisting of informational videos on the technologies used
+from a pressure sensor, while the one emulating a “computer                and guided interviews with physicians, therapists, nurses,
+scientist” outlined the user interface, data gathering, and                staff, engineers, and entrepreneurs. These supplemental
+software processing components of the BP monitor (Fig. 1).                 videos were used to understand the current needs of dif-
+After a regulatory controls lecture in the fourth week of the              ferent environments that they encounter within the virtual
+course, the students then performed an FDA strategy assign-                experiences. The interviews were also provided via the fol-
+ment to identify which standards would be required for their               lowing YouTube playlist: https://w​ ww.y​ outub​ e.c​ om/p​ layli​ st?​
+portion of the device. These exercises were mentored by                    list=​PLuCI​sTqjw​EZupB​5MxyS​U6DPB​piPsa​a42x. These
+the instructor and instructional team to guide them through                interviews provided context behind each medical procedure
+probing questions based on how different types of engineer-                and gave students an understanding of the history, current
+ing and science combine to develop a medical device, and to                standards of care, and future research of the particular field.
+justify and expand upon the above tasks.                                   After having gone through the guided clinical needs find-
+                                                                           ing exercises during the reverse engineering stage of this
+
+
+Fig. 2  VR headsets that were
+provided to the students as
+part of their course materials.
+The BNEXT VR Headset was
+used as the Google Cardboard,
+which allowed students to watch
+videos in VR on YouTube using
+their cell phones
+386                                                                                                                      C. E. King, D. Salvo
+
+
+
+
+Fig. 3  Views of the different “rooms” in the VR environment, includ-   an interview with the attending physician, and room 3) an informa-
+ing the main hospital environment where students can walk into:         tional video of the technology (ROSA ONE Brain, Zimmer Biomet,
+room 1) the VR medical procedure (e.g., a DBS procedure), room 2)       Warsaw IN)
+
+
+
+course, having selected their respective procedure, and hav-            VR setting and over the duration of the course. Instructors
+ing reviewed all the related content, each group performed              assessed these notebooks in terms of completeness, ensur-
+homework assignments where they were asked to identify                  ing that more than three observations were performed, and
+needs they can address as a biomedical engineer or other                that students had identified any problems with correspond-
+engineering discipline.                                                 ing design criteria and constraints within each observation.
+                                                                        They used the needs they had identified to determine which
+Unmet Clinical Needs Evaluation                                         top three needs should be further evaluated in terms of their
+                                                                        potential market, and what the best proposed solution would
+After performing the learning modules using VR environ-                 be to pursue throughout their senior capstone course.
+ments, videos, and supplemental material to identify medical
+devices that are currently used in clinical practice, student           Quantitative and Qualitative Analysis After
+teams used their developed list of identified unmet clini-              the Experimental Class
+cal needs to evaluate which need is most viable to solve.
+This was founded on a series of tasks: 1) assessment of the             When experiencing a state of presence in a virtual environ-
+market scenario, 2) approach to intellectual property and its           ment, the person in question psychologically feels as if they
+challenges, 3) clinical approach and obstacles given current            are physically present in the virtual environment. Because
+standards of care, 4) regulatory plan, and 5) reimbursement             presence is a perceptual phenomenon experienced by an
+strategy. These concept screening and evaluation learning               individual, presence, then, is a property of that person. How-
+modules are based on Stanford University’s Biodesign: The               ever, as Lombard and Ditton observe, presence “results from
+Process of Innovating Medical Technologies textbook and                 an interaction among formal and content characteristics of
+program [36]. For assessment purposes, students kept an                 a medium and characteristics of a media user, and therefore
+“innovation notebook” which documented their observa-                   it can and does vary across individuals and across time for
+tions, conversations, and review sessions conducted in the              the same individual” [37]. Thus, the sensations of presence
+Phenomenological Evaluation of an Undergraduate Clinical Needs Finding Skills Through a Virtual…                                      387
+
+and embodiment one feels in an immersive virtual environ-                  view of the procedures whether viewed in a traditional 2D
+ment are intensely subjective experiential phenomena. To                   video format or using our 3D VR experiences. As such, all
+effectively evaluate and refine our virtual experiences, we                versions presented students with a 180-degree view of the
+utilized a phenomenological approach, a frequent choice                    operating room along with a POV of the acting physician,
+among VR researchers, during our user feedback collection                  allowing students to more fully grasp the spectrum of staff
+and analysis. Phenomenology acknowledges and attempts to                   and equipment active during each respective procedure.
+address how not only our body but also our environments,                   Building our PC and VR experiences using Unreal Engine
+and the objects, entities, and stimuli of which they consist,              game design software [39] made it possible to locate all the
+play a role in shaping conscious thought and behavior when                 respective content for each procedure (operation anima-
+directly experienced. As such, it is commonly adopted by                   tions and footage, interviews, and medical device equipment
+VR researchers who focus on the human experience of such                   information) within a single navigable space. Though to a
+technology [38].                                                           minimal degree, these game-like experiences necessitated
+   Given that human awareness is influenced by mental,                     a level of conscious interactivity to view each element of
+environmental, and physical sensations, a phenomeno-                       the procedure by requiring navigation of the avatar to vari-
+logical approach guides us to focus on the engagements                     ous locations as well as to access and manipulate the video
+between users and the encompassing virtual environment.                    content. Moreover, at a phenomenological level VR first
+Subsequently, after the course completion, we requested our                works through sensory deprivation: depriving the user of
+participants to fill out questionnaires to determine if the VR             the visual and auditory sense-data of the physical environ-
+experiences increased their sense of presence and whether or               ment in which they are located; and secondly, by supplanting
+not they found the VR versions more educationally benefi-                  the visual and auditory sense-data of objective reality with
+cial than traditional 2D videos. We also had students list any             that of the virtual world. The combination of a more realistic
+ideas they may have for improving our educational content                  perspective made available by 3D VR technology, increased
+and the VR experiences as well as list any educational use                 interactivity, and a forced narrowing of the students’ focus to
+cases they think VR could be effectively used to improve                   solely the sense-data of the virtual experience created a more
+learning (to view Survey 2’s questions see Appendix B.2.                   intensely immersive experience than traditional 2D videos.
+Later, we initiated personal interviews with the volunteers
+among survey participants. In these interactions, our aim                  The Most and Least Educationally Beneficial Clinical
+was to discern their real-time experiences in the virtual                  Immersion Formats
+realm by seeking insights into their feelings of presence,
+embodiment, and their emotional responses to their immer-                  To investigate our hypothesis, the students completed a ques-
+sion in a clinical space. We also asked students to follow-                tionnaire at the end of the course and some participated in
+up on the survey question and provide any ideas they think                 a brief interview. A breakdown of the student demograph-
+could be used to improve our content and virtual experiences               ics for those who participated in the survey can be seen in
+(to view the interview questions, see Appendix B.3).                       Appendix Figs. 13, 14, 15, and 16. The goal of the survey
+                                                                           was to identify whether or not the 3D VR clinical immersion
+                                                                           experience elicits a greater degree of presence: the feeling
+Results                                                                    that they are physically and/or psychologically present in
+
+3D VR Clinical Immersion Experiences Provide
+a More Immersive Learning Experience
+
+Given the lack of physical access to operating room envi-
+ronments, one of our goals was to simulate, as closely as
+possible, the perspective of actually standing in the oper-
+ating room during a procedure. Accordingly, we explored
+two primary questions. Firstly, does 3D VR increase a felt
+sense of presence? Secondly, do the students find our 3D
+VR clinical experience to be more or less educationally
+beneficial than traditional 2D video content? To make the
+content scalable and widely available across all higher edu-
+cation institutions, we focused on providing the same overall
+                                                                           Fig. 4  Responses to the post-course survey question “Did VR
+                                                                           increase the felt sensations of immersion and presence?”
+388                                                                                                                     C. E. King, D. Salvo
+
+the operating room. Students were asked if the 3D VR ver-
+sions elicited a greater degree of presence or whether all the
+different versions were equal in this regard. 70% of students
+noted the VR version elicited a greater felt sense of presence,
+10% felt that all were equal, and 20% opined that it did not
+increase their sense of presence (Fig. 4).
+    Students were then asked to identify what they believed
+was the most and least educationally beneficial versions.
+There are numerous factors that can play a role in determin-
+ing overall pedagogical efficacy of an educational experi-
+ence including the method of content delivery, the visual
+fidelity or quality of the content, ease of access, interactiv-
+ity, and physical comfort or discomfort among many others.           Fig. 6  Responses to the post-course survey question "What was the
+Given how difficult it is to account for all such variations,        least educationally beneficial version?"
+we decided to take a more holistic approach by asking our
+students to evaluate the most and least beneficial version           realistic perspective offered by 3D VR and the sensory dep-
+according to their subjective experience and to then explain         rivation aspect helped them focus on the content by cut-
+what elements of that version made it better or worse than           ting out the various distractions one typically faces in any
+others. 40% of students felt the traditional 2D videos were          environment: computer and phone notifications, background
+the most beneficial, 20% chose the Google Cardboard, 20%             sounds and movements, other people, etc. For those students
+chose the Meta Quest 2, 20% believed all were equally ben-           who felt the 2D version is better, our interviews suggested
+eficial, and 10% selected the PC version (Fig. 5).                   the reason for this seems to lie in two primary factors: con-
+    As for the least educationally beneficial version, 40%           venience/ease of use and physical discomfort. As one stu-
+of students claimed that the worst version was the Google            dent described it, having to go to the library to check out the
+Cardboard, 25% felt that none of the versions were notice-           VR headset is “a hassle,” leading them to watch the You-
+ably beneficial to their learning, 15% chose the PC version,         Tube videos on their phone or computer out of convenience.
+15% chose the traditional 2D videos, and only 5% believed
+the Meta Quest version is the worst (Fig. 6).
+    For those students who felt the 3D VR versions were the
+most beneficial, 66.6% stated that the increased sense of
+presence generated from the embodied first-person perspec-
+tive offered by the HMD was what made it more beneficial,
+26.7% claimed it was the increased ability to focus due to
+the removal of distractions when wearing the HMD, and
+6.7% felt the affordability and accessibility of, specifically,
+the Google Cardboard are what made it the best (Appen-
+dix Fig. 8). The follow-up interviews corroborated that the
+two primary factors leading to their selection were the more
+
+
+
+
+                                                                     Fig. 7  Percentages of the responses to the post-course survey ques-
+Fig. 5  Responses to the post-course survey question "What was the   tion “Why 2D is More Educationally Beneficial?” (No. Responses =
+most educationally beneficial version?"                              20 students)
+Phenomenological Evaluation of an Undergraduate Clinical Needs Finding Skills Through a Virtual…                                        389
+
+Furthermore, 44.5% claimed ease of use (convenience/acces-                 Discussion
+sibility, technical benefits such as variable playback speed,
+better volume and playback controls, and ability to zoom in                Given the goal that our educational content should be open
+to the footage) was the reason the 2D version is better. 38.9%             source and easily accessible for other BME programs to
+stated that the physical discomfort (disorientation, weight of             adopt, we had to make certain concessions in how the plat-
+the headset for long periods of time, or the uncomfortability              form was offered that influenced our data in identifiable
+of wearing glasses with the headset) made the VR versions                  ways. For example, the cost-prohibitive nature of high-
+less beneficial. 11.1% felt the lack of being able to take notes           quality VR headsets like the Meta Quest 2 we used did not
+while wearing the HMD made the VR versions worse, and                      allow us to deploy their usage in the classroom itself, rely-
+5.6% never tried the VR version at all, leading them to select             ing on the Google Cardboard HMDs instead. While we had
+the 2D videos as the best (Fig. 7).                                        several Meta Quest 2’s housed in the school’s library, not a
+                                                                           single student went there to check one out. Because, as one
+Prior Familiarity with VR and Traditional Video                            student phrased it, “it was a hassle” to physically obtain a
+Games Effect on Choosing the Most Educationally                            headset for loan from the library when they could just watch
+Beneficial Format                                                          the YouTube videos on their phone or computer, most of
+                                                                           our students never tried the Meta Quest 2 during the course.
+One element we also wanted to explore was whether one’s                    Out of those that did, almost all only viewed the YouTube
+familiarity with VR and video games in general prior to                    videos rather than using the downloadable and interactive
+taking the course affected their choice on whether the VR                  VR game-like versions. As some research has shown, con-
+version is better or worse educationally. While we expected                venience is a crucial criteria for students over and against
+that increased familiarity with VR and video games would                   other factors and students associated convenience with
+lead those students to lean toward the VR versions, this was               perceived learning and course satisfaction [40]. Addition-
+not the case. In fact, it seemed that the students with a higher           ally, with regard to information-seeking practices in both
+level of familiarity with VR and/or video games were more                  academic and everyday-life contexts, convenience is one of
+likely to select the 2D video content as more educationally                the primary criteria at work in making decisions throughout
+beneficial. Interviews indicated that this is due to the sheer             the information-seeking process to the point where, in some
+lack of functionalities, visual fidelity, and overall polish of            situations, quality or content will be readily sacrificed for the
+the VR versions as they do not meet the production stand-                  sake of convenience [41]. Our student interviews corrobo-
+ards of contemporary VR and traditional video games. For                   rated this, specifying convenient ease of access and qual-
+those students who felt the 2D version was more education-                 ity of life features like being able to adjust playback speed
+ally beneficial, 66.7% had used VR at least once prior to                  in YouTube but not in VR as the primary factors leading
+taking the course, 11.1% had never tried VR, 11.1% used                    to them either not checking out the VR headsets from the
+VR at least once every three months, and 11.1% used VR on                  library or using the downloadable interactive VR experi-
+a weekly basis (Appendix Fig. 9). As for traditional video                 ences. In retrospect, our commitment to open access across
+game usage, 66.7% of students who picked the 2D version                    a variety of devices and platforms apparently moved students
+gamed on a weekly basis, 22.2% gamed at least once every                   to use the most convenient option available to them, making
+three months, and 11.% gamed as a child or game very infre-                it impossible to properly evaluate the pedagogical efficacy
+quently (Appendix Fig. 10). For those students who thought                 of each version on equal grounds.
+the VR versions were the most educationally beneficial,                        Another problematic element of our interactive VR learn-
+66.7% had tried VR at least once prior to taking the course,               ing environments is the lack of any real-time collaborative
+and 33.3% had never tried VR before (Appendix Fig. 11).                    features. Students could only enter the VR environments by
+Regarding traditional video game usage, 33.3% gamed as a                   themselves and could not work with others in the same vir-
+child or on a very infrequent basis, 33.3% gamed weekly,                   tual environment. While we do intend to address this issue in
+22.2% gamed at least once a month, and 11.1% gamed at                      future iterations, our VR learning environments will not be
+least once every three months (Appendix Fig. 12). Interest-                suitable for any kind of group work or team meetings until
+ingly, given these survey results, there is a possible correla-            such functionality is added. Furthermore, the elements of
+tion between one’s familiarity with video games and their                  the VR versions which students noted as detrimental beyond
+opinion as to the more educationally beneficial version of                 convenience, such as physical disorientation and discomfort,
+our content. While more research needs to be conducted for                 unwieldy controls, and lack of quality of life and collabo-
+validation, superficially it appears as if the more a student              rative features, were illuminating. It is likely that some of
+plays video games, the more likely they are to select the 2D               these issues would have been less relevant had the students
+version as the most educationally beneficial.                              used the high-quality Meta Quest 2 rather than the Google
+390                                                                                                             C. E. King, D. Salvo
+
+Cardboard, which is a relatively horrible experience by com-     until they begin to approach feature, if not quality, parity
+parison. But this alone is not enough to suggest that our        with user expectations of and experiences with consumer
+students would have selected the interactive VR versions as      video games. We still believe virtual learning environments
+the most beneficial even if they had taken the time to check     hold tremendous pedagogical potential for developing clini-
+the Quest 2’s out of the library. So while it is indisputable    cal needs finding skills when in-person clinical access is
+that a majority of our students felt that VR increased their     not an option and serve as a viable alternative to 2D videos.
+sense of presence and immersion, we cannot conclusively          However, definitive success of interactive virtual learning
+claim that interactive VR learning environments are more         environments will likely depend on massively increasing
+or less pedagogically efficacious compared to 2D videos at       the quality and functionality of said environments as well
+this point in time.                                              making it more convenient and cohesively integrated into
+   There also was an unexpected correlation between our          the day-to-day workflows of our students.
+students’ familiarity with traditional 2D gaming and VR             Another limitation of the study is with regard to how the
+usage and their overall opinion of our virtual learning          VR content was filmed within the medical spaces. In particu-
+environments. It seems as if the more familiar or often our      lar, the medical procedures were filmed using a 180-degree
+students game or used VR prior to taking this course, the        stereoscopic camera to capture the entire operating room
+more likely they were to select the 2D version as the most       as well as the primary physician’s POV through a head
+educationally beneficial. Conversely, our students who were      mounted camera. Due to the locations of the surgical light-
+less familiar with gaming and VR prior to taking the course      ing structures and other ceiling mounted equipment within
+were more likely to select the VR version as being most          a surgical suite, the need to film across different rooms, and
+beneficial. This was a completely unforeseen result. While       hospitals given limited funding for camera equipment, a
+some of our students did account for various elements such       full 360 view of the environment was not possible. To do
+as the lack of collaborative functionality, we did not ask       so would require semi-permanently installing cameras into
+our students to address how and/or why their familiarity         the ceiling and walls of a multi-purpose operating room.
+with gaming may have influenced their overall opinion of         To maximize the view of the environment while allowing
+the effectiveness of our virtual learning environments. What     users to fully visualize the procedure during filming, the
+follows, therefore, is mostly our own speculation.               180-degree stereoscopic camera was placed against the wall
+   One possible reason for this is the sheer novelty of expe-    of the surgical suite. If no activities were taking place in
+riencing VR or video game-like environments. In which            the operating room beyond the operating table, we would
+case, as the students continue to use VR for educational         locate the camera closer to the procedure for a better view.
+purposes the novelty factor will degrade over time, lessen-      This allowed users to be able to fully visualize all activities
+ing the students’ perceived pedagogical effectiveness of the     within the setting while also allowing our camera operators
+technology. While this is most definitely one factor, we do      to relocate the equipment for use across different suites and
+not believe this to be the primary criteria in overall student   settings.
+dissatisfaction. Rather, the nature of our interactive VR           As we move forward, we plan to acquire more Meta Quest
+and PC based learning environments fundamentally relies          2 headsets as well as have the instructor bring the headsets
+on game engine software and game based mechanics for             from the library so that each team group can utilize them
+movement and interactions within the virtual space. Thus,        during the class to fully immerse themselves into the clinical
+a comparison between our rudimentary environments and            procedures. We believe that this will allow for more accurate
+traditional consumer gaming experiences is inevitable. In        data collection with regard to the educational effectiveness
+such a light, the visual fidelity or quality of our learning     of higher quality VR headsets. Moreover, further refinement
+environments, the amount of and types of interactivity made      and development of our interactive learning modules via
+available, and the sheer lack of features found in traditional   a PC version made available for anyone with a computer
+games like multiplayer functionality, voice chat, and cus-       should also enhance the pedagogical effectiveness of our
+tomizable avatars is severely lacking. Without a fully fledged   virtual learning experiences. To this end, we plan to develop
+professional development team, it is simply not possible to      a game-like hospital environment where students can enter
+produce virtual learning environments with the same qual-        different surgical suites that will display VR medical pro-
+ity and functionality as what is found in consumer gaming        cedures, interviews, simulated medical student training
+products. We believe this to be a crucial finding considering    procedures (e.g., emergency room simulation-based train-
+the pervasive use of video games and the general increase in     ing https://​youtu.​be/​UnrQQ​s7hxdU or those presented in
+the number of gamers worldwide. While additional research        Singh et al. [42]), and other video content associated with
+will be necessary to validate this, if this correlation turns    the devices utilized or how the procedure is performed.
+out to hold true it suggests that game-like virtual learning     This multi-format deployment of our educational content
+environments will be less positively received by students        using 2D interview videos and 3D VR experiences made
+Phenomenological Evaluation of an Undergraduate Clinical Needs Finding Skills Through a Virtual…                                           391
+
+accessible across a range of devices (mobile, PC, and VR                   Appendix A: Figures
+headsets) and platforms including YouTube and our course
+database, lends itself to affordable scalability to include any            See Figs. 8, 9, 10, 11, 12, 13, 14, 15, 16
+number of students, classes, and disciplines. It should prove
+to be effective in remote learning settings as well as being
+used as educational content in a traditional classroom set-
+ting. Though access to high-quality VR devices is currently
+cost-prohibitive for large-scale deployment, continued tech-
+nological advancement will eventually drive down costs to
+an acceptable level for mass deployment.
+    The phenomenological effect of 3D VR technology
+allows us to psychologically and sensorially immerse the
+users in a virtual space to a greater degree than traditional
+2D video content. As one of our students’ described it, VR
+“allows you to immerse yourself in the environment. I mean
+turning your head kind of puts you in the feeling that you
+are in the operating room. So I would definitely say that in
+terms of immersion, I would definitely prefer watching the
+videos on the Meta Quest over YouTube.” The embodiment
+granted by VR technology, allowing the user to participate
+in the virtual environment through a first-person perspective,
+increases the users’ felt sense of presence: of being psycho-
+logically and even physically present within the virtual envi-
+ronment. Given the highly subjective nature of the sensation
+of presence in a virtual space, adequate comprehension of
+the human user experience is paramount in further develop-
+                                                                           Fig. 8  Percentages of the responses to the post-course survey ques-
+ing the effectiveness of virtual learning environments usage               tion “Why VR is More Educationally Beneficial?” (No. Responses =
+in undergraduate BME training. VR’s ability to increase the                20 students)
+sense of presence and, at least in some cases, allow for bet-
+ter focus thanks to the lack of distractions while wearing an
+HMD shows promise in developing more effective virtual
+learning environments across a wide range of disciplines.
+    Because VR learning environments are in their nascent
+stage of development and practical application for under-
+graduate education, it remains unclear as to what function-
+alities and interactive elements will be the most crucial for
+student learning. Understanding the way in which students
+interact with virtual learning environments as well as what
+they want from such environments will be paramount. Such
+user feedback should help us determine the types of features
+that will be the most important in creating virtual learning
+environments that more effectively teach a concept, specific
+body of knowledge, and enhance the development of practi-
+cal skills like clinical needs finding and screening. Further
+integration of digital technologies which track users' physio-
+logical data like eye tracking, pupil dilation, heart rate, heart          Fig. 9  Percentages of respondents to “2D is more educationally
+rate variability, and brain activity will enable the develop-              beneficial” when asked about VR usage prior to the course (No.
+ment of learning mechanisms that adapt to each individual’s                Responses = 20 students).
+learning pace. Therefore, while development in functional-
+ity, visual fidelity, and user interactivity will be needed, we
+believe that the integration of VR learning environments will
+ultimately evolve to become more pedagogically effective
+than traditional 2D video content.
+392                                                                                                                         C. E. King, D. Salvo
+
+
+
+
+                                                                        Fig. 13  Responses to the survey question “What academic year are
+Fig. 10  Percentages of respondents to “2D is more educationally ben-   you in?”
+eficial” when asked about video game usage prior to the course (No.
+Responses = 20 students)
+
+
+
+
+                                                                        Fig. 14  Responses to the survey question “What is your ethnicity?”
+
+
+
+
+Fig. 11  Percentages of respondents to “VR is more educationally
+beneficial” when asked about VR usage prior to the course (No.
+Responses = 20 students)
+
+
+
+
+                                                                        Fig. 15  Responses to the survey question “Are you a first-generation
+                                                                        college student?”
+
+
+
+                                                                        Appendix B: Surveys and Interviews
+
+                                                                        B.1 Survey 1: Submitted Prior to Taking the Course
+
+Fig. 12  Percentages of respondents to “VR is more educationally        1. What do you consider your ethnicity to be?
+beneficial” when asked about video game usage prior to the course       2. What academic year are you in?
+(No. Responses = 20 students)
+Phenomenological Evaluation of an Undergraduate Clinical Needs Finding Skills Through a Virtual…                                    393
+
+                                                                           7. How do you think VR might be useful for helping to
+                                                                              develop clinical needs finding skills? Please list the
+                                                                              aspects of VR that you think will be educationally ben-
+                                                                              eficial vs. traditional methods such as videos.
+                                                                           8. What aspects of VR do you think might be an impedance
+                                                                              to developing clinical needs finding skills? Please list
+                                                                              any potential negatives you think VR will pose to your
+                                                                              education.
+                                                                           9. Are you excited or interested in using VR for educational
+                                                                              purposes? Please explain why or why not.
+
+                                                                           B.2 Survey 2: Submitted After Taking the Course
+Fig. 16  Responses to the survey question “What is your gender?”
+Note that zero students responded as “non-binary” or “prefer not to        1. Which experience did you find to be the most beneficial
+answer.”                                                                      to your learning?
+
+                                                                                 (a)   VR Version: Meta Quest 2
+     (a)   Freshman                                                              (b)   VR Version: Google Cardboard
+     (b)   Sophomore                                                             (c)   PC Version
+     (c)   Junior                                                                (d)   Traditional 2D Video Style (i.e., YouTube)
+     (d)   Senior                                                                (e)   All were equally beneficial
+
+3. What is your gender?                                                    2. Which experience did you find to be the least beneficial
+                                                                              to your learning?
+     (a)   Male
+     (b)   Female                                                                (a)   VR Version: Meta Quest 2
+     (c)   Non-binary                                                            (b)   VR Version: Google Cardboard
+     (d)   Prefer not to answer                                                  (c)   PC Version
+                                                                                 (d)   Traditional 2D Video Style (i.e., YouTube)
+4. Are you a first-generation college student?                                   (e)   None were noticeable beneficial
+
+     (a) Yes                                                               3. Did the VR experiences elicit a greater degree of immer-
+     (b) No                                                                   sion, presence, and/or embodiment (the feeling that you
+     (c) Prefer not to answer                                                 are actually present in the operating room/clinical envi-
+                                                                              ronment)?
+5. What is your familiarity with VR?
+                                                                                 (a)   Yes
+     (a)   I have never used VR                                                  (b)   No
+     (b)   I have used VR at least once                                          (c)   All were equally immersive
+     (c)   I use VR at least once every three months                             (d)   None of them were immersive
+     (d)   I use VR at least once a week
+                                                                           4. Which VR version did you think was the most educa-
+6. What is your familiarity with video games in general                       tionally beneficial and why (VR: Meta Quest 2 or VR:
+   (PC gaming, console gaming, mobile gaming)?                                Google Cardboard)?
+                                                                           5. Which version did you find most effective and why (PC,
+     (a) I have never played a video game                                     VR: Meta Quest 2, VR: Google Cardboard, Traditional
+     (b) I have played video games a few times or only                        2D Video Style [YouTube])? (Please try to key in on
+         when I was a child                                                   specific details of the experience that made it better
+     (c) I play video games at least once every three                         than the other versions. For instance, perhaps the first-
+         months                                                               person perspective and interactive controls of the VR:
+     (d) I play video games at least once a week                              Meta Quest 2 experience enhanced immersion or your
+                                                                              engagement with the material leading to a better learn-
+                                                                              ing experience overall).
+394                                                                                                        C. E. King, D. Salvo
+
+6. Which version did you find the least effective and why         body of knowledge. Something akin to an interactive
+   (PC, VR: Meta Quest 2, VR: Google Cardboard, Tradi-            museum exhibits wherein you can engage with the mate-
+   tional 2D Video Style [YouTube])? (Please try to key in        rial individually or as a group.
+   on specific details of the experience that made it worse
+   than the other versions).                                   B.3 Interview Questions: Conducted After Taking
+7. Please list any ideas you have or potential features for    the Course
+   improving the VR: Meta Quest 2 and PC experiences.
+   (For instance, having a multiplayer function that would     1. Did you find the VR experience to be more immersive
+   allow groups to meet together in the virtual space or the      and/or provide an increased sense of embodiment?
+   ability to increase playback speed).                           Please describe what you liked and disliked and how
+8. Please list any educational use cases where you think VR       the VR environment made you feel.
+   programs could be effectively used to improve learning      2. Do you think an increased sense of immersion and
+   and why you think it will be more effective than tradi-        embodiment will be better for clinical immersion edu-
+   tional in-class or online learning methods. For instance:      cation? Why or why not? Please try to list specific ele-
+   a virtual space where you could meet up in groups for          ments to support your opinion.
+   more effective remote teamwork. Or, a virtual learn-        3. What elements should be added or improved to make the
+   ing environment where everyone meets using avatars             VR versions more educationally beneficial?
+   for online classes rather than zoom lectures. Interactive   4. What could be improved about the overall experience of
+   virtual spaces designed to teach a specific concept or         our educational content and experiences in general?
+Phenomenological Evaluation of an Undergraduate Clinical Needs Finding Skills Through a Virtual…                                            395
+
+
+Appendix C: Sample of Student Devised
+Interview: Questions and Answers
+
+
+
+
+                                                                            Funding Research reported here was supported by the VentureWell
+Author Contributions CK conceived the study and design, oversaw
+                                                                            Faculty Grant Program (Award No. 19823-19) and the National Insti-
+the filming and interviews, developed and instructed the course, and
+                                                                            tute of Biomedical Imaging and Bioengineering of the National Insti-
+co-wrote the article. DS conceived of and conducted the surveys and
+                                                                            tutes of Health (Award No. R25EB031116).
+interviews, collected and analyzed the final data, and co-wrote the arti-
+cle. All authors read and approved the final manuscript.
+                                                                            Data Availability All data and course materials can be provided by
+                                                                            emailing the author: kingce@uci.edu.
+396                                                                                                                                     C. E. King, D. Salvo
+
+Code Availability Not applicable.                                                  6. Moravec KR, Lothamer EL, Hoene A, Wagoner PM, Beckman
+                                                                                      DJ, Goergen CJ. Clinical immersion of undergraduate biomedi-
+Declarations                                                                          cal engineering students: best practices for short-term programs.
+                                                                                      Biomed Eng Educ. 2023;3:217–23.
+Conflict of interest The authors have no conflict of interest to declare           7. Holden C, Moser A. Survival guide for clinical engineering mil-
+that is relevant to the content of this article.                                      lennials. Biomed Instrum Technol. 2016;50(6):422–6.
+                                                                                   8. Rodriguez NM, Burleson G, Linnes JC, Sienko KH. Thinking
+Consent to Participate Informed consent was obtained from all indi-                   beyond the device: an overview of human-and equity-centered
+vidual participants included in the study and in the filming procedures.              approaches for health technology design. Ann Rev Biomed Eng.
+                                                                                      2023;25:257–80.
+Consent for Publication Students were informed of our intent to publish            9. Kotche M, Felder AE, Wilkens K, Stirling S. Perspectives on
+the survey results and voluntarily consented to share their responses.                Bioengineering clinical immersion: history, innovation, and
+All filmed participants were informed and consented to use the filmed                 impact. Ann Biomed Eng. 2020;48:2301–9.
+procedures for educational use only.                                              10. Mittal V, Thompson M, Altman SM, Taylor P, Summers A,
+                                                                                      Goodwin K, Louie AY. Clinical needs finding: develop-
+Ethical Approval The filming of the environments was approved under                   ing the virtual experience: a case study. Ann Biomed Eng.
+UCI Institutional Review Board (IRB) Exempt No. 15531 for UCI                         2013;41:1899–912.
+Medical Center filming and 1184 for UCI School of Medicine and                    11. Brennan-Pierce EP, Stanton SG, Dunn JA. Clinical immersion for
+School of Nursing filming locations. The assessment of environments                   biomedical engineers: pivoting to a virtual format. Biomed Eng
+in the course through student surveys and interviews was approved                     Educ. 2021;1(1):175–9.
+under UCI IRB Exempt No. 904. Students, healthcare workers, and                   12. Pottle J. Virtual reality and the transformation of medical educa-
+patients were provided informed consent through the above IRB pro-                    tion. Fut Healthcare J. 2019;6(3):181.
+tocols.                                                                           13. Baniasadi T, Ayyoubzadeh SM, Mohammadzadeh N. Challenges
+                                                                                      and practical considerations in applying virtual reality in medical
+                                                                                      education and treatment. Oman Med J. 2020;35(3): e125.
+Open Access This article is licensed under a Creative Commons Attri-              14. Tamim RM, Bernard RM, Borokhovski E, Abrami PC, Schmid
+bution 4.0 International License, which permits use, sharing, adapta-                 RF. What forty years of research says about the impact of technol-
+tion, distribution and reproduction in any medium or format, as long                  ogy on learning. Rev Educ Res. 2011;81(1):4–28.
+as you give appropriate credit to the original author(s) and the source,          15. Meyer OA, Omdahl MK, Makransky G. Investigating the effect
+provide a link to the Creative Commons licence, and indicate if changes               of pre-training when learning through immersive virtual real-
+were made. The images or other third party material in this article are               ity and video: a media and methods experiment. Comput Educ.
+included in the article’s Creative Commons licence, unless indicated                  2019;140:103603.
+otherwise in a credit line to the material. If material is not included in        16. Singh A, Ferry D, Ramakrishnan A, Balasubramanian S. Using
+the article’s Creative Commons licence and your intended use is not                   virtual reality in biomedical engineering education. J Biomech
+permitted by statutory regulation or exceeds the permitted use, you will              Eng. 2020;142(11):111013–21.
+need to obtain permission directly from the copyright holder. To view a           17. Makransky G, Lilleholt L. A structural equation modeling inves-
+copy of this licence, visit http://creativecommons.org/licenses/by/4.0/.              tigation of the emotional value of immersive virtual reality in
+                                                                                      education. Educ Technol Res Dev. 2018;66(5):1141–64.
+                                                                                  18. Makransky G, Terkildsen TS, Mayer RE. Adding immersive vir-
+                                                                                      tual reality to a science lab simulation causes more presence but
+References                                                                            less learning. Learn Instr. 2019;60:225–36.
+                                                                                  19. Bertram J, Moskaliuk J, Cress U. Virtual training: making reality
+ 1. Stephens JS, Rooney SI, Arch ES, Higginson J. Bridging courses:                   work? Comput Hum Behav. 2015;43:284–92.
+    unmet clinical needs to capstone design (work in progress). In:               20. Çakiroglu Ü, Gökoglu S. Development of fire safety behavioral
+    2016 ASEE Annual Conference & Exposition Proceedings, June                        skills via virtual reality. Comput Educ. 2019;133:56–68.
+    26, 2016, New Orleans, Louisiana. Available: ASEE PEER,                       21. Piccione J, Collett J, De Foe A. Virtual skills training: the role of
+    https://​doi.​org/​10.​18260/p.​26393.                                            presence and agency. Heliyon. 2019;5(11): e02583.
+ 2. Kadlowec J, Merrill T, Sood S, Greene Ryan J, Attaluri A, Hirsh               22. Hon N, Yeo N. Having a sense of agency can improve memory.
+    R. Clinical immersion and team-based design: into a third year. In:               Psychon Bull Rev. 2021;28:946–52.
+    2017 ASEE Annual Conference & Exposition Proceedings, June                    23. Johnson-Glenberg MC, Ly V, Su M, Zavala RN, Bartolomeo H,
+    24-28, 2017, Columbus, Ohio. Available: ASEE PEER, https://​                      Kalina E. Embodied agentic STEM education: effects of 3D VR
+    doi.​org/​10.​18260/1-​2-​28040.                                                  compared to 2D PC. In: 2020 6th International Conference of the
+ 3. Guilford WH, Keeley M, Helmke BP, Allen TE. Work in pro-                          Immersive Learning Research Network (iLRN), pp. 24–30, 2020.
+    gress: a clinical immersion program for broad curricular impact.              24. Tham J, Duin AH, Gee L, Ernst N, Abdelqader B, McGrath M.
+    In: 2019 ASEE Annual Conference & Exposition, June 15, 2019,                      Understanding virtual reality: presence, embodiment, and profes-
+    Tampa, Florida. Available: ASEE PEER, https://​doi.​org/​10.​                     sional practice. IEEE Trans Profess Commun. 2018;61(2):178–95.
+    18260/1-​2-​33581.                                                            25. Gunnar RR, Sroufe LA. Competence, autonomy, and relatedness:
+ 4. Guilford WH, Kotche M, Schmedlen RH. A survey of clinical                         a motivational analysis of self-system processes. In: Gunnar MR,
+    immersion experiences in biomedical engineering. Biomed Eng                       Sroufe LA, editors. Self processes and development. Mahwah:
+    Educ. 2023;3:113–22.                                                              Lawrence Erlbaum Associates, Inc.,; 1991. p. 43–77.
+ 5. Engineering and Engineering Technology by the Numbers.                        26. Duckworth E. The having of wonderful ideas and other essays on
+    Washington DC: American Society for Engineering Education,                        teaching and learning. New York: Teachers College Press; 2006.
+    In: Profiles of Engineering and Engineering Technology, 2021.                 27. Reading CE. Recognising and Measuring Engagement in ICT-rich
+    Available https://​ira.​asee.​org/​wp-​conte​nt/​uploa​ds/​2022/​11/​Engin​       Learning Environments. In: Australian Computers in Education
+    eering-​and-​Engin​eering-​Techn​ology-​by-​the-​Numbe​rs-​2021.​pdf.             Conference Papers. ACEC: Australian Computers in Education;
+                                                                                      2008.
+Phenomenological Evaluation of an Undergraduate Clinical Needs Finding Skills Through a Virtual…                                                                                  397
+
+28. Shernoff DJ. Optimal learning environments to promote student                                              36. Yock PG, Zenios S, Makower J, Brinton TJ, Kumar UN, Watkins
+    engagement. New York: Springer; 2013.                                                                          FTJ, Denend L, Krummel TM, Kurihara CQ. Biodesign: the pro-
+29. Lindgren R, Tscholl M, Wang S, Johnson E. Enhancing learning                                                   cess of innovating medical technologies. Cambridge: Cambridge
+    and engagement through embodied interaction within a mixed                                                     University Press; 2015.
+    reality simulation. Comput Educ. 2016;95:174–87.                                                           37. Lombard M, Ditton T. At the heart of it all: the concept of pres-
+30. King CE, Hoo CM, Tang WC, Khine M. Introducing entrepreneur-                                                   ence. J Comput Med Commun. 1997;3(2):321.
+    ship into a biomedical engineering capstone course at the Univer-                                          38. Morie JF. Ontological implications of being in immersive vir-
+    sity of California, Irvine. Technol Innovat. 2019;20(3):179–95.                                                tual environments. In: SPIE Proceedings 6804, The Engineering
+31. Prinsley R, Baranyai K. STEM Skills in the Workforce: What Do                                                  Reality of Virtual Reality, Jan. 27–31, 2008, San Jose, California,
+    Employers Want?. In: Occasional Paper Series, vol. 9, Canberra:                                                no. 680408, I. E. McDowall, M. Dolinsky, Eds. pp. 1–12, 2008.
+    Australian Government’s Office of the Chief Scientist, Mar. 2015.                                              Available from: https://​doi.​org/​10.​1117/​12.​778617.
+    Available: https://​www.​chief​scien​tist.​gov.​au/​sites/​defau​lt/​files/​                               39. Epic Games. Unreal Engine, version 4.27, Cary, North Carolina.
+    OPS09_​02Mar​2015_​Web.​pdf                                                                                    Available from: https://​www.​unrea​lengi​ne.​com.
+32. Meta, Meta Quest 2, Menlo Park, CA. https://​www.​meta.​com/​                                              40. Sanford D, Ross D, Rosenbloom A, Singer D. Course conveni-
+    quest/​produ​cts/​quest-2/                                                                                     ence, perceived learning, and course satisfaction across course
+33. Kwak H, Blackburn J, Han S. Exploring cyberbullying and other                                                  formats. J Bus Educ Scholarsh Teach. 2017;11(1):69–84.
+    toxic behavior in team competition online games. In: Proceed-                                              41. Connaway LS, Dickey TJ, Radford ML. If it is too incon-
+    ings of the 33rd Annual ACM Conference on Human Factors in                                                     venient I’m not going after it: convenience as a critical factor
+    Computing Systems, pp. 3739–3748. ACM, 2015.                                                                   in information-seeking behaviors. Library Inform Sci Res.
+34. Osterwalder A, Pigneur Y. Business model generation: a hand-                                                   2011;33(3):179–90.
+    book for visionaries, game changers, and challengers. Hoboken:                                             42. Singh A, Ferry D, Balasubramanian S. Efficacy of clinical simu-
+    Wiley; 2010.                                                                                                   lation-based training in biomedical engineering education. J Bio-
+35. Criteria for Accrediting Engineering Programs, 2022–2023                                                       mech Eng. 2019;141(12):121011–8.
+    ABET. n.d. Available: https://​www.​abet.​org/​accre​ditat​ion/​accre​
+    ditat ​ i on- ​ c rite ​ r ia/ ​ c rite ​ r ia- ​ for- ​ a ccre ​ d iting- ​ e ngin ​ e ering- ​ p rogr​   Publisher’s Note Springer Nature remains neutral with regard to
+    ams-​2022-​2023/.                                                                                          jurisdictional claims in published maps and institutional affiliations.
+

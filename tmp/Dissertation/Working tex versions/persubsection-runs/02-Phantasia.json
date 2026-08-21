@@ -1,0 +1,486 @@
+{
+  "command": "write",
+  "selectedAgent": "god-write",
+  "prompt": "================================================================\nPER-SUBSECTION PROMPT — SHARED PRELUDE\n================================================================\n\n**Concatenate with one of the 9 per-subsection delta files at invocation time.**\n\nThis prelude provides dissertation-specific context that the `/god-write` pipeline cannot derive from the corpus alone: §§1.0-1.4 inheritance, dissertation coinages, advisor-rigor blacklist, supplementary evidence pack (Sources A-E).\n\nThe pipeline's `--subsection-mode` flag handles output format (LaTeX `\\subsubsection*{...}`), word target, quotation density, section structure, and most stylistic constraints automatically. This prelude does NOT duplicate those mandates.\n\n================================================================\nARCHITECTURAL INHERITANCE FROM §§1.0–1.4\n================================================================\n\nThe dissertation's overarching thesis: the soul is constitutively rhetorical, with *phantasia* as the temporal-kinetic medium that generates a continuous, affectively charged narrative of experience across past, present, and future.\n\nThe five-node actualization chain (established in §1.0):\n\n- **A_0** — dyadic first actuality of sensible object + *aisthētikon* within the encompassing horizon of motion and time\n- **A_1** — completed perception with dual residual trace: *resonant aisthēma* (formal-eidetic) + *resonant epithymia* (affective-orectic)\n- **A_2** — the *phantasma* proper\n- **A_3** — completed cognitive actuality: three orientational modes (intellection, memory, deliberative *phantasia bouleutikē*) + orthogonal committal *doxa*\n- **A_4** — completed *praxis*\n\nEach completed actuality is simultaneously terminus of its antecedent motion and unmoved originator of its successor.\n\n§1.1 (Motion and Time as Horizon): *kinēsis* and *chronos* co-eternal (*Metaphysics* XII.6, 1071b6–11); motion as *energeia ateles* (*Physics* III.1, 201a10–14); Heidegger's *Bewegtheit* (BCAP §§25–26). Synchronic / diachronic dual register announced.\n\n§1.2 (M_0 → A_1, Actualization of *Aisthēsis*): *aisthēsis* IS a *kinēsis* (*De Anima* II.5, 416b33–417a1); three-factor schema of *De Anima* III.10, 433b13–18 applies directly; hylomorphic reception (*De Anima* II.12, 424a17–24); one-in-substrate-different-in-being. Coining of *resonant kinēsis* + dual-resonance thesis (one residue, two beings: *resonant aisthēma* + *resonant epithymia*).\n\n§1.3 (A_3, Completed Cognitive Actuality): A_3 = four-dimensional cognitive achievement converging on the *phantasma* stabilized at A_2. Three orientational modes (intellection / memory / discursive). *Doxa* enters as orthogonal committal dimension (involuntary, *logos*-dependent, exclusive to rational beings). Settled *doxai* as species of *hexis* (*Categories* 8, 8b25–9a13) function as additional unmoved originators feeding M_2 → A_3.\n\n§1.4 (Emotion as Form of Desire Under Evaluative Disclosure): higher-order *pathē* (anger, fear, pity, shame from *Rhetoric* II) and basic *resonant epithymia* are two articulational concretions of one ontological structure (preservative *paschein* / *sōtēria*, *De Anima* II.5, 417b2–7). The doxa-gate: bare *phantasma* leaves the soul \"unaffected\" of higher-order *pathē*; *doxa* propositionally ratifies the *phantasma*, producing the higher-order *pathē* *euthys* (*De Anima* III.3, 427b21–24). The *pathetic* loop has two registers: synchronic + diachronic. *Hexis* bivalence (BCAP §17): *technē*-hexis (training reduces deliberation toward transparent routine) vs *praxis*-hexis (holding-oneself-open for fresh *kairos*-resolution).\n\n§1.5 closes Chapter 1: integrative work, typology delivery, loop articulation, chapter synthesis.\n\n================================================================\nDISSERTATION COINAGES (italicized as units; deploy consistently)\n================================================================\n\n- ***resonant kinēsis*** — residual motion in the sensory apparatus persisting after object-withdrawal\n- ***resonant aisthēma*** — formal-eidetic aspect of the residual motion\n- ***resonant epithymia*** — affective-orectic aspect; basic-orectic-charge residue at A_1\n- ***pathetic* loop** — judgement-modifying recursive structure of pathos (RETIRED: \"pathos feedback loop\")\n- **articulational concretion** — axis along which generic *pathos* becomes determinate higher-order *pathē*\n- **dual-resonance thesis** — A_1 deposits both formal-eidetic and affective-orectic residues simultaneously (RETIRED: \"dual-trace\")\n- **content-conditional doxa-gate** — rule that *doxa* alone is necessary but not sufficient for higher-order *pathē*; the *doxa*'s content must engage evaluatively complex categories\n- **synchronic / diachronic register** — synchronic = single chain-pass within one event; diachronic = cumulative trajectory reshaping dispositional ground\n- ***technē*-hexis** / ***praxis*-hexis** — Heidegger's BCAP §17 bivalent reading of *hexis*\n- **affective architecture of being-in-the-world** — closing synthesis term for emotion's ontological function\n\nGreek faculty-names (preferred over English): *aisthētikon*, *aisthētērion*, *orektikon*, *kritikon*, *kinētikon*, *phantastikon*.\n\nAristotle work titles use Latin/Greek standard form: *De Anima* (NEVER *On the Soul*); *De Motu Animalium* (NEVER *Movement of Animals*); *De Insomniis* (NEVER *On Dreams*); *De Memoria* (NEVER *On Memory*); *De Sensu* (NEVER *Sense and Sensibilia*).\n\nHeideggerian German (untranslated): *Bewegtheit*, *Befindlichkeit* (NOT \"state-of-mind\"; \"disposedness\" — Kisiel), *Stimmung* (NOT \"mood\" in ontological-atmospheric register; \"attunement\" — Rickert), *Sorge*, *Geworfenheit*, *Geschichtlichkeit*, *Zeitlichkeit*, *Ekstasen*, *Gewesenheit*, *Gegenwart*, *Zukunft*, *Mitsein*, *Augenblick*, Dasein.\n\n================================================================\nFORBIDDEN PHRASES (advisor-rigor blacklist; dissertation-specific)\n================================================================\n\nThese patterns will be removed if they appear in output — the model should not generate them:\n\n- \"underwrites\" (in any meta-narrative function — \"X underwrites Y\")\n- \"rests on\" (as in \"the dissertation's claim rests on...\")\n- \"supplies the canonical / textual / philological anchor for\"\n- \"supervenient\" / \"supervenes on\"\n- \"interpretive\" qualifier on author's own readings\n- \"the chapter\" / \"this chapter\" / \"the present chapter\"\n- \"the user\" / \"the reader\" (academic monograph, not user-facing documentation)\n- \"the dissertation's claim ... rests on this structural reading\"\n- \"X is necessary for Y to be the case\" (as meta-narrative)\n- \"§1.X has already developed/established...\"\n- \"as we have seen at...\"\n- \"as we have discussed\"\n- \"to reiterate\"\n- \"before we can analyze\"\n- \"I should clarify here\"\n- \"as we will see\"\n- Adverbs: \"poignantly\", \"strategically qualified\", \"interestingly\", \"it is worth appreciating\"\n- `\\textit{Framing}:` or \"Framing:\" footnote prefixes\n- \"faculty of X\" English (use Greek faculty-names)\n- Back-references to prior subsections by number\n- Forward-references to subsequent subsections by number\n\nCitation discipline:\n\n- Aristotle: **Bekker notation ONLY**. NEVER `(Aristotle 2014, p. N)`, NEVER `On The Soul`, NEVER `[PAGE NEEDED]`.\n- *Being and Time*: `(BT \\S<n>, H.<page>; Eng.~p.~<page>)`\n- BCAP: `(BCAP p.~<n>)`\n- Gross (ADVISOR — UTMOST PRIORITY): exact page numbers, exact italics, perfectly verbatim quotations. Mark uncertain quotes `****** UNVERIFIED:`.\n- Work-in-narrative, locus-in-parens convention.\n- Author-prominent citations at ~99% (introduce author as agent before quote).\n\n================================================================\nSOURCE HIERARCHY (consultation order for any quoted material)\n================================================================\n\n1. **Tier 0** — `tmp/Dissertation/verbatim_passages.md` — 74KB PDF-verbatim-verified quotations catalog (Aristotle works, BCAP, BT, FCM, Gibson, Coope, Broadie). Authoritative for any quote it contains.\n2. **Tier 1** — `corpus/index/` — locus identification + chunk metadata. Use `phase05-offset-validation.md` for Bekker↔PDF page formulas (the standalone Bekker index page numbers are NOT reliable for mid-/late-work loci).\n3. **Tier 2** — `corpus/rhetorical_ontology/` source PDFs — fallback when neither catalog nor index resolves.\n4. **Tier 3** — training-data recall — LAST RESORT, only for non-load-bearing material; mark `****** UNVERIFIED:`.\n\n**Catalog gaps**: Gross (*Uncomfortable Situations*, *Heidegger and Rhetoric*) and *Rhetoric* I.11 1370a27–30 are not yet in `verbatim_passages.md`. For Gross specifically, the four verbatim-verified quotes are in **Source E** below (§1.4 walkthrough 2026-05-24 audit).\n\n================================================================\nSOURCE A — Aristotle direct deployments (filter to subsection-relevant)\n================================================================\n\n**De Motu Animalium 7, 701a29–b1** (Subsection 4 Type 1 load-bearing block-quote):\n> \"And so what we do without reflection, we do quickly. For when a man is actually using perception or imagination or thought in relation to that for the sake of which, what he desires he does at once. For the actualizing of desire is a substitute for inquiry or thinking. I want to drink, says appetite; this is drink, says sense or imagination or thought: straightaway I drink. In this way living creatures are impelled to move and to act, and desire is the last cause of movement, and desire arises through perception or through imagination and thought. And things that desire to act make and act sometimes from appetite or impulse and sometimes from wish.\"\n\n**De Motu Animalium 7, 701a7–16** (Subsection 4 Type 2 load-bearing block-quote):\n> \"But how is it that thought is sometimes followed by action, sometimes not; sometimes by movement, sometimes not? What happens seems parallel to the case of thinking and inferring about the immovable objects. There the end is the truth seen (for, when one thinks the two propositions, one thinks and puts together the conclusion), but here the two propositions result in a conclusion which is an action---for example, whenever one thinks that every man ought to walk, and that one is a man oneself, straightaway one walks; or that, in this case, no man should walk, one is a man: straightaway one remains at rest. And one so acts in the two cases provided that there is nothing to compel or to prevent.\"\n\n**De Motu Animalium 7, 702a17–19** (Subsection 1 single-sentence chain concentration; inline):\n> \"the organic parts are suitably prepared by the affections, these again by desire, and desire by imagination\"\n\n**De Anima III.10, 433b10–18** (Subsection 3 three-factor schema backbone):\n> \"It follows that while that which originates movement must be specifically one, viz. the faculty of appetite as such (or rather farthest back of all the object of that faculty; for it is it that itself remaining unmoved originates the movement by being apprehended in thought or imagination), the things that originate movement are numerically many. All movement involves three factors, (1) that which originates the movement, (2) that by means of which it originates it, and (3) that which is moved. The expression 'that which originates the movement' is ambiguous: it may mean either something which itself is unmoved or that which at once moves and is moved. Here that which moves without itself being moved is the realizable good, that which at once moves and is moved is the faculty of appetite (for that which is moved is moved insofar as it desires, and appetite in the sense of actual appetite *is* a kind of movement).\"\n\n**De Anima III.3, 429a1–2** (Subsection 2 anchor):\n> *Phantasia* is \"a movement resulting from actual perception.\"\n\n**Rhetoric I.11, 1370a28–30** (Subsection 2 anchor):\n> \"Both the man who remembers and the man who hopes will be attended by an imagination of what he remembers or hopes.\"\n\n**De Insomniis 2, 460b1–10** (Subsection 7 diachronic anchor):\n> \"even when the external object of perception has departed, the impressions it has made persist, and are themselves objects of perception; and let us assume, besides, that we are easily deceived respecting the operations of sense-perception when we are excited by emotions, and different persons according to their different emotions; for example, the coward when excited by fear, the amorous person by amorous desire; so that, with but little resemblance to go upon, the former thinks he sees his foes approaching, the latter, that he sees the object of his desire; and the more deeply one is under the influence of the emotion, the less similarity is required to give rise to these impressions.\"\n\n**De Anima III.3, 427b21–24** (Subsection 5 doxa-gate anchor):\nAristotle's distinction: bare *phantasma* leaves soul unaffected; *doxa* produces *euthys paschomen*.\n\n**De Anima III.3, 428b10–17** (Subsection 2 *phantasia* as movement):\n*Phantasia* as movement produced by actual sensation.\n\n**Rhetoric II.1, 1378a21–22** (Subsection 5 canonical *pathē* definition):\n> *pathē* as \"judgement-modifying\" — the *Rhetoric*'s canonical definition.\n\n**Rhetoric II.2, 1378a31–b5** (Subsection 4 Type 3 example):\n> anger as definitionally arising from perceived slight.\n\n**Rhetoric II.5, 1382a21–22** (Subsection 4 Type 3 example):\n> fear as \"a pain or disturbance due to imagining some destructive or painful evil in the future.\"\n\n**De Anima III.7, 431a8–14** (Subsection 5 perception-as-discrimination):\n> perception is like bare asserting; pursues/avoids when object is pleasant/painful; perception and appetite one in substrate, different in being.\n\n**Categories 8, 8b25–9a13** (Subsection 4 Type 2 + Subsection 6 hexis grounding):\n> *hexis* vs *diathesis*; *hexis* as more stable, longer-lasting; knowledge and virtue as paradigmatic *hexeis*.\n\n**Metaphysics Δ.20, 1022b4** (Subsection 6 hexis as activity of haver and had):\n> *hexis* as activity of haver and had; disposition for being well or ill disposed.\n\n================================================================\nSOURCE B — Heidegger BCAP (Subsection 6 load-bearing)\n================================================================\n\n**BCAP p. 127** (training reduces deliberation):\n> \"Through practice, by frequently-undergoing, it comes about that being-oriented puts the prescription further and further out of play. Training has the precise sense of reducing deliberation insofar as it is through training that the completedness of attaining a result comes about.\"\n\n**BCAP p. 128** (*praxis*-hexis as holding-oneself-open):\n> \"Cultivating *hexis* never depends on an operation, a routine. In an operation, the moment is destroyed. Every completedness, as settled routine, breaks down in the face of the moment. Appropriation and cultivation of *hexis* through habituation means nothing other than correct repetition.... The distinction lies in the fact that *praxis* depends on the *how*. The how is only appropriated in such a way that the human being enables himself *to be composed at each moment*; not routine but holding-oneself-open, *dynamis* in the *mesotēs*.\"\n\n**BCAP p. 125** (*hexis* as how-of-*pathos*):\n> \"*Hexis* is nothing other than a how of *pathos*, being-out-of-composure, in relation to being-composed-as-to . . . Insofar as we can define *hexis* according to its basic structure, we will also clarify the possible-structure of *pathē*.\"\n\n**BCAP pp. 122–123** (no *technē* for the *kairos*):\n> \"For this determination should not be conceived as though there were a *technē* for this taking-opportunities and venturing-out into the *deina* of life.\"\n\n**BCAP pp. 133–134** (Subsection 8 anti-internalist closing):\n> *pathē* are \"not psychic experiences and not in consciousness\" but \"a being-taken of human beings *in their full being-in-the-world*.\"\n\n================================================================\nSOURCE C — Heidegger BT (Subsections 7 and 8 load-bearing)\n================================================================\n\n**BT §29, H.137 (Eng.~p.~176)** — *Stimmung* as ontological-atmospheric:\n> \"A mood assails us. It comes neither from `outside' nor from `inside', but arises out of Being-in-the-world, as a way of such Being.\"\n\n**BT §74, H.385–386 (Eng.~p.~437)** — *Geschichtlichkeit* as ecstatic-horizonal:\n> \"As historical, Dasein is possible only by reason of its temporality, and temporality temporalizes itself in the ecstatico-horizonal unity of its raptures.\"\n\n**FCM (GA 29/30), p. 67** — *Stimmung* as atmosphere:\n> \"[*Stimmung* is] like an atmosphere in which we first immerse ourselves in each case and which then attunes us through and through.\"\n\n================================================================\nSOURCE D — Secondary touchstones (Subsection 2 integration)\n================================================================\n\n- O'Gorman (\"Aristotle's *Phantasia* in the *Rhetoric*,\" p. 34): *phantasia* \"forms the objects of belief and desire, even gives birth to belief and desire and provides the images that are the objects of deliberative desire, ethical choice, and political judgment.\"\n- Hawhee (*Looking Into Aristotle's Eyes*, p. 145): rhetor's task is to \"supply images concrete, narrative, and affectively charged enough to allow the audience to see what the rhetor wants them to see.\"\n- Nussbaum (*Fragility of Goodness*; *MA* commentary): *phantasia* as material-supplier for practical reasoning; the *phantasia* operated upon by deliberative reasoning synthesizes alternatives into unrealized possibilities and measures them against a single standard.\n- White (\"The Meaning of *Phantasia*,\" p. 498): residual motion as \"lingering, resonating, echoing presence of sensible forms freed from their original matter.\"\n- Frede (\"The Cognitive Role of *Phantasia*,\" pp. 282–285): residual motion has \"a life of its own\"; *phantasma* produced while sense-perception still in operation.\n- Caston (1996): *aisthēma* as direct effect of sensory stimulation; *doxa* as ratification of *phantasma*.\n- Gibson (*Ecological Approach to Visual Perception*, pp. 45–46, 119–120): ambient optic array; affordance complementarity.\n- Rickert (*Ambient Rhetoric*, pp. 131, 146, 243–244, 285): *Stimmung* as attunement; disclosure / withdrawal; rhetorical being-in-the-world.\n\n================================================================\nSOURCE E — Gross verbatim quotes (ADVISOR; §1.4 audit-verified 2026-05-24)\n================================================================\n\n**These four quotes are verbatim-verified against the source PDFs.** When a subsection's delta specifies Gross deployment, use these exact texts. Do NOT paraphrase, do NOT silently re-italicize, do NOT silently correct page numbers.\n\n**Gross, \"Introduction: Being-Moved: The Pathos of Heidegger's Rhetorical Ontology,\" in *Heidegger and Rhetoric* (ed. Gross & Kemmann, SUNY, 2005), p. 4** (anti-internalist anchor):\n> \"Heidegger characterizes *pathos* (variously 'passion,' 'affect,' 'mood,' or 'emotion') as the very condition for the possibility of rational discourse, or *logos*. No cynical and crowd-pleasing addition to *logos*, *pathos* is the very substance in which propositional thought finds its objects and its motivation. Without affect our disembodied minds would have no heart, and no legs to stand on.\"\n\n**Gross, \"Introduction,\" in *Heidegger and Rhetoric* (2005), p. 26** (translating GA 18, 206–207; enmattered-*eidos*):\n> \"the *eidos* of fear draws primarily upon a body's condition. The difference lies in the fact that the particular condition of the body (being, say, brown or scratched) plays no role in mathematical inseparability, while for the *pathe* Being in such and such a condition is essential. Both are *logoi enyloi*, but in quite different senses of the term... The *eidos* of the *pathe* is a disposition toward other humans, a Being-in-the-world.\"\n\n**Gross, *Uncomfortable Situations* (Chicago, 2017), p. 3** (Aristotle as social-phenomenon humanism):\n> \"Aristotle's *Rhetoric* offers alternatives for understanding emotions as social phenomena, which is something that leading humanists like Martha Nussbaum and Richard Sorabji should have remembered as they rushed toward the latest brain science.\"\n\n**Gross, *Uncomfortable Situations* (Chicago, 2017), p. 20** (rhetoric-as-affordance-theory; Subsection 8 close):\n> \"Rhetoric, as a humanistic form of affordance theory, posits a situation that is not neutral but is rather 'persuasive,' threatening and promising with respect to our human being-in-the-world.\"\n\n**Bonus epigraph from Gross's editor-Introduction (SUNY 2005, p. 1):**\n> \"the self-elaboration of Dasein is expressly executed\" (Heidegger, SS 1924, GA 18.110, epigraph in Gross ed., *Heidegger and Rhetoric*, p. 1)\n\n================================================================\nEND OF SHARED PRELUDE — per-subsection delta file follows below\n================================================================\n================================================================\nSUBSECTION 2 of 9 — *Phantasia* at the Heart of Every Action\n================================================================\n\n(The CLI invocation passes the LaTeX heading, word target ~900, quotation count, and output format via subsection-mode flags. This delta supplies the topical content + dissertation-specific deployment guidance.)\n\n**Subsection role.** Develop the thesis that *phantasia* is the temporal-kinetic medium that pervades every actualization in the chain. Open with *De Anima* III.3, 429a1–2: *phantasia* is \"a movement resulting from actual perception\" — a residual motion that persists, recombines, and re-presents, supplying the condition for evaluative response in the absence of immediate stimuli.\n\nDevelop *phantasia*'s temporal range using *Rhetoric* I.11, 1370a27–30: \"Both the man who remembers and the man who hopes will be attended by an imagination of what he remembers or hopes.\" Each act of remembering and each act of hoping is attended by a *phantasma*; *phantasia* is therefore the capacity by which the soul holds the present, the remembered past, and the anticipated future together as a single phenomenal manifold.\n\nDevelop the temporal-depth claim with *Rhetoric* II.5, 1382a21–22 on fear: \"a pain or disturbance due to imagining some destructive or painful evil in the future.\" The feared evil does not yet exist; the *phantasma* of it does; and the soul moves as though the feared thing were present. *Phantasia*'s temporal range is therefore what makes fear, hope, anger, and pity possible at all — they are responses to the *phantasmatic* presence of absent objects.\n\nIntegrate the secondary scholarship from Source D: Nussbaum on *phantasia* as material-supplier for practical reasoning; Hawhee on rhetorical activation of the audience's phantasmatic capacity; O'Gorman's synthesis that *phantasia* \"forms the objects of belief and desire\"; White on residual motion as \"lingering, resonating, echoing presence\"; Frede on residual motion having \"a life of its own.\"\n\nState the rhetorical cascade: new *phantasma* → new *doxa* → new emotion → new orientation → new action. *Phantasia* is the leading edge of every such cascade because every other moment of the chain operates on the *phantasma* (or, in the resonant-residue case at A_1, on the *resonant aisthēma* + *resonant epithymia* that *phantasia* will subsequently take up to constitute the *phantasma* at A_2).\n\nClose with the structural claim: every action is mediated by *phantasia* because every action is mediated by an appearance — whether the immediate *phantasma* identifying the present object as drink, the settled *phantasma* informing the universal premise of a practical syllogism, the projected *phantasma* synthesized by deliberative *phantasia bouleutikē* (*De Anima* III.11, 434a5–10), or the vivid *phantasma* induced by rhetorical *enargeia* in the audience. This is the unifying thread that the typology will refract into three distinct routes.\n\n**Required deployments (Aristotle, Bekker, minimum).**\n\n- *De Anima* III.3, 429a1–2 — \"*phantasia* is a movement resulting from actual perception\" (the architectural anchor)\n- *Rhetoric* I.11, 1370a27–30 — \"Both the man who remembers and the man who hopes will be attended by an imagination of what he remembers or hopes\" (the temporal-range anchor)\n- *Rhetoric* II.5, 1382a21–22 — \"a pain or disturbance due to imagining some destructive or painful evil in the future\" (the temporal-depth anchor, fear example)\n- *De Anima* III.11, 434a5–10 — deliberative *phantasia bouleutikē* composes multiple *phantasmata* (light reference; full development belongs to §1.3, not here)\n- *De Anima* III.7, 431a14–17 — \"the soul never thinks without an image\" (the dependence-on-image anchor)\n\n**Required deployments (secondary; deploy at minimum 3, prefer all 5 from Source D).**\n\n- Nussbaum (1985, p. 265): *phantasia* \"ties abstract thought to concrete perceptible objects or situations\"\n- Hawhee (*Looking Into Aristotle's Eyes*, p. 145): rhetor's task is to \"supply images concrete, narrative, and affectively charged enough to allow the audience to see what the rhetor wants them to see\"\n- O'Gorman (\"Aristotle's *Phantasia* in the *Rhetoric*,\" p. 34): *phantasia* \"forms the objects of belief and desire, even gives birth to belief and desire and provides the images that are the objects of deliberative desire, ethical choice, and political judgment\"\n- White (*The Meaning of Phantasia*, p. 498): residual motion as \"lingering, resonating, echoing presence of sensible forms freed from their original matter\"\n- Frede (\"The Cognitive Role of *Phantasia*,\" pp. 282–285): residual motion has \"a life of its own\"\n\n**Optional Heidegger.** Cite *(BCAP p. 149)* (or analogous) lightly to anchor the \"making-present-to-itself\" reading of *phantasia* if naturally arising. Do NOT overdevelop Heidegger here — the load-bearing Heideggerian deployments belong in §§6–8.\n\n**Gross.** Do NOT deploy Gross in this subsection. Gross deployments belong in §§6–8 per the section spec.\n\n**Forbidden for this subsection.**\n\n- Do NOT develop the three types of action. That is §4.\n- Do NOT develop the doxa-gate. That is §5.\n- Do NOT redevelop the dual-resonance thesis at length (it was developed in §1.2); reference it via canonical citation only where needed.\n- Do NOT redevelop the three orientational modes at length (intellection / memory / deliberative); they were developed in §1.3.\n- Do NOT include the *De Motu Animalium* 701a29–b1 or 701a7–16 block-quotes. Those are §4.\n\n**Opening pattern.** Open substantively with the architectural claim about *phantasia*'s mediating role. Example pattern (do not use verbatim): *Phantasia, on Aristotle's account, is not a peripheral faculty exercised only when sense fails or when the mind drifts; it is the kinetic medium through which the soul holds and transforms perceptual content across the temporal horizon, supplying the material on which every higher actualization in the chain operates.*\n\n**Closing pattern.** Close with the unifying-thread sentence that names *phantasia*'s pervasive role — every chain-pass operates on a *phantasma*, whether immediate, settled, projected, or rhetorically induced. The closing should set up the three-factor schema without naming it explicitly.\n\n**Pre-output self-audit (subsection-specific).**\n\n- *De Anima* III.3, 429a1–2 deployed with author-prominent introduction\n- *Rhetoric* I.11, 1370a27–30 deployed (temporal-range claim)\n- *Rhetoric* II.5, 1382a21–22 deployed (temporal-depth claim, fear example)\n- At least 3 secondary-source citations from the Source D pack\n- The rhetorical cascade (*phantasma* → *doxa* → emotion → orientation → action) is named\n- No deployment of Gross\n- No development of doxa-gate, three types, *hexis* bivalence, or *pathetic* loop",
+  "isPipeline": false,
+  "qualityScore": 0.5,
+  "wordCount": 1118,
+  "bodyWordCount": 1118,
+  "provenanceLedger": {
+    "sources": [
+      {
+        "title": "Heidegger, Martin (2009), p.159",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.191",
+        "confidence": 0.85
+      },
+      {
+        "title": "Multiple Authors (2005), p.113",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.421",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.213",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.498",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.149",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.277",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.218",
+        "confidence": 0.85
+      },
+      {
+        "title": "Burke, Kenneth (1945), p.311",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.202",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.88",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.83",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.6",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.26",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.18",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.70",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.60",
+        "confidence": 0.85
+      },
+      {
+        "title": "Rickert, Thomas (2013), p.182",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.22",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.181",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.409",
+        "confidence": 0.85
+      },
+      {
+        "title": "Papachristou, Christina (2013), p.9",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.241",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.37",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.43",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (2009), p.78",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.106",
+        "confidence": 0.85
+      },
+      {
+        "title": "Aristotle (2014), p.114",
+        "confidence": 0.85
+      },
+      {
+        "title": "Heidegger, Martin (1962), p.511",
+        "confidence": 0.85
+      }
+    ],
+    "claims": []
+  },
+  "retrievalStats": {
+    "chunksRetrieved": 30,
+    "averageRelevance": 0.85
+  },
+  "endnotes": null,
+  "result": {
+    "content": "\\subsubsection*{\\textit{Phantasia} at the Heart of Every Action}\n\n\\textit{Phantasia}, on Aristotle's account, is not a peripheral capacity exercised only when sense fails or when the mind drifts into idle reverie; it is the temporal-kinetic medium through which the soul holds and transforms perceptual content across past, present, and future, supplying the material on which every higher actualization in the chain operates. To grasp why every action---whether the immediate reaching for a glass, the deliberated choice of a life-plan, or the audience member's visceral recoil at a rhetor's vivid depiction of injustice---passes through \\textit{phantasia}, we must first attend to the ontological character Aristotle assigns to this capacity and then trace the consequences of that character across the full temporal range of experience. Aristotle defines \\textit{phantasia} in the \\textit{De Anima} as ``a movement resulting from actual perception'' (Aristotle, \\textit{De Anima}, 429a1--2). The formulation is precise and consequential: \\textit{phantasia} is itself a \\textit{kin\\={e}sis}, a motion---not a static image stored inertly in the soul, but a residual dynamism that persists after the sensible object has withdrawn from the perceptual field. This residual motion is what we have termed \\textit{resonant kin\\={e}sis}: the trace left in the \\textit{aisth\\={e}tikon} and \\textit{aisth\\={e}t\\={e}rion} once the actualization of perception at $A_1$ has been completed, bearing within itself the dual deposit of \\textit{resonant aisth\\={e}ma} (formal-eidetic residue) and \\textit{resonant epithymia} (affective-orectic charge). \\textit{Phantasia} takes up these residues and constitutes from them the \\textit{phantasma} proper at $A_2$---the appearance that will serve as the object for every subsequent cognitive and practical operation. White captures the phenomenological texture of this residual motion well, describing it as a ``lingering, resonating, echoing presence of sensible forms freed from their original matter'' (White, ``The Meaning of \\textit{Phantasia},'' p.~498). The \\textit{phantasma} is thus neither a copy of the original percept nor a free invention; it is the sensible form's continued life within the soul's own motility, and it is perhaps this continued life that makes higher actualization possible at all. What distinguishes \\textit{phantasia} from \\textit{aisth\\={e}sis} most decisively, however, is its temporal range. Perception is bound to the present: the \\textit{aisth\\={e}tikon} is actualized only when the sensible object is present and in contact with the organ. \\textit{Phantasia}, by contrast, operates across the full ecstatic stretch of temporal experience. Aristotle makes this explicit in the \\textit{Rhetoric}: ``Both the man who remembers and the man who hopes will be attended by an imagination of what he remembers or hopes'' (Aristotle, \\textit{Rhetoric}, 1370a28--30). Each act of remembering and each act of hoping is attended by a \\textit{phantasma}; \\textit{phantasia} is accordingly the capacity by which the soul holds the remembered past and the anticipated future together with the perceived present as a single phenomenal manifold. The soul does not merely recall a proposition about the past or entertain a bare concept of the future; it \\textit{sees}---it makes present to itself an appearance that carries sensory concreteness and affective valence even in the absence of the original stimulus. The temporal-depth consequence emerges with particular force in Aristotle's account of fear. Fear, he writes, is ``a pain or disturbance due to imagining some destructive or painful evil in the future'' (Aristotle, \\textit{Rhetoric}, 1382a21--22). The feared evil does not yet exist; and yet the soul moves as though it were present, because the \\textit{phantasma} of the evil \\textit{is} present---vivid, concrete, affectively charged. Fear is thus constitutively dependent on \\textit{phantasia}'s capacity to project a temporal horizon that exceeds the boundaries of immediate perception. Indeed, the same structure obtains for anger, pity, shame, and every higher-order \\textit{pathos} catalogued in \\textit{Rhetoric} II: each requires not merely a propositional judgment but an appearance, a \\textit{phantasma} that gives the judgment its phenomenal grip on the soul. Without \\textit{phantasia}, the evaluative disclosures that constitute the \\textit{path\\={e}} would lack their material ground entirely. Furthermore, Aristotle insists that ``the soul never thinks without an image'' (Aristotle, \\textit{De Anima}, 431a14--17). Thought itself---\\textit{noein}---depends on the \\textit{phantasma} as its material substrate, so that even the most abstract deliberation operates upon images drawn from perceptual experience and recombined by \\textit{phantasia}'s kinetic activity. Heidegger seizes on precisely this point in his reading of \\textit{De Anima}, glossing \\textit{phantasia} as the ``making-present-to-itself'' of the world, and observing that ``if even \\textit{noein} is something like a \\textit{phantasia} or cannot be without \\textit{phantasia}, then thinking too could not be without standing in the context of the entire life of a human being'' (Heidegger, \\textit{Basic Concepts of Aristotelian Philosophy}, p.~149). Thinking is not an appeal to a disembodied brain process but to the soul's own self-presenting motility; accordingly, \\textit{phantasia} pervades the totality of involvements that constitute life. The secondary literature has converged on this pervasive role from several directions. Similarly, Nussbaum contends that \\textit{phantasia} ``ties abstract thought to concrete perceptible objects or situations,'' functioning as the indispensable material-supplier for practical reasoning (Nussbaum, \\textit{Fragility of Goodness}, p.~265). Hawhee, attending to the rhetorical register, observes that the rhetor's task is to ``supply images concrete, narrative, and affectively charged enough to allow the audience to see what the rhetor wants them to see'' (Hawhee, \\textit{Looking Into Aristotle's Eyes}, p.~145). In each case, whether the domain is ethical deliberation, political judgment, or rhetorical reception, \\textit{phantasia} stands as the enabling condition---the kinetic medium through which the soul encounters its objects. Frede presses the point still further, noting that the residual motion constituting the \\textit{phantasma} has ``a life of its own,'' persisting and recombining independently of the perceptual episode that generated it (Frede, ``The Cognitive Role of \\textit{Phantasia},'' pp.~282--285). It is this autonomous vitality that allows settled \\textit{phantasmata} to inform the universal premises of practical syllogisms, projected \\textit{phantasmata} to synthesize unrealized possibilities in deliberative \\textit{phantasia bouleutik\\={e}} (Aristotle, \\textit{De Anima}, 434a5--10), and rhetorically induced \\textit{phantasmata} to grip an audience with the force of quasi-perceptual presence. Thus we may articulate the rhetorical cascade in its full generality: a new \\textit{phantasma} occasions a new \\textit{doxa}, which in turn produces a new emotion, which reorients desire, which issues in new action. \\textit{Phantasia} is the leading edge of every such cascade because every subsequent moment---judgment, \\textit{pathos}, appetitive movement, bodily motion---operates on the \\textit{phantasma} that \\textit{phantasia} has constituted. The receptive character of \\textit{aisth\\={e}sis}, which Heidegger aligns structurally with \\textit{Befindlichkeit}'s disclosure of thrownness (Heidegger, \\textit{Being and Time}, \\S29, H.137; Eng.~p.~176), finds its temporal extension in \\textit{phantasia}: where perception discloses the present situation as already mattering, \\textit{phantasia} extends that mattering across the remembered and the anticipated, weaving a continuous, affectively charged narrative that encompasses the soul's entire temporal horizon. Hence every action---whether immediate or deliberated, appetitive or rationally chosen, spontaneous or rhetorically occasioned---is mediated by an appearance. What remains to be shown is how the three factors that constitute the movement from appearance to action are themselves organized, and how the \\textit{phantasma}'s encounter with desire and cognition generates the distinct routes through which the soul arrives at \\textit{praxis}.",
+    "style": "academic",
+    "wordCount": 1118,
+    "sourcesCount": 30,
+    "qualityScore": 0.5,
+    "corpusContext": {
+      "used": true,
+      "chunkCount": 30,
+      "collections": [],
+      "citations": [
+        "Heidegger, Martin (2009), p.159",
+        "Heidegger, Martin (1962), p.191",
+        "Multiple Authors (2005), p.113",
+        "Heidegger, Martin (1962), p.421",
+        "Heidegger, Martin (2009), p.213",
+        "Heidegger, Martin (1962), p.498",
+        "Heidegger, Martin (2009), p.149",
+        "Heidegger, Martin (2009), p.277",
+        "Heidegger, Martin (1962), p.218",
+        "Burke, Kenneth (1945), p.311",
+        "Heidegger, Martin (1962), p.202",
+        "Aristotle (2014), p.88",
+        "Aristotle (2014), p.83",
+        "Aristotle (2014), p.6",
+        "Aristotle (2014), p.26",
+        "Aristotle (2014), p.18",
+        "Aristotle (2014), p.70",
+        "Aristotle (2014), p.60",
+        "Rickert, Thomas (2013), p.182",
+        "Aristotle (2014), p.22",
+        "Heidegger, Martin (1962), p.181",
+        "Heidegger, Martin (1962), p.409",
+        "Papachristou, Christina (2013), p.9",
+        "Heidegger, Martin (2009), p.241",
+        "Heidegger, Martin (2009), p.37",
+        "Heidegger, Martin (2009), p.43",
+        "Heidegger, Martin (2009), p.78",
+        "Aristotle (2014), p.106",
+        "Aristotle (2014), p.114",
+        "Heidegger, Martin (1962), p.511"
+      ],
+      "whitelistMode": true
+    },
+    "qualityMetrics": {
+      "overallScore": 0.5,
+      "stageScores": {
+        "argumentCoherence": 0.5,
+        "citationCompleteness": 0.5,
+        "styleConsistency": 0.5,
+        "factualAccuracy": 0.5
+      },
+      "issueCounts": {
+        "critical": 0,
+        "major": 0,
+        "minor": 0
+      },
+      "autoFixableCount": 0,
+      "revisionIterations": 0,
+      "passed": false
+    },
+    "revisionIterations": 0,
+    "citationEnforcement": {
+      "action": "pass",
+      "totalCitations": 2,
+      "validCitations": 2,
+      "hallucinatedCitations": 0,
+      "correctionsMade": 0,
+      "missingPageNumbers": 2,
+      "passRate": 1,
+      "report": "## Citation Enforcement Report\n\n**Action:** PASS\n**Total Citations:** 2\n**Valid:** 2\n**Hallucinated:** 0\n**Missing Page Numbers:** 2\n**Pass Rate:** 100.0%\n\n### Citations Missing Page Numbers\n\n- **Line 13:** `O'Gorman argues that` - needs page number\n- **Line 13:** `Nussbaum contends that` - needs page number\n\n### Valid Citations\n\n- `O'Gorman argues that` ✓ (O'Gorman 2005) ⚠️ (no page)\n- `Nussbaum contends that` ✓ (Nussbaum 1985) ⚠️ (no page)"
+    },
+    "proseSanitization": {
+      "sanitized": true,
+      "artifactsRemoved": 0,
+      "cleanRate": 1,
+      "violations": []
+    },
+    "inlineValidation": null,
+    "multiStepDiagnostics": {
+      "v1Diagnostics": {
+        "wordCount": 1284,
+        "citationCount": 0,
+        "quotationCount": 0,
+        "claimsWithoutCitation": 32,
+        "factualClaimsWithoutCitation": 1,
+        "interpretiveClaimsWithoutCitation": 31,
+        "uniqueAuthors": [],
+        "issues": [
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"\\subsubsection*{\\textit{Phantasia} at the Heart of Every Act...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"From the immediate identification of the glass before me as ...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"To grasp why the actualization chain cannot bypass this medi...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The formula is deceptively compact. \\textit{Phantasia} is no...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Michael White captures the ontological texture of this resid...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The resonance is not static: Dorothea Frede insists that thi...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The \\textit{phantasma} is therefore not a faded copy of sens...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"It is precisely this capacity for temporal displacement that...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Aristotle makes the point explicitly in the \\textit{Rhetoric...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Each act of remembering holds a past event present through a...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The soul does not remember by somehow re-perceiving an absen...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"In both cases it is \\textit{phantasia} that furnishes the ap...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The temporal-depth claim emerges with particular force in Ar...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Fear, hope, anger at a remembered slight, pity for a sufferi...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Without \\textit{phantasia}'s capacity to hold what is tempor...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The bare perceptual apparatus, confined to the actual and th...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Aristotle's own summary formulation confirms the scope of th...\""
+          },
+          {
+            "type": "uncited-factual-claim",
+            "severity": "major",
+            "detail": "Factual claim without citation: \"Ned O'Gorman synthesizes the implications for rhetorical the...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"On this reading, \\textit{phantasia} is not merely ancillary ...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Debra Hawhee extends the point to the rhetor's craft, arguin...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Rhetorical \\textit{enargeia}---the vivid placing-before-the-...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"A new \\textit{phantasma}---whether arising from residual per...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"That appearance calls forth \\textit{doxa}, the propositional...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"And this reorientation of desire is itself a \\textit{kin\\=es...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Heidegger recognizes as much when he glosses \\textit{phantas...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Aristotle further specifies that rational animals possess a ...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"This deliberative synthesis is what makes the practical syll...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Yet even non-deliberative action---the immediate reaching fo...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"The difference is not between actions mediated by \\textit{ph...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"Whether the \\textit{phantasma} is immediate---identifying th...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"This is the unifying thread that runs through every route fr...\""
+          },
+          {
+            "type": "uncited-claim",
+            "severity": "minor",
+            "detail": "Long sentence without nearby citation: \"What remains to be shown is how the apparatus that moves the...\""
+          },
+          {
+            "type": "under-cited-source",
+            "severity": "minor",
+            "detail": "Chunk author \"heidegger, martin\" has 0 citations despite being in retrieved set"
+          },
+          {
+            "type": "under-cited-source",
+            "severity": "minor",
+            "detail": "Chunk author \"multiple authors\" has 0 citations despite being in retrieved set"
+          },
+          {
+            "type": "under-cited-source",
+            "severity": "minor",
+            "detail": "Chunk author \"burke, kenneth\" has 0 citations despite being in retrieved set"
+          },
+          {
+            "type": "under-cited-source",
+            "severity": "minor",
+            "detail": "Chunk author \"aristotle\" has 0 citations despite being in retrieved set"
+          },
+          {
+            "type": "under-cited-source",
+            "severity": "minor",
+            "detail": "Chunk author \"rickert, thomas\" has 0 citations despite being in retrieved set"
+          },
+          {
+            "type": "under-cited-source",
+            "severity": "minor",
+            "detail": "Chunk author \"papachristou, christina\" has 0 citations despite being in retrieved set"
+          }
+        ]
+      },
+      "preventionPlan": {
+        "blacklistedAuthors": [],
+        "strengthenedConstraints": [
+          "Deliberately cite these under-represented sources: heidegger, martin, multiple authors, burke, kenneth, aristotle, rickert, thomas",
+          "1 factual attributions lacked citations in v1. Every \"X argues/defines/states\" sentence MUST include a citation."
+        ],
+        "underCitedSources": [
+          "heidegger, martin",
+          "multiple authors",
+          "burke, kenneth",
+          "aristotle",
+          "rickert, thomas",
+          "papachristou, christina"
+        ],
+        "overCitedSources": []
+      },
+      "v2Diagnostics": {
+        "blacklistedAuthorsUsedInV2": 0,
+        "blacklistedAuthorsInMainText": 0,
+        "blacklistedAuthorsInAppendix": 0
+      }
+    },
+    "rollingContext": null,
+    "pipelineHealth": "clean",
+    "injectedBridges": [
+      {
+        "id": "hook-de-anima-03",
+        "sourceAuthor": "Aristotle",
+        "sourceConcept": "αἴσθησις",
+        "targetAuthor": "Heidegger, Martin",
+        "targetConcept": "Befindlichkeit",
+        "bridgeText": "The critical parallel lies in the *receptive* character of both *aisthēsis* and *Befindlichkeit*."
+      }
+    ],
+    "corpusIndexContributions": {
+      "ontologyNodesUsed": [
+        "- **αἴτιον / αἰτία** (aition): That which accounts for a thing's being, spoken of in four senses: (1) material — that from which a thing comes to be; (2) formal — the formula or pattern; (3) efficient — the primary source of change [DA-02, META-01, META-01-06, META-02, META-04]",
+        "- **Attunement / Stimmung**: Heidegger's ontological concept of mood (*Stimmung*) reconceived as the fundamental disclosure of the world that precedes cognition, volition, and intention. Attunement is not a subjective state of mi [Intro, Ch2, Ch3, Ch4, Ch5]",
+        "- **εἶδος** (eidos): The determinate structure or actuality that makes matter into a \"this\" (*tode ti*). Not itself generated — only the composite comes into being (Z.viii). Identified as substance in the primary sense at [DA-02-03, META-01, META-01-10, META-02, META-04]",
+        "- **Befindlichkeit**: An equiprimordial existentiale of disclosedness that discloses Dasein's thrownness and facticity. Ontically manifested as mood (Stimmung). Every state-of-mind discloses Dasein as already delivered ove [D1-U5, D1-U7, D1-U8, D2-U3, D2-U4]",
+        "- **Phänomenologie**: The method of the treatise: \"To let that which shows itself be seen from itself in the very way in which it shows itself from itself.\" Composed of phenomenon (that which shows itself) and logos (letti [Intro-U2]",
+        "- **Periechon**: Greek term meaning \"that which surrounds, encompasses, or makes room for.\" Appears alongside *chora* in Plato's *Timaeus* and connects to the sense of a surrounding cosmos that is itself alive. Ricker [Intro, Ch1, Ch6, Conclusion]",
+        "- **Withdrawal**: The ontological condition whereby objects, meanings, and the world itself are never fully present to any relation. Things always reserve depths that exceed human knowledge, use, and attribution. Withd [Ch1, Ch6, Ch7, Ch8, Conclusion]",
+        "- **Chora**: The Platonic \"third kind\" (*triton genos*) from the *Timaeus* -- neither Form nor material copy but a generative, withdrawing matrix or receptacle from which all becoming, beginning, and creation emer [Intro, Ch1, Ch2, Ch3, Ch7]",
+        "- **φαντασία** (phantasia): A movement resulting from actual sensation. In De Anima, distinct from perception, opinion, and knowledge; subdivided into sensitive and deliberative. In the Rhetoric, the psychological faculty presup [DA-03-04, RHET-02-03-06, MEM-01, MA-01]",
+        "- **Dasein**: The entity that each of us is, distinguished by the fact that in its Being this Being is an issue for it. Dasein exists — its essence lies in its existence (to-be). It is characterized by mineness (Je [all, 17, units]",
+        "- **Worldliness / Being-in-the-World**: Heidegger's foundational claim that Dasein is always already thrown into a world of practical involvements -- not a subject confronting objects but a being immersed in meaningful situations. From this [Intro, Ch2, Ch3, Ch5, Ch6]",
+        "- **τὸ πρῶτον κινοῦν ἀκίνητον** (to prōton kinoun akinēton): That which first imparts motion without itself being moved. Eternal, exempt from all change (both unqualified and accidental), without parts and without magnitude (VIII.6, 258b11--12; VIII.10, 267b25- [PHYS-07, PHYS-08]"
+      ],
+      "hooksInjected": [
+        "- HOOK [Aristotle - Physics → Uexkull]: Integration points ↔ ? — [INTERP-high] — Uexkull's Naturtechnik challenges the Aristotelian phusis/technē distinction by arguing that organisms exhibit a technical character t [INTERP-high]",
+        "- HOOK [Aristotle - Physics → De Anima]: Connection ↔ ? — Physics VII.2 argues that the mover and the moved must always be in contact, and demonstrates this for alteration by induction from sense-perception:  [INTERP-high]",
+        "- HOOK [Aristotle - On Memory → BCAP]: κίνησις (residual movements) ↔ BCAP on κίνησις [INTERP-high] — **Aristotelian concept**: κίνησις (C5) — residual physiological movements left by perception; their sequential reactivation constitutes recollection;  [INTERP-high]"
+      ],
+      "tensionEdgesUsed": [
+        "- TENSION [T5]: magische_Umwelt ↔ Funktionskreis — The magical environment contradicts the stimulus-response architecture of the Funktionskreis. Early chapters build the functional cycle on perception marks from external objects; the magical chapter s [U-F6, U-F7]",
+        "- TENSION [CT-10]: chronos (Phys IV.11: number of motion — grounded in motion, mind-independent) ↔ chronos (Phys IV.14: time qua numbered requires soul as counter) — Extends to On Memory where time is the necessary condition of memory and only time-perceiving animals can remember, binding physics to psychology. Aristotle hedges: motion can exist without soul, but  [PHYS-04, MEM-01]",
+        "- TENSION [T2]: nonhuman_agency ↔ rhetorical_being — Rickert does not eliminate subjectivity but reconceives it as emplaced and distributed, preventing ambient rhetoric from collapsing into undifferentiated flat ontology while insisting that agency is n",
+        "- TENSION [T2]: Planmaessigkeit ↔ Ziel — Uexkuell strips teleological goal-language from biology but replaces it with 'Nature's plan' -- a concept that smuggles purposiveness back in under a different name. 'Nature knows how to deal with dif [U-F3, U-F4]",
+        "- TENSION [CT-04]: phantasia (DA III.3: kinesis from actual sensation — causally derived) ↔ phantasia (DA/Rhet/Mem/MA: functionally autonomous in dreams, deliberation, rhetoric, involuntary movement) — Phantasia's causal derivation from sensation conflicts with its functional autonomy in four domains: dreaming (DA), rhetorical reception (Rhet pro ommaton poiein), memory retention (Mem phantasma as l [DA-04, RHET-06, MEM-01, MA-01]"
+      ],
+      "queryExpansions": []
+    }
+  },
+  "success": true,
+  "trajectoryId": "traj_1779751098964_0e68bff4"
+}

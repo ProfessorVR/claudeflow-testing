@@ -1,0 +1,304 @@
+Work in Progress: Physiological Assessment of Learning in a Virtual
+Reality Clinical Immersion Environment
+Prof. Christine E. King, University of California, Irvine
+ Dr. Christine King is an Assistant Teaching Professor of Biomedical Engineering at UC Irvine. She received her BS and MS from Manhattan College in Mechanical Engineering and her PhD in Biomedical
+ Engineering from UC Irvine, where she developed brain-computer interface systems for neurorehabilitation. She was a post-doctorate in the Wireless Health Institute at the University of California, Los Angeles,
+ and a research manager in the Center for SMART Health, where she focused on wireless health monitoring for stroke and pediatric asthma. Her current research is on engineering education and women’s health,
+ specializing in pedagogy strategies to promote learning and innovation in design-build-test courses, including senior design, computer programming, and computer-aided-design courses, as well as pre-partum
+ and partum medical devices.
+Kit Roy Feeney
+Quangminh Tang
+Milan Das
+Dalton Salvo
+
+Introduction:
+
+The National Academy of Engineering has identified personalized learning as one of the 14 Grand
+Challenges for engineering in the 21st century [1]. Education is now shifting to a personalized process in
+which student learning is tailored to the individual needs and abilities. In addition, the Creating Helpful
+Incentives to Produce Semiconductors (CHIPS) and Science Act have listed experiential training as a
+strategic objective [2] for US educational institutions. In biomedical engineering (BME) programs, this
+includes the need for clinical immersion experiences, or learning from synergistic transactions between
+people and the environment [3] within a healthcare setting.
+
+Clinical immersion programs have been widely used in BME and bioengineering curricula [4], as it
+allows students to observe the clinical environment, better understand the practical application of medical
+devices, and identify unmet clinical needs in healthcare. However, due to the lack of access to nearby
+medical centers, hospital access for non-essential personnel, and increasing class sizes, availability of
+such programs are limited. As a result, these programs have typically been offered only to a select number
+of students (e.g. 15-20 students) [5-7]. To resolve this lack of access and move beyond prior research that
+utilized traditional video recordings [9-10], the Dept. of BME at the University of California Irvine (UCI)
+developed a virtual reality (VR) clinical immersion platform for student learning of clinical procedures
+and identification of unmet clinical needs [8]. The UCI VR platform enables a more comprehensive
+presentation of the full spectrum of staff and equipment involved in a clinical procedure [11-12]. The
+platform was piloted in Spring of 2022 as part of a junior-level unmet needs finding course for
+undergraduate BME students [8]. Initial assessment of this program revealed that the VR clinical
+immersion experiences greatly amplified the students' phenomenological sensations of immersion and
+presence [8]. In this work, we further examine the phenomenological framework of educational VR
+platforms [13-15] by focusing on the felt sensations of boredom and psychological engagement while
+virtually immersed in clinical procedures.
+
+Methods:
+
+We adopted the boredom definition of Fahlman et al. as “the aversive experience of having an unfulfilled
+desire to be engaged in satisfying activity” due to their comprehensive list of how boredom manifests
+itself in terms of the subjects’ arousal and cognitive apprehension [18]. Focusing on state boredom as the
+felt response to a discrete and concrete external experience, we attempted to track the state the student is
+in when they say “this lesson is boring” or “this video is boring.” Conversely, we also attempted to track
+the state of psychological engagement or attention to allow us to better analyze the effectiveness of our
+VR clinical immersion environments. Therefore, we implemented psychological and physiological
+methods for data collection. For our psychological methods, we had participants self-report their state of
+boredom and engagement using questionnaires intended to determine such through their felt responses
+and perception of time. Our physiological methods included collecting participants' electroencephalogram
+(EEG) data, heart rate, heart rate variability (HRV), and eye tracking.
+
+Study Protocol:
+
+Prior studies that quantify boredom from EEG [17] suggest that the default mode network (DMN) area of
+the brain is consistently activated during boredom, which includes the medial prefrontal cortex, posterior
+cingulate cortex, and inferior parietal lobe. Additionally, these studies indicate that EEG recorded over
+these regions of the brain exhibit increases in power in the alpha (8-12 Hz) and theta (4-8 Hz) frequency
+bands when compared to non-boredom physiological states. Therefore, our study examined the alpha and
+theta bands of EEG over the frontal and parietal lobes of the brain while participants were immersed in
+boring and exciting environments; we compared this data to EEG collected during the VR clinical
+immersion environments to determine whether the VR videos elicited neurophysiological behaviors more
+closely associated with boredom or engagement. Our study was approved as an IRB exempt protocol by
+the University of UCI Institutional Review Board (UCI IRB exempt No. 2678).
+
+To perform the above comparison, three individuals, two of whom had no prior experience watching
+medical procedures or performing clinical immersion within a hospital setting (see Table 1 for
+demographic data), participated in the study. For each experiment, participants watched videos wearing
+an HP-Reverb G2 Omnicept VR headset over their EEG cap. We had the participants watch three videos:
+a boring video, an interesting video, and a clip from our VR clinical immersion videos while their data
+was recorded. Each video was 17 minutes long and participants were given roughly a 5-minute break in
+between each video to allow them to restabilize.
+
+State boredom often derives from information or environmental stimuli that is monotonous, redundant,
+and/or meaningless [18]. Thus, for our boring control sample, we selected a 1989 Microsoft Word tutorial
+[19]. Due to the general familiarity our demographic has with Microsoft Word along with the age and
+obsolescence of the interface, we believe this video meets the criteria necessary to induce state boredom.
+For our interesting control sample, we selected a video covering alien reproduction vehicles and the
+mysterious deaths of scientists exploring alternative means of energy generation [20]. While this video
+could be categorized as a “conspiracy theory,” the accuracy of the information delivered is not as crucial
+to the experiment as much as presenting information that is highly interesting to the participants. Given
+the recent rise in public interest of aliens and importance of energy generation, we surmised that the topic
+generates higher levels of psychological engagement. Lastly, our VR clinical immersion video consisted
+of a clip from a spinal deformation operation recorded by the UCI medical student team [21].
+
+Data Acquisition:
+
+Each subject was seated and an EEG cap (Compumedics USA, Charlotte, NC) with 19 sintered Ag-AgCl
+electrodes, arranged according to the 10-20 International Standard, was used for EEG recording and worn
+under the VR headset. Conductive gel was applied to a subset of four electrodes at the following
+locations: F3, F4, P3, P4. These channels were selected because they corresponded to the frontal (F) and
+parietal (P) lobes, areas of the cerebral cortex generally active during boredom [16]. The frontal and
+parietal lobes are part of the DMN, a network of interacting regions that produce strong and slow
+frequencies during the resting state [17]. The ground channel, located near FPz, was used as a common
+average reference electrode. The signals were amplified (gain: 5000) and band-pass filtered (1-35 Hz)
+using four single-channel EEG bioamplifiers (Biopac Systems, Goleta CA), and were digitized (sampling
+rate: 200 Hz, resolution: 16 bits) by the MP160 data acquisition system (Biopac Systems). Data
+acquisition was performed using Acqknowledge Software (Biopac Systems). Resulting EEG data was
+imported into MATLAB (Mathworks, Natick, MA) for signal processing and analysis. We used the
+sensors built into the VR headset to collect heart rate, HRV, and eye tracking data (for information on the
+specific sensors: https://developers.hp.com/omnicept/docs/fundamentals).
+
+Data Analysis:
+
+To preprocess the EEG data, the first and last 120-seconds of data was removed from analysis to remove
+potential behavioral transition states. The raw EEG voltages were then plotted over time visually inspect
+the data for noise or recording errors. The Fourier transform was then applied to calculate the power
+spectral density (PSD) estimate using Welch’s method for spectral density estimation [22]. Welch’s PSD
+estimate was computed in two point overlapping windows and the periodogram was calculated using the
+discrete Fourier transform (DFT). To compare the PSD levels in the delta (1-3 Hz), theta (4-8 Hz), alpha
+(8-12 Hz), and beta (13-30 Hz) frequency bands for each video and participant, the power-frequency plots
+were limited from 1-30 Hz. To affirm normal data distribution for parametric statistical analysis, the team
+conducted a Kolmogorov-Smirnov goodness-of-fit hypothesis test. If no normal distribution was found,
+the Kruskal-Wallis one-way ANOVA with a 1% significance level was performed to compare PSD among
+EEG channels between each video type, a non-parametric method to assess if more than two independent
+samples have the same median. To analyze the other physiological data, we used MATLAB to plot the
+heart rate, HRV, and XY gaze coordinates and then overlayed the gaze plot onto the subject’s video
+recording in Adobe Premiere Pro (Adobe, San Jose, CA).
+Results:
+The power spectrum analyses of the EEG revealed that the PSD in the alpha band (8-12 Hz) changed over
+EEG channels P3 and P4, the parietal lobe, for all videos for subject 1(see appendix Fig. 1). However, the
+PSD over this band changed over the frontal lobe, channels F3 and F4, for the boring and clinical
+immersion videos, but did not change significantly for the exciting video (see appendix Fig. 2-4). This is
+consistent with prior EEG studies [17] and showed that the clinical video power spectrum more closely
+resembled the boring video than the exciting video for Subject 1. No change in PSD was observed over
+all EEG channels in the theta (4-8 Hz) frequency bands across the videos. Lastly, the eye tracking data
+(example shown here: https://youtu.be/m4T8kIQqQqo) showed that participants were engaged throughout
+the clinical immersion videos, and gazed mainly at the first person view at the medical devices, and
+utilized the 360 view to see technicians and supporting physicians. Analysis of heart rate and HRV were
+too similar in range across all videos, and HRV had too low of a sampling rate to discern any correlations
+within or across the videos (example Fig. 7-8)
+For the boredom control video psychological questionnaire (See appendix Table 3), all participants noted
+high levels of boredom with an average of 9 out of 9 and started to feel bored in less than ⅓ of the total
+video length. One participant fell asleep, and the others noted high levels of drowsiness after watching the
+video. Additionally, all participants felt that the video was longer than in actuality by a reasonable
+margin. For the interesting control video (see appendix Table 4), participants noted higher levels of
+engagement with an average of 6, and all participants noted beginning to feel bored at around the 10minute mark. No participants fell asleep, but all did note a slight increase in drowsiness. One participant
+felt the video was longer than in actuality, while the other two felt it was shorter than in actuality. The
+clinical immersion video (see appendix Table 5) elicited an average level of engagement at 6.33, with two
+of the participants beginning to feel bored at around 10 minutes. No participant fell asleep, one felt a
+drowsiness level of 7 out of 9 while the other two did not experience any drowsiness from watching the
+video. Interestingly, all participants felt that the video was longer than in actuality.
+Discussion:
+Due to issues during data acquisition, the EEG statistical analysis was inconclusive despite observing
+statistical difference in subjects 2 and 3 (see appendix Table 1). Namely, Subject 2’s boredom and clinical
+trials had noisy EEG data due to excessive artifacts (see appendix Fig. 5 and Fig. 6). Subject 3 had too
+high impedances to detect EEG over channel F3 and F4, so although significant p-values were found for
+these subjects, they are likely due to errors (see appendix Table 2). Despite the errors in our data,
+preliminary results suggest that we can accurately track state boredom physiologically, as seen by the
+changes in alpha band PSD. To resolve these issues, future work will include conducting preliminary tests
+to guarantee data accuracy, checks during experimentation to assess for EEG artifacts such as motion and
+line noise, and removing EEG channels due to excessive noise or high impedance. Additionally, it proved
+to be extremely challenging synchronizing the EEG, eye tracking, and video recordings as they operate
+independently from one another. Moving forward we will be redesigning our data collection platform so
+that they are more accurately synchronized for higher quality data in our continuing experimentation.
+ References:
+
+[1] National Academy of Engineering. Grand Challenges for Engineering.
+ http://www.engineeringchallenges.org/challenges/learning.aspx. Accessed: 2020-10-22.
+
+[2] White House Office of Science and Technology Policy. Draft national strategy on microelectronics
+ research. https://www.whitehouse.gov/wp-content/uploads/2022/09/SML-DRAFT-MicrolectronicsStrategy-For-Public-Comment.pdf. Accessed: 2022-10-22.
+
+[3] A. Y. Kolb and D. A. Kolb. Experiential learning theory: A dynamic, holistic approach to management
+ learning, education and development. The SAGE handbook of management learning, education and
+ development, 42:68, 2009.
+
+[4] Kotche, Miiri, Anthony E. Felder, Kimberlee Wilkens, and Susan Stirling. "Perspectives on
+ bioengineering clinical immersion: history, innovation, and impact." Annals of biomedical engineering 48
+ (2020): 2301-2309.
+
+[5] J. Stephens, S. Rooney, E. Arch, and J. Higginson, “Bridging Courses: Unmet Clinical Needs to Capstone
+ New Orleans, Louisiana. [Online]. Available: ASEE PEER, Doi: 10.18260/p.26393.
+
+[6] J. Kadlowec, T. Merrill, S. Sood, J. Greene Ryan, A. Attaluri, and R. Hirsh, “Clinical Immersion and
+ June 24-28, 2017, Columbus, Ohio. [Online]. Available: ASEE PEER, Doi: 10.18260/1-2—28040.
+
+[7] W. H. Guilford, M. Keeley, B. P. Helmke, and T. E. Allen. "Work in Progress: A Clinical Immersion
+ Tampa, Florida. [Online]. Available: ASEE PEER, Doi: 10.18260/1-2—33581.
+
+[8] C. King, D. Salvo, J. Wang, S. Rao, R. Sreedasyam, A. Kulkarni, S. Braich, and I. Sharma. Work in
+ progress: Development of virtual reality platform for unmet clinical needs finding in undergraduate
+
+[9] V. Mittal, M. Thompson, S. M. Altman, P. Taylor, A. Summers, K. Goodwin, and A. Y. Louie, “Clinical
+ Needs Finding: Developing the Virtual Experience—A Case Study,” Annals of Biomedical Engineering,
+ vol. 41, pp. 1899–1912, March 2013.
+
+[10] E. P. Brennan-Pierce, S. G. Stanton, and J. A. Dunn, “Clinical Immersion for Biomedical Engineers:
+ Pivoting to a Virtual Format,” Biomedical Engineering Education, vol. 1, no. 1, pp. 175–179, Jan. 2021.
+
+[11] R. M. Tamim, R. M. Bernard, E. Borokhovski, P. C. Abrami, and R. F. Schmid, “What Forty Years of
+ Research Says About the Impact of Technology on Learning,” Review of Educational Research, vol. 81,
+ no. 1, pp. 4–28, March 2011.
+
+[12] O. A. Meyer, M. K. Omdahl, and G. Makransky, “Investigating the Effect of Pre-training When Learning
+ Through Immersive Virtual Reality and Video: A Media and Methods Experiment,” Computers &
+ Education, vol. 140, no. 103603, Oct. 2019.
+
+[13] J. F. Morie, “Ontological Implications of Being in Immersive Virtual Environments,” in SPIE
+ Proceedings 6804, The Engineering Reality of Virtual Reality, Jan. 27-31, 2008, San Jose, California, no.
+ 680408, I. E. McDowall, M. Dolinsky, Eds. pp. 1–12, Feb. 8, 2008. [Online]. Available:
+
+[14] A. Heinzel and T. Heinzel, “The Phenomenology of Virtual Reality and Phantom Sensations,” Studia
+ Philosophia, 55:3, pp. 81–96, 2010.
+
+[15] J. Tham, A. H. Duin, L. Gee, N. Ernst, B. Abdelqader, and M. McGrath, “Understanding Virtual Reality:
+ Presence, Embodiment, and Professional Practice,” IEEE Transactions on Professional Communication,
+ 61:2, pp. 178–195, June 2018.
+
+[16] Yelamanchili, Tejaswini. n.d. “Neural Correlates of Flow, Boredom, and Anxiety in Gaming: An
+ Electroencephalogram Study,” 123.
+
+[17] Raffaelli, Quentin, Caitlin Mills, and Kalina Christoff. 2018. “The Knowns and Unknowns of Boredom:
+ A Review of the Literature.” Experimental Brain Research 236 (9): pp. 2451–62.
+
+[18] Fahlman, Shelley A., Kimberley B. Mercer-Lynn, David B. Flora, and John D. Eastwood. “Development
+ and Validation of the Multidimensional State Boredom Scale.” Assessment, 20:1, pp. 68-85, Feb., 2013.
+
+[19] Whamtan. “THE MOST BORING VIDEO EVER MADE (Microsoft Word tutorial, 1989),” YouTube,
+ Apr. 20, 2014.
+
+[20] The Why Files. “How to Build a Working UFO | Alien Reproduction Vehicles (ARVs),” YouTube, Dec. 8,
+
+[21] UCI Virtual Reality. “Spinal Deformation,” YouTube, Apr. 11, 2022.
+
+[22] Parhi, Keshab K., and Manohar Ayinala 2013. "Low-complexity Welch power spectral density
+ computation." IEEE Transactions on Circuits and Systems I: Regular Papers 61:1, pp. 172-182.
+Appendix:
+
+Subject Age Ethnicity Gender Past Experience
+ Watching
+ Medical
+ Procedures?
+
+1 20 Asian American Male No
+
+2 21 Caucasian/Asian Male No
+ American
+
+3 33 Caucasian Male Yes
+
+statistical difference between the clinical immersion video to the boring and exciting videos. A * denotes
+ that the null hypothesis is rejected at a 1% significance level.
+
+ Subject Channel F3 Channel F4 Channel P3 Channel P4
+
+ Subject 1 0.4691 0.3364 0.1987 0.7039
+
+ Subject 2 1.7408x10-8 * 3.4188x10-7 * 3.5425x10-7 * 4.8518x10-7 *
+
+ Subject 3 1.36642x10-5 * 1.1184x10-5 * 0.3103 0.5905
+
+Questions Subject 1 Subject 2 Subject 3
+
+On a scale from 1-9 how bored were you while 9 9 9
+watching this video? (1=Not bored at all, 9=
+Extreme boredom)
+
+On a scale from 1-9 how interested were you while 2 1 2
+watching this video? (1=Not engaged at all,
+9=Intense engagement)
+Roughly how many minutes into the video until 3 minutes 30 seconds 4 minutes
+you started to get bored?
+Did you fall asleep/fight to stay awake? 8 9 (Fell asleep about 7
+(1=Completely awake, 9=Fell asleep) halfway through the
+ video)
+Relatively speaking, how long did the video feel to 30 minutes 10 minutes 25 minutes
+you? (excluding sleep)
+On a scale from 1-9 how tired were you before 3 3 7
+conducting the experiment (1=completely awake,
+9=completely exhausted)
+
+Questions Subject 1 Subject 2 Subject 3
+
+On a scale from 1-9 how bored were you while watching this 5 4 3
+video? (9 high) If so, when
+On a scale from 1-9 how interested and engaged in the video 6 5 7
+were you? (1=Not engaged at all, 9=Intense engagement)
+Roughly how minutes into the video until you started to get 10 minutes 10 minutes 10 minutes
+bored?
+Did you fall asleep/fight to stay awake? (1=Completely awake, 6 3 3
+9=Fell asleep).
+Relatively speaking, roughly how long did the video feel to 20 minutes 10 minutes 15 minutes
+you?
+On a scale from 1-9 how tired were you before conducting the 5 4 6
+experiment (1=completely awake, 9=completely exhausted)
+
+Questions Subject 1 Subject 2 Subject 3
+
+On a scale from 1-9 how bored were you while watching this 3 2 6
+video? (9 high) If so, when
+On a scale from 1-9 how interested and engaged in the video 8 8 3
+were you? (1=Not engaged at all, 9=Intense engagement)
+Roughly how minutes into the video until you started to get 10 minutes Did not get 10 minutes
+bored? bored
+Did you fall asleep/fight to stay awake? (1=Completely 1 1 7
+awake, 9=Fell asleep).
+Relatively speaking, roughly how long did the video feel to 25 minutes 20 minutes 23 minutes
+you?
+On a scale from 1-9 how tired were you before conducting 7 5 6
+the experiment (1=completely awake, 9=completely
+exhausted)

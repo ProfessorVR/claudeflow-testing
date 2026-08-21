@@ -1,0 +1,86 @@
+% STANDALONE TEST WRAPPER (xelatex). Fonts swapped to DejaVu for this env;
+% in the dissertation the figure uses your \gk macro + Gentium Plus.
+\documentclass[border=12pt]{standalone}
+\usepackage{fontspec}
+\setmainfont{DejaVu Serif}
+\newfontfamily\greekfont{DejaVu Serif}
+\newcommand{\gk}[1]{{\greekfont #1}}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric}
+\newcommand{\cnum}[1]{\textcolor{blue!70}{\textbf{#1}}}
+
+\begin{document}
+\begin{tikzpicture}[
+  facet/.style={draw=blue!45, line width=0.6pt, rounded corners=3pt,
+                fill=blue!4, align=left, text width=3.4cm,
+                inner sep=5pt, font=\small},
+  agent/.style={draw=orange!75!black, line width=1pt, fill=orange!12,
+                ellipse, align=center, text width=3.2cm,
+                inner sep=4pt, font=\small},
+  link/.style={draw=gray!50, line width=0.5pt, densely dotted},
+  befall/.style={-{Stealth[length=2.6mm]}, draw=red!60, line width=1pt},
+]
+
+% --- centre: the agent / orexis (efficient cause) ---
+\node[agent] (agent) at (0,0)
+  {\textbf{the agent}\\[1pt]\emph{fear befalls}\\[1pt]
+   \textit{orexis}\,---\,moved mover\\
+   {\footnotesize\itshape\textcolor{orange!75!black}{efficient cause}}};
+
+% --- four corner facets ---
+\node[facet] (disp) at (-4.3,2.75)
+  {\textbf{\cnum{1} Disposition}\\
+   finding-oneself-\emph{threatened}; the \emph{involuntary} uptake---one must
+   ``believe'' the threat is \emph{for me, now}\\[1pt]
+   {\footnotesize\itshape\textcolor{blue!60}{formal cause: doxa's evaluative form}}};
+
+\node[facet] (intent) at (4.3,2.75)
+  {\textbf{\cnum{2} Intentionality}\\
+   \emph{toward-which}: the destructive evil (the figure, the weapon)\\
+   \emph{toward-whom}: the assailant\,\textperiodcentered\,\textit{Mitsein}\\[1pt]
+   {\footnotesize\itshape\textcolor{blue!60}{final cause: the good sought (safety)}}};
+
+\node[facet] (body) at (4.3,-2.75)
+  {\textbf{\cnum{3} Bodily form}\\
+   the \emph{cold} of fear---\gk{ταραχή}, chilled blood, flight-readiness\\[1pt]
+   {\footnotesize\itshape\textcolor{blue!60}{material cause: the affections (DMA)}}};
+
+\node[facet] (disc) at (-4.3,-2.75)
+  {\textbf{\cnum{5} Disclosive function}\\
+   brings-to-\textit{krisis}\,/\,\textit{logos}: discloses the world as
+   threatening; opens flight, defence, or seeking-help};
+
+% --- faint links: facets of ONE gestalt, not stages ---
+\draw[link] (agent) -- (disp);
+\draw[link] (agent) -- (intent);
+\draw[link] (agent) -- (body);
+\draw[link] (agent) -- (disc);
+
+% --- the befalling, from without ---
+\node[font=\itshape, text=red!65, align=center] (fromw) at (0,4.75)
+  {from without\,\textperiodcentered\,\textit{paschein}\,\textperiodcentered\,the
+   ``e-'' of e-motion\,\textperiodcentered\,being-taken};
+\draw[befall] (fromw.south) -- (agent.north);
+\draw[befall] (fromw.south) .. controls (-2.6,3.8) .. (disp.north);
+\draw[befall] (fromw.south) .. controls (2.6,3.8) .. (intent.north);
+
+% --- the ecstatic horizon (element 4: temporal range) ---
+\def\hy{-5.15}
+\draw[black!70, line width=1pt] (-5.7,\hy) -- (5.7,\hy);
+\foreach \x in {-4.1,0,4.1} \fill[black!70] (\x,\hy) circle (1.5pt);
+\node[font=\bfseries] at (0,\hy+0.36) {\cnum{4} Temporal range\,---\,the ecstatic horizon};
+\node[align=center, font=\small] (hb) at (-4.1,\hy-0.66)
+  {\textbf{having-been} (\textit{Gewesenheit})\\ sedimented \gk{οἴεσθαι}\\ the thrown ground};
+\node[align=center, font=\small] (pr) at (0,\hy-0.66)
+  {\textbf{present} (\textit{Gegenwart})\\ \gk{ταραχή}\\ felt now};
+\node[align=center, font=\small] (fut) at (4.1,\hy-0.66)
+  {\textbf{futural}\,$\star$ (\textit{Zukunft})\\ the evil coming-toward (\gk{μέλλον})\\ \emph{primary ecstasis}};
+
+% --- fear arrives from the futural (ties befalling to futural-primacy) ---
+\draw[befall, densely dashed] (fut.north) .. controls (7.7,-3.3) and (7.5,-0.5) .. (agent.east);
+\node[font=\footnotesize\itshape, text=red!70, align=center] at (3.78,0.82)
+  {fear arrives\\ from the futural};
+
+\end{tikzpicture}
+\end{document}

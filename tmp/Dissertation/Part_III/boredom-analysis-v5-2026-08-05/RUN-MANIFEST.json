@@ -1,0 +1,1339 @@
+{
+  "gate": {
+    "checks": [
+      {
+        "direction": "8/8 Boring < Clinical",
+        "friedman_p": 0.0302,
+        "key": "r1_pupil",
+        "label": "Round 1 pupil dilation",
+        "n": 8,
+        "rb": -1.0,
+        "wilcoxon_p": 0.0078
+      },
+      {
+        "direction": "7/8 Boring lowest openness",
+        "friedman_p": 0.0076,
+        "key": "r1_openness",
+        "label": "R1 eye openness (canonical)",
+        "n": 8,
+        "rb": -0.94,
+        "wilcoxon_p": 0.0156
+      },
+      {
+        "direction": "10/12",
+        "friedman_p": 0.0458,
+        "key": "pooled_pupil",
+        "label": "Pooled pupil",
+        "n": 12,
+        "rb": -0.82,
+        "rebaseline": true,
+        "wilcoxon_p": 0.0093
+      },
+      {
+        "direction": "11/12 Boring lowest openness",
+        "friedman_p": 0.0004,
+        "key": "pooled_openness",
+        "label": "Pooled eye openness (canonical)",
+        "n": 12,
+        "rb": -0.97,
+        "rebaseline": true,
+        "wilcoxon_p": 0.001
+      }
+    ],
+    "result": [
+      {
+        "check": "Round 1 pupil dilation",
+        "expected_direction": "8/8 Boring < Clinical",
+        "expected_friedman_p": 0.0302,
+        "expected_n": 8,
+        "expected_rb": -1.0,
+        "expected_wilcoxon_p": 0.0078,
+        "gate": "canonical",
+        "got_direction": "8/8",
+        "got_friedman_p": 0.0302,
+        "got_n": 8,
+        "got_rb": -1.0,
+        "got_wilcoxon_p": 0.0078,
+        "passed": true
+      },
+      {
+        "check": "R1 eye openness (canonical)",
+        "expected_direction": "7/8 Boring lowest openness",
+        "expected_friedman_p": 0.0076,
+        "expected_n": 8,
+        "expected_rb": -0.94,
+        "expected_wilcoxon_p": 0.0156,
+        "gate": "canonical",
+        "got_direction": "7/8",
+        "got_friedman_p": 0.0076,
+        "got_n": 8,
+        "got_rb": -0.944,
+        "got_wilcoxon_p": 0.0156,
+        "passed": true
+      },
+      {
+        "check": "Pooled pupil",
+        "expected_direction": "10/12",
+        "expected_friedman_p": 0.0458,
+        "expected_n": 12,
+        "expected_rb": -0.82,
+        "expected_wilcoxon_p": 0.0093,
+        "gate": "canonical",
+        "got_direction": "10/12",
+        "got_friedman_p": 0.0458,
+        "got_n": 12,
+        "got_rb": -0.821,
+        "got_wilcoxon_p": 0.0093,
+        "passed": true
+      },
+      {
+        "check": "Pooled eye openness (canonical)",
+        "expected_direction": "11/12 Boring lowest openness",
+        "expected_friedman_p": 0.0004,
+        "expected_n": 12,
+        "expected_rb": -0.97,
+        "expected_wilcoxon_p": 0.001,
+        "gate": "canonical",
+        "got_direction": "11/12",
+        "got_friedman_p": 0.0004,
+        "got_n": 12,
+        "got_rb": -0.974,
+        "got_wilcoxon_p": 0.001,
+        "passed": true
+      },
+      {
+        "check": "Round 1 pupil dilation",
+        "expected_direction": "8/8 Boring < Clinical",
+        "expected_friedman_p": 0.0302,
+        "expected_n": 8,
+        "expected_rb": -1.0,
+        "expected_wilcoxon_p": 0.0078,
+        "gate": "this-tree",
+        "got_direction": "8/8",
+        "got_friedman_p": 0.0302,
+        "got_n": 8,
+        "got_rb": -1.0,
+        "got_wilcoxon_p": 0.0078,
+        "passed": true
+      },
+      {
+        "check": "R1 eye openness (canonical)",
+        "expected_direction": "7/8 Boring lowest openness",
+        "expected_friedman_p": 0.0076,
+        "expected_n": 8,
+        "expected_rb": -0.94,
+        "expected_wilcoxon_p": 0.0156,
+        "gate": "this-tree",
+        "got_direction": "7/8",
+        "got_friedman_p": 0.0076,
+        "got_n": 8,
+        "got_rb": -0.944,
+        "got_wilcoxon_p": 0.0156,
+        "passed": true
+      },
+      {
+        "check": "Pooled pupil",
+        "expected_direction": "10/12",
+        "expected_friedman_p": 0.0458,
+        "expected_n": 12,
+        "expected_rb": -0.82,
+        "expected_wilcoxon_p": 0.0093,
+        "gate": "this-tree",
+        "got_direction": "10/12",
+        "got_friedman_p": 0.097,
+        "got_n": 12,
+        "got_rb": -0.872,
+        "got_wilcoxon_p": 0.0049,
+        "passed": true
+      },
+      {
+        "check": "Pooled eye openness (canonical)",
+        "expected_direction": "11/12 Boring lowest openness",
+        "expected_friedman_p": 0.0004,
+        "expected_n": 12,
+        "expected_rb": -0.97,
+        "expected_wilcoxon_p": 0.001,
+        "gate": "this-tree",
+        "got_direction": "11/12",
+        "got_friedman_p": 0.0004,
+        "got_n": 12,
+        "got_rb": -0.974,
+        "got_wilcoxon_p": 0.001,
+        "passed": true
+      }
+    ]
+  },
+  "git_commit": "acd31b4693eac3a2fdc2fe721932026102d02d34",
+  "inputs": {
+    "excluded_trees": [
+      "<R2>/VR Data Recorder (author ruling 2026-07-30)"
+    ],
+    "files": [
+      {
+        "bytes": 179453,
+        "ext": ".csv",
+        "label": "S01",
+        "md5": "b375359ee7c2663cd568303195fe7b62",
+        "stimulus": "BOR",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 180329,
+        "ext": ".csv",
+        "label": "S01",
+        "md5": "ee769aff3d14b9d56b79575aecfe2ba3",
+        "stimulus": "CLC",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 162195,
+        "ext": ".csv",
+        "label": "S01",
+        "md5": "0e7115a7dcdff6cf8eb7e1040069a4c9",
+        "stimulus": "INT",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 8559440,
+        "ext": ".mat",
+        "label": "S01",
+        "md5": "fd4a660d0605f6a33993df299921b4d3",
+        "stimulus": "BOR",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 8625280,
+        "ext": ".mat",
+        "label": "S01",
+        "md5": "77c3c9cc0d25c6369699f4ae90761a57",
+        "stimulus": "CLC",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 8034680,
+        "ext": ".mat",
+        "label": "S01",
+        "md5": "211240e954f3c486559c95080f12b67f",
+        "stimulus": "INT",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 2266,
+        "ext": ".txt",
+        "label": "S01",
+        "md5": "806f35a315ec13bc3ccf0bbe6d44b0a8",
+        "stimulus": "(all)",
+        "stream": "survey"
+      },
+      {
+        "bytes": 221769,
+        "ext": ".csv",
+        "label": "S02",
+        "md5": "6638234f2007c89cc1c3b9dff52b89ce",
+        "stimulus": "BOR",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 217523,
+        "ext": ".csv",
+        "label": "S02",
+        "md5": "3cd92e208540da21a991091ae97f0afe",
+        "stimulus": "CLC",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 217504,
+        "ext": ".csv",
+        "label": "S02",
+        "md5": "1db376ab536c30dd8d794f95637f9b92",
+        "stimulus": "INT",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 8213080,
+        "ext": ".mat",
+        "label": "S02",
+        "md5": "f3b12d68ba57233474da1284dba44c93",
+        "stimulus": "BOR",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 8139240,
+        "ext": ".mat",
+        "label": "S02",
+        "md5": "dace06c41ca049871379bc7033c43a26",
+        "stimulus": "CLC",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 8172320,
+        "ext": ".mat",
+        "label": "S02",
+        "md5": "8c8ab5987616ce83727fe0faa49f6a68",
+        "stimulus": "INT",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 2248,
+        "ext": ".txt",
+        "label": "S02",
+        "md5": "14e59d6afefba39ab2daff0f2b312c6c",
+        "stimulus": "(all)",
+        "stream": "survey"
+      },
+      {
+        "bytes": 171946,
+        "ext": ".csv",
+        "label": "S03",
+        "md5": "c9cd6b8b0c8ba8ab284862e754a33a8d",
+        "stimulus": "BOR",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 187866,
+        "ext": ".xlsx",
+        "label": "S03",
+        "md5": "1f51d0d20d4b71223872c225c1264bc9",
+        "stimulus": "CLC",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 165793,
+        "ext": ".csv",
+        "label": "S03",
+        "md5": "ffc762a300be0b2b11f80decedfa6d8d",
+        "stimulus": "INT",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 8371240,
+        "ext": ".mat",
+        "label": "S03",
+        "md5": "45fba5360334dab42e2c594715fc607d",
+        "stimulus": "BOR",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 7713720,
+        "ext": ".mat",
+        "label": "S03",
+        "md5": "d92710e435f1ba86b29499218c76c2be",
+        "stimulus": "CLC",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 7704160,
+        "ext": ".mat",
+        "label": "S03",
+        "md5": "813756d3fc7d9e69e598af7190bf8ee7",
+        "stimulus": "INT",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 2243,
+        "ext": ".txt",
+        "label": "S03",
+        "md5": "c5fc4e0a8f0c472528a5ba6e0c74bcae",
+        "stimulus": "(all)",
+        "stream": "survey"
+      },
+      {
+        "bytes": 203419,
+        "ext": ".csv",
+        "label": "S04",
+        "md5": "f69986fb2c2e1f4000ee061f05d60d93",
+        "stimulus": "BOR",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 207376,
+        "ext": ".csv",
+        "label": "S04",
+        "md5": "e7a534b27a97b4b70cd1f47d28c1ab88",
+        "stimulus": "CLC",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 216612,
+        "ext": ".csv",
+        "label": "S04",
+        "md5": "662f7c29aa7244e45ffc00702d648e36",
+        "stimulus": "INT",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 8161560,
+        "ext": ".mat",
+        "label": "S04",
+        "md5": "21e1a7690db1f7c1635c8a928c6732ec",
+        "stimulus": "BOR",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 8231640,
+        "ext": ".mat",
+        "label": "S04",
+        "md5": "79ffddb71fce1445a9590c3c9496e1bd",
+        "stimulus": "CLC",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 8124040,
+        "ext": ".mat",
+        "label": "S04",
+        "md5": "2adedc669e1ec4b3a4b8ccaae4828d08",
+        "stimulus": "INT",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 2238,
+        "ext": ".txt",
+        "label": "S04",
+        "md5": "3e5d6bf7911df175c7ad1cd4d23e4d56",
+        "stimulus": "(all)",
+        "stream": "survey"
+      },
+      {
+        "bytes": 175730,
+        "ext": ".csv",
+        "label": "S05",
+        "md5": "493807d55d6d31c867619ae55522431a",
+        "stimulus": "BOR",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 173632,
+        "ext": ".csv",
+        "label": "S05",
+        "md5": "77b349b726643cc8ae10e167e4c44dd1",
+        "stimulus": "CLC",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 199789,
+        "ext": ".csv",
+        "label": "S05",
+        "md5": "c056816761ea3d0ac9dc05fc8a4c727c",
+        "stimulus": "INT",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 8273640,
+        "ext": ".mat",
+        "label": "S05",
+        "md5": "b907febbf2c42f06b231de00dc90c2c7",
+        "stimulus": "BOR",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 7715600,
+        "ext": ".mat",
+        "label": "S05",
+        "md5": "70aaec7a3c277169d23272daf7ed1e44",
+        "stimulus": "CLC",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 8093000,
+        "ext": ".mat",
+        "label": "S05",
+        "md5": "9bc8eadbf430368d49756b6bfb42ba69",
+        "stimulus": "INT",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 2239,
+        "ext": ".txt",
+        "label": "S05",
+        "md5": "cf2ab387f2ee303d655dc0ff9b4ecb55",
+        "stimulus": "(all)",
+        "stream": "survey"
+      },
+      {
+        "bytes": 195923,
+        "ext": ".csv",
+        "label": "S06",
+        "md5": "f3d207156e9cf651167b4ac870f2b5b7",
+        "stimulus": "BOR",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 6858389,
+        "ext": ".csv",
+        "label": "S06",
+        "md5": "ad4a83fe110cb778049dde055d4d60f9",
+        "stimulus": "CLC",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 7691069,
+        "ext": ".csv",
+        "label": "S06",
+        "md5": "f86229c3cc3aa571f62da7437573e65d",
+        "stimulus": "INT",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 16192360,
+        "ext": ".mat",
+        "label": "S06",
+        "md5": "877a40721ca94706eccd840913231cfe",
+        "stimulus": "BOR",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 8096600,
+        "ext": ".mat",
+        "label": "S06",
+        "md5": "dbe141beccb9e86b2dd3f42518ce49cb",
+        "stimulus": "CLC",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 9104880,
+        "ext": ".mat",
+        "label": "S06",
+        "md5": "b37074e2f75e0d878c82fdcde52a68aa",
+        "stimulus": "INT",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 2240,
+        "ext": ".txt",
+        "label": "S06",
+        "md5": "b5e0265abd82f04def948edc4ba5d7e5",
+        "stimulus": "(all)",
+        "stream": "survey"
+      },
+      {
+        "bytes": 220810,
+        "ext": ".csv",
+        "label": "S07",
+        "md5": "23e69ba4558544ec4f962d9de30732df",
+        "stimulus": "BOR",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 212031,
+        "ext": ".csv",
+        "label": "S07",
+        "md5": "4d70cedc63a4cc54ff646f86a55f3f48",
+        "stimulus": "CLC",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 231017,
+        "ext": ".csv",
+        "label": "S07",
+        "md5": "674415ac6c94f1b6a89e3c0e5ee75f16",
+        "stimulus": "INT",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 9092040,
+        "ext": ".mat",
+        "label": "S07",
+        "md5": "f031ad74ce0124813875a18a1beb309b",
+        "stimulus": "BOR",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 8940760,
+        "ext": ".mat",
+        "label": "S07",
+        "md5": "9a88e1bb0f03c8e4b845575eecace816",
+        "stimulus": "CLC",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 15608120,
+        "ext": ".mat",
+        "label": "S07",
+        "md5": "bae61375a47b266561568bd067861617",
+        "stimulus": "INT",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 2294,
+        "ext": ".txt",
+        "label": "S07",
+        "md5": "095665fe2777e1c4dfa137e70e451619",
+        "stimulus": "(all)",
+        "stream": "survey"
+      },
+      {
+        "bytes": 176163,
+        "ext": ".csv",
+        "label": "S08",
+        "md5": "9a0647db611a5df74ccb3901856b590c",
+        "stimulus": "BOR",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 200793,
+        "ext": ".csv",
+        "label": "S08",
+        "md5": "5f254011784a22fe5095884e6fe166d8",
+        "stimulus": "CLC",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 168391,
+        "ext": ".csv",
+        "label": "S08",
+        "md5": "9c79f597fdc032388d37a88df7e26887",
+        "stimulus": "INT",
+        "stream": "hmd-crop"
+      },
+      {
+        "bytes": 8148280,
+        "ext": ".mat",
+        "label": "S08",
+        "md5": "55d675944176dded38e4cf2f1bf72635",
+        "stimulus": "BOR",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 8326760,
+        "ext": ".mat",
+        "label": "S08",
+        "md5": "11709d3570006a5cf01d95920ccc6f05",
+        "stimulus": "CLC",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 8076840,
+        "ext": ".mat",
+        "label": "S08",
+        "md5": "37a5f482773ad99c2a994d4723beb76a",
+        "stimulus": "INT",
+        "stream": "eeg-mat"
+      },
+      {
+        "bytes": 2331,
+        "ext": ".txt",
+        "label": "S08",
+        "md5": "3aaacb14257e5887f17fa0396532bd31",
+        "stimulus": "(all)",
+        "stream": "survey"
+      },
+      {
+        "bytes": 26083165,
+        "ext": ".csv",
+        "label": "R2-01",
+        "md5": "6dbccd1c693280597c96a9d8a6cd5453",
+        "stimulus": "BOR",
+        "stream": "r2-eye"
+      },
+      {
+        "bytes": 35644,
+        "ext": ".csv",
+        "label": "R2-01",
+        "md5": "df8272dfce18a9b550aba96f1a753a31",
+        "stimulus": "BOR",
+        "stream": "r2-cog"
+      },
+      {
+        "bytes": 19952,
+        "ext": ".csv",
+        "label": "R2-01",
+        "md5": "acd75f2acb7170dd80b2dcabf358c57b",
+        "stimulus": "BOR",
+        "stream": "r2-hr"
+      },
+      {
+        "bytes": 142624172,
+        "ext": ".csv",
+        "label": "R2-01",
+        "md5": "ff191549d7c36000f8b2fb12b5ea2559",
+        "stimulus": "BOR",
+        "stream": "r2-imu"
+      },
+      {
+        "bytes": 28642912,
+        "ext": ".csv",
+        "label": "R2-01",
+        "md5": "6e8d976f4e504cc07d1334b01091d7c4",
+        "stimulus": "CLC",
+        "stream": "r2-eye"
+      },
+      {
+        "bytes": 55505,
+        "ext": ".csv",
+        "label": "R2-01",
+        "md5": "bd49bb36f05eb940da7312c67db666e4",
+        "stimulus": "CLC",
+        "stream": "r2-cog"
+      },
+      {
+        "bytes": 20750,
+        "ext": ".csv",
+        "label": "R2-01",
+        "md5": "22d571772a75154e8a44abd867a6dd20",
+        "stimulus": "CLC",
+        "stream": "r2-hr"
+      },
+      {
+        "bytes": 143050660,
+        "ext": ".csv",
+        "label": "R2-01",
+        "md5": "e7dd6c66e699496e71f5067dabfeb279",
+        "stimulus": "CLC",
+        "stream": "r2-imu"
+      },
+      {
+        "bytes": 27816639,
+        "ext": ".csv",
+        "label": "R2-01",
+        "md5": "4d82a8aea718a5428e5e061ceb7a10d8",
+        "stimulus": "INT",
+        "stream": "r2-eye"
+      },
+      {
+        "bytes": 54424,
+        "ext": ".csv",
+        "label": "R2-01",
+        "md5": "3be380cd9155822b79ca18ff7b7abf7c",
+        "stimulus": "INT",
+        "stream": "r2-cog"
+      },
+      {
+        "bytes": 20488,
+        "ext": ".csv",
+        "label": "R2-01",
+        "md5": "38a6532bec22a5a89d3fa3f92674aaeb",
+        "stimulus": "INT",
+        "stream": "r2-hr"
+      },
+      {
+        "bytes": 2364,
+        "ext": ".txt",
+        "label": "R2-01",
+        "md5": "c69585f9be2000453cdee4a2b1f24d7e",
+        "stimulus": "(all)",
+        "stream": "survey"
+      },
+      {
+        "bytes": 24933585,
+        "ext": ".csv",
+        "label": "R2-02",
+        "md5": "16e81954d37f59b47e2b1fc53b5206fb",
+        "stimulus": "BOR",
+        "stream": "r2-eye"
+      },
+      {
+        "bytes": 34267,
+        "ext": ".csv",
+        "label": "R2-02",
+        "md5": "456beddd8b6cff42d4efa35e45315c7b",
+        "stimulus": "BOR",
+        "stream": "r2-cog"
+      },
+      {
+        "bytes": 28453374,
+        "ext": ".csv",
+        "label": "R2-02",
+        "md5": "950c41678d99e52a8a581de87dca58a5",
+        "stimulus": "CLC",
+        "stream": "r2-eye"
+      },
+      {
+        "bytes": 54697,
+        "ext": ".csv",
+        "label": "R2-02",
+        "md5": "e977c0bed28110ba74f13f519d69f125",
+        "stimulus": "CLC",
+        "stream": "r2-cog"
+      },
+      {
+        "bytes": 20658,
+        "ext": ".csv",
+        "label": "R2-02",
+        "md5": "41f4ec54b2e8122ad68f70c638afc0e7",
+        "stimulus": "CLC",
+        "stream": "r2-hr"
+      },
+      {
+        "bytes": 140674542,
+        "ext": ".csv",
+        "label": "R2-02",
+        "md5": "f87dd585950e59aaee7cf576bb41cc17",
+        "stimulus": "CLC",
+        "stream": "r2-imu"
+      },
+      {
+        "bytes": 28672394,
+        "ext": ".csv",
+        "label": "R2-02",
+        "md5": "4c0b898abdc67d7adc7a6280d3d78f9c",
+        "stimulus": "INT",
+        "stream": "r2-eye"
+      },
+      {
+        "bytes": 55202,
+        "ext": ".csv",
+        "label": "R2-02",
+        "md5": "3204fa5e35d360eaa48a49016c84ad80",
+        "stimulus": "INT",
+        "stream": "r2-cog"
+      },
+      {
+        "bytes": 20658,
+        "ext": ".csv",
+        "label": "R2-02",
+        "md5": "e4551ebca60454b10cf709a9b3e59aee",
+        "stimulus": "INT",
+        "stream": "r2-hr"
+      },
+      {
+        "bytes": 141366787,
+        "ext": ".csv",
+        "label": "R2-02",
+        "md5": "3b00c591bffa8ee7dedf9abcceab8967",
+        "stimulus": "INT",
+        "stream": "r2-imu"
+      },
+      {
+        "bytes": 2235,
+        "ext": ".txt",
+        "label": "R2-02",
+        "md5": "dd85af71bb1b4f2a493242d8169255e0",
+        "stimulus": "(all)",
+        "stream": "survey"
+      },
+      {
+        "bytes": 27423008,
+        "ext": ".csv",
+        "label": "R2-03",
+        "md5": "0da4adc3b66c55f907c6d9b05d895e2e",
+        "stimulus": "BOR",
+        "stream": "r2-eye"
+      },
+      {
+        "bytes": 54923,
+        "ext": ".csv",
+        "label": "R2-03",
+        "md5": "5d1e4a4fc156210442f9de7ef9775a0a",
+        "stimulus": "BOR",
+        "stream": "r2-cog"
+      },
+      {
+        "bytes": 20355,
+        "ext": ".csv",
+        "label": "R2-03",
+        "md5": "cfbcc44e2b9e93cd9f2b487547b55e34",
+        "stimulus": "BOR",
+        "stream": "r2-hr"
+      },
+      {
+        "bytes": 140695428,
+        "ext": ".csv",
+        "label": "R2-03",
+        "md5": "3c7dcc00850b5ab6d08c4691528bb94f",
+        "stimulus": "BOR",
+        "stream": "r2-imu"
+      },
+      {
+        "bytes": 32278349,
+        "ext": ".csv",
+        "label": "R2-03",
+        "md5": "dbf3b9220bd20f69e0e95b6e9430374a",
+        "stimulus": "CLC",
+        "stream": "r2-eye"
+      },
+      {
+        "bytes": 60038,
+        "ext": ".csv",
+        "label": "R2-03",
+        "md5": "6d3bd1e04a3443ee27dcfad80b9dbe36",
+        "stimulus": "CLC",
+        "stream": "r2-cog"
+      },
+      {
+        "bytes": 23587,
+        "ext": ".csv",
+        "label": "R2-03",
+        "md5": "ef943cd154553cd607e055c7d319036b",
+        "stimulus": "CLC",
+        "stream": "r2-hr"
+      },
+      {
+        "bytes": 161202910,
+        "ext": ".csv",
+        "label": "R2-03",
+        "md5": "7227f695b1762ea90da79d6377a62c5e",
+        "stimulus": "CLC",
+        "stream": "r2-imu"
+      },
+      {
+        "bytes": 28368914,
+        "ext": ".csv",
+        "label": "R2-03",
+        "md5": "cbbd4044059b14e66bcf0a56690fee19",
+        "stimulus": "INT",
+        "stream": "r2-eye"
+      },
+      {
+        "bytes": 55105,
+        "ext": ".csv",
+        "label": "R2-03",
+        "md5": "8f562a50589e50e19af87b417a00bbe5",
+        "stimulus": "INT",
+        "stream": "r2-cog"
+      },
+      {
+        "bytes": 20659,
+        "ext": ".csv",
+        "label": "R2-03",
+        "md5": "bec67fdb6aca53ebaed0789c7ddf28e6",
+        "stimulus": "INT",
+        "stream": "r2-hr"
+      },
+      {
+        "bytes": 2218,
+        "ext": ".txt",
+        "label": "R2-03",
+        "md5": "4251cb42a0a670e98fcf4c7042a55f6a",
+        "stimulus": "(all)",
+        "stream": "survey"
+      },
+      {
+        "bytes": 27565382,
+        "ext": ".csv",
+        "label": "R2-04",
+        "md5": "d5cfc9adb84f7f5ebc87e34292a9a21a",
+        "stimulus": "BOR",
+        "stream": "r2-eye"
+      },
+      {
+        "bytes": 54445,
+        "ext": ".csv",
+        "label": "R2-04",
+        "md5": "dc5b1056cf74efd4d3f3968cff71a1b5",
+        "stimulus": "BOR",
+        "stream": "r2-cog"
+      },
+      {
+        "bytes": 20673,
+        "ext": ".csv",
+        "label": "R2-04",
+        "md5": "6b9135cb6b74a5cb39b976c2c904e66f",
+        "stimulus": "BOR",
+        "stream": "r2-hr"
+      },
+      {
+        "bytes": 142868168,
+        "ext": ".csv",
+        "label": "R2-04",
+        "md5": "2408b5808fd4a926e0ce6856c5b56f52",
+        "stimulus": "BOR",
+        "stream": "r2-imu"
+      },
+      {
+        "bytes": 29385966,
+        "ext": ".csv",
+        "label": "R2-04",
+        "md5": "265cedeea1e88d79a92e44c49a02d16e",
+        "stimulus": "CLC",
+        "stream": "r2-eye"
+      },
+      {
+        "bytes": 52562,
+        "ext": ".csv",
+        "label": "R2-04",
+        "md5": "65db501075bfff890db30fb84bf5285a",
+        "stimulus": "CLC",
+        "stream": "r2-cog"
+      },
+      {
+        "bytes": 21524,
+        "ext": ".csv",
+        "label": "R2-04",
+        "md5": "6190029636468f1da4f72944207cbfa8",
+        "stimulus": "CLC",
+        "stream": "r2-hr"
+      },
+      {
+        "bytes": 148221990,
+        "ext": ".csv",
+        "label": "R2-04",
+        "md5": "4c2dec31b46e822afb6ac385dc803948",
+        "stimulus": "CLC",
+        "stream": "r2-imu"
+      },
+      {
+        "bytes": 28228282,
+        "ext": ".csv",
+        "label": "R2-04",
+        "md5": "9e7fac4a9282e64e2a5ceb0aaca469ea",
+        "stimulus": "INT",
+        "stream": "r2-eye"
+      },
+      {
+        "bytes": 54912,
+        "ext": ".csv",
+        "label": "R2-04",
+        "md5": "a45858b9ae8e30c6da4ee5b722a37111",
+        "stimulus": "INT",
+        "stream": "r2-cog"
+      },
+      {
+        "bytes": 20658,
+        "ext": ".csv",
+        "label": "R2-04",
+        "md5": "0009b09e438927cc3f386f7585ff880f",
+        "stimulus": "INT",
+        "stream": "r2-hr"
+      },
+      {
+        "bytes": 142060965,
+        "ext": ".csv",
+        "label": "R2-04",
+        "md5": "0d0a7d126853bb8535aa0060e0b0a200",
+        "stimulus": "INT",
+        "stream": "r2-imu"
+      },
+      {
+        "bytes": 2441,
+        "ext": ".txt",
+        "label": "R2-04",
+        "md5": "4fb19a7f40c9975094f51f722f5286f3",
+        "stimulus": "(all)",
+        "stream": "survey"
+      }
+    ],
+    "n_files": 104,
+    "policy": "label-keyed only; no path, filename or directory name from the subject trees appears here",
+    "total_bytes": 1874051437
+  },
+  "interpreter": "/home/dalton/.venv/bin/python",
+  "interpreter_actually_used": "/home/dalton/.pyenv/versions/3.11.9/bin/python3",
+  "library_versions": {
+    "matplotlib": "3.11.1",
+    "numpy": "2.2.6",
+    "openpyxl": "3.1.5",
+    "pandas": "3.0.0",
+    "scipy": "1.16.0"
+  },
+  "methodology_of_record": {
+    "modules": [
+      {
+        "bytes": 1535,
+        "md5": "aa2ab3818a865decd4578a4585f7eb00",
+        "module": "common",
+        "path": "/home/dalton/projects/claudeflow-testing/scripts/boredom-o9/common.py"
+      },
+      {
+        "bytes": 9365,
+        "md5": "14dabd89b78ca79870564ecd4fe868bb",
+        "module": "ch_hmd",
+        "path": "/home/dalton/projects/claudeflow-testing/scripts/boredom-o9/ch_hmd.py"
+      },
+      {
+        "bytes": 4041,
+        "md5": "0752818b64a7e6c875a1943260a48f35",
+        "module": "ch_stats",
+        "path": "/home/dalton/projects/claudeflow-testing/scripts/boredom-o9/ch_stats.py"
+      },
+      {
+        "bytes": 6512,
+        "md5": "2b0a3672ab9e315282d0db6dd993404f",
+        "module": "ch_eeg",
+        "path": "/home/dalton/projects/claudeflow-testing/scripts/boredom-o9/ch_eeg.py"
+      },
+      {
+        "bytes": 9947,
+        "md5": "6620e136de05de31deb4048986702f35",
+        "module": "ch_hmd_r2",
+        "path": "/home/dalton/projects/claudeflow-testing/tmp/Dissertation/Part_III/boredom-o9-processing/ch_hmd_r2.py"
+      }
+    ],
+    "path": "/home/dalton/projects/claudeflow-testing/scripts/boredom-o9",
+    "policy": "imported, never edited, never copied"
+  },
+  "note": "run_utc is the only wall-clock value produced anywhere in this analysis and is excluded from the byte-identity check; every other output is deterministic.",
+  "outputs": {
+    "figures_dir": "/home/dalton/projects/claudeflow-testing/tmp/Dissertation/Part_III/boredom-analysis-v5-2026-08-05/figures",
+    "n_figures": 72,
+    "n_tables": 27,
+    "tables_dir": "/home/dalton/projects/claudeflow-testing/tmp/Dissertation/Part_III/boredom-analysis-v5-2026-08-05/out"
+  },
+  "parameters": {
+    "ALL_SUBJECTS": [
+      "S01",
+      "S02",
+      "S03",
+      "S04",
+      "S05",
+      "S06",
+      "S07",
+      "S08",
+      "R2-01",
+      "R2-02",
+      "R2-03",
+      "R2-04"
+    ],
+    "ALPHA": 0.05,
+    "ANALYSE_IMU": false,
+    "BLINK_MAX_MS": 500.0,
+    "BLINK_MEAN_MS": 334.0,
+    "BLINK_MIN_RESOLVABLE_HZ": 20.0,
+    "BLINK_SD_MS": 67.0,
+    "BLINK_SOURCE": "VanderWerf et al. 2003, J Neurophysiol 89(5):2784-96, doi:10.1152/jn.00557.2002 - spontaneous blink 334 +/- 67 ms",
+    "CHECK_TOL": 5e-05,
+    "CSV_FLOAT_FMT": "%.12g",
+    "DESCRIPTIVE_N_BELOW": 6,
+    "EXCLUDED_TREES": [
+      "/mnt/d/PhD/Dissertation/Boredom Experiment/Boredom Experiment Round 2/VR Data Recorder"
+    ],
+    "EXCLUDE_HRV": true,
+    "FIGS": "/home/dalton/projects/claudeflow-testing/tmp/Dissertation/Part_III/boredom-analysis-v5-2026-08-05/figures",
+    "FIG_DPI": 200,
+    "FIG_FORMATS": [
+      "pdf",
+      "png"
+    ],
+    "FLOAT_PRECISION": 12,
+    "HALFWAY_APPROVAL": "author-approved 2026-07-30: 'Halfway' read as half of the 17-minute stimulus = 8.5 min",
+    "HALFWAY_MIN": 8.5,
+    "HEADSET_TRIM_BOUNDARY_S": 60.0,
+    "HEADSET_TRIM_MIN_S": 20.0,
+    "HERE": "/home/dalton/projects/claudeflow-testing/tmp/Dissertation/Part_III/boredom-analysis-v5-2026-08-05",
+    "HIGH_RATE_FLAG_HZ": 50.0,
+    "HRV_EXCLUSION_REASON": "author ruling 2026-07-30: HRV is a poisoned measurement - some subjects' head structure precluded accurate capture. Applies to BOTH rounds, the cause being anatomical and round-independent.",
+    "INTERPRETER": "/home/dalton/.venv/bin/python",
+    "METHODOLOGY_OF_RECORD": "/home/dalton/projects/claudeflow-testing/scripts/boredom-o9",
+    "OPENNESS_CLOSED_BELOW": 0.5,
+    "OPENNESS_IS_BINARY": true,
+    "OUT": "/home/dalton/projects/claudeflow-testing/tmp/Dissertation/Part_III/boredom-analysis-v5-2026-08-05/out",
+    "PERMUTATIONS": 20000,
+    "POOLABLE": {
+      "blink_rate": [
+        false,
+        "Round 1's 334 ms sampling interval equals the mean blink duration, so blinks are unresolvable there; Round 2 only"
+      ],
+      "closure_episodes": [
+        false,
+        "episode segmentation depends on sampling rate"
+      ],
+      "cognitive_load": [
+        true,
+        "mean of a vendor index; robust to sampling rate"
+      ],
+      "eye_closure": [
+        true,
+        "time-fraction/mean; robust to sampling rate"
+      ],
+      "eye_openness": [
+        true,
+        "time-fraction/mean; robust to sampling rate"
+      ],
+      "gaze_dev_median": [
+        false,
+        "windowed statistic over a 5-point rolling median; the window spans ~42 ms at 120 Hz and ~1.5 s at 3 Hz"
+      ],
+      "gaze_dev_variance": [
+        false,
+        "variance of a 5-point rolling median: rate-dependent. Decimating Round 2 from 120 Hz to Round 1's ~3.3 Hz moves it by 0.65-0.84x (mean 0.74)"
+      ],
+      "hr": [
+        true,
+        "mean of a vendor index; robust to sampling rate"
+      ],
+      "hrv": [
+        false,
+        "excluded from both rounds by author ruling"
+      ],
+      "imu_motion": [
+        false,
+        "Round 2 only; no Round 1 equivalent"
+      ],
+      "pupil_dilation": [
+        true,
+        "mean of a per-sample value; robust to sampling rate"
+      ],
+      "self_report": [
+        true,
+        "the same 7-item instrument was administered in both rounds; no instrument change, so the items pool"
+      ]
+    },
+    "R1_CLOSED_SENTINEL": -1.0,
+    "R1_COHORT_HZ": 2.994,
+    "R1_MATCH_TRIM_S": 120.0,
+    "R1_OPENNESS_SCALE": 0.01,
+    "R1_ROOT": "/mnt/d/PhD/Dissertation/Boredom Experiment",
+    "R1_SUBJECTS": [
+      "S01",
+      "S02",
+      "S03",
+      "S04",
+      "S05",
+      "S06",
+      "S07",
+      "S08"
+    ],
+    "R2_CROP_ONLY": true,
+    "R2_PARSER": "/home/dalton/projects/claudeflow-testing/tmp/Dissertation/Part_III/boredom-o9-processing",
+    "R2_PRIMARY_WINDOW": "full",
+    "R2_ROOT": "/mnt/d/PhD/Dissertation/Boredom Experiment/Boredom Experiment Round 2",
+    "R2_SUBJECTS": [
+      "R2-01",
+      "R2-02",
+      "R2-03",
+      "R2-04"
+    ],
+    "R2_WINDOWS": {
+      "full": [
+        null,
+        null
+      ],
+      "r1matched": [
+        120.0,
+        120.0
+      ]
+    },
+    "RATE_VARIANTS": [
+      "unified",
+      "asis"
+    ],
+    "RB_TOL": 0.005,
+    "REPORT_ONLY_CHANNELS": [
+      "cognitive_load",
+      "hr",
+      "hrv",
+      "imu_motion"
+    ],
+    "ROUND_LABEL": {
+      "1": "Round 1 (N=8)",
+      "2": "Round 2 (N=4)"
+    },
+    "ROUND_MARKER": {
+      "1": "o",
+      "2": "^"
+    },
+    "S06_FAST_CELLS": [
+      [
+        "S06",
+        "CLC"
+      ],
+      [
+        "S06",
+        "INT"
+      ]
+    ],
+    "SEED": 20260730,
+    "STIMULI": [
+      "BOR",
+      "CLC",
+      "INT"
+    ],
+    "STIMULUS_ACTUAL_MIN": 17.0,
+    "STIM_COLOR": {
+      "BOR": "#D55E00",
+      "CLC": "#0072B2",
+      "INT": "#009E73"
+    },
+    "STIM_LONG": {
+      "BOR": "Boring",
+      "CLC": "Clinical",
+      "INT": "Interesting"
+    },
+    "TIMELINE_BIN_S": 1.0,
+    "TIMELINE_NORM_BINS": 100,
+    "TIMELINE_VARIANT": "unified",
+    "VERIFICATION_CHECKS": [
+      {
+        "direction": "8/8 Boring < Clinical",
+        "friedman_p": 0.0302,
+        "key": "r1_pupil",
+        "label": "Round 1 pupil dilation",
+        "n": 8,
+        "rb": -1.0,
+        "wilcoxon_p": 0.0078
+      },
+      {
+        "direction": "7/8 Boring lowest openness",
+        "friedman_p": 0.0076,
+        "key": "r1_openness",
+        "label": "R1 eye openness (canonical)",
+        "n": 8,
+        "rb": -0.94,
+        "wilcoxon_p": 0.0156
+      },
+      {
+        "direction": "10/12",
+        "friedman_p": 0.0458,
+        "key": "pooled_pupil",
+        "label": "Pooled pupil",
+        "n": 12,
+        "rb": -0.82,
+        "rebaseline": true,
+        "wilcoxon_p": 0.0093
+      },
+      {
+        "direction": "11/12 Boring lowest openness",
+        "friedman_p": 0.0004,
+        "key": "pooled_openness",
+        "label": "Pooled eye openness (canonical)",
+        "n": 12,
+        "rb": -0.97,
+        "rebaseline": true,
+        "wilcoxon_p": 0.001
+      }
+    ],
+    "VOID_SURVEY_ANSWERS": "{('S04', 'BOR', 'minutes_until_bored'): 'author ruling 2026-07-31: answer void - the participant did not know the item allowed 0 or not-applicable. Her other answers on this film (boredom 1, engagement 7, felt duration 8 min of 17, fatigue 7->1) place her in the never-became-bored category, which is where it is retained'}",
+    "WILCOXON_FLOOR_N4": 0.125
+  },
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "python_version": "3.11.9",
+  "rows_read": {
+    "eeg_cells": 24,
+    "r1_cells": 24,
+    "r1_closure_episodes": 9008,
+    "r1_samples_total": 58306,
+    "r2_cells": 12,
+    "r2_closure_episodes": 5131,
+    "r2_samples_total": 1496327,
+    "survey_episodes": 36
+  },
+  "run_utc": "2026-08-08T01:29:15Z",
+  "seed": 20260730,
+  "wrappers": [
+    {
+      "reason": "ch_hmd.main() writes to a module-level OUT that is .gitignored and absent. The wrapper rebinds ch_hmd.OUT to this run's out/ directory and calls main() unmodified, so the feature code path is byte-for-byte the one that produced the dissertation's Round 1 numbers. Nothing is written into scripts/boredom-o9/.",
+      "wrapper": "run_ch_hmd(outdir)"
+    },
+    {
+      "reason": "Same OUT-rebinding as run_ch_hmd, plus a numpy compatibility shim. ch_eeg.bandpower() calls np.trapezoid, which exists only in NumPy >= 2.0; the run interpreter carries NumPy 1.26.4, where the identical function is named np.trapz (np.trapezoid IS the 2.0 rename of np.trapz, same implementation). The shim aliases the new name to the old for the duration of the call and is removed afterwards. VERIFIED numerically: band powers computed under NumPy 1.26.4 + shim are bit-identical to those computed under NumPy 2.2.6's native np.trapezoid. ch_eeg.py is not edited.",
+      "wrapper": "run_ch_eeg(outdir)"
+    },
+    {
+      "reason": "ch_stats.wide() reads a CSV from its own OUT by filename. The wrapper takes an in-memory DataFrame instead, so the same pivot (index=subject, columns=stimulus, aggfunc='first', reindexed to BOR/CLC/INT) is applied to tables this run builds - including pooled and rate-variant tables that have no file in ch_stats' directory.",
+      "wrapper": "surface_table(frame, column)"
+    },
+    {
+      "reason": "ch_hmd.main() consumes parse_window() inline and emits only summary rows, so per-sample series are unreachable for time-course figures, closure episodes and rate decimation. The wrapper calls the SAME read_hmd() and parse_window() and returns their per-sample output instead of aggregating it. No feature definition is re-implemented.",
+      "wrapper": "r1_cell_frame(sid, stim, path)"
+    },
+    {
+      "reason": "Implements author decision D1 for S06's two off-regime cells. Mirrors the step rule already used by ch_hmd_r2.gaze_dev(decimate_to=...): step = round(native/target), take every step-th row. Applied to the RAW rows before parse_window(), so every downstream feature is computed by the record's own code on the thinned series.",
+      "wrapper": "decimate_r1_cell(raw, target_hz, native_hz)"
+    },
+    {
+      "reason": "ch_hmd_r2.collect() identifies streams by column count alone, and HRV files carry 8 columns exactly like cognitive-load files. It is currently saved only by 'largest file wins' - verified, all 12 cells select a CL- file - but that is magnitude luck, and in one recorder session the HRV file IS classified as cognitive load. The wrapper requires filename prefix AND header agreement before accepting a stream.",
+      "wrapper": "r2_collect(subject_path)"
+    },
+    {
+      "reason": "Round 2 crop-only collector (author ruling D-01/D-03, 2026-07-31). Reads ONLY files whose name carries _Crop, mirroring Round 1's crop-only rule, and identifies each stream by its FILENAME PREFIX alone rather than by column count. Column counts became unusable when cropping appended t_rel_s to every file (32->33, 16->17, 8->9, 7->8) and they never separated cognitive load from HRV, which share a count in both the original and the cropped form. Every file names its own measurement, so the filename is the reliable key. HRV is recognized in order to be rejected and logged.",
+      "wrapper": "r2_collect(subject_path)"
+    },
+    {
+      "reason": "Implements author decision D4. ch_hmd_r2.tsec() subtracts the raw minimum of the timestamp column; R2-01's Interesting file carries one row with ts/sys = 17, which makes that cell read 1.7e9 s and collapses its time axis. The wrapper drops timestamp rows more than 1e12 us from the median before rebasing, and reports how many it dropped so the exclusion is logged rather than silent. Cells with no outlier are numerically identical to ch_hmd_r2.tsec().",
+      "wrapper": "r2_time_seconds(df)"
+    },
+    {
+      "reason": "Re-exported from ch_hmd_r2 unchanged. Identical in definition to the record's inline Round 1 computation: Euclidean distance of combined gaze from the per-file MEDIAN gaze direction, then a 5-point centered rolling median with min_periods=1; variance = sd**2.",
+      "wrapper": "gaze_dev(gx, gy, gz, decimate_to)"
+    }
+  ]
+}

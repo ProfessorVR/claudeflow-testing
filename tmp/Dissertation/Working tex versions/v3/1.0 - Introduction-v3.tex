@@ -1,0 +1,713 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{xcolor} % Must be loaded before soul
+\usepackage{soul} % For highlighting text
+\usepackage[utf8]{inputenc}
+\usepackage{newunicodechar}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fontspec}           % For Greek text support with XeLaTeX/LuaLaTeX
+\usepackage{polyglossia}        % Multilingual support
+\setmainlanguage{english}
+\setotherlanguage{greek}
+
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\usepackage{csquotes}           % Block quotes
+\usepackage{enumitem}           % Better lists
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric}
+
+\usepackage{fancyvrb}           % Verbatim environments for ASCII diagrams
+\usepackage{setspace}           % Line spacing
+
+
+
+%---Greek support (XeLaTeX)---
+\usepackage{fontspec}
+\newfontfamily\greekfont{Gentium Plus} % good polytonic Greek; try Times New Roman if needed
+\newcommand{\gk}[1]{{\greekfont #1}}
+
+\newunicodechar{₁}{$_1$}
+
+\usepackage[backend=biber,style=authoryear]{biblatex}
+\addbibresource{references.bib} %Add References page for in text citation
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=blue]{hyperref} %enable hyperlinks to be colored and interactable
+\usepackage{changepage} %create individual blocks of text that can be altered apart from general document.
+
+\newcommand{\ra}{\ensuremath{\rightarrow}}
+
+\newcommand{\inlinenote}[1]{\par\noindent
+  \fcolorbox{orange}{orange!20}{\parbox{0.97\linewidth}{#1}}\par\noindent}
+
+\begin{document}
+
+\inlinenote{Make sure to clearly articulate that all animal motion, brute and rational, is prompted by desire. Therefore, any animal motion is the actualization of desire. Aristotle treats animal locomotion as proceeding jointly from practical thought and appetite, with the desired object as the unmoved mover that sets the chain in motion (\cite{aristotle2014soul} III.10, 433a13--15, 433a17--20; \textit{De Motu Animalium} 6, 700b15--22): ``Both thought and appetite are capable of originating local movement: practical thought\ldots\ differs from speculative thought'' (\textit{DA} III.10, 433a13--15); ``all living things both move and are moved for the sake of something'' (\textit{MA} 6, 700b15--17); ``wish, however, impulse, and appetite, are all three forms of desire'' (\textit{MA} 6, 700b22--23). \textit{DA} III.10 establishes the \textit{orektikon--dianoia praktikē} coupling; \textit{MA} 6 supplies the species-level catalogue of \textit{orexis} into \textit{epithymia}, \textit{thymos}, and \textit{boulēsis}. Both loci are required to underwrite the introduction's framing of animal motion as desire-actualization.}
+
+\section{Rhetorical \textit{Phantasia}: The Soul's Temporal Medium}
+
+In his \textit{De Anima}, Aristotle's central task is to, essentially, answer the question ``What is the soul (\textit{psychē}), and what does it do?'' As he famously stated: ``The knowledge of the soul admittedly contributes greatly to the advance of truth in general, and, above all, to our understanding of Nature, for the soul is in some sense the principle of animal life'' (\textit{DA} I, 402a5--7). In pursuit of this inquiry, Aristotle will seek to define the essence of the soul, analyze its different faculties,\footnote{According to Aristotle's \textit{De Anima}, these faculties consist of the nutritive (II.2, 413a23--b1), sensitive (II.3, 414a30--b1; II.5, 416b32--417a20), appetitive (II.3, 414b1--3; II.9, 432b5--7), locomotive (III.9, 432a15--17; III.10--11, 433a12--434a15), imaginative (III.3, 429a12; III.3--III.4, 428a10--429a9), and intellect or reason (III.7, 431a15--17; III.4--8, esp. 429a13--431b20).} explain how the soul relates to the body,\footnote{Aristotle argues, rejecting Plato's dualism, that the soul is not a separate immaterial entity, but as the form or organizing principle that gives the body its life-function (II.1, 412a20--26, 412a27--28, 412b6--9, 414a14--21; II.4, 415b9--12).} and to understand perception, imagination, and thought.\footnote{For more on Aristotle's thinking on perception, imagination, and thought see: \textit{De Anima} III.3--5.} It is in this account that we find Aristotle most clearly engaging with the relationship between the soul and the senses. He will demonstrate how \textit{phantasia}\footnote{Papachristou insists on leaving the Greek word \textit{phantasia} untranslated precisely because its standard English rendering as ``imagination'' as well as the overall semantic breadth of the term obscures its tripartite ambiguity---its simultaneous reference to capacity, activity, and product (28 footnote 32). Indeed, to translate \textit{phantasia} simply as ``imagination'' would collapse the ontological distinction between the soul's active power of image-formation and the image that stands before the mind as a result of that power. Aristotle's account requires us to recognize that \textit{phantasia} admits of internal grades: specifically, the distinction between sensory \textit{phantasia}, which operates in all animals possessing perception, and deliberative \textit{phantasia}, which belongs only to rational animals capable of calculation and planning. Accordingly, in line with Papachristou, I too will leave \textit{phantasia} untranslated throughout.} plays an integral role in psychic processes like perception, cognition, deliberation, interpretation, and bears centrally on \textit{phantasia}'s function in human experience. The question of \textit{phantasia}---what it is, how it functions, and why Aristotle accords it such a pivotal role in the architecture of the soul---is one of the most crucial elements underpinning much of Aristotle's psychology, though, perhaps, one of the most challenging to pin down. Indeed, the difficulty arises not merely from the semantic breadth of the term, which resists any simple translation,\footnote{Aristotelian \textit{phantasia}, as noted by Debra Hawhee, is most often translated as ``imagination'' or ``mental image'' (\cite{hawhee_aristotles_eyes} 141). Dorothea Frede argues that \textit{phantasia} serves three functions: ``It designates the capacity, the activity or process, and the product or result.'' Later on, she posits that ```appearance' in a wider sense should be regarded as the central meaning to which all the functions of the term are related. It would then be (i) the capacity to experience an appearance, (ii) the on-going appearance itself, and (iii) what appears'' (\cite{frede1992cognitive} 279).} but from the structural position \textit{phantasia} occupies between direct sensation (\textit{aisthēsis}) and thought (\textit{noēsis}), between the body's reception of sensible forms and the soul's capacity to deliberate, judge, act, and feel.
+
+As Aristotle defines it, \textit{phantasia} ``is that in virtue of which an image arises for us,'' it is a faculty or disposition ``in virtue of which we discriminate and are either in error or not'' (\cite{aristotle2014soul} III, 428a1--3). Elsewhere, Aristotle describes \textit{phantasia} as being fundamental for thinking: ``To the thinking soul images serve as if they were contents of perception (and when it asserts or denies them to be good or bad it avoids or pursues them). That is why the soul never thinks without an image'' (\cite{aristotle2014soul} III, 431a15--17). Furthermore, as Aristotle explains shortly after, ``sometimes by means of the images or thoughts which are within the soul, just as if it were seeing, it calculates and deliberates what is to come by reference to what is present'' (\cite{aristotle2014soul} III, 431b6--8). ``This mental calculation,'' Ned O'Gorman remarks, ``consists of `combination' (\textit{sumplokē}) and is essential to the formation of opinion (\textit{doxa}) through practical reasoning and the realization of truth (\textit{alēthēs}) through contemplative thought'' (\cite{ogorman_aristotles_phantasia} 20).
+
+\textit{Phantasia}, therefore, functions to mediate sense perception and deliberative or speculative thinking. It, as Martha Nussbaum articulates, ``ties abstract thought to concrete perceptible objects or situations'' (265). \textit{Phantasia} is presented in \textit{De Anima} as being fundamental to human thought and mental operations; however, as Aristotle is careful to articulate, \textit{phantasia} is not ``any of the things that are never in error: e.g. knowledge of intelligence; for imagination may be false'' (\cite{aristotle2014soul} 428a16--18). In this sense, \textit{phantasia} is active when we see a hazy figure in the distance and believe it to be a man. Yet we may well find out, as we come closer to the figure in question, that it is nothing more than a small tree.
+
+All the images brought to the mind by \textit{phantasia} have their origin in direct sense perception or \textit{aisthēsis}, and Aristotle describes \textit{phantasia} as a movement causally related to direct perception: ``imagination must be a movement resulting from an actual exercise of a power of sense'' (\cite{aristotle2014soul} III, 429a2). However, \textit{phantasia} is activated not when we perceive something distinctly, ``but rather when there is some failure of accuracy in its [\textit{aisthēsis}'] exercise'' (\cite{aristotle2014soul} 428a14--15). It supplies what is missing when the object cannot be perceived or when it is not definitively perceptible. While \textit{phantasia} is a distinct capacity of the mind and differs from both thought and perception, ``it is not found without sensation, or judgment without it'' (\cite{aristotle2014soul} 427b15).
+
+Kevin White elucidates \textit{phantasia} through its functional role within the soul's cognitive architecture. White emphasizes that \textit{phantasia} serves as an intermediary between sensation (\textit{aisthēsis}) and thought (\textit{nous}), facilitating the transition from the immediate reception of sensory data to the abstract processes of reasoning and deliberation. White highlights that \textit{phantasia} is characterized as a movement resulting from actual sensation, persisting even after the sensory experience has ceased. This persistence allows for the retention and manipulation of sensory impressions (\textit{phantasmata}), which are essential for memory, imagination, and the deliberative aspects of thought.\footnote{Throughout this dissertation, I observe Aristotle's distinction between \textit{phantasia} (the faculty or capacity for image-making) and \textit{phantasma} (the determinate image-product or appearance generated by that faculty); the plural \textit{phantasmata} denotes a manifold of such products. \S1.3 develops the distinction canonically through the orientational-modes treatment.} ``Once having gained a foothold in time by means of \textit{phantasia},'' White concludes, ``\textit{nous} is capable of putting its survey of the past into the service of a calculation of the future. The importance of experience for practical wisdom is clearly based on the preserving activity of \textit{phantasia}'' (\cite{white1985meaning} 502). In other words, \textit{phantasia's} ability to store impressions of our interactions with objects of sense provides the necessary content upon which the intellect operates, and allows us to understand our present circumstances and project future anticipations in view of our previous sensory experiences. \textit{Phantasia}, then, serves to rhetorically mediate sensorial life ``just as if it were seeing, it calculates and plans for the future in view of the present'' and the past, transmuting the content of experience into images (O'Gorman 21). As noted by White, Frede, and O'Gorman, in accordance with this causal relationship, \textit{phantasia} functions as the faculty responsible for the retention of sense perceptions or what Frede calls ``after-images'' (\cite{frede1992cognitive} 280). Thanks to this function, \textit{phantasia} encompasses recollection, dreaming, visualizations, and imaginings. Furthermore, Aristotle seems to suggest that at least certain emotional responses depend on the \textit{phantasmatic} capacity of the soul. This is most clearly illustrated in Aristotle's definition of fear in the \textit{Rhetorica}: ``[f]ear may be defined as a pain or disturbance due to \textit{imagining} some destructive or painful evil in the future'' (\cite{aristotle_rhetoric} 1382a22--23; my emphasis).
+
+From these descriptions and interpretations, we can see that \textit{phantasia} plays a fundamental role in recollection, imaginings and dreams, deliberative and speculative thought (of past, present, and future), the formation of opinion or \textit{doxa}, and is even connected to the ability of emotion or affect to evoke movement. However, I believe the ontological and phenomenological implications evoked by Aristotle's notion of \textit{phantasia} are far more fundamental to the human experience of reality. ``In the noetic or human soul,'' White observes, ``\textit{phantasia} is a step in man's progression beyond time altogether, enabling him at certain points and for certain periods to pass beyond the confinements of sense to a consideration of the timeless nature of things'' (\cite{white1985meaning} 503). I think White makes a crucial observation in noting the fundamental relation between time and \textit{phantasia}. I believe Aristotle's concept of \textit{phantasia}---as a fundamental dynamic process of the human soul---lies at the core of human being through its capacity to create a continuous narrative of experience, enabling humans to navigate their reality cohesively in time.
+
+\textit{Phantasia}'s distinctive ontological role lies in its temporal range: it stretches the soul's activity across past, present, and future, and is the medium through which all three temporal horizons remain available to the higher-order operations of the soul. With respect to the past, \textit{phantasia} retains prior perceptual encounters as \textit{phantasmata} available for memory and recollection---the past held rather than gone, accessible as the material upon which \textit{mnēmē} and \textit{anamnēsis} operate. With respect to the present, \textit{phantasia} is the resonant medium of the ongoing perceptual taking: the kinetic continuation through which the actualized \textit{aisthēma} persists, can be aspectually re-presented, and offers itself to thought, opinion, emotion, and the soul's higher-order awareness of its own perceiving. With respect to the future, \textit{phantasia} is the projective faculty through which the soul calculates, anticipates, deliberates, and forms the appetitive images that draw it toward what is to come; without \textit{phantasia} there is no calculation by reference to what is present, no deliberative composition of \textit{phantasmata}, and no orectic projection toward a realizable good. The soul's higher-order operations---intellection, opinion-formation, memory and recollection, deliberative and speculative thought, the civic passions, and the practical reasoning that issues in action---unfold across these three temporal horizons rather than within any one of them; each requires holding-together what is absent (past or future) with what is present, and that holding-together is the work \textit{phantasia} accomplishes. \textit{Phantasia} is therefore not merely instrumental to the soul's higher operations but constitutive of their possibility: it is what makes the soul a being whose cognitive and affective life is temporally distributed rather than confined to the immediacy of the live perceptual encounter.\footnote{The temporal range developed here gathers three converging sets of Aristotelian texts. (i) \textit{Past---memory and recollection}: \textit{phantasia} retains prior perception as the precondition for \textit{mnēmē} and \textit{anamnēsis}: ``memory is the having of an image [\textit{phantasma}] related as a likeness [\textit{eikōn}] to that of which it is an image'' (\textit{De Memoria et Reminiscentia} 1, 451a14--18); memory is ``a \textit{hexis} or \textit{pathos} of perception\ldots\ conditioned by the lapse of time'' (\textit{De Memoria et Reminiscentia} 1, 449b24--25); ``the process of movement stamps in an impression as a seal stamps wax'' (\textit{De Memoria et Reminiscentia} 1, 450a25--b1). Frede captures the function as the \textit{phantasmata} that operate as ``after-images'' (\cite{frede1992cognitive} 280). (ii) \textit{Present---resonant kinēsis and the live taking}: live \textit{aisthēsis} is the joint actualization of percipient and perceptible (\cite{aristotle2014soul} II.5, 416b32--417a20; III.2, 425b26: ``the actualization of the sensible object and that of the percipient sense is one and the same actualization, though their being is not the same''), and that actualization is conjoint with the soul's higher-order awareness of its own perceiving (\cite{aristotle2014soul} III.2, 425b12--25). The persisting \textit{resonant kinēsis} that issues from this live encounter is what \textit{phantasia} continues to operate upon once the live object withdraws (\cite{aristotle2014soul} III.3, 429a1--2: \textit{phantasia} is ``a movement resulting from an actual exercise of a power of sense''). (iii) \textit{Future---calculation, deliberation, anticipation}: \textit{phantasia} is the medium through which the soul orients itself to what is to come: ``sometimes by means of the images or thoughts which are within the soul, just as if it were seeing, it calculates and deliberates what is to come by reference to what is present'' (\cite{aristotle2014soul} III.7, 431b6--8); ``the soul never thinks without an image'' (\cite{aristotle2014soul} III.7, 431b2); and the deliberative grade of \textit{phantasia} (\textit{bouleutikē}) is what enables the human soul to compose multiple \textit{phantasmata} into unified objects of practical reasoning (\cite{aristotle2014soul} III.11, 434a5--10). White's reading consolidates the future-orientation: ``Once having gained a foothold in time by means of \textit{phantasia}, \textit{nous} is capable of putting its survey of the past into the service of a calculation of the future'' (\cite{white1985meaning} 502). Across all three temporal registers, \textit{phantasia} subtends the higher-order operations: thought, opinion, memory, deliberation, and the civic passions all operate upon an object held across time rather than received in the immediacy of the live percipient-perceptible co-actualization alone, and it is \textit{phantasia} that secures that holding-across. Caston's structural claim that \textit{phantasia} ``stands midway between'' sensation and intellect (cited in the following paragraph) names this same mediating function under its synchronic aspect; the present paragraph develops it under the diachronic aspect of temporal range.} 
+
+What distinguishes \textit{phantasia} from \textit{aisthēsis} on the one hand and \textit{noēsis} on the other is precisely its temporal character---its capacity to hold and reproduce what is no longer present, to make the absent sensorially available.\footnote{Aristotle marks off \textit{phantasia} from perception, opinion, and discursive thought across \cite{aristotle2014soul} III.3, 427b14--428a18: ``Imagination is different from either perceiving or discursive thinking, though it is not found without sensation, or judgement without it'' (427b14--16); imagination ``takes place in the absence of'' direct sense (428a5--9); and ``imagination may be false, but knowledge and intelligence are never in error'' (428a16--18). The cluster's central feature is the temporal mode-of-operation: \textit{phantasia} is the faculty that operates in the absence of the live object, retaining and reproducing what was perceived but is no longer present.} \textit{Phantasia} is not a mixture of sensation and judgment, but a distinct faculty rooted in the soul's \textit{kinetic} constitution.\footnote{Aristotle explicitly resists a mixture model: \textit{phantasia} is ``not found without sensation'' but is also ``not the same as sensation'' (\cite{aristotle2014soul} III.3, 427b14--16; cf.~428b10--429a9). The faculty's own constitution is kinetic---a residual movement caused by actual perception---not a combination of two prior faculties. The kinetic-not-mixture distinction is decisive at 427b21--24: ``when we merely imagine something fearful or encouraging we remain unaffected, but when we \textit{think} it fearful, emotion is immediately produced.'' The contrast presupposes that imagining and thinking are not parts of one mixed operation but distinct kinetic structures.} Thus, \textit{phantasia} is neither a mere residue of sensation nor an autonomous cognitive act; rather, it is the mediating power through which sensory motion persists, transforms, and becomes available for higher-order operations of the soul.\footnote{Caston's framing of why Aristotle introduces \textit{phantasia} as a separate faculty makes the mediating-power claim structurally explicit: ``\textit{Phantasia} thus stands midway between these different powers. It is more basic than the intellectual powers, extending throughout the animal kingdom, while also being capable of error'' (Caston, ``Why Aristotle Needs Imagination,'' \textit{Phronesis} 41.1, 1996, p.~45).} For now, it suffices to establish the ontological ground: \textit{phantasia} is the soul's temporal medium, the faculty through which motion becomes \textit{phantasmata}, and \textit{phantasmata} become the material of thought (and emotion). However, to understand \textit{phantasia} adequately, we must first situate it within the broader ontological framework of motion and time: the very conditions under which anything can appear, endure, and recur within the soul's experience.
+
+Here it must be noted that the movement or procession of each completed actualization represents not a series of discrete events within a series of discrete temporal moments but a continuous unfolding in which each stage is the necessary condition for the next,\footnote{The continuous-unfolding thesis depends on two Aristotelian anchors: (a) Aristotle's definition of motion as ``the fulfilment [\textit{entelecheia}] of what is potentially, as such, is motion'' (\textit{Physica} III.1, 201a10--11)---the \textit{energeia} of the potential \textit{qua} potential, which is the very form of incomplete (\textit{ateles}) actuality and so secures the in-between status of the procession; and (b) Aristotle's grounding of time as ``the number of motion in respect of the before and after'' (\textit{Physica} IV.11, 219b1--2). The pair is what makes the procession-as-continuous-unfolding Aristotelian rather than a free-standing construction: each completed actualization is the terminus of an \textit{energeia ateles}, and the temporal measure of that \textit{energeia} is itself derivative from the motion it numbers.} much as Heidegger's analysis of temporality reveals Dasein's Being as always already stretched along (\textit{Erstreckung}) between past, present, and future (BT §72, H.374; cf.~§65, H.323--331 on ecstatic-horizonal temporality).\footnote{The stretching-along (\textit{Erstreckung}) of Dasein between birth and death is articulated as the unity of the ecstatic temporal horizons at \textit{Being and Time} §72: ``Dasein does not fill up a track or stretch `of life'---one which is somehow present-at-hand---with the phases of its momentary actualities. It stretches \textit{itself} along in such a way that its own Being is constituted in advance as a stretching-along'' (\textit{Being and Time} §72, H.374, Eng.~p. 426; cf.~§65, H.323--331). The earlier ecstatic-horizonal account at §65 (``Temporality temporalizes itself \ldots\ in the unity of ecstatic future, having-been, and Present'', H.328--329) is what grounds the §72 \textit{Erstreckung}: the unity of the horizons is precisely what makes the stretching-along possible.}
+
+From Aristotle's account of sensation through the various functions of \textit{phantasia} there is a guiding principle which connects all the functions of and temporal realms within which \textit{phantasia} operates: \textit{being-in-motion-and-time}. Therefore, beginning with his account of sensation---on which \textit{phantasia} depends---and working through the temporal components and functions, I will argue that Aristotle's conception of \textit{phantasia} is best understood as the temporal and kinetic capacity that generates a continuous, affectively charged narrative of experience, enabling human beings to cohesively navigate, interpret, and reshape their reality across past, present, and future. Anchored in this principle of \textit{being-in-motion-and-time}, \textit{phantasia} marks the pivotal transitional process whereby the world, through sensation, enters the soul as kinetic and affective resonance, and whereby the soul, through the activation of \textit{phantasmata}, becomes capable of internally navigating, recombining, and imaginatively transforming that world. To influence someone's \textit{phantasia} is thus to shape not merely their beliefs, but the very structure of their perceptual and affective reality---altering how they experience, interpret, and anticipate the world as an integrated, temporally unfolding whole.\footnote{Daniel Gross's \textit{Uncomfortable Situations} (Chicago, 2017) develops a contemporary articulation of this rhetoric's world-shaping thesis under the rubric of rhetorical affordance: ``Rhetoric, as a humanistic form of affordance theory, posits a situation that is not neutral but is rather `persuasive,' threatening and promising with respect to our human being-in-the-world. More precisely rhetorical theory provides a set of awarenesses specially appropriate to human environments ...'' (pp.~22--23). The Aristotelian \textit{phantasia} I am developing as the kinetic-temporal medium of perceptual-affective reality is the cognitive-architectural condition for the kind of rhetorical-affordance dynamics Gross specifies at the contemporary register.} Indeed, in shaping the very structure of our perceptual and affective reality, \textit{phantasia}, as I will argue, lies at the heart of humanity's rhetorical being-in-the-world: a notion which understands our existence as being inextricably intertwined with the world around us. For ``[r]hetoric stems from and is not imposed on the world. Rhetoric,'' as Thomas Rickert argues, ``is ambient and cannot be confined to a human orbit'' (\textit{Ambient}~285).
+
+
+\section{Methodology}
+
+\textit{Phantasia} is not, for Aristotle, a peripheral faculty exercised only in daydreams or bringing images before the eyes; it is the faculty upon which every waking act of cognition depends, for ``the soul never thinks without an image'' (\textit{DA} III.7, 431b2), and the image that thought operates upon is always furnished by \textit{phantasia}. Its architectural role in everyday experience is yet more fundamental: insofar as \textit{phantasia}, as I will argue, is the temporal medium through which the soul's successive perceptual instants are held together as a single cohesive narrative, binding the remembered past, the attended present, and the anticipated future into the continuous temporal horizon within which human life---thinking, deliberating, remembering, and acting---unfolds. This architectural role motivates the overarching frame of this project as a whole: the soul's inherent rhetorical nature. The soul is not, on the reading I will develop, a cognitive faculty that subsequently enters into rhetorical or affective relations with its world; it is constituted, from the moment of its existential being, as a faculty whose kinetic and affective dimensions are constitutive rather than supplementary.\footnote{This anti-internalist framing is most pointedly articulated by Heidegger in his 1924 Marburg lectures: ``the \textit{pathē} are not `psychic experiences' and not `in consciousness'; they are a being-taken of human beings \textit{in their full being-in-the-world}. \ldots\ Aristotle's critical remark (\textit{De an.} A 1, 403a3 sqq.): `to say that the soul gets angry is the same as to say that the soul builds a house. It would be better to say not that the soul has pity or learns or believes, but that the human being does the psyche.' Soul is here conceived as \textit{ousia}, insofar as the being-taken of beings as living things is expressed in the \textit{pathē}'' (\textit{Basic Concepts of Aristotelian Philosophy}, pp.~133--134). \textit{Pathos} thus names ``a being-taken of being-there\ldots\ from without, but from without \textit{in the sense of the world as the wherein of my being}'' (BCAP p.~133). The rhetorical-constitutive reading developed here adopts this anti-internalist line as foundational: the affective and kinetic structure of the soul is not an addition to a prior cognitive-internalist subject but the mode through which the soul, as being-in-the-world, is what it is.} The capacity for being-affected is not a secondary feature added to cognition but a co-equal articulation of the very same actuality that cognition itself articulates, given under a different \textit{logos}: where cognition articulates the actuality as the soul's grasping of what is, being-affected articulates the same actuality as the soul's being-moved by what is. The two are not sequenced operations stacked on a neutral cognitive substrate but two \textit{logoi}---two structural accounts---of one indivisible moment in which the soul, as being-in-the-world, is at once cognitively grasping and affectively taken.\footnote{The claim that cognition and being-affected articulate the same underlying actuality under different \textit{logoi} draws together three Aristotelian moves that jointly secure the structural feature. (i) The self-applicative (or reflexive) character of soul-inquiry (\cite{aristotle2014soul} I.1, 402a4--10): the inquiry into the soul's essence is itself an exercise of the \textit{noētic} capacity it investigates, so that even the philosophical articulation of these structures is itself a specification under a \textit{logos} of the very actuality being investigated---a self-applicative point that prevents the analysis from treating cognition as if it were given from some external vantage. (ii) The co-given (or coinciding) actualization of perceiver and perceptible (\cite{aristotle2014soul} II.5, 425b26--426a26; developed at III.2): ``The actualization of the sensible object and that of the percipient sense is one and the same actualization, though their being is not the same'' (III.2, 425b26). The qualifier ``their being is not the same'' names precisely the structural possibility that one actuality admits of two distinct accounts: the same actualization, articulated as the perceptible's becoming actually perceived (the cognitive \textit{logos}), is at once articulated as the percipient's becoming actually affected (the affective \textit{logos}). (iii) The higher-order awareness of perception (\cite{aristotle2014soul} III.2, 425b12--25): ``since it is through sense that we are aware that we are seeing or hearing, it must be either by sight that one is aware of seeing, or by some sense other than sight.'' Awareness of perceiving is not a second operation appended to perception but a further articulation of the perceptual actuality itself---the soul's reflexive grasp of its own being-affected. Taken together, the three moves establish that cognition and being-affected are not sequenced operations stacked on a neutral cognitive substrate but two articulations (\textit{logoi}) of one structural moment in which the soul, as being-in-the-world, is at once cognitively grasping and affectively taken by what discloses itself to it---the precise point at issue in the anti-internalist thesis above.} The full defense of this rhetorical framing is developed in Section~X (the engagement with Heidegger, Rickert, Uexk\"ull, and Burke). For the present section's purposes, the framing supplies the motivating stakes: the actualization chain is not a metaphysically neutral apparatus but the structure through which the rhetorically constituted soul unfolds its perceptual and appetitive capacities in engagement with a world that matters to it---and what this section traces is the architectural sequence through which that mattering is generated, with \textit{phantasia} standing at its temporal center as the faculty that sustains the cohesive narrative within which every subsequent motion the chain details becomes intelligible. 
+
+However, before we can analyze \textit{phantasia}'s operations and perceptual motion in general, we must first establish the ontological framework within which all such operations, perception, and all coming-to-be and passing-away take place. Accordingly, this section advances a sustained interpretive reading of Aristotle's account of \textit{aisthēsis} (direct sense-perception), \textit{phantasia} (imagination), cognition, and appetitive action as a single architectural sequence: as a progressive chain of actualizations through which the journey from sensible object to completed action is depicted as a series of iterated motions linking completed actualities. Each node in the chain is an actuality; each link is a motion; and each motion produces the actuality that the next motion will presuppose. This actualization chain is not given by Aristotle explicitly; rather, it is my interpretive construction, a unified architectural reading, that integrates his analyses scattered across multiple treatises---\textit{De Anima}, \textit{Physica}, \textit{Metaphysica}, \textit{De Sensu et Sensibilibus}, \textit{De Memoria et Reminiscentia}, \textit{De Insomniis}, \textit{De Motu Animalium}, and the \textit{Rhetorica}---and is strongly informed by the thinking of Martin Heidegger and, to a lesser degree, others. The present section details the methodological apparatus that makes that reading possible: the three-factor kinetic schema, the priority of actuality, the structural principle that each motion is named by its terminus, the scale-invariance of relative unmoved originators, and the interlocking of actuality-first architecture with the iterated chain. While each of these elements will be treated in greater depth in their respective sections, I will briefly discuss them here to lay the groundwork for my analysis of the actualization chain that follows. 
+
+The actualization chain advanced here (See Figure ***) organizes Aristotle's analyses of perception and action into five principal nodes: $A_0$ (the dyadic first actuality of the sensible object and the faculty of sense, situated within motion and time as the encompassing horizon), $A_1$ (completed perception---the joint actualization of the sensible object's active potency with the sense-organ's receptive potency, together with the dual residual trace it deposits at the rational soul), $A_2$ (the \textit{phantasma} proper, generated from the \textit{resonant kinēsis} deposited at $A_1$), $A_3$ (the completed cognitive actuality---the \textit{phantasma} engaged by the three orientational modes of intellection, memory, and discursive thinking, together with the orthogonal committal dimension of \textit{doxa}), and $A_4$ (the completed action / \textit{praxis}, achieved when the \textit{orektikon}\footnote{Throughout this dissertation I retain \textit{orexis} and its three species---\textit{epithymia}, \textit{thymos}, and \textit{boulēsis}---in Greek, untranslated. \textit{Orektikon} names the faculty of \textit{orexis}. While I maintain the use of the Greek throughout, I understand \textit{orexis} as desire (the overall faculty, genus) consisting of three species: \textit{epithymia} (appetite---bodily, pursue-pleasant/avoid-painful), \textit{thymos} (spirit---honor-defense, ambition, retaliation), and \textit{boulēsis} (rational wish---deliberative orientation toward the good). The English convention is inconsistent across Aristotelian translations in the Revised Oxford Translation: J.\,A.\ Smith's \textit{De Anima} renders \textit{orexis} as ``appetite'' and \textit{epithymia} as ``desire'' (DA II.3, 414b2), while Forster's \textit{De Motu Animalium} (700b22--23) and Roberts's \textit{Rhetorica} (1370a16--19) use the opposite English convention, which I adopt here. Aristotle's Greek itself is consistent across the corpus: \textit{orexis} is the genus, \textit{epithymia}/\textit{thymos}/\textit{boulēsis} the three species (DA II.3, 414b2; DA III.9--10; MA 6, 700b22--23; NE III.2, 1111b10--17). Translator-side English appears verbatim only in quoted passages.} converges the cognitive actuality at $A_3$ into bodily movement). The chain admits three entry-points reflecting Aristotle's three elicitors of movement at \textit{De Motu Animalium} 7, 701a32--33 (``I want to drink says appetite; this is drink, says sense or imagination or thought: straightaway I drink''): sense enters at $A_1$ (the sensible object actualizes a fresh perception); imagination enters at $A_2$ (an already-actualized \textit{phantasma} from prior sense is re-engaged); thought enters at $A_3$ (an already-actualized cognitive content is engaged inferentially). All three issue in $A_4$ via the \textit{orektikon} motion. 
+
+This actualization chain, to reiterate, is my interpretive construction in the sense that no single Aristotelian treatise presents it as such. Aristotle supplies the components: the three-factor kinetic schema,\footnote{\textit{De Anima} III.10, 433b12--25.} the definition of motion,\footnote{\textit{Physica} III.1, 201a10--14.} the definition of time,\footnote{\textit{Physica} IV.11, 219b1--2.} the priority-of-actuality doctrine,\footnote{\textit{Metaphysica} IX.8, 1049b12--1050a16; the hylomorphic account of perception (\textit{De Anima} II.12, 424a17--24).} the treatment of residual motion,\footnote{\textit{De Insomniis} 2, 459a24--460b3.} the dependence of thought on images,\footnote{\textit{De Anima} III.7, 431a15--17 and III.8, 432a3--9.} the enmattered-accounts framework,\footnote{\textit{De Anima} I.1, 403a25--b19.} and the practical syllogism,\footnote{\textit{De Motu Animalium} 7, 701a7--35.}. The architectural work carried out in the rest of this section will be to integrate these into a sustained reading of the actualization of desire (perception-to-action) as a single iterated motion-structure, and to advance several interpretive readings that go beyond what Aristotle explicitly states: the ontological incompleteness of time without soul, the dual-trace thesis, the orthogonal committal dimension of \textit{doxa}, and the gate-keeping condition for \textit{doxastic} commitment. 
+
+\subsection{The Kinetic Schema: A Three-Factor Structure of Perceptual Motion}
+
+\textit{Phantasia}, as I will demonstrate later on, ontologically depends on \textit{aisthēsis} (direct sense-perception) but in an asymmetrical relationship; it is, as Aristotle states, ``impossible without sensation'' (\textit{DA} III.3, 428b11--12). Accordingly, before we can analyze \textit{phantasia}, we must first address \textit{aisthēsis}, and before we can examine \textit{aisthēsis}, we must first establish the three ontological components that constitute all perceptual events: actuality, motion, and time. Their relationship is asymmetric. Actuality is prior in account and substance (\textit{Metaphysica} IX.8, 1049b4--10): the potential is intelligible only through the actuality it is potential \textit{for}, and each motion takes its name from its terminus, not its starting point (\textit{Physica} V.5, 229b25). Motion is the fulfillment of a potential \textit{qua} potential (\textit{Physica} III.1, 201a10)---the ontological hinge connecting one completed actuality to the next. Time is the number of motion with respect to before and after (\textit{Physica} IV.11, 219b1)---derivative from motion and therefore doubly dependent on actuality. The chain's structural sequence proceeds chronologically, because that is how the ensouled body lives through the event: motion and time are experienced together (\textit{Physica} IV.11, 219a4) as the passage from one completed state to the next; but, at each node, the completed actuality is what makes the preceding motion---and its temporal measure---intelligible. The list proceeds in the order of lived experience; but the explanatory priority is the reverse: each actuality is what makes the preceding motion---and its time---intelligible. Thus, you read the list forward; but, you \textit{understand} it backwards. 
+
+Each motion in this chain possesses an identical internal structure, the schema of which Aristotle provides in \textit{De Anima}: 
+
+\begin{adjustwidth}{0.5in}{0in}
+    All movement involves three factors, (1) that which originates the movement, (2) that by means of which it originates it, and (3) that which is moved. The expression 'that which originates the movement' is ambiguous: it may mean either something which itself is unmoved or that which at once moves and is moved. Here that which moves without itself being moved is the realizable good, that which at once moves and is moved is the faculty of appetite (for that which is moved is moved insofar as it desires, and appetite in the sense of actual appetite \textit{is} a kind of movement), while that which is in motion is the animal. The instrument which appetite employs to produce movement is bodily: hence the examination of it falls within the province of the functions common to body and soul. To state the matter summarily at present, that which is the instrument in the production of movement is to be found where a beginning and an end coincide as e.g. in a ball and socket joint; for there the convex and the concave sides are respectively an end and a beginning (that is why while the one remains at rest, the other is moved): they are separate in definition but not separable spatially. For everything is moved by pushing and pulling. (III.10, 433b12-25)
+\end{adjustwidth}
+Aristotle gives us three factors: (1) that which originates movement---the unmoved originator, i.e., the realizable good; (2) that by means of which it originates movement---the \textit{orektikon}, which ``at once moves and is moved''; and (3) that which is moved---the animal, via the bodily instrument (the join as beginning-and-end). This is not merely a classification of physical locomotion. It is Aristotle's schema for \textit{any} psycho-somatic movement; and, crucially, the internal psychic transitions that constitute the chain (\textit{aisthēsis} \ra \textit{phantasia} \ra cognition \ra desire \ra action) are movements. The three-factor schema, therefore, supplies a structural principle that recurs at every level of the chain.\footnote{Here I must qualify that the schema introduced by Aristotle is specifically for locomotive action, and its extension to perceptual, \textit{phantastic}, and cognitive motion is analogical. At the perceptual level, for instance, the ``moved mover'' (the sense-organ) does not mediate between an unmoved originator and move body in quite the way \textit{orexis} does at the locomotive level; rather, the actualization of the sense-organ \textit{is} the actualization of the organ's capacity. They are the same even under different descriptions.}
+
+In its absolute sense, the term ``unmoved mover'' belongs to the Prime Mover of \textit{Metaphysica}\footnote{XII, 1072a23--26.} and \textit{Physica}.\footnote{VIII, 256a--260a.} However, Aristotle employs the three-factor schema with \textit{relative} unmoved movers. In the passage quoted at length above, the ``realizable good'' is identified as the unmoved origination \textit{within the practical syllogism}, not as the cosmological Prime Mover. At each level of motion, something functions \textit{as} the unmoved originator relative to that particular motion-event, without being the cosmological Unmoved Mover. In the case of perception, the sensible object functions as the unmoved originator relative to the perceptual motion: the object acts on the sense faculty without being reciprocally acted upon \textit{in that respect} (\textit{qua} sensible). One reason for adopting this schema is that it is scale-invariant: the same structure applies at the cosmic level (Prime Mover \ra celestial spheres \ra sublunary motion) and at the psychological level (sensible objects \ra sense-faculty \ra perceiver). The three factors are formally identical; only the domain changes. This is not accidental; it reflects Aristotle's conviction that psychic events are a species of natural motion, subject to the same structural principles as any other \textit{kinēsis} the natural world exhibits.\footnote{\textit{Interpretive flag (strong-reading propagation per \S 1.1)}: I take the textual evidence at \textit{Physica} VII.3, 245b1--13---where Aristotle treats ``all the alterations that are alterations in respect of an affection of the soul, such as perceiving and thinking'' as falling under the alteration-architecture that governs natural \textit{kinēsis} more generally---together with VII.3, 246a1--b3---where Aristotle qualifies that ``excellences and defects are not alterations but perfections and departures; they exist in virtue of particular relations''---to license treating psychic events as a sub-species of natural \textit{kinēsis}. The supporting locus at \cite{aristotle2014soul} I.4, 408b5--18 reinforces this reading: although Aristotle there cautions against saying ``the soul'' is moved (preferring ``the man with his soul''), he nonetheless treats being-pained, being-pleased, and thinking as movements of the ensouled being. The Aristotelian text neither asserts nor denies the general thesis ``all psychic events are natural-kinetic'' in so many words; I draw out the implication that the present section takes as load-bearing. The stronger interpretive line---that psychic events are not merely correlated with bodily motions but are themselves species of \textit{kinēsis}, on the same footing with the natural-physical motions analyzed in the \textit{Physica}---is defended at \S 1.1 against the weaker correlation-only reading; the \textit{Innerzeitigkeit} (within-time-ness)-grounded reading of psychic motion developed there is operative here, as it will be at every subsequent stage of the actualization chain.}
+
+The actuality-first architecture and the three-factor schema interlock at a precise point: the completed actuality at each node is \textit{what serves as the relative unmoved originator of the next motion}. $A_0$---the dyadic first actuality of sensible object and faculty of sense, situated within motion and time as the encompassing horizon---is the unmoved originator of the perceptual motion $M_0 \rightarrow A_1$, in which the sensible object's active potency and the sense-organ's receptive potency are jointly actualized. $A_1$ (completed perception together with the dual residual trace it deposits---\textit{resonant aisthēma} and \textit{resonant epithymia}) is the unmoved originator of the \textit{phantastic} motion $M_1 \rightarrow A_2$. $A_2$ (the \textit{phantasma} proper, crystallized by \textit{phantasia} at the central organ) is the unmoved originator of the cognitive engagement $M_2 \rightarrow A_3$. $A_3$ (the completed cognitive actuality---the universal grasped, the past recalled, the possibility evaluated, the belief held, articulated by intellection, memory, deliberative/speculative thinking, and the orthogonal committal dimension of \textit{doxa}) is, when its content discloses a realizable good, the unmoved originator of the \textit{orektikon} motion $M_3 \rightarrow A_4$, through which \textit{orectic} action proceeds. $A_4$ (the completed action / \textit{praxis}) is the chain's terminal actuality, the bodily movement in which \textit{orexis} converges. Each completed actuality is both a terminus that \textit{names} the motion preceding it (\textit{Physica} V.5, 229b25) and an unmoved source that \textit{initiates} the motion following it. Motion takes its name from its end; the end, once achieved, becomes the beginning of what comes next. 
+
+The chain of motion, therefore, is not a sequence of \textit{different kinds} of events but the \textit{same motion-structure} iterated at increasing levels of complexity. At each stage, the moved mover is both patient and agent\footnote{\textit{Physica} III.3, 202a21--28.}---the hinge that converts one motion into the next. The sense-faculty is moved by the object and moves the organism. \textit{Phantasia} is moved by the residual trace and moves the psycho-somatic state at the central organ. The rational cognitive apparatus is moved by the \textit{phantasma} and moves the soul toward its determinate cognitive completion. The \textit{orektikon} is moved by the \textit{phantasma}-mediated realizable good and moves the body. Between each pair of hinges stands a completed actuality: the stable node from which the preceding motion receives its name and the succeeding motion receives its impetus. Time measures the passage from node to node---the before-and-after of each motion---and is itself intelligible only through the actualities that bound it. Each transition from one actuality to the next is itself a motion: a further actualization of a capacity that was latent in the preceding stage. $M_0 \rightarrow A_1$ is the actualization of perception (made possible by $A_0$'s dyadic first actuality of sensible object and sense-organ, situated within motion and time as the encompassing horizon); $M_1 \rightarrow A_2$ is the actualization of the \textit{phantasma} (made possible by the \textit{resonant kinēsis} deposited at $A_1$); $M_2 \rightarrow A_3$ is the actualization of the completed cognitive actuality (made possible by the \textit{phantasma} as object of thought); and $M_3 \rightarrow A_4$ is the actualization of \textit{orectic} action (made possible by the completed cognitive actuality at $A_3$ that discloses a realizable good). Each transition is a motion in the \textit{energeia ateles} sense (\textit{Physica} III.1, 201a10--14); each terminus is a completed actuality that becomes the unmoved originator of the next. The chain's primitive unit---actuality grounding the motion that produces the next actuality---iterates at every stage, and its specification at $A_0$ is what licenses everything downstream. 
+
+Kenneth Burke's reading of Aristotle's \textit{entelechy} provides an interpretive resource for understanding how the chain's iterated architecture licenses itself. Burke observes that the \textit{entelechy} introduces ``another kind of priority, namely the `principle' involved in a given form''---a priority that runs opposite to temporal sequence. A stage that follows another in time may be prior in form and substantiality: ``man is `prior' to boy because man has already attained its complete form whereas boy has not'' (\textit{Grammar} 261). The distinction Burke draws---between \textit{temporal priority} and \textit{priority in form and substantiality}---is crucial for the chain's structure. Each actuality in the chain stands in both relations to its neighbors. $A_0$ is temporally prior to $A_1$ (the encompassing horizon of motion and time must be in act, and the dyad of sensible object and faculty of sense must hold their first-actuality capacities, before the joint perceptual exercise that produces $A_1$ can occur), but $A_1$ is formally prior to the specific motions it grounds, just as the completed form of man is formally prior to the boy who is becoming a man. The chain is, accordingly, not a linear sequence of self-sufficient stages but a nested architecture in which each actuality licenses and is licensed by others in a reciprocal relation of temporal and formal priority. This reciprocal structure is what makes the chain genuinely iterated rather than merely sequential: each node is simultaneously the terminus of what precedes it and the principle of what follows it, and each node's intelligibility depends on both relations at once.
+
+Accordingly, this section proceeds as follows. \S 1.1 (``Being-in-Motion: The Ontological Horizon of Motion and Time'') establishes $A_0$ as the dyadic first actuality of sensible object and faculty of sense, and develops motion and time as the encompassing horizon within which the chain unfolds: motion as \textit{energeia ateles}, time as the countable number of motion, and the motion-time parallel that licenses the iterated chain structure. The actualization of perception---the motion $M_0 \rightarrow A_1$---develops the joint actualization of the sensible object's active potency with the sense-organ's receptive potency, perception as enmattered preservative \textit{alloiōsis}, the persisting residual motion (\textit{resonant kinēsis}) deposited at $A_1$, and the dual-trace thesis that specifies the internal structure of that residue. The \textit{phantastic} motion $M_1 \rightarrow A_2$ traces the secondary actualization through which the residual trace is taken up by \textit{phantasia} and constituted at the central organ into the \textit{phantasma} proper, with its inheritance of the dual-trace structure. The cognitive engagement $M_2 \rightarrow A_3$ analyzes the cognitive engagements of the \textit{phantasma}---intellection addressing the image as bearing a universal, memory addressing it as likeness of the past, the synthetic mode of deliberative and speculative \textit{phantasia} addressing multiple \textit{phantasmata} as composable into unified objects of thought, and the orthogonal committal dimension of \textit{doxa} ratifying the aspectual presentation as propositional truth-claim. The treatment of emotion and \textit{orectic} action---how the completed cognitive actuality at $A_3$, when it discloses evaluatively complex content, articulationally concretizes the latent \textit{resonant epithymia} into the civic passions\footnote{\textit{Pathos} in this dissertation names the most general structure of being-affected, in the manner of the \textit{Metaphysica} $\Delta$ 21 fourfold (1022b15--21): the genus of any being's affectability, the structure of being-occurrable-to. This genus admits of articulational levels along the concretion axis: at the less-articulated pole, basic affective valence---the hedonic tonality co-given with every \textit{aisthēsis} (a constitutive feature of \textit{aisthēsis}'s \textit{kritikon}); at the fully concretized pole, the civic passions---each comprising a propositional \textit{krisis}, a species-specific orectic stance, and a hedonic tonality. Cross-cutting this articulation axis is the bodily-physiological dimension: every level of \textit{pathos} is realized through enmattered alteration, the material substrate through which the affective structure becomes determinate. Within the present section, references to \textit{pathos} (singular) name the genus, the ontological name for \textit{being-affectable} and \textit{being-affected}; references to \textit{civic passions} name the maximally articulationally-concretized form: the cataloged emotions of the \textit{Rhetoric} (anger, fear, pity, shame, indignation, envy, emulation, kindness, friendship, and their kin), treated by Aristotle and Heidegger as constitutive of the \textit{being-in-the-world} of \textit{polis}-dwelling, speech-bearing animals. The substantive definitional anchor is at \S 1.4 \P 2.} that mobilize \textit{orexis} into the species-specific orectic form the particular \textit{pathos} calls forth---and, where the realizable good is reached only through deliberation, the deliberate choice of the means to it (\textit{prohairesis}), and how that mobilized \textit{orexis} moves the body to action at $A_4$---follows the cognitive analysis.
+
+\clearpage
+
+% TikZ libraries required by the actualization-chain diagram
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing,fit,backgrounds,shapes.geometric}
+
+% Color definitions for the actualization-chain TikZ diagram (mirrors the canonical TikZ source)
+\definecolor{actuality}{RGB}{30,60,120}
+\definecolor{motion}{RGB}{140,40,40}
+\definecolor{timecolor}{RGB}{60,120,60}
+\definecolor{pathoscolor}{RGB}{160,120,40}
+\definecolor{emotioncolor}{RGB}{140,60,100}
+\definecolor{perceptual}{RGB}{225,237,252}
+\definecolor{cognitive}{RGB}{252,240,225}
+\definecolor{loopcolor}{RGB}{100,100,100}
+\definecolor{feedbackcolor}{RGB}{140,60,100}
+
+\begin{tikzpicture}[scale=0.62, transform shape,
+  actnode/.style={
+    rectangle, rounded corners=4pt,
+    draw=actuality, fill=actuality!8,
+    line width=1.2pt,
+    minimum width=7cm, minimum height=1.5cm,
+    text width=6.6cm, align=center,
+    font=\sffamily\small\bfseries,
+    text=actuality
+  },
+  motionnode/.style={
+    rectangle, rounded corners=2pt,
+    draw=motion, fill=motion!6,
+    line width=0.8pt, dashed,
+    minimum width=5.8cm, minimum height=1cm,
+    text width=5.6cm, align=center,
+    font=\sffamily\footnotesize,
+    text=motion
+  },
+  timenode/.style={
+    rectangle, rounded corners=2pt,
+    draw=timecolor!70, fill=timecolor!5,
+    line width=0.6pt,
+    minimum width=3.0cm, minimum height=0.65cm,
+    text width=2.8cm, align=center,
+    font=\sffamily\scriptsize\itshape,
+    text=timecolor!80!black
+  },
+  kineticbox/.style={
+    rectangle, rounded corners=1pt,
+    draw=motion!40, fill=white,
+    line width=0.4pt,
+    text width=3.8cm, align=left,
+    font=\sffamily\tiny,
+    text=black!65, inner sep=3pt
+  },
+  pathostrack/.style={
+    rectangle, rounded corners=3pt,
+    draw=pathoscolor!60, fill=pathoscolor!8,
+    line width=0.7pt,
+    text width=3.6cm, align=center,
+    font=\sffamily\scriptsize\itshape,
+    text=pathoscolor!80!black, inner sep=5pt
+  },
+  emotionbox/.style={
+    rectangle, rounded corners=3pt,
+    draw=emotioncolor!70, fill=emotioncolor!6,
+    line width=0.8pt,
+    text width=4.4cm, align=center,
+    font=\sffamily\scriptsize,
+    text=emotioncolor!85!black, inner sep=5pt
+  },
+  detailbox/.style={
+    rectangle, rounded corners=3pt,
+    draw=motion!35, fill=white,
+    line width=0.5pt,
+    text width=4.8cm, align=left,
+    font=\sffamily\tiny,
+    text=black!65, inner sep=5pt
+  },
+  chainlink/.style={
+    -{Stealth[length=5pt,width=4pt]},
+    line width=1.2pt, color=actuality!55
+  },
+  looparrow/.style={
+    -{Stealth[length=5pt,width=4pt]},
+    line width=1pt, color=loopcolor, densely dashed
+  },
+  feedbackarrow/.style={
+    -{Stealth[length=4pt,width=3pt]},
+    line width=0.8pt, color=feedbackcolor!60, densely dashed
+  },
+]
+
+%----Layout constants----
+\def\nodesep{3.8}        % vertical gap between actuality nodes
+\def\motionoff{1.9}      % offset of motion nodes from actuality above
+\def\kinoff{5.8}          % kinetic boxes: distance LEFT of center
+\def\timeoff{5.6}         % time boxes: distance RIGHT of center
+\def\detailoff{10.8}      % detail boxes: far right column
+\def\loopoff{10.2}        % recursive loop: far right clearance
+
+% ============================================================
+%  ACTUALITIES (center column)
+% ============================================================
+
+\node[actnode] (A0) at (0, 0) {
+  $A_0$: Motion and Time as Ontological Horizon\\[1pt]
+  {\footnotesize\normalfont\textit{kinēsis kai chronos}}
+};
+\node[actnode] (A1) at (0, -\nodesep) {
+  $A_1$: Completed Perception\\[1pt]
+  {\footnotesize\normalfont Aisthēma + Affective Valence (\textit{pathos})}
+};
+\node[actnode] (A2) at (0, -2*\nodesep) {
+  $A_2$: The \textit{Phantasma} Proper\\[1pt]
+  {\footnotesize\normalfont Dual-aspect: formal imprint + affective charge}
+};
+\node[actnode] (A3) at (0, -3*\nodesep) {
+  $A_3$: Completed Cognitive Actuality\\[1pt]
+  {\footnotesize\normalfont Noētic / Doxastic / Mnemonic / Anticipatory}
+};
+\node[actnode] (A4) at (0, -4*\nodesep) {
+  $A_4$: Completed Action (\textit{praxis})\\[1pt]
+  {\footnotesize\normalfont Motor loop closed; recursive}
+};
+
+% ============================================================
+%  MOTIONS (between actualities)
+% ============================================================
+
+\node[motionnode] (M01) at (0, -\motionoff) {
+  $M_0 \!\to\! A_1$: Perceptual Motion\\[-1pt]
+  {\tiny\normalfont aisthēsis---form received without matter (DA II.12, 424a17--24)}
+};
+\node[motionnode] (M12) at (0, -\nodesep - \motionoff) {
+  $M_1 \!\to\! A_2$: Phantastic Motion\\[-1pt]
+  {\tiny\normalfont Residual trace settles into determinate \textit{phantasma} (DA III.3, 428b10--16)}
+};
+\node[motionnode] (M23) at (0, -2*\nodesep - \motionoff) {
+  $M_2 \!\to\! A_3$: Cognitive Engagement\\[-1pt]
+  {\tiny\normalfont 3 orientational modes + 1 committal dimension (doxa)}
+};
+\node[motionnode] (M34) at (0, -3*\nodesep - \motionoff) {
+  $M_3 \!\to\! A_4$: \textit{Orektikon} Motion\\[-1pt]
+  {\tiny\normalfont Desire converging in action; somatic prep.\ internal (MA 702a17--19)}
+};
+
+% ============================================================
+%  CHAIN ARROWS
+% ============================================================
+
+\draw[chainlink] (A0.south) -- (M01.north);
+\draw[chainlink] (M01.south) -- (A1.north);
+\draw[chainlink] (A1.south) -- (M12.north);
+\draw[chainlink] (M12.south) -- (A2.north);
+\draw[chainlink] (A2.south) -- (M23.north);
+\draw[chainlink] (M23.south) -- (A3.north);
+\draw[chainlink] (A3.south) -- (M34.north);
+\draw[chainlink] (M34.south) -- (A4.north);
+
+% ============================================================
+%  TIME (right column — close to center)
+% ============================================================
+
+\node[timenode] (T01) at (\timeoff, -\motionoff)
+  {$\tau_{0 \to 1}$: medium transmits};
+\node[timenode] (T12) at (\timeoff, -\nodesep - \motionoff)
+  {$\tau_{1 \to 2}$: trace persists \& settles};
+\node[timenode] (T23) at (\timeoff, -2*\nodesep - \motionoff)
+  {$\tau_{2 \to 3}$: variable by mode};
+\node[timenode] (T34) at (\timeoff, -3*\nodesep - \motionoff)
+  {$\tau_{3 \to 4}$: desire $\to$ motor act};
+
+\foreach \t/\m in {T01/M01, T12/M12, T23/M23, T34/M34} {
+  \draw[-{Stealth[length=3pt]}, timecolor!50, thin] (\t.west) -- (\m.east);
+}
+
+% Time axis label — next to T01
+\node[timecolor!80!black, font=\sffamily\scriptsize\bfseries,
+  text width=2.4cm, align=center]
+  at (\timeoff + 3.2, -\motionoff)
+  {TIME:\\number of motion\\(Phys.\ IV.11,\\219b1)};
+
+% T23 detail — below T23
+\node[rectangle, rounded corners=2pt, draw=timecolor!30, fill=white,
+  line width=0.3pt, text width=3.4cm, align=left,
+  font=\sffamily\tiny\itshape, text=timecolor!65!black, inner sep=3pt]
+  (T23d) at (\timeoff, -2*\nodesep - \motionoff - 1.3) {
+  intellection: instantaneous\\
+  doxa: \textit{euthus} to extended\\
+  memory: constitutively temporal\\
+  deliberation: prospective,\\
+  \quad bounded by sense of time\\
+  \quad (DA III.10, 433b7)
+};
+\draw[-{Stealth[length=2pt]}, timecolor!30, ultra thin] (T23d.north) -- (T23.south);
+
+% T34 detail — below T34
+\node[rectangle, rounded corners=2pt, draw=timecolor!30, fill=white,
+  line width=0.3pt, text width=3.4cm, align=left,
+  font=\sffamily\tiny\itshape, text=timecolor!65!black, inner sep=3pt]
+  (T34d) at (\timeoff, -3*\nodesep - \motionoff - 1.3) {
+  ``virtually simultaneous''\\
+  under normal conditions\\
+  (MA 702a15--17);\\
+  ``natural correspondence\\
+  of the active and passive''
+};
+\draw[-{Stealth[length=2pt]}, timecolor!30, ultra thin] (T34d.north) -- (T34.south);
+
+% ============================================================
+%  KINETIC ROLES (left column)
+% ============================================================
+
+\node[kineticbox] (K01) at (-\kinoff, -\motionoff) {
+  \textbf{Unmoved}: $A_0$ (motion-time horizon) + sensible object's active potency\\
+  \textbf{Moved mover}: sense faculty\\
+  \quad {\tiny(analogical ext.\ of III.10 schema)}\\
+  \textbf{Moved}: sense organ / perceiver
+};
+\node[kineticbox] (K12) at (-\kinoff, -\nodesep - \motionoff + 1.0) {
+  \textbf{Unmoved}: $A_1$ (completed perception)\\
+  \textbf{Moved mover}: \textit{phantasia}\\
+  \quad {\tiny(retentive faculty; 429a1--2)}\\
+  \textbf{Moved}: psycho-somatic state
+};
+\node[kineticbox] (K23) at (-\kinoff, -2*\nodesep - \motionoff) {
+  \textbf{Unmoved}: $A_2$ (\textit{phantasma}) +\\
+  \quad held \textit{doxai}\\
+  \textbf{Moved mover}: rational cognitive\\
+  \quad apparatus (unified)\\
+  \textbf{Moved}: rational animal
+};
+\node[kineticbox] (K34) at (-\kinoff, -3*\nodesep - \motionoff) {
+  \textbf{Unmoved}: realizable good at $A_3$\\
+  \quad (433b10--18)\\
+  \textbf{Moved mover}: \textit{orexis}\\
+  \quad {\tiny(emotion-structured or basic appetite)}\\
+  \textbf{Moved}: animal via joint (433b21--25)
+};
+
+\foreach \k/\m in {K01/M01, K12/M12, K23/M23, K34/M34} {
+  \draw[-{Stealth[length=3pt]}, motion!30, thin] (\k.east) -- (\m.west);
+}
+
+% ============================================================
+%  HEXEIS (Standing Dispositions) — Step 7 bisected band
+%  Renders the technē/praxis bivalence as additional unmoved
+%  originators of M_2→A_3 (alongside A_2). PRAXIS-hexis
+%  additionally reaches upstream to A_1: Type 3 two-level
+%  modulation (input-to-doxa AND doxastic ratification).
+%  Anchored: Met. Δ 20, 1022b 4; GA 18 §17; NE II.1.
+% ============================================================
+
+\node[rectangle, rounded corners=2pt,
+      draw=pathoscolor!60, fill=pathoscolor!12,
+      line width=0.5pt,
+      minimum width=2.0cm, minimum height=1.1cm,
+      text width=1.8cm, align=center,
+      font=\sffamily\tiny, text=pathoscolor!80!black]
+      (techne-hexis) at (-\kinoff - 8.5, -2*\nodesep - \motionoff)
+      {\textit{technē-hexis}\\[-1pt]
+       {\tiny\normalfont(Type 2:\\routine)}};
+
+\node[rectangle, rounded corners=2pt,
+      draw=pathoscolor!60, fill=pathoscolor!12,
+      line width=0.5pt,
+      minimum width=2.0cm, minimum height=1.1cm,
+      text width=1.8cm, align=center,
+      font=\sffamily\tiny, text=pathoscolor!80!black]
+      (praxis-hexis) at (-\kinoff - 6.1, -2*\nodesep - \motionoff)
+      {\textit{praxis-hexis}\\[-1pt]
+       {\tiny\normalfont(Type 3:\\open resolution)}};
+
+\node[rectangle, rounded corners=4pt,
+      draw=pathoscolor!75, fill=pathoscolor!4,
+      line width=0.6pt, dash pattern=on 3pt off 2pt,
+      fit=(techne-hexis)(praxis-hexis),
+      inner sep=4pt,
+      label={[font=\sffamily\tiny\bfseries,
+              text=pathoscolor!90!black, label distance=1pt]
+             above:\textit{Hexeis} (Standing Dispositions)},
+      label={[font=\sffamily\tiny\itshape,
+              text=pathoscolor!65!black, label distance=1pt]
+             below:Met.\ $\Delta$ 20, 1022b\,4 \,$\cdot$\, GA 18 \S 17}]
+      (hexis-band) {};
+
+% Arrow 1: technē-hexis → M_2→A_3 (additional unmoved originator)
+\draw[-{Stealth[length=3pt]}, pathoscolor!55, line width=0.5pt,
+      dash pattern=on 2pt off 1.5pt]
+  (techne-hexis.east)
+  .. controls +(1.5, 0.3) and +(-4.0, -1.5) ..
+  (M23.south west);
+
+% Arrow 2: praxis-hexis → M_2→A_3 (same role; Type 3 chain)
+\draw[-{Stealth[length=3pt]}, pathoscolor!55, line width=0.5pt,
+      dash pattern=on 2pt off 1.5pt]
+  (praxis-hexis.east)
+  .. controls +(1.2, 0.3) and +(-3.0, -1.2) ..
+  (M23.south);
+
+% Arrow 3: praxis-hexis → A_1 (Type 3 two-level reach;
+% modulates basic-valence input ahead of doxa-gating)
+\draw[-{Stealth[length=3pt]}, pathoscolor!50, line width=0.5pt,
+      densely dotted]
+  (praxis-hexis.north)
+  .. controls +(0, 2.5) and +(-4.0, 0) ..
+  (A1.west);
+
+% Type 3 two-level annotation
+\node[font=\sffamily\tiny\itshape, text=pathoscolor!65!black,
+      text width=2.4cm, align=center,
+      fill=white, fill opacity=0.88, text opacity=1, inner sep=2pt]
+      at (-\kinoff - 6.1, -\nodesep - \motionoff - 0.3)
+      {Type 3 only:\\two-level reach\\($A_1$ input bias\\$+\,M_2{\to}A_3$ doxastic ratification)};
+
+% Schema label — top of diagram, centered
+\node[motion!70!black, font=\sffamily\footnotesize\bfseries]
+  at (0, 1.8)
+  {THREE-FACTOR SCHEMA (DA III.10, 433b10--18)};
+
+% ============================================================
+%  BASIC AFFECTIVE VALENCE TRACK (far left)
+% ============================================================
+
+\node[pathostrack] (pathos) at (-\kinoff + 0.2, 2.8) {
+  \textbf{Basic Affective Valence}\\[2pt]
+  {\tiny \textit{pathos}: pleasure/pain, good/bad}\\
+  {\tiny co-constitutive with perception}\\
+  {\tiny (DA II.3, 414b4--6; III.7, 431a8--10)}
+};
+
+\draw[pathoscolor!45, line width=0.6pt, densely dotted,
+  -{Stealth[length=3pt]}]
+  ($(pathos.south) + (0, -0.15)$) -- ($(K34.south) + (0, -0.5)$)
+  node[pos=0.06, right=8pt, font=\sffamily\tiny\bfseries\itshape,
+    text=pathoscolor!75!black, text width=2.0cm, align=left]
+  {co-constitutive\\with perception\\at $A_0$--$A_1$}
+  node[pos=0.47, right=3pt, font=\sffamily\tiny\itshape,
+    text=pathoscolor!55!black, text width=2.0cm, align=left]
+  {dispositional valence\\persists through\\every node}
+  node[pos=0.80, right=3pt, font=\sffamily\tiny\itshape,
+    text=pathoscolor!55!black, text width=2.0cm, align=left]
+  {non-mobilising:\\bare phantasia $\to$\\\textit{apathōs} (427b21)};
+
+% ============================================================
+%  M2→M3 DETAIL BOX (far right column)
+% ============================================================
+
+\node[detailbox] (modes) at (\detailoff, -2*\nodesep - \motionoff) {
+  \textbf{\small Orientational Modes:}\\[3pt]
+  \textbf{1.\ Intellection} (atemporal)\\
+  \quad \textit{phantasma} $\to$ universal\\[2pt]
+  \textbf{2.\ Memory} (retrospective)\\
+  \quad \textit{phantasma} as past \textit{qua} past\\[2pt]
+  \textbf{3.\ Deliberative \textit{phantasia}} (prospective)\\
+  \quad several \textit{phantasmata} $\to$ unity\\
+  \quad\quad{\tiny projective-synthetic + calculative-practical}\\[5pt]
+  \rule{\linewidth}{0.3pt}\\[4pt]
+  \textbf{\small Committal Dimension:}\\[3pt]
+  \textbf{4.\ Doxa} (orthogonal, not parallel)\\
+  \quad supervenes upon any mode\\
+  \quad requires \textit{logos}, \textit{pistis}, \textit{pepeisthai}\\
+  \quad\quad (DA III.3, 428a19--24)\\
+  \quad involuntary: \textit{ouk eph' hēmin} (427b17--21)\\
+  \quad subject to gatekeeping condition\\
+  \quad\quad{\tiny(\textit{De Insomn.}\ 460b3--16; interp.\ recon.)}
+};
+
+\draw[-{Stealth[length=3pt]}, motion!25, thin]
+  (M23.east) -- (modes.west |- M23.east);
+
+% ============================================================
+%  EMOTION-DESIRE COMPOSITE (far right column, below modes)
+% ============================================================
+
+\node[emotionbox] (emotion) at (\detailoff, -3*\nodesep - \motionoff - 1.5) {
+  \textbf{Emotion-Desire Composite}\\[3pt]
+  {\tiny When doxa at $A_3$ discloses evaluatively complex}\\
+  {\tiny content (427b21--24: \textit{euthus paschomen}):}\\[3pt]
+  {\scriptsize cognitive eval.\ + conative orient.}\\
+  {\scriptsize + somatic preparation}\\[3pt]
+  {\tiny DA I.1, 403a25--b19: anger = desire for}\\
+  {\tiny retaliation + boiling of blood}\\[4pt]
+  {\tiny\bfseries Emotion IS the form desire takes}\\
+  {\tiny\bfseries under evaluative conditions}\\[4pt]
+  \rule{\linewidth}{0.3pt}\\[3pt]
+  {\tiny\itshape Variable: simple appetite bypasses}\\
+  {\tiny\itshape emotion (MA 701a32--33)}
+};
+
+\draw[-{Stealth[length=3pt]}, emotioncolor!40, thin]
+  (M34.east) -- (emotion.west |- M34.east);
+
+% ============================================================
+%  CHAIN TERMINATION (left, near A3-M34)
+% ============================================================
+
+\node[rectangle, rounded corners=2pt, draw=actuality!25, fill=white,
+  line width=0.4pt, text width=3.6cm, align=center,
+  font=\sffamily\tiny\itshape, text=actuality!50, inner sep=4pt]
+  (terminate) at (-\kinoff, -3*\nodesep + 0.3) {
+  \textbf{Chain terminates at $A_3$}\\
+  when doxa concerns\\non-practical content:\\
+  no \textit{orexis} activated\\(DA III.10, 433a13--15)
+};
+
+\draw[-{Stealth[length=3pt]}, actuality!25, thin]
+  (terminate.east) -- (A3.west |- terminate.east);
+
+% ============================================================
+%  DUAL-ORIGIN (left, near A2)
+% ============================================================
+
+\node[rectangle, rounded corners=2pt, draw=actuality!25, fill=white,
+  line width=0.4pt, text width=3.6cm, align=center,
+  font=\sffamily\tiny\itshape, text=actuality!50, inner sep=4pt]
+  (dualorigin) at (-\kinoff, -2*\nodesep + 0.45) {
+  \textbf{Dual origin:}\\thinking-initiated cases\\
+  enter at $A_2$ with stored\\
+  \textit{phantasmata} (MA 702a20--21);\\
+  $A_0$--$A_1$ = genetic origin
+};
+
+\draw[-{Stealth[length=3pt]}, actuality!25, thin]
+  (dualorigin.east) -- (A2.west |- dualorigin.east);
+
+% Somatic preparation note removed — content already in M34 description
+% and in the Emotion-Desire Composite detail box
+
+% ============================================================
+%  FEEDBACK LOOP
+%  Route: emotion box → down → far left → up to A2 left side
+% ============================================================
+
+\draw[feedbackarrow, rounded corners=8pt]
+  (emotion.south) -- ++(0, -0.5)
+  -- ++({-\detailoff - \kinoff - 1.8}, 0)
+  -- ++(0, {\nodesep + \motionoff + 0.5})
+  -- (A2.west);
+
+% Feedback label — placed on the vertical segment (left side of loop)
+\node[font=\sffamily\tiny\itshape, text=feedbackcolor!60,
+  text width=3.2cm, align=center, anchor=east]
+  at ({-\kinoff - 1.5}, -3*\nodesep) {
+  \textbf{Feedback}:\\emotion impairs\\corrective faculty\\
+  $\to$ further doxa\\$\to$ further emotion\\[2pt]
+  {\tiny\textit{De Insomn.}\ 460b3--16}\\
+  {\tiny\textit{Rhet.}\ 1378a20--22}\\
+  {\tiny(interp.\ recon.)}
+};
+
+% ============================================================
+%  ONTOLOGICAL PRIORITY LINE
+% ============================================================
+
+\coordinate (divleft)  at (-\kinoff - 2.6, -2*\nodesep - 1.15);
+\coordinate (divright) at (\timeoff + 2.0, -2*\nodesep - 1.15);
+
+\draw[black!35, line width=0.5pt, densely dash dot]
+  (divleft) -- (divright);
+
+\node[font=\sffamily\tiny\itshape, text=black!45,
+  text width=11cm, align=center, anchor=south,
+  fill=white, fill opacity=0.85, text opacity=1, inner sep=1pt]
+  at ($(divleft)!0.5!(divright) + (0, 0.08)$)
+  {$A_2$ is the pivotal actuality: everything prior converges upon it;
+   everything subsequent operates upon it as indispensable material};
+
+% ============================================================
+%  BACKGROUND ZONES
+% ============================================================
+
+\begin{scope}[on background layer]
+  \node[fill=perceptual, rounded corners=6pt, inner sep=10pt,
+    fit=(A0)(A2)(K01)(K12)(T01)(T12),
+    label={[font=\sffamily\tiny\bfseries, text=actuality!40,
+      anchor=north west, xshift=4pt, yshift=-2pt]north west:
+      PERCEPTUAL--PHANTASMATIC}] (zoneupper) {};
+
+  \node[fill=cognitive, rounded corners=6pt, inner sep=10pt,
+    fit=(A3)(A4)(K23)(K34)(T23)(T34),
+    label={[font=\sffamily\tiny\bfseries, text=motion!40,
+      anchor=north west, xshift=4pt, yshift=-2pt]north west:
+      NOETIC--OREKTIKON}] (zonelower) {};
+\end{scope}
+
+% ============================================================
+%  RECURSIVE LOOP (far right, with ample clearance)
+% ============================================================
+
+\draw[looparrow, rounded corners=10pt]
+  (A4.east) -- ++(\loopoff, 0)
+  -- ++(0, 4*\nodesep)
+  -- (A0.east)
+  node[pos=0.50, right=6pt, font=\sffamily\scriptsize\itshape,
+    text=loopcolor, text width=2.6cm, align=center]
+  {Recursive loop:\\completed action\\changes the world\\$\to$ fresh $M_0 \rightarrow A_1$ cycle};
+
+% ============================================================
+%  NAMING PRINCIPLE (top right)
+% ============================================================
+
+\node[rectangle, rounded corners=2pt, draw=actuality!20, fill=white,
+  font=\sffamily\tiny\itshape, text=actuality!55,
+  text width=2.8cm, align=center, inner sep=3pt]
+  at (\timeoff, 1.2) {
+  Each motion takes its\\name from its terminus\\
+  (Phys.\ V.5, 229b25)
+};
+
+% ============================================================
+%  VARIABLE EMOTION NOTE (bottom)
+% ============================================================
+
+\node[rectangle, rounded corners=3pt, draw=black!25, fill=white,
+  line width=0.4pt, text width=8.0cm, align=center,
+  font=\sffamily\tiny, text=black!55, inner sep=6pt]
+  at (0, -4*\nodesep - 2.2) {
+  \textbf{Variable emotion presence}: evaluatively complex actions
+  (fear, anger, pity) pass through the emotion-desire composite;
+  simple appetitive actions (MA 701a32--33: ``I want to drink \ldots\
+  straightaway I drink'') bypass emotion.
+  Long-habituated actions may also bypass emotional mediation.
+};
+
+% ============================================================
+%  LEGEND (bottom of diagram)
+% ============================================================
+
+\node[rectangle, rounded corners=4pt, draw=black!40, fill=white,
+  line width=0.6pt, inner sep=8pt]
+  (legend) at (0, -4*\nodesep - 4.8) {
+  \begin{tikzpicture}[
+    lsample/.style={minimum width=1.4cm, minimum height=0.45cm,
+      font=\sffamily\tiny, align=center, inner sep=2pt},
+    llabel/.style={font=\sffamily\tiny, text=black!70, anchor=west},
+    lline/.style={font=\sffamily\tiny, text=black!70, anchor=west},
+  ]
+    % Title
+    \node[font=\sffamily\scriptsize\bfseries, text=black!75] at (3.2, 1.8) {LEGEND};
+
+    % Row 1: Actuality node
+    \node[lsample, rectangle, rounded corners=3pt,
+      draw=actuality, fill=actuality!8, line width=1pt,
+      text=actuality, font=\sffamily\tiny\bfseries]
+      (leg-act) at (0.8, 1.2) {$A_n$};
+    \node[llabel] at (1.8, 1.2) {Completed actuality (determinate node in the chain)};
+
+    % Row 2: Motion node
+    \node[lsample, rectangle, rounded corners=2pt,
+      draw=motion, fill=motion!6, line width=0.7pt, dashed,
+      text=motion, font=\sffamily\tiny]
+      (leg-mot) at (0.8, 0.6) {$M_n$};
+    \node[llabel] at (1.8, 0.6) {Motion segment (transition between actualities)};
+
+    % Row 3: Time node
+    \node[lsample, rectangle, rounded corners=2pt,
+      draw=timecolor!70, fill=timecolor!5, line width=0.5pt,
+      text=timecolor!80!black, font=\sffamily\tiny\itshape]
+      (leg-time) at (0.8, 0.0) {$\tau_{n \to n\!+\!1}$};
+    \node[llabel] at (1.8, 0.0) {Temporal interval of the motion segment};
+
+    % Row 4: Kinetic role box
+    \node[lsample, rectangle, rounded corners=1pt,
+      draw=motion!40, fill=white, line width=0.35pt,
+      text=black!60, font=\sffamily\tiny]
+      (leg-kin) at (0.8, -0.6) {\textbf{U} / \textbf{MM} / \textbf{M}};
+    \node[llabel] at (1.8, -0.6)
+      {Three-factor kinetic roles (unmoved / moved mover / moved)};
+
+    % Row 5: Pathos track (gold dotted line)
+    \draw[pathoscolor!50, line width=0.7pt, densely dotted,
+      -{Stealth[length=3pt]}] (0.1, -1.2) -- (1.5, -1.2);
+    \node[llabel] at (1.8, -1.2)
+      {Basic affective valence (\textit{pathos}): dispositional, non-mobilising};
+
+    % Row 6: Emotion-desire composite
+    \node[lsample, rectangle, rounded corners=3pt,
+      draw=emotioncolor!70, fill=emotioncolor!6, line width=0.7pt,
+      text=emotioncolor!85!black, font=\sffamily\tiny]
+      (leg-emot) at (0.8, -1.8) {Emotion};
+    \node[llabel] at (1.8, -1.8)
+      {Emotion-desire composite (cognitive eval.\ + conative orient.\ + somatic prep.)};
+
+    % Row 7: Feedback loop
+    \draw[feedbackcolor!60, line width=0.7pt, densely dashed,
+      -{Stealth[length=3pt]}] (0.1, -2.4) -- (1.5, -2.4);
+    \node[llabel] at (1.8, -2.4)
+      {Feedback path (emotion $\to$ impaired corrective faculty $\to$ further doxa)};
+
+    % Row 8: Recursive loop
+    \draw[loopcolor, line width=0.8pt, densely dashed,
+      -{Stealth[length=3pt]}] (0.1, -3.0) -- (1.5, -3.0);
+    \node[llabel] at (1.8, -3.0)
+      {Recursive loop ($A_4$ changes the world $\to$ fresh $M_0 \rightarrow A_1$ cycle)};
+
+    % Row 9: Background zones
+    \node[lsample, rectangle, rounded corners=3pt,
+      fill=perceptual, draw=none, font=\sffamily\tiny, text=actuality!50]
+      (leg-perc) at (0.8, -3.6) {zone};
+    \node[llabel] at (1.8, -3.6)
+      {Perceptual--phantasmatic zone ($A_0$--$A_2$) / Noētic--orektikon zone ($A_3$--$A_4$)};
+
+  \end{tikzpicture}
+};
+
+\end{tikzpicture}
+
+\clearpage
+
+
+
+\end{document}

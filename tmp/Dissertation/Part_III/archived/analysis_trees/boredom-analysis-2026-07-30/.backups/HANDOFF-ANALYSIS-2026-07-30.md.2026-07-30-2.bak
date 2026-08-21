@@ -1,0 +1,289 @@
+# HANDOFF — Boredom Experiment full analysis (N=12)
+
+**Written 2026-07-30, end of Phase 5. Phases 0–5 complete and verified; Phases 6–7 remain.**
+Everything below is verified against the live trees, not remembered.
+
+---
+
+## 1. The goal
+
+Produce the complete analysis, statistics and figure suite for the empirical chapter of the
+dissertation: 12 participants (Round 1 `S01`–`S08`, Round 2 `R2-01`–`R2-04`), sensor recordings across
+three 17-minute video conditions (Boring / Clinical / Interesting), plus a 7-item self-report
+instrument per episode. **Analysis, statistics and figures only — no chapter prose.**
+
+The authoritative specification is:
+
+```
+plans/boredom-eyetracking-full-analysis-execution-2026-07-30.md
+```
+
+Where this handoff and that document disagree, **the specification wins**.
+
+---
+
+## 2. Current state — one line
+
+Phases 0–5 are done, the four locked verification checks pass at two independent gates on every run,
+21 output tables are written, and **two consecutive runs produce byte-identical CSVs**. What remains is
+the figure suite (Phase 6) and the reproducibility artefacts (Phase 7).
+
+---
+
+## 3. Where everything lives
+
+| what | path |
+|---|---|
+| **Analysis tree (this work)** | `tmp/Dissertation/Part_III/boredom-analysis-2026-07-30/` |
+| Entry point | `analysis/run.py` |
+| Output tables (21 CSVs) | `out/` |
+| Intermediate canonical outputs | `out/_raw/` |
+| Figures (EMPTY — Phase 6) | `figures/` |
+| **Methodology of record — DO NOT EDIT** | `scripts/boredom-o9/` |
+| Round 2 parser (extendable, not edited) | `tmp/Dissertation/Part_III/boredom-o9-processing/ch_hmd_r2.py` |
+| Prior findings | `tmp/Dissertation/Part_III/reanalysis/boredom-o9-physiological-findings.md` |
+| Round 2 recon | `tmp/Dissertation/Part_III/reanalysis/boredom-round2-recon-2026-07-29.md` |
+| Self-report record | `tmp/Dissertation/Part_III/reanalysis/boredom-experiment-brief.md` |
+| Section-level resume doc | `tmp/Dissertation/Part_III/HANDOFF-LAB-BOREDOM-ANALYSIS-AND-SECTION-2026-07-30.md` |
+| Raw data, Round 1 | `/mnt/d/PhD/Dissertation/Boredom Experiment/Subjects/` |
+| Raw data, Round 2 | `/mnt/d/PhD/Dissertation/Boredom Experiment/Boredom Experiment Round 2/Subjects/` |
+| **EXCLUDED ENTIRELY (author ruling)** | `…/Boredom Experiment Round 2/VR Data Recorder/` |
+
+**Run it with:**
+
+```bash
+cd tmp/Dissertation/Part_III/boredom-analysis-2026-07-30/analysis
+/home/dalton/.venv/bin/python run.py              # full run
+/home/dalton/.venv/bin/python run.py --no-figures # tables only
+```
+
+Takes roughly a minute. Round 2 extraction reads ~1.5 GB of CSV, which dominates the time.
+
+---
+
+## 4. Module state — 11 complete, 2 stubs
+
+| module | state | what it does |
+|---|---|---|
+| `config.py` | complete | every constant that affects a number; all 8 author decisions recorded with their rationale |
+| `adapters.py` | complete | 8 documented wrappers over the methodology of record; nothing copied, nothing edited |
+| `journal.py` | complete | exclusions, QC, coercions, deterministic CSV writing, **PII guard** |
+| `stats.py` | complete | Friedman, Wilcoxon, Holm, rank-biserial, within-subject z, pooling |
+| `gate.py` | complete | the four locked checks, run twice per execution |
+| `r1.py` | complete | Round 1 features, both rate variants, closure episodes |
+| `r2.py` | complete | Round 2 features, timestamp repair, blinks, IMU, non-wear trim |
+| `survey.py` | complete | defensive 7-item parser with per-item confidence |
+| `crossref.py` | complete | keystone, moderation, replication, self-report tests |
+| `eeg.py` | complete | band power, retention, artifact ratio, full negatives |
+| `run.py` | complete | single deterministic entry point |
+| **`figures.py`** | **STUB** | returns 0; required suite documented in its docstring |
+| **`report.py`** | **STUB** | returns False; required artefacts documented in its docstring |
+
+`run.py` reports honestly when the stubs are hit — it prints `NOT IMPLEMENTED (Phase 6 pending)` rather
+than claiming output it did not produce. **Do not mistake a clean run for a finished one.**
+
+---
+
+## 5. The four locked checks — the gate
+
+A run that does not reproduce these has a bug. They are checked automatically at **Gate 1** (canonical
+code path) and **Gate 2** (this tree's own extractors), and `run.py` aborts on failure.
+
+| check | n | direction | Friedman | Wilcoxon | rb |
+|---|---|---|---|---|---|
+| Round 1 pupil dilation | 8 | 8/8 Boring < Clinical | 0.0302 | 0.0078 | −1.00 |
+| Round 1 eye-closure | 8 | 7/8 Boring lowest | 0.0076 | 0.0156 | −0.944 |
+| Pooled pupil | 12 | 10/12 | 0.0458 | 0.0093 | −0.821 |
+| Pooled eye-closure | 12 | 11/12 | 0.0004 | 0.0010 | −0.974 |
+
+**All four have passed on every run of this session.** One detail is load-bearing and easy to lose:
+Round 1's openness proxy (`pct_valid_eye`, 0–100) **must** be rescaled by 1/100 onto Round 2's 0–1
+fraction before any pooled signed-rank test. Wilcoxon ranks the magnitude of paired differences, so
+mixed units silently re-weight subjects. Rescaled reproduces rb=−0.974; unscaled gives rb=−0.872,
+p=0.0049. This lives in `config.R1_OPENNESS_SCALE`.
+
+---
+
+## 6. Author decisions, all applied
+
+| # | decision | where implemented |
+|---|---|---|
+| D1 | S06 rate mismatch — compute **both** unified and as-is | `config.RATE_VARIANTS`, `r1.extract()` |
+| D2 | S07's Interesting episode **counts** as valid data | no exclusion; confirmed 24/24 EEG cells parse |
+| D3 | **HRV excluded, both rounds** (poisoned by head structure) | `config.EXCLUDE_HRV`, logged per cell |
+| D4 | R2-01's bad timestamp row dropped, clock recomputed | `adapters.r2_time_seconds()` |
+| D5 | Blink ≤ 500 ms per VanderWerf et al. 2003 | `config.BLINK_MAX_MS` |
+| D6 | EEG — report everything, no retention floor | `eeg.analyse()` |
+| D7 | Single interpreter `/home/dalton/.venv/bin/python` | `config.INTERPRETER` |
+| D8 | Output at `boredom-analysis-2026-07-30/` | `config.OUT` |
+| — | "Halfway" survey answer read as 8.5 min | `config.HALFWAY_MIN`, logged as author-approved |
+| — | Ignore all files under `VR Data Recorder/` | `config.EXCLUDED_TREES` |
+
+---
+
+## 7. Findings so far
+
+**Confirmed and stable**
+
+- **Pupil and eye openness are the two surfaces that carry the result.** 9 pairwise contrasts survive
+  Holm across the entire analysis, and every one of them is pupil or openness.
+- **Openness is the strongest effect in the dataset.** Pooled N=12: Boring below Interesting in **12/12**
+  subjects (rb=−1.00, Holm p=0.0015) and below Clinical in 11/12 (rb=−0.974, Holm p=0.0020).
+- **EEG is not significant anywhere.** 0 of 5 surfaces reach Friedman p<0.05; 0 of 15 pairwise contrasts
+  survive Holm; keystone concordance is 4/8, exactly chance. Retention averages 62.3% (range
+  36.3–74.4%, 3 of 24 cells below 50%). This is the evidence for the "dropped because too noisy"
+  ruling, and it is reported rather than asserted.
+- **S05's sleep event is directly visible** as a single continuous **449-second** eye closure beginning
+  245 s into the Boring episode.
+- **Prior exposure resolves 4/12** (S02, S03, S08 by `(Med)` marker; R2-01 by explicit statement) and
+  the strata remain near-indistinguishable on clinical — boredom 6.00 vs 5.13, engaged composite 0.286
+  vs 0.277. The exposure objection is still answered at N=12.
+
+**Discovered this session, and each one changes something**
+
+- **Round 2 openness is BINARY**, not continuous. Across 12 cells and 3,416,362 per-eye samples the only
+  values present are {0, 1}. The specification describes it as continuous; it is not. Consequence: the
+  threshold is irrelevant and the blink/extended-closure split rests **entirely** on the VanderWerf
+  duration ceiling.
+- **A headset on/off artefact in Round 2.** Nine of twelve cells put their longest closure in the final
+  3% of the recording; all twelve are 27–36 s. Round 2 has no crop export, so its full recordings
+  include non-wear time that Round 1's crop windows exclude. Worth 2.4–3.0 percentage points of "eye
+  closed" per cell. Trimmed columns added; **conclusions identical either way**.
+- **S06's harmonisation flips its direction on gaze variance.** Round 1 gaze variance moves from
+  Friedman p=0.6065 (4/8) to p=0.3247 (5/8) — still not significant, but the artefact is gone. The
+  within-Round-1 decimation factors (0.72×, 0.76×) land inside the 0.65–0.84 band measured across
+  rounds, independently confirming the no-pooling rule.
+- **The zero-reverse asymmetry does NOT hold at N=12.** See §8 — this is the most consequential finding
+  and it weakens a claim the specification expected to strengthen.
+- **A new divergence case in Round 2**: R2-02's Interesting episode carries the S07 signature (boredom 7
+  *and* engagement 6). Full divergent set at N=12: S02, S04, S07, S08, R2-02.
+- **Round 2 does have HRV**, contrary to the recon note — 11 files, 10 of 12 cells usable. Excluded
+  anyway by author ruling, but the record needed correcting.
+- **Blink rate is not recoverable in Round 1.** Its median sampling interval is ~334 ms, which is the
+  mean spontaneous blink duration. A blink occupies 0–1 samples. Blink rate is a Round 2 measure only.
+
+---
+
+## 8. The reverse case — read this before writing anything
+
+The specification asks whether the zero-reverse asymmetry holds at N=12. **It does not.** The clinical
+decomposition is:
+
+| category | n | subjects |
+|---|---|---|
+| divergent (physiology engaged, self-report bored) | 5/12 | S02, S04, S07, S08, R2-02 |
+| concordant-engaged | 3/12 | S01, S03, R2-04 |
+| concordant-bored | 3/12 | S05, S06, R2-01 |
+| **reverse** | **1/12** | **R2-03** |
+
+Three things must travel with that number:
+
+1. **It is sensitive to how the engaged composite is built.** Reverse cases number 0 under openness
+   alone, 1 under the baseline (pupil + cognitive load + openness), 2 under pupil + cognitive load, and
+   3 under pupil alone. R2-03 is reverse under 6 of 7 definitions.
+2. **It survives the non-wear trim** (composite −0.510 untrimmed, −0.451 trimmed).
+3. **"Reverse" is a within-subject relative statement, not an absolute one.** R2-03 reported boredom
+   3/1/2 across the three videos — they never reported being bored by anything, and never became bored
+   on any stimulus. Their clinical episode is simply their own relative physiological minimum. That is
+   materially different from "physiologically bored while reporting engagement", and the honest form of
+   the finding says so without making the case disappear.
+
+---
+
+## 9. What remains
+
+### Phase 6 — figure suite (`analysis/figures.py`)
+
+Required set is written out in that file's docstring. In summary: **12 per-subject sets** (summary card,
+per-stimulus time series with closures shaded, self-report vs physiology, felt vs actual duration),
+**3 combined sets** one per stimulus (distribution with every subject plotted, paired-difference slope
+plot, cohort time-series envelope), and **8 cross-cutting figures** (effect-size forest, keystone
+scatter, keystone decomposition strip, eye-closure heatmap, R1-vs-R2 replication, felt-duration
+dilation, channel correlation matrix, EEG justification).
+
+Every figure: colour-blind-safe fixed stimulus colours from `config.STIM_COLOR`, PDF **and** PNG, a
+sibling `.csv` with the same stem carrying its source data, and a caption stub naming n, test,
+statistic and effect size. All source data is already computed and available in the `ctx` dict returned
+by `run.main()`.
+
+Note: **matplotlib exists only in `.venv`**, not in the pyenv interpreter. This is why D7 exists.
+
+### Phase 7 — reproducibility artefacts (`analysis/report.py`)
+
+`RUN-MANIFEST.json`, `METHODS.md`, `EXCLUSIONS.log`, `QC-REPORT.md`, `FINDINGS.md`, `SOURCES.md`,
+`RECONCILIATION.md`. Required content is written out in that file's docstring. Two things are easy to
+miss: METHODS.md **must print `adapters.WRAPPERS` verbatim** (8 entries, each with its reason), and
+every file must be written through `journal.write_text()` so the PII guard runs on the way out.
+
+### Then
+
+Re-run twice and confirm byte-identical CSVs, and confirm `git status --porcelain scripts/boredom-o9/`
+is still empty.
+
+---
+
+## 10. Standing constraints — non-negotiable
+
+- **PII.** `S01`–`S08` / `R2-01`–`R2-04` only. No participant name in any output, log, figure, caption
+  or filename. The crosswalk is never persisted; it is derived at runtime from sorted folder order via
+  `common.subject_map()`. `journal.emit_guard()` is a **backstop, not the mechanism** — redact by
+  construction. It fired twice this session: once on a genuine leak (fixed), once on a false positive
+  (`bored`, harvested from a video clip filename, exempted explicitly).
+- **Never edit `scripts/boredom-o9/`.** Wrap, don't edit; record every wrapper. Currently clean.
+- **Never pool a rate-dependent feature across rounds.** Every pooled statistic carries a `poolable`
+  flag and a one-line reason.
+- **Crop windows only** for Round 1. If a crop is ever missing, fail loudly — never substitute the full
+  recording. Enforced before the run in `adapters.run_ch_hmd()`.
+- **Nothing is omitted for being non-significant.**
+- **No chapter prose. No commits. No video processing.** Back up before touching any existing file, and
+  say so first.
+- Label every n<6 result **descriptive**; at n=4 the Wilcoxon floor is p=0.125, so perfect separation is
+  the strongest obtainable result and must be stated as such.
+
+---
+
+## 11. Sources for the works cited
+
+Verified this session, for `SOURCES.md` in Phase 7 and for the chapter's works cited:
+
+- **VanderWerf, Frans, Petra Brassinga, Dirk Reits, Majid Aramideh, and Bram Ongerboer de Visser.**
+  "Eyelid Movements: Behavioral Studies of Blinking in Humans Under Different Stimulus Conditions."
+  *Journal of Neurophysiology*, vol. 89, no. 5, 2003, pp. 2784–96. doi:10.1152/jn.00557.2002.
+  — Source of the 334 ± 67 ms spontaneous blink duration behind `config.BLINK_MAX_MS`. Quoted verbatim
+  from the full text: "The total duration of spontaneous blinks was 334 ± 67 ms, the down phase
+  duration was 92 ± 17 ms, and the up phase duration lasted 242 ± 55 ms." Those blinks were recorded
+  **while subjects watched a video**, which matches this paradigm closely.
+- **King et al.** ASEE 2023, paper **#37129**. — F3/F4/P3/P4 montage and the DMN alpha+theta boredom
+  marker, implemented by `ch_eeg.py`.
+- **King et al.** ASEE 2024, paper **#44685**. — The gaze-deviation-variance feature implemented by
+  `ch_hmd.py`.
+
+The two ASEE entries need their full author lists, first names and paper titles filled in from your own
+records before they reach the works cited; only the paper numbers and their methodological roles were
+verified here.
+
+> **Deliberate omission, and it needs your judgment.** The full author lists of both ASEE papers are
+> cited by lead author only in this document, because **several co-author surnames are also participant
+> surnames** — the studies were run within the lab and members of the author team appear in the
+> participant pool. The PII guard caught this when the full lists were first written here.
+>
+> Nothing about citing the papers is improper: those author lists are already published and public. But
+> the collision is worth a deliberate decision rather than an accident, because a works-cited entry sits
+> a few pages from a per-subject results matrix, and the two together narrow the pool a reader is
+> choosing from. The crosswalk itself is not recoverable from the author list — subject labels come from
+> sorted folder order and are never persisted — so this is a narrowing risk, not an identification.
+>
+> **Recommendation:** cite both papers in full and normally in the works cited, which is required and
+> correct, and keep the per-subject matrix label-keyed as it already is. Take no further action. But the
+> decision is yours, and it is better made now than noticed at review.
+
+---
+
+## 12. Open question for the author
+
+**HRV scope.** The ruling was given in answer to a question about *Round 2* HRV, with the reason that
+head structure precluded accurate measurement. Because that cause is anatomical and round-independent,
+it has been applied to **both** rounds — so Round 1's HRV has been dropped from the reported surfaces
+too, where it previously sat at Friedman p=0.6065. The exclusion is logged with the reason and is fully
+recoverable by flipping `config.EXCLUDE_HRV`. **If Round 1 HRV was meant to stay, say so and it comes
+straight back.**

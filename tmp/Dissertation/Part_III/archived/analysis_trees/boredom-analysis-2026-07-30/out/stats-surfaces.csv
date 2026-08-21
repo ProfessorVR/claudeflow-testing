@@ -1,0 +1,32 @@
+surface,scope,n,poolable,poolable_reason,friedman_chi2,friedman_p,descriptive_only,note,small_n_note
+pupil dilation,R1-unified,8,True,mean of a per-sample value; robust to sampling rate,7,0.0301973834223,False,,
+pupil dilation,R1-asis,8,True,mean of a per-sample value; robust to sampling rate,7,0.0301973834223,False,,
+pupil dilation,R2,4,True,mean of a per-sample value; robust to sampling rate,1.5,0.472366552741,True,,"n=4: the Wilcoxon floor is p=0.125, so perfect separation is the strongest obtainable result"
+pupil dilation,POOLED N=12,12,True,mean of a per-sample value; robust to sampling rate,6.16666666667,0.0458063141726,False,,
+cognitive load,R1-unified,8,True,mean of a vendor index; robust to sampling rate,1.75,0.416862019679,False,,
+cognitive load,R1-asis,8,True,mean of a vendor index; robust to sampling rate,1.75,0.416862019679,False,,
+cognitive load,R2,4,True,mean of a vendor index; robust to sampling rate,6.5,0.0387742078317,True,,"n=4: the Wilcoxon floor is p=0.125, so perfect separation is the strongest obtainable result"
+cognitive load,POOLED N=12,12,True,mean of a vendor index; robust to sampling rate,1.5,0.472366552741,False,,
+HR,R1-unified,8,True,mean of a vendor index; robust to sampling rate,3.25,0.196911675204,False,,
+HR,R1-asis,8,True,mean of a vendor index; robust to sampling rate,3.25,0.196911675204,False,,
+HR,R2,2,True,mean of a vendor index; robust to sampling rate,,,,n=2 too few complete cases,
+HR,POOLED N=12,10,True,mean of a vendor index; robust to sampling rate,0.8,0.670320046036,False,,
+gaze deviation variance,R1-unified,8,False,variance of a 5-point rolling median: rate-dependent. Decimating Round 2 from 120 Hz to Round 1's ~3.3 Hz moves it by 0.65-0.84x (mean 0.74),2.25,0.324652467358,False,,
+gaze deviation variance,R1-asis,8,False,variance of a 5-point rolling median: rate-dependent. Decimating Round 2 from 120 Hz to Round 1's ~3.3 Hz moves it by 0.65-0.84x (mean 0.74),1,0.606530659713,False,,
+gaze deviation variance,R2,4,False,variance of a 5-point rolling median: rate-dependent. Decimating Round 2 from 120 Hz to Round 1's ~3.3 Hz moves it by 0.65-0.84x (mean 0.74),1.5,0.472366552741,True,,"n=4: the Wilcoxon floor is p=0.125, so perfect separation is the strongest obtainable result"
+gaze deviation median,R1-unified,8,False,windowed statistic over a 5-point rolling median; the window spans ~42 ms at 120 Hz and ~1.5 s at 3 Hz,4,0.135335283237,False,,
+gaze deviation median,R1-asis,8,False,windowed statistic over a 5-point rolling median; the window spans ~42 ms at 120 Hz and ~1.5 s at 3 Hz,4,0.135335283237,False,,
+gaze deviation median,R2,4,False,windowed statistic over a 5-point rolling median; the window spans ~42 ms at 120 Hz and ~1.5 s at 3 Hz,6,0.0497870683679,True,,"n=4: the Wilcoxon floor is p=0.125, so perfect separation is the strongest obtainable result"
+eye openness,R1-unified,8,True,time-fraction/mean; robust to sampling rate,9.75,0.00763509421886,False,,
+eye openness,R2,4,True,time-fraction/mean; robust to sampling rate,6,0.0497870683679,True,,"n=4: the Wilcoxon floor is p=0.125, so perfect separation is the strongest obtainable result"
+eye openness,R2-trimmed,4,True,time-fraction/mean; robust to sampling rate,6,0.0497870683679,True,,"n=4: the Wilcoxon floor is p=0.125, so perfect separation is the strongest obtainable result"
+eye openness,POOLED N=12,12,True,time-fraction/mean; robust to sampling rate,15.5,0.000430742540576,False,,
+eye openness,POOLED N=12 trimmed,12,True,time-fraction/mean; robust to sampling rate,15.5,0.000430742540576,False,,
+blink rate,R2 only,4,False,"Round 1's 334 ms sampling interval equals the mean blink duration, so blinks are unresolvable there; Round 2 only",0.5,0.778800783071,True,,"n=4: the Wilcoxon floor is p=0.125, so perfect separation is the strongest obtainable result"
+% time eyes closed,R2 only,4,False,episode segmentation depends on sampling rate,6,0.0497870683679,True,,"n=4: the Wilcoxon floor is p=0.125, so perfect separation is the strongest obtainable result"
+head motion (gyro magnitude),R2 only,1,False,Round 2 only; no Round 1 equivalent,,,,n=1 too few complete cases,
+EEG DMN power (alpha+theta),R1 only (N=8),8,,not classified,3.25,0.196911675204,False,Round 2 has no EEG; this channel is N=8 permanently,
+EEG parietal alpha,R1 only (N=8),8,,not classified,3,0.223130160148,False,Round 2 has no EEG; this channel is N=8 permanently,
+EEG frontal alpha,R1 only (N=8),8,,not classified,1.75,0.416862019679,False,Round 2 has no EEG; this channel is N=8 permanently,
+EEG parietal theta,R1 only (N=8),8,,not classified,0.75,0.687289278791,False,Round 2 has no EEG; this channel is N=8 permanently,
+EEG frontal theta,R1 only (N=8),8,,not classified,0.25,0.882496902585,False,Round 2 has no EEG; this channel is N=8 permanently,

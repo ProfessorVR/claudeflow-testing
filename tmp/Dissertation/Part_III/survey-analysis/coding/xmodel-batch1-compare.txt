@@ -1,0 +1,88 @@
+# Cross-model compare — batch 1 (146 W25 rows), 2026-07-23
+# pass1-1.txt = Haiku 4.5 single pass (2026-07-06, superseded per Station 7 ruling)
+# pass2-1.txt = Fable 5 blind replacement pass (2026-07-23, CODER-INSTRUCTIONS protocol,
+#   coder saw ONLY instructions + batch-1.txt; validated: 146/146 row-aligned, all codes in
+#   codebook vocabulary)
+# Measure: Jaccard over per-row code sets (same convention as agreement-stats.txt; H-NEW
+#   slug normalization changes nothing here)
+
+MEAN JACCARD (Haiku vs Fable): 0.596        [Fable–Fable batch-6 benchmark: 0.878]
+EXACT-SET MATCHES: 56/146 (38.4%)
+ROWS BELOW 0.5: 50/146
+
+# Systematic divergence patterns (Haiku → Fable):
+# 1. D2-A3 vs X-OFFTOPIC boundary: Haiku coded generic course-element praise (lectures,
+#    quizzes, final project) as D2-A3 platform-interest; Fable routes non-VLE praise to
+#    X-OFFTOPIC (e.g. R007/Q5, R008/Q5, R032/Q5). Inflates Haiku-batch D2-A3.
+# 2. Short-response under-reading: Haiku X-EMPTY where content exists (R021/Q5, R021/Q6,
+#    R022/Q5).
+# 3. E-SHA under-application by Haiku on Q10 social proposals (R014/Q10, R017/Q10,
+#    R030/Q10, R032/Q10) — E-SHA counts in t3 will rise on refresh.
+# 4. Extra Haiku F1-PRESENCE (R006/Q10, R011/Q5, R034/Q5) — load-bearing for F7's
+#    APP-vs-VID presence rates; refresh must re-check F7.
+# 5. A4-DIV: Haiku flagged R007/Q10, R017/Q9, R037/Q9 as DIV; Fable retains only R014/Q9 —
+#    F5's register will shrink on refresh (its W25 rows re-verify then).
+# 6. Fable invented H-NEW-vr-redundant (6 rows: R007/Q6, R008/Q10, R014/Q9, R015/Q10,
+#    R032/Q10, R037/Q9) = the value-skepticism theme (batch-6's H-NEW-skeptic) rediscovered
+#    independently in W25 — corroborates F6's term-neutral sweep; harmonize to the
+#    skepticism theme at refresh per the Station 4 emergent protocol. Also H-NEW-low-immersion
+#    (R007/Q10). Coder ambiguity flags retained in session log (nb. R009/Q5 role-presence
+#    "became a real engineer" counted F1 — review at refresh).
+
+# Rows with Jaccard < 0.5 (rcode | item | J | Haiku codes | Fable codes):
+W25-R001 | Q9 | 0.4 | A1.crash;A1.lag;D3-A3A4 | A1.crash;A1.lag;A1.other;G2-OPTIMIZE
+W25-R002 | Q9 | 0.11 | A1.nav;B1-FALLBACK;D0-A0A1 | A1.nav;A1.other;D1-A2;D3-A3A4;E-SPA;G4-INTERACT;G5-GUIDE
+W25-R003 | Q5 | 0.33 | D2-A3;TRANSLATED | TRANSLATED;X-OFFTOPIC
+W25-R005 | Q9 | 0.0 | A1.hw | A1.install;G2-OPTIMIZE;X-NONUSE
+W25-R006 | Q5 | 0.0 | F2-WORLD | D2-A3
+W25-R006 | Q10 | 0.33 | E-NAR;F1-PRESENCE | E-NAR;G6-USECASE
+W25-R007 | Q5 | 0.0 | D2-A3 | X-OFFTOPIC
+W25-R007 | Q6 | 0.33 | B1-FALLBACK | A2-DIFFUSE;B1-FALLBACK;H-NEW-vr-redundant
+W25-R007 | Q10 | 0.0 | A4-DIV | G1-PROVISION;H-NEW-low-immersion
+W25-R008 | Q5 | 0.0 | D2-A3 | X-OFFTOPIC
+W25-R008 | Q9 | 0.0 | G5-GUIDE | G3-CONTENT
+W25-R008 | Q10 | 0.0 | A2-DIFFUSE | H-NEW-vr-redundant
+W25-R009 | Q5 | 0.33 | E-NAR;F1-PRESENCE | D2-A3;F1-PRESENCE
+W25-R011 | Q5 | 0.0 | F1-PRESENCE | D2-A3
+W25-R012 | Q9 | 0.25 | D2-A3;G5-GUIDE | D1-A2;D2-A3;G3-CONTENT
+W25-R013 | Q6 | 0.25 | D0-A0A1;D1-A2;G5-GUIDE | D1-A2;G3-CONTENT
+W25-R014 | Q5 | 0.33 | C3-LENGTH;D2-A3;E-NAR | D2-A3
+W25-R014 | Q9 | 0.29 | A2-DIFFUSE;A4-DIV;B1-FALLBACK | A1.dark;A4-DIV;B1-FALLBACK;D1-A2;E-AFF;H-NEW-vr-redundant
+W25-R014 | Q10 | 0.33 | G6-USECASE;X-NONUSE | E-SHA;G6-USECASE
+W25-R015 | Q10 | 0.0 | A2-DIFFUSE | H-NEW-vr-redundant
+W25-R017 | Q9 | 0.25 | A4-DIV;B1-FALLBACK | A5-WITHDRAWN;B1-FALLBACK;E-AFF
+W25-R017 | Q10 | 0.33 | E-AFF;G6-USECASE | E-SHA;G6-USECASE
+W25-R018 | Q6 | 0.25 | A1.hw;G5-GUIDE | G5-GUIDE;X-NONUSE;X-OFFTOPIC
+W25-R020 | Q5 | 0.0 | D2-A3 | E-LUD
+W25-R021 | Q5 | 0.0 | X-EMPTY | D2-A3;X-OFFTOPIC
+W25-R021 | Q6 | 0.0 | X-EMPTY | D3-A3A4;G4-INTERACT
+W25-R022 | Q5 | 0.0 | X-EMPTY | X-OFFTOPIC
+W25-R025 | Q5 | 0.33 | D2-A3;E-AFF | C3-LENGTH;D2-A3
+W25-R025 | Q6 | 0.43 | A3-MONOTONY;C3-LENGTH;D0-A0A1;D2-A3;D3-A3A4 | A1.other;A3-MONOTONY;C3-LENGTH;D0-A0A1;D1-A2
+W25-R025 | Q9 | 0.29 | A3-MONOTONY;D0-A0A1;D3-A3A4;G5-GUIDE | A1.other;A3-MONOTONY;D0-A0A1;D1-A2;G3-CONTENT
+W25-R028 | Q9 | 0.0 | G5-GUIDE | G3-CONTENT
+W25-R029 | Q5 | 0.0 | D2-A3 | E-LUD
+W25-R029 | Q6 | 0.0 | X-OFFTOPIC | G3-CONTENT
+W25-R030 | Q5 | 0.33 | D2-A3;E-SHA | D2-A3;X-OFFTOPIC
+W25-R030 | Q6 | 0.0 | X-OFFTOPIC | D3-A3A4;G4-INTERACT
+W25-R030 | Q10 | 0.33 | E-AFF;G6-USECASE | E-SHA;G6-USECASE
+W25-R031 | Q5 | 0.0 | D2-A3;D4-LOOP | D3-A3A4
+W25-R031 | Q9 | 0.0 | A3-MONOTONY;D2-A3;G5-GUIDE | C3-LENGTH;D1-A2;G3-CONTENT
+W25-R032 | Q5 | 0.0 | D2-A3 | X-OFFTOPIC
+W25-R032 | Q6 | 0.0 | D2-A3;G5-GUIDE | D1-A2;G3-CONTENT;X-OFFTOPIC
+W25-R032 | Q10 | 0.0 | A2-DIFFUSE | E-SHA;H-NEW-vr-redundant
+W25-R033 | Q5 | 0.2 | E-AFF;E-NAR;F1-PRESENCE | D2-A3;E-AFF;F3-CARRY
+W25-R034 | Q5 | 0.33 | D2-A3;E-NAR;F1-PRESENCE | D2-A3
+W25-R034 | Q6 | 0.2 | D1-A2;G2-OPTIMIZE | A1.dark;D1-A2;G3-CONTENT;X-OFFTOPIC
+W25-R034 | Q9 | 0.33 | A1.other;D1-A2;G2-OPTIMIZE | A1.crash;A1.dark;D1-A2;G2-OPTIMIZE;G3-CONTENT
+W25-R035 | Q6 | 0.25 | G5-GUIDE | D2-A3;G4-INTERACT;G5-GUIDE;X-OFFTOPIC
+W25-R035 | Q9 | 0.4 | A1.install;A1.other;B1-FALLBACK | A1.crash;A1.other;A5-WITHDRAWN;B1-FALLBACK
+W25-R036 | Q5 | 0.33 | C3-LENGTH;D2-A3 | D2-A3;X-OFFTOPIC
+W25-R036 | Q9 | 0.33 | A1.crash;G2-OPTIMIZE | A1.crash;G5-GUIDE
+W25-R037 | Q9 | 0.17 | A1.hw;A4-DIV;B1-FALLBACK | A1.install;B1-FALLBACK;G2-OPTIMIZE;H-NEW-vr-redundant
+
+# Note: the low-agreement listing above uses H-NEW-normalized sets for J; the code columns
+# show the actual slugs. Full row-by-row data reproducible from the two pass files.
+# DISPOSITION (Station 7 ruling): pass1-1 (Haiku) SUPERSEDED; pass2-1 (Fable) canonical for
+# batch 1 on refresh. Refresh = one deterministic pass after batch-5 confirmation,
+# adjudications 1-7 supreme.

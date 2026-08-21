@@ -1,0 +1,113 @@
+# Cross-model compare — batch 2 (146 W25 rows), 2026-07-23
+# pass1-2.txt = Haiku 4.5 single pass (2026-07-06, superseded per Station 7 ruling)
+# pass2-2.txt = Fable 5 blind replacement pass (2026-07-23, CODER-INSTRUCTIONS protocol,
+#   coder saw ONLY instructions + batch-2.txt; validated: 146/146 row-aligned, all codes in
+#   codebook vocabulary)
+
+MEAN JACCARD (Haiku vs Fable): 0.514        [batch 1: 0.596; Fable–Fable benchmark: 0.878]
+EXACT-SET MATCHES: 41/146 (28.1%)
+ROWS BELOW 0.5: 67/146
+
+# INDEPENDENT CORROBORATION OF ADJUDICATIONS 5–6 (the C2 strike): the blind Fable coder,
+# with no knowledge of the adjudication, coded
+#   W25-R049/Q5 -> D2-A3;C3-LENGTH   (the objective-length reading; Haiku had C2-FLOW)
+#   W25-R076/Q5 -> D2-A3             (no temporal code at all; Haiku had C2-FLOW)
+# and applied C2-FLOW to ZERO rows in the batch. The strike stands on its own warrant AND
+# is now independently replicated.
+
+# Systematic divergence patterns (Haiku → Fable):
+# 1. F3-CARRY COLLAPSE: 14 rows where Haiku applied F3-CARRY, Fable sustains NONE (0 F3 in
+#    the whole batch) — Haiku read "most useful for learning" Q5 praise as carry-over;
+#    Fable reserves F3 for actual after-effects talk per the definition and recodes these
+#    mostly to E-NAR. Corpus F3 = 18 (16 W25): expect a large drop at refresh; any
+#    incorporation-positive claim citing F3 gets re-checked.
+#    Rows: R048/Q5 R049/Q10 R052/Q5 R055/Q5 R057/Q5 R059/Q5 R064/Q5 R064/Q10 R065/Q5
+#          R067/Q5 R067/Q10 R070/Q5 R075/Q5 R075/Q10
+# 2. D2-A3 vs X-OFFTOPIC boundary again, both directions this time (R042/Q6, R045/Q5,
+#    R061/Q5 vs R061/Q6, R070/Q5 vs R070/Q6): Haiku also mis-routed some genuine
+#    platform-content praise to X-OFFTOPIC.
+# 3. A4-DIV: Haiku flags at R038/Q10, R056/Q9, R059/Q6 dropped by Fable; R065/Q6 and
+#    R078/Q6 retained. F5's register re-verifies at refresh (nb. W25-R038/Q10 is in the
+#    current DIV register).
+# 4. X-EMPTY vs X-NONUSE boundary: Fable routes "couldn't install" non-use to X-NONUSE
+#    (R055/Q9, R069/Q9, R076/Q9).
+# 5. H-NEW-videos-suffice ×5 (R054/Q6, R059/Q6, R071/Q10, R078/Q6, R078/Q10) — the
+#    value-skepticism/redundancy theme discovered independently a THIRD time (batch-6
+#    H-NEW-skeptic, batch-1 H-NEW-vr-redundant); harmonize at refresh per Station 4
+#    protocol.
+
+# Rows with Jaccard < 0.5 (rcode | item | J | Haiku codes | Fable codes; H-NEW normalized):
+W25-R038 | Q10 | 0.25 | A4-DIV;G6-USECASE | A1.other;E-SHA;G6-USECASE
+W25-R039 | Q9 | 0.25 | D1-A2;G3-CONTENT | A1.other;E-NAR;G3-CONTENT
+W25-R042 | Q6 | 0.0 | G5-GUIDE | X-OFFTOPIC
+W25-R042 | Q9 | 0.33 | A1.hw;G2-OPTIMIZE | A1.install;G2-OPTIMIZE
+W25-R042 | Q10 | 0.33 | D3-A3A4;G6-USECASE | E-SPA;G6-USECASE
+W25-R043 | Q6 | 0.0 | A3-MONOTONY | X-OFFTOPIC
+W25-R044 | Q5 | 0.25 | D2-A3;F1-PRESENCE | D1-A2;D2-A3;E-NAR
+W25-R044 | Q9 | 0.25 | A1.lag;D1-A2 | A1.crash;A1.lag;D2-A3
+W25-R044 | Q10 | 0.25 | F1-PRESENCE;F2-WORLD | D3-A3A4;E-SPA;F1-PRESENCE
+W25-R045 | Q5 | 0.0 | X-OFFTOPIC | D2-A3
+W25-R045 | Q9 | 0.11 | B1-FALLBACK;D3-A3A4 | A1.prox;B1-FALLBACK;D1-A2;D2-A3;E-KIN;E-NAR;E-SPA;F1-PRESENCE
+W25-R048 | Q5 | 0.33 | D2-A3;F3-CARRY | D2-A3;E-NAR
+W25-R048 | Q6 | 0.0 | A1.lag;A1.nav | A1.crash;A1.other
+W25-R049 | Q5 | 0.33 | C2-FLOW;D2-A3 | C3-LENGTH;D2-A3
+W25-R049 | Q9 | 0.33 | A1.lag;D3-A3A4 | A1.lag;G2-OPTIMIZE
+W25-R051 | Q6 | 0.0 | G5-GUIDE | A2-DIFFUSE
+W25-R051 | Q9 | 0.0 | D4-LOOP;G4-INTERACT | X-OFFTOPIC
+W25-R052 | Q5 | 0.33 | D2-A3;F3-CARRY | D2-A3;E-NAR
+W25-R053 | Q5 | 0.33 | D2-A3;E-AFF | C3-LENGTH;D2-A3
+W25-R053 | Q6 | 0.33 | A1.hw;B1-FALLBACK;E-AFF | A1.other;B1-FALLBACK;D1-A2;E-AFF;G3-CONTENT
+W25-R053 | Q10 | 0.33 | D3-A3A4;E-SHA | E-SHA;G6-USECASE
+W25-R054 | Q6 | 0.0 | A2-DIFFUSE | A1.install;B1-FALLBACK;H-NEW-videos-suffice
+W25-R054 | Q9 | 0.2 | A1.hw;B1-FALLBACK;E-AFF | A1.other;D2-A3;E-AFF
+W25-R054 | Q10 | 0.4 | A1.hw;G6-USECASE | A1.hw;A1.other;E-AFF;G1-PROVISION;G6-USECASE
+W25-R055 | Q9 | 0.33 | B1-FALLBACK;X-EMPTY | B1-FALLBACK;X-NONUSE
+W25-R055 | Q10 | 0.33 | G6-USECASE | D3-A3A4;E-SPA;G6-USECASE
+W25-R056 | Q6 | 0.0 | A1.nav;D1-A2 | A1.other
+W25-R056 | Q9 | 0.33 | A4-DIV;D3-A3A4 | D3-A3A4;G4-INTERACT
+W25-R057 | Q5 | 0.33 | D2-A3;F3-CARRY | D2-A3;E-NAR
+W25-R057 | Q9 | 0.4 | A1.lag;D3-A3A4 | A1.hw;A1.lag;D2-A3;D3-A3A4;E-SPA
+W25-R057 | Q10 | 0.25 | D0-A0A1;G6-USECASE | D3-A3A4;E-SPA;G6-USECASE
+W25-R058 | Q9 | 0.33 | G4-INTERACT;G5-GUIDE | D3-A3A4;G4-INTERACT
+W25-R058 | Q10 | 0.0 | G6-USECASE | E-SHA
+W25-R059 | Q5 | 0.33 | D2-A3;F3-CARRY | D2-A3;E-NAR
+W25-R059 | Q6 | 0.0 | A4-DIV;B1-FALLBACK | D3-A3A4;E-KIN;E-SPA;H-NEW-videos-suffice
+W25-R059 | Q10 | 0.33 | D2-A3;G6-USECASE | E-KIN;G6-USECASE
+W25-R060 | Q6 | 0.0 | G5-GUIDE | X-OFFTOPIC
+W25-R060 | Q9 | 0.25 | A1.install;A1.lag | A1.hw;A1.lag;X-NONUSE
+W25-R061 | Q5 | 0.0 | D2-A3;D4-LOOP | X-OFFTOPIC
+W25-R061 | Q6 | 0.0 | X-OFFTOPIC | D2-A3
+W25-R061 | Q10 | 0.33 | G6-USECASE | D1-A2;E-NAR;G6-USECASE
+W25-R064 | Q5 | 0.33 | D2-A3;F3-CARRY | D2-A3;E-NAR
+W25-R064 | Q6 | 0.33 | A1.crash;A1.nav | A1.crash;A1.other
+W25-R065 | Q5 | 0.0 | D2-A3;F3-CARRY | X-OFFTOPIC
+W25-R065 | Q6 | 0.25 | A4-DIV | A2-DIFFUSE;A4-DIV;D2-A3;E-SPA
+W25-R065 | Q9 | 0.2 | D3-A3A4;G4-INTERACT;G6-USECASE | E-AFF;E-SPA;G4-INTERACT
+W25-R066 | Q9 | 0.0 | X-EMPTY | E-LUD
+W25-R067 | Q5 | 0.33 | D2-A3;F3-CARRY | D2-A3;E-NAR
+W25-R068 | Q6 | 0.0 | G5-GUIDE | X-OFFTOPIC
+W25-R068 | Q9 | 0.0 | A1.prox;D3-A3A4 | D1-A2;G4-INTERACT
+W25-R069 | Q9 | 0.0 | A1.install;X-EMPTY | X-NONUSE
+W25-R070 | Q5 | 0.0 | D2-A3;F3-CARRY | X-OFFTOPIC
+W25-R070 | Q6 | 0.0 | X-OFFTOPIC | D2-A3
+W25-R070 | Q9 | 0.25 | B1-FALLBACK;D1-A2 | A1.nav;A5-WITHDRAWN;B1-FALLBACK
+W25-R070 | Q10 | 0.4 | E-SHA;G6-USECASE | E-LUD;E-SHA;E-SPA;G4-INTERACT;G6-USECASE
+W25-R071 | Q10 | 0.33 | D4-LOOP;G6-USECASE | G6-USECASE;H-NEW-videos-suffice
+W25-R072 | Q5 | 0.0 | X-EMPTY | X-OFFTOPIC
+W25-R074 | Q5 | 0.33 | D2-A3;D4-LOOP | D2-A3;E-NAR
+W25-R075 | Q5 | 0.33 | D2-A3;F3-CARRY | D2-A3;E-NAR
+W25-R075 | Q9 | 0.0 | D1-A2;G2-OPTIMIZE | D0-A0A1;E-LUD;G3-CONTENT
+W25-R076 | Q9 | 0.33 | A1.install;X-EMPTY | A1.install;X-NONUSE
+W25-R077 | Q6 | 0.0 | G5-GUIDE | X-OFFTOPIC
+W25-R077 | Q9 | 0.0 | A1.nav;D3-A3A4 | G5-GUIDE
+W25-R078 | Q6 | 0.33 | A4-DIV;B1-FALLBACK | A4-DIV;H-NEW-videos-suffice
+W25-R078 | Q9 | 0.33 | A1.crash;A1.lag | A1.crash;G2-OPTIMIZE
+W25-R078 | Q10 | 0.2 | D3-A3A4;G6-USECASE | D2-A3;E-SPA;G6-USECASE;H-NEW-videos-suffice
+W25-R079 | Q5 | 0.33 | D2-A3;D4-LOOP | B1-FALLBACK;D2-A3
+
+# Coder ambiguity flags (from the blind coder's report): R051/Q6 thin-text A2; R054/Q6
+# secondhand friction reports; R053/Q6 implied fallback; R070/Q9 implied withdrawal;
+# R078/Q6 A4-DIV without hollowness vocabulary; R078/Q9 imperative-form bug claim;
+# R062/Q9 blurry-referent; R066/Q9 which-videos unclear; R058/Q10 fits no family cleanly.
+# DISPOSITION (Station 7 ruling): pass1-2 (Haiku) SUPERSEDED; pass2-2 (Fable) canonical for
+# batch 2 on refresh. Adjudications 5-6 (C2 strike) remain supreme AND are now replicated.

@@ -1,0 +1,15 @@
+=== ch-fig <-> ch-hmd CROSS-VALIDATION ===
+
+1. HR/HRV/CogLoad fig-vs-CSV byte-match (tail-aligned, threshold 0.01):
+   60/63 cells match  -> confirms the ch-hmd column mapping is correct.
+
+   mismatches:
+  MISMATCH S07 BOR HR: maxAbsDiff=46 (tail-aligned) len fig=2720 csv=2900
+  MISMATCH S07 BOR HRV: maxAbsDiff=338.6 (tail-aligned) len fig=2720 csv=2900
+  MISMATCH S07 BOR CogLoad: maxAbsDiff=0.5425 (head-aligned) len fig=2720 csv=2900
+2. gaze fig('Eye Gaze Axis' 3 traces) vs csv(raw gaze X/Y/Z): |corr| over 60 traces median=0.108 min=0.002
+   -> LOW correlation: the .fig 'Eye Gaze Axis' is NOT the raw X/Y/Z filtered — it is a
+      different derived quantity. CONSEQUENCE: ch-hmd's raw-derived eye_gaze_axis/median
+      are UNVALIDATED provisional proxies. For processed gaze, use the .fig series (ch-fig)
+      as authoritative, but its exact definition/filter is undocumented. Gaze is the one
+      soft signal (as scoping predicted); HR/HRV/CogLoad/pupil are solid.

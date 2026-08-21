@@ -1,0 +1,79 @@
+# Cross-model compare — batch 5 (77 S25 + 69 W26 rows), 2026-07-23
+# pass1-5.txt = Haiku 4.5 single pass (2026-07-06, superseded per Station 7 ruling)
+# pass2-5.txt = Fable 5 blind replacement pass (2026-07-23, CODER-INSTRUCTIONS protocol,
+#   coder saw ONLY instructions + batch-5.txt; validated: 146/146 row-aligned, all codes in
+#   codebook vocabulary)
+
+MEAN JACCARD (Haiku vs Fable): 0.668        [b1: 0.596 · b2: 0.514 · Fable–Fable: 0.878]
+EXACT-SET MATCHES: 77/146 (52.7%)
+ROWS BELOW 0.5: 37/146
+PER-TERM: S25 0.669 (77 rows) · W26 0.666 (69 rows) — uniform
+
+# INDEPENDENT CORROBORATION OF ADJUDICATION 7 (the D1-A0A1 fold-in): the blind Fable coder,
+# with no knowledge of the adjudication and no access to the off-codebook variant, coded
+#   S25-R074/Q9 -> ...D0-A0A1...      S25-R077/Q6 -> ...D0-A0A1...
+#   W26-R003/Q9 -> A1.dark;D0-A0A1;G5-GUIDE
+#   S25-R069/Q9 -> A1.dark;D1-A2     (exactly the camera-position D1-A2 reading the
+#                                     fold-in added; A1.dark per the D/A double-code rule)
+# The fold-in is replicated blind, three D0 + the one D1-A2.
+
+# Systematic divergence patterns (Haiku → Fable):
+# 1. X-EMPTY under-reading again: 8 rows Haiku marked contentless that Fable codes
+#    substantively (S25-R058/Q10, S25-R059/Q10, S25-R061/Q5, W26-R001/Q5, W26-R004/Q5,
+#    W26-R005/Q9, W26-R009/Q5, W26-R010/Q5). X-EMPTY (86 corpus-wide) will shrink.
+# 2. G5-GUIDE vs G3-CONTENT boundary: Haiku's G5 often = Fable's G3 (S25-R058/Q9,
+#    S25-R064/Q9, S25-R067/Q9, S25-R070/Q9).
+# 3. NEW A4-DIV flags from Fable: W26-R011/Q5 (nb: the cross-term duplicate respondent) and
+#    W26-R014/Q6 — enter the DIV register as candidates for manual review at refresh
+#    (either-pass sensitivity: recall at flag stage, precision at review).
+# 4. F3-CARRY: Haiku 0, Fable 2 (W26-R006/Q5, W26-R018/Q5) — genuine after-effects talk,
+#    consistent with the strict-definition reading that collapsed batch 2's 14 false F3s.
+# 5. MASK flag: W26-R007/Q5 carries potentially self-identifying content (bilingual +
+#    Paraguay-translator ask; no personal name) — anonymization follow-up under the
+#    Station 1 masking policy.
+# 6. H-NEW-integration (W26-R005/Q6): curricular-integration suggestion fitting no G code.
+
+# Rows with Jaccard < 0.5 (rcode | item | J | Haiku codes | Fable codes; H-NEW normalized):
+S25-R058 | Q9 | 0.0 | G5-GUIDE | G3-CONTENT
+S25-R058 | Q10 | 0.0 | X-EMPTY | G6-USECASE
+S25-R059 | Q10 | 0.0 | X-EMPTY | G6-USECASE
+S25-R061 | Q5 | 0.0 | X-EMPTY | D2-A3
+S25-R061 | Q6 | 0.0 | A1.other | E-AFF
+S25-R064 | Q5 | 0.0 | X-OFFTOPIC | E-LUD
+S25-R064 | Q9 | 0.0 | G5-GUIDE | G3-CONTENT;G4-INTERACT
+S25-R066 | Q10 | 0.33 | D2-A3;X-NONUSE | G6-USECASE;X-NONUSE
+S25-R067 | Q9 | 0.33 | G5-GUIDE;X-NONUSE | G3-CONTENT;X-NONUSE
+S25-R068 | Q9 | 0.17 | A1.lag;A1.nav | A1.crash;A1.nav;E-SPA;G2-OPTIMIZE;G5-GUIDE
+S25-R069 | Q6 | 0.0 | A1.hw | A1.install
+S25-R069 | Q9 | 0.0 | D1-A0A1 | A1.dark;D1-A2
+S25-R070 | Q5 | 0.0 | B1-FALLBACK | D2-A3
+S25-R070 | Q9 | 0.0 | A1.install | G5-GUIDE
+S25-R070 | Q10 | 0.0 | D2-A3 | G6-USECASE
+S25-R072 | Q9 | 0.0 | A1.hw;X-NONUSE | A1.lag;D4-LOOP
+S25-R074 | Q5 | 0.33 | B1-FALLBACK;X-NONUSE | B1-FALLBACK;F1-PRESENCE
+S25-R074 | Q9 | 0.17 | A1.install;D1-A0A1 | A1.install;A1.other;B1-FALLBACK;D0-A0A1;G2-OPTIMIZE
+S25-R077 | Q6 | 0.0 | D1-A0A1 | A1.other;D0-A0A1;G3-CONTENT
+S25-R077 | Q9 | 0.0 | G2-OPTIMIZE | D0-A0A1;G3-CONTENT
+S25-R078 | Q5 | 0.33 | D2-A3 | D2-A3;E-LUD;X-OFFTOPIC
+W26-R001 | Q5 | 0.0 | X-EMPTY | D2-A3
+W26-R003 | Q5 | 0.33 | D2-A3 | D2-A3;E-SPA;X-OFFTOPIC
+W26-R003 | Q9 | 0.25 | D1-A0A1;G5-GUIDE | A1.dark;D0-A0A1;G5-GUIDE
+W26-R004 | Q5 | 0.0 | X-EMPTY | D2-A3
+W26-R005 | Q6 | 0.0 | D2-A3 | E-AFF;H-NEW-integration
+W26-R005 | Q9 | 0.0 | X-EMPTY | G3-CONTENT
+W26-R006 | Q9 | 0.33 | G4-INTERACT | D3-A3A4;G4-INTERACT;G5-GUIDE
+W26-R007 | Q5 | 0.4 | D2-A3;F1-PRESENCE | B2-MINIMAL;D2-A3;E-LUD;F1-PRESENCE;MASK
+W26-R007 | Q10 | 0.0 | G6-USECASE | D4-LOOP
+W26-R009 | Q5 | 0.0 | X-EMPTY | D2-A3;E-LUD
+W26-R010 | Q5 | 0.0 | X-EMPTY | X-OFFTOPIC
+W26-R011 | Q5 | 0.25 | A1.nav;B1-FALLBACK | A1.nav;A4-DIV;X-OFFTOPIC
+W26-R014 | Q5 | 0.0 | B1-FALLBACK | D2-A3
+W26-R014 | Q6 | 0.25 | A1.hw;D2-A3 | A1.hw;A4-DIV;D4-LOOP
+W26-R016 | Q9 | 0.33 | G4-INTERACT | D2-A3;F1-PRESENCE;G4-INTERACT
+W26-R017 | Q5 | 0.0 | X-OFFTOPIC | E-LUD
+
+# Adjudication safety: adjudications 1-4 (W26-R023/R036/R049/R055) are all batch-6 rows —
+# untouched by the re-pass. Adjudications 5-6 satisfied natively (zero C2 in pass2-2);
+# adjudication 7 replicated natively (above).
+# DISPOSITION (Station 7 ruling): pass1-5 (Haiku) SUPERSEDED; pass2-5 (Fable) canonical for
+# batch 5 on refresh. ALL THREE REPLACEMENT PASSES COMPLETE (0.596 / 0.514 / 0.668).
