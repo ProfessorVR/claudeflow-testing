@@ -105,16 +105,27 @@ def write(name, caption_comment, header, rows, align):
 
 
 # ---------------------------------------------------------------- D1 criterion table
+LABELS = {
+    "gaze deg p90 (device-forward baseline)":
+        "gaze deviation, 90th percentile (device-forward)",
+    "% time >10 deg off center (device-forward baseline)":
+        "share of episode beyond 10 degrees (device-forward)",
+    "excursion rate >10 deg (device-forward baseline)":
+        "excursions beyond 10 degrees per minute (device-forward)",
+    "gaze deviation variance (per-file baseline)": "gaze deviation variance (per-file)",
+    "HR": "heart rate",
+}
 d = crit[crit.round_scope == "pooled"] if "round_scope" in crit.columns else crit
 rows = []
 for ch in d.channel.unique():
     b = d[(d.channel == ch) & (d.criterion == "boredom")].iloc[0]
     e = d[(d.channel == ch) & (d.criterion == "engagement")].iloc[0]
-    rows.append(f"{ch} & {int(b.n)} & {fmt(b.rho)} & {fp(b.p_perm)} & {fmt(b.pearson_r)}"
+    lab = LABELS.get(ch, ch)
+    rows.append(f"{lab} & {int(b.n)} & {fmt(b.rho)} & {fp(b.p_perm)} & {fmt(b.pearson_r)}"
                 f" & {fmt(e.rho)} & {fp(e.p_perm)} & {fmt(e.pearson_r)}")
 write("D1-criterion-full",
-      "every channel against both ratings; Spearman with within-participant permutation p, "
-      "Pearson beside it; pooled 36 episodes",
+      "every channel against both ratings; Spearman with within-participant Monte Carlo "
+      "permutation p, Pearson beside it; pooled 36 episodes",
       "channel & $n$ & $\\rho_{bor}$ & $p$ & $r_{bor}$ & $\\rho_{eng}$ & $p$ & $r_{eng}$",
       rows, "lccccccc")
 
@@ -143,6 +154,10 @@ items = ["sleep_fight", "fatigue_after", "minutes_until_bored", "depletion",
          "fatigue_prior", "felt_duration_ratio"]
 rows = []
 seed = SEED
+# predicted direction of the most-boring-minus-most-engaging difference per item:
+# +1 = higher on the most-boring episode; -1 = lower (minutes: sooner bored = smaller)
+PRED = {"sleep_fight": +1, "fatigue_after": +1, "minutes_until_bored": -1,
+        "depletion": +1, "fatigue_prior": +1, "felt_duration_ratio": +1}
 for item in items:
     it = wz(surf(sur, item))
     cells = []
@@ -151,11 +166,13 @@ for item in items:
         seed += 1
         cells.append(f"{fmt(rho)} ({fp(pp)})")
     pos, neg, tie, sp = paired(item)
+    agree, contra = (pos, neg) if PRED[item] > 0 else (neg, pos)
     rows.append(f"{item.replace('_', ' ')} & " + " & ".join(cells)
-                + f" & {pos}/{neg}/{tie} & {fp(sp)}")
+                + f" & {agree}/{contra}/{tie} & {fp(sp)}")
 write("D3-survey-battery",
-      "every survey item against both ratings and both eye measures (rho, permutation p), "
-      "with the within-participant paired tally (agree/contra/tied) and exact sign p",
+      "every survey item against both ratings and both eye measures (rho, Monte Carlo "
+      "permutation p), with the within-participant paired tally in each item's predicted "
+      "direction (agree/contra/tied) and exact sign p",
       "item & vs boredom & vs engagement & vs gaze & vs closure & paired & sign $p$",
       rows, "lcccccc")
 
@@ -187,7 +204,8 @@ for sid in SUBJ:
         w0 = wide[(wide.subject == sid) & (wide.stimulus == st)].iloc[0]
         s0 = sur[(sur.subject == sid) & (sur.stimulus == st)].iloc[0]
         k0 = key[(key.subject == sid) & (key.stimulus == st)].iloc[0]
-        mb = "--" if pd.isna(s0.minutes_until_bored) else f"{s0.minutes_until_bored:g}"
+        mb = ("--" if pd.isna(s0.minutes_until_bored)
+              else f"{s0.minutes_until_bored:.2f}".rstrip("0").rstrip("."))
         rows.append(
             f"{sid} & {st} & {100*w0.closure_frac:.1f} & {w0.gaze_deg_median_subject:.1f}"
             f" & {int(s0.boredom)} & {int(s0.engagement)} & {int(s0.sleep_fight)} & {mb}"
@@ -237,11 +255,14 @@ try:
     ret = pd.read_csv(os.path.join(OUT, "eeg-retention-snr.csv"))
     rows = []
     for _, r0 in ret.iterrows():
-        cells = " & ".join(str(r0[c]) if not isinstance(r0[c], float) else f"{r0[c]:.1f}"
-                           for c in ret.columns[1:])
-        rows.append(f"{r0[ret.columns[0]]} & {cells}")
-    write("D7a-eeg-retention", "EEG retention/SNR by cell (the evidence behind D-16)",
-          " & ".join(ret.columns), rows, "l" + "c" * (len(ret.columns) - 1))
+        rows.append(f"{r0.subject} & {r0.stimulus} & {int(r0.n_epochs)}"
+                    f" & {int(r0.retained_epochs)} & {r0.retained_pct:.1f}"
+                    f" & {r0.artifact_to_clean_variance_ratio:.1f}")
+    write("D7a-eeg-retention",
+          "EEG epoch retention by recording (the evidence behind D-16); ratio = artifact "
+          "variance over clean variance",
+          "subject & episode & epochs & retained & retained \\% & artifact/clean variance",
+          rows, "llcccc")
 except Exception as e:
     print("D7a skipped:", e)
 flat = crit[(crit.round_scope == "pooled")

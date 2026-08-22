@@ -177,7 +177,7 @@ Everything that follows compares two things: what a participant's body did durin
 and what that participant said about the same episode afterward. Four decisions govern how that
 comparison was made, and each exists to remove a way the comparison could mislead. They are, in
 the order taken up below, within-subject standardization, the parallel reporting of rank-order
-and product-moment correlation, a within-cluster Monte Carlo permutation test in place of the analytic one,
+and product-moment correlation, a within-cluster permutation test in place of the analytic one,
 and a paired within-subject contrast evaluated by an exact sign test.
 
 The first decision is to measure every participant against themselves, which is done by
@@ -211,11 +211,11 @@ is not merely monotonic but close to proportional, which is the condition that w
 hold before such a measurement could stand in for a rating rather than merely accompany it.
 
 The third decision concerns how an association is judged unlikely to have arisen by chance, and
-it replaces the analytic probability with a within-cluster Monte Carlo permutation test. The textbook
+it replaces the analytic probability with a within-cluster permutation test. The textbook
 formula assumes the thirty-six episodes are thirty-six independent observations. They are not:
 they are twelve participants contributing three episodes each, and episodes from one person
 resemble one another for reasons unrelated to the films. That clustering violates the
-independence assumption and inflates significance, sometimes badly. The Monte Carlo test builds
+independence assumption and inflates significance, sometimes badly. The permutation test builds
 its null distribution from the data instead. Each participant's three ratings are randomly
 reassigned among that participant's own three episodes, the coefficient is recomputed, and the
 procedure is repeated twenty thousand times. The reported probability is the proportion of those
