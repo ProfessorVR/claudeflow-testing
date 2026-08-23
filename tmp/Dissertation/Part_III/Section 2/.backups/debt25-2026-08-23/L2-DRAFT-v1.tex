@@ -1,0 +1,501 @@
+% LAB BOREDOM — module L2, The Apparatus and the Data. GUIDED DRAFTING (desktop recipe).
+% Session 2026-08-06, continuing the Section 2 run. Spec: outline v7 §L2. Rulings: register v8.
+% Protocol: Stage-3 guided batches, approval gate each batch; bare ¶-numbers when presenting.
+% Sources for THIS module differ from L1: there is no L1-style pack. Evidence comes from
+%   (a) boredom-analysis-v5-2026-08-05/ (METHODS.md, FINDINGS.md, out/*.csv) — the ONLY tree;
+%   (b) PROSE-METHODS-CRITERION-VALIDITY-v2 and PROSE-METHODS-GAZE-BASELINE-v2 — DO NOT REWRITE;
+%   (c) our own published papers, quoted only through gated spans.
+% Standing rulings carried from L1 (see L1-DRAFT-v1.tex header for the full list):
+%   first+last name at first mention · NO vague "instrument" · American spelling · MLA ·
+%   no bold run-in heads · "demonstrated" never "prove" · all three films treated equally.
+%
+% ★ COHORT STRUCTURE — CORRECTED AND AUTHOR-CONFIRMED 2026-08-06. This overturns a standing
+%   finding and the outline's L2.1 framing. Record the change in register v9.
+%   (1) The 2023 paper (P1) reported THREE subjects. Verified in the document four ways:
+%       the Methods sentence "three individuals, two of whom had no prior experience...";
+%       Table 1's three demographic rows (ages 20, 21, 33); results discussing Subject 1-3
+%       only; the limitations naming Subject 2's artifacts and Subject 3's impedances.
+%       Four copies of the PDF across four repos are byte-identical (md5 dc8c888f...).
+%       AUTHOR CONFIRMED 2026-08-06 that three is correct for the published paper.
+%   (2) Round 1 as a COLLECTION ROUND has eight subjects (S01-S08). The 2023 paper published
+%       three of them. These are different facts about different things.
+%   (3) ★ F-11 IS WITHDRAWN (author ruling 2026-08-06). The register asserts "the published
+%       gaze cohort cannot contain Round 2," inferred from the 2024 paper's reference access
+%       dates (all Jan 16, 2024) against Round 2 being recorded that March. The author, who
+%       ran the study, confirms the 2024 paper's twelve IS Round 1's eight plus Round 2's
+%       four, using the SAME Round 1 data. Arithmetic corroborates: only twelve people exist
+%       in the dataset. Citation access dates date the references, not the submission.
+%   (4) CONSEQUENCE FOR L2.1: outline v7's "the two twelves are different twelves" trap is
+%       GONE. Replaced by continuity — the published gaze cohort IS this analysis's cohort.
+%   (5) Participants include COMPUTER SCIENCE undergraduates (author, 2026-08-06) alongside
+%       the BME undergraduates, MEng BME students, and first-/second-year medical students
+%       the 2024 paper's own participant paragraph names.
+%   (6) IRB: use the 2024 form — UCI IRB Exempt No. 20232678. (The 2023 paper renders it
+%       "UCI IRB exempt No. 2678".)
+%
+% ★ PARHI AND AYINALA RE-PINNED: 2014, NOT 2013. IEEE Transactions on Circuits and Systems I,
+%   vol. 61, no. 1, January 2014. Outline v7 §L2.4 flagged the suspicion; confirmed from the
+%   PDF front matter. Works cited takes 2014.
+%
+% O-14: author ruling 2026-08-06 — multiplicity in the criterion family is handled as a
+%   FOOTNOTE, not a computed correction. Revisable later.
+% O-15: author ruling 2026-08-06 — DEFERRED to the point in the draft where it lands (L2.8).
+%   The ****** stays until then.
+% ============================================================================
+% L2 REVISION BATCH (2026-08-21, author-ruled during appendix drafting; backup
+% .backups/L2-revision-2026-08-21/):
+%   L2-E1 administration corrected per author statement: SIX questions in the break; the
+%     fatigue question ("how tired right now") asked JUST BEFORE each film began.
+%   L2-E2 "after each film" -> "for each film"; appendix footnote notes the ADMINISTERED
+%     wording (D-H: administered text is canonical; ****** designation stays provisional
+%     per the renumbering rule).
+%   L2-E3 parsing passage updated to the D-39 counts (239/5/1/7/0, none missing; six
+%     never-bored minutes cells -> the n=30 explanation; one NA->scale-floor; the flagged
+%     annotation case). The pre-D-39 "five semantic / two absent" text is superseded.
+%   L2-E4 the O-15 ****** marker DELETED — O-15 RESOLVED by author statement 2026-08-21
+%     (administration description now lives in E1 and Appendix B).
+% ============================================================================
+%
+% BATCH 1 = L2.1 + L2.2 (drafted 2026-08-06, awaiting review).
+%   Survey figures verified in boredom-analysis-v5 METHODS.md §6: seven items =
+%   fatigue-prior, boredom (1-9), engagement (1-9), minutes-until-bored, sleep-fight,
+%   felt duration, fatigue-after. Derived: felt_duration_ratio = felt/17;
+%   depletion = fatigue_after - fatigue_prior. Parsing confidence: exact 239, converted 5,
+%   flagged 1, semantic 5, missing 2; every interpreted value written to EXCLUSIONS.log with
+%   its raw string; 'Halfway' read as 8.5 min (author-approved 2026-07-30).
+
+% BATCH 1 REV 1 (2026-08-06, author notes):
+%   P1: the publication-reconciliation paragraph COLLAPSED INTO A FOOTNOTE at first mention of
+%     the papers, since an appendix will carry all publications. The body now narrates the
+%     experiment in the order it was run.
+%   P2.1: pedantic opener replaced.
+%   P2.2: EXACT PROCEDURE ORDER added — calibration, then three 17-minute films with ~5-minute
+%     breaks, survey administered in each break. Sources: P1 ("Each video was 17 minutes long
+%     and participants were given roughly a 5-minute break in between each video to allow them
+%     to restabilize"; headset worn "over their EEG cap") and P2 ("asked to first perform an
+%     eye-tracking calibration session, followed by watching engaging, clinical immersion, and
+%     boring VR videos").
+%   P2.3: SURVEY QUESTIONS pulled verbatim from the 2023 paper's appendix tables and pointed to
+%     a new appendix via footnote. SIX of the seven verify verbatim:
+%       (1) "On a scale from 1-9 how bored were you while watching this video? (1=Not bored at
+%           all, 9= Extreme boredom)"
+%       (2) "On a scale from 1-9 how interested were you while watching this video? (1=Not
+%           engaged at all, 9=Intense engagement)"  [Table 4 variant: "how interested and
+%           engaged in the video were you?"]
+%       (3) "Roughly how many minutes into the video until you started to get bored?"
+%       (4) "Did you fall asleep/fight to stay awake? (1=Completely awake, 9=Fell asleep)"
+%       (5) "Relatively speaking, how long did the video feel to you?"
+%       (6) "On a scale from 1-9 how tired were you before conducting the experiment
+%           (1=completely awake, 9=completely exhausted)"
+%     ★ THE SEVENTH ITEM (fatigue AFTER the episode, `fatigue_after` in the v5 tree, which
+%       `depletion` is computed from) DOES NOT APPEAR in the 2023 paper's printed tables.
+%       Its wording is ****** UNVERIFIED and must be recovered from the raw survey files
+%       before the appendix is assembled. Do not invent it.
+%   P2.4/2.5: the parsing passage REWRITTEN. Key clarification the author asked for: the counts
+%     sum to 252 = 36 episodes x 7 items, i.e. every answer collected. Verified: 239+5+1+5+2=252.
+
+Twelve people took part, eight in the first round of recording and four in the second, all
+recruited at the University of California, Irvine from undergraduate biomedical engineering,
+master's biomedical engineering, computer science, and first- and second-year medical
+students, under IRB exemption 20232678.\footnote{Both published studies draw on these same
+twelve. The 2023 paper reported three of the first round's eight participants; the 2024 paper
+reported all twelve, using for the first-round participants the same recordings the earlier
+paper had drawn on. The analysis presented here pools all twelve. Both papers are reproduced
+in Appendix ******.} Each participant was fitted with an EEG cap and an HP Reverb G2 Omnicept
+headset worn over it, then completed an eye-tracking calibration in which they fixed on points
+around a circle at the center of the display and registered each with a trigger pull on the
+headset's controller. They then
+watched three films of seventeen minutes each---a boring film, an interesting film, and
+clinical immersion footage---while EEG, eye tracking, and the headset's other sensors recorded
+continuously. Between films came a break of roughly five minutes, long enough for the
+participant to settle before the next recording began. Six of the survey's seven questions
+were administered in that break, their answers referring to the film just watched rather than
+to the session as a whole; the remaining question---how tired the participant felt right
+then---was asked just before each film began. Thirty-six episodes result: twelve participants
+by three films.
+
+The survey asked seven questions for each film.\footnote{The full survey, in its administered
+wording, is reproduced in Appendix ******.} Two of them do the work the rest of this section depends on. Boredom and
+engagement were asked separately, each on its own nine-point scale, rather than as two ends of a
+single scale running from bored to engaged. That is why disagreement inside a participant's own
+answers is visible at all: someone can rate boredom high and engagement high in the same breath,
+and some did. The remaining questions asked how many minutes passed before boredom set in, how
+hard the participant fought to stay awake, how long the film felt, and how tired they were
+before and after watching. Two further quantities are calculated from these rather than asked
+directly. Felt duration becomes a ratio against the film's actual seventeen minutes, so a film
+that felt like half an hour scores near 1.8 and one that passed quickly scores below 1.
+Depletion is simply the second fatigue rating minus the first: how much more tired a participant
+was when a film ended than when it began, which separates the film's own effect on alertness
+from whatever tiredness they brought into the session.
+
+The questions were put to participants aloud and their answers written down by the proctor, so
+the surveys survive as free text rather than as selections from fixed options, and turning that
+text into numbers required reading each answer. Those readings are recorded rather than made
+quietly. Seven questions across thirty-six episodes gives 252 answers, and none is missing.
+Of these, 239 were plain numbers within the expected range and needed no interpretation at
+all. Five required a unit or a range to be converted---``25 sec'' became 0.42 minutes,
+``10--12'' became 11. One arrived in range but carrying an annotation, which is logged with
+it. Seven were not numbers yet carried their meaning plainly: six answers to how many minutes
+passed before boredom set in record that the participant never became bored---a finding
+rather than a missing value, kept as its own category rather than filled in or counted as
+zero, which is why that item is tested on thirty values rather than thirty-six---and one
+``NA'' on a 1--9 item means the film produced none of the asked-after quality and is read as
+1, the scale's floor. Every
+interpreted value is stored alongside the exact words the participant wrote, so any reading can
+be checked against its original.\footnote{One answer reading ``Halfway'' was read as 8.5
+minutes, half of the seventeen-minute film.} What the survey can register follows from the
+definition it was built under. Fahlman's account supplies that definition, not the wording of
+the questions, which put it to participants in ordinary language---and that is what makes these
+seven items a first-form measurement, able to record the boredom a person notices and can
+attribute, and unable in principle to record the rest.
+
+% ============================================================================
+% BATCH 2 = the criterion method (outline v7 §L2.8, now the section's ONLY method).
+% Drafted 2026-08-07 under the author's ruling of the same date:
+%   ★ FILM-SEPARATION STATISTICS ARE EXCLUDED FROM THE DISSERTATION ENTIRELY.
+%     Not demoted, not appendixed. The 99 pairwise contrasts, the Friedman/Wilcoxon
+%     across-film tests, and the nine Holm-surviving contrasts do not appear.
+%     Boredom is a response, not a property of a film, so the organizing variable is
+%     what each participant reported about each episode.
+%   ★ The criterion analysis IS the experiment.
+%   ★ Body carries the Spearman/Pearson comparison chart; the fuller criterion table
+%     for non-load-bearing channels goes to the appendix.
+%   ★ Sleep-fight: within-participant result in the body as a convergent finding, with
+%     the correlation beside it carrying the shared-method caveat.
+%   ★ METHOD MUST BE EXPLAINED FOR A READER WITHOUT STATISTICAL TRAINING — not only the
+%     results but what was computed and why that computation and not another.
+% CONSEQUENCE: PROSE-METHODS-CRITERION-VALIDITY-v2's "do not rewrite" status LAPSES for
+%   register. Its numbers and logic are preserved; its pitch is not, because v2 assumes a
+%   statistically literate reader and the author has ruled otherwise. Numbers below are
+%   read from boredom-analysis-v5 out/criterion-validity.csv after the D-39 re-run.
+% NEW ANALYSIS (2026-08-07, not in outline v7): sleep-fight against reported boredom and
+%   engagement, and the within-participant most-boring vs most-engaging paired test.
+%   Computed this session; verified figures in the batch-2 ledger at the foot of this file.
+% ============================================================================
+
+Everything that follows compares two things: what a participant's body did during an episode
+and what that participant said about the same episode afterward. Four decisions govern how that
+comparison was made, and each exists to remove a way the comparison could mislead. They are, in
+the order taken up below, within-subject standardization, the parallel reporting of rank-order
+and product-moment correlation, a within-cluster Monte Carlo permutation test in place of the analytic one,
+and a paired within-subject contrast evaluated by an exact sign test.
+
+The first decision is to measure every participant against themselves, which is done by
+converting each value to a within-subject standard score, or z-score. People differ enormously
+in ways that have nothing to do with boredom. One person's eyes range widely across any scene;
+another's barely move. One person uses the whole nine-point scale; another never says more than
+seven about anything. Pooling the thirty-six episodes and correlating them directly would let
+those standing differences between people dominate the result, so that much of what came out
+would describe who has a restless eye or a generous hand with a rating scale rather than
+anything about boredom. Standardizing within each participant removes it: every value becomes
+its distance from that participant's own mean, divided by that participant's own standard
+deviation. In plain terms, each person is scored against their own average and their own
+typical spread, so a participant whose gaze wandered furthest on the film they found dullest
+registers identically whether their eyes are naturally still or naturally restless. What each
+person contributes is the shape of their own three episodes and nothing else, which is precisely
+the quantity the question is about.
+
+The second decision is to report the association two ways, as Spearman's rank-order correlation
+and as Pearson's product-moment correlation. Spearman's coefficient asks only about order: when
+a participant's episodes are ranked from least to most boring, do the physiological measurements
+fall in the same order? It is computed on ranks rather than on the values themselves, which is
+what makes it the appropriate primary statistic here, because it assumes only that the rating
+scale is ordinal---that a 9 means more than an 8---and not that it is interval-scaled, that the
+distance from a 3 to a 4 is the same size as the distance from an 8 to a 9. For a
+self-report scale that stronger assumption cannot be guaranteed. Pearson's coefficient asks
+whether the relationship is linear: does each additional point of reported boredom correspond to
+roughly the same additional amount of gaze wandering all the way up the scale? It carries the
+interval assumption Spearman's avoids, so the conclusions do not rest on it. Both are reported
+because their agreement is itself a result. Where the two coefficients converge, the association
+is not merely monotonic but close to proportional, which is the condition that would have to
+hold before such a measurement could stand in for a rating rather than merely accompany it.
+
+The third decision concerns how an association is judged unlikely to have arisen by chance, and
+it replaces the analytic probability with a within-cluster Monte Carlo permutation test. The textbook
+formula assumes the thirty-six episodes are thirty-six independent observations. They are not:
+they are twelve participants contributing three episodes each, and episodes from one person
+resemble one another for reasons unrelated to the films. That clustering violates the
+independence assumption and inflates significance, sometimes badly. The Monte Carlo test builds
+its null distribution from the data instead. Each participant's three ratings are randomly
+reassigned among that participant's own three episodes, the coefficient is recomputed, and the
+procedure is repeated twenty thousand times. The reported probability is the proportion of those
+twenty thousand rearrangements producing an association at least as strong as the observed one.
+Put without the vocabulary: the connection between body and report is deliberately broken twenty
+thousand times over, and the question is how often blind chance manages to do as well as the
+real data did. Because the reshuffling happens strictly inside each participant, the clustering
+is respected rather than assumed away.
+
+The fourth decision applies to the sleep item and answers an objection to it, by way of a paired
+within-subject contrast. A participant who arrived short of sleep will fight drowsiness in every
+episode, and that has nothing to do with any film; drowsiness therefore carries a component
+belonging to the person rather than to what they watched, which in a between-episode comparison
+would appear as noise or, worse, as a spurious effect. Pairing removes it. For each participant,
+the episode that participant rated most boring is set against the episode the same participant
+rated most engaging, and the drowsiness reported in each is compared. Any tiredness carried into
+the session appears on both sides of that difference and cancels, so what remains is the effect
+of that participant's own experience of the two episodes. Because the design yields one
+difference per participant, significance is assessed by an exact sign test---counting how many
+participants went in each direction and computing the exact binomial probability of a split at
+least that lopsided---supported by an exact sign-flip permutation over the same differences.
+With twelve participants the test has a hard floor: even a perfect split cannot produce a
+probability below roughly one in a thousand, so the reported value should be read as the
+strongest result this sample size can express rather than as a precise measure of rarity.
+
+% ============================================================================
+% BATCH 3 = the stimuli, and the two-apparatus problem (outline §L2.3 + §L2.4).
+% Drafted 2026-08-07. Verified this session against archon-cli-v3 and the v5 tree:
+%   Q-P1a "State boredom often derives from information or environmental stimuli that is
+%     monotonous, redundant, and/or meaningless" -- EXACT, King & Salvo P1 (2023).
+%   Q-P1b "Due to the general familiarity our demographic has with Microsoft Word along with
+%     the age and obsolescence of the interface, we believe this video meets the criteria
+%     necessary to induce state boredom" -- EXACT, same source.
+%   Rates: R1 median 3.00 Hz (2.79-3.00 after harmonization); R2 median 120.1 Hz. Factor ~40.
+%   Poolable: pupil, cognitive load, HR, eye closure/openness, self-report. NOT poolable:
+%     gaze_dev_median, gaze_dev_variance (5-point rolling median window = ~42 ms at 120 Hz
+%     vs ~1.5 s at 3 Hz); decimating R2 to R1's rate moves variance by 0.65-0.84x (mean 0.74).
+%   Blink: R1's median sampling interval ~334 ms = the mean duration of a spontaneous blink,
+%     so a blink occupies 0-1 samples and is unresolvable at any threshold. 20 Hz is the floor.
+%     Blink rate is therefore a Round 2 measure only.
+%   Openness scale harmonization: R1 percentage (0-100) vs R2 fraction (0-1), R1 x 0.01.
+% NOTE: film-separation consequences of the rate difference are NOT stated, per the ruling.
+%   The rate difference is presented as a constraint on WHICH MEASURES CAN BE POOLED, which is
+%   what it is, rather than as a caveat about comparing films.
+% ============================================================================
+
+Three films were shown, each seventeen minutes long, and each was chosen before any data
+existed to serve a particular role. The boring film is a Microsoft Word tutorial recorded in
+1989, selected because boredom has long been associated with material that is redundant,
+monotonous, of low intensity, or meaningless---a characterization Fahlman and colleagues draw
+together from a literature reaching back to Berlyne, and the one our own study invoked when
+choosing the stimulus.\footnote{Fahlman and colleagues present it as a conceptualization the
+field has offered rather than as their own definition, citing Berlyne (1960), Fiske and Maddi
+(1961), Geiwitz (1966), Hebb (1966), Mikulas and Vodanovich (1993), and Posner, Russell and
+Peterson (2005). Our 2023 paper paraphrases their summary.} A software
+tutorial for a program the participants already knew, delivered through an interface three
+decades obsolete, was expected to supply those qualities at once. The paper states the
+reasoning plainly: ``Due to the general familiarity our demographic has with Microsoft Word
+along with the age and obsolescence of the interface, we believe this video meets the criteria
+necessary to induce state boredom.'' The interesting film covers alleged alien reproduction
+vehicles and the deaths of scientists associated with alternative energy research, chosen on
+the expectation that a topic of live public fascination would hold attention regardless of
+whether its claims withstand scrutiny---accuracy was not the criterion, since the film was
+selected to engage rather than to inform. The clinical film is a clip of a spinal deformation
+procedure drawn from the platform's own library, and it is the material the platform exists to
+deliver. Whether any of the three actually produced the state it was chosen to produce is a
+question for the participants rather than for the selection rationale, and each participant
+answered it for themselves.
+
+The two rounds were recorded on the same equipment, and what differs between them is the
+software that captured what the equipment produced. Participants in both rounds wore the same
+headset with the same sensors; the only hardware change is that the EEG cap was dropped for
+Round 2. The capture software, however, was still being developed during Round 1 and logged at
+a median of three samples per second. By Round 2 it had been brought to the point where every
+sensor polled and logged at the full rate of one hundred and twenty. That difference is a
+factor of roughly forty, and it governs what can be combined, because measurements differ in
+how much they care about how often they were sampled. A
+quantity that is an average of instantaneous values---pupil diameter, the proportion of an
+episode spent with the eyes closed, heart rate---is unaffected: averaging a hundred and twenty
+readings per second and averaging three per second give the same answer, because the underlying
+quantity is being sampled rather than constructed, and the sensor was reporting the same thing
+in both rounds regardless of how often the software wrote it down. A quantity computed over a
+moving window is a different matter. The gaze-deviation measure smooths across five consecutive samples before
+anything else happens, and five samples spans about forty-two milliseconds at Round 2's rate
+against roughly a second and a half at Round 1's. Those are not the same measurement wearing one
+name; recomputing Round 2's gaze variance after thinning it down to Round 1's rate changes the
+value by a quarter or more. Every quantity in this analysis therefore carries a flag recording
+whether it may be pooled across the two rounds, with the reason attached, and windowed
+quantities are computed within a round and never combined across them.
+
+One measurement is lost to the same arithmetic, and stating why is more useful than reporting
+it with a caveat. A spontaneous blink lasts about a third of a second. Round 1's median interval
+between samples is also about a third of a second, so a blink there occupies either one sample
+or none, and no threshold applied to that data can distinguish a blink from a gap in the logged samples.
+Around twenty samples per second is the floor for measuring blinks honestly. Blink rate is
+consequently a Round 2 quantity only, and no Round 1 blink figure appears anywhere in this
+analysis. A smaller mismatch was repairable rather than fatal: the two rounds recorded eye
+openness on different scales, one as a percentage and one as a fraction, and the two are brought
+onto a single scale before any test that ranks the sizes of differences, since leaving them
+mixed would silently give one round's participants forty times the weight of the other's.
+
+% ============================================================================
+% BATCH 4 = eye closure and its Round 1 proxy (§L2.5) + the two windows (§L2.6).
+% Drafted 2026-08-07. Figures verified in boredom-analysis-v5 METHODS.md this session:
+%   R1 has NO continuous openness channel; the per-sample validity flag (validL & validR)
+%     is the proxy, aggregated as pct_valid_eye. LICENSED inside Round 2 where both exist:
+%     validity proxy vs vendor continuous openness correlate at PEARSON r = 0.998 across
+%     the 12 Round 2 cells.
+%   R1 closure EPISODES read from the per-eye -1 sentinel in dilL/dilR (parse_window()
+%     masks those to NaN -- correct for pupil, fatal for closure). An episode is a maximal
+%     run where BOTH eyes read -1.
+%   R2 openness VERIFIED BINARY: {0,1} only across 12 cells and 3,416,362 per-eye samples,
+%     no intermediate value, so OPENNESS_CLOSED_BELOW = 0.5 is NOT a tuned parameter and the
+%     sensitivity sweep over it was redundant and not run. CONSEQUENCE: blink vs extended
+%     closure rests ENTIRELY on duration.
+%   Blink ceiling 500 ms = VanderWerf mean 334 +/- 67 ms, i.e. mean + ~2.5 SD, rounded;
+%     those blinks were recorded while subjects watched video, matching this paradigm.
+%     Source pinned: J Neurophysiol 89(5):2784-96, doi:10.1152/jn.00557.2002.
+%   Episode counts: R1 4365 (3501 blink-length, 864 extended); R2 5131 (4895 blink, 236 ext).
+%   ★ NEW LIMIT (VanderWerf entry, 2026-08-06): the ceiling is a DURATION threshold and blink
+%     duration varies systematically with vertical gaze position -- controllable at a fixed
+%     screen, NOT in 360 video where gaze is the participant's own behavior. The partition,
+%     the episode counts and R2's blink rate all inherit that dependency. Carry to L6.
+%   WINDOWS: R1 crop mean 818.0 s (range 661.1-973.7); R2 full mean 1038.9 s (1013.2-1167.8);
+%     r1matched = crop minus 120 s each end, mean 798.9 s (773.2-927.8). R1 removed ~2 min
+%     inside each 30 s instructed closure as a sync guard (protocol not yet settled), so its
+%     window is the middle ~13.6 min of a 17-min film. `full` is primary; both carried
+%     through the same tests in window-comparison.csv. THE RESULT BELONGS TO L3, NOT HERE.
+% ============================================================================
+
+Eye closure is named for exactly what it measures: the proportion of an episode during which
+the participant's eyes were shut. Both rounds record it the same way, and the recording is
+unusually clean. The headset reports each eye as open or closed and nothing in between---in
+Round 1 the pupil channel writes a sentinel value whenever an eye cannot be seen, and in Round 2
+a dedicated per-eye channel carries the same information; across all twelve Round 2 recordings
+and more than three million individual eye samples the only values present are zero and one,
+with no intermediate value anywhere. The consequence is that the distinction between a blink and
+a sustained closure rests entirely on how long the closure lasted, and on nothing else.
+
+An episode counts as closed only where both eyes are shut at once.\footnote{Single-eye readings
+occur and are not counted. Averaged across episodes they would add about half a percentage point
+of closure time, reaching 2.2 points in the most affected episode. They are excluded because the
+data cannot distinguish a genuinely closed eye from an eye the tracker has simply lost---a
+headset shifting on the face, an eyelash, a lens, an uneven calibration---and treating a
+tracking failure as closure would let how well the equipment happened to fit a particular
+participant register as boredom. The conservative rule costs nothing measurable: the two
+definitions correlate at 0.998 across the thirty-six episodes, and adopting it moves the
+association between closure and reported boredom from +0.460 to +0.475, and between closure and
+reported engagement from $-$0.417 to $-$0.435.} Where the two rounds are read from different
+columns, they are read to the same rule.
+
+Separating blinks from sustained closures requires a boundary in time, and the boundary is
+drawn from VanderWerf and colleagues, who measured spontaneous blinks at an average of 334
+milliseconds with a spread of 67, in participants who were themselves watching video, which is
+the same situation as this experiment. A closure of half a second or less is therefore treated
+as a blink, that being the mean plus about two and a half standard deviations rounded upward,
+and anything longer is treated as a sustained closure. The same work established that blink
+duration is not a constant: it varies systematically with where the eye is pointed
+vertically.\footnote{The eyelid follows the eye. Looking downward brings the upper lid partway
+down with it, so a blink begun from a downward gaze starts with the lid already lower and
+travels a shorter distance than one begun from a level gaze---the same reflex, differently
+sized and differently timed, depending only on where the eye happened to be pointing. The
+participants here varied enough for this to matter. Measured against the headset's forward axis,
+one Round 2 participant spent five percent of every episode looking more than twenty degrees
+below center, and held a median gaze between four and six degrees below center throughout;
+another sat closer to level, with a median gaze two to four degrees above center. A blink
+measured on the first participant and a blink measured on the second are not being measured
+under the same conditions.} That dependency has a particular consequence in this apparatus,
+because vertical gaze here is not a controlled variable but a behavior.
+
+Participants were seated and did not turn around, and the screen was fixed in front of them in
+every case: the boring and interesting films were conventional flat video, presented as such,
+and the clinical footage was a hundred and eighty degrees, in stereoscopic 3D, rather than a
+full surround. What was
+never fixed is where within that field a participant chose to look. A participant who lets their
+gaze fall toward the floor stops seeing the boring or interesting film altogether, and sees only
+the floor of the operating room in the clinical footage. That behavior is not incidental to what
+this section studies---looking away from a film is one of the more legible things a disengaged
+viewer does---and it is also the behavior that changes how a blink measures. The partition into
+blinks and sustained closures, the episode counts, and Round 2's blink rate therefore inherit a
+dependency on the very conduct under observation, which is a reason to treat the blink
+measurements as descriptive and to rest nothing on them.
+
+The two rounds also differ in how much of each film was analyzed, and the difference is not
+neutral for a measurement that accumulates. Round 1's recordings were cropped with roughly two
+minutes removed inside each of the instructed closures that bracket a film, a sync guard
+adopted while the protocol was still being settled, which leaves the middle thirteen and a half
+minutes or so of a seventeen-minute film. Round 2's recordings are essentially the whole of it.
+Since a participant can only close their eyes for a larger fraction of a window if the window
+contains the moments when they did so, a shorter window and a longer one are not exchangeable.
+Rather than assume the difference away, both are computed: every quantity is calculated on the
+full recording and again on a window trimmed to match Round 1's, and both are carried through
+the same tests. The full window is primary. What the comparison between them shows belongs with
+the results rather than here.
+
+% ============================================================================
+% BATCH 5 = viewing order (§L2.7), the gaze baselines (§L2.9), and what each measurement
+% can and cannot say (§L2.10, REBUILT -- its v7 form was organized around separation).
+% Drafted 2026-08-07.
+%
+% ★ CONSEQUENCE OF THE GOVERNING RULING FOR §L2.9: the three-baseline architecture was built
+%   to answer TWO questions -- separation and agreement -- with device-forward assigned to
+%   separation (where it carried "the only gaze result in this study to survive correction")
+%   and per-participant assigned to agreement. With separation excluded, device-forward has
+%   no assigned question left. It is therefore reported as a computed alternative rather than
+%   as the holder of a question. PROSE-METHODS-GAZE-BASELINE-v2 §0.7-0.8 is superseded on that
+%   point; its §0.9 justification for the per-participant baseline is UNAFFECTED and is what
+%   the paragraph below renders, because that argument was always from design, not coefficient.
+%
+% Verified figures (PROSE-METHODS-GAZE-BASELINE-v2 + criterion-validity.csv after D-40):
+%   per-participant vs boredom +0.590 (perm 0.0024); vs engagement -0.585 (0.0022)
+%   per-file        vs boredom +0.524 (0.0074); vs engagement -0.527 (0.0075)
+%   device-forward  vs boredom +0.359 (0.0751); vs engagement -0.391 (0.0515) -- neither survives
+%   F-01 axis conventions: R1 Unreal X forward / Y horizontal / Z vertical;
+%                          R2 Unity  Z forward / X horizontal / Y vertical (from original MATLAB)
+%   Viewing order (F-09/F-14): S01 and S05 ran CLC -> BOR -> INT; the other six Round 1 and all
+%     four Round 2 ran INT -> CLC -> BOR. Boring LAST in ten of twelve, second in two. Order
+%     fixed after the first two participants; the published paper states the reason.
+%     ★ THE TEST OF THE ORDER HYPOTHESIS GOES TO L6, NOT HERE.
+%   Appendix-only / removed (criterion-validity.csv): cognitive load -0.092 (0.6516) / +0.107
+%     (0.5954); HR +0.088 (0.6774) / +0.036 (0.8647).
+%   D-30: Round 1 participants were instructed to refrain from agitated movement because it
+%     would corrupt the EEG; the instruction was NOT given in Round 2 -- the fifth asymmetry,
+%     alongside capture software, axis convention, sampling rate and window.
+% ============================================================================
+
+The order in which the three films were shown was not the same for everyone, and the exception
+is worth stating because it was deliberate. The first two participants watched the clinical
+footage first, then the boring film, then the interesting one. After those two sessions the
+order was fixed for everyone who followed---interesting, then clinical, then boring---on a
+suspicion that the boring film was depressing whatever came after it, and the published paper
+records that reasoning. The consequence is that the boring film ran last for ten of the twelve
+participants and second for the remaining two.
+
+Gaze deviation requires one further decision, because the measure is an angle and an angle needs
+a center. Nothing in the data supplies one. Three candidates were computed for every
+participant and every film. The first takes center to be the direction the headset itself was
+pointing, so the measure asks how far the eye has turned from straight ahead.\footnote{This one
+had to be reconstructed per round rather than fixed once, because the two capture programs used
+different conventions for which axis points forward---Round 1 treating X as forward with Y
+horizontal and Z vertical, Round 2 treating Z as forward with X horizontal and Y vertical.
+A single hard-coded forward direction
+would have given every Round 1 episode a meaningless offset near ninety degrees.} The second
+takes center to be the middle direction of that particular recording, so the measure asks how
+far the eye strayed from where it mostly sat during that film. The third takes center to be the
+participant's own middle direction across all three of their films.
+
+The third is the one scored against what participants reported, and the reason is the design
+rather than the result. The whole analysis is within-subject: every value on both sides is
+measured against that participant's own average across their three episodes, so each person
+serves as their own control. Of the three centers, only the per-participant one is built that
+same way. It removes what differs between people and has no bearing on the question---how the
+headset happened to sit on a particular face---and it removes it in the domain where that
+nuisance actually lives, by recentering the direction the eye is pointing before any angle is
+taken. It preserves what differs within a person and does bear on the question: whether they
+held their eye differently during one film than another. The per-recording center goes one step
+too far, recentering inside each episode and erasing precisely the between-film difference the
+analysis is looking for. The headset-forward center keeps that difference but carries the
+fitting variation along with it. All three are reported, and no result appears without its
+center named.\footnote{The ranking corroborates the reasoning without being its ground: against
+reported boredom the per-participant center reaches +0.590, the per-recording center +0.524,
+and the headset-forward center +0.359, which does not hold up. The two personal centers agree
+in direction and in ordering, so nothing here turns on which of them is used.}
+
+What each measurement can and cannot say follows from all of this, and is worth stating once
+before presenting any of the results. Two measurements carry the analysis: gaze deviation, centered on the
+participant, and eye closure. The self-report is the third, and it is the criterion the other
+two are scored against rather than a competitor to them. Pupil diameter is reported and set
+aside for reasons already given. Cognitive load was collected as a curiosity and was never a
+candidate for analysis. The headset reports it as a single number derived by proprietary
+calculation, and the calculation is not published: there is no way to establish which
+variables enter it, how they are weighted, or how anything particular to this study would
+affect what it returns. A measurement whose construction cannot be inspected cannot be
+interpreted, whatever value it happens to report. Heart rate and its variability are removed for a different reason, and one that
+belongs to the equipment rather than to the data. Both are taken by sensors that must rest
+against the forehead, and the headset's housing is shaped to a narrow range of facial
+structures; on a number of participants, most consistently those of Asian descent, it did not
+sit flush against the skin. The contact those sensors require was therefore never established,
+and no reading taken through a gap can be relied upon regardless of what it says. The EEG yields a direction and no result, as described. One asymmetry
+between the rounds remains to be named alongside the capture software, the axis conventions,
+the sampling rate and the analysis window: Round 1 participants were asked to refrain from
+agitated movement, because such movement corrupts an EEG recording, and Round 2 participants,
+who wore no EEG cap, were given no such instruction.
