@@ -38,8 +38,9 @@ keep the lid open. Every step keeps the machine awake by itself, but a laptop on
    === [1/3] Cooking content ...
    ```
 3. Wait. It says `[1/3] Cooking`, then `[2/3] Building + staging Development`, then `[3/3] ... Shipping`. Each part
-   takes 10–20 minutes and the window prints nothing while a part runs — that is normal, it is not stuck. Total
-   30–60 minutes. Do not close the window.
+   takes 10–20 minutes after a change and the window prints nothing while a part runs — that is normal, it is not
+   stuck. Total 30–60 minutes after a change; when nothing changed since the last build it finishes in a few minutes
+   (3½ minutes when this page was tested). Do not close the window.
 4. Read the last lines:
    - `PACKAGE OK` and two lines starting `Development:` and `Shipping:` → done. Press any key to close the window.
    - `PACKAGE FAILED: …` followed by `Log: C:\Users\...\package_win_2026-09-22_…log` → stop. Send that log file and a
