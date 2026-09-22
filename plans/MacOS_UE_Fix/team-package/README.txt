@@ -12,11 +12,21 @@ WHAT THIS IS
   migrates the project, applies the Mac-side project fixes, verifies the project
   against the source masters, and the packaging scripts with their guard.
 
-  START HERE for a new Mac:  Building-awsTutorial-on-a-Mac.md  (the runbook)
+  NOT AN ENGINEER? Read only PACKAGING-STEP-BY-STEP.md: one file to double-click on Windows, one
+                             command to type on a Mac, and the word OK or FAILED at the end.
+  START HERE for a new Mac:  Building-awsTutorial-on-a-Mac.md  (the engineer's runbook)
   Full method & rationale:   SOP-UE5.4.1-Mac-Build-and-Migration.md
   Engineering state:         docs/HANDOFF-2026-09-21.md
 
 PACKAGE CONTENTS
+  PACKAGING-STEP-BY-STEP.md        the non-engineer page: Windows build, Mac build from a Windows change, Mac build
+                                   from a Mac change — each as one file to run and one word to read
+  windows\make-project-zip.bat     WINDOWS PC, double-click inside the project folder: makes the zip a Mac needs
+                                   (with Build\, without Intermediate/Binaries/Saved) + its .md5, one folder up
+  windows\package-windows.bat      WINDOWS PC, double-click inside the project folder: cook + Development + Shipping
+                                   builds into Packaged\<date>-dev and <date>-shipping; ends PACKAGE OK / FAILED
+  mac-rebuild-from-zip.sh          MAC, one command: zip -> migrate -> video fix -> Development + Shipping apps,
+                                   ends PASS / FAIL; --package-only after a change made in the editor on that Mac
   run-ue541-mac.sh                 engine build + project migration (steps 4-13; run this first)
   patches/6g-MetalRHI-resolution-list.patch          engine patch: resolution list in pixels (SOP 9c)
   patches/6h-WebBrowserSingleton-CEF-fallback.patch  engine patch: CEF bundle-path fallback (SOP 11c)

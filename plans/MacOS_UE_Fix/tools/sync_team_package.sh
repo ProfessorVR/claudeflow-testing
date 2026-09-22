@@ -71,6 +71,7 @@ cp_f "$P/HANDOFF-2026-09-21.md" "$T/docs/HANDOFF-2026-09-21.md"
 for f in masters/project-mac/Build/Mac/Resources/Info.Template.plist masters/project-mac/Build/Mac/Resources/NoSandbox.entitlements \
          run-ue541-mac.sh apply-mac-project-fixes.sh package-awsTutorial-mac.sh verify-project-masters.sh apply-project-masters.sh \
          make-project-zip.sh apply-electra-override-mac.sh set_electra_override.py verify_media_overrides.py \
+         mac-rebuild-from-zip.sh windows/make-project-zip.bat windows/package-windows.bat PACKAGING-STEP-BY-STEP.md \
          README.txt SOP-UE5.4.1-Mac-Build-and-Migration.md Building-awsTutorial-on-a-Mac.md; do
   [ -f "$T/$f" ] || { echo "hand-maintained file missing from the package: $f"; exit 1; }
 done

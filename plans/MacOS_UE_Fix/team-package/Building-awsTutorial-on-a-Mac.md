@@ -152,6 +152,12 @@ lines, a thread sample and the log evidence. The saved mode must be Windowed (bu
 unattended launch cannot complete a macOS fullscreen transition). Confirm no `awsTutorial` process is alive before
 touching the ini — an exiting instance rewrites it.
 
+## 6a. After a content change (anything done in the Unreal editor)
+
+Not an engineering task any more: `PACKAGING-STEP-BY-STEP.md` — on Windows `windows\make-project-zip.bat` makes the
+zip, on the Mac `bash mac-rebuild-from-zip.sh <zip>` does §2 + the video fix + §3 in one command and ends PASS/FAIL
+(`--package-only` when the change was made in the editor on that Mac). Its logs land in `~/awsTutorial-rebuild-<stamp>/`.
+
 ## 6. After a source change (project C++, plugin, MacEngine.ini)
 
 The masters are in the engineering repository (`plans/MacOS_UE_Fix/`, HANDOFF §3) and mirrored here under `masters/`
