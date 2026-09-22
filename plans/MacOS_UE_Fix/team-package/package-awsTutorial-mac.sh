@@ -18,8 +18,12 @@
 set -uo pipefail
 
 ENGINE="${UE_ENGINE:-/Volumes/UnrealEngine/UE_5_4_1}"
-UPROJECT="${UE_PROJECT:-/Volumes/UnrealEngine/Unreal_Projects/awsTutorial/awsTutorial.uproject}"
-ARCHIVE="${UE_ARCHIVE:-/Volumes/UnrealEngine/Unreal_Projects/awsTutorial/Packaged/Mac}"
+# UE_PROJECT (.uproject path) or UE_PROJECT_DIR (project folder) — both accepted since 2026-09-21; UE_ARCHIVE overrides the output.
+if [ -n "${UE_PROJECT:-}" ]; then UPROJECT="$UE_PROJECT"
+elif [ -n "${UE_PROJECT_DIR:-}" ]; then UPROJECT="$UE_PROJECT_DIR/awsTutorial.uproject"
+else UPROJECT="/Volumes/UnrealEngine/Unreal_Projects/awsTutorial/awsTutorial.uproject"; fi
+ARCHIVE="${UE_ARCHIVE:-$(dirname "$UPROJECT")/Packaged/Mac}"
+[ -f "$UPROJECT" ] || { echo "  !! project not found: $UPROJECT (set UE_PROJECT or UE_PROJECT_DIR)"; exit 1; }
 RUNUAT="$ENGINE/Engine/Build/BatchFiles/RunUAT.sh"
 UEDITOR="$ENGINE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor"
 APP="$ARCHIVE/awsTutorial.app"
@@ -28,17 +32,26 @@ STAGELOG="/tmp/awsTutorial-stage.log"
 COMMON=(-project="$UPROJECT" -target=awsTutorial -platform=Mac -clientconfig=Development
         -unrealexe="$UEDITOR" -nop4 -utf8output -nocompileeditor -skipbuildeditor -nocompile -nocompileuat)
 
+# Guard (2026-09-21): never package an engine that lacks patch 6g (resolution list) — the game depends on it and
+# nothing at run time reports its absence. check_engine_patch.sh ships beside this script in the team package.
+GUARD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/check_engine_patch.sh"
+[ -f "$GUARD" ] || { echo "  !! check_engine_patch.sh is missing beside this script — the team package is incomplete; refusing to package."; exit 1; }
+bash "$GUARD" "$ENGINE/Engine/Source/Runtime/Apple/MetalRHI/Private/MetalRHI.cpp" || { echo "  !! ENGINE_PATCH_MISSING — nothing was packaged."; exit 1; }
+
 echo "==> [1/4] Cook (auto-kills the stuck cook the moment it finishes)…"
 : > "$COOKLOG"
 caffeinate -dimsu "$RUNUAT" BuildCookRun "${COMMON[@]}" -cook >"$COOKLOG" 2>&1 &
 UAT=$!
 cooked=0
 for _ in $(seq 1 400); do          # up to ~100 min
-  if grep -qaE 'Success - [0-9]+ error\(s\)' "$COOKLOG" && grep -qa 'Execution of commandlet took' "$COOKLOG"; then
+  # Only a cook with ZERO errors is complete; "Success - 3 error(s)" is a failed cook that must not be staged (2026-09-21).
+  if grep -qaE 'Success - 0 error\(s\)' "$COOKLOG" && grep -qa 'Execution of commandlet took' "$COOKLOG"; then
     cooked=1; break
   fi
-  if grep -qaE 'COOK FAILED|BUILD FAILED|Fatal error|Error: Cook' "$COOKLOG"; then
-    echo "  !! COOK FAILED — see $COOKLOG"; kill "$UAT" 2>/dev/null; exit 1
+  if grep -qaE 'COOK FAILED|BUILD FAILED|Fatal error|Error: Cook' "$COOKLOG" \
+     || { grep -qaE 'Success - [1-9][0-9]* error\(s\)' "$COOKLOG" && grep -qa 'Execution of commandlet took' "$COOKLOG"; }; then
+    echo "  !! COOK FAILED — see $COOKLOG ($(grep -aoE 'Success - [0-9]+ error\(s\), [0-9]+ warning' "$COOKLOG" | tail -1))"
+    pkill -f "UnrealEditor.*$(basename "$UPROJECT").*-run=Cook" 2>/dev/null; pkill -f "AutomationTool.dll.*BuildCookRun.*$(basename "$UPROJECT").*-cook" 2>/dev/null; kill "$UAT" 2>/dev/null; exit 1
   fi
   if ! kill -0 "$UAT" 2>/dev/null; then           # UAT exited on its own (cook didn't hang)
     grep -qa 'Execution of commandlet took' "$COOKLOG" && { cooked=1; break; }
@@ -46,10 +59,13 @@ for _ in $(seq 1 400); do          # up to ~100 min
   fi
   sleep 15
 done
-[ "$cooked" = 1 ] || { echo "  !! timed out waiting for cook"; kill "$UAT" 2>/dev/null; exit 1; }
+# $UAT is caffeinate's PID (it does not forward signals): kill the cook and UAT themselves on a timeout, or a second run
+# would cook concurrently into the same Saved/Cooked/Mac (2026-09-22 review).
+[ "$cooked" = 1 ] || { echo "  !! timed out waiting for cook"; pkill -f "UnrealEditor.*$(basename "$UPROJECT").*-run=Cook" 2>/dev/null; pkill -f "AutomationTool.dll.*BuildCookRun.*$(basename "$UPROJECT").*-cook" 2>/dev/null; kill "$UAT" 2>/dev/null; exit 1; }
 echo "    cook complete ($(grep -aoE 'Success - [0-9]+ error\(s\), [0-9]+ warning' "$COOKLOG" | tail -1)); force-killing the stuck cook…"
-pkill -f 'UnrealEditor.*-run=Cook' 2>/dev/null
-pkill -f 'AutomationTool.dll.*BuildCookRun.*-cook' 2>/dev/null
+# Scoped to THIS project's cook (the command line carries the .uproject path) — never another project's (2026-09-21).
+pkill -f "UnrealEditor.*$(basename "$UPROJECT").*-run=Cook" 2>/dev/null
+pkill -f "AutomationTool.dll.*BuildCookRun.*$(basename "$UPROJECT").*-cook" 2>/dev/null
 kill "$UAT" 2>/dev/null
 sleep 3
 

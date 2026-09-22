@@ -1,0 +1,24 @@
+=== dock-autohide-1  2026-09-22T02:17:57Z  app=awsTutorial wait=60s
+mode: 1512 982 hidpi 120 px=3024x1964
+screen[0] Built-in Retina Display: frame 1512x982 pt @2.0x = 3024x1964 px; menuBar 33.0 pt (66 px), dock bottom 0.0 pt (0 px), dock left 52.0 right 0.0 pt, titleBar 28.0 pt (56 px)
+  safeAreaInsets top 32.0 left 0.0 bottom 0.0 right 0.0 pt; auxTopLeft Optional((0.0, 950.0, 663.0, 32.0)) auxTopRight Optional((848.0, 950.0, 664.0, 32.0))
+pid 3260 at 19:17:57
+ 3260 106.1 605872   01:00 S   
+window "" owner=awsTutorial: frame pt x=0 y=33 w=1512 h=949 | px x=0 y=66 w=3024 h=1898 (frame includes the title bar)
+--- ini lines written after 2026-09-22T02:17:57:
+Trace2=startup on AC: AC measured, battery measured, nothing to measure @ 2026-09-22T02:17:58.480Z
+Trace1=insets menu=66 title=56 dock=0 display=3024x1964 os @ 2026-09-22T02:18:01.495Z
+MacWindow=reached 3024x1842 windowed at 0,122 after 1 correction(s) @ 2026-09-22T02:18:02.511Z
+--- (all current ini lines)
+Trace3=insets menu=66 title=56 dock=0 display=3024x1964 os @ 2026-09-22T02:16:51.203Z
+Trace2=startup on AC: AC measured, battery measured, nothing to measure @ 2026-09-22T02:17:58.480Z
+Trace1=insets menu=66 title=56 dock=0 display=3024x1964 os @ 2026-09-22T02:18:01.495Z
+MacWindow=reached 3024x1842 windowed at 0,122 after 1 correction(s) @ 2026-09-22T02:18:02.511Z
+quit: exited after SIGTERM at 19:18:58
+--- crash reports newer than start:
+(none)
+--- dev log:
+[2026.09.22-02.18.01:495][361]LogGraphicsAutoTune: Display: macOS insets: display 3024x1964 at 0,0; menu bar 66, title bar 56, Dock 0 px (read from the OS; positive gfx.MacMenuBarPx/MacTitleBarPx/MacDockPx override)
+[2026.09.22-02.18.02:504][482]LogGraphicsAutoTune: Display: macOS: moving the window from 104,186 to 0,122 (under the menu bar, clear of the Dock; 1 of 3)
+[2026.09.22-02.18.02:511][483]LogGraphicsAutoTune: Display: macOS: window is 3024x1842 windowed at 0,122; clicks land under the pointer at this size
+=== done 19:18:59

@@ -4,6 +4,7 @@
 **Validated:** 2026-07-23 on Apple M4 · macOS 15.7.7 (Sequoia) · Xcode 16.4 / Clang 17 · engine + tools built clean, a real Windows C++ project (AWS SDK + EmbeddedVoiceChat proximity voice) migrated and running.
 **Clean engine build time:** ~33 min (`-MaxParallelActions=6`). **Project build:** ~2 min.
 **Runtime/packaging validated 2026-07-24** (`awsTutorial`): one-command Mac package (§11f) → launches, Cognito login web view works (§11c CEF), hospital level loads, **streamed DASH surgical videos play via ElectraPlayer** (§11d — spot-checked, not every title individually), **microphone capture confirmed live** (§11e — real input levels + human-voice detection; end-to-end receipt by a remote peer not yet re-confirmed at time of writing). **Exit-hang update 2026-07-25:** the **packaged game now quits cleanly** (the hang traced to audio-capture teardown and was resolved by the §11e mic-permission fix — confirmed over repeated joined-voice sessions). A **dev-only** editor force-quit annoyance remains — see §12.
+**Update 2026-09-21 (build 44):** the fix set gained two awsTutorial engine patches — **6g `MetalRHI.cpp`** (resolution list, §9c) and **6h `WebBrowserSingleton.cpp`** (the §11c CEF fallback, no longer a manual edit) — both applied by `run-ue541-mac.sh` step 6 from `patches/` and guarded by `check_engine_patch.sh`, which every packaging script runs first. The script also applies the Mac-side project fixes itself (step 12b) and verifies the project against the source masters (step 12c). Packaging = `package_mac_gfx.sh` (Development + Shipping, §11f). The lab runbook for a blank Mac is `Building-awsTutorial-on-a-Mac.md`; the engineering state is `docs/HANDOFF-2026-09-21.md`.
 
 > **Why this SOP exists:** UE 5.4.1 (April 2024) targets Xcode 14/15 / Clang ≤16. Xcode 16.4 ships **Clang 17**, which promotes several warnings to hard errors and is stricter about template lookup. Epic fixed most of this only in later 5.4.x/5.5. This SOP is the exact, minimal set of source patches + build steps to make **5.4.1 specifically** build and run on a modern Apple-Silicon Mac.
 
@@ -63,11 +64,12 @@ git clone --depth 1 --branch 5.4.1-release git@github.com:EpicGames/UnrealEngine
 cd UE_5_4_1
 git fetch --depth 1 origin tag 5.4.4-release      # for the Apple toolchain backport diff in Section 4
 ```
+`run-ue541-mac.sh` steps 4–5 do exactly this (shallow clone of the tag; the tag is what the lab builds — there is no fork). Everything the engine needs on top of the tag is re-applied by step 6 (§4, §9 and the two awsTutorial patches 6g/6h) and recorded in `<engine>/.ue541_fix_backups/APPLIED.txt`. On the Air the same edits also sit on the local engine branch `local/mac-engine-fixes` (one commit, `MetalRHI.cpp`) — a safety net for that machine only, never something to clone from. **Never `git checkout 5.4.1-release` / `git stash` on a build volume** without re-running step 6: the edits are working-tree changes and a checkout silently reverts them (the guard, §9c, is what catches it).
 
 ---
 
 ## 4. THE Xcode 16.4 / Clang 17 FIX SET  ⭐
-Apply ALL of these to a fresh 5.4.1 tree, **before** running Setup/Build. Back up every file you touch.
+Apply ALL of these to a fresh 5.4.1 tree, **before** running Setup/Build. Back up every file you touch. `run-ue541-mac.sh` step 6 applies 4a–4d as **6a–6d**, §9a/§9b as **6e/6f**, and (since 2026-09-21) the two awsTutorial engine patches **6g** (§9c, `patches/6g-MetalRHI-resolution-list.patch`) and **6h** (§11c, `patches/6h-WebBrowserSingleton-CEF-fallback.patch`) with `git apply`, then runs `check_engine_patch.sh` as a hard gate before any build.
 
 ### 4a. Let UBT accept Xcode 16 (Apple SDK ceiling) — backport from 5.4.4
 5.4.1 refuses Xcode 16 as "unsupported." Pull the Apple toolchain fixes from 5.4.4 and apply:
@@ -125,7 +127,7 @@ Skipping this is the single most confusing failure mode — the build keeps erro
 ## 5. Dependencies & project files
 ```bash
 cd /Volumes/UnrealEngine/UE_5_4_1
-./Setup.sh                 # downloads ~15–30 GB of binaries; installs the bundled dotnet. (If system Python errors: python3.11 Setup.py)
+./Setup.sh                 # downloads ~15–30 GB of binaries; installs the bundled dotnet. Non-interactive: ./Setup.sh --force (GitDependencies otherwise prompts y/n on modified managed files and aborts without a terminal). There is no Setup.py in UE 5.4.
 # (do the UBT rebuild in 4e now, since Setup.sh provides the bundled dotnet)
 ./GenerateProjectFiles.sh  # optional for command-line builds; needed for the Xcode workspace
 ```
@@ -214,9 +216,10 @@ unzip -p  <the>.zip Build/Mac/Resources/Info.Template.plist | grep -c NSMicropho
 > project name (`awsTutorial`), so a previous — possibly obsolete — copy is usually sitting there.
 > `run-ue541-mac.sh` used to detect that and *silently skip extraction*, then build and package
 > whatever was already on disk while reporting success. **That is how the obsolete fork reached
-> macOS.** The script now moves any existing copy aside to
-> `<project>_superseded_<timestamp>` and extracts fresh (`UE_KEEP_EXISTING=1` restores the old
-> behaviour deliberately). If you extract by hand, move the old one aside yourself first.
+> macOS.** The script now keeps a copy extracted from the very same zip (a `.migrated-from` marker
+> holding the zip's md5 — a re-run resumes without re-extracting 5 GB) and moves a copy from any other
+> zip aside to `<project>_superseded_<timestamp>` before extracting fresh (`UE_KEEP_EXISTING=1` keeps
+> whatever is there, deliberately). If you extract by hand, move the old one aside yourself first.
 
 Any APFS location works — pick one; the example below uses the engine volume, the standard
 macOS spot is `~/Documents/Unreal Projects`. (The team script prompts for this, defaulting to
@@ -230,12 +233,15 @@ unzip -q /path/to/<project>.zip     # -> Config/ Content/ Plugins/ Source/ <Proj
 ### 8a·2. Engine already built? Skip straight to the project
 ```bash
 UE_SKIP_ENGINE=1 UE_NONINTERACTIVE=1 \
+UE_ENGINE_PARENT=/Volumes/UnrealEngine UE_PROJECT_DEST=/Volumes/UnrealEngine/Unreal_Projects \
 UE_PROJECT_ZIP=/Volumes/UnrealEngine/Unreal_Projects/_incoming/<project>.zip \
-./run-ue541-mac.sh
+bash ./run-ue541-mac.sh
 ```
+(`UE_ENGINE_PARENT`/`UE_PROJECT_DEST` are required non-interactively: the defaults are `~/UnrealEngine` and
+`~/Documents/Unreal Projects`, which on the Air means "no built editor found".)
 `UE_SKIP_ENGINE=1` skips steps 4–11 wholesale and goes to §12 (migrate) + §13 (build the project editor target).
 
-Without it the script does **not** rebuild the engine — the clone check and all six §6 fixes self-detect "already applied", and §10/§11 builds are incremental — but it still walks 4–11: a few minutes of checking, an **unconditional** UnrealBuildTool rebuild (§8) and project-file regeneration (§9), and **§4 still verifies GitHub/EpicGames SSH access and `die`s if it has lapsed**, which aborts the run before the migration ever happens. On a Mac that only needs a new project zip, always pass `UE_SKIP_ENGINE=1`.
+Without it the script does **not** rebuild the engine — the clone check and all eight step-6 fixes (6a–6h) self-detect "already applied", and §10/§11 builds are incremental — but it still walks 4–11: a few minutes of checking, an **unconditional** UnrealBuildTool rebuild (§8) and project-file regeneration (§9), and **§4 still verifies GitHub/EpicGames SSH access and `die`s if it has lapsed**, which aborts the run before the migration ever happens. On a Mac that only needs a new project zip, always pass `UE_SKIP_ENGINE=1`.
 
 ### 8b. Re-point the engine association
 The Windows `.uproject` carries a Windows engine GUID. Point it at the source build:
@@ -297,6 +303,11 @@ File: `Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h` — delet
 ```
 > `Character.h` is a core header — this rebuild touches the Engine module + dependents (~47 actions in practice, ~1 min).
 
+### 9c. Options-menu resolution list halved on Retina — `MetalRHI.cpp` (patch 6g, 2026-09-20)
+`FMetalDynamicRHI::RHIGetAvailableResolutions` divides every `CGDisplayMode` by the Retina backing scale a second time, so the options menu's resolution list tops out at half the panel (1440×932 on a 2880×1864 panel) and the game's graphics auto-tuner can never select native. Fix: report the mode's own size (`CGDisplayModeGetWidth/Height`, no `/ Scale`; marker comment `Local fix 2026-09-20`).
+File: `Engine/Source/Runtime/Apple/MetalRHI/Private/MetalRHI.cpp` (~line 1308). Shipped as `patches/6g-MetalRHI-resolution-list.patch` in the team package; applied by `run-ue541-mac.sh` step 6g (`git apply`; `--ignore-whitespace` on a CRLF tree).
+**Guard:** `check_engine_patch.sh [MetalRHI.cpp]` exits 0 only when the marker is present, the stock divisions are gone AND the two fixed assignment lines are present verbatim (a revert that keeps the comment still fails); `run-ue541-mac.sh` (end of step 6, and with `UE_SKIP_ENGINE=1`), `package-awsTutorial-mac.sh`, `package_mac_shipping.sh`, `package_mac_gfx.sh` and `build_mac_editor.sh` all run it first and stop with `ENGINE_PATCH_MISSING` — nothing at run time reports the missing fix, and a `git checkout` reverts it silently. Rebuild after applying by hand: `Build.sh UnrealEditor` (incremental) or the next package run.
+
 **Result:** editor launches → compiles project shaders → level loads → AWS SDK dylibs load → proximity voice works.
 
 ---
@@ -312,6 +323,10 @@ File: `Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h` — delet
 | 6 | Build `ShaderCompileWorker` (+ tools) | `Build.sh ShaderCompileWorker …` | first-launch requirement |
 | 7 | `GEngine` null-guard | `AudioCaptureCore/.../AudioCaptureInternal.h` | project-load crash (voice) |
 | 8 | delete `AnimMontage_DEPRECATED` block | `GameFramework/Character.h` | multiplayer replication |
+| 9 | **6g** resolution list in pixels (`patches/6g-…`) | `Apple/MetalRHI/Private/MetalRHI.cpp` | options menu / auto-tuner can pick native (§9c); guarded |
+| 10 | **6h** CEF bundle-path fallback (`patches/6h-…`) | `WebBrowser/Private/WebBrowserSingleton.cpp` | packaged login web view does not SIGTRAP (§11c) |
+
+Script mapping: rows 1–4 = `run-ue541-mac.sh` 6a–6d, row 7 = 6e, row 8 = 6f, rows 9–10 = 6g/6h; row 5 = step 8; row 6 = step 11. Also modified by the 5.4.4 backport (row 1) and present in `engine-patches/engine-all-local-modifications.patch` for reference: `Apple_SDK.json`, `UEBuildModuleCPP.cs`, `UBAExecutor.cs`, `UEDeployAndroid.cs`, `VCToolChain.cs`, `VSWorkspaceProjectFile.cs`, `XcodeProject.cs`, `AppleToolChain.cs`. The applied set is written to `<engine>/.ue541_fix_backups/APPLIED.txt`.
 
 **Pitfalls that cost the most time:** (5) forgetting to rebuild UBT; assuming a build/agent's "success" claim instead of checking ground truth (log growth, `clang` procs, disk); putting the project on ExFAT; and reading the *project* Saved/Logs when early crashes go to the *engine's* Saved/Crashes.
 
@@ -381,7 +396,7 @@ Verify after packaging: `codesign -d --entitlements :- <App>` must show **no** `
 ### 11c. Packaged app crashes at launch in `cef_initialize` (Cognito login) — CEF framework path
 The Cognito login uses a CEF/Chromium web view. UE hard-codes CEF's location to `<EngineDir>/Binaries/ThirdParty/CEF3/Mac/…`, but Modern-Xcode packaging **stages the framework inside the app bundle** at `Contents/Frameworks/`. In the packaged app the engine-relative path doesn't exist, so `cef_initialize` dereferences a missing framework and the app **SIGTRAPs on launch** (right when the login web view would appear). *(Editor is unaffected — it runs from the engine dir, where the legacy path exists.)*
 
-**Durable fix (engine source, reversible)** — `Engine/Source/Runtime/WebBrowser/Private/WebBrowserSingleton.cpp`, in `Initialize(...)`: after each of the two legacy paths is computed (`ResourcesPath` ~L305 and `CefFrameworkPath` ~L351), fall back to the executable-relative bundle path when the legacy one is absent. Both edits are Mac-relevant and guarded by `!FPaths::DirectoryExists(...)`, so they are inert anywhere the legacy path already resolves:
+**Durable fix (engine source, reversible) — since 2026-09-21 applied automatically as patch 6h** (`patches/6h-WebBrowserSingleton-CEF-fallback.patch`, `run-ue541-mac.sh` step 6; the script skips it when the patch reverse-applies or the `../Frameworks/` fallback string is present in both places — Resources and framework dir — and stops if both hunks did not land). The edit, for reference — `Engine/Source/Runtime/WebBrowser/Private/WebBrowserSingleton.cpp`, in `Initialize(...)`: after each of the two legacy paths is computed (`ResourcesPath` ~L305 and `CefFrameworkPath` ~L351), fall back to the executable-relative bundle path when the legacy one is absent. Both edits are Mac-relevant and guarded by `!FPaths::DirectoryExists(...)`, so they are inert anywhere the legacy path already resolves:
 ```cpp
 // after ResourcesPath is built (marker: [ue541 packaging fix - reversible])
 if (!FPaths::DirectoryExists(ResourcesPath))
@@ -462,8 +477,17 @@ Two mitigations are in place:
 # One-time: make it executable, then just run it whenever you want a build.
 chmod +x package-awsTutorial-mac.sh
 ./package-awsTutorial-mac.sh
-# Overridable via env: UE_ENGINE, UE_PROJECT, UE_ARCHIVE. Output: <Project>/Packaged/Mac/awsTutorial.app
+# Overridable via env: UE_ENGINE, UE_PROJECT_DIR (or UE_PROJECT=<.uproject path>), UE_ARCHIVE. Output: <Project>/Packaged/Mac/awsTutorial.app
 ```
+
+**Both configurations in one run (the normal way since build 33): `package_mac_gfx.sh`.** It runs the guard (§9c), parks the previous apps in `<Project>/.backups/<name>/apps/` (`first`) or removes the current ones (`rebuild`), runs `package-awsTutorial-mac.sh` (Development: cook + stage), then `package_mac_shipping.sh` (Shipping staged from the same cook, `-nodebuginfo`, to `Packaged/Mac-Shipping/awsTutorial-Mac-Shipping.app`), then verifies both apps (tuner text compiled in, `NSHighResolutionCapable`, `bAllowHighDPIInGameMode` inside the pak, signature, size). Log `/tmp/gfx_package_mac.out` ends with `ALL_DONE`; `DEV_EXIT=0` and `SHIP_EXIT=0` mean both apps were built. About 7 min with a warm cook, 15–20 min cold.
+```bash
+# from the team package folder (or ~/gfx_autotune on the Air); survives an ssh disconnect
+UE_ENGINE=/Volumes/UnrealEngine/UE_5_4_1 UE_PROJECT_DIR=/Volumes/UnrealEngine/Unreal_Projects/awsTutorial \
+  nohup ./package_mac_gfx.sh build-$(date +%Y%m%dT%H%M%S) first > /dev/null 2>&1 &
+tail -f /tmp/gfx_package_mac.out
+```
+Paths default to the Air's; on another Mac set `UE_ENGINE`, `UE_PROJECT_DIR` (and `UE_TEAM_PACKAGE` when `package-awsTutorial-mac.sh` is not beside the script). Each script writes its own log: `/tmp/awsTutorial-cook.log`, `/tmp/awsTutorial-stage.log`, `/tmp/awsTutorial-stage-shipping.log`, `/tmp/evc_package_mac_shipping.out`.
 
 **⚠️ MAP SELECTION IS YOURS — the script never touches map settings.** The intended flow is *UserLogin → hospital level*. You choose which hospital level ships by **saving `Hospital_Server` or `Hospital_Client` AS `FirstPersonMap`** in the editor first, then packaging. The script does **not** modify `GameDefaultMap` / `ServerDefaultMap` / any map INI keys — it packages whatever you've saved as `FirstPersonMap`, preserving the login→level sequence. (Current project defaults, left intact: `GameDefaultMap=/Game/FirstPerson/Maps/UserLogin`, `ServerDefaultMap=/Game/FirstPerson/Maps/FirstPersonMap`.)
 
@@ -525,6 +549,8 @@ UEDITOR="$ENGINE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEdito
 ```
 - **`-MaxParallelActions`** on any `Build.sh` below: same RAM rule as §6 (24 GB → 6–8).
 - Wrap long runs in `caffeinate -dimsu …` so the Mac never sleeps mid-build, and over SSH use `nohup … </dev/null &` so the build survives a disconnect (§6).
+- **Run the guard first** (every script does; by hand: `bash check_engine_patch.sh "$ENGINE/Engine/Source/Runtime/Apple/MetalRHI/Private/MetalRHI.cpp"` → `engine patch present`). `ENGINE_PATCH_MISSING` means the engine lost patch 6g (§9c); re-apply and rebuild before packaging anything.
+- The project must carry `Config/Mac/MacEngine.ini` with `r.AllowOcclusionQueries=0` — without it the **Shipping** app freezes before the level in Metal occlusion-query waits (2026-09-20; Development is unaffected). `run-ue541-mac.sh` step 12b checks it.
 - **Set your map first** (§11f): save `Hospital_Server` or `Hospital_Client` **as `FirstPersonMap`** in the editor, then quit or leave the editor open — the CLI never touches map settings. *Then* run the CLI. Closing the editor first is cleaner but not required (the kill step in §11h-5 only matches cook processes).
 
 #### 11h-3. Which target to build — the three layers, and the one that bites
@@ -572,6 +598,8 @@ caffeinate -dimsu "$RUNUAT" BuildCookRun "${COMMON[@]}" \
 ```
 Success = `BUILD SUCCESSFUL` in the log. Output: `$ARCHIVE/awsTutorial.app`.
 
+**Step 2b — Shipping from the same cook** (`package_mac_shipping.sh` does exactly this): the same command with `-clientconfig=Shipping -nodebuginfo` and `-archivedirectory="$PROJDIR/Packaged/Mac-Shipping"`; output `awsTutorial-Mac-Shipping.app`. Shipping writes no log and no `LogExit` line — judge a Shipping run by the `[GraphicsAutoTune]` trace in `~/Library/Application Support/Epic/awsTutorial/Saved/Config/Mac/GameUserSettings.ini` (`MacWindow=`, `Trace1..3=`) and the absence of a crash report (`Building-awsTutorial-on-a-Mac.md` §5).
+
 **Step 3 — CEF safety net** (harmless if the §11c engine fix is already in; re-run after *every* package):
 ```bash
 APP="$ARCHIVE/awsTutorial.app"
@@ -613,7 +641,9 @@ open "$APP"
 
 ---
 
-## 12. Known issues / open items (updated 2026-08-24)
+## 12. Known issues / open items (updated 2026-09-21)
+- **Mac Shipping freezes in Metal GPU-fence waits — OPEN at engine level, worked around.** Every CPU wait on a Metal fence is lost in a Shipping build (occlusion queries, HZB staging readback; `-norhithread` did not help). `Config/Mac/MacEngine.ini` (`[SystemSettings] r.AllowOcclusionQueries=0`) ships with the project and keeps culling off; the game's Mac graphics auto-tuner measures with it off. Details: `docs/HANDOFF-2026-09-21.md` §9, `report/quit-crash-and-window-repair-2026-09-20.md` §7.
+- **Ad-hoc signing only.** Nothing is notarized; on another Mac run `xattr -dr com.apple.quarantine <app>` (or right-click ▸ Open once). Distribution outside the lab needs a Developer ID certificate (§11a).
 - **Editor "Package Project" deadlocks — OPEN, worked around, use the CLI (§11h).** The editor-spawned cook carries `-EditorIOPort=<port>` and hangs in `-[NSApplication _shouldTerminate]` after cooking successfully, so the GUI package never reaches staging and cannot be recovered from inside the editor. Reproduced twice; every CLI package succeeded. **Workaround is permanent policy for this project: package via §11f (script) or §11h-4 (raw commands).** Root-causing the AppKit teardown is not planned — it is the same deadlock as the editor force-quit below and buys nothing the CLI path doesn't already give.
 - **Packaged game exit hang — RESOLVED (2026-07-25).** The packaged `.app` previously went to a black screen on exit and had to be force-quit. Investigation (log analysis + live thread `sample`s + controlled reproduction) ruled out AWS (its event-loops destroy and `Aws::ShutdownAPI` completes cleanly in the log) and CEF (the login-screen quit exits clean), and localized the hang to the **audio-capture stream teardown**: with the mic in permission-limbo (no `NSMicrophoneUsageDescription` → macOS silence-feed), the CoreAudio/RtAudio capture stream never closed cleanly and blocked process teardown. Adding the mic key (§11e) fixed capture **and** the exit hang together — verified over repeated full joined-voice sessions that now reach `Log file closed` and the process actually terminates (no lingering PID). No risky teardown-code change was needed.
 - **Editor-only force-quit — OPEN, dev-only, low priority.** *(Same AppKit teardown deadlock that breaks GUI packaging — §11h-1 Hang 2.)* The **source-built `UnrealEditor.app`** still hangs on quit (force-quit needed) after a play-in-editor session. It does **not** affect the shipped game (the deliverable quits cleanly). Its `Info.plist` already carries a mic-usage key, so the first thing to check is whether macOS mic permission was actually **granted to `UnrealEditor`** (System Settings ▸ Privacy & Security ▸ Microphone) — if denied, its capture stream is in the same limbo that hung the game. If it's granted and the editor still hangs, it's likely a generic UE-5.4-source-on-Mac editor-teardown issue (heavier module/CEF teardown), independent of this project. Diagnose the same way if desired: reproduce, then `sample <pid>` the lingering process. Not pursued further since it doesn't affect the packaged build.

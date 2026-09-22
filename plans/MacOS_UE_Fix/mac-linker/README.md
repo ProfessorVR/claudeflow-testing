@@ -46,6 +46,14 @@ stays — harmless, and it spares a unit re-creation per level.
 
 If the engine is ever upgraded, re-derive the hand expansion from the new `IMPLEMENT_PRIMARY_GAME_MODULE`.
 
+**Monolithic only (2026-09-21 late evening).** The hand expansion is guarded by `PLATFORM_MAC && IS_MONOLITHIC`. In
+the modular editor target (`awsTutorialEditor`) every module's `IMPLEMENT_MODULE` already emits the replacement
+operators, so the expansion was a redefinition there — found when the lab MacBook Pro compiled the editor target
+from the migrated project (`awsTutorial.cpp:56: error: redefinition of 'operator delete'`); the Air had not rebuilt
+its editor target since build 42 (dylib of 2026-09-19 13:51), so the cook there ran a pre-42 game module. The editor
+keeps the stock macro (it is not shipped; on macOS 26 a PIE session with the voice unit could still hit the VPIO
+free — dev-only). The packaged game is monolithic and unchanged, so builds 42–44 stay valid; no new build number.
+
 ## Files
 
 - `awsTutorial.cpp` — master of the project's module file; copied to `<project>/Source/awsTutorial/awsTutorial.cpp`

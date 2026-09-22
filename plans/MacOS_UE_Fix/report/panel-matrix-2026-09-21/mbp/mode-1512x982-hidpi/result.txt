@@ -1,0 +1,32 @@
+=== mode-1512x982-hidpi  2026-09-22T02:14:30Z  app=awsTutorial wait=60s
+mode: 1512 982 hidpi 120 px=3024x1964
+screen[0] Built-in Retina Display: frame 1512x982 pt @2.0x = 3024x1964 px; menuBar 33.0 pt (66 px), dock bottom 75.0 pt (150 px), dock left 0.0 right 0.0 pt, titleBar 28.0 pt (56 px)
+  safeAreaInsets top 32.0 left 0.0 bottom 0.0 right 0.0 pt; auxTopLeft Optional((0.0, 950.0, 663.0, 32.0)) auxTopRight Optional((848.0, 950.0, 664.0, 32.0))
+pid 3017 at 19:14:30
+ 3017 100.6 1002832   01:00 S   
+window "" owner=awsTutorial: frame pt x=0 y=33 w=1512 h=876 | px x=0 y=66 w=3024 h=1752 (frame includes the title bar)
+--- ini lines written after 2026-09-22T02:14:30:
+Trace3=insets menu=66 title=56 dock=146 display=3024x1964 os @ 2026-09-22T02:14:34.445Z
+Trace2=menu found 3 s after level start; waiting to settle (shader work done) @ 2026-09-22T02:14:47.945Z
+Trace1=settled 2 s after the menu was found (shader wait done); nothing to measure @ 2026-09-22T02:14:49.998Z
+MacWindow=reached 3024x1696 windowed at 0,122 after 1 correction(s) @ 2026-09-22T02:14:49.297Z
+--- (all current ini lines)
+Trace3=insets menu=66 title=56 dock=146 display=3024x1964 os @ 2026-09-22T02:14:34.445Z
+Trace2=menu found 3 s after level start; waiting to settle (shader work done) @ 2026-09-22T02:14:47.945Z
+Trace1=settled 2 s after the menu was found (shader wait done); nothing to measure @ 2026-09-22T02:14:49.998Z
+MacWindow=reached 3024x1696 windowed at 0,122 after 1 correction(s) @ 2026-09-22T02:14:49.297Z
+quit: exited after SIGTERM at 19:15:31
+--- crash reports newer than start:
+/Users/kinglab/Library/Application Support/Epic/UnrealEngine/5.4/Saved/Crashes/EnsureReport-awsTutorial-092CDB46BA4F734D6A3E7C945123C8C5
+/Users/kinglab/Library/Application Support/Epic/UnrealEngine/5.4/Saved/Crashes/EnsureReport-awsTutorial-19D38165B5404DD44E652DBF63E639A0
+/Users/kinglab/Library/Application Support/Epic/UnrealEngine/5.4/Saved/Crashes/EnsureReport-awsTutorial-6E321F0FDE4CB4B663D5F0B461354C4F
+/Users/kinglab/Library/Application Support/Epic/UnrealEngine/5.4/Saved/Crashes/EnsureReport-awsTutorial-443A11021E4B5CD0E2A08B81FDA2CB08
+/Users/kinglab/Library/Application Support/Epic/UnrealEngine/5.4/Saved/Crashes/EnsureReport-awsTutorial-75D0DD3A56417795C6BDF998AE3B0C3E
+--- dev log:
+[2026.09.22-02.14.34:445][361]LogGraphicsAutoTune: Display: macOS insets: display 3024x1964 at 0,0; menu bar 66, title bar 56, Dock 146 px (read from the OS; positive gfx.MacMenuBarPx/MacTitleBarPx/MacDockPx override)
+[2026.09.22-02.14.35:453][482]LogGraphicsAutoTune: Display: macOS: display 3024x1964; window is Windowed 3024x1782 at 0,122, wanted 3024x1696 windowed at 0,122; applying r.setres 3024x1696w (1 of 3)
+[2026.09.22-02.14.35:474][483]LogGraphicsAutoTune: Display: macOS: window is 3024x1696 windowed at 0,122; clicks land under the pointer at this size
+[2026.09.22-02.14.44:582][545]LogOutputDevice: Error: Ensure condition failed: 0  [File:./Runtime/Apple/MetalRHI/Private/MetalStateCache.cpp] [Line: 2359] 
+[2026.09.22-02.14.49:278][937]LogGraphicsAutoTune: Display: macOS: display 3024x1964; window is Windowed 3024x1964 at 0,122, wanted 3024x1696 windowed at 0,122; applying r.setres 3024x1696w (1 of 3)
+[2026.09.22-02.14.49:297][938]LogGraphicsAutoTune: Display: macOS: window is 3024x1696 windowed at 0,122; clicks land under the pointer at this size
+=== done 19:15:31

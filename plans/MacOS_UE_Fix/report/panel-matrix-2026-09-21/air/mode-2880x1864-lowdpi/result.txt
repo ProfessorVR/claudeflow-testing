@@ -1,0 +1,28 @@
+=== mode-2880x1864-lowdpi  2026-09-22T02:14:56Z  app=awsTutorial wait=60s
+mode: 2880 1864 lowdpi 60 px=2880x1864
+screen[0] Built-in Display: frame 2880x1864 pt @1.0x = 2880x1864 px; menuBar 62.0 pt (62 px), dock bottom 85.0 pt (85 px), dock left 0.0 right 0.0 pt, titleBar 28.0 pt (28 px)
+  safeAreaInsets top 56.0 left 0.0 bottom 0.0 right 0.0 pt; auxTopLeft Optional((0.0, 1808.0, 1284.0, 56.0)) auxTopRight Optional((1596.0, 1808.0, 1284.0, 56.0))
+pid 6946 at 19:14:56
+ 6946  62.7 987792   01:00 S   
+window "" owner=awsTutorial: frame pt x=0 y=62 w=2880 h=1717 | px x=0 y=62 w=2880 h=1717 (frame includes the title bar)
+--- ini lines written after 2026-09-22T02:14:56:
+MacWindow=reached 2880x1689 windowed at 0,90 after 1 correction(s) @ 2026-09-22T02:15:21.678Z
+Trace3=insets menu=62 title=28 dock=85 display=2880x1864 os @ 2026-09-22T02:15:00.101Z
+Trace2=menu found 3 s after level start; waiting to settle (shader work done) @ 2026-09-22T02:15:20.642Z
+Trace1=settled 2 s after the menu was found (shader wait done); nothing to measure @ 2026-09-22T02:15:22.712Z
+--- (all current ini lines)
+MacWindow=reached 2880x1689 windowed at 0,90 after 1 correction(s) @ 2026-09-22T02:15:21.678Z
+Trace3=insets menu=62 title=28 dock=85 display=2880x1864 os @ 2026-09-22T02:15:00.101Z
+Trace2=menu found 3 s after level start; waiting to settle (shader work done) @ 2026-09-22T02:15:20.642Z
+Trace1=settled 2 s after the menu was found (shader wait done); nothing to measure @ 2026-09-22T02:15:22.712Z
+quit: exited after SIGTERM at 19:15:57
+--- crash reports newer than start:
+(none)
+--- dev log:
+[2026.09.22-02.15.00:101][180]LogGraphicsAutoTune: Display: macOS insets: display 2880x1864 at 0,0; menu bar 62, title bar 28, Dock 85 px (read from the OS; positive gfx.MacMenuBarPx/MacTitleBarPx/MacDockPx override)
+[2026.09.22-02.15.01:118][241]LogGraphicsAutoTune: Display: macOS: display 2880x1864; window is Windowed 2400x1800 at 240,90, wanted 2880x1689 windowed at 0,90; applying r.setres 2880x1689w (1 of 3)
+[2026.09.22-02.15.01:157][242]LogGraphicsAutoTune: Display: macOS: window is 2880x1689 windowed at 0,90; clicks land under the pointer at this size
+[2026.09.22-02.15.17:677][214]LogOutputDevice: Error: Ensure condition failed: 0  [File:./Runtime/Apple/MetalRHI/Private/MetalStateCache.cpp] [Line: 2359] 
+[2026.09.22-02.15.21:642][365]LogGraphicsAutoTune: Display: macOS: display 2880x1864; window is Windowed 2880x1864 at 0,90, wanted 2880x1689 windowed at 0,90; applying r.setres 2880x1689w (1 of 3)
+[2026.09.22-02.15.21:678][366]LogGraphicsAutoTune: Display: macOS: window is 2880x1689 windowed at 0,90; clicks land under the pointer at this size
+=== done 19:15:57

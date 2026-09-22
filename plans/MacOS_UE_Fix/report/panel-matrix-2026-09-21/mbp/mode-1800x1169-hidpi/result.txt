@@ -1,0 +1,28 @@
+=== mode-1800x1169-hidpi  2026-09-22T02:12:16Z  app=awsTutorial wait=60s
+mode: 1800 1169 hidpi 120 px=3600x2338
+screen[0] Built-in Retina Display: frame 1800x1169 pt @2.0x = 3600x2338 px; menuBar 39.0 pt (78 px), dock bottom 85.0 pt (170 px), dock left 0.0 right 0.0 pt, titleBar 28.0 pt (56 px)
+  safeAreaInsets top 38.0 left 0.0 bottom 0.0 right 0.0 pt; auxTopLeft Optional((0.0, 1131.0, 790.0, 38.0)) auxTopRight Optional((1010.0, 1131.0, 790.0, 38.0))
+pid 2862 at 19:12:16
+ 2862 100.4 1025472   01:00 U   
+window "" owner=awsTutorial: frame pt x=0 y=39 w=1800 h=1047 | px x=0 y=78 w=3600 h=2094 (frame includes the title bar)
+--- ini lines written after 2026-09-22T02:12:16:
+Trace3=insets menu=78 title=56 dock=166 display=3600x2338 os @ 2026-09-22T02:12:19.921Z
+Trace2=menu found 3 s after level start; waiting to settle (shader work done) @ 2026-09-22T02:12:37.437Z
+Trace1=settled 2 s after the menu was found (shader wait done); nothing to measure @ 2026-09-22T02:12:39.479Z
+MacWindow=reached 3600x2038 windowed at 0,134 after 1 correction(s) @ 2026-09-22T02:12:38.822Z
+--- (all current ini lines)
+Trace3=insets menu=78 title=56 dock=166 display=3600x2338 os @ 2026-09-22T02:12:19.921Z
+Trace2=menu found 3 s after level start; waiting to settle (shader work done) @ 2026-09-22T02:12:37.437Z
+Trace1=settled 2 s after the menu was found (shader wait done); nothing to measure @ 2026-09-22T02:12:39.479Z
+MacWindow=reached 3600x2038 windowed at 0,134 after 1 correction(s) @ 2026-09-22T02:12:38.822Z
+quit: exited after SIGTERM at 19:13:17
+--- crash reports newer than start:
+/Users/kinglab/Library/Application Support/Epic/UnrealEngine/5.4/Saved/Crashes/EnsureReport-awsTutorial-6E321F0FDE4CB4B663D5F0B461354C4F
+--- dev log:
+[2026.09.22-02.12.19:921][361]LogGraphicsAutoTune: Display: macOS insets: display 3600x2338 at 0,0; menu bar 78, title bar 56, Dock 166 px (read from the OS; positive gfx.MacMenuBarPx/MacTitleBarPx/MacDockPx override)
+[2026.09.22-02.12.20:928][482]LogGraphicsAutoTune: Display: macOS: display 3600x2338; window is Windowed 2704x1512 at 448,326, wanted 3600x2038 windowed at 0,134; applying r.setres 3600x2038w (1 of 3)
+[2026.09.22-02.12.20:951][483]LogGraphicsAutoTune: Display: macOS: window is 3600x2038 windowed at 0,134; clicks land under the pointer at this size
+[2026.09.22-02.12.34:079][ 21]LogOutputDevice: Error: Ensure condition failed: 0  [File:./Runtime/Apple/MetalRHI/Private/MetalStateCache.cpp] [Line: 2359] 
+[2026.09.22-02.12.38:803][410]LogGraphicsAutoTune: Display: macOS: display 3600x2338; window is Windowed 3024x1964 at 288,134, wanted 3600x2038 windowed at 0,134; applying r.setres 3600x2038w (1 of 3)
+[2026.09.22-02.12.38:822][411]LogGraphicsAutoTune: Display: macOS: window is 3600x2038 windowed at 0,134; clicks land under the pointer at this size
+=== done 19:13:17

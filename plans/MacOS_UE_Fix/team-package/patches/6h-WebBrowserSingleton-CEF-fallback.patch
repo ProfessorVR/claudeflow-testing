@@ -1,0 +1,42 @@
+diff --git a/Engine/Source/Runtime/WebBrowser/Private/WebBrowserSingleton.cpp b/Engine/Source/Runtime/WebBrowser/Private/WebBrowserSingleton.cpp
+index c73c447e8..44a82a92e 100644
+--- a/Engine/Source/Runtime/WebBrowser/Private/WebBrowserSingleton.cpp
++++ b/Engine/Source/Runtime/WebBrowser/Private/WebBrowserSingleton.cpp
+@@ -304,6 +304,19 @@ FWebBrowserSingleton::FWebBrowserSingleton(const FWebBrowserInitSettings& WebBro
+ 		// Specify path to resources
+ 		FString ResourcesPath(FPaths::Combine(*FPaths::EngineDir(), CEF3_RESOURCES_DIR));
+ 		ResourcesPath = FPaths::ConvertRelativePathToFull(ResourcesPath);
++#if PLATFORM_MAC
++		// [ue541 packaging fix - reversible] Modern-Xcode packaging stages the CEF framework in
++		// <App>/Contents/Frameworks (executable-relative), not the legacy EngineDir ThirdParty/CEF3/Mac
++		// path. When the legacy path is absent, redirect to the bundled framework's Resources.
++		if (!FPaths::DirectoryExists(ResourcesPath))
++		{
++			const FString BundleResources = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::GetPath(FPlatformProcess::ExecutablePath()), TEXT("../Frameworks/Chromium Embedded Framework.framework/Resources")));
++			if (FPaths::DirectoryExists(BundleResources))
++			{
++				ResourcesPath = BundleResources;
++			}
++		}
++#endif
+ 		if (!FPaths::DirectoryExists(ResourcesPath))
+ 		{
+ 			UE_LOG(LogWebBrowser, Error, TEXT("Chromium Resources information not found at: %s."), *ResourcesPath);
+@@ -337,6 +350,17 @@ FWebBrowserSingleton::FWebBrowserSingleton(const FWebBrowserInitSettings& WebBro
+ 		// Let CEF know where we have put the framework bundle as it is non-default
+ 		FString CefFrameworkPath(FPaths::Combine(*FPaths::EngineDir(), CEF3_FRAMEWORK_DIR));
+ 		CefFrameworkPath = FPaths::ConvertRelativePathToFull(CefFrameworkPath);
++		// [ue541 packaging fix - reversible] Prefer the executable-relative framework staged by
++		// modern-Xcode packaging (<App>/Contents/Frameworks) when the legacy path is absent, so
++		// CefInitialize finds the framework's Resources (else Chromium CHECK-aborts -> SIGTRAP).
++		if (!FPaths::DirectoryExists(CefFrameworkPath))
++		{
++			const FString BundleFramework = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::GetPath(FPlatformProcess::ExecutablePath()), TEXT("../Frameworks/Chromium Embedded Framework.framework")));
++			if (FPaths::DirectoryExists(BundleFramework))
++			{
++				CefFrameworkPath = BundleFramework;
++			}
++		}
+ 		CefString(&Settings.framework_dir_path) = TCHAR_TO_WCHAR(*CefFrameworkPath);
+ 		CefString(&Settings.main_bundle_path) = TCHAR_TO_WCHAR(*CefFrameworkPath);
+ #endif

@@ -15,8 +15,11 @@ fork**, and is moot. ARBv3 already had the Vietnam work finished in September 20
 
 - Full evidence: `SESSION-LOG-2026-08-24.md` **Parts G and H**.
 - Current procedure: `team-package/README.txt` (7-step runbook) and
-  `team-package/SOP-UE5.4.1-Mac-Build-and-Migration.md` (§8·0 lineage check, §8a·1, §8a·2, §11d).
-- **Next active task:** `plans/MacOS_Voice_Echo/BOOT-PROMPT.md` — macOS voice-chat echo/feedback.
+  `team-package/SOP-UE5.4.1-Mac-Build-and-Migration.md` (§8·0 lineage check, §8a·1, §8a·2, §11d);
+  for a blank lab Mac, `team-package/Building-awsTutorial-on-a-Mac.md`.
+- **Boot document for every new session (2026-09-21, build 44): `HANDOFF-2026-09-21.md`** — machines, masters
+  and drift checksums, build/test procedure, open items. The voice-echo task (`plans/MacOS_Voice_Echo/BOOT-PROMPT.md`)
+  was closed 2026-09-18 (memory `project-macos-voice-echo-session-2026-09-18`).
 
 Before any asset work on this project, confirm lineage:
 `BP_SC_CatPara` + `BP_WG_CatPara` present = live project. `BP_SC_T1`/`BP_WG_TEST` plus the

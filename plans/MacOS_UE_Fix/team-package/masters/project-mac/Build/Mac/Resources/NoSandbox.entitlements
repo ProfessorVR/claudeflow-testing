@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- No com.apple.security.app-sandbox: CEF/Chromium (WebBrowserWidget, used by the
+         Cognito Hosted-UI login) cannot initialize inside the macOS App Sandbox.
+         Without the sandbox, network access is unrestricted; the network keys are
+         harmless and kept for clarity. get-task-allow suits Development/local builds;
+         drop it for a notarized Developer ID distribution build. -->
+    <key>com.apple.security.get-task-allow</key><true/>
+    <key>com.apple.security.network.client</key><true/>
+    <key>com.apple.security.network.server</key><true/>
+</dict>
+</plist>

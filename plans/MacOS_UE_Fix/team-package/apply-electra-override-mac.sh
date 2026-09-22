@@ -32,7 +32,10 @@ case "$MODE" in
 esac
 
 ENGINE="${UE_ENGINE:-/Volumes/UnrealEngine/UE_5_4_1}"
-UPROJECT="${UE_PROJECT:-/Volumes/UnrealEngine/Unreal_Projects/awsTutorial/awsTutorial.uproject}"
+# UE_PROJECT (.uproject path) or UE_PROJECT_DIR (project folder) — both accepted since 2026-09-21.
+if [ -n "${UE_PROJECT:-}" ]; then UPROJECT="$UE_PROJECT"
+elif [ -n "${UE_PROJECT_DIR:-}" ]; then UPROJECT="$UE_PROJECT_DIR/awsTutorial.uproject"
+else UPROJECT="/Volumes/UnrealEngine/Unreal_Projects/awsTutorial/awsTutorial.uproject"; fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC="$SCRIPT_DIR/set_electra_override.py"
 WORK=/tmp/electra_run.py

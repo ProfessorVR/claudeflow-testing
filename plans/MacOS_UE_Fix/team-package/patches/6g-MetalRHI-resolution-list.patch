@@ -1,0 +1,25 @@
+diff --git a/Engine/Source/Runtime/Apple/MetalRHI/Private/MetalRHI.cpp b/Engine/Source/Runtime/Apple/MetalRHI/Private/MetalRHI.cpp
+index c6d568639..28fa385e0 100644
+--- a/Engine/Source/Runtime/Apple/MetalRHI/Private/MetalRHI.cpp
++++ b/Engine/Source/Runtime/Apple/MetalRHI/Private/MetalRHI.cpp
+@@ -1308,13 +1308,17 @@ bool FMetalDynamicRHI::RHIGetAvailableResolutions(FScreenResolutionArray& Resolu
+ 	if (AllModes)
+ 	{
+ 		const int32 NumModes = CFArrayGetCount(AllModes);
+-		const int32 Scale = (int32)FMacApplication::GetPrimaryScreenBackingScaleFactor();
+ 		
+ 		for (int32 Index = 0; Index < NumModes; Index++)
+ 		{
+ 			const CGDisplayModeRef Mode = (const CGDisplayModeRef)CFArrayGetValueAtIndex(AllModes, Index);
+-			const int32 Width = (int32)CGDisplayModeGetWidth(Mode) / Scale;
+-			const int32 Height = (int32)CGDisplayModeGetHeight(Mode) / Scale;
++			// Local fix 2026-09-20: the stock engine divides both of these by
++			// FMacApplication::GetPrimaryScreenBackingScaleFactor(). CGDisplayModeGetWidth/Height already report the
++			// mode's own size, so that halves every resolution the game can offer - 1440x932 on a 2880x1864 panel -
++			// and no options menu can ever select the display's real resolution. Slate's screen space on macOS is
++			// backing pixels, which is what these return.
++			const int32 Width = (int32)CGDisplayModeGetWidth(Mode);
++			const int32 Height = (int32)CGDisplayModeGetHeight(Mode);
+ 			const int32 RefreshRate = (int32)CGDisplayModeGetRefreshRate(Mode);
+ 			
+ 			if (Width >= MinAllowableResolutionX && Width <= MaxAllowableResolutionX && Height >= MinAllowableResolutionY && Height <= MaxAllowableResolutionY)
