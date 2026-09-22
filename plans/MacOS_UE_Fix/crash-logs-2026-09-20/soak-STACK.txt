@@ -1,0 +1,19 @@
+[2026.09.21-00.35.23:754][272]LogMac: === Critical error: ===
+SIGSEGV: invalid attempt to access memory at address 0x3
+
+[2026.09.21-00.35.23:755][272]LogMac: 0x0583a03c awsTutorial!FMallocBinned2::GetAllocationSizeExternal(void*, unsigned long&)   [UnknownFile]) 
+0x058903b0 awsTutorial!FMallocPoisonProxy::Free(void*)   [UnknownFile]) 
+0x05857ef8 awsTutorial!FMemory::Free(void*)   [UnknownFile]) 
+0x0c203248 awsTutorial!operator delete[](void*)   [UnknownFile]) 
+0x466c57f0 AudioDSP!VAD3ConfigurationInterface_DecodeFull()   [UnknownFile]) 
+0x466c58f0 AudioDSP!VAD3ConfigurationInterface_DecodeFull()   [UnknownFile]) 
+0x4671eaa8 AudioDSP!VAD3ConfigurationInterface_DecodeFull()   [UnknownFile]) 
+0x46842484 AudioDSP!AUAnomalyDetectionFactory()   [UnknownFile]) 
+0x46842418 AudioDSP!AUAnomalyDetectionFactory()   [UnknownFile]) 
+0x46839904 AudioDSP!AUAnomalyDetectionFactory()   [UnknownFile]) 
+0x46d8f400 AudioDSP!ABHelperCreateDescriptionFromDSPGraph()   [UnknownFile]) 
+0x90bf4e74 AudioToolboxCore!AudioComponentInstanceDispose()   [UnknownFile]) 
+0x90c122a4 AudioToolboxCore!DSPGraph::AUBox::close()   [UnknownFile]) 
+0x90c9eef4 AudioToolboxCore!DSPGraph::Graph::~Graph()   [UnknownFile]) 
+0x90c9ee54 AudioToolboxCore!DSPGraph::Graph::~Graph()   [UnknownFile]) 
+0x4666f3d8 AudioDSP![Unknown]()   [UnknownFile]) 

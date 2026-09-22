@@ -1,0 +1,23 @@
+=== T3-stale-counter: dev app, wait 22s, quit=term, 23:14:19
+--- [GraphicsAutoTune] before:
+TunedVersion=1
+FinishedFailures=3
+FinishedFailuresFor=1
+pid 87062 at 23:14:19
+  PID  %CPU    RSS ELAPSED STAT
+87062 108.8 591520   00:22 S   
+sample: query-wait frames=1 fence-wait=1 game-thread-top: FRenderCommandFence::Wait(bool) const  (in awsTutorial) + 1876  [0x107
+--- [GraphicsAutoTune] after 22s:
+TunedVersion=1
+FinishedFailures=3
+FinishedFailuresFor=1
+quit: exited after term at 23:14:46
+config rewritten at exit: GameUserSettings=yes Input.ini=yes
+--- crash/ensure reports newer than this test:
+(none)
+--- dev log evidence:
+﻿Log file open, 09/20/26 23:14:19
+LogConfig: Set CVar [[r.AllowOcclusionQueries:0]]
+[2026.09.21-06.14.20:550][  0]LogGraphicsAutoTune: Display: Startup: will tune in the first level with the options menu (TunedVersion=1, attempts=0, options save present)
+[2026.09.21-06.14.45:951][502]Log file closed, 09/20/26 23:14:45
+=== done 23:14:46

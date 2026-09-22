@@ -1,0 +1,912 @@
+// EVCCaptureCore_Mac.cpp - macOS VoiceProcessingIO capture with echo cancellation.
+// See AEC/EVCCaptureCore.h. Added 2026-09-18 (awsTutorial voice-echo fix).
+//
+// Measured facts this file depends on (probe plans/MacOS_UE_Fix/tools/mac/aec_probe, 2026-09-18):
+//  * VPIO with its OUTPUT bus disabled (what UE's iOS AudioCaptureAudioUnit does) fails
+//    AudioUnitInitialize on macOS with -10875. The output bus stays enabled and renders silence.
+//  * With the output element bound to the device the game plays to, VPIO cancels audio rendered by
+//    OTHER output units on that device (32.7 dB) as well as its own output (29.2 dB).
+//  * Voice processing lowers the captured microphone level by ~17-25 dB, so AGC stays on.
+//  * Echo cancellation is switched on EXPLICITLY (BypassVoiceProcessing = 0). It is never derived from
+//    Audio::FCaptureDeviceInfo::bSupportsHardwareAEC, which UE 5.4 leaves uninitialized.
+//  * A VoiceProcessingIO instance is NEVER handed to AudioComponentInstanceDispose (2026-09-20). Inside an
+//    Unreal process the engine's operator new/delete replace the C++ library's for every image (dyld
+//    coalesces the weak libc++ definitions onto the executable's), and Apple's teardown of the unit's
+//    voice-activity detector (AudioDSP: AUAnomalyDetectionFactory -> VAD3ConfigurationInterface ->
+//    operator delete[]) frees a block the engine's allocator never issued: FMallocBinned2 stops the
+//    process with "unrecognized block". Every quit-time crash of 2026-09-20 has that stack; two of the
+//    four sessions crashed, the others exited before the deferred dispose ran. Uninitialize does not
+//    take that path (Rebind() has always uninitialized live units), so units are stopped, uninitialized
+//    and parked for reuse instead - see ParkUnit().
+
+#include "AEC/EVCCaptureCore.h"
+
+#if EVC_AEC_MAC
+
+#include <AudioToolbox/AudioToolbox.h>
+#include <AvailabilityMacros.h>
+#include <CoreAudio/CoreAudio.h>
+#include <dispatch/dispatch.h>
+
+#include <algorithm>
+#include <atomic>
+#include <chrono>
+#include <cstdarg>
+#include <cstdio>
+#include <cstring>
+#include <mutex>
+#include <set>
+
+namespace EVCAec
+{
+namespace
+{
+	constexpr AudioUnitElement InputBus = 1;
+	constexpr AudioUnitElement OutputBus = 0;
+	constexpr UInt32 MinRenderCapacity = 4096;
+
+	std::string Format(const char* Fmt, ...)
+	{
+		char Buffer[1024];
+		va_list Args;
+		va_start(Args, Fmt);
+		vsnprintf(Buffer, sizeof(Buffer), Fmt, Args);
+		va_end(Args);
+		return std::string(Buffer);
+	}
+
+	std::string ToStdString(CFStringRef Str)
+	{
+		if (!Str)
+		{
+			return std::string();
+		}
+		char Buffer[512];
+		if (CFStringGetCString(Str, Buffer, sizeof(Buffer), kCFStringEncodingUTF8))
+		{
+			return std::string(Buffer);
+		}
+		return std::string();
+	}
+
+	AudioStreamBasicDescription MonoFloat(double Rate)
+	{
+		AudioStreamBasicDescription Desc;
+		std::memset(&Desc, 0, sizeof(Desc));
+		Desc.mSampleRate = Rate;
+		Desc.mFormatID = kAudioFormatLinearPCM;
+		Desc.mFormatFlags = kAudioFormatFlagsNativeFloatPacked;
+		Desc.mChannelsPerFrame = 1;
+		Desc.mBitsPerChannel = 32;
+		Desc.mBytesPerFrame = 4;
+		Desc.mFramesPerPacket = 1;
+		Desc.mBytesPerPacket = 4;
+		return Desc;
+	}
+
+	AudioObjectPropertyAddress Address(AudioObjectPropertySelector Selector, AudioObjectPropertyScope Scope = kAudioObjectPropertyScopeGlobal)
+	{
+		AudioObjectPropertyAddress Addr = { Selector, Scope, kAudioObjectPropertyElementMain };
+		return Addr;
+	}
+
+	AudioDeviceID DefaultDevice(bool bInput)
+	{
+		const AudioObjectPropertyAddress Addr = Address(bInput ? kAudioHardwarePropertyDefaultInputDevice : kAudioHardwarePropertyDefaultOutputDevice);
+		AudioDeviceID Device = kAudioObjectUnknown;
+		UInt32 Size = sizeof(Device);
+		if (AudioObjectGetPropertyData(kAudioObjectSystemObject, &Addr, 0, nullptr, &Size, &Device) != noErr)
+		{
+			return kAudioObjectUnknown;
+		}
+		return Device;
+	}
+
+	std::vector<AudioDeviceID> AllDevices()
+	{
+		const AudioObjectPropertyAddress Addr = Address(kAudioHardwarePropertyDevices);
+		UInt32 Size = 0;
+		if (AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &Addr, 0, nullptr, &Size) != noErr || Size == 0)
+		{
+			return std::vector<AudioDeviceID>();
+		}
+		std::vector<AudioDeviceID> Devices(Size / sizeof(AudioDeviceID));
+		if (AudioObjectGetPropertyData(kAudioObjectSystemObject, &Addr, 0, nullptr, &Size, Devices.data()) != noErr)
+		{
+			return std::vector<AudioDeviceID>();
+		}
+		Devices.resize(Size / sizeof(AudioDeviceID));
+		return Devices;
+	}
+
+	std::string DeviceString(AudioDeviceID Device, AudioObjectPropertySelector Selector)
+	{
+		const AudioObjectPropertyAddress Addr = Address(Selector);
+		CFStringRef Value = nullptr;
+		UInt32 Size = sizeof(Value);
+		if (AudioObjectGetPropertyData(Device, &Addr, 0, nullptr, &Size, &Value) != noErr || !Value)
+		{
+			return std::string();
+		}
+		std::string Result = ToStdString(Value);
+		CFRelease(Value);
+		return Result;
+	}
+
+	int InputChannels(AudioDeviceID Device)
+	{
+		const AudioObjectPropertyAddress Addr = Address(kAudioDevicePropertyStreamConfiguration, kAudioObjectPropertyScopeInput);
+		UInt32 Size = 0;
+		if (AudioObjectGetPropertyDataSize(Device, &Addr, 0, nullptr, &Size) != noErr || Size == 0)
+		{
+			return 0;
+		}
+		// Local fix 2026-09-20: a device can gain streams between the size query above and the read below - connecting
+		// AirPods brings the voice-processing aggregate device into being and reconfigures it - and Core Audio writes as
+		// many bytes as the ioDataSize it is handed allows. Passing the stale query size there lets it write past the
+		// allocation: one extra AudioBuffer puts a small integer over the next heap object's pointer field, and an
+		// unrelated free() dies later. Allocate with slack, pass the true capacity, retry if it grew again, and never
+		// walk further than what was actually written.
+		for (int Attempt = 0; Attempt < 4; ++Attempt)
+		{
+			if (Size > (1u << 20))
+			{
+				return 0;
+			}
+			const size_t Slack = 8 * sizeof(AudioBuffer);
+			std::vector<AudioBuffer> Storage((Size + Slack + sizeof(AudioBuffer) - 1) / sizeof(AudioBuffer));
+			AudioBufferList* List = reinterpret_cast<AudioBufferList*>(Storage.data());
+			const UInt32 Capacity = static_cast<UInt32>(Storage.size() * sizeof(AudioBuffer));
+			UInt32 Written = Capacity;
+			if (AudioObjectGetPropertyData(Device, &Addr, 0, nullptr, &Written, List) != noErr)
+			{
+				return 0;
+			}
+			if (Written > Capacity)
+			{
+				Size = Written;
+				continue;
+			}
+			const UInt32 Header = static_cast<UInt32>(offsetof(AudioBufferList, mBuffers));
+			const UInt32 Room = Written > Header ? (Written - Header) / static_cast<UInt32>(sizeof(AudioBuffer)) : 0;
+			const UInt32 Count = List->mNumberBuffers < Room ? List->mNumberBuffers : Room;
+			int Channels = 0;
+			for (UInt32 Index = 0; Index < Count; ++Index)
+			{
+				Channels += static_cast<int>(List->mBuffers[Index].mNumberChannels);
+			}
+			return Channels;
+		}
+		return 0;
+	}
+
+	bool IsHidden(AudioDeviceID Device)
+	{
+		const AudioObjectPropertyAddress Addr = Address(kAudioDevicePropertyIsHidden);
+		UInt32 Hidden = 0;
+		UInt32 Size = sizeof(Hidden);
+		return AudioObjectGetPropertyData(Device, &Addr, 0, nullptr, &Size, &Hidden) == noErr && Hidden != 0;
+	}
+
+	double NominalRate(AudioDeviceID Device)
+	{
+		const AudioObjectPropertyAddress Addr = Address(kAudioDevicePropertyNominalSampleRate);
+		Float64 Rate = 0.0;
+		UInt32 Size = sizeof(Rate);
+		AudioObjectGetPropertyData(Device, &Addr, 0, nullptr, &Size, &Rate);
+		return Rate;
+	}
+
+	// Input devices, OS default first. VPIO's private aggregate devices are excluded.
+	std::vector<FDeviceInfo> ListInputs(std::vector<AudioDeviceID>* OutIds)
+	{
+		const AudioDeviceID Default = DefaultDevice(true);
+		std::vector<FDeviceInfo> Inputs;
+		std::vector<AudioDeviceID> Ids;
+		for (AudioDeviceID Device : AllDevices())
+		{
+			const int Channels = InputChannels(Device);
+			if (Channels <= 0 || IsHidden(Device))
+			{
+				continue;
+			}
+			FDeviceInfo Info;
+			Info.Id = DeviceString(Device, kAudioDevicePropertyDeviceUID);
+			if (Info.Id.find("VPAUAggregateAudioDevice") != std::string::npos || Info.Id.find("CADefaultDeviceAggregate") != std::string::npos)
+			{
+				continue;
+			}
+			Info.Name = DeviceString(Device, kAudioObjectPropertyName);
+			Info.NumChannels = Channels;
+			Info.NativeSampleRate = static_cast<int>(NominalRate(Device));
+			Info.bIsDefault = (Device == Default);
+			if (Info.bIsDefault)
+			{
+				Inputs.insert(Inputs.begin(), Info);
+				Ids.insert(Ids.begin(), Device);
+			}
+			else
+			{
+				Inputs.push_back(Info);
+				Ids.push_back(Device);
+			}
+		}
+		if (OutIds)
+		{
+			*OutIds = Ids;
+		}
+		return Inputs;
+	}
+
+	class FMacVoiceProcessingCore;
+
+	// Device-change notifications. One set of HAL listeners for the whole process. The listener only
+	// posts a job to a private serial queue and never blocks (it may run on the main thread); the job
+	// takes the lock and only touches cores that are still registered - Close() unregisters under the
+	// same lock - so a closing core is never touched afterwards.
+	struct FDeviceWatch
+	{
+		std::mutex Mutex;
+		std::set<FMacVoiceProcessingCore*> Live;
+		dispatch_queue_t Queue = nullptr; // set once, before the listeners are added; never changes
+		bool bListening = false;
+		std::mutex ParkMutex;             // its own lock: taken while Mutex and a core's UnitMutex may be held
+		std::vector<AudioUnit> Parked;    // stopped, uninitialized VoiceProcessingIO units kept for reuse; never disposed
+	};
+
+	FDeviceWatch& Watch()
+	{
+		static FDeviceWatch* Instance = new FDeviceWatch(); // process lifetime; the HAL listeners are never removed
+		return *Instance;
+	}
+
+	struct FDeviceJob
+	{
+		bool bInputChanged;   // default input changed, or the device list changed (bound input may be gone)
+		bool bOutputChanged;  // default output changed
+	};
+
+	struct FCreateJob
+	{
+		FMacVoiceProcessingCore* Core;
+	};
+
+	void RunDeviceJob(void* Context);
+	void RunCreateJob(void* Context);
+
+	// Device queue (or inline): stops and uninitializes a VoiceProcessingIO unit and keeps it for the next
+	// CreateUnit(). It is never passed to AudioComponentInstanceDispose - see the note at the top of the file:
+	// disposing one inside an Unreal process dies in Apple's voice-activity-detector teardown. Uninitializing
+	// releases the microphone and the device (the orange indicator goes out); what stays is one idle
+	// component instance, and a process normally parks and reuses a single one.
+	void ParkUnit(void* Context)
+	{
+		AudioUnit Unit = static_cast<AudioUnit>(Context);
+		AudioOutputUnitStop(Unit);
+		AudioUnitUninitialize(Unit);
+		FDeviceWatch& W = Watch();
+		std::lock_guard<std::mutex> Lock(W.ParkMutex);
+		W.Parked.push_back(Unit);
+	}
+
+	AudioUnit TakeParkedUnit()
+	{
+		FDeviceWatch& W = Watch();
+		std::lock_guard<std::mutex> Lock(W.ParkMutex);
+		if (W.Parked.empty())
+		{
+			return nullptr;
+		}
+		AudioUnit Unit = W.Parked.back();
+		W.Parked.pop_back();
+		return Unit;
+	}
+	OSStatus OnDeviceChanged(AudioObjectID Object, UInt32 NumAddresses, const AudioObjectPropertyAddress* Addresses, void* ClientData);
+
+	class FMacVoiceProcessingCore final : public ICaptureCore
+	{
+	public:
+		FMacVoiceProcessingCore(FLogFn InLog, const FOptions& InOptions)
+			: Log(std::move(InLog))
+			, Options(InOptions)
+		{
+		}
+
+		~FMacVoiceProcessingCore() override
+		{
+			Close();
+		}
+
+		const char* BackendName() const override
+		{
+			return Options.bBypassVoiceProcessing ? "macOS VoiceProcessingIO (BYPASSED - test only)" : "macOS VoiceProcessingIO (AEC)";
+		}
+
+		bool EnumerateInputs(std::vector<FDeviceInfo>& Out) override
+		{
+			Out = ListInputs(nullptr);
+			return true;
+		}
+
+		bool Open(int DeviceIndex, int FramesPerCallback, FCaptureFn OnCapture) override
+		{
+			if (bOpen.load())
+			{
+				Emit(ELogLevel::Warning, "Open: a stream is already open");
+				return false;
+			}
+			std::vector<AudioDeviceID> Ids;
+			const std::vector<FDeviceInfo> Inputs = ListInputs(&Ids);
+			if (Inputs.empty())
+			{
+				Emit(ELogLevel::Error, "Open: no input devices");
+				return false;
+			}
+			const size_t Chosen = DeviceIndex < 0 ? 0 : static_cast<size_t>(DeviceIndex);
+			if (Chosen >= Inputs.size())
+			{
+				Emit(ELogLevel::Error, Format("Open: device index %d out of range (%d input devices)", DeviceIndex, static_cast<int>(Inputs.size())));
+				return false;
+			}
+			{
+				std::lock_guard<std::mutex> Lock(UnitMutex);
+				Reblocker.Reset(FramesPerCallback);
+				Callback = std::move(OnCapture);
+				Opened = Inputs[Chosen];
+				PendingInput = Ids[Chosen];
+				BlockFrames = FramesPerCallback;
+				bFollowDefaultInput = Inputs[Chosen].bIsDefault;
+				bWantRunning = false;
+				bHealthy = false;
+				bCreating = true;
+				bOpen = true;
+			}
+			// VoiceProcessingIO's AudioUnitInitialize takes ~2.5 s (measured in the game 2026-09-18: one
+			// frame stalled 2.57 s). Create it on the serial device queue instead of the game thread; the
+			// same queue orders it before any device-change job. Start() takes effect once it is ready.
+			StartWatching();
+			dispatch_async_f(Watch().Queue, new FCreateJob{ this }, &RunCreateJob);
+			Emit(ELogLevel::Info, Format("opening '%s' in the background", Inputs[Chosen].Name.c_str()));
+			return true;
+		}
+
+		void SetAsyncFailureHandler(FFailureFn Handler) override
+		{
+			std::lock_guard<std::mutex> Lock(UnitMutex);
+			OnAsyncFailure = std::move(Handler);
+		}
+
+		// Device-watch queue, watch lock held (a concurrent Close() waits for this to finish).
+		void CompleteOpen()
+		{
+			FFailureFn Failed;
+			std::string Message;
+			{
+				std::lock_guard<std::mutex> Lock(UnitMutex);
+				if (!bOpen.load() || !bCreating.load())
+				{
+					return;
+				}
+				const bool bCreated = CreateUnit(PendingInput, DefaultDevice(false));
+				bCreating = false;
+				if (!bCreated)
+				{
+					DestroyUnit();
+					Failed = OnAsyncFailure;
+					Message = "could not create the voice-processing unit (see the errors above)";
+				}
+				else
+				{
+					bHealthy = true;
+					if (bWantRunning.load())
+					{
+						const OSStatus Status = AudioOutputUnitStart(Unit);
+						bRunning = Status == noErr;
+						if (Status != noErr)
+						{
+							Emit(ELogLevel::Error, Format("AudioOutputUnitStart failed: %d", static_cast<int>(Status)));
+						}
+					}
+					Message = Format("opened '%s' (%d ch @ %d Hz native) -> 48000 Hz mono, %d-frame blocks; output reference '%s'; AEC %s, AGC %s%s%s",
+						Opened.Name.c_str(), Opened.NumChannels, Opened.NativeSampleRate, BlockFrames,
+						DeviceString(OutputDevice, kAudioObjectPropertyName).c_str(),
+						Options.bBypassVoiceProcessing ? "BYPASSED" : "ON", Options.bAutomaticGainControl ? "on" : "off",
+						bFollowDefaultInput ? ", following the default input" : "", bRunning.load() ? "; capturing" : "");
+				}
+			}
+			if (Failed)
+			{
+				Emit(ELogLevel::Error, Message);
+				Failed(Message);
+			}
+			else if (!Message.empty())
+			{
+				Emit(ELogLevel::Info, Message);
+			}
+		}
+
+		bool Start() override
+		{
+			std::lock_guard<std::mutex> Lock(UnitMutex);
+			if (!bOpen.load())
+			{
+				return false;
+			}
+			bWantRunning = true;
+			if (bCreating.load())
+			{
+				return true; // CompleteOpen() starts it
+			}
+			if (!Unit)
+			{
+				return false; // creation failed; the async failure handler has been told
+			}
+			if (bRunning.load())
+			{
+				return true;
+			}
+			if (!bHealthy && !Rebind(InputDevice, DefaultDevice(false)))
+			{
+				return false; // Rebind() logged why; the next device event retries
+			}
+			const OSStatus Status = AudioOutputUnitStart(Unit);
+			if (Status != noErr)
+			{
+				Emit(ELogLevel::Error, Format("AudioOutputUnitStart failed: %d", static_cast<int>(Status)));
+				return false;
+			}
+			bRunning = true;
+			return true;
+		}
+
+		bool Stop() override
+		{
+			std::lock_guard<std::mutex> Lock(UnitMutex);
+			if (!bOpen.load())
+			{
+				return false;
+			}
+			bWantRunning = false;
+			if (Unit)
+			{
+				AudioOutputUnitStop(Unit);
+			}
+			bRunning = false;
+			return true;
+		}
+
+		void Close() override
+		{
+			// Unregistering takes the watch lock, so this waits for an in-progress background creation
+			// (at most ~2.5 s, only if the stream is closed while still opening); a creation job that
+			// has not started yet finds this core unregistered and does nothing.
+			StopWatching();
+			std::lock_guard<std::mutex> Lock(UnitMutex);
+			DestroyUnit(/*bDeferDispose=*/true);
+			Callback = nullptr;
+			OnAsyncFailure = nullptr;
+			bWantRunning = false;
+			bCreating = false;
+			bOpen = false;
+		}
+
+		bool IsOpen() const override { return bOpen.load(); }
+		// While the unit is still being created, report the intent, so callers that stop a "capturing"
+		// stream before reopening it (the microphone widget) behave as they did before.
+		bool IsRunning() const override { return bRunning.load() || (bCreating.load() && bWantRunning.load()); }
+
+		FDeviceInfo OpenedDevice() const override
+		{
+			std::lock_guard<std::mutex> Lock(UnitMutex);
+			return Opened;
+		}
+
+		// Device-watch queue, watch lock held.
+		void OnDefaultsChanged(bool bInputChanged, bool bOutputChanged)
+		{
+			std::lock_guard<std::mutex> Lock(UnitMutex);
+			if (!bOpen.load() || !Unit)
+			{
+				return;
+			}
+			AudioDeviceID NewInput = InputDevice;
+			bool bInputLost = false;
+			if (bInputChanged)
+			{
+				const std::vector<AudioDeviceID> Present = AllDevices();
+				bInputLost = std::find(Present.begin(), Present.end(), InputDevice) == Present.end() || InputChannels(InputDevice) <= 0;
+				if (bFollowDefaultInput || bInputLost)
+				{
+					const AudioDeviceID Candidate = DefaultDevice(true);
+					if (Candidate != kAudioObjectUnknown && InputChannels(Candidate) > 0)
+					{
+						NewInput = Candidate;
+					}
+				}
+			}
+			const AudioDeviceID NewOutput = bOutputChanged ? DefaultDevice(false) : OutputDevice;
+			if (NewInput == InputDevice && NewOutput == OutputDevice && bHealthy)
+			{
+				return;
+			}
+			// VPIO's own aggregate-device churn also fires device-list events; while re-binding keeps
+			// failing, retry at most once a second.
+			const std::chrono::steady_clock::time_point Now = std::chrono::steady_clock::now();
+			if (!bHealthy && Now - LastRebindAttempt < std::chrono::seconds(1))
+			{
+				return;
+			}
+			LastRebindAttempt = Now;
+			if (bInputLost && NewInput != InputDevice)
+			{
+				bFollowDefaultInput = true; // the chosen microphone went away: fall back to the default
+			}
+			Rebind(NewInput, NewOutput);
+		}
+
+	private:
+		// UnitMutex held. Re-targets the existing unit; restarts it if capture is wanted. A failure
+		// leaves the core unhealthy, and the next device event or Start() retries.
+		bool Rebind(AudioDeviceID NewInput, AudioDeviceID NewOutput)
+		{
+			AudioOutputUnitStop(Unit);
+			bRunning = false;
+			AudioUnitUninitialize(Unit);
+			if (!BindDevices(NewInput, NewOutput) || !InitializeAndConfigure())
+			{
+				bHealthy = false;
+				Emit(ELogLevel::Error, "device change: could not re-bind the voice-processing unit; will retry on the next device change");
+				return false;
+			}
+			bHealthy = true;
+			if (NewInput != InputDevice)
+			{
+				Opened.Name = DeviceString(NewInput, kAudioObjectPropertyName);
+				Opened.Id = DeviceString(NewInput, kAudioDevicePropertyDeviceUID);
+				Opened.NumChannels = InputChannels(NewInput);
+				Opened.NativeSampleRate = static_cast<int>(NominalRate(NewInput));
+			}
+			InputDevice = NewInput;
+			OutputDevice = NewOutput;
+			if (bWantRunning)
+			{
+				bRunning = AudioOutputUnitStart(Unit) == noErr;
+			}
+			Emit(ELogLevel::Info, Format("device change: bound to input '%s', output reference '%s'%s",
+				Opened.Name.c_str(), DeviceString(OutputDevice, kAudioObjectPropertyName).c_str(), bRunning.load() ? " (running)" : ""));
+			return true;
+		}
+
+		static OSStatus InputProc(void* RefCon, AudioUnitRenderActionFlags* Flags, const AudioTimeStamp* TimeStamp, UInt32 /*Bus*/, UInt32 NumFrames, AudioBufferList* /*Data*/)
+		{
+			FMacVoiceProcessingCore* Self = static_cast<FMacVoiceProcessingCore*>(RefCon);
+			if (NumFrames > Self->RenderBuffer.size())
+			{
+				Self->DroppedSlices.fetch_add(1);
+				return noErr; // never crash the audio thread over an oversized slice
+			}
+			// AudioBufferList declares mBuffers[1]. The capture format is mono, so one buffer is what the unit
+			// should fill - but a unit delivering a de-interleaved multi-channel format into a bare
+			// AudioBufferList would write past it, so give it room and check what came back (2026-09-20).
+			struct
+			{
+				AudioBufferList List;
+				AudioBuffer Extra[7];
+			} Storage;
+			Storage.List.mNumberBuffers = 1;
+			Storage.List.mBuffers[0].mNumberChannels = 1;
+			Storage.List.mBuffers[0].mDataByteSize = NumFrames * sizeof(float);
+			Storage.List.mBuffers[0].mData = Self->RenderBuffer.data();
+			if (AudioUnitRender(Self->Unit, Flags, TimeStamp, InputBus, NumFrames, &Storage.List) != noErr)
+			{
+				Self->RenderErrors.fetch_add(1);
+				return noErr;
+			}
+			// The unit may point mData at its own buffer instead of filling ours; read from wherever it says.
+			const float* Samples = static_cast<const float*>(Storage.List.mBuffers[0].mData);
+			const UInt32 Delivered = Storage.List.mBuffers[0].mDataByteSize / sizeof(float);
+			if (Storage.List.mNumberBuffers != 1 || Storage.List.mBuffers[0].mNumberChannels != 1 || !Samples || Delivered == 0)
+			{
+				Self->RenderErrors.fetch_add(1);
+				return noErr;
+			}
+			if (Self->bRunning.load() && Self->Callback)
+			{
+				const FCaptureFn& Sink = Self->Callback;
+				Self->Reblocker.Push(Samples, static_cast<int>(Delivered < NumFrames ? Delivered : NumFrames), [&Sink](const float* Block, int Frames) { Sink(Block, Frames); });
+			}
+			return noErr;
+		}
+
+		static OSStatus SilenceProc(void* /*RefCon*/, AudioUnitRenderActionFlags* Flags, const AudioTimeStamp* /*TimeStamp*/, UInt32 /*Bus*/, UInt32 /*NumFrames*/, AudioBufferList* Data)
+		{
+			for (UInt32 Index = 0; Index < Data->mNumberBuffers; ++Index)
+			{
+				std::memset(Data->mBuffers[Index].mData, 0, Data->mBuffers[Index].mDataByteSize);
+			}
+			*Flags |= kAudioUnitRenderAction_OutputIsSilence;
+			return noErr;
+		}
+
+		bool Check(OSStatus Status, const char* What)
+		{
+			if (Status != noErr)
+			{
+				Emit(ELogLevel::Error, Format("%s failed: %d", What, static_cast<int>(Status)));
+				return false;
+			}
+			return true;
+		}
+
+		// UnitMutex held. Takes a parked unit when there is one (see ParkUnit), otherwise a new instance.
+		bool CreateUnit(AudioDeviceID Input, AudioDeviceID Output)
+		{
+			if (AudioUnit Reused = TakeParkedUnit())
+			{
+				Unit = Reused;
+				if (ConfigureUnit(Input, Output))
+				{
+					Emit(ELogLevel::Info, "reusing the parked voice-processing unit");
+					return true;
+				}
+				// Never disposed: it goes back to the park, out of the way, and a fresh instance is tried once.
+				Emit(ELogLevel::Warning, "the parked voice-processing unit could not be reconfigured; creating a new instance");
+				ParkUnit(Unit);
+				Unit = nullptr;
+			}
+			AudioComponentDescription Desc = { kAudioUnitType_Output, kAudioUnitSubType_VoiceProcessingIO, kAudioUnitManufacturer_Apple, 0, 0 };
+			AudioComponent Component = AudioComponentFindNext(nullptr, &Desc);
+			if (!Component)
+			{
+				Emit(ELogLevel::Error, "VoiceProcessingIO component not found");
+				return false;
+			}
+			if (!Check(AudioComponentInstanceNew(Component, &Unit), "AudioComponentInstanceNew(VoiceProcessingIO)"))
+			{
+				Unit = nullptr;
+				return false;
+			}
+			return ConfigureUnit(Input, Output);
+		}
+
+		// UnitMutex held, Unit set and uninitialized (new, or parked after a previous use: every property below is
+		// set again, which is what Rebind() has always done to a live unit).
+		bool ConfigureUnit(AudioDeviceID Input, AudioDeviceID Output)
+		{
+			const UInt32 Enable = 1;
+			if (!Check(AudioUnitSetProperty(Unit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, InputBus, &Enable, sizeof(Enable)), "enable VPIO input")
+				// Output stays ENABLED: disabling it makes AudioUnitInitialize fail on macOS (-10875).
+				|| !Check(AudioUnitSetProperty(Unit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, OutputBus, &Enable, sizeof(Enable)), "enable VPIO output"))
+			{
+				return false;
+			}
+			if (!BindDevices(Input, Output))
+			{
+				return false;
+			}
+			const AudioStreamBasicDescription Mono48 = MonoFloat(ICaptureCore::DeliveredSampleRate);
+			if (!Check(AudioUnitSetProperty(Unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, InputBus, &Mono48, sizeof(Mono48)), "set capture format")
+				|| !Check(AudioUnitSetProperty(Unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, OutputBus, &Mono48, sizeof(Mono48)), "set render format"))
+			{
+				return false;
+			}
+			AURenderCallbackStruct Render = { &FMacVoiceProcessingCore::SilenceProc, this };
+			AURenderCallbackStruct Capture = { &FMacVoiceProcessingCore::InputProc, this };
+			if (!Check(AudioUnitSetProperty(Unit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, OutputBus, &Render, sizeof(Render)), "set render callback")
+				|| !Check(AudioUnitSetProperty(Unit, kAudioOutputUnitProperty_SetInputCallback, kAudioUnitScope_Global, InputBus, &Capture, sizeof(Capture)), "set input callback"))
+			{
+				return false;
+			}
+			if (!InitializeAndConfigure())
+			{
+				return false;
+			}
+			InputDevice = Input;
+			OutputDevice = Output;
+			return true;
+		}
+
+		// UnitMutex held, unit uninitialized.
+		bool BindDevices(AudioDeviceID Input, AudioDeviceID Output)
+		{
+			if (!Check(AudioUnitSetProperty(Unit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, InputBus, &Input, sizeof(Input)), "bind input device"))
+			{
+				return false;
+			}
+			// The echo reference is the output device the game plays to (UE's mixer renders to the default output).
+			if (Output != kAudioObjectUnknown)
+			{
+				return Check(AudioUnitSetProperty(Unit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, OutputBus, &Output, sizeof(Output)), "bind output (echo reference) device");
+			}
+			Emit(ELogLevel::Warning, "no default output device; the echo reference is left to VoiceProcessingIO");
+			return true;
+		}
+
+		// UnitMutex held.
+		bool InitializeAndConfigure()
+		{
+			if (!Check(AudioUnitInitialize(Unit), "AudioUnitInitialize(VoiceProcessingIO)"))
+			{
+				return false;
+			}
+			UInt32 MaxFrames = 0;
+			UInt32 Size = sizeof(MaxFrames);
+			AudioUnitGetProperty(Unit, kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0, &MaxFrames, &Size);
+			RenderBuffer.assign(MaxFrames > MinRenderCapacity ? MaxFrames : MinRenderCapacity, 0.0f);
+
+			const UInt32 Bypass = Options.bBypassVoiceProcessing ? 1 : 0;
+			if (!Check(AudioUnitSetProperty(Unit, kAUVoiceIOProperty_BypassVoiceProcessing, kAudioUnitScope_Global, InputBus, &Bypass, sizeof(Bypass)), "set BypassVoiceProcessing"))
+			{
+				return false;
+			}
+			UInt32 ReadBack = 99;
+			Size = sizeof(ReadBack);
+			if (AudioUnitGetProperty(Unit, kAUVoiceIOProperty_BypassVoiceProcessing, kAudioUnitScope_Global, InputBus, &ReadBack, &Size) != noErr || ReadBack != Bypass)
+			{
+				Emit(ELogLevel::Error, Format("BypassVoiceProcessing read back %u, expected %u", static_cast<unsigned>(ReadBack), static_cast<unsigned>(Bypass)));
+				return false;
+			}
+			const UInt32 Agc = Options.bAutomaticGainControl ? 1 : 0;
+			if (AudioUnitSetProperty(Unit, kAUVoiceIOProperty_VoiceProcessingEnableAGC, kAudioUnitScope_Global, InputBus, &Agc, sizeof(Agc)) != noErr)
+			{
+				Emit(ELogLevel::Warning, "could not set VoiceProcessingEnableAGC");
+			}
+#if defined(MAC_OS_VERSION_14_0) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_VERSION_14_0
+			if (__builtin_available(macOS 14.0, *))
+			{
+				// Keep the game's own sound from being turned down while voice chat runs.
+				AUVoiceIOOtherAudioDuckingConfiguration Ducking;
+				Ducking.mEnableAdvancedDucking = false;
+				Ducking.mDuckingLevel = kAUVoiceIOOtherAudioDuckingLevelMin;
+				if (AudioUnitSetProperty(Unit, kAUVoiceIOProperty_OtherAudioDuckingConfiguration, kAudioUnitScope_Global, OutputBus, &Ducking, sizeof(Ducking)) != noErr)
+				{
+					Emit(ELogLevel::Warning, "could not set minimum other-audio ducking");
+				}
+			}
+#endif
+			return true;
+		}
+
+		// UnitMutex held. AudioOutputUnitStop is synchronous: once it returns no callback into this core
+		// can run, so the slow part (uninitialize, ~0.7 s measured) can be deferred to the device queue
+		// when bDeferDispose - it touches only the unit handle, never the core. The unit is parked, never
+		// disposed (ParkUnit).
+		void DestroyUnit(bool bDeferDispose = false)
+		{
+			if (Unit)
+			{
+				AudioOutputUnitStop(Unit);
+				if (bDeferDispose && Watch().Queue)
+				{
+					dispatch_async_f(Watch().Queue, Unit, &ParkUnit);
+				}
+				else
+				{
+					ParkUnit(Unit);
+				}
+				Unit = nullptr;
+			}
+			bRunning = false;
+			const unsigned long long Errors = RenderErrors.exchange(0);
+			const unsigned long long Dropped = DroppedSlices.exchange(0);
+			if (Errors || Dropped)
+			{
+				Emit(ELogLevel::Warning, Format("closed with %llu render errors, %llu dropped slices", Errors, Dropped));
+			}
+		}
+
+		void StartWatching()
+		{
+			FDeviceWatch& W = Watch();
+			std::lock_guard<std::mutex> Lock(W.Mutex);
+			if (!W.bListening)
+			{
+				// Deliver HAL notifications on the HAL's own thread, as RtAudio (the pre-fix capture path)
+				// set process-wide; otherwise they arrive on the main run loop.
+				CFRunLoopRef NoRunLoop = nullptr;
+				const AudioObjectPropertyAddress RunLoopAddr = Address(kAudioHardwarePropertyRunLoop);
+				AudioObjectSetPropertyData(kAudioObjectSystemObject, &RunLoopAddr, 0, nullptr, sizeof(NoRunLoop), &NoRunLoop);
+
+				W.Queue = dispatch_queue_create("EmbeddedVoiceChat.AEC.DeviceWatch", DISPATCH_QUEUE_SERIAL);
+				const AudioObjectPropertyAddress InAddr = Address(kAudioHardwarePropertyDefaultInputDevice);
+				const AudioObjectPropertyAddress OutAddr = Address(kAudioHardwarePropertyDefaultOutputDevice);
+				const AudioObjectPropertyAddress ListAddr = Address(kAudioHardwarePropertyDevices);
+				const bool bIn = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &InAddr, &OnDeviceChanged, nullptr) == noErr;
+				const bool bOut = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &OutAddr, &OnDeviceChanged, nullptr) == noErr;
+				const bool bList = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &ListAddr, &OnDeviceChanged, nullptr) == noErr;
+				W.bListening = bIn || bOut || bList;
+				if (!bIn || !bOut || !bList)
+				{
+					Emit(ELogLevel::Warning, "could not watch all device changes; some device switches need a stream reopen");
+				}
+			}
+			W.Live.insert(this);
+		}
+
+		void StopWatching()
+		{
+			FDeviceWatch& W = Watch();
+			std::lock_guard<std::mutex> Lock(W.Mutex);
+			W.Live.erase(this);
+		}
+
+		void Emit(ELogLevel Level, const std::string& Message) const
+		{
+			if (Log)
+			{
+				Log(Level, Message);
+			}
+		}
+
+		FLogFn Log;
+		FOptions Options;
+		mutable std::mutex UnitMutex;
+		AudioUnit Unit = nullptr;
+		AudioDeviceID InputDevice = kAudioObjectUnknown;
+		AudioDeviceID OutputDevice = kAudioObjectUnknown;
+		bool bFollowDefaultInput = false; // UnitMutex
+		bool bHealthy = false;            // UnitMutex: false after a failed re-bind (retried on the next event / Start)
+		std::atomic<bool> bWantRunning{ false }; // written under UnitMutex: Start() called and not Stop()ped
+		std::atomic<bool> bCreating{ false };    // written under UnitMutex: background creation pending
+		AudioDeviceID PendingInput = kAudioObjectUnknown; // UnitMutex: device for the background creation
+		int BlockFrames = 480;            // UnitMutex
+		FFailureFn OnAsyncFailure;        // UnitMutex
+		std::chrono::steady_clock::time_point LastRebindAttempt; // UnitMutex
+		FDeviceInfo Opened;
+		FCaptureFn Callback;
+		std::vector<float> RenderBuffer;
+		Detail::FReblocker Reblocker;
+		std::atomic<bool> bOpen{ false };
+		std::atomic<bool> bRunning{ false };
+		std::atomic<unsigned long long> RenderErrors{ 0 };
+		std::atomic<unsigned long long> DroppedSlices{ 0 };
+	};
+
+	// Serial device-watch queue: background VoiceProcessingIO creation for one core.
+	void RunCreateJob(void* Context)
+	{
+		std::unique_ptr<FCreateJob> Job(static_cast<FCreateJob*>(Context));
+		FDeviceWatch& W = Watch();
+		std::lock_guard<std::mutex> Lock(W.Mutex);
+		if (W.Live.count(Job->Core) != 0)
+		{
+			Job->Core->CompleteOpen();
+		}
+	}
+
+	// Serial device-watch queue.
+	void RunDeviceJob(void* Context)
+	{
+		std::unique_ptr<FDeviceJob> Job(static_cast<FDeviceJob*>(Context));
+		FDeviceWatch& W = Watch();
+		std::lock_guard<std::mutex> Lock(W.Mutex);
+		for (FMacVoiceProcessingCore* Core : W.Live)
+		{
+			Core->OnDefaultsChanged(Job->bInputChanged, Job->bOutputChanged);
+		}
+	}
+
+	// HAL listener. Never blocks: it only posts a job (the queue is fixed before any listener exists).
+	OSStatus OnDeviceChanged(AudioObjectID /*Object*/, UInt32 NumAddresses, const AudioObjectPropertyAddress* Addresses, void* /*ClientData*/)
+	{
+		bool bInput = false;
+		bool bOutput = false;
+		for (UInt32 Index = 0; Index < NumAddresses; ++Index)
+		{
+			bInput |= Addresses[Index].mSelector == kAudioHardwarePropertyDefaultInputDevice
+				|| Addresses[Index].mSelector == kAudioHardwarePropertyDevices;
+			bOutput |= Addresses[Index].mSelector == kAudioHardwarePropertyDefaultOutputDevice;
+		}
+		dispatch_async_f(Watch().Queue, new FDeviceJob{ bInput, bOutput }, &RunDeviceJob);
+		return noErr;
+	}
+} // namespace
+
+std::unique_ptr<ICaptureCore> CreatePlatformCaptureCore(FLogFn Log, const FOptions& Options)
+{
+	return std::unique_ptr<ICaptureCore>(new FMacVoiceProcessingCore(std::move(Log), Options));
+}
+
+} // namespace EVCAec
+
+#endif // EVC_AEC_MAC

@@ -1,0 +1,25 @@
+=== T2-standdown: dev app, wait 22s, quit=term, 23:13:52
+--- [GraphicsAutoTune] before:
+TunedVersion=1
+FinishedFailures=3
+FinishedFailuresFor=2
+pid 86989 at 23:13:52
+  PID  %CPU    RSS ELAPSED STAT
+86989 126.3 595568   00:22 R   
+sample: query-wait frames=1 fence-wait=2 game-thread-top: FRenderCommandFence::Wait(bool) const  (in awsTutorial) + 1876  [0x107
+--- [GraphicsAutoTune] after 22s:
+TunedVersion=2
+FinishedFailures=3
+FinishedFailuresFor=2
+Attempts=0
+LastResult=stood down for good: 3 runs finished but could not be applied or saved; the menu's settings stay
+quit: exited after term at 23:14:19
+config rewritten at exit: GameUserSettings=yes Input.ini=yes
+--- crash/ensure reports newer than this test:
+(none)
+--- dev log evidence:
+﻿Log file open, 09/20/26 23:13:52
+LogConfig: Set CVar [[r.AllowOcclusionQueries:0]]
+[2026.09.21-06.13.53:491][  0]LogGraphicsAutoTune: Warning: Not tuning this install any more: 3 runs finished but could not be applied or saved (see LastResult); the menu's settings stay
+[2026.09.21-06.14.18:850][510]Log file closed, 09/20/26 23:14:18
+=== done 23:14:19

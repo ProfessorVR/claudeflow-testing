@@ -1,0 +1,124 @@
+# BOOT PROMPT — MacOS UE Fix: Paraguay video playback
+
+Paste this whole file as the first message of a clean session.
+
+---
+
+You are picking up an investigation into why the **Cataract Operations — Paraguay** video widget
+fails on the macOS build of the `awsTutorial` Unreal Engine 5.4.1 project, while the byte-identical
+widget plays correctly in a shipped Windows build.
+
+**Read these first, in this order, before touching anything:**
+1. `plans/MacOS_UE_Fix/SESSION-LOG-2026-08-24.md` — what was run, what it returned, and two
+   retracted conclusions you must not re-derive.
+2. `plans/MacOS_UE_Fix/README.md` — folder map.
+3. The published report (rev. 2): https://claude.ai/code/artifact/5542fb4f-8efc-4ed9-9f66-ae7b09c576fd
+
+## State of play
+
+**Symptom (macOS only):** the Paraguay video player plays nothing, and never switches back to the
+Procedures / Interviews buttons the way every other procedure widget does.
+
+**Settled — do not re-investigate:**
+- Live chain is `Hospital_Client → BP_SC_CAT_PARA → BP_WG_CAT_PARA`. One instance, World Partition
+  external actor. That *is* the widget the player sees.
+- `BP_WG_CAT_PARA` is genuinely damaged: 54 graph nodes read a non-existent `MP_360_POV_CAT_PARA`,
+  19 read a deleted `Button_4K`, 208 custom events / 208 delegate binds (vs 7–32 in working peers),
+  80 runtime `OnClicked` binds layered on 27 designer binds, 128 never-released `OnMediaOpened` binds.
+- **Those defects are NOT the cause.** The same bytes play fine in the shipped Windows package.
+  `K2Node_*` nodes are editor-only and stripped at cook; a packaged build runs the serialized
+  `BlueprintGeneratedClass` bytecode, not the graph. Treat the damage as debt, on its own schedule.
+- Zero broken asset references anywhere. The Paraguay media library (162 stream sources) is intact.
+- The PC project at `Documents/Unreal_Projects/UCI_Campus_Template_v1.0` is not a similar project —
+  169 of 171 relevant assets are byte-identical to the Mac one. Only the two `.umap` files differ.
+
+**The live hypothesis (unproven):** the Mac needs a per-asset player override
+(`PlatformPlayerNames → Mac → ElectraPlayer`) to decode this content, that override is what made Mac
+playback work during the July 2026 packaging session, and **it is not on disk in either project today** —
+0 assets and 0 config entries contain `PlatformPlayerNames` or `ElectraPlayer`. The Mac's stream
+sources were re-saved (442 of 444 differ from the PC copies) but no override property persisted.
+
+## Your first task — the decisive test
+
+Confirm or kill the hypothesis before doing anything else. On the Mac:
+
+1. Mount the engine volume — it is **not** auto-mounted:
+   `hdiutil attach /Volumes/KingLab/UnrealEngine.sparsebundle`
+2. Open the project and re-run `~/Downloads/ue541-team-package/set_electra_override.py`
+   (Editor → Tools → Execute Python Script). Run it with `DRY_RUN = True` first and report the count.
+3. **The critical step v1 of this work never verified:** after applying with `DRY_RUN = False` and
+   saving, re-open one affected `StreamMediaSource` and confirm **Player Overrides** actually shows
+   `Mac → ElectraPlayer`. Then verify on disk:
+   ```bash
+   grep -l "PlatformPlayerNames\|ElectraPlayer" <asset>.uasset
+   ```
+   If the property does not survive the save, **that is the bug** — pivot to why.
+4. If it persists: repackage (CLI only, see below) and test Paraguay.
+
+Report the result plainly either way. A negative result is a real result here.
+
+## Hard constraints
+
+- **Package from the CLI. Never use the editor's Package Project button** — it deadlocks on this
+  project (`-EditorIOPort` cook hangs in `-[NSApplication _shouldTerminate]`, unrecoverable from the
+  GUI). Full procedure is **SOP §11h** in `~/Downloads/ue541-team-package/SOP-UE5.4.1-Mac-Build-and-Migration.md`
+  on the Mac; one-command path is `package-awsTutorial-mac.sh`.
+- **Map selection belongs to the operator.** They choose the shipped level by saving
+  `Hospital_Server` or `Hospital_Client` **as `FirstPersonMap`** in the editor. Never touch
+  `GameDefaultMap` / `ServerDefaultMap` or any map INI key.
+- **If you change plugin or project source, rebuild the PROJECT EDITOR target** (`awsTutorialEditor`),
+  not the game target — the cook runs as the editor and loads the editor's plugin dylibs. Verify by
+  mtime. This has burned this project twice.
+- **Back up before changing any asset** — timestamped copies under a `.backups/` directory.
+- **Verification-gated:** show the operator evidence and wait for sign-off before committing.
+- Do not modify `awsTutorial.uproject` (e.g. to enable PythonScriptPlugin) without asking first.
+
+## Environment
+
+| | |
+|---|---|
+| Mac | `ssh -o BatchMode=yes daltonsalvo@192.168.50.10 'bash -lc "…"'` — login shell is **required** |
+| Mac project | `/Volumes/UnrealEngine/Unreal_Projects/awsTutorial` |
+| Mac engine | `/Volumes/UnrealEngine/UE_5_4_1` (APFS sparsebundle on `/Volumes/KingLab`) |
+| PC project | `/mnt/c/Users/Dalton/Documents/Unreal_Projects/UCI_Campus_Template_v1.0` |
+| Working Windows build | `…/Packaged/20 - God please be the last/Windows` |
+| Team package + SOP | `~/Downloads/ue541-team-package/` on the Mac (mirror on `/Volumes/KingLab/`) |
+
+Gotchas: `timeout` does not exist on macOS (`gtimeout`). Heredocs are blocked by a hook in this repo —
+write scripts with the Write tool, then run them. macOS BSD `sed` needs `-i.bak`.
+
+## Tooling already built (in `plans/MacOS_UE_Fix/tools/`)
+
+- `uasset2.py` — UE5 `.uasset` package-table parser. Derives import/export strides empirically from
+  the table offsets, so it does not depend on version-flag guesswork. Gives real node counts by class.
+  `python3 uasset2.py <file.uasset>`
+- `nodedata.py` — reads each export's serialized blob and counts resolvable FNames. **Has false
+  positives**; only valid for relative comparison across files using the same method.
+  `python3 nodedata.py <file.uasset> K2Node_VariableGet 400`
+- `checkrefs2.sh` — FName-aware asset reference resolver. The naive version of this produced a
+  false-positive storm; see the log's §B3 before modifying it.
+
+Baseline outputs are preserved in `plans/MacOS_UE_Fix/data/` (manifests + name tables) so you can diff
+against a changed project without re-deriving them.
+
+## If the override hypothesis dies
+
+Next candidates, in order:
+1. Read the **Compiler Results** panel on `BP_WG_CAT_PARA` in the Mac editor — establishes whether
+   editor-side compile errors exist at all (a debt question now, but still unanswered).
+2. Capture a packaged-run log on the Mac with `-LogCmds="LogAvfMedia VeryVerbose, LogElectraPlayer
+   Verbose, LogMedia Verbose, LogMediaAssets Verbose"` while clicking a Paraguay video, and compare
+   the player-selection lines against a working procedure (e.g. BilateralScar or CAT_UCI_02).
+   The July 2026 session used exactly this technique; it is what identified AvfMedia `-12847`.
+3. Compare Paraguay's stream URLs against a working procedure's — Paraguay is 384 mp4 / 102 mpd,
+   UCI_02 is 105 mp4 / 21 mpd. Format mix alone did not explain it, but per-asset URL checks were not
+   exhaustive.
+
+## Deliverable
+
+Update the existing report rather than creating a new one — republish
+`plans/MacOS_UE_Fix/report/paraguay-widget-forensics.html`, passing
+`url: https://claude.ai/code/artifact/5542fb4f-8efc-4ed9-9f66-ae7b09c576fd` so it keeps the same link.
+It is already at revision 2; if you overturn something, say so explicitly in the corrections section
+the way rev. 2 does. This work has been wrong once already — the operator's own test caught it, and
+that norm is worth keeping.

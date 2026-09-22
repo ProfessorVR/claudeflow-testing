@@ -1,0 +1,278 @@
+// EVCAECCaptureStream.cpp - see EVCAECCaptureStream.h. Added 2026-09-18 (awsTutorial voice-echo fix).
+
+#include "AEC/EVCAECCaptureStream.h"
+
+#include "AudioDevice.h"
+#include "AudioDeviceNotificationSubsystem.h"
+#include "AudioMixerDevice.h"
+#include "Engine/Engine.h"
+#include "Features/IModularFeatures.h"
+#include "HAL/IConsoleManager.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogEmbeddedVoiceChatAEC, Log, All);
+
+namespace EmbeddedVoiceChatAEC
+{
+	namespace
+	{
+		TAutoConsoleVariable<int32> CVarCaptureBackend(
+			TEXT("EmbeddedVoiceChat.CaptureBackend"),
+			0,
+			TEXT("Voice-chat microphone back-end, read when a capture object first opens.\n")
+			TEXT(" 0: echo-cancelling OS voice capture (macOS VoiceProcessingIO / Windows Voice Capture DSP) [default]\n")
+			TEXT(" 1: engine capture back-end (RtAudio/WASAPI, no echo cancellation - the pre-2026-09-18 behaviour)"),
+			ECVF_Default);
+
+		void LogFromCore(EVCAec::ELogLevel Level, const std::string& Message)
+		{
+			const FString Text = UTF8_TO_TCHAR(Message.c_str());
+			switch (Level)
+			{
+			case EVCAec::ELogLevel::Error:
+				UE_LOG(LogEmbeddedVoiceChatAEC, Error, TEXT("%s"), *Text);
+				break;
+			case EVCAec::ELogLevel::Warning:
+				UE_LOG(LogEmbeddedVoiceChatAEC, Warning, TEXT("%s"), *Text);
+				break;
+			default:
+				UE_LOG(LogEmbeddedVoiceChatAEC, Log, TEXT("%s"), *Text);
+				break;
+			}
+		}
+
+		// The format the plugin receives (mono, 48 kHz), not the device's native one.
+		Audio::FCaptureDeviceInfo ToEngineInfo(const EVCAec::FDeviceInfo& Device)
+		{
+			Audio::FCaptureDeviceInfo Info;
+			Info.DeviceName = UTF8_TO_TCHAR(Device.Name.c_str());
+			Info.DeviceId = UTF8_TO_TCHAR(Device.Id.c_str());
+			Info.InputChannels = 1;
+			Info.PreferredSampleRate = EVCAec::ICaptureCore::DeliveredSampleRate;
+			Info.bSupportsHardwareAEC = true; // assigned explicitly; the engine back-ends leave this uninitialized
+			return Info;
+		}
+	}
+
+	namespace
+	{
+		// The output device the engine's main audio device renders to (Windows: IMMDevice ID). Game thread. Every UE5
+		// audio device is an audio mixer device.
+		FString EngineOutputDeviceId()
+		{
+			if (!GEngine)
+			{
+				return FString();
+			}
+			FAudioDeviceHandle Handle = GEngine->GetMainAudioDevice();
+			FAudioDevice* Device = Handle.GetAudioDevice();
+			if (!Device)
+			{
+				return FString();
+			}
+			Audio::IAudioMixerPlatformInterface* Platform = static_cast<Audio::FMixerDevice*>(Device)->GetAudioMixerPlatform();
+			return Platform ? Platform->GetPlatformDeviceInfo().DeviceId : FString();
+		}
+	}
+
+	FAECCaptureStream::FAECCaptureStream(std::unique_ptr<EVCAec::ICaptureCore> InCore)
+		: Core(std::move(InCore))
+	{
+	}
+
+	void FAECCaptureStream::FollowEngineOutputDevice()
+	{
+		Core->SetRenderEndpoint(TCHAR_TO_UTF8(*EngineOutputDeviceId()));
+		if (!DeviceSwitchedHandle.IsValid() && GEngine)
+		{
+			if (UAudioDeviceNotificationSubsystem* Notifications = UAudioDeviceNotificationSubsystem::Get())
+			{
+				// Broadcast on the game thread (AsyncTask in OnDeviceSwitched), where this stream is also destroyed.
+				DeviceSwitchedHandle = Notifications->DeviceSwitchedNative.AddLambda([this](FString DeviceId)
+				{
+					UE_LOG(LogEmbeddedVoiceChatAEC, Log, TEXT("Game audio moved to output device %s; echo reference follows"), *DeviceId);
+					Core->SetRenderEndpoint(TCHAR_TO_UTF8(*DeviceId));
+				});
+			}
+		}
+	}
+
+	FAECCaptureStream::~FAECCaptureStream()
+	{
+		if (DeviceSwitchedHandle.IsValid() && GEngine)
+		{
+			if (UAudioDeviceNotificationSubsystem* Notifications = UAudioDeviceNotificationSubsystem::Get())
+			{
+				Notifications->DeviceSwitchedNative.Remove(DeviceSwitchedHandle);
+			}
+		}
+		if (Core)
+		{
+			Core->Close();
+		}
+	}
+
+	bool FAECCaptureStream::GetCaptureDeviceInfo(Audio::FCaptureDeviceInfo& OutInfo, int32 DeviceIndex)
+	{
+		std::vector<EVCAec::FDeviceInfo> Devices;
+		if (!Core->EnumerateInputs(Devices) || Devices.empty())
+		{
+			return false;
+		}
+		const size_t Index = DeviceIndex < 0 ? 0 : static_cast<size_t>(DeviceIndex);
+		if (Index >= Devices.size())
+		{
+			return false;
+		}
+		OutInfo = ToEngineInfo(Devices[Index]);
+		return true;
+	}
+
+	bool FAECCaptureStream::OpenAudioCaptureStream(const Audio::FAudioCaptureDeviceParams& InParams, Audio::FOnAudioCaptureFunction InOnCapture, uint32 NumFramesDesired)
+	{
+		// InParams.bUseHardwareAEC is not consulted: echo cancellation is this back-end's purpose.
+		if (Core->IsOpen())
+		{
+			return false; // never replace the callback of a live stream
+		}
+		OnCapture = MoveTemp(InOnCapture);
+		FramesDelivered = 0;
+		FollowEngineOutputDevice();
+		const int FramesPerCallback = NumFramesDesired > 0 ? static_cast<int>(NumFramesDesired) : 480;
+		const bool bOpened = Core->Open(InParams.DeviceIndex, FramesPerCallback, [this](const float* Samples, int NumFrames)
+		{
+			const double StreamTime = static_cast<double>(FramesDelivered.load()) / EVCAec::ICaptureCore::DeliveredSampleRate;
+			OnAudioCapture(const_cast<float*>(Samples), static_cast<uint32>(NumFrames), StreamTime, false);
+			FramesDelivered += static_cast<uint64>(NumFrames);
+		});
+		if (!bOpened)
+		{
+			OnCapture = nullptr;
+		}
+		return bOpened;
+	}
+
+	bool FAECCaptureStream::CloseStream()
+	{
+		if (!Core->IsOpen())
+		{
+			return false;
+		}
+		Core->Close();
+		return true;
+	}
+
+	bool FAECCaptureStream::StartStream()
+	{
+		return Core->Start();
+	}
+
+	bool FAECCaptureStream::StopStream()
+	{
+		return Core->Stop();
+	}
+
+	bool FAECCaptureStream::AbortStream()
+	{
+		Core->Close();
+		return true;
+	}
+
+	bool FAECCaptureStream::GetStreamTime(double& OutStreamTime)
+	{
+		OutStreamTime = static_cast<double>(FramesDelivered.load()) / EVCAec::ICaptureCore::DeliveredSampleRate;
+		return true;
+	}
+
+	int32 FAECCaptureStream::GetSampleRate() const
+	{
+		return Core->IsOpen() ? EVCAec::ICaptureCore::DeliveredSampleRate : 0;
+	}
+
+	bool FAECCaptureStream::IsStreamOpen() const
+	{
+		return Core->IsOpen();
+	}
+
+	bool FAECCaptureStream::IsCapturing() const
+	{
+		return Core->IsRunning();
+	}
+
+	void FAECCaptureStream::OnAudioCapture(void* InBuffer, uint32 InBufferFrames, double StreamTime, bool bOverflow)
+	{
+		if (OnCapture)
+		{
+			OnCapture(InBuffer, static_cast<int32>(InBufferFrames), 1, EVCAec::ICaptureCore::DeliveredSampleRate, StreamTime, bOverflow);
+		}
+	}
+
+	void FAECCaptureStream::SetAsyncFailureHandler(TFunction<void(const FString&)> Handler)
+	{
+		if (!Handler)
+		{
+			Core->SetAsyncFailureHandler(nullptr);
+			return;
+		}
+		Core->SetAsyncFailureHandler([Handler = MoveTemp(Handler)](const std::string& Reason)
+		{
+			Handler(FString(UTF8_TO_TCHAR(Reason.c_str())));
+		});
+	}
+
+	bool FAECCaptureStream::GetInputDevicesAvailable(TArray<Audio::FCaptureDeviceInfo>& OutDevices)
+	{
+		OutDevices.Reset();
+		std::vector<EVCAec::FDeviceInfo> Devices;
+		if (!Core->EnumerateInputs(Devices))
+		{
+			return false;
+		}
+		for (const EVCAec::FDeviceInfo& Device : Devices)
+		{
+			OutDevices.Add(ToEngineInfo(Device));
+		}
+		return true;
+	}
+
+	TUniquePtr<Audio::IAudioCaptureStream> CreateCaptureStream(FString& OutBackendName, bool& bOutIsEchoCancelling)
+	{
+		bOutIsEchoCancelling = false;
+		if (GEngine && !GEngine->UseSound())
+		{
+			OutBackendName = TEXT("none (audio disabled)");
+			return nullptr;
+		}
+
+		const bool bForceEngine = CVarCaptureBackend.GetValueOnAnyThread() == 1 || FParse::Param(FCommandLine::Get(), TEXT("EVCEngineCapture"));
+		if (!bForceEngine)
+		{
+			std::unique_ptr<EVCAec::ICaptureCore> Core = EVCAec::CreatePlatformCaptureCore(&LogFromCore);
+			if (Core)
+			{
+				OutBackendName = UTF8_TO_TCHAR(Core->BackendName());
+				bOutIsEchoCancelling = true;
+				return MakeUnique<FAECCaptureStream>(std::move(Core));
+			}
+		}
+		return CreateEngineCaptureStream(OutBackendName, bForceEngine
+			? TEXT("forced by EmbeddedVoiceChat.CaptureBackend=1 or -EVCEngineCapture")
+			: TEXT("no echo-cancelling core on this platform"));
+	}
+
+	TUniquePtr<Audio::IAudioCaptureStream> CreateEngineCaptureStream(FString& OutBackendName, const TCHAR* Reason)
+	{
+		// The first registered IAudioCaptureFactory: the same choice Audio::FAudioCapture makes.
+		IModularFeatures::Get().LockModularFeatureList();
+		TArray<Audio::IAudioCaptureFactory*> Factories = IModularFeatures::Get().GetModularFeatureImplementations<Audio::IAudioCaptureFactory>(Audio::IAudioCaptureFactory::GetModularFeatureName());
+		IModularFeatures::Get().UnlockModularFeatureList();
+		if (Factories.Num() > 0 && Factories[0] != nullptr)
+		{
+			OutBackendName = FString::Printf(TEXT("engine capture back-end, no echo cancellation (%s)"), Reason);
+			return Factories[0]->CreateNewAudioCaptureStream();
+		}
+		OutBackendName = TEXT("none (no audio capture implementation registered)");
+		return nullptr;
+	}
+}

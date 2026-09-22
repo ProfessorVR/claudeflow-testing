@@ -1,0 +1,127 @@
+# BOOT PROMPT — awsTutorial video stations: finish the ship
+
+Paste this whole file as the first message of a clean session.
+
+---
+
+You are finishing a repair of the surgical-video stations in the `awsTutorial` Unreal Engine 5.4.1
+project. The hard diagnostic work is **done and verified**. What remains is content entry, a save-as,
+and packaging on two platforms.
+
+**Read these first, in this order:**
+1. `plans/MacOS_UE_Fix/SESSION-LOG-2026-08-24.md` — Parts A–D. Records what was run and **five
+   retracted conclusions you must not re-derive.**
+2. The work order (rev. 2): https://claude.ai/code/artifact/68994c10-4b85-421f-a006-4edc7a2d7965
+3. The forensics report (rev. 5): https://claude.ai/code/artifact/5542fb4f-8efc-4ed9-9f66-ae7b09c576fd
+
+---
+
+## What was wrong, in one paragraph
+
+Four video widgets exist across two architectural generations. The pre-ABR generation
+(`BP_WG_CAT_PARA`, `BP_WG_CAT_VIET`) used a manual resolution picker; when adaptive-bitrate streaming
+was added, the quality buttons were deleted but the graph nodes reading them were not, which orphaned
+the entire playback path. The ABR generation (`BP_WG_TEST`, `BP_WG_CatViet_Test`) works. **Every real
+fix turned out to be pointing an orbit trigger at the newer widget.** No Blueprint surgery was needed.
+It was never a macOS bug — the Mac shipped `Hospital_Client`, which still wired the old stations, while
+Windows shipped a `FirstPersonMap` that already used the rebuilds.
+
+## DONE — verified on disk 2026-08-25, do not redo
+
+Both stations swapped in `Hospital_Client` and **saved**. All 11 orbit triggers read cleanly from
+`__ExternalActors__`:
+
+```
+BP_SC_T1            -> BP_WG_TEST            <- Paraguay   (swapped, plays: 360 + interviews)
+BP_SC_CatViet_Test  -> BP_WG_CatViet_Test    <- Vietnam    (swapped, plays: procedures + interviews)
+BP_SC_BilateralScar, CAT_UCI_01, CAT_UCI_02, CHOC, CORNEA, DBS, PeriMortem, SD, TAVR  <- untouched
+```
+
+No `BP_SC_CAT_PARA` / `BP_SC_CAT_VIET` triggers remain. Saved timestamps 2026-08-24 18:14–18:34;
+`Hospital_Client.umap` 18:31.
+
+Also done: `BP_WG_CAT_PARA`'s null POV variables (`MP_360_POV_CAT_PARA_1`/`_2`) were repointed to
+`MP_POV_01_CAT_PARA` / `MP_POV_02_CAT_PARA` and verified (zero `Accessed None`). That widget is now
+retired, but keep the change.
+
+## REMAINING WORK
+
+1. **Vietnam content entry** in `BP_WG_CatViet_Test` — enter the video titles, and **hide** the surplus
+   buttons (it came from the 50-button template).
+2. **Save**, then ask the assistant to byte-verify the trigger pairings again.
+3. **Verify** — PIE `Hospital_Client`, walk Paraguay, Vietnam, and **UCI-02 as the control**.
+4. **Ship Windows** — `File → Save Current Level As… → FirstPersonMap` (overwrite), then package
+   (Shipping, to match the last build).
+5. **Ship Mac** — carry the corrected `Hospital_Client.umap` + its `__ExternalActors__` folder + the
+   widget assets across, then package **CLI only**.
+
+### Two data bugs to fix while entering titles
+- `CAT_VIET_MISC` points at a **Paraguay** URL: `/Dash/Cat-Para/Day03/Phacoemmulsification/360/adaptive_360.mpd`
+- `CAT_VIET_360_4K_Low` is not 4K — its file is a `264_1080_6Mbps` encode
+
+## HARD CONSTRAINTS
+
+- **HIDE surplus buttons, never DELETE them.** Set Visibility to Collapsed. Deleting widget objects
+  that graph nodes still reference is exactly how `BP_WG_CAT_PARA` was destroyed — 19 nodes kept
+  reading a `Button_4K` that no longer existed and the playback path died silently behind it.
+  `BP_WG_CatViet_Test` came from the same template.
+- **`ScreenActorRef` is an ACTOR pointer and cannot cross maps.** If a swapped station stops opening
+  its menu on overlap, this is why. Set it after pasting, against the instance in the current map.
+  `BP_OrbitTrigger` has no tag property — only `ScreenActor`, `ScreenActorRef`, `WidgetClass`,
+  `bAutoShowWidget`.
+- **Package the Mac from the CLI. Never the editor's Package Project button** — it deadlocks
+  (`-EditorIOPort` cook hangs in `-[NSApplication _shouldTerminate]`, unrecoverable from the GUI).
+  SOP §11h, or `~/Downloads/ue541-team-package/package-awsTutorial-mac.sh`. Windows' Package button
+  is fine; the deadlock is macOS-only.
+- **Map selection belongs to the operator.** Never touch `GameDefaultMap` / `ServerDefaultMap` or any
+  map INI key. Shipping level is chosen by saving `Hospital_Client` as `FirstPersonMap`.
+- **Keep `Hospital_Client` current.** A stale `Hospital_Client` is the whole reason this bug reached
+  macOS — the ship workflow saves it over `FirstPersonMap`, so staleness silently undoes fixes.
+- **Back up before changing assets** — timestamped `.backups/`.
+- **Verification-gated:** show evidence and wait for sign-off before committing.
+- Do not modify `awsTutorial.uproject` (e.g. to enable `PythonScriptPlugin`) without asking.
+
+## ENVIRONMENT
+
+| | |
+|---|---|
+| PC project | `/mnt/c/Users/Dalton/Documents/Unreal_Projects/UCI_Campus_Template_v1.0` |
+| PC engine | `D:\UE_5.4.1` — the registered engine (GUID `{E88B43D6-…}`); `PythonScriptPlugin` is compiled but not enabled |
+| Windows launcher | `cmd.exe` works from WSL; run from a `/mnt/c` cwd or you get UNC warnings |
+| Mac | `ssh -o BatchMode=yes daltonsalvo@192.168.50.10 'bash -lc "…"'` — login shell **required** |
+| Mac project | `/Volumes/UnrealEngine/Unreal_Projects/awsTutorial` |
+| Mac engine | `/Volumes/UnrealEngine/UE_5_4_1` — APFS sparsebundle; check `ls /Volumes` before `hdiutil attach` |
+| Windows build | `…/Packaged/20 - God please be the last/Windows` (Shipping, Sep 2025) |
+
+Gotchas: `timeout` does not exist on macOS (`gtimeout`); macOS uses `md5 -r` not `md5sum`; heredocs are
+blocked by a hook in this repo — write scripts with the Write tool then run them; disk is tight
+(C: ~92 GB, D: ~67 GB free, both 98–99% full) and a cook plus staging wants 15–20 GB.
+
+## HOW TO VERIFY ANYTHING
+
+Run the game on a specific map without cooking:
+```
+"D:\UE_5.4.1\Engine\Binaries\Win64\UnrealEditor.exe" ^
+  "C:\Users\Dalton\Documents\Unreal_Projects\UCI_Campus_Template_v1.0\awsTutorial.uproject" ^
+  Hospital_Client -game -log ^
+  -LogCmds="LogMediaAssets Verbose, LogElectraPlayer Verbose, LogWmfMedia Verbose, LogMedia Verbose"
+```
+Log lands at `Saved/Logs/awsTutorial.log`. Confirm the right station with `Returning: BP_SC_T1` and
+`Current Widget = BP_WG_TEST_C_0`. Success signals: zero `Accessed None`, an `OpenSource` per player,
+`Playback started at play position`.
+
+**Include `LogWmfMedia`.** Windows mp4s go through WmfMedia, not Electra — grepping only
+`IMediaPlayer::Open` (an Electra-only line) produced a false "zero opens" conclusion once already.
+
+## METHOD NOTES WORTH KEEPING
+
+- **Which widget is live is a property of the MAP**, not of `BP_FirstPersonCharacter` (which
+  hard-references `BP_WG_CAT_PARAOG`, not the live widget). The screen↔widget pairing lives on the
+  `BP_OrbitTrigger` actor instance. Read it from the external-actor packages, not from any Blueprint.
+- Tools in `plans/MacOS_UE_Fix/tools/`: `uasset2.py` (UE5 table parser, strides derived empirically),
+  `blob.py` (export blob extractor), `census.py` (media override census), `urls.py` (StreamUrl census).
+  `nodedata.py` has false positives — relative comparison only.
+- Media player **overrides are invisible to string greps** — `PlatformPlayerNames` is `transient` and
+  stored as raw `TMap<FGuid,FGuid>`. See `reference-ue-media-player-override-serialization` memory.
+- **A control that does not exercise the subject is not a control.** The "byte-identical widget plays
+  on Windows" comparison drove three wrong revisions because that build never loaded the widget.

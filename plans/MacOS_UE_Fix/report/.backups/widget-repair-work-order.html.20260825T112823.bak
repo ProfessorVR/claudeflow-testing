@@ -1,0 +1,274 @@
+<title>Widget Repair Work Order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap">
+
+<style>
+:root{
+  --bg:#F4F5F7;
+  --surface:#FFFFFF;
+  --surface-2:#EDEFF3;
+  --ink:#1A1C22;
+  --muted:#666B79;
+  --rule:#DCE0E7;
+  --rule-strong:#C3C9D4;
+  --broken:#B06E12;
+  --broken-wash:#FBF1DF;
+  --working:#14655F;
+  --working-wash:#E2F0EE;
+  --critical:#9E2A21;
+  --critical-wash:#FAE9E7;
+  --shadow:0 1px 2px rgba(20,24,35,.06),0 8px 24px -16px rgba(20,24,35,.28);
+  --sans:"IBM Plex Sans Condensed",ui-sans-serif,"Helvetica Neue",Arial,sans-serif;
+  --serif:"IBM Plex Serif",ui-serif,Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#15161A; --surface:#1C1E24; --surface-2:#23262E;
+    --ink:#E6E8ED; --muted:#989EAC; --rule:#2B2F38; --rule-strong:#3B4049;
+    --broken:#E0A94A; --broken-wash:#2A2317;
+    --working:#4FB0A8; --working-wash:#152827;
+    --critical:#E4695C; --critical-wash:#2B1A18;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15161A; --surface:#1C1E24; --surface-2:#23262E;
+  --ink:#E6E8ED; --muted:#989EAC; --rule:#2B2F38; --rule-strong:#3B4049;
+  --broken:#E0A94A; --broken-wash:#2A2317;
+  --working:#4FB0A8; --working-wash:#152827;
+  --critical:#E4695C; --critical-wash:#2B1A18;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 28px 96px}
+.col{max-width:70ch}
+
+.mast{padding:60px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:flex;flex-wrap:wrap;gap:10px 18px;margin-bottom:20px}
+h1{font-family:var(--sans);font-weight:700;font-size:clamp(2.3rem,5.5vw,3.5rem);line-height:1.04;letter-spacing:-.018em;margin:0;text-wrap:balance}
+h1 .sub{display:block;color:var(--broken);font-size:.42em;font-weight:600;margin-top:13px}
+.standfirst{font-size:1.08rem;color:var(--muted);margin:20px 0 0;max-width:64ch}
+
+h2{font-family:var(--sans);font-weight:700;font-size:1.5rem;letter-spacing:-.012em;margin:58px 0 4px;text-wrap:balance}
+h2 .ph{font-family:var(--mono);font-size:.6em;font-weight:600;color:var(--broken);margin-right:.7em;letter-spacing:.08em}
+h3{font-family:var(--sans);font-weight:600;font-size:1.08rem;margin:30px 0 6px}
+p{margin:13px 0}
+strong{font-weight:600}
+code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);padding:.12em .38em;border-radius:3px;border:1px solid var(--rule);white-space:nowrap}
+.lede{font-size:1.05rem;color:var(--muted)}
+
+.step{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:20px 24px;margin:16px 0;box-shadow:var(--shadow)}
+.step .hd{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;margin-bottom:2px}
+.step .n{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:3px;background:var(--surface-2);color:var(--muted);border:1px solid var(--rule-strong)}
+.step h3{margin:0;font-size:1.1rem}
+.step p{font-size:16px;margin:10px 0 0}
+.step ul{margin:10px 0 0;padding-left:20px;font-size:16px}
+.step li{margin:6px 0}
+.done{font-family:var(--mono);font-size:12.5px;margin-top:12px;padding:10px 14px;border-radius:3px;background:var(--working-wash);border-left:3px solid var(--working);color:var(--working)}
+.warn{font-family:var(--mono);font-size:12.5px;margin-top:12px;padding:10px 14px;border-radius:3px;background:var(--critical-wash);border-left:3px solid var(--critical);color:var(--critical)}
+
+pre{font-family:var(--mono);font-size:12.5px;line-height:1.7;background:var(--surface-2);border:1px solid var(--rule);border-radius:4px;padding:14px 16px;overflow-x:auto;margin:14px 0}
+.scroll{overflow-x:auto;margin:20px 0 6px;border:1px solid var(--rule);border-radius:4px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);font-weight:500;border-bottom:1px solid var(--rule-strong);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+td.ok{color:var(--working);font-weight:600}
+td.bad{color:var(--critical);font-weight:600}
+.tnote{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin:10px 0 0}
+.gate{border:1px dashed var(--broken);background:var(--broken-wash);border-radius:4px;padding:16px 20px;margin:20px 0}
+.gate h3{margin-top:0;color:var(--broken)}
+.gate p{font-size:16px}
+.foot{margin-top:64px;padding-top:20px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:11.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 24px}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow">
+    <span>Work order</span>
+    <span>awsTutorial · UE 5.4.1</span>
+    <span>2026-08-24 · rev. 2</span>
+  </div>
+  <h1>Widget Repair Work Order
+    <span class="sub">Both stations swapped. Neither Blueprint repair was needed.</span>
+  </h1>
+  <p class="standfirst">The plan collapsed to one repeated operation: point each broken station at its adaptive-bitrate rebuild. Paraguay and Vietnam both play in editor. What remains is content entry, then ship on two platforms.</p>
+</header>
+
+<div class="col">
+
+<h2>Where things stand</h2>
+
+</div>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>Station</th><th>Now points at</th><th>State</th></tr></thead>
+  <tbody>
+    <tr><td>Paraguay</td><td><code>BP_SC_T1</code> / <code>BP_WG_TEST</code></td><td class="ok">360 + interviews play</td></tr>
+    <tr><td>Cataract Vietnam</td><td><code>BP_SC_CatViet_Test</code> / <code>BP_WG_CatViet_Test</code></td><td class="ok">procedures + interviews play — needs titles</td></tr>
+    <tr><td>Cataract UCI-02</td><td>unchanged</td><td class="ok">works — the reference pattern</td></tr>
+    <tr><td><code>BP_WG_CAT_PARA</code>, <code>BP_WG_CAT_VIET</code></td><td>—</td><td>retired, not repaired</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="col">
+<p class="tnote">Paraguay's null POV variables (<code>MP_360_POV_CAT_PARA_1</code>/<code>_2</code>) were already repaired and verified — zero <code>Accessed None</code> in the last run. That change is worth keeping even though the widget is being retired.</p>
+
+<h2><span class="ph">00</span>Before you start</h2>
+
+<p>Back up the two things this work rewrites. You have a full build backup; these are the targeted copies that make a mistake cheap to undo:</p>
+
+<ul>
+  <li><code>Content/FirstPerson/Maps/Hospital_Client.umap</code></li>
+  <li><code>Content/__ExternalActors__/FirstPerson/Maps/Hospital_Client/</code> — 4,520 files</li>
+</ul>
+
+<p>Work on the PC throughout. The Mac is Phase E and only receives the result.</p>
+
+<h2><span class="ph">A</span>Blueprint repairs — not required</h2>
+
+<p class="lede">This phase originally held two fixes: the interview readiness race in <code>BP_WG_TEST</code> and the open-deadlock in <code>BP_WG_CAT_VIET</code>. Both evaporated when the stations were swapped. Recorded here so the reasoning survives, not as work to do.</p>
+
+<div class="step">
+  <div class="hd"><span class="n">A · 1</span><h3>Interview race — resolved by the swap</h3></div>
+  <p>The <code>MP_ITV-01 is not ready</code> failure travelled with the old widget, not with <code>BP_WG_TEST</code>. Once Paraguay pointed at <code>BP_SC_T1</code>, interviews played correctly with no graph change.</p>
+</div>
+
+<div class="step">
+  <div class="hd"><span class="n">A · 2</span><h3>Vietnam deadlock — superseded, and my diagnosis was wrong</h3></div>
+  <p>I reported that <code>BP_WG_CAT_VIET</code> checked readiness <em>before</em> opening. Its graph actually does the right thing — <code>Open Source</code> first, branch on the return value, bind <code>OnMediaOpened</code>, and poll on a 3-second timer as a safety net.</p>
+  <p>Two measurement errors fed that: the "zero opens" finding came from grepping <code>IMediaPlayer::Open</code>, an <strong>Electra-only</strong> line, while <code>MP_2D_CAT_VIET</code> is an mp4 that goes through <strong>WmfMedia</strong> on Windows; and the captured failure string <code>MP_2D_CAT_VIETNot Ready</code> came from the 2D path, not the 360 graph I was reasoning about.</p>
+  <p>All Vietnam content is reachable — both adaptive manifests and every mp4 tier return HTTP 206 with correct MIME types — so the fault was the pre-ABR widget's own player handling. Moot now that it is retired.</p>
+</div>
+
+<h2><span class="ph">B</span>Swap both stations — done</h2>
+
+<p class="lede">Neither old widget is being repaired. <code>BP_WG_CAT_PARA</code> is the pre-ABR design — clicking a procedure opens a resolution panel and binds four quality buttons that no longer exist, so the custom event holding every <code>Open Source</code> call can never fire. <code>BP_WG_CAT_VIET</code> is the same generation. Both have adaptive-bitrate rebuilds that already work.</p>
+
+<p>The screen-to-widget pairing lives on the <code>BP_OrbitTrigger</code> actor instance in the map, not in either Blueprint. That makes this a small edit.</p>
+
+<div class="step">
+  <div class="hd"><span class="n">B · 1</span><h3>Copy the rebuilt station into <code>Hospital_Client</code></h3></div>
+  <p>Open <strong>FirstPersonMap</strong>, select the rebuilt screen actor, copy. Open <strong>Hospital_Client</strong>, paste. Transform and settings come with it. Paraguay uses <code>BP_SC_T1</code>; Vietnam uses <code>BP_SC_CatViet_Test</code>.</p>
+</div>
+
+<div class="step">
+  <div class="hd"><span class="n">B · 2</span><h3>Repoint the trigger</h3></div>
+  <p>The trigger exposes no tag. It has exactly two properties that matter:</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Station</th><th>ScreenActorRef</th><th>WidgetClass</th></tr></thead>
+    <tbody>
+      <tr><td>Paraguay</td><td><code>BP_SC_T1</code></td><td><code>BP_WG_TEST</code></td></tr>
+      <tr><td>Vietnam</td><td><code>BP_SC_CatViet_Test</code></td><td><code>BP_WG_CatViet_Test</code></td></tr>
+    </tbody>
+  </table></div>
+  <div class="warn">ScreenActorRef is an ACTOR pointer — it cannot cross maps. Set it AFTER pasting, against the instance in this map. This is what makes a swapped station fail to open its menu on overlap.</div>
+</div>
+
+<div class="step">
+  <div class="hd"><span class="n">B · 3</span><h3>Delete the retired actors</h3></div>
+  <p>Once nothing points at them, delete the old <code>BP_SC_CAT_PARA</code> and <code>BP_SC_CAT_VIET</code> actors from <code>Hospital_Client</code>. Leaving them is harmless but confusing to the next person.</p>
+  <p>The orphaned Vietnam trigger — the one in FirstPersonMap with a widget set and no screen — needs no action. It exists only in FirstPersonMap, and Phase D overwrites that map from Hospital_Client, so it disappears on its own.</p>
+</div>
+
+<div class="step">
+  <div class="hd"><span class="n">B · 4</span><h3>Vietnam content entry</h3></div>
+  <p><code>BP_WG_CatViet_Test</code> was built from the 50-button template, so it has more buttons than Vietnam has videos. Enter the video titles, then deal with the surplus.</p>
+  <div class="warn">HIDE, DO NOT DELETE the surplus buttons. Set Visibility to Collapsed. Deleting widget objects that graph nodes still reference is exactly how BP_WG_CAT_PARA was destroyed — 19 nodes still read a Button_4K that no longer existed, and the whole playback path died behind it.</div>
+  <p>Two data bugs to fix while you are in there:</p>
+  <ul>
+    <li><code>CAT_VIET_MISC</code> points at a <strong>Paraguay</strong> URL — <code>/Dash/Cat-Para/Day03/Phacoemmulsification/360/adaptive_360.mpd</code>. Copy-paste error.</li>
+    <li><code>CAT_VIET_360_4K_Low</code> is not 4K — its file is a <code>264_1080_6Mbps</code> encode under a 4K name.</li>
+  </ul>
+  <div class="done">DONE WHEN — every visible button has a title and plays its video; no blank buttons remain</div>
+</div>
+
+<h2><span class="ph">C</span>Verify in <code>Hospital_Client</code></h2>
+
+<div class="step">
+  <div class="hd"><span class="n">C · 1</span><h3>Full pass, uncooked</h3></div>
+  <pre>"D:\UE_5.4.1\Engine\Binaries\Win64\UnrealEditor.exe" ^
+  "C:\Users\Dalton\Documents\Unreal_Projects\UCI_Campus_Template_v1.0\awsTutorial.uproject" ^
+  Hospital_Client -game -log ^
+  -LogCmds="LogMediaAssets Verbose, LogElectraPlayer Verbose"</pre>
+  <p>Walk every station that changed and one that didn't:</p>
+  <ul>
+    <li><strong>Paraguay</strong> — procedures and interviews</li>
+    <li><strong>Cataract Vietnam</strong> — procedures and interviews</li>
+    <li><strong>Cataract UCI-02</strong> — the control; it must still work</li>
+  </ul>
+  <div class="done">DONE WHEN — log shows Returning: BP_SC_T1 at Paraguay, OpenSource for Cat-Para and Cat-Viet URLs, Playback started for each, and zero Accessed None</div>
+</div>
+
+<h2><span class="ph">D</span>Ship the Windows build</h2>
+
+<div class="step">
+  <div class="hd"><span class="n">D · 1</span><h3>Save, then Save As</h3></div>
+  <p>Save the Blueprints and <code>Hospital_Client</code>. Then <strong>File → Save Current Level As… → <code>FirstPersonMap</code></strong>, overwrite. Slow — it rewrites the external-actor tree.</p>
+  <p>This is also what stops the bug recurring. The old Paraguay station reached macOS precisely because <code>Hospital_Client</code> was stale relative to what shipped.</p>
+</div>
+
+<div class="step">
+  <div class="hd"><span class="n">D · 2</span><h3>Package</h3></div>
+  <p><strong>Platforms → Windows → Package Project</strong>, Shipping config to match your last build. The editor Package button is safe here — the deadlock in SOP §11h is macOS-only.</p>
+  <div class="warn">DISK — C: 92 GB free, D: 67 GB, both 98–99% full. A cook plus staging can want 15–20 GB.</div>
+</div>
+
+<h2><span class="ph">E</span>The Mac</h2>
+
+<p class="lede">The Mac has every asset it needs — <code>BP_SC_T1</code>, <code>BP_WG_TEST</code>, <code>BP_SC_CatViet_Test</code>, <code>BP_WG_CatViet_Test</code> are all present and <code>BP_SC_T1</code> is already cooked into the existing build. What it does not have is the corrected maps: both its <code>Hospital_Client</code> and <code>FirstPersonMap</code> still carry the old Paraguay station.</p>
+
+<div class="step">
+  <div class="hd"><span class="n">E · 1</span><h3>Carry the fixes across</h3></div>
+  <p>Two routes. Copy the corrected <code>Hospital_Client.umap</code>, its <code>__ExternalActors__</code> folder, and the two repaired widget assets from the PC to the Mac — or repeat Phases A and B in the Mac editor. Copying is faster and guarantees parity; repeating avoids any risk of a partial asset set.</p>
+</div>
+
+<div class="step">
+  <div class="hd"><span class="n">E · 2</span><h3>Package from the CLI — never the editor button</h3></div>
+  <p>On macOS the editor's Package Project button deadlocks: its cook completes, then the process hangs in <code>-[NSApplication _shouldTerminate]</code> and never exits, and UAT never reaches stage. Use <strong>SOP §11h</strong>, or the one-command path:</p>
+  <pre>~/Downloads/ue541-team-package/package-awsTutorial-mac.sh</pre>
+  <p>Then run the packaged app with the same verbose media flags and confirm Paraguay and Vietnam both play.</p>
+  <div class="done">DONE WHEN — macOS build plays Paraguay procedures, Paraguay interviews, and Vietnam</div>
+</div>
+
+<h2>Checklist</h2>
+
+</div>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>#</th><th>Step</th><th>Gate</th></tr></thead>
+  <tbody>
+    <tr><td>00</td><td>Back up Hospital_Client + its external actors</td><td>—</td></tr>
+    <tr><td>A·1</td><td><code>BP_WG_TEST</code> interviews → OnMediaOpened</td><td>interview plays</td></tr>
+    <tr><td>A·2</td><td><code>BP_WG_CAT_VIET</code> → open first, then bind</td><td>OpenSource appears for Cat-Viet</td></tr>
+    <tr><td>—</td><td><strong>Gate A — send log, both must pass</strong></td><td class="ok">verified</td></tr>
+    <tr><td>B·1</td><td>Copy <code>BP_SC_T1</code> into Hospital_Client</td><td>—</td></tr>
+    <tr><td>B·2</td><td>Repoint Paraguay trigger → T1 / TEST</td><td>—</td></tr>
+    <tr><td>B·3</td><td>Delete retired <code>BP_SC_CAT_PARA</code> actor</td><td>—</td></tr>
+    <tr><td>C·1</td><td>PIE Hospital_Client, all three stations</td><td class="ok">zero Accessed None</td></tr>
+    <tr><td>D·1</td><td>Save, then Save As FirstPersonMap</td><td>—</td></tr>
+    <tr><td>D·2</td><td>Package Windows (Shipping)</td><td>plays in package</td></tr>
+    <tr><td>E·1</td><td>Carry maps + widgets to the Mac</td><td>—</td></tr>
+    <tr><td>E·2</td><td>Package Mac via CLI only</td><td class="ok">plays on macOS</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="col">
+<p class="tnote">Phases A and B are independent of each other and could run in either order. They are sequenced this way so that if Phase C fails, the cause is the map edit and nothing else.</p>
+</div>
+
+<div class="foot">
+  <span>Companion to: Paraguay Widget Forensics (rev. 5)</span>
+  <span>Trigger pairings read from __ExternalActors__ packages</span>
+  <span>Verification via packaged/PIE log capture</span>
+</div>
+
+</div>

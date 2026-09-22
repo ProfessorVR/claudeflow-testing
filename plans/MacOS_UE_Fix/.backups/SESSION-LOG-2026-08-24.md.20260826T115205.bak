@@ -1,0 +1,873 @@
+# Session log — Paraguay widget investigation + Mac CLI packaging docs
+**Date:** 2026-08-24 · **Session:** `be627851-3de2-4ae4-a1b2-3114b88015cb` · **Model:** Opus 5 (1M), effort high
+**Working dir:** `/home/dalton/projects/claudeflow-testing` (WSL) · branch `feat/wraith-retrieval`
+
+This log records what was actually run and what it returned, in order, so a clean session can
+verify any claim rather than trust it. Two separate pieces of work happened:
+**Part A** = the Mac CLI packaging SOP update; **Part B** = the Paraguay widget forensics.
+
+---
+
+## PART A — SOP §11h, CLI packaging (COMPLETE, shipped)
+
+### A1. Located the prior session
+```bash
+grep -lc "UnrealEngine\|RunUAT\|BuildCookRun" ~/.claude/projects/-home-dalton-projects-claudeflow-testing/*.jsonl
+```
+→ exactly one prior session: **`3cc5009e-4b11-4aee-bb60-df2faeb05903.jsonl`** (12.4 MB, 2026-07-24→25).
+User turns and assistant text extracted with `scratchpad/extract_user.py` and `extract_window.py`
+(both trivial jsonl readers; recreate if needed).
+
+### A2. Root cause of the GUI packaging failure — recovered from that transcript
+Ground truth found in the transcript (not inferred):
+- Editor spawns its cook with `-EditorIOPort=<port>` — observed twice: `56990`, `57842`.
+- Cook **completes**: 2916 packages, `Success - 0 error(s)`, `LogExit: Exiting`, log closed.
+- Process then **never terminates**. `sample <pid>` main thread:
+  `main → -[NSApplication terminate:] → -[NSApplication _shouldTerminate] (AppKit) + 1188 → mach_msg wait`, 0% CPU.
+- UAT never reaches stage/pak/archive. Editor has no "reuse existing cook" control → unrecoverable from the GUI.
+- Plain `RunUAT` cook has **no** `-EditorIOPort` and exits cleanly. Both GUI attempts hung; every CLI package succeeded.
+- Companion gotcha: the cook runs as the **editor**, so it loads the **editor's** plugin dylibs. The
+  `!IsRunningCommandlet()` AWS gate compiled only into the *game* target was silently ignored
+  (fix written 11:53, `UnrealEditor-AWSCore.dylib` still dated 07:16 → hang). After rebuilding the
+  **editor** target (12:28) a cook-only run exited in 42 s with `Aws::InitAPI called: 0`.
+
+### A3. Documents updated (Mac, backed up, verified)
+- Wrote **SOP §11h** (~140 lines): 11h-1 why the GUI fails · 11h-2 prerequisites · 11h-3 three-target
+  build matrix · 11h-4 explicit `RunUAT BuildCookRun` cook + `-skipcook` commands · 11h-5 hang
+  detect/kill · 11h-6 verification incl. the stale-`.app` false pass.
+- Also: warning in the §11 TL;DR, a new §12 known-issue entry, cross-ref on the editor force-quit item,
+  §12 date → 2026-08-24, footer note, and a rewritten README packaging block (incl. correcting a stale
+  README line that still called the packaged-app exit hang "under investigation" — SOP §12 records it
+  resolved 2026-07-25).
+- Backups: `~/Downloads/ue541-team-package/.backups/*.20260824T133537.bak` and the KingLab mirror's
+  `.backups/*.20260824T133612.bak`.
+- Synced to **three** locations, all md5 `dd575b1ebb86ea660a2f0390237f6aad`:
+  `~/Downloads/ue541-team-package/` (authoritative), `/Volumes/KingLab/ue541-team-package/` (team mirror), WSL copy.
+  KingLab copy written with `COPYFILE_DISABLE=1` + AppleDouble sweep per the SOP's own ExFAT rule.
+
+**Status: done. No open items.**
+
+---
+
+## PART B — Paraguay widget forensics (verdict CORRECTED mid-session)
+
+### B1. Environment
+```bash
+ssh -o BatchMode=yes daltonsalvo@192.168.50.10 'bash -lc "..."'      # Mac, key auth, login shell required
+hdiutil attach /Volumes/KingLab/UnrealEngine.sparsebundle             # engine volume was NOT mounted
+```
+Mac project: `/Volumes/UnrealEngine/Unreal_Projects/awsTutorial`
+PC project:  `/mnt/c/Users/Dalton/Documents/Unreal_Projects/UCI_Campus_Template_v1.0` (note lowercase `v1.0`)
+
+### B2. Asset inventory
+`Content/Blueprints/360_Screens/Widgets/` holds 4 Paraguay variants:
+
+| asset | bytes |
+|---|---|
+| `BP_WG_CAT_PARA` | 5,912,752 |
+| `BP_WG_CAT_PARAOG` | 1,871,881 |
+| `BP_WG_CAT_PARA_Test` | 980,105 |
+| `BP_WG_CAT_PARA_V2` | 2,771 (empty child of `_Test`) |
+| `BP_WG_CAT_UCI_02` (control) | 880,294 |
+
+Screens: `BP_SC_CAT_PARA`, `_PARAOG`, `_PARA_Test`, `_PARA_V3` (2,724 B empty child of `_Test`).
+Media on disk `Media/MediaPlayers/CAT_PARA/`: `MP_2D`, `MP_360`, `MP_POV_01`, `MP_POV_02` (+ matching `MT_`/`MAT_`).
+
+### B3. ⚠️ FALSE START — retracted, do not reuse
+First reference check reported 31–33 "missing" assets per screen **including in working widgets**.
+**Invalid.** UE encodes a trailing `_<digits>` as a separate FName *number*, so the name table stores
+`CAT_UCI_02_LASER` for the asset `CAT_UCI_02_LASER_360`. A second artifact: a regex character class
+excluding `+` truncated `CAT_PARA_INT_GLAU+CAT_RES_GUEVVARRA_0720`.
+Corrected script = `tools/checkrefs2.sh` (accepts `X` or `X_<digits>`).
+**Corrected result: ZERO genuinely broken references** in any widget or screen, both projects.
+
+### B4. Which widget is live
+`Hospital_Client` is World Partition; actors live in `__ExternalActors__`, so the `.umap` names none.
+```bash
+find .../__ExternalActors__/FirstPerson/Maps/Hospital_Client -name '*.uasset' -print0 \
+  | xargs -0 strings -a | grep -oE 'BP_SC_[A-Za-z0-9_]+' | sort | uniq -c
+```
+Mac `Hospital_Client`: 4,520 external actors, 11 procedures, **exactly one `BP_SC_CAT_PARA`** — same
+count as every other procedure. Live chain = `Hospital_Client → BP_SC_CAT_PARA → BP_WG_CAT_PARA`.
+
+### B5. Package-table parser (the real instrument)
+`strings` only yields the deduplicated name table — it cannot count node instances. Built
+`tools/uasset2.py`: reads the UE5 summary, derives the **import stride** and **export stride
+empirically from the table offsets** rather than guessing version flags (this is what makes it robust).
+Layout confirmed by probing raw ints:
+- export entry: `[0]=ClassIndex [1]=Super [2]=Template [3]=Outer [4],[5]=ObjectName FName [6]=Flags [7,8]=SerialSize i64 [9,10]=SerialOffset i64`
+- import entry: `ClassPackage(0..7) ClassName(8..15) OuterIndex(16..19) ObjectName(20..27)` ← **+20, not +16**
+Strides observed for these assets: import 40, export 112. Self-validating: asserts every export name resolves.
+`tools/nodedata.py` reads each export's serialized blob and counts resolvable FNames (has false
+positives — only use it for *relative* comparison across files with the same method).
+
+### B6. Node census — the hard numbers
+
+| metric | CAT_PARA (live) | PARAOG | PARA_Test | UCI_02 |
+|---|---|---|---|---|
+| exports | 3,212 | 1,195 | 728 | 533 |
+| Button widgets | 50 | 50 | 50 | 20 |
+| WidgetSwitcher | 2 | 2 | 2 | 2 |
+| ComponentBoundEvent (designer click binds) | 27 | 27 | 9 | 12 |
+| AddDelegate | 208 | 32 | 5 | 7 |
+| — of which `OnClicked` (runtime binds) | **80** | 0 | 0 | 0 |
+| — of which `OnMediaOpened` | **128** | 32 | 4 | 7 |
+| RemoveDelegate / ClearDelegate | 0 | 0 | 0 | 0 |
+| CustomEvent | 208 | 32 | 5 | 7 |
+| CallFunction | 785 | 273 | — | 129 |
+| VariableGet | 648 | 157 | — | 68 |
+| media players hard-referenced | **2 of 4** | 4 of 4 | 4 of 4 | 3 of 3 |
+
+Dangling variable reads found in `BP_WG_CAT_PARA` (via `nodedata.py … K2Node_VariableGet`):
+- **54 ×** `MP_360_POV_CAT_PARA` — no such asset (real names are `MP_POV_01_CAT_PARA` / `MP_POV_02_CAT_PARA`)
+- **19 ×** `Button_4K` — no widget object of that name (0 of the 50 buttons carry a quality name)
+- 2 × `MP_360_POV_CAT_PARA_02-1`, 2 × `_02-2`, 2 × `MP_360_CAT_PARA_02`, 1 × `MP_2D_CAT_PARA_02`
+
+`Button_1080_High` / `Button_1080_Low` / `Button_4K` appear in the name table and in 80 compiled
+`Function` exports (`OnClicked_Button_2D_00_4K` etc.) but exist as **no widget object**.
+
+### B7. ⚠️ VERDICT v1 — ISSUED THEN DISPROVED
+Published rev.1 concluding the dangling refs stop the Blueprint compiling → graph never runs →
+explains both symptoms. **Operator then reported the Paraguay player works correctly in
+`Packaged/20 - God please be the last/Windows`.**
+
+### B8. The control experiment
+```bash
+# manifest diff, 171 assets across Blueprints/360_Screens, Media/MediaPlayers, Media/Materials, FirstPerson/Maps
+join -j2 pc_manifest.txt mac_manifest.txt -o 0,1.1,2.1 | awk '$2!=$3{print $1}'
+```
+→ **only 2 files differ: `FirstPerson/Maps/Hospital_Client.umap` and `FirstPerson/Maps/FirstPersonMap.umap`.**
+All four widget packages byte-identical (md5 `9b3a0369328b`, `36e98480d8d9`, `68e7958c94b4`, `0ad017589641`).
+
+Shipped Windows build `Packaged/20 - God please be the last/Windows`, IoStore `.ucas` = 2,074,486,320 B;
+`.utoc` directory index references `Hospital_Client`, `CAT_PARAGUAY`, `MP_POV_01_CAT_PARA` → Paraguay
+content genuinely shipped. **Operator confirmed it plays.**
+
+**Why v1 was wrong:** `K2Node_*` objects are **editor-only and stripped at cook**. A packaged build runs
+the bytecode serialized into the `BlueprintGeneratedClass`, not the graph. Dangling editor-graph
+references break an *editor* compile; a cooked build runs the last bytecode that compiled cleanly.
+v1 read an editor-side symptom as a runtime cause.
+
+Also noted: PC `FirstPersonMap` (4,526 actors) contains **no** `BP_SC_CAT_PARA` — it has UCI_01, UCI_02,
+CHOC, CORNEA, CatViet_Test, DBS, PeriMortem, SD, T1, TAVR, BilateralScar. PC `Hospital_Client` (4,520)
+does contain it, same 11-procedure set as the Mac. Relevant to the ship-by-saving-as-`FirstPersonMap`
+workflow, but moot for this test since the shipped container carries `Hospital_Client`.
+
+### B9. The live hypothesis — the missing player override
+Operator recalled the Electra override is what made Mac playback work. Checked:
+```bash
+grep -rl "PlatformPlayerNames\|ElectraPlayer" <project>/Content/Media/   # both projects
+grep -rniE "electra|PlatformPlayerNames|MediaSettings|DesiredPlayer" <project>/Config/*.ini
+```
+→ **0 assets and 0 config entries, on BOTH sides.**
+
+Parsed `BilatScar_360.uasset` (the first asset the July session overrode; its Electra playback is in the
+July logs) with `uasset2.py`: both copies carry the **same 13-entry name table**, no override property
+in either. An override would necessarily appear there as a name.
+
+Stream sources *were* touched on the Mac: **442 of 444 differ** (only `CHOC/1080/CHOC_BOTH_1080_Low`
+and `TAVR/TAVR_Animation` identical). But for `BilatScar_360` the delta is 69 differing bytes, first at
+offset 258, 32 bytes inserted in the thumbnail/GUID region, byte-identical tails. PC 10,338 B → Mac
+10,370 B. **Re-saved, but no override property persisted.**
+
+Cannot determine from disk alone whether the bulk pass never wrote the property or it was reverted later.
+
+### B10. Deliverable
+Artifact **rev. 2** (verdict corrected), same URL:
+**https://claude.ai/code/artifact/5542fb4f-8efc-4ed9-9f66-ae7b09c576fd**
+Source preserved at `report/paraguay-widget-forensics.html` (republish that path to update the same URL,
+or pass the URL as `url` from a new session).
+
+---
+
+---
+
+## PART C — 2026-08-24, session `2448d1ae` — THE OVERRIDE HYPOTHESIS IS DEAD (rev. 3)
+
+Model Opus 5 (1M), effort high. **No project file was modified.** Read-only throughout, plus one
+`rsync` pull of 444 stream sources to scratchpad.
+
+### C1. ⚠️ RETRACTION — rev. 2's central negative was a method artifact
+
+Rev. 2 concluded "0 assets and 0 config entries contain `PlatformPlayerNames` or `ElectraPlayer`,
+on BOTH sides" and built the whole live hypothesis on it. **That search could not have succeeded.**
+Ground truth from the engine on disk,
+`Engine/Source/Runtime/MediaAssets/Public/BaseMediaSource.h` + `Private/Assets/BaseMediaSource.cpp`:
+
+```cpp
+UPROPERTY(transient, BlueprintReadWrite, EditAnywhere, Category=Platforms,
+          Meta=(DisplayName="Player Overrides"))
+TMap<FString, FName> PlatformPlayerNames;      // transient => NEVER a tagged property
+```
+and `UBaseMediaSource::Serialize`, since `FMediaFrameworkObjectVersion::SerializeGUIDsInMediaSourceInsteadOfPlainNames`,
+hand-serializes it as **`TMap<FGuid,FGuid>`** (platform GUID → player-plugin GUID).
+
+⇒ Neither the string `PlatformPlayerNames` nor `ElectraPlayer` can appear in an **uncooked** `.uasset`,
+override set or not. A string grep has **zero discriminating power** here. Do not re-run it.
+
+Corollary, also retracted: rev. 2 read the +32-byte Mac/PC delta in `BilatScar_360.uasset` as
+"32 bytes inserted in the thumbnail/GUID region". It is the override map itself — an empty
+`TMap<FGuid,FGuid>` is 4 B (count 0), a one-entry map is 4+16+16 = 36 B. **Delta = exactly +32.**
+
+### C2. The correct instrument — parse the export blob, don't grep it
+
+`tools/blob.py` (extends `tools/uasset2.py`): reads each export's `SerialOffset`/`SerialSize`
+(export entry ints `[7,8]`=size i64 @+28, `[9,10]`=offset i64 @+36) and returns the blob. The override
+map is the **last** thing `UBaseMediaSource::Serialize` writes, so it sits at the blob tail.
+`tools/census.py` walks a tree and validates the trailing count against 0..3 entries.
+
+`BilatScar_360` media-source export blob:
+```
+PC  123 B   tail … 00000000                                  <- count 0, no override
+Mac 155 B   tail … 01000000                                  <- count 1
+                   96e23b00 0c4f0017 60781f8e 1fbbef81       <- platform GUID
+                   803fee94 9242608e d54dd2b4 c2e1adfd       <- player GUID
+```
+
+Both GUIDs resolved against engine ground truth:
+- `003BE29617004F0C8E1F786081EFBB1F` = **Mac** — `Engine/Config/Mac/DataDrivenPlatformInfo.ini:12`
+  `GlobalIdentifier` (`FMediaModule::GetPlatformGuid` → `FDataDrivenPlatformInfoRegistry::GetPlatformInfo(..).GlobalIdentifier`).
+- `94EE3F808E604292B4D24DD5FDADE1C2` = **ElectraPlayer** —
+  `ElectraPlayerFactoryModule.cpp:89` `GetPlayerPluginGUID()`.
+
+### C3. Census — the override IS on disk, everywhere
+
+| `Content/Media/StreamMediaSources` | Mac | PC |
+|---|---|---|
+| packages | 444 | 444 |
+| — `StreamMediaSource` | 442 | 442 |
+| — `ObjectRedirector` (CHOC_BOTH_1080_Low, TAVR_Animation) | 2 | 2 |
+| carrying `Mac → ElectraPlayer` | **442 of 442** | 0 of 442 |
+| **CAT_PARAGUAY sources with the override** | **162 of 162** | 0 of 162 |
+
+Identical single-entry map on all 442. This reconciles SOP §11d's "443/443" — true denominator is 442
+(the other two are redirectors, not media sources).
+
+### C4. The shipped Mac build has it baked in
+
+At cook, `PreSave` resolves the map for the target platform into `PlayerName`, and cooked packages
+write `Ar << PlayerName` as a **plain FName** — so in `Saved/Cooked/` the string IS greppable:
+
+```
+grep -rl ElectraPlayer Saved/Cooked/Mac/awsTutorial/Content/Media/StreamMediaSources | wc -l
+→ 442   (of 442 cooked sources; incl. all 162 CAT_PARAGUAY + all 4 CAT_PARA media players)
+```
+
+Ordering proven by mtime, all 2026-07-24: source assets written **16:25** (bulk pass) → cook **16:40**
+→ stage/pak **16:41** → app binary **16:42**. The cook postdates the override; the `-skipcook` hazard
+(staging a stale cook over newer assets) did **not** occur.
+
+### C5. The Blueprint is exonerated at the byte level
+
+Cooked `BlueprintGeneratedClass` — what a packaged build actually executes — compared across platforms:
+
+| cooked artifact | Windows | Mac | md5 |
+|---|---|---|---|
+| `BP_WG_CAT_PARA.uasset` | 73,830 | 73,830 | `7dcfc86087bf70c69f2de57719781cd0` **identical** |
+| `BP_WG_CAT_PARA.uexp` | 238,728 | 238,728 | `9a3802eaf07d3645a4ecd70e2117671f` **identical** |
+| `BP_WG_CAT_UCI_02.uexp` (control) | 47,546 | 47,546 | `89ada8126de337a70d45338ab12b77b6` **identical** |
+
+(Windows cook from the PC project, Sep 2025; Mac cook Jul 2026.) 238 KB = real bytecode, not a stub or
+failed compile. Same source bytes, same cooked bytes, opposite behavior.
+
+### C6. Other eliminations this session
+
+- **Content reachable.** From the Mac, Paraguay DASH manifests return `200 application/dash+xml`:
+  `Dash/Cat-Para/Day03/Phacoemmulsification/{360,POV-DR,POV-MS}/adaptive_*.mpd` (9,506 / 9,318 / 9,340 B),
+  as do the BilateralScar and CAT-UCI-02 controls.
+- **Container mix is not the differentiator.** URL census (`tools/urls.py`): Paraguay 128 mp4 /
+  34 mpd; UCI_02 35 mp4 / 7 mpd — same proportion. Project-wide 363 mp4 / 78 mpd / 3 empty.
+- **Nothing missing from the cook.** All 4 CAT_PARA media players and all 162 Paraguay sources cooked.
+- `ElectraPlayer` **is** enabled in `awsTutorial.uproject`. `PythonScriptPlugin` is **not** — so the
+  boot prompt's "re-run set_electra_override.py via Tools → Execute Python Script" was not runnable
+  as written, and is now moot anyway.
+
+### C7. The one thing structurally unique to Paraguay
+
+Media-player census, `Content/Media/MediaPlayers/`: every procedure drives a **single** POV player
+named `MP_360_POV_<proc>`. **CAT_PARA is the exception** — `MP_2D`, `MP_360`, `MP_POV_01`, `MP_POV_02`.
+Paraguay is the only procedure asking the Mac for **four concurrent players, two simultaneous POV
+streams**. (Also explains E2: 54 nodes still read the deleted single-POV `MP_360_POV_CAT_PARA` —
+the layout was refactored one-POV → two-POV and the graph was never cleaned.)
+
+**Leading hypothesis — NOT a finding:** a concurrency / decoder-session limit under the forced
+ElectraPlayer on macOS. Would explain both symptoms at once: if one of four players never reports
+`OnMediaOpened`, no video appears *and* the return to Procedures/Interviews never fires (128 handlers
+hang off that callback, 0 unbinds). **Not asserted as cause.** Two revisions have already been wrong
+by publishing an inference as a verdict.
+
+### C8. Next — the only instrument left is runtime
+
+```bash
+open "…/Packaged/Mac/awsTutorial.app" --args \
+  -LogCmds="LogElectraPlayer Verbose, LogElectra Verbose, LogAvfMedia VeryVerbose, LogMedia Verbose, LogMediaAssets Verbose" \
+  -abslog=/tmp/paraguay.log
+```
+Click one Paraguay video and one working procedure. The log answers directly: how many of the four
+Paraguay players reach `IMediaPlayer::Open`, which report opened, what the failing one reports.
+
+**DO NOT re-run `set_electra_override.py`.** It is a proven no-op — the override it would write is
+already on every asset and already in the build — and re-saving 442 packages would destroy the clean
+timestamp evidence in C4.
+
+**OPEN QUESTION for the operator (one sentence):** do other procedures currently play correctly in the
+Mac build, with Paraguay alone failing? Untested this session. If *nothing* plays on the current Mac
+build, C7 is the wrong tree and this is a general Mac media regression.
+
+### C9. Deliverable
+Artifact **rev. 3**, same URL: https://claude.ai/code/artifact/5542fb4f-8efc-4ed9-9f66-ae7b09c576fd
+Source `report/paraguay-widget-forensics.html` (backup: `report/.backups/*.20260824T150841.bak`).
+New tools added to `tools/`: `blob.py` (export-blob extractor), `census.py` (override census),
+`urls.py` (StreamUrl census), `insdiff.py` (insertion finder).
+
+### C10. Standing facts added
+- Engine volume **was** already mounted this session — check before `hdiutil attach`.
+- The July transcript `3cc5009e-…jsonl` is the authority on what was actually done in July; mine it
+  with a jsonl reader rather than trusting summaries. It records at 23:22 UTC that the bulk script was
+  "NOT yet run by user" — it was in fact run **later**, at 16:25 PDT, which the asset mtimes prove.
+- macOS `md5 -r` (not `md5sum`); engine source lives at
+  `/Volumes/UnrealEngine/UE_5_4_1/Engine/Source/Runtime/MediaAssets/` (cpp under `Private/Assets/`).
+
+---
+
+---
+
+## PART D — RESOLVED. Runtime log + the map difference (rev. 5)
+
+### D1. The runtime capture
+Launched the packaged Mac build over SSH (`scratchpad/launch_paraguay_log.sh`, deployed to
+`/tmp/launch_paraguay_log.sh` on the Mac) with all seven media categories raised; operator played
+Paraguay then CAT_UCI_02. Log = `/tmp/paraguay.log`, 14.8 MB, pulled locally.
+
+**Paraguay never opens anything.** Entire session contained exactly **3** `OpenSource` calls:
+`CAT_UCI_02_LASER_360`, `CAT_UCI_02_LASER_POV-DR`, `CAT_UCI_02_ITV-Farid`. **Zero** for CAT_PARAGUAY.
+The 4 CAT_PARA players receive `.Pause` only — never `.Open` / `.Play`.
+
+**ElectraPlayer is healthy.** UCI_02's DASH streams opened through Electra; **0** `LogAvfMedia` lines and
+**0** `-12847` in 14.8 MB. Confirms §C3/§C4 from the runtime side. Mac build = **Development** config.
+
+**The fault — 448 × `Accessed None`:**
+```
+LogScript: Warning: Accessed None trying to read property MP_360_POV_CAT_PARA_1   (224×)
+LogScript: Warning: Accessed None trying to read property MP_360_POV_CAT_PARA_2   (224×)
+  BP_WG_CAT_PARA_C ... Function ...BP_WG_CAT_PARA_C:ExecuteUbergraph_BP_WG_CAT_PARA:0023
+```
+~4 Hz for the 57 s Paraguay was on screen, across both live instances (272 + 176); stops on leaving.
+2 of them inside `BndEvt__Button_Pause_…OnButtonClickedEvent`. These are **widget variables** bound to
+the deleted asset `MP_360_POV_CAT_PARA` → null on load. A null-context call aborts the rest of that
+execution path, so Open/Play and the panel switch never run. Explains all three symptoms; also explains
+why **Pause works** (designer `ComponentBoundEvent`, bound by the widget system) while the procedure /
+interview buttons produce **no log line at all**.
+
+⇒ Rev. 3's decoder-concurrency hypothesis is **dead** (no decode is ever attempted).
+⇒ Rev. 1 named the **correct culprit**; only its mechanism (a failed editor compile) was wrong.
+
+### D2. ⚠️ THE CONTROL EXPERIMENT WAS INVALID — the real reason Windows works
+Operator confirmed Paraguay (incl. the procedure buttons) plays correctly in the shipped Windows build.
+Cause is **map content, not platform**:
+
+| shipped `FirstPersonMap` contains | Windows | Mac |
+|---|---|---|
+| `BP_OrbitTrigger_CatPara` | absent | **present** |
+| `BP_OrbitTrigger_CatParaV2` | **present** | absent |
+| `BP_SC_CAT_PARA` / `BP_WG_CAT_PARA` | **absent** | **present** |
+| `BP_SC_T1` (the rebuild) | **present** | absent |
+
+`BP_SC_T1` = the Paraguay rebuild under a provisional name; references the full Paraguay source library
+(`CAT_PARA_D1_CatRhet`, `D2_CAT`, `D2_GLAU`, `D3_IVI`, `D3_OIL`, `D3_PHAC`, interviews) and drives
+`MP_360_Test` / `MP_ITV` / `MP_POV` — never `MP_360_POV_CAT_PARA`.
+
+Controls that make it conclusive:
+- `BP_FirstPersonCharacter` (holds the trigger→widget wiring) is **byte-identical** in both cooked builds:
+  `feb73f722dc2d36eb340dd213ce0e972` / `6c1cc104d2423cf8e20aac305c46aea4`.
+- `Hospital_Client` carries the **old** station in **both** projects — same actor, same UAID
+  `…E89C25A80DC62D5902`.
+- `BP_SC_T1` exists in the Mac project **and is already cooked into the Mac build** — just never placed.
+
+**⇒ NOT a macOS bug.** The Mac ships `Hospital_Client` saved as `FirstPersonMap` (the documented
+workflow); that map was never updated to the rebuilt station. **Falsifiable prediction: a Windows build
+packaged from `Hospital_Client` fails identically.**
+
+**⇒ Every revision from 2 onward rested on a control that never exercised the subject.** The Windows
+package does not load `BP_WG_CAT_PARA` at all. That is what retracted a correct culprit in rev. 1 and
+sent revs. 2–3 hunting a platform difference that did not exist.
+
+### D3. The fix — operator's decision (level choice, per the standing rule)
+- **Route A (cheapest, already validated):** replace `BP_OrbitTrigger_CatPara → BP_SC_CAT_PARA` in
+  `Hospital_Client` with the `CatParaV2 → BP_SC_T1` arrangement Windows ships. No asset work needed;
+  both exist and are cooked on the Mac. Worth renaming `BP_SC_T1` while in there.
+- **Route B:** repair `BP_WG_CAT_PARA` — repoint `MP_360_POV_CAT_PARA_1`/`_2` to `MP_POV_01_CAT_PARA` /
+  `MP_POV_02_CAT_PARA` and fix the 54 nodes reading the deleted name. Keeps the 4-player layout and the
+  quality selectors; E1–E6 still queued behind it.
+- Verify either by re-running the log capture and confirming **zero** `Accessed None`.
+
+### D4. Method note worth keeping
+`BP_FirstPersonCharacter` hard-references `BP_SC_CAT_PARAOG` / `BP_WG_CAT_PARAOG`, **not**
+`BP_WG_CAT_PARA` — the live widget is reached via the placed screen actor, so *which widget is live is a
+property of the MAP, not of the character Blueprint*. Determine it from the cooked `.umap` name table
+(`strings … | grep -oE "BP_(SC|WG)_[A-Za-z0-9_]+"`), never from the Blueprint graph.
+
+### D5. Deliverable
+Artifact **rev. 5** (resolved), same URL:
+https://claude.ai/code/artifact/5542fb4f-8efc-4ed9-9f66-ae7b09c576fd
+Mac log preserved at `/tmp/paraguay.log` on the Mac (volatile) — copy retained in this session's
+scratchpad as `paraguay.log`. Windows launcher left at `C:\Users\Dalton\launch_paraguay_win.bat`
+(the Shipping build produces no log; that test was behavioral only).
+
+---
+
+---
+
+---
+
+## PART E — 2026-08-25, session `5da05a26` — swap VERIFIED at property level; Vietnam entry spec'd (work order rev. 3)
+
+Model Opus 5 (1M), effort xhigh. **No project asset was modified.** Read-only on the project, plus one
+backup copy and one CDN reachability probe.
+
+### E1. New instrument — the UE 5.4 property tag is not the classic layout
+
+`tools/props.py` decodes tagged properties out of an export blob. Getting it right needed two
+corrections that are worth not re-deriving:
+
+- **UE 5.4 reworked `FPropertyTag`.** The layout in this project's packages (UE4Ver 522 / UE5Ver 1012) is
+  `FName Name` · `FName TypeName` + `int32 ParameterCount` (an `FPropertyTypeName`, recursive) ·
+  `int32 Size` · `uint8 Flags` · value. `Flags` is `EPropertyTagFlags`: `0x01` HasArrayIndex (an
+  `int32` follows), `0x02` HasPropertyGuid (an `FGuid` follows), `0x08` BoolTrue. There is **no
+  unconditional ArrayIndex and no unconditional bHasPropertyGuid byte** — assuming the pre-5.4 layout
+  yields garbage on the second property of every export.
+- **Export blobs carry one leading byte** before the first tag. `props.py` auto-detects it by testing
+  whether the FName at `SerialOffset` resolves, rather than hardcoding the skip.
+
+`StructProperty` values are themselves tagged blocks, so the reader recurses (guarded: typename
+recursion capped at depth 4 and parameter counts at 0..4, or a malformed struct sends it infinite).
+Without that recursion `VariableReference` reads as raw hex — see E5.
+
+### E2. ⚠️ The trigger census looked like a half-finished swap. It is not.
+
+`tools/triggers.py` over the PC's `Hospital_Client/__ExternalActors__` (4,519 packages) finds 11 orbit
+triggers. Two of them name **two** screen actors, and the extra one is the old station:
+
+```
+Paraguay trigger imports: BP_SC_T1_C, BP_SC_CAT_PARA_C_UAID_E89C25A80DC62D5902_1352092399, BP_WG_TEST_C
+Vietnam  trigger imports: BP_SC_CatViet_Test_C, BP_SC_CAT_VIET_C_UAID_001FBC137C7D670702_..., BP_WG_CatViet_Test_C
+```
+
+Reading the property block rather than the name table settles it:
+
+| | Paraguay | Vietnam | UCI-02 (control) |
+|---|---|---|---|
+| `ScreenActorRef` object | `BP_SC_CAT_PARA_C_UAID_…5902_1352092399` | `BP_SC_CAT_VIET_C_UAID_…0702_1607824018` | `BP_SC_CAT_UCI_02_C_UAID_…` |
+| `ScreenActorRef` **class** | **`BP_SC_T1_C`** | **`BP_SC_CatViet_Test_C`** | `BP_SC_CAT_UCI_02_C` |
+| `WidgetClass` | `BP_WG_TEST_C` | `BP_WG_CatViet_Test_C` | `BP_WG_CAT_UCI_02_C` |
+| `ActorLabel` | `BP_OrbitTrigger_CatPara` | `BP_OrbitTrigger_CatViet` | `BP_OrbitTrigger_CatUCI02` |
+
+Confirmed from the screen packages themselves: `5/9Q/0O2K56X5OMYLDSUEV9HKOC` holds an export of class
+**`BP_SC_T1_C`** named `BP_SC_CAT_PARA_C_UAID_…`, and `A/70/UFVQYBYFV6SZ5734DJ0L7H` holds one of class
+**`BP_SC_CatViet_Test_C`** named `BP_SC_CAT_VIET_C_UAID_…`.
+
+⇒ The actors were **converted in place**, not pasted alongside. UE does not rename an actor object when
+its class is replaced. **The class is what identifies a station; the object name and label are stale
+cosmetics.** `ScreenActorRef` resolves to an actor in this map's own `PersistentLevel`, so the
+cross-map actor-pointer hazard did not bite.
+
+⇒ **Work-order step B·3 (delete the retired actors) is MOOT** — no actor in `Hospital_Client` carries
+`BP_SC_CAT_PARA_C` or `BP_SC_CAT_VIET_C` as its class. Only the four packages touched 08-24 18:14–18:34
+differ, and they account for exactly the two triggers and the two screens.
+
+### E3. Vietnam is a one-procedure, one-interview station — by design
+
+Two independent reads agree, which is why this is stated as a finding rather than an inference:
+
+- `BP_SC_CatViet_Test` CDO declares exactly `VS_360-01` → `CAT_VIET_360`, `VS_POV-DR-01` →
+  `CAT_VIET_POV-DR`, `ITV-01` → `CAT_UCI_02_ITV-LasVsManAnim1`. (`BP_SC_T1`, for contrast, declares 6
+  procedures × 3 angles + 14 interviews.)
+- `BP_WG_CatViet_Test`'s graph has 9 `K2Node_ComponentBoundEvent`, of which exactly **two** are content
+  buttons: `Button_VS_PRO-01` and `Button_VS_ITV-01`. The other 18 have no handler.
+- The graph's `K2Node_Variable*` nodes read exactly `VS_360-01`, `VS_POV-DR-01`, `ITV-01` — no other
+  stream variable, and **no surplus button**.
+
+`tools/widgettree.py` rebuilds the UMG tree from the slot exports' `Content`/`Parent` pairs. It is
+**index-keyed, never name-keyed**: a WidgetBlueprint holds TWO widget trees (designer + generated-class
+template) whose exports share names, and a name-keyed map silently merges them into nonsense.
+
+Content entry needed (all three currently placeholders):
+
+| asset | widget | now | set to |
+|---|---|---|---|
+| `BP_WG_CatViet_Test` | `TextBlock_131` (in `Button_VS_PRO-01`) | `Procedure Title` | operator's call |
+| `BP_WG_CatViet_Test` | `TextBlock_19` (in `Button_VS_ITV-01`) | `Procedure Title` | `Cataract Animation: Laser vs Manual` |
+| `BP_SC_CatViet_Test` | `TextRender` (in-world sign) | `Procedure Title Here` | `Cataract Operation - Vietnam` |
+
+Neither of the last two is invented: `BP_WG_CAT_UCI_02` already labels the identical asset
+`CAT_UCI_02_ITV-LasVsManAnim1` as `Cataract Animation: Laser vs Manual`, and the retired
+`BP_SC_CAT_VIET` carries `Cataract Operation - Vietnam` today. The in-world sign was **not** in the
+work order before rev. 3.
+
+**Collapse the SizeBox, not the Button.** Each button sits in its own SizeBox and the SizeBoxes are what
+the ScrollBox lays out; collapsing the Button alone leaves the wrapper's height as an empty row.
+Keep `SizeBox_291` (PRO-01) and `SizeBox_10` (ITV-01); collapse the other 18 —
+PRO: `SizeBox_462 _547 _4 _3 _2`; ITV: `SizeBox_11 _12 SizeBox _5 _6 _1 _7 _8 _9 _14 _15 _16 _17`.
+
+### E4. Both "data bugs" are orphans — neither blocks the ship
+
+A scan of all 16,023 packages finds **no referencer** for `CAT_VIET_MISC` or `CAT_VIET_360_4K_Low`.
+Both are pre-adaptive leftovers; the ABR rebuild reaches neither.
+
+- `CAT_VIET_MISC` → `/Dash/Cat-Para/Day03/Phacoemmulsification/360/adaptive_360.mpd` (Paraguay).
+  **There is nothing to repoint it to.** Seven candidate Vietnam-Misc paths probed against the CDN
+  (`Cat-Vietnam/Misc/adaptive_{360,pov,traditional}.mpd`, `Cat-Vietnam/{ITV,LasVsMan}/…`) all return
+  **403**. The Laser-vs-Manual content's published manifest is
+  `/Dash/CAT-UCI-02/ITV/ITV-LasVsManAnimation/adaptive_pov.mpd`, and Vietnam's `ITV-01` already uses it.
+- `CAT_VIET_360_4K_Low` → a `264_1080_6Mbps_96_High5.1` file (1,816,249,534 B) under a 4K name.
+  Genuine 3840×2160 Vietnam 360 **does** exist, but only as representation id 3 (bw 19,995,653) inside
+  `/Dash/Cat-Vietnam/360/adaptive_360.mpd` — which is what the station plays. Only the progressive tier
+  is misnamed. (`CAT_VIET_POV_4K_Low` is genuinely 2160 and is fine.)
+
+### E5. ⚠️ RETRACTED WITHIN THIS SESSION — two of my own readings
+
+- **"Zero graph nodes reference the surplus buttons"** was first produced by matching button names
+  against `VariableReference` values that the flat printer had rendered as raw hex. A struct printed as
+  hex cannot match a name: the check had **zero discriminating power**, exactly like rev. 2's
+  `PlatformPlayerNames` grep. Only after `props.py` learned to recurse into `FMemberReference` and
+  report `MemberName` was the result real. The conclusion survived; the first evidence for it did not.
+- **ScrollBox display order** was decoded from each panel's `Slots` array and reported rows in a
+  definite order. The output was self-inconsistent (panels listing themselves as their own child,
+  `PackageMetaData` as a ScrollBox row), so the `Slots` element layout is not what I assumed.
+  **Display order is not established and is not claimed anywhere.** The `Content`/`Parent` tree is
+  independently validated (every button appears exactly once, both widget trees agree) and is what the
+  work order rests on.
+
+### E6. State on disk at exit
+
+- PC `Hospital_Client.umap` 08-24 18:31; `FirstPersonMap.umap` still 2025-09-22 (Phase D not run).
+- Mac `Hospital_Client.umap` 07-24 07:46, `FirstPersonMap.umap` 07-24 12:03 — both predate every fix.
+  Engine volume **already mounted** (`KingLab`, `Macintosh HD`, `UnrealEngine`).
+- `BP_WG_CAT_VIET.uasset` mtime 08-24 **21:48** — the retired widget was opened and saved after the map
+  work. Harmless (nothing references it) but unexplained.
+- Backup: `UCI_Campus_Template_v1.0/.backups/20260825T112304/` — 45 MB, 4,527 files (map + all 4,519
+  external actors + 5 Blueprints + the 2 media sources). At the **project root**, not under `Content/`,
+  which the editor would try to import.
+
+### E7. Deliverable
+
+Work order **rev. 3**, same URL: https://claude.ai/code/artifact/68994c10-4b85-421f-a006-4edc7a2d7965
+Source `report/widget-repair-work-order.html` (backup in `report/.backups/`). Rev. 2's Phase A — the
+record of the two Blueprint repairs that evaporated, including its own retracted diagnosis — is carried
+forward verbatim, and rev. 2's phase lettering is preserved because the boot prompt cites it.
+
+New tools: `props.py` (UE 5.4 tagged-property decoder, recursive), `triggers.py` (orbit-trigger census),
+`widgettree.py` (UMG tree, index-keyed).
+
+---
+
+---
+
+---
+
+## PART F — 2026-08-25, session `5da05a26` (cont.) — Vietnam SHIPPED; Paraguay interviews fail ONLY when cooked
+
+Operator completed the Vietnam content entry. Vietnam now plays procedures + interviews with sound in
+both editor and package. A new fault surfaced on Paraguay **interviews**. No project asset was modified
+by the assistant in this part; all edits were the operator's, in the editor.
+
+### F1. The confirmed fault signature
+
+Paraguay interview, packaged build, 82.7 s untouched:
+
+```
+IMediaPlayer::Open(...ITV-GlaucomaSurgeonDrPerrera/adaptive_pov.mpd)
+Initial buffering ended after 0.230s
+Player starts prerolling to warm decoders and renderers
+Player prerolling complete
+IMediaControls::SetRate(1.000000)
+Playback started at play position 0.000
+   <-- 84 seconds, no further Electra line at all -->
+Playback paused at play position 82.719
+```
+
+Open succeeds, `Play` is called, the clock free-runs to 82.7 s — and the player **fetches exactly one
+segment, then never requests anything again**. It never re-evaluates quality, never rebuffers.
+
+The instrument that proves it is the **Electra statistics block**, written per player on `Close`.
+Grep `Electra player statistics` and read `Bytes of video data streamed` +
+`Number of segments fetched` against `Play position at end`:
+
+| stream | run | played | video fetched | segments | res reached |
+|---|---|---|---|---|---|
+| Glaucoma 360 | package | 70.2 s | **172.5 MB** | 2 + 17 | 3840×2160 |
+| Glaucoma POV-DR | package | 70.2 s | 111.5 MB | 2 + 17 | 3840×2160 |
+| Glaucoma POV-MS | package | 70.2 s | 85.4 MB | 2 + 17 | 3840×2160 |
+| **ITV-Perrera** | **package** | **82.7 s** | **0.55 MB** | **1** | **640×360** |
+| Vietnam ITV-LasVsMan | package | 70.9 s | **122.3 MB** | 2 + 17 | 3840×2160 |
+| **ITV-Saravia** | **editor** | 10.8 s | **12.8 MB** | 2 + 2 | 3840×2160 |
+
+⇒ **Works uncooked, fails cooked, and only for Paraguay interviews.** Vietnam interviews and Paraguay
+procedures are fine in the same package; Paraguay interviews are fine in the editor.
+
+User-visible symptoms all follow from one fetched segment: frozen frame, no audio, widget timecode
+stuck, image updating only on scrub (a seek forces a preroll, which yields one fresh frame).
+
+### F2. ⚠️ Minimum test duration — most of this session's runs proved nothing
+
+Electra prefetches ~2 segments (~8 s) on open. **Any test shorter than ~30 s cannot distinguish a
+healthy stream from a stalled one**, because both show "2 segments fetched". Four separate runs in this
+session were 2–10 s and were read as controls; none of them discriminated. The 70 s untouched runs are
+what produced every conclusion above. **Untouched ≥60 s, or don't bother.**
+
+### F3. Everything on disk is EXONERATED
+
+Compared Paraguay's interview chain against Vietnam's working one, link by link — all identical:
+
+| link | Paraguay | Vietnam | verdict |
+|---|---|---|---|
+| MediaPlayer asset | `MP_ITV_Test` | `MP_ITV_CatViet` | same props (`PlayOnOpen=False` + GUID only) |
+| MediaTexture | `MT_ITV_Test` → MP | `MT_ITV_CatViet` → MP | correctly bound, same props |
+| Material | `MAT_ITV_Test` | `MAT_ITV_CatViet` | **identical expression graphs** |
+| Screen mesh | `ITV_Screen` (Screen_2D) | `ITV_Screen` (Screen_2D) | same mesh, same override material |
+| Sound | `MediaSound_ITV` → MP_ITV_Test | `MediaSound_ITV` → MP_ITV_CatViet | bound **on the placed instance** |
+| CDN content | manifests, segments, `tfdt` | — | all healthy, `baseMediaDecodeTime=0` |
+
+**Operator's decisive test:** playing the interview manually through the media player in the editor
+plays correctly *and renders correctly on the level screen when made visible*. That exonerates the whole
+`MP_ITV_Test`/`MT_ITV_Test`/`MAT_ITV_Test`/`ITV_Screen` triple in one move — no asset swap needed.
+
+Also confirmed: exactly one placed owner of `MP_ITV_Test` per map
+(`Hospital_Client 5/9Q/0O2K56X5OMYLDSUEV9HKOC`, `FirstPersonMap 8/44/3XSB6M5A9X9SRNN3EC7W7T`). No
+contention. `BP_SC_T1_Backup` / `BP_SC_Test_PRO` reference it but are not placed.
+
+### F4. ⚠️ FIVE assistant hypotheses raised and killed in this part
+
+Recorded so they are not re-derived:
+
+1. **MediaSoundComponent has no MediaPlayer ⇒ no audio.** WRONG. The property is set on the **placed
+   actor instance**, not the Blueprint component template. I read only templates. The package has
+   sound throughout. *Check instances as well as templates.*
+2. **Shipping strips the 97 `PrintString` nodes, and the lost time unmasks a race.** Dead on arrival —
+   the failing package is **Development**, which strips nothing.
+3. **32 `OpenSource` vs 4 `Play` calls means most sources never get played.** WRONG. `Play` count ==
+   media-player count in all three widgets (4/4, 3/3, 3/3): one `Play` per player, not per source.
+4. **Back-pressure: nothing drains the sample queue.** Raised, then dropped because working streams
+   showed the same 2-segment counts — that rejection was invalid (see F2, runs too short). Now the best
+   available description of the *behaviour*, though still not a root cause.
+5. **`Play` is never called in the package.** WRONG — an `awk` time filter excluded the window
+   containing `SetRate(1.000000)`. Always verify the window before concluding a line is absent.
+
+Also retracted: **"only CornBank is broken"** — five other Paraguay interviews fail the same way, and
+CornBank's content is byte-comparable to interviews that work.
+
+### F5. Method notes worth keeping
+
+- **`Electra player statistics` is the instrument for "is it really playing".** Position advancing is
+  NOT sufficient — the clock free-runs. Bytes and segment counts are what discriminate.
+- **Log rotation:** each run rotates the previous to `awsTutorial-backup-<timestamp>.log`. A second
+  concurrent instance writes `awsTutorial_2.log`. Verify a log's time range and
+  `IMediaPlayer::Open(http` count before analysing it — one log handed over this session was from an
+  instance that never left the login screen (0 opens).
+- Packaged **Development** builds log fully (`awsTutorial.exe` + large `.pdb`); packaged **Shipping**
+  builds (`awsTutorial-Win64-Shipping.exe`) compile logging out. Build 21 is Development.
+- `LogBlueprintUserMessages` (PrintString) appears at **default** verbosity in packaged Development —
+  no `-LogCmds` needed.
+- **`MP_ITV-01 is not ready`** prints in the same millisecond as `OpenSource`, in both working and
+  failing runs. It is a diagnostic print before the player has opened, **not a failure**. It has been
+  misread as a fault since the first session.
+- CloudFront redirects `http:` → `https:` with an **empty body**; `curl` without `-L` returns 0 bytes
+  and looks like missing content. One audio-track census was wrong for exactly this reason.
+
+### F5b. The definitive measurement, and the end of the instrument
+
+Deep Electra categories (`LogElectraSamples`, `LogElectraHTTPManager`, `LogElectraDecoders`,
+`LogElectraPlayerStats`, `LogElectraPlayerFactory`, `LogElectraCodecFactory`) were raised to Verbose and
+then VeryVerbose against packaged build 21. **All six emit nothing** — only the "verbosity has been
+raised" notices. Those code paths do not log in this build. The mechanism is not reachable from outside
+the engine; do not spend another run on it.
+
+Cleanest control of the whole investigation — both interviews, one session, matched ~11 s windows:
+
+| interview | played | video fetched | segments | res |
+|---|---|---|---|---|
+| Paraguay ITV-Perrera | 10.98 s | **546,944 B** | **1** | 640×360 |
+| Vietnam's ITV-LasVsMan | 11.18 s | **15,342,087 B** | 2 + 2 | 3840×2160 |
+
+28x over matched windows. And the extreme datapoint, 281 s untouched on one interview:
+
+```
+ITV-MobileClinicRuralVisitsTeam
+   clock advanced to   279.093 s   (1:1 with wall clock)
+   video fetched         565,243 B  (ONE segment, ~4 s of media)
+   segments                     1
+   rebuffered                   0    <-- decisive
+```
+
+4.7 minutes of playback on one 4-second segment, **never rebuffering**. A starved player rebuffers.
+This one does not, because it does not believe it needs data: its output queues are full and nothing
+drains them. Clock outran data ~70x.
+
+⇒ Best available description: **nothing consumes the ITV player's decoded output in a cooked build.**
+Not a root cause — the consumer (`MT_ITV_Test` / `MediaSound_ITV`) is correctly bound and demonstrably
+works when driven manually in the editor.
+
+### F6. Open item + the staleness confound
+
+Package 21 has a real confound: `FirstPersonMap.umap` was saved **13:05:45**, the pak was written
+**13:06:32** — 47 s later, far shorter than a full cook. The cook almost certainly predates that save.
+A cooked `FirstPersonMap.umap` dated **15:26:49** exists in `Saved/Cooked/` and is in no package.
+This is the `-skipcook` hazard from SOP §11h.
+
+**Next step ordered:** clear `Saved/Cooked/Windows`, package **Shipping** (matching build 20 per the
+work order), retest Paraguay interviews ≥60 s untouched.
+- plays ⇒ stale cook; that build is the ship build.
+- still stalls ⇒ genuine cook-specific fault against a clean baseline. Note Shipping has no logging, so
+  a Development package would then be needed purely to capture a log.
+
+### F7. State at exit
+
+Editor: **all stations working**, Paraguay interviews included (operator retested). Package 21: Paraguay
+interviews stall. Both stations swapped and byte-verified; `FirstPersonMap` current and matching
+`Hospital_Client` (4,519 packages, 11 triggers). Vietnam content entry complete.
+Backup `UCI_Campus_Template_v1.0/.backups/20260825T112304/` predates the operator's edits.
+New tools: `playanalyze.py`, `stats.py` (in this session's scratchpad) — per-media advance and
+statistics-block extraction from an Electra log.
+
+---
+
+## PART G — ROOT CAUSE. **The work was being done in an OBSOLETE FORK of the project.**
+
+`/mnt/c/Users/Dalton/Documents/Unreal_Projects/UCI_Campus_Template_v1.0` is **not the live project**.
+The live one is **`awsTutorial_VoiceRPCNew_ARBv3`** (same directory root). Confirmed by the operator
+2026-08-25 and corroborated on disk from several directions.
+
+### G1. Evidence
+
+- The Sept-2025 Windows build that plays **everything** correctly (`Downloads/Windows_(09-26-2025)`,
+  identical to `Packaged/20 - God please be the last`) was cooked from **ARBv3**. Its manifest ships
+  `BP_SC_CatPara` + `BP_WG_CatPara` and contains **no** `BP_SC_T1` / `BP_WG_TEST` and **none** of the
+  retired `CAT_PARA` family.
+- `BP_WG_CatPara` (ARBv3) and `BP_WG_TEST` (fork) are **the same asset renamed**: names 681/681,
+  imports 142/142, exports 1305/1305, and the only differing name-table entries are the asset's own
+  (`CatPara`→`TEST`, `BP_SC_CatPara`→`BP_SC_T1`). Graph counts identical (Open 32, Play 4, Pause 8,
+  IsReady 36, Delay 17, AddDelegate 32, ComponentBoundEvent 27, PrintString 97).
+- **ARBv3's Vietnam station was already finished in Sept 2025**: both titles entered
+  (`Cataract Operation`, `Cataract Animation: Laser vs Manual`), all 18 surplus buttons already
+  `ESlateVisibility::Collapsed`, sign already `Cataract Operation - Vietnam`. The fork's copy still had
+  every placeholder — which is what generated the DEBT of "Vietnam content entry" in the first place.
+- The fork additionally cooks six retired assets ARBv3 never had: `BP_SC_CAT_PARA`, `BP_SC_CAT_PARAOG`,
+  `BP_SC_CAT_PARA_Test`, `BP_WG_CAT_PARA`, `BP_WG_CAT_PARAOG`, `BP_WG_CAT_PARA_Test`.
+- **The Mac project is a copy of the FORK.** `/Volumes/UnrealEngine/Unreal_Projects/awsTutorial`:
+  `BP_SC_CatPara`/`BP_WG_CatPara` **absent**; `BP_SC_T1`, `BP_WG_TEST`, `BP_SC_CAT_PARA`,
+  `BP_WG_CAT_PARA`, `BP_WG_CAT_PARAOG` **present**.
+- `.uproject`, `DefaultEngine.ini`, `DefaultGame.ini` and all ten C++ source files are **identical**
+  between fork and ARBv3 — which is exactly why no configuration diff ever found anything.
+
+⇒ **The original macOS Paraguay failure was the Mac running the obsolete fork.** Not a macOS bug, not
+Electra, not the player override, not a stale `Hospital_Client`. Part D was right that it was not a
+macOS bug and right that the Windows/Mac control was invalid — but the mechanism was larger than a
+stale map inside one project: the two builds came from **two different project lineages**.
+
+### G2. What this invalidates
+
+Everything verified in Parts E and F was measured **correctly but against the fork**. The trigger
+pairings, the Vietnam content spec, the backup at `.backups/20260825T112304/`, work order rev. 3/4 —
+all describe the wrong project. **Do not carry them forward without re-verifying against ARBv3.**
+
+The Paraguay-interviews-stall-when-cooked fault (Part F) is a property of **the fork**. Eleven
+hypotheses were tested and killed against it; none was the cause, because the cause was upstream of all
+of them. That fault may simply not exist in ARBv3 — the Sept-2025 ARBv3 build plays those interviews.
+
+What *does* carry forward: the tooling (`props.py`, `triggers.py`, `widgettree.py`, `playanalyze.py`,
+`stats.py`), the method notes in F5, and the Vietnam content spec — which independently derived exactly
+the three strings ARBv3 already had, a useful check that the reasoning was sound.
+
+### G3. Standing rule from this
+
+**Confirm the project lineage before any asset work.** Cheap discriminator:
+
+```
+BP_SC_CatPara / BP_WG_CatPara present   -> ARBv3, the live project
+BP_SC_T1 / BP_WG_TEST present, plus the CAT_PARA family -> the obsolete fork
+```
+
+### G4. Open
+
+- Operator packaging a clean Shipping build from ARBv3 to confirm Paraguay + Vietnam both play.
+- **The Mac must be replaced from ARBv3, not patched.** Its current project is the fork.
+- Decide whether anything authored only in the fork since Sept 2025 needs porting to ARBv3 before the
+  fork is abandoned.
+
+---
+
+## PART H — 2026-08-26 — MAC REBUILT FROM THE LIVE PROJECT. RESOLVED END TO END.
+
+Operator confirmed: **the packaged Mac build plays procedures AND interviews for both Paraguay and
+Vietnam.** The investigation that began as "Paraguay videos are blank on macOS" is closed. Root cause
+was Part G: the Mac ran an obsolete fork.
+
+### H1. What was done
+1. **Migrated** ARBv3 (the live project) to `/Volumes/UnrealEngine/Unreal_Projects/awsTutorial`.
+   Lineage verified on the Mac: `BP_SC_CatPara`/`BP_WG_CatPara` present, `CAT_PARA` family absent.
+2. **Built** the Mac editor target (82 s).
+3. **Applied the Electra overrides** — `set_electra_override.py` run unmodified as a
+   `-run=pythonscript` commandlet with `-EnablePlugins=PythonScriptPlugin`, so `awsTutorial.uproject`
+   was never modified. Verified independently by parsing the raw `.uasset` bytes: **442/442**
+   `Mac(96e23b00…)->ElectraPlayer(803fee94…)`, CAT_PARAGUAY **162/162**.
+4. **Packaged** (CLI, SOP §11h). Result: 3.5 GB `.app`, `Signature=adhoc`, **0** `app-sandbox`
+   entitlement keys, cooked media **442/442** carrying ElectraPlayer.
+5. **Deleted the fork** from the Mac (48 GB freed) after four guards: Windows copy still exists,
+   target has fork markers, target has no live markers, live project intact.
+
+### H2. ⚠️ Three traps found, each a SILENT failure that reports success
+1. **`run-ue541-mac.sh` step 12 would have built the fork.** Its guard was
+   `if [ -f "$DEST/$UPROJ_IN_ZIP" ]; then log "Project already extracted"` — and every migration
+   unzips to the same name, so an obsolete copy at that path was kept, built and packaged while the
+   freshly transferred zip was ignored. **This is how the fork reached macOS in the first place.**
+   Fixed: moves any occupant aside to `<project>_superseded_<timestamp>`; `UE_KEEP_EXISTING=1` opts out.
+2. **`set_electra_override.py` silently no-opped.** A commandlet's Asset Registry starts EMPTY:
+   `ar.get_assets()` returned 0, the loop never ran, and it exited in **0.06 s** logging
+   "Python script executed successfully". Fixed with `scan_paths_synchronous()` (0 assets before,
+   **443** after) and a hard failure on `found: 0`. Also: `unreal.log()` Display output is swallowed
+   in commandlet mode — only Warnings/Errors survive — so the summary is emitted as a Warning and
+   written to `/tmp/electra_result.json`. **Silence is not evidence.**
+3. **A fresh migration has NONE of the Mac project fixes.** Signing, entitlements and the microphone
+   key live in the project's `Config/` and `Build/Mac/`, and had only ever been applied to the copy on
+   the Mac. Packaging died **after a full cook and a 12-minute build** with
+   `Signing for "awsTutorial" requires selecting either a development team`. New script
+   `apply-mac-project-fixes.sh` applies all of §11a/§11b/§11e idempotently and self-verifies.
+
+### H3. ⚠️ Fourth trap — the editor's "Zip Up Project" OMITS `Build/`
+A zip made from the fully-fixed Mac project still arrived **half-fixed**: `Config/DefaultEngine.ini`
+carried `PremadeMacEntitlements=(FilePath="/Game/Build/Mac/Resources/NoSandbox.entitlements")` while
+the entitlements file itself and `Info.Template.plist` (microphone) were **not in the zip** — the
+editor zips only `Config/ Content/ Plugins/ Source/ *.uproject`. Corrected by appending `Build/`.
+Verify any hand-made zip with:
+```
+unzip -Z1 <zip> | grep -c NoSandbox.entitlements                                  # want 1
+unzip -p  <zip> Build/Mac/Resources/Info.Template.plist | grep -c NSMicrophone    # want 1
+```
+
+### H4. Deliverables (3 locations, md5-verified: ~/Downloads authoritative, /Volumes/KingLab mirror, repo `plans/MacOS_UE_Fix/team-package/`)
+New: `apply-mac-project-fixes.sh`, `apply-electra-override-mac.sh`, `verify_media_overrides.py`
+(standalone byte-level proof, needs no Unreal).
+Fixed: `set_electra_override.py`, `run-ue541-mac.sh` (+ new `UE_SKIP_ENGINE=1` to skip steps 4–11,
+which otherwise still run a UBT rebuild and a GitHub access check that aborts the run if it fails).
+Docs: README gained a 7-step runbook; SOP gained §8·0 (lineage), §8a·1 (`Build/` omission),
+§8a·2 (`UE_SKIP_ENGINE`), and a rewritten §11d.
+The team-package folder now also holds `BME_Virtual_Hospital_08-25-26.zip` — the Mac-sourced project,
+`Build/` appended, containing every fix. The old Windows zip was removed.
+
+### H5. Open
+- Push the §11a/§11b/§11e fixes into the **Windows** source project so future zips carry them.
+- Optionally mirror the project zip to KingLab (6.9 TB free).
+- The Windows fork `UCI_Campus_Template_v1.0` (197 GB) still exists and can be retired.
+
+---
+
+## Standing facts worth not re-deriving
+
+- Mac SSH: `daltonsalvo@192.168.50.10`, **always** `bash -lc "..."` (login shell — `/opt/homebrew/bin` otherwise absent).
+- Engine volume is an APFS sparsebundle and is **not** auto-mounted:
+  `hdiutil attach /Volumes/KingLab/UnrealEngine.sparsebundle`.
+- Heredocs are blocked by a hook in this repo — use the Write tool for scripts, then `bash script.sh`.
+- `timeout` does not exist on macOS (`gtimeout`, or nohup+sleep+kill).
+- PythonScriptPlugin is **not** enabled/built in this project. Enabling it = editing `awsTutorial.uproject`
+  + rebuilding the editor target. Not done; would need operator approval.
+- No project file was modified in Part B. Part A modified only the two team-package documents.

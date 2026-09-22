@@ -1,0 +1,384 @@
+diff --git a/Engine/Config/Apple/Apple_SDK.json b/Engine/Config/Apple/Apple_SDK.json
+index 98dfdd889..491d1f94b 100644
+--- a/Engine/Config/Apple/Apple_SDK.json
++++ b/Engine/Config/Apple/Apple_SDK.json
+@@ -2,7 +2,7 @@
+ 	// Xcode versions
+ 	"MainVersion": "14.1",
+ 	"MinVersion": "14.1.0",
+-	"MaxVersion": "15.9.0",
++	"MaxVersion": "16.9.0",
+ 
+ 	// The versions on Windows are iTunes versions
+ 	"MinVersion_Win64": "1100.0.0.0",
+diff --git a/Engine/Source/Programs/UnrealBuildTool/Configuration/UEBuildModuleCPP.cs b/Engine/Source/Programs/UnrealBuildTool/Configuration/UEBuildModuleCPP.cs
+index 33c885b9e..37d959c40 100644
+--- a/Engine/Source/Programs/UnrealBuildTool/Configuration/UEBuildModuleCPP.cs
++++ b/Engine/Source/Programs/UnrealBuildTool/Configuration/UEBuildModuleCPP.cs
+@@ -650,6 +650,28 @@ namespace UnrealBuildTool
+ 			CompileEnvironment.bUseUnity = bModuleUsesUnityBuild;
+ 			GeneratedCPPCompileEnvironment.bUseUnity = bModuleUsesUnityBuild;
+ 
++			// Create and register a special action that can be used to compile single files (even when unity is enabled) for generated files
++			if (GeneratedFileItems.Any())
++			{
++				CppCompileEnvironment SingleGeneratedCPPCompileEnvironment = new CppCompileEnvironment(GeneratedCPPCompileEnvironment);
++				SingleGeneratedCPPCompileEnvironment.PrecompiledHeaderAction = PrecompiledHeaderAction.None;
++				foreach (DirectoryReference Directory in GeneratedFileItems.Select(x => x.Location.Directory).Distinct())
++				{
++					ToolChain.CreateSpecificFileAction(SingleGeneratedCPPCompileEnvironment, Directory, IntermediateDirectory, Graph);
++				}
++			}
++
++			// Create and register a special action that can be used to compile single files (even when unity is enabled) for normal files
++			if (ModuleDirectories.Any())
++			{
++				CppCompileEnvironment SingleCompileEnvironment = new CppCompileEnvironment(CompileEnvironment);
++				SingleCompileEnvironment.PrecompiledHeaderAction = PrecompiledHeaderAction.None;
++				foreach (DirectoryReference Directory in ModuleDirectories)
++				{
++					ToolChain.CreateSpecificFileAction(SingleCompileEnvironment, Directory, IntermediateDirectory, Graph);
++				}
++			}
++
+ 			// Compile Generated CPP Files
+ 			if (bModuleUsesUnityBuild)
+ 			{
+@@ -1484,18 +1506,6 @@ namespace UnrealBuildTool
+ 				AdaptiveFiles = new List<FileItem>();
+ 			}
+ 
+-			// Create and register a special action that can be used to compile single files (even when unity is enabled)
+-			if (NormalFiles.Count > 0 || AdaptiveFiles.Count > 0)
+-			{
+-				PrecompiledHeaderAction OldAction = CompileEnvironment.PrecompiledHeaderAction;
+-				CompileEnvironment.PrecompiledHeaderAction = PrecompiledHeaderAction.None;
+-				foreach (DirectoryReference Directory in ModuleDirectories)
+-				{
+-					ToolChain.CreateSpecificFileAction(CompileEnvironment, Directory, IntermediateDirectory, Graph);
+-				}
+-				CompileEnvironment.PrecompiledHeaderAction = OldAction;
+-			}
+-
+ 			CPPOutput OutputFiles = new CPPOutput();
+ 
+ 			if (NormalFiles.Count > 0)
+diff --git a/Engine/Source/Programs/UnrealBuildTool/Executors/UnrealBuildAccelerator/UBAExecutor.cs b/Engine/Source/Programs/UnrealBuildTool/Executors/UnrealBuildAccelerator/UBAExecutor.cs
+index 8ae19e0f2..d09a7e609 100644
+--- a/Engine/Source/Programs/UnrealBuildTool/Executors/UnrealBuildAccelerator/UBAExecutor.cs
++++ b/Engine/Source/Programs/UnrealBuildTool/Executors/UnrealBuildAccelerator/UBAExecutor.cs
+@@ -485,7 +485,7 @@ namespace UnrealBuildTool
+ 				ProcessStartInfo startInfo = GetActionStartInfo(action, out FileItem? pchItem);
+ 				using (IProcess process = _session!.RunProcess(startInfo, false, null, enableDetour))
+ 				{
+-					if (process.ExitCode != 0 && UBAConfig.bForcedRetry)
++					if (process.ExitCode != 0 && UBAConfig.bForcedRetry || (process.ExitCode >= 9000 && process.ExitCode < 10000))
+ 					{
+ 						_threadedLogger.LogWarning("{Description} {StatusDescription}: Exited with error code {ExitCode}. This action will retry without UBA", action.CommandDescription, action.StatusDescription, process.ExitCode);
+ 						_forcedRetryActions.AddOrUpdate(action, false, (k, v) => false);
+@@ -575,6 +575,11 @@ namespace UnrealBuildTool
+ 						RemoteActionFailedCrash(queue, action, e.ExitCode, e.ExecutingHost ?? "Unknown", "C1001");
+ 						return;
+ 					}
++					else if (e.ExitCode >= 9000 && e.ExitCode < 10000)
++					{
++						RemoteActionFailedCrash(queue, action, e.ExitCode, e.ExecutingHost ?? "Unknown", "UBA error");
++						return;
++					}
+ 
+ 					string additionalDescription = $"[RemoteExecutor: {e.ExecutingHost}]";
+ 					TimeSpan processorTime = e.TotalProcessorTime;
+diff --git a/Engine/Source/Programs/UnrealBuildTool/Platform/Android/UEDeployAndroid.cs b/Engine/Source/Programs/UnrealBuildTool/Platform/Android/UEDeployAndroid.cs
+index abbc78485..3e1c0be1d 100644
+--- a/Engine/Source/Programs/UnrealBuildTool/Platform/Android/UEDeployAndroid.cs
++++ b/Engine/Source/Programs/UnrealBuildTool/Platform/Android/UEDeployAndroid.cs
+@@ -3024,10 +3024,10 @@ namespace UnrealBuildTool
+ 
+ 			// Required for OBB download support
+ 			Text.AppendLine("\t\t<service android:name=\"OBBDownloaderService\" />");
+-			Text.AppendLine("\t\t<receiver android:name=\"AlarmReceiver\" />");
++			Text.AppendLine("\t\t<receiver android:name=\"AlarmReceiver\" android:exported=\"false\"/>");
+ 
+-			Text.AppendLine("\t\t<receiver android:name=\"com.epicgames.unreal.LocalNotificationReceiver\" />");
+-			Text.AppendLine("\t\t<receiver android:name=\"com.epicgames.unreal.CellularReceiver\" />");
++			Text.AppendLine("\t\t<receiver android:name=\"com.epicgames.unreal.LocalNotificationReceiver\" android:exported=\"false\"/>");
++			Text.AppendLine("\t\t<receiver android:name=\"com.epicgames.unreal.CellularReceiver\" android:exported=\"false\"/>");
+ 
+ 			if (bRestoreNotificationsOnReboot)
+ 			{
+@@ -4959,7 +4959,7 @@ namespace UnrealBuildTool
+ 					AFSToken = string.IsNullOrEmpty(AFSToken) ? "" : " -k " + AFSToken;
+ 
+ 					string AFSExecutable = Path.Combine(Unreal.EngineDirectory.ToString(), @"Binaries/DotNET/Android/UnrealAndroidFileTool", GetAFSExecutable(UnrealTargetPlatform.Win64, Logger));
+-					string AFS = $"{AFSExecutable} -p {PackageName}{AFSToken}";
++					string AFSArguments = $"-p {PackageName}{AFSToken}";
+ 
+ 					string? SOPushScriptLocation = Path.GetDirectoryName(FinalSOName)!;
+ 
+@@ -4968,7 +4968,8 @@ namespace UnrealBuildTool
+ 					// MakeApk will not be called in bDontBundleLibrariesInAPK mode, so we need to run stripping outside of it
+ 					string SOPushScript = @$"
+ set ADB=adb
+-set AFS={AFS.Replace("/", "\\")}
++set AFS={AFSExecutable.Replace("/", "\\")}
++set AFSARGS={AFSArguments}
+ set DEVICE=
+ if not \""%1\""==\""\"" set DEVICE=-s %1
+ pushd %~dp0
+@@ -4976,7 +4977,7 @@ pushd %~dp0
+ 					if (bUseAFS)
+ 					{
+ 						SOPushScript += @$"
+-%AFS% %DEVICE% push {FinalSONameStrippedRelative} ""^int/libUnreal.so""
++%AFS% %DEVICE% %AFSARGS% push {FinalSONameStrippedRelative} ""^int/libUnreal.so""
+ if ""%ERRORLEVEL%"" NEQ ""0"" (exit /b %ERRORLEVEL%)
+ ";
+ 					}
+@@ -5832,7 +5833,7 @@ popd
+ 			SavePackageInfo(ProjectName, ProjectDirectory.FullName, Type, bSkipGradleBuild);
+ 
+ 			MakeApk(ToolChain, ProjectName, Type, ProjectDirectory.FullName, ExecutablePath, EngineDirectory, bForDistribution: bForDistribution, CookFlavor: CookFlavor, Configuration: Configuration,
+-				bMakeSeparateApks: ShouldMakeSeparateApks(), bIncrementalPackage: false, bDisallowPackagingDataInApk: bIsDataDeploy, bDisallowExternalFilesDir: !bForDistribution || bIsDataDeploy,
++				bMakeSeparateApks: ShouldMakeSeparateApks(), bIncrementalPackage: false, bDisallowPackagingDataInApk: bIsDataDeploy, bDisallowExternalFilesDir: bIsDataDeploy,
+ 				bSkipGradleBuild: bSkipGradleBuild, bIsArchive: bIsArchive, bIsFromUAT: true);
+ 			return true;
+ 		}
+diff --git a/Engine/Source/Programs/UnrealBuildTool/Platform/Mac/MacToolChain.cs b/Engine/Source/Programs/UnrealBuildTool/Platform/Mac/MacToolChain.cs
+index 4c3488079..6da5965ca 100644
+--- a/Engine/Source/Programs/UnrealBuildTool/Platform/Mac/MacToolChain.cs
++++ b/Engine/Source/Programs/UnrealBuildTool/Platform/Mac/MacToolChain.cs
+@@ -135,6 +135,12 @@ namespace UnrealBuildTool
+ 		{
+ 			base.GetCompileArguments_WarningsAndErrors(CompileEnvironment, Arguments);
+ 
++			Arguments.Add("-Wno-shorten-64-to-32");
++			Arguments.Add("-Wno-vla-cxx-extension");
++			Arguments.Add("-Wno-extra-qualification");
++			Arguments.Add("-Wno-missing-template-arg-list-after-template-kw");
++			Arguments.Add("-Wno-error=dangling-assignment");  // Xcode16.4/Clang17 fixes
++
+ 			//Arguments.Add("-Wsign-compare"); // fed up of not seeing the signed/unsigned warnings we get on Windows - lets enable them here too.
+ 		}
+ 
+diff --git a/Engine/Source/Programs/UnrealBuildTool/Platform/Windows/VCToolChain.cs b/Engine/Source/Programs/UnrealBuildTool/Platform/Windows/VCToolChain.cs
+index 44541ae94..6a898fa7d 100644
+--- a/Engine/Source/Programs/UnrealBuildTool/Platform/Windows/VCToolChain.cs
++++ b/Engine/Source/Programs/UnrealBuildTool/Platform/Windows/VCToolChain.cs
+@@ -1485,7 +1485,7 @@ namespace UnrealBuildTool
+ 
+ 			AppendCLArguments_Global(CompileEnvironment, BaseCompileAction.Arguments);
+ 
+-			BaseCompileAction.bIsAnalyzing = Target.StaticAnalyzer != StaticAnalyzer.None;
++			BaseCompileAction.bIsAnalyzing = Target.StaticAnalyzer != StaticAnalyzer.Default && !CompileEnvironment.bDisableStaticAnalysis && !(Target.WindowsPlatform.Compiler.IsClang() && CompileEnvironment.PrecompiledHeaderAction == PrecompiledHeaderAction.Create);
+ 
+ 			// Add include paths to the argument list.
+ 			BaseCompileAction.IncludePaths.AddRange(CompileEnvironment.UserIncludePaths);
+diff --git a/Engine/Source/Programs/UnrealBuildTool/ProjectFiles/VisualStudioWorkspace/VSWorkspaceProjectFile.cs b/Engine/Source/Programs/UnrealBuildTool/ProjectFiles/VisualStudioWorkspace/VSWorkspaceProjectFile.cs
+index a27238bf4..49b6ecb8f 100644
+--- a/Engine/Source/Programs/UnrealBuildTool/ProjectFiles/VisualStudioWorkspace/VSWorkspaceProjectFile.cs
++++ b/Engine/Source/Programs/UnrealBuildTool/ProjectFiles/VisualStudioWorkspace/VSWorkspaceProjectFile.cs
+@@ -288,9 +288,9 @@ namespace UnrealBuildTool
+ 
+ 			return new TargetBuildInfo()
+ 			{
+-				BuildCmd = $"{BuildCommandBuilder.BuildScript.FullName} {BuildArguments}",
+-				RebuildCmd = $"{BuildCommandBuilder.RebuildScript.FullName} {BuildArguments}",
+-				CleanCmd = $"{BuildCommandBuilder.CleanScript.FullName} {BuildArguments}",
++				BuildCmd = $"\"{BuildCommandBuilder.BuildScript.FullName}\" {BuildArguments}",
++				RebuildCmd = $"\"{BuildCommandBuilder.RebuildScript.FullName}\" {BuildArguments}",
++				CleanCmd = $"\"{BuildCommandBuilder.CleanScript.FullName}\" {BuildArguments}",
+ 				PrimaryOutput = Target.Binaries[0].OutputFilePath.FullName,
+ 				BuildByDefault = bBuildByDefault,
+ 			};
+diff --git a/Engine/Source/Programs/UnrealBuildTool/ProjectFiles/Xcode/XcodeProject.cs b/Engine/Source/Programs/UnrealBuildTool/ProjectFiles/Xcode/XcodeProject.cs
+index 538c4fde6..ea1bd5c75 100644
+--- a/Engine/Source/Programs/UnrealBuildTool/ProjectFiles/Xcode/XcodeProject.cs
++++ b/Engine/Source/Programs/UnrealBuildTool/ProjectFiles/Xcode/XcodeProject.cs
+@@ -2067,8 +2067,14 @@ namespace UnrealBuildTool.XcodeProjectXcconfig
+ 
+ 					ConfigXcconfig.AppendLine($"PRODUCT_NAME_ = {ProductName}");
+ 					ConfigXcconfig.AppendLine($"PRODUCT_NAME_build = $(PRODUCT_NAME_)");
+-					string ArchivedName = ApplicationDisplayName ?? (UnrealData.UProjectFileLocation == null ? ProductName : UnrealData.UProjectFileLocation!.GetFileNameWithoutAnyExtensions());
+-					ConfigXcconfig.AppendLine($"PRODUCT_NAME_install = {ArchivedName}");
++					if (String.IsNullOrEmpty(ApplicationDisplayName))
++					{
++						ConfigXcconfig.AppendLine($"PRODUCT_NAME_install = {(UnrealData.UProjectFileLocation == null ? ProductName : UnrealData.UProjectFileLocation!.GetFileNameWithoutAnyExtensions())}");
++					}
++					else
++					{
++						ConfigXcconfig.AppendLine($"PRODUCT_NAME_install = {ApplicationDisplayName}");
++					}
+ 
+ 					// this will choose the proper PRODUCT_NAME when archiving vs normal building
+ 					ConfigXcconfig.AppendLine("PRODUCT_NAME = $(PRODUCT_NAME_$(ACTION))");
+diff --git a/Engine/Source/Programs/UnrealBuildTool/ToolChain/AppleToolChain.cs b/Engine/Source/Programs/UnrealBuildTool/ToolChain/AppleToolChain.cs
+index c1d66e90e..562df6fad 100644
+--- a/Engine/Source/Programs/UnrealBuildTool/ToolChain/AppleToolChain.cs
++++ b/Engine/Source/Programs/UnrealBuildTool/ToolChain/AppleToolChain.cs
+@@ -474,6 +474,14 @@ namespace UnrealBuildTool
+ 			Arguments.Add("-Wno-unknown-warning-option");
+ 			Arguments.Add("-Wno-range-loop-analysis");
+ 			Arguments.Add("-Wno-single-bit-bitfield-constant-conversion");
++
++			// Disable warnings for Xcode 16 for now
++			if (Info.ClangVersion.CompareTo(new Version(16, 0, 0)) >= 0)
++			{
++		Arguments.Add("-Wno-shadow");
++				Arguments.Add("-Wno-invalid-unevaluated-string");
++				Arguments.Add("-Wno-deprecated-this-capture");
++			}
+ 		}
+ 
+ 		/// <inheritdoc/>
+@@ -792,23 +800,12 @@ namespace UnrealBuildTool
+ 
+ 		protected virtual void GetLinkArguments_Global(LinkEnvironment LinkEnvironment, List<string> Arguments)
+ 		{
+-			// Temp solution for UE-191350
+-
+-			// This Regex will extract a 2-4 segment version code from string containing a 2-5 segment code 
+-			// ie: if given string: "Apple clang version 14.0.0 (clang-1400.0.17.3.1)"
+-			//     it'll extract: "1400.0.17.3"  (note the dropped 5th segment)
+-			Match M = Regex.Match(Info.ClangVersionString, @"(\(clang-(?<ver>\d+.\d+(.(\d+))?(.(\d+))?)(.(\d+))?\))");
+-			if (M.Success)
+-			{
+-				string LibString = M.Groups["ver"].ToString();
+-				Version? LibVersion = new Version(LibString);
+-				// The Apple's new linker in Xcode 15 beta 5 (clang version 1500.0.38.1) has issues with some templated classes and dynamic linking.
+-				// Fall back to using the classic.
+-				if (LibVersion.CompareTo(new Version(1500, 0, 38, 1)) >= 0)
+-				{
+-					Arguments.Add(" -ld_classic");
+-				}
+-			}
++			// The Apple's new linker in Xcode 15 beta 5 (clang version 1500.0.38.1) has issues with some templated classes and dynamic linking.
++			// Fall back to using the classic.
++			if (Info.ClangVersion.CompareTo(new Version(15, 0, 38)) >= 0 && Info.ClangVersion.CompareTo(new Version(16, 0, 0)) < 0)
++            {
++                Arguments.Add(" -ld_classic");
++            }
+ 		}
+ 
+ 		#region Stub Xcode Projects
+diff --git a/Engine/Source/Runtime/Apple/MetalRHI/Private/MetalRHI.cpp b/Engine/Source/Runtime/Apple/MetalRHI/Private/MetalRHI.cpp
+index c6d568639..28fa385e0 100644
+--- a/Engine/Source/Runtime/Apple/MetalRHI/Private/MetalRHI.cpp
++++ b/Engine/Source/Runtime/Apple/MetalRHI/Private/MetalRHI.cpp
+@@ -1308,13 +1308,17 @@ bool FMetalDynamicRHI::RHIGetAvailableResolutions(FScreenResolutionArray& Resolu
+ 	if (AllModes)
+ 	{
+ 		const int32 NumModes = CFArrayGetCount(AllModes);
+-		const int32 Scale = (int32)FMacApplication::GetPrimaryScreenBackingScaleFactor();
+ 		
+ 		for (int32 Index = 0; Index < NumModes; Index++)
+ 		{
+ 			const CGDisplayModeRef Mode = (const CGDisplayModeRef)CFArrayGetValueAtIndex(AllModes, Index);
+-			const int32 Width = (int32)CGDisplayModeGetWidth(Mode) / Scale;
+-			const int32 Height = (int32)CGDisplayModeGetHeight(Mode) / Scale;
++			// Local fix 2026-09-20: the stock engine divides both of these by
++			// FMacApplication::GetPrimaryScreenBackingScaleFactor(). CGDisplayModeGetWidth/Height already report the
++			// mode's own size, so that halves every resolution the game can offer - 1440x932 on a 2880x1864 panel -
++			// and no options menu can ever select the display's real resolution. Slate's screen space on macOS is
++			// backing pixels, which is what these return.
++			const int32 Width = (int32)CGDisplayModeGetWidth(Mode);
++			const int32 Height = (int32)CGDisplayModeGetHeight(Mode);
+ 			const int32 RefreshRate = (int32)CGDisplayModeGetRefreshRate(Mode);
+ 			
+ 			if (Width >= MinAllowableResolutionX && Width <= MaxAllowableResolutionX && Height >= MinAllowableResolutionY && Height <= MaxAllowableResolutionY)
+diff --git a/Engine/Source/Runtime/AudioCaptureCore/Private/AudioCaptureInternal.h b/Engine/Source/Runtime/AudioCaptureCore/Private/AudioCaptureInternal.h
+index 39db06b4f..3fcb6058d 100644
+--- a/Engine/Source/Runtime/AudioCaptureCore/Private/AudioCaptureInternal.h
++++ b/Engine/Source/Runtime/AudioCaptureCore/Private/AudioCaptureInternal.h
+@@ -38,7 +38,7 @@ namespace Audio
+ 		IModularFeatures::Get().UnlockModularFeatureList();
+ 
+ 		// For now, just return the first audio capture stream implemented. We can make this configurable at a later point.
+-		if (AudioCaptureStreamFactories.Num() > 0 && AudioCaptureStreamFactories[0] != nullptr && GEngine->UseSound())
++		if (AudioCaptureStreamFactories.Num() > 0 && AudioCaptureStreamFactories[0] != nullptr && (GEngine == nullptr || GEngine->UseSound()))
+ 		{
+ 			return AudioCaptureStreamFactories[0]->CreateNewAudioCaptureStream();
+ 		}
+diff --git a/Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h b/Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h
+index 819bfaf06..cc178da5b 100644
+--- a/Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h
++++ b/Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h
+@@ -45,11 +45,6 @@ struct FRepRootMotionMontage
+ 	UPROPERTY()
+ 	bool bIsActive = false;
+ 
+-#if WITH_EDITORONLY_DATA
+-	/** AnimMontage providing Root Motion */
+-	UPROPERTY(meta = (DeprecatedProperty, DeprecationMessage = "Use the GetAnimMontage function instead"))
+-	TObjectPtr<UAnimMontage> AnimMontage_DEPRECATED = nullptr;
+-#endif
+ 	
+ 	/** Animation providing Root Motion */
+ 	UPROPERTY()
+diff --git a/Engine/Source/Runtime/WebBrowser/Private/WebBrowserSingleton.cpp b/Engine/Source/Runtime/WebBrowser/Private/WebBrowserSingleton.cpp
+index c73c447e8..44a82a92e 100644
+--- a/Engine/Source/Runtime/WebBrowser/Private/WebBrowserSingleton.cpp
++++ b/Engine/Source/Runtime/WebBrowser/Private/WebBrowserSingleton.cpp
+@@ -304,6 +304,19 @@ FWebBrowserSingleton::FWebBrowserSingleton(const FWebBrowserInitSettings& WebBro
+ 		// Specify path to resources
+ 		FString ResourcesPath(FPaths::Combine(*FPaths::EngineDir(), CEF3_RESOURCES_DIR));
+ 		ResourcesPath = FPaths::ConvertRelativePathToFull(ResourcesPath);
++#if PLATFORM_MAC
++		// [ue541 packaging fix - reversible] Modern-Xcode packaging stages the CEF framework in
++		// <App>/Contents/Frameworks (executable-relative), not the legacy EngineDir ThirdParty/CEF3/Mac
++		// path. When the legacy path is absent, redirect to the bundled framework's Resources.
++		if (!FPaths::DirectoryExists(ResourcesPath))
++		{
++			const FString BundleResources = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::GetPath(FPlatformProcess::ExecutablePath()), TEXT("../Frameworks/Chromium Embedded Framework.framework/Resources")));
++			if (FPaths::DirectoryExists(BundleResources))
++			{
++				ResourcesPath = BundleResources;
++			}
++		}
++#endif
+ 		if (!FPaths::DirectoryExists(ResourcesPath))
+ 		{
+ 			UE_LOG(LogWebBrowser, Error, TEXT("Chromium Resources information not found at: %s."), *ResourcesPath);
+@@ -337,6 +350,17 @@ FWebBrowserSingleton::FWebBrowserSingleton(const FWebBrowserInitSettings& WebBro
+ 		// Let CEF know where we have put the framework bundle as it is non-default
+ 		FString CefFrameworkPath(FPaths::Combine(*FPaths::EngineDir(), CEF3_FRAMEWORK_DIR));
+ 		CefFrameworkPath = FPaths::ConvertRelativePathToFull(CefFrameworkPath);
++		// [ue541 packaging fix - reversible] Prefer the executable-relative framework staged by
++		// modern-Xcode packaging (<App>/Contents/Frameworks) when the legacy path is absent, so
++		// CefInitialize finds the framework's Resources (else Chromium CHECK-aborts -> SIGTRAP).
++		if (!FPaths::DirectoryExists(CefFrameworkPath))
++		{
++			const FString BundleFramework = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::GetPath(FPlatformProcess::ExecutablePath()), TEXT("../Frameworks/Chromium Embedded Framework.framework")));
++			if (FPaths::DirectoryExists(BundleFramework))
++			{
++				CefFrameworkPath = BundleFramework;
++			}
++		}
+ 		CefString(&Settings.framework_dir_path) = TCHAR_TO_WCHAR(*CefFrameworkPath);
+ 		CefString(&Settings.main_bundle_path) = TCHAR_TO_WCHAR(*CefFrameworkPath);
+ #endif
+diff --git a/Engine/Source/ThirdParty/FBX/2020.2/include/fbxsdk/core/base/fbxredblacktree.h b/Engine/Source/ThirdParty/FBX/2020.2/include/fbxsdk/core/base/fbxredblacktree.h
+index f121b68f0..4db77cf7e 100644
+--- a/Engine/Source/ThirdParty/FBX/2020.2/include/fbxsdk/core/base/fbxredblacktree.h
++++ b/Engine/Source/ThirdParty/FBX/2020.2/include/fbxsdk/core/base/fbxredblacktree.h
+@@ -315,7 +315,7 @@ public:
+                 const RecordType* lParent = mParent;
+                 const RecordType* lNode = this;
+ 
+-                while (lParent && lParent->mLefttChild == lNode)
++                while (lParent && lParent->mLeftChild == lNode)
+                 {
+                     lNode = lParent;
+                     lParent = lParent->mParent;
+diff --git a/Engine/Source/UnrealEditor.Target.cs b/Engine/Source/UnrealEditor.Target.cs
+index 5f7cb7bc4..227936bc4 100644
+--- a/Engine/Source/UnrealEditor.Target.cs
++++ b/Engine/Source/UnrealEditor.Target.cs
+@@ -10,7 +10,7 @@ public class UnrealEditorTarget : TargetRules
+ 		Type = TargetType.Editor;
+ 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+ 		BuildEnvironment = TargetBuildEnvironment.Shared;
+-		bBuildAllModules = true;
++		bBuildAllModules = false; // skip broken experimental plugins (Clang17)
+ 		ExtraModuleNames.Add("UnrealGame");
+ 	}
+ }

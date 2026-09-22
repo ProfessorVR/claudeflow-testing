@@ -1,0 +1,188 @@
+# Test protocol — macOS voice-chat echo
+**Written:** 2026-08-26 · for `plans/MacOS_UE_Fix` · pairs with SESSION-LOG Part I
+
+Two tests, run in order. **Test 1 is a 5-minute instrument check.** **Test 2 is the one that
+produces the answer.** Test 2 also captures a Mac log, so it subsumes Test 1's data — Test 1 exists
+only so we don't discover a broken instrument halfway through the elaborate setup.
+
+Do not skip Test 1. Part F burned four runs on tests that could not discriminate, and Part H found
+three separate tools that reported success while doing nothing.
+
+---
+
+## What each test establishes
+
+| | Test 1 — Mac solo | Test 2 — two-machine leak matrix |
+|---|---|---|
+| machines | Mac only | Mac + Windows |
+| needs a peer? | **no** | yes (the two machines are the peers) |
+| duration | ~5 min | ~30 min |
+| produces | **configuration** facts | **behavioural** facts |
+| answers | which backend, which device, what `bSupportsHardwareAEC` reads as | **who leaks** — Mac only, or Windows too |
+| output | `/tmp/voice-mac-solo-*.log` | 4 rows of yes/no + a Mac log per row |
+
+---
+
+## Before either test — one-time prerequisites
+
+**Mac**
+- Engine volume mounted. Check `ls /Volumes` shows `UnrealEngine`.
+  If not: `hdiutil attach /Volumes/KingLab/UnrealEngine.sparsebundle`
+- Scripts present: `ls -la /tmp/voice_log_*.sh` (already deployed).
+  If `/tmp` was cleared, say so and they will be re-copied.
+- Grant the mic prompt if macOS asks. The build is adhoc-signed and carries
+  `NSMicrophoneUsageDescription` — verified present in the packaged `Info.plist`.
+
+**Windows** (Test 2 only)
+- Build **22** is the newest and is live-ARBv3 lineage (verified: ships `BP_SC_CatPara` /
+  `BP_WG_CatPara`, no fork markers).
+  `Packaged\22\Windows\awsTutorial.exe`
+- ⚠️ Build 22 is **Shipping**, which compiles logging out. **The Windows side of Test 2 is
+  behavioural only — it produces no log.** That is fine for "who leaks". If we later want
+  Windows-side device/AEC data, a Development package is needed.
+- Copy the whole `Packaged\22\Windows` folder to the Windows laptop if testing on the laptop.
+
+**Both**
+- Same voice server / same channel. Confirm the two clients actually reach each other *before*
+  starting the matrix — a row where the peers never connected looks identical to a row with no echo.
+- Fixed speaker volume. Pick one level (say 50%) and **do not change it between rows**, or the rows
+  are not comparable.
+
+---
+
+## TEST 1 — Mac solo: instrument check + configuration baseline
+
+**Purpose:** prove the log captures what we need, and read the capture configuration.
+**You do not need a second person or a second machine.**
+
+### ⚠️ This test CANNOT be run unattended — measured, not assumed
+
+Probe 2026-08-26 (`/tmp/voice-probe-20260826T133808.log`): the app was launched over SSH, loaded
+`GameDefaultMap = /Game/FirstPerson/Maps/UserLogin`, and sat there for 110 s.
+
+```
+Found default device : 0        <- capture stream never opened
+capture callbacks    : 0
+VoiceChat startup    : 1        <- module loads, but nothing opens a stream
+No Audio Capture implementations found : 3
+```
+
+⇒ **A human must log in and join voice.** Launching, monitoring, log retrieval and analysis can all
+be done remotely; the login and the speaking cannot.
+
+Also noted, not concluded: the three `No Audio Capture implementations found` notices at login-screen
+time mean `CreateImpl()` saw **zero** registered factories at that moment. Most likely CDO
+construction ahead of module load. **Watch for it in section 2 of the summary** — if that notice
+appears immediately before `Found default device`, the fault is larger than AEC.
+
+1. At the Mac (or over SSH — the script uses `open`, so both work):
+   ```bash
+   bash /tmp/voice_log_capture.sh mac-solo
+   ```
+   It prints the log path and the default input/output devices, launches the app, then **waits and
+   confirms the log is actually growing** before telling you to proceed. If it warns that no log
+   appeared, stop — the instrument is broken and Test 2 would be wasted.
+
+2. In the app: **join the voice channel.** Alone is fine — we only need the capture stream to open.
+
+3. Leave it running **≥60 seconds**, untouched. **Speak for ~20 s of that.**
+   Sixty seconds is not arbitrary: it is the floor established in Part F2, where four runs under
+   10 s all failed to discriminate.
+
+4. **Cmd-Q.** Not force-quit — the teardown lines matter.
+
+5. Summarize:
+   ```bash
+   bash /tmp/voice_log_summary.sh /tmp/voice-mac-solo-<stamp>.log
+   ```
+
+### What Test 1 must show before Test 2 is worth running
+
+| section | pass condition | if it fails |
+|---|---|---|
+| 1. session reality | `OpenCaptureStream attempts` ≥ 1 **and** `capture callbacks fired` in the thousands | voice never started; the app didn't join, or mic permission was denied |
+| 3. device + AEC | one `Found default device:` line naming **MacBook Air Microphone** | a different device is in play — tell me, it changes the diagnosis |
+| 4. rate | `captured N frames in R sample rate` with a consistent R | — |
+
+**The line I most want back, verbatim:**
+```
+[VoiceChat] Found default device: <name> | ID: <id> | Channels: <n> | SampleRate: <r> | AEC: <Yes|No>
+```
+That `AEC:` value is the uninitialized read, observed rather than argued. **Either value confirms
+the finding** — `No` means a naive port would silently bypass Voice Processing I/O; `Yes` means the
+stack byte happened to be non-zero. It is never a value anything actually assigned.
+
+---
+
+## TEST 2 — the leak matrix: who is re-transmitting?
+
+**Purpose:** the professor datapoint already shows the Mac leaks. This establishes whether **Windows
+leaks too** — the thing §5 insists on before calling anything platform-specific.
+
+### The physical setup, and the one confound that matters
+
+The trap: if both machines are in the same room, your **direct** voice reaches the speaker-machine's
+microphone through the air. That machine then transmits it to you perfectly normally — and it sounds
+like an echo, but it is not a loop. A control that cannot separate those two proves nothing (Part D2).
+
+**Design it out: put the speaker machine in another room, door closed.** Then the only path from its
+speakers to its own mic is its own internal loop — which is exactly what we are measuring.
+
+- **Speaker machine:** in room B, alone, speakers at your fixed volume, nobody near it.
+- **Headset machine:** with you in room A, headset **worn** (this matters — headphones on the desk
+  still couple into the mic).
+- You speak only into the **headset** mic.
+- Listen for **your own voice coming back**, delayed.
+
+### The four rows
+
+Run each for **≥60 s**, speaking intermittently. Record yes/no and how strong.
+
+| # | speakers (room B) | headset (room A, worn) | you listen for | if YES it means |
+|---|---|---|---|---|
+| 1 | **Mac** | Windows | your voice returning | **Mac leaks** — expected, matches the professor |
+| 2 | **Windows** | Mac | your voice returning | **Windows leaks too** → not a platform bug |
+| 3 | both on speakers | — | runaway howl | worst case, expect the loudest |
+| 4 | neither (both headsets) | both | should be **clean** | if this echoes, something else is wrong |
+
+Row 4 is the control. **If row 4 echoes, stop** — the fault is not acoustic and the whole AEC
+diagnosis needs revisiting.
+
+### Capture a Mac log on every row where the Mac is running
+
+Before each row, on the Mac:
+```bash
+bash /tmp/voice_log_capture.sh row1-mac-speakers    # row 1
+bash /tmp/voice_log_capture.sh row2-mac-headset     # row 2
+bash /tmp/voice_log_capture.sh row3-both-speakers   # row 3
+bash /tmp/voice_log_capture.sh row4-both-headsets   # row 4
+```
+One tag per row keeps the logs separable. Quit the app between rows so each row gets its own log
+(the script refuses to start a second instance, which is deliberate — Part F5).
+
+### Recording the result
+
+For each row write down: **row #, echo yes/no, strength (none / mild / strong / howl), and the log
+filename.** That is the whole deliverable. Four lines.
+
+---
+
+## What the outcomes mean
+
+| result | reading | consequence for the fix |
+|---|---|---|
+| Row 1 yes, Row 2 **no** | genuine platform asymmetry: Mac leaks, Windows does not | macOS-only fix; Windows stays untouched. But then Windows' clean behaviour still needs explaining — WASAPI reports `bSupportsHardwareAEC = false` too |
+| Row 1 yes, Row 2 **yes** | **both platforms leak** | reframes the job: "this engine ships with AEC disabled on both desktop platforms." The Windows back-end becomes part of the primary fix, not a secondary nicety |
+| Row 1 no | contradicts the professor datapoint | something changed since that session — re-check volume, device, and that the peers really connected |
+| Row 4 yes | control failed | not acoustic. Stop and re-diagnose |
+
+---
+
+## Standing constraints that still apply
+
+- **Nothing is modified by either test.** Both are read-only; no engine, project, plugin or asset
+  is touched. No packaging, no rebuild.
+- Do not change speaker volume between rows.
+- Do not re-run `set_electra_override.py` (proven no-op, Part C8).
+- Windows build 22 is the known-good build. **Nothing on the Windows side gets changed** without
+  explicit go-ahead — these tests only run it.

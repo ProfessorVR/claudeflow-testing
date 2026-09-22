@@ -1,0 +1,726 @@
+<title>Paraguay Widget Forensics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap">
+
+<style>
+:root{
+  --bg:#F4F5F7;
+  --surface:#FFFFFF;
+  --surface-2:#EDEFF3;
+  --ink:#1A1C22;
+  --muted:#666B79;
+  --rule:#DCE0E7;
+  --rule-strong:#C3C9D4;
+  --broken:#B06E12;
+  --broken-wash:#FBF1DF;
+  --working:#14655F;
+  --working-wash:#E2F0EE;
+  --critical:#9E2A21;
+  --critical-wash:#FAE9E7;
+  --shadow:0 1px 2px rgba(20,24,35,.06),0 8px 24px -16px rgba(20,24,35,.28);
+
+  --sans:"IBM Plex Sans Condensed",ui-sans-serif,"Helvetica Neue",Arial,sans-serif;
+  --serif:"IBM Plex Serif",ui-serif,Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#15161A;
+    --surface:#1C1E24;
+    --surface-2:#23262E;
+    --ink:#E6E8ED;
+    --muted:#989EAC;
+    --rule:#2B2F38;
+    --rule-strong:#3B4049;
+    --broken:#E0A94A;
+    --broken-wash:#2A2317;
+    --working:#4FB0A8;
+    --working-wash:#152827;
+    --critical:#E4695C;
+    --critical-wash:#2B1A18;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15161A;
+  --surface:#1C1E24;
+  --surface-2:#23262E;
+  --ink:#E6E8ED;
+  --muted:#989EAC;
+  --rule:#2B2F38;
+  --rule-strong:#3B4049;
+  --broken:#E0A94A;
+  --broken-wash:#2A2317;
+  --working:#4FB0A8;
+  --working-wash:#152827;
+  --critical:#E4695C;
+  --critical-wash:#2B1A18;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--serif);font-size:17px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 28px 96px}
+.col{max-width:68ch}
+
+/* ---------- masthead ---------- */
+.mast{padding:64px 0 34px;border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:var(--mono);font-size:11.5px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:10px 18px;margin-bottom:20px;
+}
+h1{
+  font-family:var(--sans);font-weight:700;font-size:clamp(2.5rem,6vw,4rem);
+  line-height:1.02;letter-spacing:-.018em;margin:0;text-wrap:balance;
+}
+h1 .sub{display:block;color:var(--broken);font-size:.44em;font-weight:600;letter-spacing:.005em;margin-top:14px}
+.standfirst{font-size:1.09rem;color:var(--muted);margin:22px 0 0;max-width:64ch}
+
+/* ---------- structure ---------- */
+h2{
+  font-family:var(--sans);font-weight:700;font-size:1.62rem;letter-spacing:-.012em;
+  margin:64px 0 4px;text-wrap:balance;
+}
+h2 .num{font-family:var(--mono);font-size:.62em;font-weight:500;color:var(--muted);margin-right:.7em;letter-spacing:.04em}
+h3{font-family:var(--sans);font-weight:600;font-size:1.11rem;letter-spacing:-.005em;margin:34px 0 6px}
+p{margin:14px 0}
+a{color:var(--broken)}
+strong{font-weight:600}
+code{
+  font-family:var(--mono);font-size:.855em;
+  background:var(--surface-2);padding:.12em .38em;border-radius:3px;
+  border:1px solid var(--rule);white-space:nowrap;
+}
+.lede{font-size:1.06rem}
+
+/* ---------- verdict ---------- */
+.verdict{
+  margin:40px 0 0;background:var(--surface);border:1px solid var(--rule);
+  border-left:4px solid var(--critical);border-radius:4px;
+  padding:28px 32px;box-shadow:var(--shadow);
+}
+.verdict .tag{
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--critical);
+}
+.verdict p{margin:12px 0 0}
+.verdict p:first-of-type{font-size:1.14rem}
+
+/* ---------- chain ---------- */
+.chain{
+  display:flex;flex-wrap:wrap;align-items:stretch;gap:0;margin:26px 0 8px;
+  font-family:var(--mono);font-size:13px;
+}
+.node{
+  background:var(--surface);border:1px solid var(--rule-strong);
+  padding:12px 16px;display:flex;flex-direction:column;gap:3px;min-width:0;
+}
+.node .k{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.node .v{font-weight:600;word-break:break-all}
+.node.bad{border-color:var(--critical);background:var(--critical-wash)}
+.node.bad .v{color:var(--critical)}
+.arrow{display:flex;align-items:center;padding:0 12px;color:var(--muted);font-size:16px}
+.dangle{
+  margin:14px 0 0;padding:14px 18px;border-radius:4px;
+  background:var(--critical-wash);border:1px dashed var(--critical);
+  font-family:var(--mono);font-size:12.5px;line-height:1.75;
+}
+.dangle b{color:var(--critical);font-weight:600}
+.proof{
+  margin:14px 0 0;padding:14px 18px;border-radius:4px;
+  background:var(--working-wash);border:1px solid var(--working);
+  font-family:var(--mono);font-size:12.5px;line-height:1.85;
+}
+.proof b{color:var(--working);font-weight:600}
+.proof code{background:none;padding:0;font-size:12px}
+
+/* ---------- evidence ---------- */
+.ev{
+  border-top:1px solid var(--rule);padding:22px 0 4px;
+  display:grid;grid-template-columns:60px 1fr;gap:0 22px;align-items:start;
+}
+.ev:last-of-type{border-bottom:1px solid var(--rule);margin-bottom:8px}
+.ev .id{
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.08em;
+  color:var(--broken);padding-top:5px;
+}
+.ev h3{margin:0 0 2px}
+.ev p{margin:8px 0 0;font-size:16px}
+.ev .fig{
+  font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  margin-top:10px;padding-left:14px;border-left:2px solid var(--rule-strong);
+  line-height:1.8;
+}
+.ev .fig b{color:var(--ink);font-weight:600}
+
+/* ---------- table ---------- */
+.scroll{overflow-x:auto;margin:22px 0 6px;border:1px solid var(--rule);border-radius:4px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 14px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--rule)}
+th:first-child,td:first-child{text-align:left;white-space:normal;min-width:220px}
+thead th{
+  font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);
+  font-weight:500;border-bottom:1px solid var(--rule-strong);vertical-align:bottom;
+}
+thead th.subject{color:var(--broken)}
+thead th.ref{color:var(--working)}
+tbody tr:last-child td{border-bottom:none}
+td.subject{background:var(--broken-wash);color:var(--broken);font-weight:600}
+td.ref{background:var(--working-wash);color:var(--working)}
+tr.rule-row td{border-top:1px solid var(--rule-strong)}
+.tnote{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin:10px 0 0}
+
+/* ---------- fixes ---------- */
+.fix{
+  background:var(--surface);border:1px solid var(--rule);border-radius:4px;
+  padding:22px 26px;margin:18px 0;box-shadow:var(--shadow);
+}
+.fix .hd{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:baseline;margin-bottom:4px}
+.fix .rank{
+  font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.13em;
+  text-transform:uppercase;padding:3px 9px;border-radius:3px;
+  background:var(--working-wash);color:var(--working);border:1px solid var(--working);
+}
+.fix.second .rank{background:var(--broken-wash);color:var(--broken);border-color:var(--broken)}
+.fix h3{margin:0;font-size:1.14rem}
+.fix p{font-size:16px;margin:10px 0 0}
+.fix .cost{font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* ---------- method ---------- */
+.method{
+  margin-top:26px;padding:24px 28px;background:var(--surface-2);
+  border:1px solid var(--rule);border-radius:4px;
+}
+.method h3{margin-top:0}
+.method p,.method li{font-size:15.5px}
+.method ul{margin:10px 0 0;padding-left:20px}
+.method li{margin:7px 0}
+
+.foot{
+  margin-top:60px;padding-top:22px;border-top:2px solid var(--ink);
+  font-family:var(--mono);font-size:11.5px;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:8px 26px;
+}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .wrap{padding:0 18px 64px}
+  .ev{grid-template-columns:1fr;gap:6px}
+  .ev .id{padding-top:0}
+  .arrow{padding:4px 0;transform:rotate(90deg)}
+  .chain{flex-direction:column}
+}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow">
+    <span>Blueprint forensics</span>
+    <span>awsTutorial · UE 5.4.1</span>
+    <span>Rev. 4 — cause found at runtime</span>
+    <span>2026-08-24</span>
+  </div>
+  <h1>Paraguay Widget Forensics
+    <span class="sub">The damage is real, and one piece of it does stop it playing.</span>
+  </h1>
+  <p class="standfirst">A structural comparison of the Cataract Operations&nbsp;— Paraguay video widget against three working peers and against a second copy of the whole project, read directly out of the serialized <code>.uasset</code> package tables.</p>
+</header>
+
+<div class="col">
+
+<div class="verdict">
+  <div class="tag">Verdict · runtime evidence</div>
+  <p><strong>Paraguay never attempts to open a video at all.</strong> A verbose packaged-run log captured
+  on the Mac on 2026-08-24 settles it: across the whole session the build issued exactly three
+  <code>OpenSource</code> calls, all of them for the working control procedure. Not one Paraguay media
+  source was ever opened. The failure is upstream of the media layer entirely.</p>
+  <p>The log shows why — <strong>448 runtime <code>Accessed None</code> errors</strong> inside
+  <code>BP_WG_CAT_PARA</code>, on two null widget variables, <code>MP_360_POV_CAT_PARA_1</code> and
+  <code>MP_360_POV_CAT_PARA_2</code>. These are the same dead POV references catalogued as
+  <strong>E2</strong>. Reading a null object reference aborts the rest of that execution path, so the
+  code that would open the videos and switch the panel back never runs. One fact accounts for all three
+  reported symptoms. See <strong>§07</strong>.</p>
+  <p><strong>What this does and does not overturn.</strong> Revision 1 named the right culprit — the
+  dangling <code>MP_360_POV_CAT_PARA</code> reference — but gave the wrong mechanism, claiming the
+  Blueprint fails to compile so the graph never runs. It compiles and it runs; the variables are simply
+  null, and the reads abort mid-path. Revisions 2 and 3 remain correct in what they eliminated: the
+  player override is present and ElectraPlayer is working (the control procedure opened three DASH
+  streams through it, with zero <code>AvfMedia</code> activity and zero <code>-12847</code>).</p>
+  <p><strong>The Windows comparison is now the open question, and it is weaker than it looked.</strong>
+  The two builds are not equivalent: the Mac build is <b>Development</b> configuration, the shipped
+  Windows build is <b>Shipping</b>, which compiles out the very logging that made this visible. The
+  cooked content is byte-identical and <code>MP_360_POV_CAT_PARA</code> is absent from both packages, so
+  the same null reads should occur on Windows — silently. Whether Paraguay's procedure buttons actually
+  work there has not been tested. <strong>§07</strong> names that test.</p>
+</div>
+
+<h2><span class="num">01</span>What is actually wired into the level</h2>
+
+<p class="lede">Worth establishing first, because the Paraguay folder holds four widget variants and four screen variants, and only one pair is live.</p>
+
+<p><code>Hospital_Client</code> is a World Partition map — its actors live in <code>__ExternalActors__</code>, which is why the <code>.umap</code> itself names none of them. Across its 4,520 external actors there is exactly one Paraguay screen instance, the same count as each of the other ten procedures:</p>
+
+</div>
+
+<div class="chain">
+  <div class="node"><span class="k">Map</span><span class="v">Hospital_Client</span></div>
+  <div class="arrow">→</div>
+  <div class="node"><span class="k">Screen actor</span><span class="v">BP_SC_CAT_PARA</span></div>
+  <div class="arrow">→</div>
+  <div class="node bad"><span class="k">Widget · the subject</span><span class="v">BP_WG_CAT_PARA</span></div>
+</div>
+
+<div class="col">
+<p>So the widget under the microscope is the one the player actually sees. The other variants — <code>BP_WG_CAT_PARAOG</code>, <code>BP_WG_CAT_PARA_Test</code>, and a 2,771-byte empty child <code>BP_WG_CAT_PARA_V2</code> — are not referenced by the level at all. <code>PARAOG</code> and <code>PARA_Test</code> are used below as working controls alongside <code>BP_WG_CAT_UCI_02</code>.</p>
+
+<p>The screen actor is <strong>not</strong> the problem. <code>BP_SC_CAT_PARA</code> correctly drives all four Paraguay media players and all four materials. The widget it hosts only knows about two of them.</p>
+
+<h2><span class="num">02</span>The control experiment</h2>
+
+<p class="lede">A second copy of the entire project exists on the Windows workstation at <code>Documents/Unreal_Projects/UCI_Campus_Template_v1.0</code>. It is not a similar project. It is the same bytes.</p>
+
+<p>Comparing every blueprint, media player, material and map across the two projects: <strong>169 of 171 assets are byte-identical</strong>. The only two that differ are <code>Hospital_Client.umap</code> and <code>FirstPersonMap.umap</code>.</p>
+</div>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>Widget package</th><th>Mac project</th><th>Windows project</th><th>Result</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>BP_WG_CAT_PARA</td><td>9b3a0369328b</td><td>9b3a0369328b</td><td class="ref">identical</td></tr>
+    <tr><td>BP_WG_CAT_PARAOG</td><td>36e98480d8d9</td><td>36e98480d8d9</td><td class="ref">identical</td></tr>
+    <tr><td>BP_WG_CAT_PARA_Test</td><td>68e7958c94b4</td><td>68e7958c94b4</td><td class="ref">identical</td></tr>
+    <tr><td>BP_WG_CAT_UCI_02</td><td>0ad017589641</td><td>0ad017589641</td><td class="ref">identical</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="tnote">MD5, first 12 hex digits. Full manifest: 171 assets across Blueprints/360_Screens, Media/MediaPlayers, Media/Materials, FirstPerson/Maps.</p>
+
+<div class="col">
+<p>The shipped Windows build at <code>Packaged/20 - God please be the last/Windows</code> — a 2.07&nbsp;GB IoStore container — lists <code>Hospital_Client</code>, <code>CAT_PARAGUAY</code> and <code>MP_POV_01_CAT_PARA</code> in its directory index, so the Paraguay content is genuinely in it. <strong>Operator confirmed the Paraguay video player works correctly in that build.</strong></p>
+
+<p>That is the control this investigation needed. Identical widget bytes, identical media assets, one platform plays it and one does not. Whatever is wrong is downstream of the Blueprint.</p>
+
+<h2><span class="num">03</span>The defects — real, catalogued, not fatal</h2>
+
+<p class="lede">Everything below is read from the package name, import and export tables. It is all still true, and all still present in both projects. What has changed is its status: this is technical debt and latent risk, not the reported fault.</p>
+
+<div class="ev">
+  <div class="id">E1</div>
+  <div>
+    <h3>The POV media players were dropped from the widget</h3>
+    <p>Four Paraguay media players exist on disk, each with a matching media texture and material. The screen actor references all four. The live widget hard-references only two — and both working Paraguay siblings reference all four.</p>
+    <div class="fig">
+      on disk &nbsp;<b>MP_2D · MP_360 · MP_POV_01 · MP_POV_02</b><br>
+      BP_SC_CAT_PARA &nbsp;→&nbsp; <b>all 4</b><br>
+      BP_WG_CAT_PARAOG &nbsp;→&nbsp; <b>all 4</b> &nbsp;·&nbsp; BP_WG_CAT_PARA_Test &nbsp;→&nbsp; <b>all 4</b><br>
+      BP_WG_CAT_PARA &nbsp;→&nbsp; <b>MP_2D, MP_360 only</b>
+    </div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="id">E2</div>
+  <div>
+    <h3>Fifty-four nodes still read the POV player under a name that never existed</h3>
+    <p>The graph reads the POV players through a variable named for an asset naming scheme the project does not use. Largest cluster of dangling references in the widget.</p>
+    <div class="fig"><b>54</b> × <code>K2Node_VariableGet</code> → <code>MP_360_POV_CAT_PARA</code> &nbsp;(unresolvable)</div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="id">E3</div>
+  <div>
+    <h3>Nineteen nodes read a button that was deleted</h3>
+    <p>The rework added quality selection — <code>Button_1080_High</code>, <code>Button_1080_Low</code>, <code>Button_4K</code> appear throughout the name table and in 80 compiled event names. The widget tree contains 50 buttons and not one carries a quality name. The components were removed; the graph nodes reading them were not.</p>
+    <div class="fig"><b>19</b> × <code>K2Node_VariableGet</code> → <code>Button_4K</code> &nbsp;(no such widget object)</div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="id">E4</div>
+  <div>
+    <h3>The graph is four to six times the size of any working peer</h3>
+    <p>3,212 export objects against 533 for the UCI widget, from a 5.9&nbsp;MB package where every other widget in the folder sits between 660&nbsp;KB and 915&nbsp;KB. Button count is unchanged at 50 — the growth is entirely graph nodes, from hand-duplicating a play block per video × per resolution.</p>
+    <div class="fig">exports &nbsp;<b>3,212</b> vs 1,195 (PARAOG) · 728 (PARA_Test) · <b>533</b> (UCI_02)<br>package &nbsp;<b>5,912,752 B</b> vs 880,294 B (UCI_02)</div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="id">E5</div>
+  <div>
+    <h3>Every button is bound twice, by two different mechanisms</h3>
+    <p>The working widgets bind clicks one way only — designer-bound component events. The live Paraguay widget keeps all 27 of those <em>and</em> adds 80 runtime <code>Bind Event to OnClicked</code> nodes. Runtime binding adds to a multicast delegate rather than replacing, so a click dispatches to both handlers.</p>
+    <div class="fig">
+      BP_WG_CAT_UCI_02 &nbsp;<b>12</b> designer, <b>0</b> runtime OnClicked<br>
+      BP_WG_CAT_PARAOG &nbsp;<b>27</b> designer, <b>0</b> runtime OnClicked<br>
+      BP_WG_CAT_PARA &nbsp;<b>27</b> designer <b>+ 80</b> runtime OnClicked
+    </div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="id">E6</div>
+  <div>
+    <h3>128 media-opened handlers are bound and never released</h3>
+    <p>The <code>OnMediaOpened → Play</code> idiom is duplicated across every video-and-quality combination. Media players are project assets, not per-instance objects, so these handlers accumulate on shared state. There is not one <code>RemoveDelegate</code> or <code>ClearDelegate</code> node anywhere in the folder — the working widgets get away with it because they bind 7 and 32 times, at construction.</p>
+    <div class="fig">OnMediaOpened binds &nbsp;<b>128</b> (PARA) vs 32 (PARAOG) vs <b>7</b> (UCI_02) &nbsp;·&nbsp; unbind nodes: <b>0</b> everywhere</div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="id">E7</div>
+  <div>
+    <h3>Not a missing-asset problem</h3>
+    <p>The obvious first suspicion, and it is wrong. Every <code>/Game/</code> reference in all four widgets and all seven screen actors resolves to a file on disk. The Paraguay media library is intact: 162 stream sources, all present.</p>
+    <div class="fig">unresolved asset references across all widgets and screens &nbsp;<b>0</b></div>
+  </div>
+</div>
+
+<h2><span class="num">04</span>Side by side</h2>
+
+<p>The subject against its own working predecessor and two unrelated working widgets. Identical rows are as informative as the divergent ones — the widget tree is untouched; everything that differs is in the graph.</p>
+</div>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr>
+      <th>Package table metric</th>
+      <th class="subject">CAT_PARA<br>live</th>
+      <th class="ref">CAT_PARAOG<br>predecessor</th>
+      <th class="ref">CAT_PARA_Test</th>
+      <th class="ref">CAT_UCI_02</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Package size (bytes)</td><td class="subject">5,912,752</td><td class="ref">1,871,881</td><td class="ref">980,105</td><td class="ref">880,294</td></tr>
+    <tr><td>Export objects</td><td class="subject">3,212</td><td class="ref">1,195</td><td class="ref">728</td><td class="ref">533</td></tr>
+    <tr class="rule-row"><td>Button widgets</td><td class="subject">50</td><td class="ref">50</td><td class="ref">50</td><td class="ref">20</td></tr>
+    <tr><td>WidgetSwitchers</td><td class="subject">2</td><td class="ref">2</td><td class="ref">2</td><td class="ref">2</td></tr>
+    <tr class="rule-row"><td>Designer-bound click events</td><td class="subject">27</td><td class="ref">27</td><td class="ref">9</td><td class="ref">12</td></tr>
+    <tr><td>Runtime OnClicked binds</td><td class="subject">80</td><td class="ref">0</td><td class="ref">0</td><td class="ref">0</td></tr>
+    <tr><td>OnMediaOpened binds</td><td class="subject">128</td><td class="ref">32</td><td class="ref">4</td><td class="ref">7</td></tr>
+    <tr><td>Unbind nodes</td><td class="subject">0</td><td class="ref">0</td><td class="ref">0</td><td class="ref">0</td></tr>
+    <tr class="rule-row"><td>Custom events</td><td class="subject">208</td><td class="ref">32</td><td class="ref">5</td><td class="ref">7</td></tr>
+    <tr><td>CallFunction nodes</td><td class="subject">785</td><td class="ref">273</td><td class="ref">—</td><td class="ref">129</td></tr>
+    <tr><td>VariableGet nodes</td><td class="subject">648</td><td class="ref">157</td><td class="ref">—</td><td class="ref">68</td></tr>
+    <tr class="rule-row"><td>Media players referenced</td><td class="subject">2 of 4</td><td class="ref">4 of 4</td><td class="ref">4 of 4</td><td class="ref">3 of 3</td></tr>
+    <tr><td>Dangling variable reads</td><td class="subject">73+</td><td class="ref">0</td><td class="ref">0</td><td class="ref">0</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="tnote">— = not extracted. Dangling reads counted as 54 × MP_360_POV_CAT_PARA + 19 × Button_4K, excluding the four <code>_02-x</code> variants. Every figure in this table is identical in both projects.</p>
+
+<div class="col">
+
+<h2><span class="num">05</span>The player override is present — the hypothesis is dead</h2>
+
+<p class="lede">Revision 2 reported that no Mac&nbsp;→&nbsp;ElectraPlayer override existed on any asset in either project. That finding was an artifact of the search method. The override is on disk on all 442 Mac stream sources, and it is baked into the shipped Mac build.</p>
+
+<h3>Why the earlier search could not have found it</h3>
+
+<p>Revision 2 looked for the strings <code>PlatformPlayerNames</code> and <code>ElectraPlayer</code> inside the <code>.uasset</code> files. In UE&nbsp;5.4.1 neither string can appear there, for two independent reasons visible in the engine source:</p>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>Engine source</th><th>What it means for the bytes on disk</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>BaseMediaSource.h</code><br><code>UPROPERTY(transient, …)<br>TMap&lt;FString, FName&gt; PlatformPlayerNames;</code></td>
+      <td><b>transient</b> — the property is never written as a tagged property, so the name <code>PlatformPlayerNames</code> never enters the package name table.</td>
+    </tr>
+    <tr>
+      <td><code>UBaseMediaSource::Serialize</code><br>since <code>SerializeGUIDsInMediaSourceInsteadOfPlainNames</code></td>
+      <td>The map is hand-serialized as <code>TMap&lt;FGuid, FGuid&gt;</code> — platform GUID to player-plugin GUID. Raw 16-byte values, no strings. <code>ElectraPlayer</code> never appears either.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>A string search for the override is therefore guaranteed to return zero whether the override is set or not. It has no discriminating power, and revision 2 read its null result as an absence.</p>
+
+<h3>What the bytes actually say</h3>
+
+<p>An empty override map serializes as four bytes — an entry count of zero. One entry serializes as 4&nbsp;+&nbsp;16&nbsp;+&nbsp;16&nbsp;=&nbsp;36 bytes. The difference is <strong>exactly 32 bytes</strong>, which is precisely the insertion revision 2 measured in the Mac copy of <code>BilatScar_360.uasset</code> and attributed to thumbnail or GUID padding.</p>
+
+<p>Reading the media-source export blob out of both copies of that asset:</p>
+
+<div class="proof">
+  <b>PC</b> &nbsp;export blob 123 B, tail &nbsp;<code>… 00000000</code> &nbsp;← entry count 0, no override<br>
+  <b>Mac</b> &nbsp;export blob 155 B, tail &nbsp;<code>… 01000000</code> &nbsp;← entry count 1<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;platform GUID &nbsp;<code>96e23b00 0c4f0017 60781f8e 1fbbef81</code><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player &nbsp;&nbsp;GUID &nbsp;<code>803fee94 9242608e d54dd2b4 c2e1adfd</code>
+</div>
+
+<p>Both GUIDs resolve against engine ground truth:</p>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>GUID as stored</th><th>Resolves to</th><th>Authority</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>003BE29617004F0C8E1F786081EFBB1F</code></td><td class="ref">Mac</td><td><code>Engine/Config/Mac/DataDrivenPlatformInfo.ini</code> · <code>GlobalIdentifier</code></td></tr>
+    <tr><td><code>94EE3F808E604292B4D24DD5FDADE1C2</code></td><td class="ref">ElectraPlayer</td><td><code>ElectraPlayerFactoryModule.cpp</code> · <code>GetPlayerPluginGUID()</code></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>The census</h3>
+
+<p>Parsing the override map out of every stream-source package in both projects, rather than searching for strings in them:</p>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr>
+      <th>Content/Media/StreamMediaSources</th>
+      <th class="subject">Mac project</th>
+      <th class="ref">Windows project</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Packages on disk</td><td class="subject">444</td><td class="ref">444</td></tr>
+    <tr><td>— of which <code>StreamMediaSource</code></td><td class="subject">442</td><td class="ref">442</td></tr>
+    <tr><td>— of which <code>ObjectRedirector</code> (no media data)</td><td class="subject">2</td><td class="ref">2</td></tr>
+    <tr class="rule-row"><td>Carrying <code>Mac → ElectraPlayer</code></td><td class="subject">442 of 442</td><td class="ref">0 of 442</td></tr>
+    <tr><td>Carrying any other override</td><td class="subject">0</td><td class="ref">0</td></tr>
+    <tr class="rule-row"><td><b>CAT_PARAGUAY sources with the override</b></td><td class="subject"><b>162 of 162</b></td><td class="ref">0 of 162</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="tnote">Every one of the 442 carries the identical single-entry map. The two exceptions are redirectors, not media sources — which also reconciles the SOP's "443/443" against the true denominator of 442.</p>
+
+<h2><span class="num">06</span>What the shipped Mac build actually contains</h2>
+
+<p class="lede">The editor assets having the override does not by itself mean the build does. At cook, <code>PreSave</code> resolves the map for the target platform into a single <code>PlayerName</code> field, and that field <em>is</em> written as a plain FName — so in cooked packages the string is greppable. It is there.</p>
+
+<div class="proof">
+  <b>442 of 442</b> cooked Mac stream sources contain the FName <code>ElectraPlayer</code><br>
+  including all <b>162</b> CAT_PARAGUAY sources and all <b>4</b> CAT_PARA media players
+</div>
+
+<p>The timestamps close the question of ordering. The bulk override pass wrote the source assets at <b>16:25</b>; the cook that produced these packages ran at <b>16:40</b>; stage and pak at <b>16:41</b>; the application binary at <b>16:42</b>, all on 2026-07-24. The cook postdates the override by fifteen minutes, so the <code>-skipcook</code> hazard — staging an older cook over newer assets — did not occur here.</p>
+
+<h3>The Blueprint is exonerated at the byte level</h3>
+
+<p>The cooked <code>BlueprintGeneratedClass</code> — the thing a packaged build actually executes — is byte-identical on the platform where Paraguay works and the platform where it fails:</p>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>Cooked artifact</th><th class="ref">Windows cook</th><th class="subject">Mac cook</th><th>MD5</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>BP_WG_CAT_PARA.uasset</code></td><td class="ref">73,830 B</td><td class="subject">73,830 B</td><td><code>7dcfc860…</code> identical</td></tr>
+    <tr><td><code>BP_WG_CAT_PARA.uexp</code></td><td class="ref">238,728 B</td><td class="subject">238,728 B</td><td><code>9a3802ea…</code> identical</td></tr>
+    <tr><td><code>BP_WG_CAT_UCI_02.uexp</code> (control)</td><td class="ref">47,546 B</td><td class="subject">47,546 B</td><td><code>89ada812…</code> identical</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>At 238&nbsp;KB the Paraguay class is five times its working peers, so the cook produced substantial bytecode, not a stub or a failed compile. Combined with the source packages already being byte-identical (<strong>§02</strong>), this closes the Blueprint line of inquiry for the runtime fault in both directions: same source bytes, same cooked bytes, opposite behavior.</p>
+
+<h3>Three eliminations, and what survives them</h3>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>Candidate cause</th><th>Status</th><th>On what evidence</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Blueprint graph damage</td><td class="ref">eliminated</td><td>Editor-only nodes stripped at cook; cooked class byte-identical across platforms</td></tr>
+    <tr><td>Missing Mac player override</td><td class="ref">eliminated</td><td>Present on 442/442 sources and in 442/442 cooked packages</td></tr>
+    <tr><td>Broken or missing assets</td><td class="ref">eliminated</td><td>Zero unresolved references; all 162 sources and all 4 players cooked</td></tr>
+    <tr><td>Unreachable stream content</td><td class="ref">eliminated</td><td>Paraguay DASH manifests return HTTP 200 <code>application/dash+xml</code> from the Mac</td></tr>
+    <tr><td>Container mix (mp4 vs DASH)</td><td class="ref">not a differentiator</td><td>Paraguay 128 mp4 / 34 mpd; UCI_02 35 mp4 / 7 mpd — same proportion</td></tr>
+    <tr class="rule-row"><td><b>Runtime media playback on Mac</b></td><td><b>open</b></td><td>The only layer left that differs between the two platforms</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>The one structural thing that is unique to Paraguay</h3>
+
+<p>Across the whole project, every procedure drives a single POV player named <code>MP_360_POV_&lt;procedure&gt;</code>. Paraguay is the exception: it has two, <code>MP_POV_01_CAT_PARA</code> and <code>MP_POV_02_CAT_PARA</code>, alongside <code>MP_2D</code> and <code>MP_360</code>. Paraguay is therefore the only procedure that asks the Mac for <strong>four concurrent media players, two of them simultaneous POV streams</strong> — a load no other procedure on that platform exercises. It is also why the widget carries 54 nodes still reading the deleted single-POV player (<strong>E2</strong>): the layout was refactored from one POV to two and the graph was never cleaned up.</p>
+
+<p>That makes a concurrency or decoder-session limit under the forced ElectraPlayer the leading candidate, and it would explain both symptoms together: if one of the four players never reports <code>OnMediaOpened</code>, no video appears <em>and</em> the return to the Procedures / Interviews panel never fires, because 128 handlers hang off that callback and nothing releases them. <strong>This is a hypothesis, not a finding.</strong> Two revisions of this report have now been wrong by publishing an inference as a cause, and it is not being done a third time.</p>
+
+<h3>The test that settles it</h3>
+
+<p>Run the packaged Mac build with verbose media logging and click into Paraguay, then into a working procedure for contrast:</p>
+
+<div class="dangle">
+open "…/Packaged/Mac/awsTutorial.app" --args \<br>
+&nbsp;&nbsp;-LogCmds="LogElectraPlayer Verbose, LogElectra Verbose, LogAvfMedia VeryVerbose, LogMedia Verbose, LogMediaAssets Verbose" \<br>
+&nbsp;&nbsp;-abslog=/tmp/paraguay.log
+</div>
+
+<p>The log answers it directly: how many of the four Paraguay players reach <code>IMediaPlayer::Open</code>, which of them report opened, and what the failing one reports instead. This is the same technique that identified the AvfMedia <code>-12847</code> failure in July, and it is the only remaining instrument that can see runtime behavior.</p>
+
+<div class="method">
+  <h3>One open question the operator can answer in a sentence</h3>
+  <p>This analysis assumes other procedures currently play correctly in the Mac build and Paraguay alone fails. That assumption has not been tested in this session, and it is the difference between a Paraguay-specific fault and a general Mac media regression that Paraguay merely shows most visibly. If <em>no</em> procedure plays on the current Mac build, the investigation changes shape entirely and the concurrency hypothesis above is the wrong tree.</p>
+</div>
+
+<h2><span class="num">07</span>The runtime log — what actually happens</h2>
+
+<p class="lede">Captured 2026-08-24 from the packaged Mac build with
+<code>LogElectraPlayer</code>, <code>LogElectra</code>, <code>LogElectraPlayerPlugin</code>,
+<code>LogAvfMedia</code>, <code>LogMedia</code>, <code>LogMediaAssets</code> and
+<code>LogMediaUtils</code> raised. 14.8&nbsp;MB, one Paraguay visit and one control visit.</p>
+
+<h3>Paraguay opens nothing</h3>
+
+<div class="proof">
+  <b>Every</b> <code>OpenSource</code> call in the entire session:<br>
+  &nbsp;&nbsp;1 × <code>CAT_UCI_02_LASER_360</code> &nbsp;·&nbsp; 1 × <code>CAT_UCI_02_LASER_POV-DR</code>
+  &nbsp;·&nbsp; 1 × <code>CAT_UCI_02_ITV-Farid</code><br>
+  <b>0</b> for any CAT_PARAGUAY source.
+</div>
+
+<p>The four Paraguay media players do exist and are reachable — they receive <code>.Pause</code> from the
+character Blueprint on leaving the screen — but they never receive <code>.Open</code> or <code>.Play</code>.
+The control procedure received all three.</p>
+
+<h3>ElectraPlayer is working correctly</h3>
+
+<p>The control's DASH streams opened through Electra exactly as intended:</p>
+
+<div class="dangle" style="background:var(--working-wash);border-color:var(--working)">
+LogElectraPlayer: IMediaPlayer::Open(http://…/Dash/CAT-UCI-02/Laser/360/adaptive_360.mpd)<br>
+LogElectraPlayer: Opening stream at "http://…/Dash/CAT-UCI-02/Laser/POV-DR/adaptive_pov.mpd"
+</div>
+
+<p>Zero <code>LogAvfMedia</code> lines and zero <code>-12847</code> in 14.8&nbsp;MB of log. The July fix is
+functioning, on this build, right now. That independently re-confirms §05 and §06 from the runtime side.</p>
+
+<h3>The cause: two null variables</h3>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>Runtime error</th><th>Count</th><th>Where</th></tr></thead>
+  <tbody>
+    <tr><td><code>Accessed None</code> → <code>MP_360_POV_CAT_PARA_1</code></td><td>224</td><td><code>ExecuteUbergraph_BP_WG_CAT_PARA:0023</code></td></tr>
+    <tr><td><code>Accessed None</code> → <code>MP_360_POV_CAT_PARA_2</code></td><td>224</td><td><code>ExecuteUbergraph_BP_WG_CAT_PARA:0023</code></td></tr>
+    <tr><td>— of those, in the Pause button handler</td><td>2</td><td><code>BndEvt__Button_Pause_…OnButtonClickedEvent</code></td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="tnote">448 total, across both live widget instances (272 + 176), recurring at ~4&nbsp;Hz for the
+57 seconds Paraguay was on screen and stopping the moment it was left.</p>
+
+<p>These are <em>variables</em> of the widget class, not assets: two object references that should point at
+the POV media players. The asset they were bound to, <code>MP_360_POV_CAT_PARA</code>, does not exist in
+either project or in either packaged build — so the reference resolves to null on load. This is
+<strong>E2</strong> seen from the runtime side: the widget was refactored from one POV player to two
+(<code>MP_POV_01</code> / <code>MP_POV_02</code>) and 54 graph nodes were left reading the deleted single-POV
+name.</p>
+
+<p>In the Blueprint VM, calling a function on a null object reference aborts the remainder of that
+execution path. That is the whole failure:</p>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>Reported symptom</th><th>Explained by</th></tr></thead>
+  <tbody>
+    <tr><td>No video plays</td><td>The <code>Open</code>/<code>Play</code> calls sit downstream of the null read and never execute — confirmed by zero <code>OpenSource</code></td></tr>
+    <tr><td>Procedure and Interview buttons do nothing</td><td>Their handlers run through the same aborted path; no log line is produced by a click at all</td></tr>
+    <tr><td>Never returns to the Procedures / Interviews panel</td><td>The panel switch is downstream of the same abort; the 128 <code>OnMediaOpened</code> continuations (<strong>E6</strong>) can never fire because nothing ever opens</td></tr>
+    <tr><td>The Pause button <em>does</em> work</td><td>It is a designer-bound <code>ComponentBoundEvent</code>, bound by the widget system rather than by graph execution — and the log shows it pausing <code>MP_360</code> and <code>MP_2D</code> while skipping both POV players, exactly where the null reads land</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>The concurrency hypothesis is dead too</h3>
+
+<p>Revision 3 proposed that Paraguay's four concurrent players and two simultaneous POV streams might
+exhaust a macOS decoder limit. The log refutes it: no decode is ever attempted. The four-player layout
+remains the reason the dead reference exists, but it is not itself the fault.</p>
+
+<h3>The one test still outstanding</h3>
+
+<div class="method">
+  <h3>Does Paraguay actually work on Windows?</h3>
+  <p>The whole platform framing rests on the operator's report that the byte-identical widget plays
+  correctly in the shipped Windows package. That report is not being doubted, but it has never been
+  tested against <em>this</em> interaction — entering Paraguay, opening the Procedures list, and clicking a
+  procedure button.</p>
+  <p>Two facts now make the platform framing look weaker than it did. The cooked content is identical and
+  <code>MP_360_POV_CAT_PARA</code> is absent from <em>both</em> packaged builds, so the same null reads should
+  occur on Windows. And the builds are not equivalent: the Mac build is <b>Development</b>, the shipped
+  Windows build is <b>Shipping</b> (<code>awsTutorial-Win64-Shipping.exe</code>), which compiles out the
+  logging that made this visible — so the same fault would be silent there.</p>
+  <p>If the Paraguay procedure buttons are dead on Windows too, this is not a macOS problem at all: it is a
+  content bug that the Mac build merely exposed, and the fix is the same on both platforms. If they work
+  on Windows, something outside the widget class is supplying those references on that build, and the two
+  <code>.umap</code> files — the only assets that differ between the projects — become the place to look.</p>
+</div>
+
+<h2><span class="num">08</span>Corrections</h2>
+
+<div class="method">
+  <h3>Four errors across four revisions, each caught by evidence rather than review</h3>
+  <p><strong>Revision 3’s hypothesis was wrong, and revision 1 was closer than it was given credit for.</strong> Revision 3 proposed a macOS decoder-concurrency limit under the forced ElectraPlayer. The runtime log refutes it outright: no decode is ever attempted, because Paraguay never opens a source. It also partially rehabilitates revision 1, which named the correct culprit — the dangling <code>MP_360_POV_CAT_PARA</code> reference — while getting the mechanism wrong. The lesson is narrower than "revision 1 was wrong": the <em>culprit</em> was identified in revision 1 and the <em>mechanism</em> took three more revisions and a runtime log to establish.</p>
+  <p><strong>Revision 2's central negative was wrong.</strong> It reported that no player override existed on any asset in either project. The search looked for strings that this asset format cannot contain — <code>PlatformPlayerNames</code> is a <code>transient</code> property and the override is stored as raw GUIDs — so the null result carried no information. The override is present on 442 of 442 Mac stream sources and in 442 of 442 cooked Mac packages. Revision 2 also read the resulting 32-byte difference in <code>BilatScar_360.uasset</code> as thumbnail padding; it is the override map itself, at exactly the size a one-entry <code>TMap&lt;FGuid,FGuid&gt;</code> occupies.</p>
+  <p><strong>Revision 1's verdict was wrong.</strong> It concluded that dangling <code>Button_4K</code> and <code>MP_360_POV_CAT_PARA</code> references stop the Blueprint compiling and therefore stop the graph running, and that this explained both symptoms. The operator's Windows package test disproved it: identical bytes, correct playback. <code>K2Node_*</code> objects are editor-only and stripped at cook, so a packaged build executes serialized bytecode, not the graph. Revision 1 treated an editor-side symptom as a runtime cause. The cooked-class comparison in <strong>§06</strong> now confirms this independently.</p>
+  <p><strong>An earlier method artifact.</strong> A first pass reported dozens of broken asset references across every widget including the working ones. UE encodes a trailing <code>_&lt;digits&gt;</code> as a separate FName number, so the name table stores <code>CAT_UCI_02_LASER</code> for the asset <code>CAT_UCI_02_LASER_360</code>. Corrected for that, genuinely broken references are zero — which is what <strong>E7</strong> reports.</p>
+  <p><strong>The common failure mode.</strong> All three were negative or structural results read out of a tool whose discriminating power had not itself been tested. The correction in each case came from checking what the format guarantees before trusting what a search over it returned.</p>
+</div>
+
+<h2><span class="num">09</span>What to do next</h2>
+
+<div class="fix">
+  <div class="hd"><span class="rank">First</span><h3>Test the same interaction on Windows</h3></div>
+  <p>Enter Paraguay in the shipped Windows build, open the Procedures list, and click a procedure button.
+  This is one minute of work and it decides whether this is a macOS problem or a content bug that the Mac
+  build merely exposed. Everything else waits on the answer.</p>
+  <p class="cost">Cost: one minute. Decides the shape of the fix.</p>
+</div>
+
+<div class="fix">
+  <div class="hd"><span class="rank">Then</span><h3>Repoint the two dead variables</h3></div>
+  <p>The fix is small and local: in <code>BP_WG_CAT_PARA</code>, set <code>MP_360_POV_CAT_PARA_1</code> and
+  <code>MP_360_POV_CAT_PARA_2</code> to <code>MP_POV_01_CAT_PARA</code> and <code>MP_POV_02_CAT_PARA</code>,
+  the two players that actually exist, and fix the 54 graph nodes reading the deleted name. Do this alone,
+  change nothing else, and retest — so the result is attributable.</p>
+  <p class="cost">Cost: contained. Verify by re-running the log capture and confirming zero <code>Accessed None</code>.</p>
+</div>
+
+<div class="fix second">
+  <div class="hd"><span class="rank">Do not</span><h3>Re-run the override script</h3></div>
+  <p>Proven no-op twice over: the override is already on every asset, already baked into the build, and the
+  runtime log shows Electra selecting and opening streams correctly. Re-running it would re-save 442
+  packages and change nothing.</p>
+  <p class="cost">Cost of doing it anyway: a corrupted audit trail for no information gain.</p>
+</div>
+
+<div class="fix second">
+  <div class="hd"><span class="rank">Then, separately</span><h3>Treat the widget damage as debt, on its own schedule</h3></div>
+  <p><strong>E1</strong>–<strong>E6</strong> are real and survive a cook on both platforms, which makes them latent rather than urgent. When they are addressed, start from <code>BP_WG_CAT_PARAOG</code> — same 50-button, 2-switcher layout, all four media players, zero dangling reads — and add quality selection as data rather than as 208 duplicated custom events. Bind <code>OnMediaOpened</code> once at Construct. Pick one binding mechanism and do not mix them.</p>
+  <p class="cost">Cost: a session. Do not bundle this with the playback fix — changing both at once destroys the ability to attribute the result.</p>
+</div>
+
+<p>Independently: the three dead variants — <code>BP_WG_CAT_PARA_V2</code>, <code>BP_SC_CAT_PARA_V3</code>, and the <code>_Test</code> pair — are unreferenced by any map and worth deleting once Paraguay is working, so the next person does not have to work out which of four widgets is live.</p>
+
+
+<div class="foot">
+  <span>Sources: /Volumes/UnrealEngine/Unreal_Projects/awsTutorial · Documents/Unreal_Projects/UCI_Campus_Template_v1.0</span>
+  <span>Method: package name / import / export table parse</span>
+  <span>No project files were modified</span>
+</div>
+
+</div>
+</div>

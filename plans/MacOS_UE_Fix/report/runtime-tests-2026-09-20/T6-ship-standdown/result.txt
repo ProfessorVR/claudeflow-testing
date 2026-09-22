@@ -1,0 +1,20 @@
+=== T6-ship-standdown: ship app, wait 30s, quit=term, 23:17:23
+--- [GraphicsAutoTune] before:
+TunedVersion=1
+FinishedFailures=3
+FinishedFailuresFor=2
+pid 87323 at 23:17:23
+  PID  %CPU    RSS ELAPSED STAT
+87323  70.9 460624   00:30 S   
+sample: query-wait frames=0 fence-wait=6 game-thread-top: FRenderCommandFence::Wait(bool) const  (in awsTutorial-Mac-Shipping) +
+--- [GraphicsAutoTune] after 30s:
+TunedVersion=2
+FinishedFailures=3
+FinishedFailuresFor=2
+Attempts=0
+LastResult=stood down for good: 3 runs finished but could not be applied or saved; the menu's settings stay
+quit: exited after term at 23:17:58
+config rewritten at exit: GameUserSettings=no Input.ini=yes
+--- crash/ensure reports newer than this test:
+(none)
+=== done 23:17:58

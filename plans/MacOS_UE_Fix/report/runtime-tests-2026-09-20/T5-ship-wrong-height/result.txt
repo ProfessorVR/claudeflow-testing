@@ -1,0 +1,19 @@
+=== T5-ship-wrong-height: ship app, wait 50s, quit=term, 23:15:50
+--- [GraphicsAutoTune] before:
+Attempts=0
+TunedVersion=2
+LastResult=Low,
+pid 87242 at 23:15:50
+  PID  %CPU    RSS ELAPSED STAT
+87242  61.2 461072   00:50 S   
+sample: query-wait frames=0 fence-wait=1 game-thread-top: FRenderCommandFence::Wait(bool) const  (in awsTutorial-Mac-Shipping) +
+--- [GraphicsAutoTune] after 50s:
+Attempts=0
+TunedVersion=2
+LastResult=Low,
+MacWindow=reached 2880x1620 windowed at 0,124 after 1 correction(s) @ 2026-09-21T06:16:06.938Z
+quit: exited after term at 23:17:23
+config rewritten at exit: GameUserSettings=yes Input.ini=yes
+--- crash/ensure reports newer than this test:
+(none)
+=== done 23:17:23

@@ -1,0 +1,456 @@
+<title>Paraguay Widget Forensics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap">
+
+<style>
+:root{
+  --bg:#F4F5F7;
+  --surface:#FFFFFF;
+  --surface-2:#EDEFF3;
+  --ink:#1A1C22;
+  --muted:#666B79;
+  --rule:#DCE0E7;
+  --rule-strong:#C3C9D4;
+  --broken:#B06E12;
+  --broken-wash:#FBF1DF;
+  --working:#14655F;
+  --working-wash:#E2F0EE;
+  --critical:#9E2A21;
+  --critical-wash:#FAE9E7;
+  --shadow:0 1px 2px rgba(20,24,35,.06),0 8px 24px -16px rgba(20,24,35,.28);
+
+  --sans:"IBM Plex Sans Condensed",ui-sans-serif,"Helvetica Neue",Arial,sans-serif;
+  --serif:"IBM Plex Serif",ui-serif,Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#15161A;
+    --surface:#1C1E24;
+    --surface-2:#23262E;
+    --ink:#E6E8ED;
+    --muted:#989EAC;
+    --rule:#2B2F38;
+    --rule-strong:#3B4049;
+    --broken:#E0A94A;
+    --broken-wash:#2A2317;
+    --working:#4FB0A8;
+    --working-wash:#152827;
+    --critical:#E4695C;
+    --critical-wash:#2B1A18;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15161A;
+  --surface:#1C1E24;
+  --surface-2:#23262E;
+  --ink:#E6E8ED;
+  --muted:#989EAC;
+  --rule:#2B2F38;
+  --rule-strong:#3B4049;
+  --broken:#E0A94A;
+  --broken-wash:#2A2317;
+  --working:#4FB0A8;
+  --working-wash:#152827;
+  --critical:#E4695C;
+  --critical-wash:#2B1A18;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--serif);font-size:17px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 28px 96px}
+.col{max-width:68ch}
+
+/* ---------- masthead ---------- */
+.mast{padding:64px 0 34px;border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:var(--mono);font-size:11.5px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:10px 18px;margin-bottom:20px;
+}
+h1{
+  font-family:var(--sans);font-weight:700;font-size:clamp(2.5rem,6vw,4rem);
+  line-height:1.02;letter-spacing:-.018em;margin:0;text-wrap:balance;
+}
+h1 .sub{display:block;color:var(--broken);font-size:.44em;font-weight:600;letter-spacing:.005em;margin-top:14px}
+.standfirst{font-size:1.09rem;color:var(--muted);margin:22px 0 0;max-width:64ch}
+
+/* ---------- structure ---------- */
+h2{
+  font-family:var(--sans);font-weight:700;font-size:1.62rem;letter-spacing:-.012em;
+  margin:64px 0 4px;text-wrap:balance;
+}
+h2 .num{font-family:var(--mono);font-size:.62em;font-weight:500;color:var(--muted);margin-right:.7em;letter-spacing:.04em}
+h3{font-family:var(--sans);font-weight:600;font-size:1.11rem;letter-spacing:-.005em;margin:34px 0 6px}
+p{margin:14px 0}
+a{color:var(--broken)}
+strong{font-weight:600}
+code{
+  font-family:var(--mono);font-size:.855em;
+  background:var(--surface-2);padding:.12em .38em;border-radius:3px;
+  border:1px solid var(--rule);white-space:nowrap;
+}
+.lede{font-size:1.06rem}
+
+/* ---------- verdict ---------- */
+.verdict{
+  margin:40px 0 0;background:var(--surface);border:1px solid var(--rule);
+  border-left:4px solid var(--critical);border-radius:4px;
+  padding:28px 32px;box-shadow:var(--shadow);
+}
+.verdict .tag{
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--critical);
+}
+.verdict p{margin:12px 0 0}
+.verdict p:first-of-type{font-size:1.14rem}
+
+/* ---------- chain ---------- */
+.chain{
+  display:flex;flex-wrap:wrap;align-items:stretch;gap:0;margin:26px 0 8px;
+  font-family:var(--mono);font-size:13px;
+}
+.node{
+  background:var(--surface);border:1px solid var(--rule-strong);
+  padding:12px 16px;display:flex;flex-direction:column;gap:3px;min-width:0;
+}
+.node .k{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.node .v{font-weight:600;word-break:break-all}
+.node.bad{border-color:var(--critical);background:var(--critical-wash)}
+.node.bad .v{color:var(--critical)}
+.arrow{display:flex;align-items:center;padding:0 12px;color:var(--muted);font-size:16px}
+.dangle{
+  margin:14px 0 0;padding:14px 18px;border-radius:4px;
+  background:var(--critical-wash);border:1px dashed var(--critical);
+  font-family:var(--mono);font-size:12.5px;line-height:1.75;
+}
+.dangle b{color:var(--critical);font-weight:600}
+
+/* ---------- evidence ---------- */
+.ev{
+  border-top:1px solid var(--rule);padding:22px 0 4px;
+  display:grid;grid-template-columns:60px 1fr;gap:0 22px;align-items:start;
+}
+.ev:last-of-type{border-bottom:1px solid var(--rule);margin-bottom:8px}
+.ev .id{
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.08em;
+  color:var(--broken);padding-top:5px;
+}
+.ev h3{margin:0 0 2px}
+.ev p{margin:8px 0 0;font-size:16px}
+.ev .fig{
+  font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  margin-top:10px;padding-left:14px;border-left:2px solid var(--rule-strong);
+  line-height:1.8;
+}
+.ev .fig b{color:var(--ink);font-weight:600}
+
+/* ---------- table ---------- */
+.scroll{overflow-x:auto;margin:22px 0 6px;border:1px solid var(--rule);border-radius:4px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 14px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--rule)}
+th:first-child,td:first-child{text-align:left;white-space:normal;min-width:220px}
+thead th{
+  font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);
+  font-weight:500;border-bottom:1px solid var(--rule-strong);vertical-align:bottom;
+}
+thead th.subject{color:var(--broken)}
+thead th.ref{color:var(--working)}
+tbody tr:last-child td{border-bottom:none}
+td.subject{background:var(--broken-wash);color:var(--broken);font-weight:600}
+td.ref{background:var(--working-wash);color:var(--working)}
+tr.rule-row td{border-top:1px solid var(--rule-strong)}
+.tnote{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin:10px 0 0}
+
+/* ---------- fixes ---------- */
+.fix{
+  background:var(--surface);border:1px solid var(--rule);border-radius:4px;
+  padding:22px 26px;margin:18px 0;box-shadow:var(--shadow);
+}
+.fix .hd{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:baseline;margin-bottom:4px}
+.fix .rank{
+  font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.13em;
+  text-transform:uppercase;padding:3px 9px;border-radius:3px;
+  background:var(--working-wash);color:var(--working);border:1px solid var(--working);
+}
+.fix.second .rank{background:var(--broken-wash);color:var(--broken);border-color:var(--broken)}
+.fix h3{margin:0;font-size:1.14rem}
+.fix p{font-size:16px;margin:10px 0 0}
+.fix .cost{font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* ---------- method ---------- */
+.method{
+  margin-top:26px;padding:24px 28px;background:var(--surface-2);
+  border:1px solid var(--rule);border-radius:4px;
+}
+.method h3{margin-top:0}
+.method p,.method li{font-size:15.5px}
+.method ul{margin:10px 0 0;padding-left:20px}
+.method li{margin:7px 0}
+
+.foot{
+  margin-top:60px;padding-top:22px;border-top:2px solid var(--ink);
+  font-family:var(--mono);font-size:11.5px;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:8px 26px;
+}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .wrap{padding:0 18px 64px}
+  .ev{grid-template-columns:1fr;gap:6px}
+  .ev .id{padding-top:0}
+  .arrow{padding:4px 0;transform:rotate(90deg)}
+  .chain{flex-direction:column}
+}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow">
+    <span>Blueprint forensics</span>
+    <span>awsTutorial · UE 5.4.1</span>
+    <span>Rev. 2 — verdict corrected</span>
+    <span>2026-08-24</span>
+  </div>
+  <h1>Paraguay Widget Forensics
+    <span class="sub">The widget is damaged. The damage is not what stops it playing.</span>
+  </h1>
+  <p class="standfirst">A structural comparison of the Cataract Operations&nbsp;— Paraguay video widget against three working peers and against a second copy of the whole project, read directly out of the serialized <code>.uasset</code> package tables.</p>
+</header>
+
+<div class="col">
+
+<div class="verdict">
+  <div class="tag">Verdict · revised</div>
+  <p><strong>The blueprint defects catalogued here are real, but they are not the cause of the failure.</strong> A byte-identical copy of this widget plays correctly in a shipped Windows package, which rules the graph damage out as the operative fault.</p>
+  <p>The first version of this report concluded that dangling variable references stop the Blueprint compiling and therefore stop the graph running. That inference was wrong in one specific way: <code>K2Node_*</code> nodes are editor-only and are stripped at cook, so a packaged build executes the bytecode serialized into the <code>BlueprintGeneratedClass</code>, not the graph. Dangling editor-graph references break an <em>editor</em> compile; a cooked build runs the last bytecode that compiled cleanly. See <strong>§06</strong>.</p>
+  <p><strong>The live hypothesis is now platform, not blueprint:</strong> no media-player override exists on any media asset in either project today, and the Mac needs one to decode these streams. That is a Mac-only, media-only regression — the right shape for "identical widget, works on Windows, dead on Mac." It is <em>not yet proven</em>; <strong>§05</strong> names the test that settles it.</p>
+</div>
+
+<h2><span class="num">01</span>What is actually wired into the level</h2>
+
+<p class="lede">Worth establishing first, because the Paraguay folder holds four widget variants and four screen variants, and only one pair is live.</p>
+
+<p><code>Hospital_Client</code> is a World Partition map — its actors live in <code>__ExternalActors__</code>, which is why the <code>.umap</code> itself names none of them. Across its 4,520 external actors there is exactly one Paraguay screen instance, the same count as each of the other ten procedures:</p>
+
+</div>
+
+<div class="chain">
+  <div class="node"><span class="k">Map</span><span class="v">Hospital_Client</span></div>
+  <div class="arrow">→</div>
+  <div class="node"><span class="k">Screen actor</span><span class="v">BP_SC_CAT_PARA</span></div>
+  <div class="arrow">→</div>
+  <div class="node bad"><span class="k">Widget · the subject</span><span class="v">BP_WG_CAT_PARA</span></div>
+</div>
+
+<div class="col">
+<p>So the widget under the microscope is the one the player actually sees. The other variants — <code>BP_WG_CAT_PARAOG</code>, <code>BP_WG_CAT_PARA_Test</code>, and a 2,771-byte empty child <code>BP_WG_CAT_PARA_V2</code> — are not referenced by the level at all. <code>PARAOG</code> and <code>PARA_Test</code> are used below as working controls alongside <code>BP_WG_CAT_UCI_02</code>.</p>
+
+<p>The screen actor is <strong>not</strong> the problem. <code>BP_SC_CAT_PARA</code> correctly drives all four Paraguay media players and all four materials. The widget it hosts only knows about two of them.</p>
+
+<h2><span class="num">02</span>The control experiment</h2>
+
+<p class="lede">A second copy of the entire project exists on the Windows workstation at <code>Documents/Unreal_Projects/UCI_Campus_Template_v1.0</code>. It is not a similar project. It is the same bytes.</p>
+
+<p>Comparing every blueprint, media player, material and map across the two projects: <strong>169 of 171 assets are byte-identical</strong>. The only two that differ are <code>Hospital_Client.umap</code> and <code>FirstPersonMap.umap</code>.</p>
+</div>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>Widget package</th><th>Mac project</th><th>Windows project</th><th>Result</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>BP_WG_CAT_PARA</td><td>9b3a0369328b</td><td>9b3a0369328b</td><td class="ref">identical</td></tr>
+    <tr><td>BP_WG_CAT_PARAOG</td><td>36e98480d8d9</td><td>36e98480d8d9</td><td class="ref">identical</td></tr>
+    <tr><td>BP_WG_CAT_PARA_Test</td><td>68e7958c94b4</td><td>68e7958c94b4</td><td class="ref">identical</td></tr>
+    <tr><td>BP_WG_CAT_UCI_02</td><td>0ad017589641</td><td>0ad017589641</td><td class="ref">identical</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="tnote">MD5, first 12 hex digits. Full manifest: 171 assets across Blueprints/360_Screens, Media/MediaPlayers, Media/Materials, FirstPerson/Maps.</p>
+
+<div class="col">
+<p>The shipped Windows build at <code>Packaged/20 - God please be the last/Windows</code> — a 2.07&nbsp;GB IoStore container — lists <code>Hospital_Client</code>, <code>CAT_PARAGUAY</code> and <code>MP_POV_01_CAT_PARA</code> in its directory index, so the Paraguay content is genuinely in it. <strong>Operator confirmed the Paraguay video player works correctly in that build.</strong></p>
+
+<p>That is the control this investigation needed. Identical widget bytes, identical media assets, one platform plays it and one does not. Whatever is wrong is downstream of the Blueprint.</p>
+
+<h2><span class="num">03</span>The defects — real, catalogued, not fatal</h2>
+
+<p class="lede">Everything below is read from the package name, import and export tables. It is all still true, and all still present in both projects. What has changed is its status: this is technical debt and latent risk, not the reported fault.</p>
+
+<div class="ev">
+  <div class="id">E1</div>
+  <div>
+    <h3>The POV media players were dropped from the widget</h3>
+    <p>Four Paraguay media players exist on disk, each with a matching media texture and material. The screen actor references all four. The live widget hard-references only two — and both working Paraguay siblings reference all four.</p>
+    <div class="fig">
+      on disk &nbsp;<b>MP_2D · MP_360 · MP_POV_01 · MP_POV_02</b><br>
+      BP_SC_CAT_PARA &nbsp;→&nbsp; <b>all 4</b><br>
+      BP_WG_CAT_PARAOG &nbsp;→&nbsp; <b>all 4</b> &nbsp;·&nbsp; BP_WG_CAT_PARA_Test &nbsp;→&nbsp; <b>all 4</b><br>
+      BP_WG_CAT_PARA &nbsp;→&nbsp; <b>MP_2D, MP_360 only</b>
+    </div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="id">E2</div>
+  <div>
+    <h3>Fifty-four nodes still read the POV player under a name that never existed</h3>
+    <p>The graph reads the POV players through a variable named for an asset naming scheme the project does not use. Largest cluster of dangling references in the widget.</p>
+    <div class="fig"><b>54</b> × <code>K2Node_VariableGet</code> → <code>MP_360_POV_CAT_PARA</code> &nbsp;(unresolvable)</div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="id">E3</div>
+  <div>
+    <h3>Nineteen nodes read a button that was deleted</h3>
+    <p>The rework added quality selection — <code>Button_1080_High</code>, <code>Button_1080_Low</code>, <code>Button_4K</code> appear throughout the name table and in 80 compiled event names. The widget tree contains 50 buttons and not one carries a quality name. The components were removed; the graph nodes reading them were not.</p>
+    <div class="fig"><b>19</b> × <code>K2Node_VariableGet</code> → <code>Button_4K</code> &nbsp;(no such widget object)</div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="id">E4</div>
+  <div>
+    <h3>The graph is four to six times the size of any working peer</h3>
+    <p>3,212 export objects against 533 for the UCI widget, from a 5.9&nbsp;MB package where every other widget in the folder sits between 660&nbsp;KB and 915&nbsp;KB. Button count is unchanged at 50 — the growth is entirely graph nodes, from hand-duplicating a play block per video × per resolution.</p>
+    <div class="fig">exports &nbsp;<b>3,212</b> vs 1,195 (PARAOG) · 728 (PARA_Test) · <b>533</b> (UCI_02)<br>package &nbsp;<b>5,912,752 B</b> vs 880,294 B (UCI_02)</div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="id">E5</div>
+  <div>
+    <h3>Every button is bound twice, by two different mechanisms</h3>
+    <p>The working widgets bind clicks one way only — designer-bound component events. The live Paraguay widget keeps all 27 of those <em>and</em> adds 80 runtime <code>Bind Event to OnClicked</code> nodes. Runtime binding adds to a multicast delegate rather than replacing, so a click dispatches to both handlers.</p>
+    <div class="fig">
+      BP_WG_CAT_UCI_02 &nbsp;<b>12</b> designer, <b>0</b> runtime OnClicked<br>
+      BP_WG_CAT_PARAOG &nbsp;<b>27</b> designer, <b>0</b> runtime OnClicked<br>
+      BP_WG_CAT_PARA &nbsp;<b>27</b> designer <b>+ 80</b> runtime OnClicked
+    </div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="id">E6</div>
+  <div>
+    <h3>128 media-opened handlers are bound and never released</h3>
+    <p>The <code>OnMediaOpened → Play</code> idiom is duplicated across every video-and-quality combination. Media players are project assets, not per-instance objects, so these handlers accumulate on shared state. There is not one <code>RemoveDelegate</code> or <code>ClearDelegate</code> node anywhere in the folder — the working widgets get away with it because they bind 7 and 32 times, at construction.</p>
+    <div class="fig">OnMediaOpened binds &nbsp;<b>128</b> (PARA) vs 32 (PARAOG) vs <b>7</b> (UCI_02) &nbsp;·&nbsp; unbind nodes: <b>0</b> everywhere</div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="id">E7</div>
+  <div>
+    <h3>Not a missing-asset problem</h3>
+    <p>The obvious first suspicion, and it is wrong. Every <code>/Game/</code> reference in all four widgets and all seven screen actors resolves to a file on disk. The Paraguay media library is intact: 162 stream sources, all present.</p>
+    <div class="fig">unresolved asset references across all widgets and screens &nbsp;<b>0</b></div>
+  </div>
+</div>
+
+<h2><span class="num">04</span>Side by side</h2>
+
+<p>The subject against its own working predecessor and two unrelated working widgets. Identical rows are as informative as the divergent ones — the widget tree is untouched; everything that differs is in the graph.</p>
+</div>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr>
+      <th>Package table metric</th>
+      <th class="subject">CAT_PARA<br>live</th>
+      <th class="ref">CAT_PARAOG<br>predecessor</th>
+      <th class="ref">CAT_PARA_Test</th>
+      <th class="ref">CAT_UCI_02</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Package size (bytes)</td><td class="subject">5,912,752</td><td class="ref">1,871,881</td><td class="ref">980,105</td><td class="ref">880,294</td></tr>
+    <tr><td>Export objects</td><td class="subject">3,212</td><td class="ref">1,195</td><td class="ref">728</td><td class="ref">533</td></tr>
+    <tr class="rule-row"><td>Button widgets</td><td class="subject">50</td><td class="ref">50</td><td class="ref">50</td><td class="ref">20</td></tr>
+    <tr><td>WidgetSwitchers</td><td class="subject">2</td><td class="ref">2</td><td class="ref">2</td><td class="ref">2</td></tr>
+    <tr class="rule-row"><td>Designer-bound click events</td><td class="subject">27</td><td class="ref">27</td><td class="ref">9</td><td class="ref">12</td></tr>
+    <tr><td>Runtime OnClicked binds</td><td class="subject">80</td><td class="ref">0</td><td class="ref">0</td><td class="ref">0</td></tr>
+    <tr><td>OnMediaOpened binds</td><td class="subject">128</td><td class="ref">32</td><td class="ref">4</td><td class="ref">7</td></tr>
+    <tr><td>Unbind nodes</td><td class="subject">0</td><td class="ref">0</td><td class="ref">0</td><td class="ref">0</td></tr>
+    <tr class="rule-row"><td>Custom events</td><td class="subject">208</td><td class="ref">32</td><td class="ref">5</td><td class="ref">7</td></tr>
+    <tr><td>CallFunction nodes</td><td class="subject">785</td><td class="ref">273</td><td class="ref">—</td><td class="ref">129</td></tr>
+    <tr><td>VariableGet nodes</td><td class="subject">648</td><td class="ref">157</td><td class="ref">—</td><td class="ref">68</td></tr>
+    <tr class="rule-row"><td>Media players referenced</td><td class="subject">2 of 4</td><td class="ref">4 of 4</td><td class="ref">4 of 4</td><td class="ref">3 of 3</td></tr>
+    <tr><td>Dangling variable reads</td><td class="subject">73+</td><td class="ref">0</td><td class="ref">0</td><td class="ref">0</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="tnote">— = not extracted. Dangling reads counted as 54 × MP_360_POV_CAT_PARA + 19 × Button_4K, excluding the four <code>_02-x</code> variants. Every figure in this table is identical in both projects.</p>
+
+<div class="col">
+
+<h2><span class="num">05</span>The live hypothesis: the missing player override</h2>
+
+<p class="lede">Mac's default media backend cannot decode this content; a per-asset player override pointing at ElectraPlayer is what made Mac playback work during the July packaging session. That override is not on disk today.</p>
+
+<p>Searching both projects for the property that carries it returns nothing:</p>
+
+<div class="dangle">
+  <b>Player overrides found in <code>Content/Media</code>:</b><br>
+  Windows project &nbsp;→&nbsp; <b>0</b> assets containing <code>PlatformPlayerNames</code> or <code>ElectraPlayer</code><br>
+  Mac project &nbsp;→&nbsp; <b>0</b> assets containing <code>PlatformPlayerNames</code> or <code>ElectraPlayer</code><br>
+  Project <code>Config/*.ini</code> media settings, either side &nbsp;→&nbsp; <b>none</b>
+</div>
+
+<p>Parsing <code>BilatScar_360.uasset</code> — the first asset the July session overrode, and the one whose Electra playback is recorded in the logs — both copies carry the same 13-entry name table, with no override property in either. An override would have to appear there as a name.</p>
+
+<p>The stream sources <em>were</em> touched on the Mac: <strong>442 of 444 differ</strong> between the two projects. But the differences are small and sit outside the name table — 69 differing bytes for <code>BilatScar_360</code>, with 32 bytes inserted in the thumbnail/GUID region and byte-identical tails. The assets were re-saved. No override property persisted.</p>
+
+<p>Whether the bulk pass never wrote the property or something reverted it later cannot be determined from disk state alone. Either way, if the override is what made Mac playback work, <strong>the Mac project does not have it now</strong>.</p>
+
+<h3>How this would produce both symptoms</h3>
+<p>Dead video follows directly. The stuck menu follows only if the return-to-menu path hangs off the media callbacks — and the widget binds <code>OnMediaOpened</code> 128 times (<strong>E6</strong>), so if the source never opens, none of those continuations run. That second step is consistent with the evidence but is <em>inference, not proof</em>.</p>
+
+<h3>The test that settles it</h3>
+<p>On the Mac, re-run <code>set_electra_override.py</code>, then open one affected asset and confirm <strong>Player Overrides</strong> actually shows <code>Mac → ElectraPlayer</code> after saving. If the property does not persist across a save, that is the bug. If it persists and Paraguay then plays, the hypothesis is confirmed and the graph defects stay on the debt list.</p>
+
+<h2><span class="num">06</span>Corrections to revision 1</h2>
+
+<div class="method">
+  <h3>Two errors, both caught by evidence rather than review</h3>
+  <p><strong>The verdict was wrong.</strong> Revision 1 concluded that <code>Button_4K</code> and <code>MP_360_POV_CAT_PARA</code> dangling references stop the Blueprint compiling and therefore stop the graph running, and that this single fact explained both symptoms. The operator's Windows package test disproves it: identical bytes, correct playback. The flaw in the reasoning is that <code>K2Node_*</code> objects are editor-only and stripped at cook, so a packaged build never executes the graph — it executes serialized bytecode. Dangling editor-graph references are an editor-compile problem. Revision 1 treated an editor-side symptom as a runtime cause.</p>
+  <p><strong>An earlier method artifact.</strong> A first pass reported dozens of broken asset references across every widget including the working ones. UE encodes a trailing <code>_&lt;digits&gt;</code> as a separate FName number, so the name table stores <code>CAT_UCI_02_LASER</code> for the asset <code>CAT_UCI_02_LASER_360</code>. Corrected for that, genuinely broken references are zero — which is what <strong>E7</strong> reports.</p>
+  <p><strong>Still not verified.</strong> No Blueprint has been opened in the editor. The Python scripting plugin is not enabled or built in this project, and enabling it means editing <code>awsTutorial.uproject</code> and rebuilding the editor target — a project change not made unasked. Reading the <strong>Compiler Results</strong> panel on <code>BP_WG_CAT_PARA</code> would confirm whether the editor-side compile errors exist; that is now a debt question, not the fault line.</p>
+</div>
+
+<h2><span class="num">07</span>What to do next</h2>
+
+<div class="fix">
+  <div class="hd"><span class="rank">First</span><h3>Restore the Mac player overrides and retest</h3></div>
+  <p>Re-apply the Mac → ElectraPlayer override to the stream sources and verify it survives a save by reopening one asset. Then run Paraguay on the Mac. This is the cheapest action with the highest information yield: it either fixes the reported fault or eliminates the leading hypothesis.</p>
+  <p class="cost">Cost: minutes. Confirms or kills the platform hypothesis outright.</p>
+</div>
+
+<div class="fix second">
+  <div class="hd"><span class="rank">Then, separately</span><h3>Treat the widget damage as debt, on its own schedule</h3></div>
+  <p><strong>E1</strong>–<strong>E6</strong> are real and survive a Windows cook, which makes them latent rather than urgent. When they are addressed, start from <code>BP_WG_CAT_PARAOG</code> — same 50-button, 2-switcher layout, all four media players, zero dangling reads, same binding architecture as every widget that works — and add quality selection as data rather than as 208 duplicated custom events. Bind <code>OnMediaOpened</code> once at Construct. Pick one binding mechanism and do not mix them.</p>
+  <p class="cost">Cost: a session. Do not bundle this with the playback fix — changing both at once destroys the ability to attribute the result.</p>
+</div>
+
+<p>Independently: the three dead variants — <code>BP_WG_CAT_PARA_V2</code>, <code>BP_SC_CAT_PARA_V3</code>, and the <code>_Test</code> pair — are unreferenced by any map and worth deleting once Paraguay is working, so the next person does not have to work out which of four widgets is live.</p>
+
+<div class="foot">
+  <span>Sources: /Volumes/UnrealEngine/Unreal_Projects/awsTutorial · Documents/Unreal_Projects/UCI_Campus_Template_v1.0</span>
+  <span>Method: package name / import / export table parse</span>
+  <span>No project files were modified</span>
+</div>
+
+</div>
+</div>

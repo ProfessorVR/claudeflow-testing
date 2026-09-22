@@ -1,0 +1,24 @@
+=== T1-dev-real-state: dev app, wait 45s, quit=term, 23:05:27
+--- [GraphicsAutoTune] before:
+Attempts=0
+TunedVersion=2
+LastResult=Low, 30 fps, 100% resolution
+MacWindow=reached 2880x1620 windowed at 0,124 after 1 correction(s) @ 2026-09-21T05:05:11.009Z
+pid 86567 at 23:05:27
+  PID  %CPU    RSS ELAPSED STAT
+86567  88.0 402416   00:45 R   
+sample: query-wait frames=0 fence-wait=0 game-thread-top: 
+--- [GraphicsAutoTune] after 45s:
+Attempts=0
+TunedVersion=2
+LastResult=Low, 30 fps, 100% resolution
+MacWindow=reached 2880x1620 windowed at 0,124 after 1 correction(s) @ 2026-09-21T05:05:11.009Z
+still alive after term -> SIGKILL
+quit: killed at 23:07:31
+config rewritten at exit: GameUserSettings=no Input.ini=no
+--- crash/ensure reports newer than this test:
+(none)
+--- dev log evidence:
+﻿Log file open, 09/20/26 23:05:40
+LogConfig: Set CVar [[r.AllowOcclusionQueries:0]]
+=== done 23:07:31
